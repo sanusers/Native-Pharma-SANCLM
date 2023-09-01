@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.mastersync.MasterSyncActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text_dark"
+            android:minHeight="?attr/actionBarSize"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" >
+
+            <ImageView
+                android:id="@+id/backArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/back_arrow"
+                android:layout_marginStart="30dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Master Sync"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginStart="30dp"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBar">
+
+        <RelativeLayout
+            android:layout_weight="0.75"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="30dp"
+            android:background="@drawable/testdrawable">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MR_Name"
+                android:textColor="@color/text_dark"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                app:drawableEndCompat="@drawable/down_arrow" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1.25"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:padding="30dp">
+
+            <TextView
+                android:id="@+id/txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Last Sync: "
+                android:textColor="@color/text_dark"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="27 Jun 2023 02:38 PM"
+                android:textColor="@color/text_dark"
+                android:textSize="20sp"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@id/txt"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="30dp"
+        android:background="#ececec"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll1">
+
+        <RelativeLayout
+            android:layout_weight="0.75"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/listedDoctor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Listed Doctor"
+                    android:textColor="@color/text_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/right_arrow"
+                    android:padding="20dp"
+                    android:background="@drawable/selector_box"/>
+
+            <TextView
+                android:id="@+id/chemist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chemist"
+                    android:textColor="@color/text_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/down_arrow"
+                    android:padding="20dp"
+
+                    android:background="@drawable/selector_box"
+                    android:layout_below="@id/listedDoctor"
+                    android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/stockiest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Stockist"
+                android:textColor="@color/text_dark"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/down_arrow"
+                android:padding="20dp"
+                android:background="@drawable/selector_box"
+                android:layout_below="@id/chemist"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/hospital"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hospital"
+                android:textColor="@color/text_dark"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/down_arrow"
+                android:padding="20dp"
+                android:background="@drawable/selector_box"
+                android:layout_below="@id/stockiest"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/cip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CIP"
+                android:textColor="@color/text_dark"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/down_arrow"
+                android:padding="20dp"
+                android:background="@drawable/selector_box"
+                android:layout_below="@id/hospital"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/subordinate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Subordinate"
+                android:textColor="@color/text_dark"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/down_arrow"
+                android:padding="20dp"
+                android:background="@drawable/selector_box"
+                android:layout_below="@id/cip"
+                android:layout_marginTop="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/subordinate"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/selector_box"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="15dp"
+                    android:padding="20dp"
+                    android:text="Sync All"
+                    android:textColor="@color/text_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    app:drawableStartCompat="@drawable/refresh_icon" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1.25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:cardCornerRadius="5dp"
+                app:cardBackgroundColor="#F3CBD2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"
+                        app:cardCornerRadius="5dp"
+                        android:backgroundTint="@color/dark_pink"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap on each to sync individually"
+                        android:textColor="@color/dark_pink"
+                        android:textSize="18sp"
+                        android:layout_gravity="center"
+                        android:padding="15dp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
