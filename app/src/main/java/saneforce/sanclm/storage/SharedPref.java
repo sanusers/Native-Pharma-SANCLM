@@ -6,14 +6,26 @@ import android.content.SharedPreferences;
 public class SharedPref {
 
     public static final String SP_NAME = "e_detail";
-    public static final String DEVICE_ID = "device_id";
-    public static final String FCM_TOKEN = "fcm_token";
+
+    //Setting
     public static final String BASE_URL = "base_url";
     public static final String LICENSE_KEY = "license_key";
     public static final String BASE_WEB_URL = "base_web_wrl";
     public static final String PHP_PATH_URL = "php_path_url";
     public static final String REPORTS_URL = "reports_url";
     public static final String SLIDES_URL = "slides_url";
+    public static final String LOGO_URL = "logo_url";
+    public static final String SETTING_STATE = "setting_state";
+
+
+
+    //Login
+    public static final String LOGIN_STATE = "login_state";
+    public static final String DEVICE_ID = "device_id";
+    public static final String FCM_TOKEN = "fcm_token";
+
+
+
 
 
    public static SharedPreferences sharedPreferences;
@@ -25,7 +37,7 @@ public class SharedPref {
         editor.putString(BASE_URL,baseUrl).apply();
     }
 
-    public static void saveUrls(Context context,String baseUrl,String licenseKey,String baseWebUrl,String PhpPathUrl,String reportsUrl,String SlidesUrl){
+    public static void saveUrls(Context context,String baseUrl,String licenseKey,String baseWebUrl,String PhpPathUrl,String reportsUrl,String SlidesUrl,String logoUrl,boolean settingState){
         sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(BASE_URL,baseUrl);
@@ -34,6 +46,8 @@ public class SharedPref {
         editor.putString(PHP_PATH_URL,PhpPathUrl);
         editor.putString(REPORTS_URL,reportsUrl);
         editor.putString(SLIDES_URL,SlidesUrl);
+        editor.putString(LOGO_URL,logoUrl);
+        editor.putBoolean(SETTING_STATE,settingState);
         editor.apply();
     }
 
@@ -60,6 +74,24 @@ public class SharedPref {
     public static String getSlideUrl(Context context){
         return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(SLIDES_URL,"");
     }
+
+    public static String getLogoUrl(Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(LOGO_URL,"");
+    }
+
+    public static boolean getSettingState(Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getBoolean(SETTING_STATE,false);
+    }
+
+    public static void saveLoginState(Context context,boolean state){
+        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(LOGIN_STATE,state).apply();
+    }
+    public static boolean getLoginState(Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getBoolean(LOGIN_STATE,false);
+    }
+
 
     public static void saveDeviceId(Context context,String deviceId){
         sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);

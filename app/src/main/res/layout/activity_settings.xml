@@ -6,14 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".activity.setting.SettingsActivity">
 
-<!--    <ScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:fillViewport="true">-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content">-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -24,208 +29,230 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <RelativeLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1.4"
                     android:paddingStart="70dp"
                     android:paddingEnd="70dp"
-                    android:paddingTop="100dp">
+                    android:paddingTop="100dp"
+                    android:layout_gravity="center">
 
-                    <TextView
-                        android:id="@+id/appConfigTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="App Configuration"
-                        android:textColor="@color/text_dark"
-                        android:textSize="22sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <LinearLayout
-                        android:id="@+id/layout1"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constarint"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2"
-                        android:layout_marginTop="30dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/appConfigTxt">
-
-
-                        <LinearLayout
-                            android:layout_weight="1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Web URL"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark" />
-
-                            <EditText
-                                android:id="@+id/urlETxt"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Enter URL"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark"
-                                android:background="@drawable/edittext_stroke"
-                                android:layout_marginTop="20dp"
-                                android:padding="18dp"
-                                android:maxLines="1"
-                                android:singleLine="true"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_weight="1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginStart="40dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="License Key"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark" />
-
-                            <EditText
-                                android:id="@+id/licenseETxt"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Enter License"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark"
-                                android:background="@drawable/edittext_stroke"
-                                android:layout_marginTop="20dp"
-                                android:padding="18dp"
-                                android:maxLines="1"
-                                android:singleLine="true"/>
-
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/layout2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2"
-                        android:layout_marginTop="30dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/layout1">
-
-                        <LinearLayout
-                            android:layout_weight="1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Language"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark" />
-
-                            <TextView
-                                android:id="@+id/language"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="English"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark"
-                                android:background="@drawable/edittext_stroke"
-                                android:layout_marginTop="20dp"
-                                android:padding="18dp"
-                                app:drawableRightCompat="@drawable/down_arrow" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_weight="1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginStart="40dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Your Device ID"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark" />
-
-                            <TextView
-                                android:id="@+id/deviceIdETxt"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="34ftr32342sfsf34"
-                                android:textSize="18sp"
-                                android:textColor="@color/text_dark"
-                                android:background="@drawable/edittext_stroke"
-                                android:layout_marginTop="20dp"
-                                android:padding="18dp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/saveSettingBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Save Settings"
-                        android:textSize="16sp"
-                        android:textColor="@color/white"
-                        android:textAllCaps="false"
-                        android:padding="16dp"
-                        android:background="@drawable/edittext_stroke"
-                        app:backgroundTint="#282A3C"
-                        android:layout_marginTop="30dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/layout2"/>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintVertical_bias="0.85"
-                        app:layout_constraintHorizontal_bias="0.85"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/saveSettingBtn">
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true">
 
                         <TextView
+                            android:id="@+id/appConfigTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Powered by"
-                            android:textColor="#282A3C"
-                            android:textSize="16sp"
-                            android:layout_gravity="center"/>
+                            android:text="App Configuration"
+                            android:textColor="@color/text_dark"
+                            android:textSize="22sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageView
-                            android:id="@+id/sanImg"
+                        <LinearLayout
+                            android:id="@+id/layout1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp"
+                            android:orientation="horizontal"
+                            android:weightSum="2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/appConfigTxt">
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Web URL"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp" />
+
+                                <EditText
+                                    android:id="@+id/urlETxt"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="20dp"
+                                    android:background="@drawable/edittext_stroke"
+                                    android:hint="Enter URL"
+                                    android:maxLines="1"
+                                    android:padding="18dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="40dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="License Key"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp" />
+
+                                <EditText
+                                    android:id="@+id/licenseETxt"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="20dp"
+                                    android:background="@drawable/edittext_stroke"
+                                    android:hint="Enter License"
+                                    android:maxLines="1"
+                                    android:padding="18dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp"
+                            android:orientation="horizontal"
+                            android:weightSum="2"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/layout1">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Language"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:id="@+id/language"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="20dp"
+                                    android:background="@drawable/edittext_stroke"
+                                    android:padding="18dp"
+                                    android:text="English"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp"
+                                    app:drawableRightCompat="@drawable/down_arrow" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="40dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Your Device ID"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:id="@+id/deviceIdETxt"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="20dp"
+                                    android:background="@drawable/edittext_stroke"
+                                    android:hint="34ftr32342sfsf34"
+                                    android:padding="18dp"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="18sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/saveSettingBtn"
                             android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:src="@drawable/saneforce_img" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp"
+                            android:background="@drawable/edittext_stroke"
+                            android:padding="16dp"
+                            android:text="Save Settings"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            app:backgroundTint="#282A3C"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/layout2" />
 
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:paddingBottom="50dp"
+                        android:layout_below="@id/constarint"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Powered by"
+                                android:textColor="#282A3C"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/sanImg"
+                                android:layout_width="wrap_content"
+                                android:layout_height="80dp"
+                                android:src="@drawable/saneforce_img" />
+
+                        </LinearLayout>
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+
 
                 <LinearLayout
                     android:layout_weight="0.6"
@@ -239,9 +266,20 @@
 
             </LinearLayout>
 
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--    </ScrollView>-->
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateTint="@color/text_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

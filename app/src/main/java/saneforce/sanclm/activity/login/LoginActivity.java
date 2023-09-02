@@ -1,6 +1,11 @@
 package saneforce.sanclm.activity.login;
 
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -16,22 +21,21 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.R;
+import saneforce.sanclm.utility.DownloaderClass;
+import saneforce.sanclm.utility.ImageStorage;
+import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.common.UtilityClass;
 import saneforce.sanclm.databinding.ActivityLoginBinding;
@@ -45,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
     ApiInterface apiInterface;
+    PackageManager packageManager;
+    PackageInfo packageInfo;
     String fcmToken = "";
     SQLite sqlite;
 
@@ -58,6 +64,10 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
+
+        getImageFromLocal("logo");
+
+
         if (fcmToken.isEmpty()){
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<String>() {
                 @Override
@@ -67,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPref.saveFcmToken(getApplicationContext(), s);
                 }
             });
-
         }
 
         binding.loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -101,8 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                 String data = "";
                 LoginResponse loginResponse;
                 if (cursor.moveToFirst()) {
-                    data = cursor.getString(cursor.getColumnIndex("login_data"));
-
+                    data = cursor.getString(1);
                 }
                 cursor.close();
                 Type type = new TypeToken<LoginResponse>() {
@@ -115,6 +123,34 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void getImageFromLocal(String imageName){
+        Log.e("test","Login getImageFromLocal");
+        packageManager = this.getPackageManager();
+        String packageName = this.getPackageName();
+        try {
+            packageInfo = packageManager.getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String fileDirectory = packageInfo.applicationInfo.dataDir;
+        Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
+        if(ImageStorage.checkIfImageExists(fileDirectory, imageName + ".png")) {
+            Log.e("test","image exists");
+            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName + ".png");
+            String path = file.getAbsolutePath();
+            Bitmap b = BitmapFactory.decodeFile(path);
+          binding.logoImg.setImageBitmap(b);
+        } else {
+            Log.e("test","image not exists in login");
+            String baseWebUrl = SharedPref.getBaseWebUrl(getApplicationContext());
+            String logoUrl = SharedPref.getLogoUrl(getApplicationContext());
+            if (!baseWebUrl.equals("") && !logoUrl.equals("")){
+                DownloaderClass downloaderClass = (DownloaderClass) new DownloaderClass(baseWebUrl+logoUrl, fileDirectory, imageName).execute();
+            }
+
+        }
+    }
+
 
     public void login(String userId,String password)  {
 
@@ -122,7 +158,8 @@ public class LoginActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.VISIBLE);
             String baseUrl = SharedPref.getBaseUrl(getApplicationContext());
             String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-            Log.e("test","login url : "  + baseUrl + pathUrl);
+            String replacedUrl = pathUrl.replace("?","/");
+            Log.e("test","login url : "  + baseUrl + replacedUrl);
             Log.e("test","base url from sharePref  : " + SharedPref.getBaseUrl(getApplicationContext()));
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), "http://crm.saneforce.in/iOSServer/db_api.php/");
 
@@ -153,8 +190,11 @@ public class LoginActivity extends AppCompatActivity {
                                 LoginResponse loginResponse = new LoginResponse();
                                 loginResponse = new Gson().fromJson(stringResponse,LoginResponse.class);
 
-                                Log.e("test","login : " + new Gson().toJson(loginResponse));
+                                Log.e("test","login response : " + new Gson().toJson(loginResponse));
                                 sqlite.saveLoginData(stringResponse);
+                                openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
+                                startActivity(new Intent(LoginActivity.this, MasterSyncActivity.class));
+                                SharedPref.saveLoginState(getApplicationContext(),true);
                             }else{
                                 if (jsonObject2.has("msg")){
                                     Toast.makeText(LoginActivity.this,jsonObject2.getString("msg") , Toast.LENGTH_SHORT).show();
@@ -163,7 +203,6 @@ public class LoginActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-
                     }
                 }
 
@@ -171,7 +210,6 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure (@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                     Log.e("test","failed : " + t);
                     binding.progressBar.setVisibility(View.GONE);
-
                 }
             });
 

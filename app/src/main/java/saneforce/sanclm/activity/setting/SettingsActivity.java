@@ -2,6 +2,8 @@ package saneforce.sanclm.activity.setting;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -24,12 +26,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.utility.DownloaderClass;
+import saneforce.sanclm.utility.ImageStorage;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.common.UtilityClass;
@@ -42,7 +47,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     ActivitySettingsBinding binding;
     ApiInterface apiInterface;
-    String deviceId = "", url = "", licenseKey ="",divisionCode = "",baseWebUrl="", phpPathUrl ="",reportsUrl="", slidesUrl ="";
+    PackageManager packageManager;
+    PackageInfo packageInfo;
+
+    String deviceId = "", url = "", licenseKey ="",divisionCode = "",baseWebUrl="", phpPathUrl ="",reportsUrl="", slidesUrl ="",logoUrl="";
     int hitCount = 0;
 
     @Override
@@ -132,12 +140,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void configuration(String enteredUrl){
+        binding.progressBar.setVisibility(View.VISIBLE);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
 
         Call<JsonArray> call = apiInterface.Configuration("ConfigiOS.json");
         call.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                binding.progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()){
                     Log.e("test","success : "+ response.body().toString());
                     SharedPref.saveBaseUrl(getApplicationContext(),"https://"+url+"/apps/");
@@ -148,13 +158,15 @@ public class SettingsActivity extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObj = jsonArray.getJSONObject(i);
                             if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
-                                JSONObject Config = new JSONObject(jsonObj.getString("config"));
-                                divisionCode = Config.getString("division");
-                                baseWebUrl = Config.getString("weburl");
-                                phpPathUrl = Config.getString("appurl");
-                                reportsUrl = Config.getString("reportUrl");
-                                slidesUrl = Config.getString("slideurl");
-                                SharedPref.saveUrls(getApplicationContext(),enteredUrl,licenseKey,baseWebUrl,phpPathUrl,reportsUrl,slidesUrl);
+                                JSONObject config = new JSONObject(jsonObj.getString("config"));
+                                divisionCode = config.getString("division");
+                                baseWebUrl = config.getString("weburl");
+                                phpPathUrl = config.getString("appurl");
+                                reportsUrl = config.getString("reportUrl");
+                                slidesUrl = config.getString("slideurl");
+                                logoUrl = config.getString("logoimg");
+                                downloadImage(baseWebUrl + logoUrl,"logo");
+                                SharedPref.saveUrls(getApplicationContext(),enteredUrl,licenseKey,baseWebUrl,phpPathUrl,reportsUrl,slidesUrl,logoUrl,true);
                                 Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
                                 licenseKeyValid = true;
@@ -180,12 +192,37 @@ public class SettingsActivity extends AppCompatActivity {
                 if (hitCount <2){
                     configuration("http://" + url + "/apps/");
                 }else{
+                    binding.progressBar.setVisibility(View.GONE);
                     Log.e("test","hit count is : " + hitCount);
                     hitCount =0;
                 }
 
             }
         });
+
+    }
+
+    public void downloadImage(String url,String imageName){
+        packageManager = this.getPackageManager();
+        String packageName = this.getPackageName();
+        try {
+            packageInfo = packageManager.getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String fileDirectory = packageInfo.applicationInfo.dataDir;
+        Log.e("test","filepath + name : " + fileDirectory + "/" + imageName);
+        if(ImageStorage.checkIfImageExists(fileDirectory,imageName + ".png")) {
+            Log.e("test","image exists");
+            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName + ".png");
+            assert file != null;
+            String path = file.getAbsolutePath();
+//            b = BitmapFactory.decodeFile(path);
+//          imageView.setImageBitmap(b);
+        } else {
+            Log.e("test","image not exists");
+            new DownloaderClass(url, fileDirectory,imageName).execute() ;
+        }
 
     }
 }

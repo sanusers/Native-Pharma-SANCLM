@@ -10,11 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.SettingsActivity;
+import saneforce.sanclm.storage.SharedPref;
 
 
 public class SplashScreen extends AppCompatActivity {
-
 
 
     @Override
@@ -25,8 +26,19 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run () {
-                startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
-                finish();
+                if (SharedPref.getSettingState(getApplicationContext())){
+                    if (SharedPref.getLoginState(getApplicationContext())){
+                        startActivity(new Intent(SplashScreen.this, MasterSyncActivity.class));
+                        finish();
+                    }else{
+                        startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+                        finish();
+                    }
+                }else{
+                    startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
+                    finish();
+                }
+
             }
         },2000);
     }

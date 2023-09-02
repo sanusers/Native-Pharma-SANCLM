@@ -30,19 +30,21 @@ public class SQLite extends SQLiteOpenHelper {
     @Override
     public void onUpgrade (SQLiteDatabase sqLiteDB, int i, int i1) {
         sqLiteDB.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLE);
+        onCreate(sqLiteDB);
 
     }
 
     public void deleteAllTable(){
         SQLiteDatabase sqLiteDB = this.getWritableDatabase();
         sqLiteDB.execSQL("DELETE FROM " + LOGIN_TABLE);
+        sqLiteDB.close();
     }
 
     public void saveLoginData(String data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(LOGIN_DATA,data);
-        db.insert(LOGIN_TABLE,null,contentValues);
+        db.replace(LOGIN_TABLE,null,contentValues);
         db.close();
     }
 
