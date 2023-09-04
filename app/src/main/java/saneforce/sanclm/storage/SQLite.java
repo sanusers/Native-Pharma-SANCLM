@@ -44,7 +44,10 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(LOGIN_DATA,data);
-        db.replace(LOGIN_TABLE,null,contentValues);
+        int updated = db.update(LOGIN_TABLE,contentValues,null,null);
+        if (updated <= 0){
+            db.insert(LOGIN_TABLE,null,contentValues);
+        }
         db.close();
     }
 

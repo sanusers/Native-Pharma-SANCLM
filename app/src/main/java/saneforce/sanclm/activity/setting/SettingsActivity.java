@@ -193,6 +193,7 @@ public class SettingsActivity extends AppCompatActivity {
                     configuration("http://" + url + "/apps/");
                 }else{
                     binding.progressBar.setVisibility(View.GONE);
+                    Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
                     Log.e("test","hit count is : " + hitCount);
                     hitCount =0;
                 }

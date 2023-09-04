@@ -12,16 +12,20 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.SettingsActivity;
+import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 
 public class SplashScreen extends AppCompatActivity {
 
+    SQLite sqLite;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        sqLite = new SQLite(getApplicationContext());
+        sqLite.getWritableDatabase();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -38,6 +42,8 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
                     finish();
                 }
+               startActivity(new Intent(SplashScreen.this,SettingsActivity.class));
+               finish();
 
             }
         },2000);

@@ -7,6 +7,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="text_dark">#282A3C</color>
+    <color name="text_dark_65">#A6282A3C</color>
+    <color name="background">#EEEEEE</color>
     <color name="dark_pink">#F1536E</color>
+    <color name="pink_15">#26F1536E</color>
 
 </resources>

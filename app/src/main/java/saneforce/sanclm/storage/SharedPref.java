@@ -8,6 +8,7 @@ public class SharedPref {
     public static final String SP_NAME = "e_detail";
 
     //Setting
+    public static final String SETTING_STATE = "setting_state";
     public static final String BASE_URL = "base_url";
     public static final String LICENSE_KEY = "license_key";
     public static final String BASE_WEB_URL = "base_web_wrl";
@@ -15,7 +16,6 @@ public class SharedPref {
     public static final String REPORTS_URL = "reports_url";
     public static final String SLIDES_URL = "slides_url";
     public static final String LOGO_URL = "logo_url";
-    public static final String SETTING_STATE = "setting_state";
 
 
 
@@ -77,6 +77,12 @@ public class SharedPref {
 
     public static String getLogoUrl(Context context){
         return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(LOGO_URL,"");
+    }
+
+    public static void saveSettingState(Context context,boolean state){
+        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SETTING_STATE,state).apply();
     }
 
     public static boolean getSettingState(Context context){

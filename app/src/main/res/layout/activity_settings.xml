@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".activity.setting.SettingsActivity">
 
     <ScrollView
@@ -32,10 +33,10 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.4"
+                    android:layout_weight="1.5"
                     android:paddingStart="70dp"
                     android:paddingEnd="70dp"
-                    android:paddingTop="100dp"
+                    android:paddingTop="70dp"
                     android:layout_gravity="center">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,14 +48,27 @@
                         android:layout_alignParentTop="true">
 
                         <TextView
+                            android:id="@+id/sanclm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SAN CLM"
+                            android:textColor="@color/text_dark"
+                            android:textSize="24sp"
+                            android:fontFamily="@font/satoshi_medium"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
                             android:id="@+id/appConfigTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="App Configuration"
                             android:textColor="@color/text_dark"
                             android:textSize="22sp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_marginTop="30dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toBottomOf="@id/sanclm" />
 
                         <LinearLayout
                             android:id="@+id/layout1"
@@ -67,10 +81,9 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/appConfigTxt">
 
-
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
@@ -79,27 +92,31 @@
                                     android:layout_height="wrap_content"
                                     android:text="Web URL"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp" />
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium" />
 
                                 <EditText
                                     android:id="@+id/urlETxt"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
+                                    android:layout_marginTop="10dp"
                                     android:background="@drawable/edittext_stroke"
                                     android:hint="Enter URL"
+                                    android:textColorHint="@color/text_dark_65"
                                     android:maxLines="1"
-                                    android:padding="18dp"
+                                    android:padding="15dp"
                                     android:singleLine="true"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp" />
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:gravity="center|start"/>
 
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="40dp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="30dp"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
@@ -108,20 +125,24 @@
                                     android:layout_height="wrap_content"
                                     android:text="License Key"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp" />
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium" />
 
                                 <EditText
                                     android:id="@+id/licenseETxt"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
+                                    android:layout_marginTop="10dp"
                                     android:background="@drawable/edittext_stroke"
                                     android:hint="Enter License"
+                                    android:textColorHint="@color/text_dark_65"
                                     android:maxLines="1"
-                                    android:padding="18dp"
+                                    android:padding="15dp"
                                     android:singleLine="true"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp" />
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:gravity="center|start"/>
 
 
                             </LinearLayout>
@@ -140,8 +161,8 @@
                             app:layout_constraintTop_toBottomOf="@id/layout1">
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
@@ -150,27 +171,30 @@
                                     android:layout_height="wrap_content"
                                     android:text="Language"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp" />
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium" />
 
                                 <TextView
                                     android:id="@+id/language"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_marginTop="20dp"
+                                    android:layout_marginTop="10dp"
                                     android:background="@drawable/edittext_stroke"
-                                    android:padding="18dp"
+                                    android:padding="15dp"
                                     android:text="English"
-                                    android:textColor="@color/text_dark"
+                                    android:textColor="@color/text_dark_65"
                                     android:textSize="18sp"
-                                    app:drawableRightCompat="@drawable/down_arrow" />
+                                    android:fontFamily="@font/satoshi_medium"
+                                    app:drawableRightCompat="@drawable/down_arrow"
+                                    android:gravity="center|start"/>
 
 
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="40dp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="30dp"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
@@ -179,18 +203,20 @@
                                     android:layout_height="wrap_content"
                                     android:text="Your Device ID"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp" />
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium" />
 
                                 <TextView
                                     android:id="@+id/deviceIdETxt"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:background="@drawable/edittext_stroke"
-                                    android:hint="34ftr32342sfsf34"
-                                    android:padding="18dp"
+                                    android:layout_marginTop="10dp"
+                                    android:background="@drawable/etxt_stroke_with_fill_color"
+                                    android:padding="15dp"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp" />
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:gravity="center|start"/>
 
                             </LinearLayout>
 
@@ -202,11 +228,15 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="30dp"
                             android:background="@drawable/edittext_stroke"
-                            android:padding="16dp"
+                            android:paddingStart="30dp"
+                            android:paddingEnd="30dp"
+                            android:paddingTop="15dp"
+                            android:paddingBottom="15dp"
                             android:text="Save Settings"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
                             android:textSize="16sp"
+                            android:fontFamily="@font/satoshi_medium"
                             app:backgroundTint="#282A3C"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/layout2" />
@@ -235,8 +265,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="Powered by"
-                                android:textColor="#282A3C"
-                                android:textSize="16sp" />
+                                android:textColor="@color/text_dark_65"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/satoshi_medium"/>
 
                             <ImageView
                                 android:id="@+id/sanImg"
@@ -255,10 +286,10 @@
 
 
                 <LinearLayout
-                    android:layout_weight="0.6"
+                    android:layout_weight="0.5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/side_img"
+                    android:background="@drawable/setting_side_img"
                     android:adjustViewBounds="true"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"

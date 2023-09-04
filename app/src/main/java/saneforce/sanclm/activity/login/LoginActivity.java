@@ -33,6 +33,7 @@ import java.lang.reflect.Type;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.activity.setting.SettingsActivity;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
 import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
@@ -61,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         sqlite = new SQLite(getApplicationContext());
+        sqlite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
@@ -105,18 +107,21 @@ public class LoginActivity extends AppCompatActivity {
         binding.clearData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-               // sqlite.deleteAllTable();
-                Cursor cursor = sqlite.getLoginData();
-                String data = "";
-                LoginResponse loginResponse;
-                if (cursor.moveToFirst()) {
-                    data = cursor.getString(1);
-                }
-                cursor.close();
-                Type type = new TypeToken<LoginResponse>() {
-                }.getType();
-                loginResponse = new Gson().fromJson(data, type);
-                Log.e("test","login data from sqlite : " + new Gson().toJson(loginResponse));
+                sqlite.deleteAllTable();
+                SharedPref.saveLoginState(getApplicationContext(),false);
+                SharedPref.saveSettingState(getApplicationContext(),false);
+                startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
+//                Cursor cursor = sqlite.getLoginData();
+//                String data = "";
+//                LoginResponse loginResponse;
+//                if (cursor.moveToFirst()) {
+//                    data = cursor.getString(0);
+//                }
+//                cursor.close();
+//                Type type = new TypeToken<LoginResponse>() {
+//                }.getType();
+//                loginResponse = new Gson().fromJson(data, type);
+//                Log.e("test","login data from sqlite : " + new Gson().toJson(loginResponse));
 
             }
         });
