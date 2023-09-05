@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SAN CLM</string>
+
+
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+
+</resources>

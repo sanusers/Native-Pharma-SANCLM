@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+
+        <item
+            android:id="@+id/nav_refresh"
+
+            android:title="Refresh" />
+
+        <item
+            android:id="@+id/nav_create_presentation"
+
+            android:title="Create Presentation" />
+        <item
+            android:id="@+id/nav_tour_plan"
+
+            android:title="Tour Plan" />
+        <item
+            android:id="@+id/nav_missed_date"
+            android:title="Missed Date Entry" />
+
+        <item
+            android:id="@+id/nav_leave_appln"
+            android:title="Leave Application" />
+        <item
+            android:id="@+id/nav_approvals"
+            android:title="Approvals" />
+
+        <item
+            android:id="@+id/nav_reports"
+            android:title="Reports"
+            />
+        <item
+            android:id="@+id/nav_quiz"
+            android:title="Quiz"
+            />
+        <item
+            android:id="@+id/nav_geotagging"
+            android:title="Geo Tagging"
+            android:visible="false"  />
+        <item
+            android:id="@+id/nav_nearme"
+            android:title="Near Me" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout" />
+    </group>
+
+</menu>

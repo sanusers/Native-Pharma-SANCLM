@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="5dp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+  <TextView
+      android:id="@+id/txt_call"
+      android:layout_marginTop="5dp"
+      android:layout_marginLeft="5dp"
+      android:layout_width="wrap_content"
+      android:text="Count :"
+      android:layout_height="wrap_content">
+
+  </TextView>
+
+
+    <TextView
+        android:id="@+id/txt_callcount"
+        android:text="4"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/txt_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:padding="1dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#F1E4E4"
+        android:drawableLeft="@drawable/baseline_sync_24"
+        android:text=" Sync"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="#F44848">
+
+    </TextView>
+
+
+  <TextView
+      android:id="@+id/text_date"
+      android:layout_below="@+id/txt_call"
+      android:layout_marginTop="5dp"
+      android:layout_marginLeft="5dp"
+      android:textStyle="bold"
+      android:layout_width="wrap_content"
+      android:text="September 13, 2023"
+      android:layout_height="wrap_content">
+
+  </TextView>
+
+  <TextView
+      android:layout_below="@+id/txt_call"
+      android:layout_marginTop="5dp"
+      android:textStyle="normal"
+      android:layout_width="wrap_content"
+      android:layout_marginRight="5dp"
+      android:text="Collapse"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_height="wrap_content">
+
+  </TextView>
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recyelerview"
+      android:layout_width="match_parent"
+      android:layout_below="@+id/text_date"
+      android:layout_marginTop="5dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:layout_above="@+id/r_layout"
+      android:layout_height="match_parent" />
+
+
+  <RelativeLayout
+      android:id="@+id/r_layout"
+      android:layout_width="match_parent"
+      android:layout_alignParentBottom="true"
+      android:orientation="vertical"
+      android:layout_marginTop="5dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:layout_height="wrap_content">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:id="@+id/linear"
+      android:layout_marginBottom="5dp"
+      android:padding="0dp"
+      android:orientation="horizontal"
+      android:layout_height="wrap_content">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Call"
+        android:layout_weight="1"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/black"
+        android:padding="5dp"
+        android:background="@drawable/backround_text"
+        app:backgroundTint="#26282A3C" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/backround_text"
+        android:text="Add Activity"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        app:backgroundTint="#26282A3C" />
+
+  </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/edittext_stroke"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:text="Final Sumit"
+        app:backgroundTint="#282A3C" />
+
+  </RelativeLayout>
+
+
+
+</RelativeLayout>
