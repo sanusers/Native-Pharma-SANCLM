@@ -262,7 +262,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="1"
+                            android:text="6"
                             android:textColor="@color/text_dark_65"
                             android:textSize="@dimen/_7sdp"
                             tools:ignore="SpUsage" />
