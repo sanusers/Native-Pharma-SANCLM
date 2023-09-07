@@ -59,29 +59,29 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         deviceId = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
-        binding.deviceIdETxt.setText(deviceId);
+        binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
 
-        binding.language.setOnClickListener(new View.OnClickListener() {
+        binding.tvLanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
                 selectLanguage();
             }
         });
 
-        binding.saveSettingBtn.setOnClickListener(new View.OnClickListener() {
+        binding.btnSaveSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
                 UtilityClass.hideKeyboard(SettingsActivity.this);
-                url = binding.urlETxt.getText().toString().trim().replaceAll("\\s","");
-                licenseKey = binding.licenseETxt.getText().toString().trim();
-                deviceId = binding.deviceIdETxt.getText().toString();
+                url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s","");
+                licenseKey = binding.etLicenseKey.getText().toString().trim();
+                deviceId = binding.tvDeviceId.getText().toString();
                 
                 if (url.isEmpty()){
-                    binding.urlETxt.requestFocus();
+                    binding.etWebUrl.requestFocus();
                     Toast.makeText(SettingsActivity.this, "Enter URL", Toast.LENGTH_SHORT).show();
                 } else if (licenseKey.isEmpty()) {
-                    binding.licenseETxt.requestFocus();
+                    binding.etLicenseKey.requestFocus();
                     Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
                 } else{
                     Log.e("test","url is  : " + url + " -- device id : " + deviceId);
@@ -139,14 +139,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void configuration(String enteredUrl){
-        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.pbConfigurationProgress.setVisibility(View.VISIBLE);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
 
         Call<JsonArray> call = apiInterface.Configuration("ConfigiOS.json");
         call.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                binding.progressBar.setVisibility(View.GONE);
+                binding.pbConfigurationProgress.setVisibility(View.GONE);
                 if (response.isSuccessful()){
                     Log.e("test","success : "+ response.body().toString());
                     SharedPref.saveBaseUrl(getApplicationContext(),"https://"+url+"/apps/");
@@ -191,7 +191,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (hitCount <2){
                     configuration("http://" + url + "/apps/");
                 }else{
-                    binding.progressBar.setVisibility(View.GONE);
+                    binding.pbConfigurationProgress.setVisibility(View.GONE);
                     Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
                     Log.e("test","hit count is : " + hitCount);
                     hitCount =0;
