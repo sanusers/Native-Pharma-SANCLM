@@ -33,10 +33,10 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:paddingStart="70dp"
-                    android:paddingEnd="70dp"
-                    android:paddingTop="70dp"
+                    android:layout_weight="1.45"
+                    android:paddingStart="64dp"
+                    android:paddingEnd="64dp"
+                    android:paddingTop="72dp"
                     android:layout_gravity="center">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +53,7 @@
                             android:layout_height="wrap_content"
                             android:text="SAN CLM"
                             android:textColor="@color/text_dark"
-                            android:textSize="24sp"
+                            android:textSize="28sp"
                             android:fontFamily="@font/satoshi_medium"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -66,7 +66,7 @@
                             android:textColor="@color/text_dark"
                             android:textSize="22sp"
                             android:fontFamily="@font/satoshi_medium"
-                            android:layout_marginTop="30dp"
+                            android:layout_marginTop="24dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/sanclm" />
 
@@ -74,7 +74,7 @@
                             android:id="@+id/layout1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
+                            android:layout_marginTop="24dp"
                             android:orientation="horizontal"
                             android:weightSum="2"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -92,14 +92,14 @@
                                     android:layout_height="wrap_content"
                                     android:text="Web URL"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium" />
 
                                 <EditText
                                     android:id="@+id/urlETxt"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
+                                    android:layout_marginTop="16dp"
                                     android:background="@drawable/edittext_stroke"
                                     android:hint="Enter URL"
                                     android:textColorHint="@color/text_dark_65"
@@ -107,7 +107,7 @@
                                     android:padding="15dp"
                                     android:singleLine="true"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:gravity="center|start"/>
 
@@ -125,14 +125,14 @@
                                     android:layout_height="wrap_content"
                                     android:text="License Key"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium" />
 
                                 <EditText
                                     android:id="@+id/licenseETxt"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
+                                    android:layout_marginTop="16dp"
                                     android:background="@drawable/edittext_stroke"
                                     android:hint="Enter License"
                                     android:textColorHint="@color/text_dark_65"
@@ -140,7 +140,7 @@
                                     android:padding="15dp"
                                     android:singleLine="true"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:gravity="center|start"/>
 
@@ -153,7 +153,7 @@
                             android:id="@+id/layout2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
+                            android:layout_marginTop="24dp"
                             android:orientation="horizontal"
                             android:weightSum="2"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -171,19 +171,19 @@
                                     android:layout_height="wrap_content"
                                     android:text="Language"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium" />
 
                                 <TextView
                                     android:id="@+id/language"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_marginTop="10dp"
+                                    android:layout_marginTop="16dp"
                                     android:background="@drawable/edittext_stroke"
                                     android:padding="15dp"
                                     android:text="English"
                                     android:textColor="@color/text_dark_65"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium"
                                     app:drawableRightCompat="@drawable/down_arrow"
                                     android:gravity="center|start"/>
@@ -203,18 +203,18 @@
                                     android:layout_height="wrap_content"
                                     android:text="Your Device ID"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium" />
 
                                 <TextView
                                     android:id="@+id/deviceIdETxt"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
+                                    android:layout_marginTop="16dp"
                                     android:background="@drawable/etxt_stroke_with_fill_color"
                                     android:padding="15dp"
                                     android:textColor="@color/text_dark"
-                                    android:textSize="18sp"
+                                    android:textSize="20sp"
                                     android:fontFamily="@font/satoshi_medium"
                                     android:gravity="center|start"/>
 
@@ -226,16 +226,16 @@
                             android:id="@+id/saveSettingBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
+                            android:layout_marginTop="24dp"
                             android:background="@drawable/edittext_stroke"
-                            android:paddingStart="30dp"
-                            android:paddingEnd="30dp"
-                            android:paddingTop="15dp"
-                            android:paddingBottom="15dp"
+                            android:paddingStart="32dp"
+                            android:paddingEnd="32dp"
+                            android:paddingTop="20dp"
+                            android:paddingBottom="20dp"
                             android:text="Save Settings"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
-                            android:textSize="16sp"
+                            android:textSize="20sp"
                             android:fontFamily="@font/satoshi_medium"
                             app:backgroundTint="#282A3C"
                             app:layout_constraintStart_toStartOf="parent"
@@ -266,13 +266,14 @@
                                 android:layout_gravity="center"
                                 android:text="Powered by"
                                 android:textColor="@color/text_dark_65"
-                                android:textSize="16sp"
-                                android:fontFamily="@font/satoshi_medium"/>
+                                android:textSize="18sp"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_marginBottom="12dp"/>
 
                             <ImageView
                                 android:id="@+id/sanImg"
-                                android:layout_width="wrap_content"
-                                android:layout_height="80dp"
+                                android:layout_width="284dp"
+                                android:layout_height="71dp"
                                 android:src="@drawable/saneforce_img" />
 
                         </LinearLayout>
@@ -283,10 +284,8 @@
 
                 </RelativeLayout>
 
-
-
                 <LinearLayout
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.55"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/setting_side_img"

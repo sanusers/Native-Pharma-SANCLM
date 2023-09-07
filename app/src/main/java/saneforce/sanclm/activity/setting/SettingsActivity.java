@@ -49,7 +49,6 @@ public class SettingsActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
-
     String deviceId = "", url = "", licenseKey ="",divisionCode = "",baseWebUrl="", phpPathUrl ="",reportsUrl="", slidesUrl ="",logoUrl="";
     int hitCount = 0;
 

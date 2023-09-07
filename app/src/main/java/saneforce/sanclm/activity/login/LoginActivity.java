@@ -161,12 +161,11 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             binding.progressBar.setVisibility(View.VISIBLE);
-            String baseUrl = SharedPref.getBaseUrl(getApplicationContext());
+            String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-            String replacedUrl = pathUrl.replace("?","/");
+            String replacedUrl = pathUrl.replaceAll("\\?.*","/");
             Log.e("test","login url : "  + baseUrl + replacedUrl);
-            Log.e("test","base url from sharePref  : " + SharedPref.getBaseUrl(getApplicationContext()));
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), "http://crm.saneforce.in/iOSServer/db_api.php/");
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl+replacedUrl);
 
             String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
             JSONObject jsonObject = new JSONObject();
@@ -180,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("AppDeviceRegId", fcmToken);
             jsonObject.put("location", "0.0 : 0.0");
 
-            Log.e("test","login obj : " + jsonObject);
+            Log.e("test","master obj : " + jsonObject);
             Call<JsonObject> call = apiInterface.Login(jsonObject.toString());
             call.enqueue(new Callback<JsonObject>() {
                 @Override

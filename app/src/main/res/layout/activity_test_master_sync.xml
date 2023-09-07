@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TestMasterSyncActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text_dark"
+            android:backgroundTint="@color/text_dark"
+            android:minHeight="?attr/actionBarSize"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" >
+
+            <ImageView
+                android:id="@+id/backArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/back_arrow_white"
+                android:layout_marginStart="30dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Master Test Sync"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:layout_marginStart="30dp"
+                android:fontFamily="@font/satoshi_medium"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/appBar">
+
+        <RelativeLayout
+            android:layout_weight="1.3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/testdrawable"
+            android:layout_marginStart="32dp">
+
+            <TextView
+                android:id="@+id/hqName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MR_Name "
+                android:textColor="@color/text_dark"
+                android:textSize="22sp"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/down_arrow"
+                android:padding="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="0.7"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:layout_marginEnd="32dp">
+
+            <TextView
+                android:id="@+id/txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="Last Sync : "
+                android:textColor="@color/text_dark_65"
+                android:textSize="22sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@id/txt"
+                android:text="27 Jun 2023 02:38 PM"
+                android:textColor="@color/text_dark_65"
+                android:textSize="22sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/ll1"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_weight="0.6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="#ececec"
+                android:scrollbars="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#ececec"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp">
+
+                    <TextView
+                        android:id="@+id/listedDoctor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Listed Doctor"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/right_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:id="@+id/chemist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Chemist"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/listedDoctor" />
+
+                    <TextView
+                        android:id="@+id/stockiest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Stockist"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/chemist" />
+
+                    <TextView
+                        android:id="@+id/unlistedDoctor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Unlisted Doctor"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/stockiest" />
+
+                    <TextView
+                        android:id="@+id/hospital"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Hospital"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/unlistedDoctor" />
+
+                    <TextView
+                        android:id="@+id/cip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CIP"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/hospital" />
+
+                    <TextView
+                        android:id="@+id/input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Input"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/cip" />
+
+                    <TextView
+                        android:id="@+id/product"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Product"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/input" />
+
+                    <TextView
+                        android:id="@+id/leave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Leave"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/product" />
+
+                    <TextView
+                        android:id="@+id/tourPlan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tour Plan"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/leave" />
+
+                    <TextView
+                        android:id="@+id/slide"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Slide"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/tourPlan" />
+
+
+                    <TextView
+                        android:id="@+id/subordinate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Subordinate"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/slide" />
+
+                    <TextView
+                        android:id="@+id/setup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Setup"
+                        android:textColor="@color/text_dark"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/satoshi_medium"
+                        app:drawableEndCompat="@drawable/down_arrow"
+                        android:padding="21dp"
+                        android:background="@drawable/selector_box"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@id/subordinate" />
+
+                    <LinearLayout
+                        android:id="@+id/masterSyncAll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/selector_box"
+                        android:gravity="center"
+                        android:layout_below="@id/setup">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="15dp"
+                            android:padding="21dp"
+                            android:text="Sync All"
+                            android:textColor="@color/text_dark"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="center"
+                            app:drawableStartCompat="@drawable/refresh_icon" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_weight="1.4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="#ececec"
+                android:scrollbars="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#ececec"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="32dp">
+
+                        <LinearLayout
+                            android:id="@+id/ll3"
+                            android:weightSum="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_weight=".75"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:cardCornerRadius="6dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:background="@color/pink_15">
+
+                                    <androidx.cardview.widget.CardView
+                                        android:layout_width="5dp"
+                                        android:layout_height="match_parent"
+                                        app:cardCornerRadius="5dp"
+                                        android:backgroundTint="@color/dark_pink"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Tap on each to sync individually"
+                                        android:textColor="@color/dark_pink"
+                                        android:textSize="16sp"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:layout_gravity="center"
+                                        android:padding="15dp"/>
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:paddingStart="-12dp"
+                            android:paddingEnd="-12dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@id/ll3" />
+
+                        <LinearLayout
+                            android:weightSum="3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="12dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@id/recView">
+
+                            <Button
+                                    android:id="@+id/childSync"
+                                    android:layout_weight="1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Sync Listed Doctor"
+                                    android:textColor="@color/white"
+                                    android:textSize="18sp"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:padding="30dp"
+                                    android:background="@drawable/selector_box"
+                                    app:backgroundTint="@color/text_dark"/>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>
