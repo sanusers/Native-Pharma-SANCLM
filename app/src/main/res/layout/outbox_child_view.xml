@@ -19,8 +19,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
                 android:layout_gravity="center"
                 android:src="@drawable/account" />
 
@@ -40,21 +40,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Label 1"
+                    android:textSize="@dimen/_7ssp"
+
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                  />
 
                 <TextView
                     android:id="@+id/textViewLabel2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Label 2"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/_6ssp"
+                    />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/optionview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_10ssp"
+                android:layout_height="@dimen/_10ssp"
                 android:layout_gravity="center"
                 android:layout_marginRight="5dp"
                 android:gravity="center"

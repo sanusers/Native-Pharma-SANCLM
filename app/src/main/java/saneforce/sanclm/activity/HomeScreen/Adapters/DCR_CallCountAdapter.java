@@ -42,7 +42,7 @@ public class DCR_CallCountAdapter extends RecyclerView.Adapter<DCR_CallCountAdap
 
     @Override
     public void onBindViewHolder(@NonNull listDataViewholider holder, int position) {
-        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(250, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(with, ViewGroup.LayoutParams.MATCH_PARENT);
 
         param.setMargins(10, 10, 10, 10);
         holder.linearLayout.setLayoutParams(param);

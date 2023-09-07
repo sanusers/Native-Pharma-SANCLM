@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:background="@color/backround_graey"
     android:layout_height="match_parent"
-    tools:context=".activity.DashBoard.HomeDashBoard">
+    tools:context=".activity.HomeScreen.HomeDashBoard">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,8 +26,8 @@
 
                 <ImageView
                     android:id="@+id/back_arrow"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
                     android:layout_gravity="left"
                     android:layout_centerVertical="true"
                     tools:ignore="ContentDescription,RtlHardcoded" />
@@ -42,31 +42,33 @@
                     android:text="SAN Media Pvt Ltd."
                     android:gravity="left"
                     android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:textSize="@dimen/_9ssp" />
                 <ImageView
                     android:id="@+id/img_notofication"
                     android:layout_toLeftOf="@id/img_account"
-                    android:layout_width="50dp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/notification"
                     android:layout_marginRight="20dp"
-                    android:layout_height="wrap_content">
+                   >
                 </ImageView>
                 <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/img_account"
                     android:layout_toLeftOf="@id/img_sync"
-                    android:layout_width="50dp"
+
                     android:src="@drawable/account"
                     android:layout_marginRight="20dp"
-
-                    android:layout_height="wrap_content">
+                >
                 </ImageView>
                 <ImageView
                     android:id="@+id/img_sync"
-                    android:layout_width="50dp"
                     android:src="@drawable/sync"
                     android:layout_marginRight="20dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content">
                 </ImageView>
             </RelativeLayout>
@@ -100,13 +102,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginLeft="10dp"
+                    android:backgroundTint="@color/white"
                     android:layout_marginRight="10dp"
                     android:gravity="center"
-                    android:background="@color/white">
+                    android:background="@drawable/custom_backround_layout">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/_9ssp"
+                        android:layout_height="@dimen/_9ssp"
                         android:layout_gravity="start|center_vertical"
                         android:src="@drawable/calendar"
                         android:layout_marginEnd="10dp"/>
@@ -116,12 +119,13 @@
                         android:layout_height="wrap_content"
                         android:text="September 29, 2023"
                         android:textStyle="bold"
+                        android:textSize="@dimen/_8ssp"
                         android:gravity="center"
                         android:padding="5dp"/>
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/_9ssp"
+                        android:layout_height="@dimen/_9ssp"
                         android:layout_gravity="end|center_vertical"
                         android:src="@drawable/double_vector"
                         android:layout_marginStart="10dp"
@@ -131,20 +135,22 @@
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:scrollbars="horizontal"
+
                     android:layout_marginLeft="8dp"
                     app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
                     android:layout_marginRight="8dp"
                     app:tabSelectedTextColor="@color/black"
                     app:tabTextColor="#9CAC99AC"
                     android:clipToOutline="true"
-                    app:tabPadding="0dp"
-
+                    app:tabInlineLabel="true"
+                    app:tabPadding="1dp"
+    
                     android:textAlignment="center"
                     android:background="@color/backround_graey"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"/>
+                    android:layout_height="wrap_content"/>
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:layout_marginTop="15dp"
@@ -193,6 +199,7 @@
                         android:layout_height="wrap_content"
                         android:text="Quick Link"
                         android:textStyle="bold"
+                        android:textSize="@dimen/_8ssp"
                         android:textColor="@android:color/black"
                         />
 
@@ -212,15 +219,14 @@
                             android:layout_weight="1"
                             android:layout_margin="5dp"
                             android:backgroundTint="#c6eae1"
-
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:layout_width="20dp"
+                                android:layout_width="@dimen/_9ssp"
                                 android:src="@drawable/image"
                                 android:layout_marginLeft="10dp"
                                 android:layout_gravity="center|left"
-                                android:layout_height="20dp">
+                                android:layout_height="@dimen/_9ssp">
                             </ImageView>
 
 
@@ -228,6 +234,7 @@
                                 android:layout_width="match_parent"
                                 android:gravity="center"
                                 android:textStyle="bold"
+                                android:textSize="@dimen/_8ssp"
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
                                 android:text="Presentation"
@@ -237,11 +244,11 @@
                             </TextView>
 
                             <ImageView
-                                android:layout_width="15dp"
-                                android:src="@drawable/right_arrow"
+                                android:layout_width="@dimen/_9ssp"
+                                android:src="@drawable/arrow_right"
                                 android:layout_marginRight="10dp"
                                 android:layout_gravity="center|right"
-                                android:layout_height="15dp">
+                                android:layout_height="@dimen/_9ssp">
 
                             </ImageView>
 
@@ -259,11 +266,11 @@
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:layout_width="20dp"
+                                android:layout_width="@dimen/_9ssp"
                                 android:src="@drawable/user_time"
                                 android:layout_marginLeft="10dp"
                                 android:layout_gravity="center|left"
-                                android:layout_height="20dp">
+                                android:layout_height="@dimen/_9ssp">
                             </ImageView>
 
 
@@ -271,6 +278,8 @@
                                 android:layout_width="match_parent"
                                 android:gravity="center"
                                 android:textStyle="bold"
+                                android:textSize="@dimen/_8ssp"
+
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
 
@@ -282,11 +291,11 @@
                             </TextView>
 
                             <ImageView
-                                android:layout_width="15dp"
-                                android:src="@drawable/right_arrow"
-                                android:layout_marginRight="10dp"
+                                android:layout_width="@dimen/_9ssp"
+                                android:layout_height="@dimen/_9ssp"
                                 android:layout_gravity="center|right"
-                                android:layout_height="15dp">
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/arrow_right">
 
                             </ImageView>
                         </LinearLayout>
@@ -301,11 +310,11 @@
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:layout_width="20dp"
+                                android:layout_width="@dimen/_9ssp"
                                 android:src="@drawable/file_char_line"
                                 android:layout_marginLeft="10dp"
                                 android:layout_gravity="center|left"
-                                android:layout_height="20dp">
+                                android:layout_height="@dimen/_9ssp">
                             </ImageView>
 
                             <TextView
@@ -314,6 +323,7 @@
                                 android:textStyle="bold"
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
+                                android:textSize="@dimen/_8ssp"
                                 android:text="Report"
                                 android:textColor="#2a293b"
                                 android:layout_height="wrap_content">
@@ -321,11 +331,11 @@
                             </TextView>
 
                             <ImageView
-                                android:layout_width="15dp"
-                                android:src="@drawable/right_arrow"
+                                android:layout_width="@dimen/_9ssp"
+                                android:src="@drawable/arrow_right"
                                 android:layout_marginRight="10dp"
                                 android:layout_gravity="center|right"
-                                android:layout_height="15dp">
+                                android:layout_height="@dimen/_9ssp">
 
                             </ImageView>
 

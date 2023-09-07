@@ -8,10 +8,11 @@
 
   <TextView
       android:id="@+id/txt_call"
-      android:layout_marginTop="5dp"
+      android:layout_marginTop="8dp"
       android:layout_marginLeft="5dp"
       android:layout_width="wrap_content"
       android:text="Count :"
+      android:textSize="@dimen/_7ssp"
       android:layout_height="wrap_content">
 
   </TextView>
@@ -20,7 +21,9 @@
     <TextView
         android:id="@+id/txt_callcount"
         android:text="4"
-        android:layout_marginTop="5dp"
+        android:textSize="@dimen/_7ssp"
+
+        android:layout_marginTop="8dp"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/txt_call"
         android:layout_width="wrap_content"
@@ -29,15 +32,17 @@
     </TextView>
 
     <TextView
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:padding="1dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:background="#F1E4E4"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_backround_layout"
+        android:backgroundTint="#F1E4E4"
         android:drawableLeft="@drawable/baseline_sync_24"
-        android:text=" Sync"
+        android:text=" Sync "
+        android:textSize="@dimen/_7ssp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:textColor="#F44848">
@@ -48,10 +53,11 @@
   <TextView
       android:id="@+id/text_date"
       android:layout_below="@+id/txt_call"
-      android:layout_marginTop="5dp"
+      android:layout_marginTop="8dp"
       android:layout_marginLeft="5dp"
       android:textStyle="bold"
       android:layout_width="wrap_content"
+      android:textSize="@dimen/_7ssp"
       android:text="September 13, 2023"
       android:layout_height="wrap_content">
 
@@ -59,12 +65,13 @@
 
   <TextView
       android:layout_below="@+id/txt_call"
-      android:layout_marginTop="5dp"
+      android:layout_marginTop="8dp"
       android:textStyle="normal"
       android:layout_width="wrap_content"
       android:layout_marginRight="5dp"
       android:text="Collapse"
       android:layout_alignParentRight="true"
+      android:textSize="@dimen/_7ssp"
       android:layout_alignParentEnd="true"
       android:layout_height="wrap_content">
 
@@ -74,7 +81,7 @@
       android:id="@+id/recyelerview"
       android:layout_width="match_parent"
       android:layout_below="@+id/text_date"
-      android:layout_marginTop="5dp"
+      android:layout_marginTop="10dp"
       android:layout_marginLeft="5dp"
       android:layout_marginRight="5dp"
       android:layout_above="@+id/r_layout"
@@ -103,6 +110,8 @@
         android:layout_height="wrap_content"
         android:text="Add Call"
         android:layout_weight="1"
+        android:textSize="@dimen/_7ssp"
+
         android:layout_marginRight="5dp"
         android:textColor="@color/black"
         android:padding="5dp"
@@ -115,6 +124,8 @@
         android:layout_weight="1"
         android:background="@drawable/backround_text"
         android:text="Add Activity"
+        android:textSize="@dimen/_7ssp"
+
         android:padding="5dp"
         android:textColor="@color/black"
         app:backgroundTint="#26282A3C" />
@@ -133,6 +144,7 @@
         android:padding="10dp"
         android:textColor="@color/white"
         android:text="Final Sumit"
+        android:textSize="@dimen/_7ssp"
         app:backgroundTint="#282A3C" />
 
   </RelativeLayout>

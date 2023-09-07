@@ -14,6 +14,7 @@
         android:layout_marginLeft="10dp"
         android:id="@+id/txt_name"
         android:textStyle="bold"
+        android:textSize="@dimen/_9ssp"
         android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -28,6 +29,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:textColor="@color/white"
+        android:textSize="@dimen/_9ssp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </TextView>
@@ -41,7 +43,7 @@
         android:visibility="gone"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:textSize="12dp"
+        android:textSize="@dimen/_7ssp"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -63,8 +65,8 @@
         <ProgressBar
             android:id="@+id/progress_bar"
             style="@style/CircularDeterminateProgressBar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
             android:layout_centerInParent="true"
             android:indeterminate="false"
             android:padding="20dp"
@@ -76,11 +78,11 @@
             android:id="@+id/progressValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textStyle="bold"
             android:layout_centerInParent="true"
             android:text="10%"
-             />
+            android:textSize="@dimen/_5ssp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>
 

@@ -36,7 +36,7 @@ DCR_CallCountAdapter dcrCallCountAdapter;
 RelativeLayout relativeLayout;
 
 
-    int height,width;
+
 
     ArrayList<String> list = new ArrayList<String>() {{
         add("Doctor Calls");
@@ -57,11 +57,10 @@ RelativeLayout relativeLayout;
         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        int width = displayMetrics.widthPixels;
-        int hight = displayMetrics.heightPixels;
+        int width = ((displayMetrics.widthPixels/3)*2)/3-22;
 
 
-        dcrCallCountAdapter = new DCR_CallCountAdapter(list,250,getContext());
+        dcrCallCountAdapter = new DCR_CallCountAdapter(list,width,getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());

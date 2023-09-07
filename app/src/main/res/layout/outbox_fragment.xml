@@ -5,9 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
+
     <TextView
         android:id="@+id/txt_call"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/_7ssp"
+
         android:layout_width="wrap_content"
         android:text="Count :"
         android:layout_height="wrap_content">
@@ -17,6 +21,9 @@
     <TextView
         android:id="@+id/txt_callcount"
         android:text="06"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/_7ssp"
+
         android:layout_marginLeft="2dp"
         android:layout_toRightOf="@+id/txt_call"
         android:layout_width="wrap_content"
@@ -25,15 +32,17 @@
     </TextView>
 
     <TextView
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:padding="1dp"
+        android:backgroundTint="#F1E4E4"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:background="#F1E4E4"
+        android:background="@drawable/custom_backround_layout"
+        android:textSize="@dimen/_7ssp"
         android:drawableLeft="@drawable/baseline_sync_24"
-        android:text=" Sync"
-        android:layout_marginTop="3dp"
+        android:text=" Sync "
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:textColor="#F44848">
@@ -46,7 +55,7 @@
         android:id="@+id/Expandapleview"
         android:layout_width="match_parent"
         android:layout_below="@+id/txt_call"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_above="@+id/r_layout"

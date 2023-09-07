@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:text="Select Work Type"
         android:layout_margin="10dp"
+        android:textSize="@dimen/_7ssp"
         android:drawableRight="@drawable/vector_"
         android:padding="10dp"
         android:textColor="@color/text_dark"
@@ -28,13 +29,14 @@
         android:text="Select Head Quarters"
         android:layout_margin="10dp"
         android:padding="10dp"
+        android:textSize="@dimen/_7ssp"
+
         android:backgroundTint="#26282A3C"
         android:drawableRight="@drawable/vector_"
-
         android:textColor="@color/text_dark"
         android:background="@drawable/backround_text" />
 
-    <!-- TextView for selecting cluster -->
+
     <TextView
         android:id="@+id/txt_cluster"
         android:layout_width="match_parent"
@@ -42,35 +44,38 @@
         android:text="Select Cluster"
         android:layout_margin="10dp"
         android:drawableRight="@drawable/vector_"
+        android:textSize="@dimen/_7ssp"
 
         android:padding="10dp"
         android:textColor="@color/text_dark"
         android:background="@drawable/backround_text" />
 
-    <!-- EditText for entering remarks -->
+
     <EditText
         android:id="@+id/dayremark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Remark"
-        android:textSize="16sp"
         android:padding="10dp"
         android:layout_margin="10dp"
         android:background="@drawable/backround_text"
         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
         android:gravity="top|left"
         android:inputType="text"
+        android:textSize="@dimen/_7ssp"
         android:lines="8"
         android:maxLines="10"
         android:minLines="6"
         android:scrollbars="vertical" />
 
-    <!-- Button for submission -->
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit"
         android:padding="10dp"
+        android:textSize="@dimen/_7ssp"
+
         android:layout_margin="10dp"
         android:textColor="@color/white"
         android:background="@drawable/edittext_stroke"
