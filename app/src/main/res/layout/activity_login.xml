@@ -4,22 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".activity.login.LoginActivity">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:fitsSystemWindows="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+    
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -46,8 +33,7 @@
                 <LinearLayout
                     android:layout_weight="0.8"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/white">
+                    android:layout_height="0dp">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -60,27 +46,55 @@
 
             </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_weight="0.9"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_weight="1.2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
-                android:layout_width="500dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="5dp"
                 android:background="@color/white"
-                android:layout_marginTop="120dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/_25sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/ll2">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="40dp">
+                    android:padding="@dimen/_12sdp">
 
                     <ImageView
                         android:id="@+id/logoImg"
-                        android:layout_width="132dp"
-                        android:layout_height="125dp"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
                         android:src="@drawable/san_icon"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"/>
@@ -89,114 +103,143 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="User ID"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_7sdp"
                         android:textColor="@color/text_dark"
-                        android:fontFamily="@font/satoshi_medium"
                         android:layout_gravity="start"
-                        android:layout_marginTop="24dp" />
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        tools:ignore="SpUsage"/>
 
                     <EditText
                         android:id="@+id/userId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Enter User ID"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_6sdp"
                         android:textColorHint="@color/text_dark_65"
                         android:textColor="@color/text_dark"
                         android:fontFamily="@font/satoshi_medium"
-                        android:background="@drawable/edittext_stroke"
-                        android:layout_marginTop="16dp"
-                        android:padding="15dp"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:gravity="center|start"/>
+                        android:gravity="center|start"
+                        android:background="@drawable/edittext_stroke"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:padding="@dimen/_7sdp"
+                        tools:ignore="SpUsage"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Password"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_7sdp"
                         android:textColor="@color/text_dark"
                         android:layout_gravity="start"
-                        android:layout_marginTop="24dp"
-                        android:fontFamily="@font/satoshi_medium" />
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        tools:ignore="SpUsage"/>
 
-                    <com.google.android.material.textfield.TextInputLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:passwordToggleEnabled="true"
-                        app:hintEnabled="false"
-                        android:layout_marginTop="16dp">
+                        android:orientation="horizontal"
+                        android:background="@drawable/edittext_stroke"
+                        android:layout_marginTop="@dimen/_4sdp">
 
                         <EditText
                             android:id="@+id/password"
-                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/edittext_stroke"
                             android:hint="Enter Password"
+                            android:textSize="@dimen/_6sdp"
                             android:textColorHint="@color/text_dark_65"
                             android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
                             android:inputType="textPassword"
+                            android:fontFamily="@font/satoshi_medium"
                             android:maxLines="1"
-                            android:padding="15dp"
                             android:singleLine="true"
-                            android:textSize="20sp"
-                            android:gravity="center|start"/>
+                            android:gravity="center|start"
+                            android:background="@null"
+                            android:padding="@dimen/_7sdp"
+                            tools:ignore="SpUsage"/>
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <ImageView
+                            android:id="@+id/eyeImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/eye_visible"
+                            android:layout_gravity="center"
+                            android:padding="@dimen/_7sdp"/>
+
+                    </LinearLayout>
 
                     <Button
                         android:id="@+id/loginBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Login"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/_7sdp"
                         android:textColor="@color/white"
                         android:textAllCaps="false"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:padding="10dp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:padding="@dimen/_3sdp"
                         android:background="@drawable/edittext_stroke"
                         app:backgroundTint="#282A3C"
-                        android:layout_marginTop="24dp" />
+                        android:layout_marginTop="@dimen/_8sdp"
+                        tools:ignore="SpUsage"/>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="32dp">
+                        android:layout_marginTop="@dimen/_9sdp">
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <LinearLayout
                             android:id="@+id/clearData"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Clear data"
-                            android:textSize="20sp"
-                            android:textColor="@color/dark_pink"
-                            android:textAllCaps="false"
-                            android:fontFamily="@font/satoshi_medium"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
                             android:background="@drawable/edittext_stroke"
-                            app:backgroundTint="@color/pink_15"
-                            android:drawableStart="@drawable/rotate_left"
-                            android:drawableTint="@color/dark_pink"
-                            android:drawablePadding="10dp"
-                            android:paddingStart="20dp"
-                            android:paddingEnd="20dp"
-                            android:paddingTop="10dp"
-                            android:paddingBottom="10dp"
+                            android:backgroundTint="@color/pink_15"
                             android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true" />
+                            android:layout_alignParentTop="true">
+
+                            <ImageView
+                                android:layout_width="@dimen/_7sdp"
+                                android:layout_height="@dimen/_7sdp"
+                                android:src="@drawable/rotate_left"
+                                android:layout_gravity="center"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Clear data"
+                                android:textSize="@dimen/_7sdp"
+                                android:textColor="@color/dark_pink"
+                                android:textAllCaps="false"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:layout_gravity="center"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/versionNoTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="Version 1.2"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:text="Version 1.2"
-                            android:textSize="18sp"
-                            android:textColor="@color/text_dark_65" />
+                            tools:ignore="SpUsage"/>
                     </RelativeLayout>
 
                 </LinearLayout>
@@ -208,9 +251,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_gravity="center"
-                android:layout_marginTop="78dp"
-                android:layout_marginBottom="50dp"
+                android:gravity="center|bottom"
+                android:layout_below="@id/cardView"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
                 app:layout_constraintTop_toBottomOf="@id/cardView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -221,22 +266,30 @@
                     android:layout_height="wrap_content"
                     android:text="Powered by"
                     android:textColor="@color/text_dark_65"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/_6sdp"
                     android:layout_gravity="center"
                     android:fontFamily="@font/satoshi_medium"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginStart="@dimen/_5sdp"
+                    tools:ignore="SpUsage"/>
 
                 <ImageView
                     android:id="@+id/sanImg"
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/saneforce_img" />
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:src="@drawable/saneforce_img"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"/>
 
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+        <LinearLayout
+            android:layout_weight="0.9"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -248,6 +301,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

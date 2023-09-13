@@ -37,10 +37,10 @@
                         android:id="@+id/tv_app_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_variable"
                         android:text="@string/str_app_name"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
+                        android:fontFamily="@font/satoshi_bold"
                         tools:ignore="SpUsage" />
 
                     <TextView
@@ -49,10 +49,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_app_name"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:fontFamily="@font/satoshi_variable"
                         android:text="@string/str_app_configuration"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
+                        android:fontFamily="@font/satoshi_bold"
                         tools:ignore="SpUsage" />
 
                     <LinearLayout
@@ -74,10 +74,10 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/satoshi_variable"
                                 android:text="@string/str_web_url"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
+                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="SpUsage" />
 
                             <EditText
@@ -109,10 +109,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/satoshi_variable"
                                 android:text="@string/str_license_key"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="SpUsage" />
 
                             <EditText
@@ -123,7 +124,7 @@
                                 android:background="@drawable/edittext_stroke"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:gravity="center|start"
-                                android:hint="@string/str_license_key"
+                                android:hint="@string/str_enter_license"
                                 android:importantForAutofill="no"
                                 android:maxLines="1"
                                 android:padding="@dimen/_7sdp"
@@ -154,10 +155,10 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/satoshi_variable"
                                 android:text="@string/str_language"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
+                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="RelativeOverlap,SpUsage" />
 
                             <RelativeLayout
@@ -201,10 +202,10 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/satoshi_variable"
                                 android:text="@string/str_your_device_id"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
+                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="SpUsage" />
 
                             <TextView
@@ -230,17 +231,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/ll_language_layout"
-                        android:layout_marginTop="@dimen/_12sdp"
                         android:background="@drawable/edittext_stroke"
-                        android:fontFamily="@font/satoshi_variable"
-                        android:padding="@dimen/_6sdp"
-                        android:paddingStart="@dimen/_14sdp"
-                        android:paddingEnd="@dimen/_14sdp"
                         android:text="@string/str_save_settings"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_7sdp"
                         app:backgroundTint="@color/text_dark"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:padding="@dimen/_6sdp"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:paddingStart="@dimen/_15sdp"
+                        android:paddingEnd="@dimen/_15sdp"
                         tools:ignore="SpUsage" />
                 </RelativeLayout>
 
@@ -262,7 +263,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="1"
+                            android:text="@string/str_powered_by"
                             android:textColor="@color/text_dark_65"
                             android:textSize="@dimen/_7sdp"
                             tools:ignore="SpUsage" />
@@ -295,4 +296,5 @@
         android:indeterminateTint="@color/text_dark"
         android:visibility="gone"
         tools:ignore="UnusedAttribute" />
+
 </RelativeLayout>

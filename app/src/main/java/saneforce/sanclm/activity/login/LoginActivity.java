@@ -3,12 +3,12 @@ package saneforce.sanclm.activity.login;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -22,21 +22,20 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Type;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.R;
+import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.SettingsActivity;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
-import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.common.UtilityClass;
 import saneforce.sanclm.databinding.ActivityLoginBinding;
@@ -54,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     PackageInfo packageInfo;
     String fcmToken = "";
     SQLite sqlite;
+    private int passwordNotVisible=1;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -66,9 +66,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-
         getImageFromLocal("logo");
-
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         if (fcmToken.isEmpty()){
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<String>() {
@@ -80,6 +79,23 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+
+        binding.eyeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                if (passwordNotVisible == 1) {
+                    binding.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    binding.eyeImage.setImageDrawable(getResources().getDrawable(R.drawable.eye_hide));
+                    passwordNotVisible = 0;
+                } else {
+                    binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    binding.eyeImage.setImageDrawable(getResources().getDrawable(R.drawable.eye_visible));
+                    passwordNotVisible = 1;
+                }
+
+                binding.password.setSelection(binding.password.length());
+            }
+        });
 
         binding.loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,7 +213,9 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.e("test","login response : " + new Gson().toJson(loginResponse));
                                 sqlite.saveLoginData(stringResponse);
                                 openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
-                                startActivity(new Intent(LoginActivity.this, MasterSyncActivity.class));
+                                Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
+                                intent.putExtra("Origin","Login");
+                                startActivity(intent);
                                 SharedPref.saveLoginState(getApplicationContext(),true);
                             }else{
                                 if (jsonObject2.has("msg")){

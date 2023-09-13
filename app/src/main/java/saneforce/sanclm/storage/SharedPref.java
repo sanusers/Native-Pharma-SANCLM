@@ -18,13 +18,13 @@ public class SharedPref {
     public static final String LOGO_URL = "logo_url";
 
 
-
     //Login
     public static final String LOGIN_STATE = "login_state";
     public static final String DEVICE_ID = "device_id";
     public static final String FCM_TOKEN = "fcm_token";
 
-
+    //Master Sync
+    public static final String MASTER_LAST_SYNC = "last_sync";
 
 
 
@@ -117,6 +117,16 @@ public class SharedPref {
 
     public static String getFcmToken(Context context){
         return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(FCM_TOKEN,"");
+    }
+
+    public static void saveMasterLastSync(Context context,String date){
+        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(MASTER_LAST_SYNC,date).apply();
+    }
+
+    public static String getLastSync(Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(MASTER_LAST_SYNC,"");
     }
 
 

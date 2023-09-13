@@ -26,19 +26,20 @@
 
             <ImageView
                 android:id="@+id/backArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
                 android:src="@drawable/back_arrow_white"
-                android:layout_marginStart="30dp"/>
+                android:layout_marginStart="@dimen/_8sdp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Master Sync"
                 android:textColor="@color/white"
-                android:textSize="22sp"
-                android:layout_marginStart="30dp"
-                android:fontFamily="@font/satoshi_medium"/>
+                android:textSize="@dimen/_7sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:fontFamily="@font/satoshi_medium"
+                tools:ignore="SpUsage"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -51,6 +52,7 @@
         android:weightSum="2"
         android:orientation="horizontal"
         android:background="@color/white"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/appBar">
@@ -60,7 +62,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/testdrawable"
-            android:layout_marginStart="32dp">
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp">
 
             <TextView
                 android:id="@+id/hqName"
@@ -68,20 +71,21 @@
                 android:layout_height="wrap_content"
                 android:text="MR_Name "
                 android:textColor="@color/text_dark"
-                android:textSize="22sp"
+                android:textSize="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
+                android:textStyle="bold"
+                android:paddingTop="@dimen/_6sdp"
+                android:paddingBottom="@dimen/_6sdp"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
+                android:layout_alignParentTop="true"
+                tools:ignore="SpUsage"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/down_arrow"
-                android:padding="20dp"
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
                 android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:src="@drawable/down_arrow" />
 
         </RelativeLayout>
 
@@ -91,29 +95,32 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_gravity="end"
-            android:gravity="end"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:layout_marginEnd="32dp">
+            android:gravity="end">
 
             <TextView
                 android:id="@+id/txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:fontFamily="@font/satoshi_medium"
                 android:text="Last Sync : "
                 android:textColor="@color/text_dark_65"
-                android:textSize="22sp" />
+                android:textSize="@dimen/_6sdp"
+                android:textStyle="bold"
+                android:fontFamily="@font/satoshi_medium"
+                tools:ignore="SpUsage" />
 
             <TextView
+                android:id="@+id/lastSyncTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_toEndOf="@id/txt"
+                android:fontFamily="@font/satoshi_medium"
                 android:text="27 Jun 2023 02:38 PM"
                 android:textColor="@color/text_dark_65"
-                android:textSize="22sp" />
+                android:textSize="@dimen/_6sdp"
+                android:textStyle="bold"
+                tools:ignore="SpUsage" />
 
         </RelativeLayout>
 
@@ -122,6 +129,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ececec"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/ll1"
@@ -132,6 +140,7 @@
             android:layout_height="match_parent"
             android:weightSum="2"
             android:orientation="horizontal"
+            android:padding="@dimen/_6sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -141,207 +150,459 @@
                 android:layout_weight="0.6"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="#ececec"
                 android:scrollbars="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#ececec"
-                    android:paddingStart="32dp"
-                    android:paddingEnd="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp">
+                    android:paddingEnd="@dimen/_3sdp">
 
-                    <TextView
+                    <LinearLayout
                         android:id="@+id/listedDoctor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Listed Doctor"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/right_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
                         android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true" />
+                        android:layout_alignParentStart="true">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/listedDrTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Listed Doctor"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:layout_gravity="center"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/listDrArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/right_arrow"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/chemist"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Chemist"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/listedDoctor" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/listedDoctor">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/chemistTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Chemist"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/chemistArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/stockiest"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Stockist"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/chemist" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/chemist">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/stockiestTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Stockist"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/stockArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/unlistedDoctor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Unlisted Doctor"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
                         android:layout_alignParentStart="true"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/stockiest" />
+                        android:layout_below="@id/stockiest">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/unlistedDoctorTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Unlisted Doctor"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/unListDrArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/hospital"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Hospital"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/unlistedDoctor" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/unlistedDoctor">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/hospitalTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Hospital"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/hospitalArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/cip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="CIP"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/hospital" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/hospital">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/cipTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="CIP"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/cipArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Input"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/cip" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/cip">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/inputTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Input"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/inputArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/product"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Product"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/input" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/input">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/productTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Product"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/productArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/leave"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Leave"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/product" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/product">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/leaveTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Leave"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/leaveArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
                         android:id="@+id/tourPlan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tour Plan"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/leave" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/leave">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/tourPlanTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Tour Plan"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/tpArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/slide"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Slide"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/tourPlan" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/tourPlan" >
 
+                        <TextView
+                            android:id="@+id/slideTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Slide"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
 
-                    <TextView
+                        <ImageView
+                            android:id="@+id/slideArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/subordinate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Subordinate"
-                        android:textColor="@color/text_dark"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/satoshi_medium"
-                        app:drawableEndCompat="@drawable/down_arrow"
-                        android:padding="21dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
-                        android:layout_marginTop="16dp"
-                        android:layout_below="@id/slide" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/slide" >
+
+                        <TextView
+                            android:id="@+id/subordinateTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Subordinate"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/subordinateArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/syncAll"
+                        android:id="@+id/setup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@drawable/selector_box"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/subordinate">
+
+                        <TextView
+                            android:id="@+id/setupTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Setup"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/setupArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/down_arrow"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/masterSyncAll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
                         android:gravity="center"
-                        android:layout_below="@id/subordinate">
+                        android:padding="@dimen/_7sdp"
+                        android:layout_below="@id/setup">
+
+                        <ImageView
+                            android:layout_width="@dimen/_9sdp"
+                            android:layout_height="@dimen/_9sdp"
+                            android:src="@drawable/refresh_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawablePadding="15dp"
-                            android:padding="21dp"
                             android:text="Sync All"
                             android:textColor="@color/text_dark"
-                            android:textSize="20sp"
+                            android:textSize="@dimen/_5sdp"
+                            android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
                             android:layout_gravity="center"
-                            app:drawableStartCompat="@drawable/refresh_icon" />
+                            android:gravity="center"
+                            android:layout_marginStart="@dimen/_3sdp"
+                            tools:ignore="SpUsage"/>
 
                     </LinearLayout>
 
@@ -353,8 +614,8 @@
                 android:layout_weight="1.4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="#ececec"
-                android:scrollbars="vertical">
+                android:scrollbars="vertical"
+                android:paddingTop="@dimen/_4sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -363,16 +624,13 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="#ececec"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="32dp">
+                        android:paddingStart="@dimen/_3sdp">
 
                         <LinearLayout
                             android:id="@+id/ll3"
                             android:weightSum="1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="30dp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true">
 
@@ -380,7 +638,7 @@
                                 android:layout_weight=".75"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                app:cardCornerRadius="6dp">
+                                app:cardCornerRadius="@dimen/_2sdp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -389,9 +647,9 @@
                                     android:background="@color/pink_15">
 
                                     <androidx.cardview.widget.CardView
-                                        android:layout_width="5dp"
+                                        android:layout_width="@dimen/_2sdp"
                                         android:layout_height="match_parent"
-                                        app:cardCornerRadius="5dp"
+                                        app:cardCornerRadius="@dimen/_2sdp"
                                         android:backgroundTint="@color/dark_pink"/>
 
                                     <TextView
@@ -399,10 +657,11 @@
                                         android:layout_height="wrap_content"
                                         android:text="Tap on each to sync individually"
                                         android:textColor="@color/dark_pink"
-                                        android:textSize="16sp"
+                                        android:textSize="@dimen/_6sdp"
                                         android:fontFamily="@font/satoshi_medium"
                                         android:layout_gravity="center"
-                                        android:padding="15dp"/>
+                                        android:padding="@dimen/_4sdp"
+                                        tools:ignore="SpUsage"/>
 
                                 </LinearLayout>
 
@@ -410,870 +669,44 @@
 
                         </LinearLayout>
 
-                        <RelativeLayout
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recView"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:paddingTop="22dp"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_4sdp"
+                            android:paddingStart="@dimen/_minus4sdp"
+                            android:paddingEnd="@dimen/_minus4sdp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
-                            android:layout_below="@id/ll3"
-                            android:layout_alignParentBottom="true">
+                            android:layout_below="@id/ll3" />
 
-                            <LinearLayout
-                                android:id="@+id/LinearLayout1"
-                                android:weightSum="3"
-                                android:layout_width="match_parent"
+                        <LinearLayout
+                            android:weightSum="3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@id/recView">
+
+                            <Button
+                                android:id="@+id/childSync"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentTop="true">
-
-                                <LinearLayout
-                                    android:id="@+id/master_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:id="@+id/masterName"
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Geo Doctor"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/master_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:layout_weight="1"
-                                        android:id="@+id/masterCount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/spl_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Specialty"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/spl_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/spl_count"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:layout_gravity="bottom"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_weight="1"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:gravity="bottom"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/ql_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Qualification"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/ql_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/ql_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/LinearLayout2"
-                                android:weightSum="3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="24dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_below="@id/LinearLayout1">
-
-                                <LinearLayout
-                                    android:id="@+id/cat_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Category"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/cat_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/cat_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/department_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Department"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/dep_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/dep_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/class_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Class "
-                                            android:textSize="20sp"
-                                            android:textColor="@color/text_dark"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/class_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/class_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:textStyle="bold"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/LinearLayout3"
-                                android:weightSum="3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="24dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_below="@id/LinearLayout2">
-
-                                <LinearLayout
-                                    android:id="@+id/feedback_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Feedback"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/feedback_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/feedback_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:visibility="invisible">
-
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:visibility="invisible">
-
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/subordinateLayout"
-                                android:weightSum="3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="10dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_below="@id/LinearLayout3"
-                                android:visibility="gone">
-
-                                <LinearLayout
-                                    android:id="@+id/subordinate_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Subordinate"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/subordinate_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/subordinateMaster_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/subMgr_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="Subordinate MGR"
-                                            android:textColor="@color/text_dark"
-                                            android:textSize="20sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/subMgr_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/subMgr_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/jWork_card"
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:padding="16dp"
-                                    android:layout_marginStart="24dp"
-                                    android:background="@drawable/selector_box">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_weight="1"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:text="JointWork "
-                                            android:textSize="20sp"
-                                            android:textColor="@color/text_dark"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_gravity="center"/>
-
-                                        <ProgressBar
-                                            android:id="@+id/jWork_progressBar"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                            android:layout_gravity="end|center"
-                                            android:visibility="gone"/>
-
-                                    </LinearLayout>
-
-                                    <TextView
-                                        android:id="@+id/jWork_count"
-                                        android:layout_weight="1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="0dp"
-                                        android:text="0"
-                                        android:textColor="@color/text_dark_65"
-                                        android:textSize="18sp"
-                                        android:textStyle="bold"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_gravity="bottom"
-                                        android:gravity="bottom"/>
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                            <RelativeLayout
-                                android:id="@+id/productLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_below="@id/subordinateLayout"
-                                android:visibility="gone">
-
-                                <LinearLayout
-                                    android:id="@+id/productLayout1"
-                                    android:weightSum="3"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_alignParentEnd="true"
-                                   android:layout_alignParentTop="true">
-
-                                    <LinearLayout
-                                        android:id="@+id/product_card"
-                                        android:layout_weight="1"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical"
-                                        android:padding="16dp"
-                                        android:background="@drawable/selector_box">
-
-                                        <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="horizontal">
-
-                                            <TextView
-                                                android:layout_weight="1"
-                                                android:layout_width="0dp"
-                                                android:layout_height="wrap_content"
-                                                android:text="Product"
-                                                android:textColor="@color/text_dark"
-                                                android:textSize="20sp"
-                                                android:fontFamily="@font/satoshi_medium"
-                                                android:layout_gravity="center"/>
-
-                                            <ProgressBar
-                                                android:id="@+id/product_progressBar"
-                                                android:layout_width="24dp"
-                                                android:layout_height="24dp"
-                                                android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                                android:layout_gravity="end|center"
-                                                android:visibility="gone"/>
-
-                                        </LinearLayout>
-
-                                        <TextView
-                                            android:id="@+id/product_count"
-                                            android:layout_weight="1"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="0dp"
-                                            android:text="0"
-                                            android:textColor="@color/text_dark_65"
-                                            android:textSize="18sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_marginTop="10dp"
-                                            android:layout_gravity="bottom"
-                                            android:gravity="bottom"/>
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:id="@+id/proCategory_card"
-                                        android:layout_weight="1"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical"
-                                        android:padding="16dp"
-                                        android:layout_marginStart="24dp"
-                                        android:background="@drawable/selector_box">
-
-                                        <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="horizontal">
-
-                                            <TextView
-                                                android:layout_weight="1"
-                                                android:layout_width="0dp"
-                                                android:layout_height="wrap_content"
-                                                android:text="Product Category"
-                                                android:textColor="@color/text_dark"
-                                                android:textSize="20sp"
-                                                android:fontFamily="@font/satoshi_medium"
-                                                android:layout_gravity="center"/>
-
-                                            <ProgressBar
-                                                android:id="@+id/proCat_progressBar"
-                                                android:layout_width="24dp"
-                                                android:layout_height="24dp"
-                                                android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                                android:layout_gravity="end|center"
-                                                android:visibility="gone"/>
-
-                                        </LinearLayout>
-
-                                        <TextView
-                                            android:id="@+id/proCat_count"
-                                            android:layout_weight="1"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="0dp"
-                                            android:text="0"
-                                            android:textColor="@color/text_dark_65"
-                                            android:textSize="18sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_marginTop="10dp"
-                                            android:layout_gravity="bottom"
-                                            android:gravity="bottom"/>
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:id="@+id/brand_card"
-                                        android:layout_weight="1"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical"
-                                        android:padding="16dp"
-                                        android:layout_marginStart="24dp"
-                                        android:background="@drawable/selector_box">
-
-                                        <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="horizontal">
-
-                                            <TextView
-                                                android:layout_weight="1"
-                                                android:layout_width="0dp"
-                                                android:layout_height="wrap_content"
-                                                android:text="Brand "
-                                                android:textSize="20sp"
-                                                android:textColor="@color/text_dark"
-                                                android:fontFamily="@font/satoshi_medium"
-                                                android:layout_gravity="center"/>
-
-                                            <ProgressBar
-                                                android:id="@+id/brand_progressBar"
-                                                android:layout_width="24dp"
-                                                android:layout_height="24dp"
-                                                android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                                android:layout_gravity="end|center"
-                                                android:visibility="gone"/>
-
-                                        </LinearLayout>
-
-                                        <TextView
-                                            android:id="@+id/brand_count"
-                                            android:layout_weight="1"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="0dp"
-                                            android:text="0"
-                                            android:textColor="@color/text_dark_65"
-                                            android:textSize="18sp"
-                                            android:textStyle="bold"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_marginTop="10dp"
-                                            android:layout_gravity="bottom"
-                                            android:gravity="bottom"/>
-
-                                    </LinearLayout>
-
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/productLayout2"
-                                    android:weightSum="3"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:layout_marginTop="24dp"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_below="@id/productLayout1">
-
-                                    <LinearLayout
-                                        android:id="@+id/compProduct_card"
-                                        android:layout_weight="1"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical"
-                                        android:padding="16dp"
-                                        android:background="@drawable/selector_box">
-
-                                        <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="horizontal">
-
-                                            <TextView
-                                                android:layout_weight="1"
-                                                android:layout_width="0dp"
-                                                android:layout_height="wrap_content"
-                                                android:text="Competitor Product"
-                                                android:textColor="@color/text_dark"
-                                                android:textSize="20sp"
-                                                android:fontFamily="@font/satoshi_medium"
-                                                android:layout_gravity="center"/>
-
-                                            <ProgressBar
-                                                android:id="@+id/compPro_progressBar"
-                                                android:layout_width="24dp"
-                                                android:layout_height="24dp"
-                                                android:indeterminateDrawable="@drawable/pink_progress_bar"
-                                                android:layout_gravity="end|center"
-                                                android:visibility="gone"/>
-
-                                        </LinearLayout>
-
-                                        <TextView
-                                            android:id="@+id/compPro_count"
-                                            android:layout_weight="1"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="0dp"
-                                            android:text="0"
-                                            android:textColor="@color/text_dark_65"
-                                            android:textSize="18sp"
-                                            android:fontFamily="@font/satoshi_medium"
-                                            android:layout_marginTop="10dp"
-                                            android:layout_gravity="bottom"
-                                            android:gravity="bottom"/>
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:layout_weight="1"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical"
-                                        android:padding="16dp"
-                                        android:layout_marginStart="24dp"
-                                        android:visibility="invisible">
-
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:layout_weight="1"
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical"
-                                        android:padding="16dp"
-                                        android:layout_marginStart="24dp"
-                                        android:visibility="invisible">
-
-                                    </LinearLayout>
-
-                                </LinearLayout>
-
-                            </RelativeLayout>
-
-                            <LinearLayout
-                                android:weightSum="3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="24dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentEnd="true"
-                                android:layout_below="@id/productLayout">
-
-                                <LinearLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:padding="30dp"
-                                    android:layout_marginEnd="20dp"
-                                    android:backgroundTint="@color/text_dark"
-                                    android:background="@drawable/selector_box">
-
-                                    <TextView
-                                        android:id="@+id/childSync"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="Sync Listed Doctor"
-                                        android:textColor="@color/white"
-                                        android:textSize="18sp"
-                                        android:fontFamily="@font/satoshi_medium"
-                                        android:layout_gravity="center"
-                                        android:gravity="center" />
-
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                        </RelativeLayout>
+                                android:text="Sync Listed Doctor"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_6sdp"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:padding="@dimen/_8sdp"
+                                android:background="@drawable/selector_box"
+                                app:backgroundTint="@color/text_dark"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 

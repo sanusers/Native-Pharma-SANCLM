@@ -2,14 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/_3sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="@dimen/_5sdp"
         android:background="@drawable/selector_box"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,14 +28,15 @@
                 android:layout_height="wrap_content"
                 android:text="Geo Doctor"
                 android:textColor="@color/text_dark"
-                android:textSize="20sp"
+                android:textSize="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                tools:ignore="SpUsage"/>
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
                 android:indeterminateDrawable="@drawable/pink_progress_bar"
                 android:layout_gravity="end|center"
                 android:visibility="gone"/>
@@ -48,11 +50,12 @@
             android:layout_height="0dp"
             android:text="0"
             android:textColor="@color/text_dark_65"
-            android:textSize="18sp"
-            android:fontFamily="@font/satoshi_medium"
-            android:layout_marginTop="10dp"
+            android:textSize="@dimen/_5sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_gravity="bottom"
-            android:gravity="bottom"/>
+            android:gravity="bottom"
+            tools:ignore="SpUsage"/>
 
     </LinearLayout>
 
