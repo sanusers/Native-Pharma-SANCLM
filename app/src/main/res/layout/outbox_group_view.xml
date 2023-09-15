@@ -4,41 +4,41 @@
     android:orientation="horizontal"
     android:gravity="center"
     android:layout_height="wrap_content">
-
-
 <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/text_date"
-        android:layout_marginLeft="5dp"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:layout_gravity="start"
-        android:layout_width="wrap_content"
-        android:text="September 13, 2023"
-        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_width="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:textStyle="bold"
+            android:gravity="center"
 
-    </TextView>
+            android:textSize="@dimen/_7sdp"
+            android:textColor="@color/black_45"
+            android:text="September 13, 2023"
+            android:layout_height="wrap_content">
+
+        </TextView>
 
     <TextView
-        android:id="@+id/text_datee"
-        android:layout_marginRight="5dp"
-        android:padding="5dp"
-        android:textStyle="bold"
+        android:id="@+id/txt_expand_status"
+        android:padding="@dimen/_2sdp"
+        android:textSize="@dimen/_7sdp"
         android:layout_gravity="end"
         android:layout_width="wrap_content"
         android:text="Expand"
+        android:gravity="center"
+
         android:layout_alignParentRight="true"
         android:layout_height="wrap_content">
-
     </TextView>
     </RelativeLayout>
 

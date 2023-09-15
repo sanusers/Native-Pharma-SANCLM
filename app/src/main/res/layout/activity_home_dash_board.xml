@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:background="@color/backround_graey"
     android:layout_height="match_parent"
-    tools:context=".activity.DashBoard.HomeDashBoard">
+    tools:context=".activity.HomeScreen.HomeDashBoard">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,8 +26,8 @@
 
                 <ImageView
                     android:id="@+id/back_arrow"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
                     android:layout_gravity="left"
                     android:layout_centerVertical="true"
                     tools:ignore="ContentDescription,RtlHardcoded" />
@@ -37,36 +37,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:fontFamily="@font/satoshi_variable"
+                    android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_toRightOf="@+id/back_arrow"
-                    android:text="SAN Media Pvt Ltd."
+                    android:text="SAN Media Pvt Ltd.5"
                     android:gravity="left"
                     android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:textSize="@dimen/_8sdp" />
                 <ImageView
                     android:id="@+id/img_notofication"
                     android:layout_toLeftOf="@id/img_account"
-                    android:layout_width="50dp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/notification"
-                    android:layout_marginRight="20dp"
-                    android:layout_height="wrap_content">
+                    android:layout_marginRight="@dimen/_8sdp"
+                   >
                 </ImageView>
                 <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/img_account"
                     android:layout_toLeftOf="@id/img_sync"
-                    android:layout_width="50dp"
-                    android:src="@drawable/account"
-                    android:layout_marginRight="20dp"
 
-                    android:layout_height="wrap_content">
+                    android:src="@drawable/acount_img"
+                    android:layout_marginRight="@dimen/_8sdp"
+                >
                 </ImageView>
                 <ImageView
                     android:id="@+id/img_sync"
-                    android:layout_width="50dp"
-                    android:src="@drawable/sync"
-                    android:layout_marginRight="20dp"
+                    android:src="@drawable/sync_img"
+                    android:layout_marginRight="@dimen/_8sdp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content">
                 </ImageView>
             </RelativeLayout>
@@ -89,73 +92,71 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:layout_width="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="1.7"
                 android:orientation="vertical"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/_3sdp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:background="@color/white">
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginRight="@dimen/_4sdp"
+                    android:background="@drawable/custom_backround_layout">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="start|center_vertical"
-                        android:src="@drawable/calendar"
-                        android:layout_marginEnd="10dp"/>
+                        android:id="@+id/caleder_img"
+                        android:layout_width="@dimen/_9sdp"
+                        android:layout_height="@dimen/_9sdp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:src="@drawable/calendar_img" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="September 29, 2023"
-                        android:textStyle="bold"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/satoshi_medium"
                         android:gravity="center"
-                        android:padding="5dp"/>
+                        android:padding="@dimen/_3sdp"
+                        android:text="September 29, 2023"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_8sdp"
+                        android:textStyle="bold" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:src="@drawable/double_vector"
-                        android:layout_marginStart="10dp"
-                       />
-                </LinearLayout>
+                        android:layout_width="@dimen/_9sdp"
+                        android:layout_height="@dimen/_9sdp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="@dimen/_5sdp"
 
+                        android:src="@drawable/arrow_bot_top_img" />
+                </RelativeLayout>
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tab_layout"
-                    android:layout_marginTop="10dp"
-                    android:scrollbars="horizontal"
-                    android:layout_marginLeft="8dp"
-                    app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
-                    android:layout_marginRight="8dp"
-                    app:tabSelectedTextColor="@color/black"
-                    app:tabTextColor="#9CAC99AC"
-                    android:clipToOutline="true"
-                    app:tabPadding="0dp"
-
-                    android:textAlignment="center"
-                    android:background="@color/backround_graey"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"/>
+               <include
+                   layout="@layout/customize_tablayout"
+                   android:layout_width="match_parent"
+                   android:layout_marginLeft="@dimen/_4sdp"
+                   android:layout_marginRight="@dimen/_4sdp"
+                   android:layout_height="wrap_content"/>
 
                 <androidx.viewpager2.widget.ViewPager2
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:id="@+id/view_pager"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:layout_marginRight="@dimen/_4sdp"
                     android:background="@drawable/backround_text"
                     android:backgroundTint="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="@dimen/_4sdp"
                     android:layout_weight="1"/>
 
 
@@ -176,14 +177,17 @@
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/view_pager1"
+                        android:layout_marginTop="@dimen/_4sdp"
                         android:backgroundTint="@color/white"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginLeft="@dimen/_2sdp"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="10dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"/>
 
                 </LinearLayout>
                 <RelativeLayout
+                    android:layout_margin="@dimen/_2sdp"
                     android:layout_width="match_parent"
                     android:layout_weight="5"
                     android:layout_height="match_parent">
@@ -192,147 +196,196 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Quick Link"
+                        android:fontFamily="@font/satoshi_medium"
                         android:textStyle="bold"
-                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_8sdp"
+                        android:textColor="@color/text_dark"
                         />
-
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/txt_quik_link">
                     <LinearLayout
-                        android:layout_below="@+id/txt_quik_link"
                         android:layout_width="match_parent"
                         android:radius="12dp"
+                        android:layout_marginTop="@dimen/_2sdp"
                         android:orientation="horizontal"
                         android:layout_height="match_parent">
 
-
                         <LinearLayout
-
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
+                            android:id="@+id/ll_presentation"
                             android:background="@drawable/backround_text"
-                            android:layout_weight="1"
-                            android:layout_margin="5dp"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginBottom="@dimen/_2sdp"
                             android:backgroundTint="#c6eae1"
-
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:layout_width="20dp"
-                                android:src="@drawable/image"
+                                android:layout_width="@dimen/_9sdp"
+                                android:src="@drawable/image_img"
                                 android:layout_marginLeft="10dp"
                                 android:layout_gravity="center|left"
-                                android:layout_height="20dp">
+                                android:layout_height="@dimen/_9sdp">
                             </ImageView>
 
 
                             <TextView
                                 android:layout_width="match_parent"
-                                android:gravity="center"
-                                android:textStyle="bold"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="center"
                                 android:text="Presentation"
-                                android:textColor="#2a293b"
-                                android:layout_height="wrap_content">
+                                android:textColor="@color/black_45"
+                                android:textSize="@dimen/_7sdp"
+                                >
 
                             </TextView>
 
                             <ImageView
-                                android:layout_width="15dp"
-                                android:src="@drawable/right_arrow"
-                                android:layout_marginRight="10dp"
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center|right"
-                                android:layout_height="15dp">
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/arrow_right_">
 
                             </ImageView>
 
                         </LinearLayout>
                         <LinearLayout
-
+                            android:id="@+id/ll_slide"
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
                             android:backgroundTint="#d3e4ef"
                             android:background="@drawable/backround_text"
-
-                            android:layout_weight="1"
                             android:layout_margin="5dp"
 
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:layout_width="20dp"
-                                android:src="@drawable/user_time"
+                                android:layout_width="@dimen/_9sdp"
+                                android:src="@drawable/eye_img"
                                 android:layout_marginLeft="10dp"
                                 android:layout_gravity="center|left"
-                                android:layout_height="20dp">
+                                android:layout_height="@dimen/_9sdp">
                             </ImageView>
 
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:gravity="center"
-                                android:textStyle="bold"
+
+                                android:textSize="@dimen/_7sdp"
+                                android:fontFamily="@font/satoshi_medium"
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
-
+                                android:textColor="@color/black_45"
 
                                 android:text="Slide Preview"
-                                android:textColor="#2a293b"
+
                                 android:layout_height="wrap_content">
 
                             </TextView>
 
                             <ImageView
-                                android:layout_width="15dp"
-                                android:src="@drawable/right_arrow"
-                                android:layout_marginRight="10dp"
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center|right"
-                                android:layout_height="15dp">
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/arrow_right_">
 
                             </ImageView>
                         </LinearLayout>
                         <LinearLayout
-                            android:layout_weight="1"
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
                             android:backgroundTint="#f2d7db"
                             android:background="@drawable/backround_text"
-
                             android:layout_margin="5dp"
+                            android:id="@+id/ll_report"
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:layout_width="20dp"
-                                android:src="@drawable/file_char_line"
+                                android:layout_width="@dimen/_9sdp"
+                                android:src="@drawable/file_chart_img"
                                 android:layout_marginLeft="10dp"
                                 android:layout_gravity="center|left"
-                                android:layout_height="20dp">
+                                android:layout_height="@dimen/_9sdp">
                             </ImageView>
 
                             <TextView
                                 android:layout_width="match_parent"
-                                android:gravity="center"
-                                android:textStyle="bold"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="center"
+                                android:textColor="@color/black_45"
                                 android:text="Report"
-                                android:textColor="#2a293b"
-                                android:layout_height="wrap_content">
+                                android:textSize="@dimen/_7sdp">
 
                             </TextView>
 
                             <ImageView
-                                android:layout_width="15dp"
-                                android:src="@drawable/right_arrow"
+                                android:layout_width="@dimen/_8sdp"
+                                android:src="@drawable/arrow_right_"
                                 android:layout_marginRight="10dp"
                                 android:layout_gravity="center|right"
-                                android:layout_height="15dp">
+                                android:layout_height="@dimen/_8sdp">
+
+                            </ImageView>
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:id="@+id/ll_analys"
+                            android:orientation="horizontal"
+                            android:background="@drawable/backround_text"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginBottom="@dimen/_2sdp"
+                            android:backgroundTint="#26FFEB3B"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:layout_width="@dimen/_9sdp"
+                                android:src="@drawable/image_img"
+                                android:layout_marginLeft="10dp"
+                                android:layout_gravity="center|left"
+                                android:layout_height="@dimen/_9sdp">
+                            </ImageView>
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="center"
+                                android:text="Analysis"
+                                android:textColor="@color/black_45"
+                                android:textSize="@dimen/_7sdp"
+                                >
+                            </TextView>
+
+                            <ImageView
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center|right"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/arrow_right_">
 
                             </ImageView>
 
                         </LinearLayout>
 
                     </LinearLayout>
-
+                    </HorizontalScrollView>
                 </RelativeLayout>
             </LinearLayout>
 
@@ -341,11 +394,12 @@
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_150sdp"
             android:layout_height="match_parent"
             android:background="@color/white"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
+            android:requiresFadingEdge="none"
             app:itemBackground="@drawable/drawer_item_bg"
             app:menu="@menu/activity_navigation_drawer_drawer" />
 

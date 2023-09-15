@@ -1,47 +1,61 @@
-plugins {
-    id 'com.android.application'
-}
-
+apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
-
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url "https://maven.google.com" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+    }
+}
 
 android {
     namespace 'saneforce.sanclm'
     compileSdk 33
-
     defaultConfig {
         applicationId "saneforce.sanclm"
         minSdk 19
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
-
 }
 
-
-
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -49,7 +63,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-
 
     //Google :-
     implementation 'com.google.android.play:core:1.10.3'
@@ -71,11 +84,10 @@ dependencies {
     implementation platform("com.google.firebase:firebase-bom:26.0.0")
 
 
-    implementation ("androidx.viewpager2:viewpager2:1.0.0")
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
-    implementation ("com.jakewharton:butterknife:10.2.1")
-    implementation ("com.github.siyamed:android-shape-imageview:0.9.3@aar")
 
-
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
 }
 

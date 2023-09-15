@@ -4,77 +4,136 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="@dimen/_2sdp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- TextView for selecting work type -->
-    <TextView
-        android:id="@+id/txt_worktype"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Work Type"
-        android:layout_margin="10dp"
-        android:drawableRight="@drawable/vector_"
-        android:padding="10dp"
-        android:textColor="@color/text_dark"
-        android:background="@drawable/backround_text" />
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/_4sdp"
+        android:background="@drawable/backround_text"
+        >
 
-    <TextView
-        android:id="@+id/txt_headquaters"
+        <TextView
+            android:id="@+id/txt_worktype"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:drawablePadding="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:padding="@dimen/_4sdp"
+            android:text="Select Work Type"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/_7sdp" />
+
+        <ImageView
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:src="@drawable/vector" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Head Quarters"
-        android:layout_margin="10dp"
-        android:padding="10dp"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/_4sdp"
         android:backgroundTint="#26282A3C"
-        android:drawableRight="@drawable/vector_"
+        android:background="@drawable/backround_text"
+        >
 
-        android:textColor="@color/text_dark"
-        android:background="@drawable/backround_text" />
+        <TextView
+            android:id="@+id/txt_headquaters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Head Quarters"
+            android:layout_margin="@dimen/_4sdp"
+            android:padding="@dimen/_4sdp"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:textColor="@color/text_dark"
+            />
 
-    <!-- TextView for selecting cluster -->
-    <TextView
-        android:id="@+id/txt_cluster"
+        <ImageView
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:src="@drawable/vector" />
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Cluster"
-        android:layout_margin="10dp"
-        android:drawableRight="@drawable/vector_"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/_4sdp"
+        android:background="@drawable/backround_text"
+        >
 
-        android:padding="10dp"
-        android:textColor="@color/text_dark"
-        android:background="@drawable/backround_text" />
 
-    <!-- EditText for entering remarks -->
+        <TextView
+            android:id="@+id/txt_cluster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Cluster"
+            android:layout_margin="@dimen/_4sdp"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:padding="@dimen/_4sdp"
+            android:textColor="@color/text_dark"
+            />
+
+        <ImageView
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:src="@drawable/vector" />
+    </RelativeLayout>
+
+
+
     <EditText
         android:id="@+id/dayremark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Remark"
-        android:textSize="16sp"
-        android:padding="10dp"
-        android:layout_margin="10dp"
+        android:padding="@dimen/_4sdp"
+        android:layout_margin="@dimen/_4sdp"
         android:background="@drawable/backround_text"
         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
         android:gravity="top|left"
         android:inputType="text"
+        android:textSize="@dimen/_7sdp"
+        android:fontFamily="@font/satoshi_medium"
         android:lines="8"
         android:maxLines="10"
         android:minLines="6"
         android:scrollbars="vertical" />
 
-    <!-- Button for submission -->
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit"
-        android:padding="10dp"
-        android:layout_margin="10dp"
+        android:padding="@dimen/_4sdp"
+        android:gravity="center"
+        android:textSize="@dimen/_7sdp"
+        android:fontFamily="@font/satoshi_variable"
+        android:layout_margin="@dimen/_4sdp"
         android:textColor="@color/white"
         android:background="@drawable/edittext_stroke"
-        app:backgroundTint="#282A3C" />
+        app:backgroundTint="@color/black_45" />
 
 </LinearLayout>
 </ScrollView>

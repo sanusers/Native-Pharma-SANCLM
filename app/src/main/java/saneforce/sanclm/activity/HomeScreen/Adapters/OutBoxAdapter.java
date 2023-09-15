@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.TextView;
 
 import saneforce.sanclm.R;
 
@@ -59,6 +60,15 @@ public class OutBoxAdapter extends BaseExpandableListAdapter {
         View view = convertView;
         if (view == null) {
             view = inflater.inflate(R.layout.outbox_group_view, parent, false);
+
+        }
+
+        TextView isexpandStatus=view.findViewById(R.id.txt_expand_status);
+
+        if(isExpanded){
+            isexpandStatus.setText("Collapse");
+          }else {
+            isexpandStatus.setText("Expand");
         }
         return view;
     }

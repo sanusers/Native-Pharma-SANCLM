@@ -2,12 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/_4sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
 
     <TextView
         android:id="@+id/txt_call"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:textSize="@dimen/_7sdp"
+        android:fontFamily="@font/satoshi_medium"
         android:layout_width="wrap_content"
         android:text="Count :"
         android:layout_height="wrap_content">
@@ -17,28 +22,51 @@
     <TextView
         android:id="@+id/txt_callcount"
         android:text="06"
-        android:layout_marginLeft="2dp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:textSize="@dimen/_7sdp"
+        android:fontFamily="@font/satoshi_medium"
         android:layout_toRightOf="@+id/txt_call"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
     </TextView>
 
-    <TextView
-        android:layout_width="60dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:padding="1dp"
-        android:layout_marginRight="10dp"
-        android:background="#F1E4E4"
-        android:drawableLeft="@drawable/baseline_sync_24"
-        android:text=" Sync"
-        android:layout_marginTop="3dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:textColor="#F44848">
+        android:gravity="center"
+        android:padding="@dimen/_1sdp"
+        android:background="@drawable/custom_backround_layout"
+        android:backgroundTint="#F1E4E4"
+        android:orientation="horizontal">
 
-    </TextView>
+
+        <ImageView
+            android:id="@+id/refresh"
+            android:layout_width="@dimen/_6sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:src="@drawable/refresh_1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/refresh"
+            android:layout_gravity="right"
+            android:fontFamily="@font/satoshi_regular"
+            android:text="Sync"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:textStyle="bold"
+            android:textSize="@dimen/_7sdp"
+            android:textColor="#f1536e">
+
+        </TextView>
+
+
+    </RelativeLayout>
 
 
 
@@ -46,9 +74,8 @@
         android:id="@+id/Expandapleview"
         android:layout_width="match_parent"
         android:layout_below="@+id/txt_call"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_3sdp"
         android:layout_above="@+id/r_layout"
         android:layout_height="match_parent"
         />
@@ -59,22 +86,21 @@
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-
         android:layout_height="wrap_content">
 
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:textSize="@dimen/_7sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
             android:background="@drawable/edittext_stroke"
-            android:padding="10dp"
             android:text="Clear Calls"
             android:textColor="@color/white"
-            app:backgroundTint="#282A3C" />
+            app:backgroundTint="@color/black_45" />
 
     </RelativeLayout>
 
