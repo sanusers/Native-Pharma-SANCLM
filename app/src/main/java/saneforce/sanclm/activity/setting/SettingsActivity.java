@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,13 +27,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
 import saneforce.sanclm.R;
@@ -57,6 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         deviceId = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         binding.tvDeviceId.setText(deviceId);
@@ -84,19 +87,19 @@ public class SettingsActivity extends AppCompatActivity {
                     binding.etLicenseKey.requestFocus();
                     Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
                 } else{
-                    Log.e("test","url is  : " + url + " -- device id : " + deviceId);
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())){
-                        configuration("https://" + url + "/apps/");
+                        if (checkURL(url)){
+                            configuration("https://" + url + "/apps/");
+                        }else{
+                            Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
+                        }
                     }else{
                         Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
                     }
-//                    startActivity(new Intent(SettingsActivity.this, MasterSyncActivity.class));
                 }
-
 
             }
         });
-
 
     }
 
@@ -138,71 +141,80 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    private static boolean checkURL(CharSequence input) {
+        boolean validUrl = false;
+        Pattern pattern = Patterns.WEB_URL;
+        validUrl = pattern.matcher(input).matches();
+        return validUrl;
+    }
+
     public void configuration(String enteredUrl){
         binding.pbConfigurationProgress.setVisibility(View.VISIBLE);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
 
-        Call<JsonArray> call = apiInterface.Configuration("ConfigiOS.json");
-        call.enqueue(new Callback<JsonArray>() {
-            @Override
-            public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                binding.pbConfigurationProgress.setVisibility(View.GONE);
-                if (response.isSuccessful()){
-                    Log.e("test","success : "+ response.body().toString());
-                    SharedPref.saveBaseUrl(getApplicationContext(),"https://"+url+"/apps/");
-                    JSONArray jsonArray = null;
-                    try {
-                        jsonArray = new JSONArray(response.body().toString());
-                        boolean licenseKeyValid = false;
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObj = jsonArray.getJSONObject(i);
-                            if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
-                                JSONObject config = new JSONObject(jsonObj.getString("config"));
-                                divisionCode = config.getString("division");
-                                baseWebUrl = config.getString("weburl");
-                                phpPathUrl = config.getString("appurl");
-                                reportsUrl = config.getString("reportUrl");
-                                slidesUrl = config.getString("slideurl");
-                                logoUrl = config.getString("logoimg");
-                                downloadImage(baseWebUrl + logoUrl,"logo");
-                                SharedPref.saveUrls(getApplicationContext(),enteredUrl,licenseKey,baseWebUrl,phpPathUrl,reportsUrl,slidesUrl,logoUrl,true);
-                                Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
-                                licenseKeyValid = true;
-                                break;
-                            }
-                        }
-                        
-                        if (!licenseKeyValid){
-                            Toast.makeText(SettingsActivity.this, "Invalid license", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }else{
-                    Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                Log.e("test","failed : " + t.toString());
-                hitCount++;
-                if (hitCount <2){
-                    configuration("http://" + url + "/apps/");
-                }else{
+        try {
+            Call<JsonArray> call = apiInterface.configuration("ConfigiOS.json");
+            call.enqueue(new Callback<JsonArray>() {
+                @Override
+                public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                     binding.pbConfigurationProgress.setVisibility(View.GONE);
-                    Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
-                    Log.e("test","hit count is : " + hitCount);
-                    hitCount =0;
+                    if (response.isSuccessful()){
+                        Log.e("test","success : "+ response.body().toString());
+                        SharedPref.saveBaseUrl(getApplicationContext(),"https://"+url+"/apps/");
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = new JSONArray(response.body().toString());
+                            boolean licenseKeyValid = false;
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObj = jsonArray.getJSONObject(i);
+                                if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
+                                    JSONObject config = new JSONObject(jsonObj.getString("config"));
+                                    divisionCode = config.getString("division");
+                                    baseWebUrl = config.getString("weburl");
+                                    phpPathUrl = config.getString("appurl");
+                                    reportsUrl = config.getString("reportUrl");
+                                    slidesUrl = config.getString("slideurl");
+                                    logoUrl = config.getString("logoimg");
+                                    downloadImage(baseWebUrl + logoUrl, Constants.LOGO_IMAGE_NAME,enteredUrl);
+                                    licenseKeyValid = true;
+                                    break;
+                                }
+                            }
+
+                            if (!licenseKeyValid){
+                                Toast.makeText(SettingsActivity.this, "Invalid license", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else{
+                        Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
-            }
-        });
+                @Override
+                public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                    Log.e("test","failed : " + t.toString());
+                    hitCount++;
+                    if (hitCount <2){
+                        configuration("http://" + url + "/apps/");
+                    }else{
+                        binding.pbConfigurationProgress.setVisibility(View.GONE);
+                        Toast.makeText(SettingsActivity.this, "Try again later", Toast.LENGTH_SHORT).show();
+                        Log.e("test","hit count is : " + hitCount);
+                        hitCount =0;
+                    }
+
+                }
+            });
+        } catch (Exception exception){
+            Log.e("test","excep : " + exception);
+        }
+
 
     }
 
-    public void downloadImage(String url,String imageName){
+    public void downloadImage(String url,String imageName,String enteredUrl){
         packageManager = this.getPackageManager();
         String packageName = this.getPackageName();
         try {
@@ -211,18 +223,20 @@ public class SettingsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String fileDirectory = packageInfo.applicationInfo.dataDir;
-        Log.e("test","filepath + name : " + fileDirectory + "/" + imageName);
-        if(ImageStorage.checkIfImageExists(fileDirectory,imageName + ".png")) {
-            Log.e("test","image exists");
-            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName + ".png");
-            assert file != null;
-            String path = file.getAbsolutePath();
-//            b = BitmapFactory.decodeFile(path);
-//          imageView.setImageBitmap(b);
-        } else {
+        Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
+        if(!ImageStorage.checkIfImageExists(fileDirectory,imageName )) {
             Log.e("test","image not exists");
-            new DownloaderClass(url, fileDirectory,imageName).execute() ;
+            new DownloaderClass(url, fileDirectory, imageName, new AsyncInterface() {
+                @Override
+                public void taskCompleted (boolean status) {
+                    SharedPref.saveUrls(getApplicationContext(),enteredUrl,licenseKey,baseWebUrl,phpPathUrl,reportsUrl,slidesUrl,logoUrl,true);
+                    Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+                }
+            }).execute();
+
         }
 
     }
+
 }

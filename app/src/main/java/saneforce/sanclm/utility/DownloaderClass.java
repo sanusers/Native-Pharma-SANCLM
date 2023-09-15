@@ -8,16 +8,20 @@ import android.util.Log;
 import java.net.URL;
 import java.net.URLConnection;
 
+import saneforce.sanclm.activity.setting.AsyncInterface;
+
 public class DownloaderClass extends AsyncTask<Object,Object,Object> {
 
     private String requestUrl, imageName,filePath;
     private Bitmap bitmap;
-    static boolean downloadSate = false;
+    public AsyncInterface asyncInterface ;
 
-    public DownloaderClass (String requestUrl,String filepath, String imageName) {
+
+    public DownloaderClass (String requestUrl, String filepath, String imageName,AsyncInterface asyncInterface) {
         this.requestUrl = requestUrl;
         this.filePath = filepath;
         this.imageName = imageName;
+        this.asyncInterface = asyncInterface;
     }
 
     @Override
@@ -35,12 +39,11 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
     @Override
     protected void onPostExecute(Object o) {
         if (!ImageStorage.checkIfImageExists(filePath, imageName)) {
-            Log.e("test","images download completed");
-            String state = "";
-            state =  ImageStorage.saveImage(bitmap,filePath,imageName);
-            if (state != null && state.equalsIgnoreCase("success")){
-               downloadSate = true;
-           }
+            String status = ImageStorage.saveImage(bitmap,filePath,imageName);
+            if (status != null && status.equalsIgnoreCase("success")){
+                asyncInterface.taskCompleted(true);
+            }
+            Log.e("test","logo image downloaded");
         }
     }
 }

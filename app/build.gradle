@@ -19,6 +19,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //To use java Local library below api level 26
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -28,6 +31,9 @@ android {
         }
     }
     compileOptions {
+        //To use java Local library below api level 26
+        coreLibraryDesugaringEnabled = true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -49,6 +55,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "android.arch.lifecycle:extensions:1.1.1"
 
 
     //Google :-
@@ -69,6 +76,11 @@ dependencies {
     implementation "com.google.firebase:firebase-crashlytics"
     implementation "com.google.firebase:firebase-auth:22.1.1"
     implementation platform("com.google.firebase:firebase-bom:26.0.0")
+
+
+    //To use java Local(Date) library below api level 26
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+
 
 
 

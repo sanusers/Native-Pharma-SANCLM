@@ -12,6 +12,7 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.SettingsActivity;
+import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
@@ -30,20 +31,20 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run () {
-                if (SharedPref.getSettingState(getApplicationContext())){
-                    if (SharedPref.getLoginState(getApplicationContext())){
-                        startActivity(new Intent(SplashScreen.this, MasterSyncActivity.class));
-                        finish();
-                    }else{
-                        startActivity(new Intent(SplashScreen.this, LoginActivity.class));
-                        finish();
-                    }
-                }else{
-                    startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
-                    finish();
-                }
-//               startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
-//               finish();
+//                if (SharedPref.getSettingState(getApplicationContext())){
+//                    if (SharedPref.getLoginState(getApplicationContext())){
+//                        startActivity(new Intent(SplashScreen.this, MasterSyncActivity.class));
+//                        finish();
+//                    }else{
+//                        startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+//                        finish();
+//                    }
+//                }else{
+//                    startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
+//                    finish();
+//                }
+               startActivity(new Intent(SplashScreen.this, TourPlanActivity.class));
+               finish();
 
             }
         },2000);

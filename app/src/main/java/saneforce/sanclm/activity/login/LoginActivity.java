@@ -15,6 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
+import saneforce.sanclm.activity.setting.AsyncInterface;
 import saneforce.sanclm.activity.setting.SettingsActivity;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
@@ -55,6 +59,9 @@ public class LoginActivity extends AppCompatActivity {
     SQLite sqlite;
     private int passwordNotVisible=1;
 
+    LoginViewModel loginViewModel = new LoginViewModel();
+
+
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-        getImageFromLocal("logo");
+        getImageFromLocal(Constants.LOGO_IMAGE_NAME);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         if (fcmToken.isEmpty()){
@@ -145,7 +152,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void getImageFromLocal(String imageName){
-        Log.e("test","Login getImageFromLocal");
         packageManager = this.getPackageManager();
         String packageName = this.getPackageName();
         try {
@@ -155,18 +161,26 @@ public class LoginActivity extends AppCompatActivity {
         }
         String fileDirectory = packageInfo.applicationInfo.dataDir;
         Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
-        if(ImageStorage.checkIfImageExists(fileDirectory, imageName + ".png")) {
-            Log.e("test","image exists");
-            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName + ".png");
+        if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
+            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
             String path = file.getAbsolutePath();
             Bitmap b = BitmapFactory.decodeFile(path);
           binding.logoImg.setImageBitmap(b);
         } else {
-            Log.e("test","image not exists in login");
             String baseWebUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String logoUrl = SharedPref.getLogoUrl(getApplicationContext());
             if (!baseWebUrl.equals("") && !logoUrl.equals("")){
-                DownloaderClass downloaderClass = (DownloaderClass) new DownloaderClass(baseWebUrl+logoUrl, fileDirectory, imageName).execute();
+                new DownloaderClass(baseWebUrl + logoUrl, fileDirectory, imageName, new AsyncInterface() {
+                    @Override
+                    public void taskCompleted (boolean status) {
+                        if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
+                            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
+                            String path = file.getAbsolutePath();
+                            Bitmap b = BitmapFactory.decodeFile(path);
+                            binding.logoImg.setImageBitmap(b);
+                        }
+                    }
+                }).execute();
             }
 
         }
@@ -196,46 +210,35 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("location", "0.0 : 0.0");
 
             Log.e("test","master obj : " + jsonObject);
-            Call<JsonObject> call = apiInterface.Login(jsonObject.toString());
-            call.enqueue(new Callback<JsonObject>() {
+            loginViewModel.loginProcess(getApplicationContext(),baseUrl+replacedUrl,jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonObject>() {
                 @Override
-                public void onResponse (@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                public void onChanged (JsonObject jsonObject) {
                     binding.progressBar.setVisibility(View.GONE);
+                    try {
+                        JSONObject jsonObject2 = new JSONObject(jsonObject.toString());
 
-                    if (response.isSuccessful()) {
-                        try {
-                            JSONObject jsonObject2 = new JSONObject(response.body().toString());
-                            if (jsonObject2.getBoolean("success")){
-                                String stringResponse = response.body().toString();
-                                LoginResponse loginResponse = new LoginResponse();
-                                loginResponse = new Gson().fromJson(stringResponse,LoginResponse.class);
+                        if (jsonObject2.getBoolean("success")){
+                            String stringResponse = jsonObject.toString();
+                            LoginResponse loginResponse = new LoginResponse();
+                            loginResponse = new Gson().fromJson(stringResponse,LoginResponse.class);
 
-                                Log.e("test","login response : " + new Gson().toJson(loginResponse));
-                                sqlite.saveLoginData(stringResponse);
-                                openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
-                                Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
-                                intent.putExtra("Origin","Login");
-                                startActivity(intent);
-                                SharedPref.saveLoginState(getApplicationContext(),true);
-                            }else{
-                                if (jsonObject2.has("msg")){
-                                    Toast.makeText(LoginActivity.this,jsonObject2.getString("msg") , Toast.LENGTH_SHORT).show();
-                                }
+                            Log.e("test","login response : " + new Gson().toJson(loginResponse));
+                            sqlite.saveLoginData(stringResponse);
+                            openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
+                            Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
+                            intent.putExtra("Origin","Login");
+                            startActivity(intent);
+                            SharedPref.saveLoginState(getApplicationContext(),true);
+                        }else{
+                            if (jsonObject2.has("msg")){
+                                Toast.makeText(LoginActivity.this,jsonObject2.getString("msg") , Toast.LENGTH_SHORT).show();
                             }
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
                         }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
                 }
-
-                @Override
-                public void onFailure (@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    Log.e("test","failed : " + t);
-                    binding.progressBar.setVisibility(View.GONE);
-                }
             });
-
-
         }catch (Exception e){
             e.printStackTrace();
 

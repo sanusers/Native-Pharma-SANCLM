@@ -12,7 +12,7 @@ public class ImageStorage {
         String stored = null;
         File folder = new File(filePath, "images");  //the dot makes this directory hidden to the user
         folder.mkdir();
-        File file = new File(folder.getAbsoluteFile(), filename + ".png");
+        File file = new File(folder.getAbsoluteFile(), filename );
         if (file.exists())
             return null;
 

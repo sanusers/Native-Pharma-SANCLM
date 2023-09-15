@@ -6,6 +6,9 @@ public class Constants {
     public static final String APP_VERSION = "V2.0.8";
     public static final String APP_MODE = "Android-Edet";
 
+    //Local storage
+    public static final String LOGO_IMAGE_NAME = "logo.png";
+
     //----------------------------------------------------
     //Master sync table key names
     public static final String DOCTOR = "Doctor";

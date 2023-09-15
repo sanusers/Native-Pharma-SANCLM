@@ -44,6 +44,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
+    MasterSyncViewModel masterSyncViewModel = new MasterSyncViewModel();
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     SQLite sqLite;
     LoginResponse loginResponse;
@@ -78,11 +79,23 @@ public class MasterSyncActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMasterSyncBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
 
-        String origin = getIntent().getExtras().getString("Origin");
+        Bundle bundle = getIntent().getExtras();
+        String origin = "";
+        if (bundle != null){
+            origin = getIntent().getExtras().getString("Origin");
+        }
         Log.e("test","origin is  : " + origin);
+
+//        if (origin.equalsIgnoreCase("Login")){
+//            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//        }else {
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//        }
 
         Cursor cursor = sqLite.getLoginData();
         loginResponse = new LoginResponse();
@@ -112,7 +125,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
         binding.listedDoctor.setSelected(true);
-        masterSyncAll();
+       // masterSyncAll();
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -474,19 +487,19 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void listItemClicked(ImageView imageView, LinearLayout view){
-        binding.listDrArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.down_arrow,null));
-        binding.chemistArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.stockArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.unListDrArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.hospitalArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.cipArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.inputArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.productArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.leaveArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.tpArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.slideArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.subordinateArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
-        binding.setupArrow.setImageDrawable(getResources().getDrawable(R.drawable.down_arrow));
+        binding.listDrArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.arrow_down, null));
+        binding.chemistArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.stockArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.unListDrArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.hospitalArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.cipArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.inputArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.productArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.leaveArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.tpArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.slideArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.subordinateArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.setupArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
 
         binding.listedDoctor.setSelected(false);
         binding.unlistedDoctor.setSelected(false);
@@ -502,7 +515,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.subordinate.setSelected(false);
         binding.setup.setSelected(false);
 
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.right_arrow,null));
+        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.arrow_right, null));
         view.setSelected(true);
     }
 
@@ -572,7 +585,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                 sync(childArray.get(j).getMasterFor(),childArray.get(j).getRemoteTableName(),childArray,j);
             }
         }
-
         Log.e("test","count : " + count);
 
     }
@@ -583,7 +595,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
             String replacedUrl = pathUrl.replaceAll("\\?.*","/");
-//            Log.e("test","master url : "  + baseUrl + replacedUrl);
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl+replacedUrl);
 
             JSONObject jsonObject = new JSONObject();
@@ -614,45 +625,45 @@ public class MasterSyncActivity extends AppCompatActivity {
                 call = apiInterface.getAdditionalMaster(jsonObject.toString());
             }
 
-            call.enqueue(new Callback<JsonArray>() {
-                @Override
-                public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                    masterSyncItemModels.get(position).setPB_visibility(false);
-                    apiSuccessCount ++;
-                    if (response.isSuccessful()) {
-                        Log.e("test","master for : " + masterFor + " -- " + "remote : " + remoteTableName);
-                        Log.e("test","response " + remoteTableName +" : " + response.body().toString());
-                        try {
-                            JSONArray jsonArray = new JSONArray(response.body().toString());
-                            masterSyncItemModels.get(position).setPB_visibility(false);
-                            masterSyncItemModels.get(position).setCount(jsonArray.length());
+            if (call != null){
+                call.enqueue(new Callback<JsonArray>() {
+                    @Override
+                    public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                        masterSyncItemModels.get(position).setPB_visibility(false);
+                        apiSuccessCount ++;
+                        if (response.isSuccessful()) {
+                            Log.e("test","master for : " + masterFor + " -- " + "remote : " + remoteTableName);
+                            Log.e("test","response " + remoteTableName +" : " + response.body().toString());
+                            try {
+                                JSONArray jsonArray = new JSONArray(response.body().toString());
+                                masterSyncItemModels.get(position).setPB_visibility(false);
+                                masterSyncItemModels.get(position).setCount(jsonArray.length());
 
-                            masterSyncAdapter.notifyDataSetChanged();
-                            String dateAndTime = DateTimeFormat.getCurrentDateTime(DateTimeFormat.FORMAT_1);
-                            binding.lastSyncTime.setText(dateAndTime);
-                            SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
-                            sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                                masterSyncAdapter.notifyDataSetChanged();
+                                String dateAndTime = DateTimeFormat.getCurrentDateTime(DateTimeFormat.FORMAT_1);
+                                binding.lastSyncTime.setText(dateAndTime);
+                                SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
+                                sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
+                        masterSyncAdapter.notifyDataSetChanged();
+                        Log.e("test","success count : " + apiSuccessCount);
+
                     }
-                    masterSyncAdapter.notifyDataSetChanged();
-                    Log.e("test","success count : " + apiSuccessCount);
 
-                }
+                    @Override
+                    public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                        Log.e("test","failed : " + t);
+                        apiSuccessCount++;
+                        Log.e("test","success count at error : " + apiSuccessCount);
+                        masterSyncItemModels.get(position).setPB_visibility(false);
+                        masterSyncAdapter.notifyDataSetChanged();
 
-                @Override
-                public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                    Log.e("test","failed : " + t);
-                    apiSuccessCount++;
-                    Log.e("test","success count at error : " + apiSuccessCount);
-
-                    masterSyncItemModels.get(position).setPB_visibility(false);
-                    masterSyncAdapter.notifyDataSetChanged();
-
-                }
-            });
-
+                    }
+                });
+            }
 
         }catch (Exception e){
             e.printStackTrace();
