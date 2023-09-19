@@ -31,17 +31,17 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="@dimen/_25sdp"
+                android:layout_width="@dimen/_20sdp"
                 android:src="@drawable/tab_litte_line"
                 android:layout_margin="@dimen/_1sdp"
                 android:layout_height="wrap_content"/>
             <ImageView
-                android:layout_width="@dimen/_25sdp"
+                android:layout_width="@dimen/_20sdp"
                 android:layout_margin="@dimen/_1sdp"
                 android:src="@drawable/tab_dark_line"
                 android:layout_height="wrap_content"/>
             <ImageView
-                android:layout_width="@dimen/_25sdp"
+                android:layout_width="@dimen/_20sdp"
                 android:layout_margin="@dimen/_1sdp"
                 android:src="@drawable/tab_litte_line"
                 android:layout_height="wrap_content"/>

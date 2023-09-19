@@ -106,11 +106,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        int width = (int) ((((displayMetrics.widthPixels / 3) * 1.9) / 3)-20);
+        int width = (int) ((((displayMetrics.widthPixels / 3) * 1.9) / 3)-10);
         LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-        param1.setMargins(0, 5, 10, 0);
+        param1.setMargins(0, 5, 0, 0);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-        param.setMargins(10, 5, 10, 0);
+        param.setMargins(10, 5, 0, 0);
         pre_layout.setLayoutParams(param1);
         slide_layout.setLayoutParams(param);
         report_layout.setLayoutParams(param);
@@ -120,6 +120,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
         TabLayoutMediator tabLayoutMediator=new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @SuppressLint("ResourceType")
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 switch (position){
@@ -132,15 +133,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         break;
                     case 2:
                         tab.setText("Outbox");
-
-                        BadgeDrawable badgeDrawable=tab.getOrCreateBadge();
-                        badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.black));
-                        badgeDrawable.setVisible(true);
-                        badgeDrawable.setHorizontalOffset(1);
-                        badgeDrawable.setVerticalOffset(10);
-                        badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
-                        badgeDrawable.setNumber(1);
-                        badgeDrawable.setBadgeTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
 
                         break;
 

@@ -32,17 +32,17 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="@dimen/_25sdp"
+                android:layout_width="@dimen/_20sdp"
                 android:src="@drawable/tab_dark_line"
                 android:layout_margin="@dimen/_1sdp"
                 android:layout_height="wrap_content"/>
             <ImageView
-                android:layout_width="@dimen/_25sdp"
+                android:layout_width="@dimen/_20sdp"
                 android:layout_margin="@dimen/_1sdp"
                 android:src="@drawable/tab_litte_line"
                 android:layout_height="wrap_content"/>
             <ImageView
-                android:layout_width="@dimen/_25sdp"
+                android:layout_width="@dimen/_20sdp"
                 android:layout_margin="@dimen/_1sdp"
                 android:src="@drawable/tab_litte_line"
                 android:layout_height="wrap_content"/>
@@ -113,8 +113,8 @@
                             <ProgressBar
                                 android:id="@+id/doc_progress_bar"
                                 style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="@dimen/_37sdp"
+                                android:layout_height="@dimen/_37sdp"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
@@ -193,8 +193,8 @@
                             <ProgressBar
                                 android:id="@+id/che_progress_bar"
                                 style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="@dimen/_37sdp"
+                                android:layout_height="@dimen/_37sdp"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
@@ -273,8 +273,8 @@
                             <ProgressBar
                                 android:id="@+id/stock_progress_bar"
                                 style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="@dimen/_37sdp"
+                                android:layout_height="@dimen/_37sdp"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
@@ -352,8 +352,8 @@
                             <ProgressBar
                                 android:id="@+id/unlist_progress_bar"
                                 style="?android:attr/progressBarStyleHorizontal"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="@dimen/_37sdp"
+                                android:layout_height="@dimen/_37sdp"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
@@ -407,7 +407,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:text="June 2023 - August 2023"
             android:textColor="@color/txt_lite_black"
-            android:textSize="@dimen/_8sdp" />
+            android:textSize="@dimen/_7sdp" />
 
         <LinearLayout
             android:layout_width="match_parent"

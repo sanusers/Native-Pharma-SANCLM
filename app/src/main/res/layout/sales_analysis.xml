@@ -12,38 +12,40 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/_3sdp"
-        android:textSize="@dimen/_8sdp"
-        android:textColor="@color/text_dark"
-        android:textStyle="bold"
         android:fontFamily="@font/satoshi_medium"
-        android:text="Sales Analysis"/>
+        android:text="Sales Analysis"
+        android:textColor="@color/text_dark"
+        android:textSize="@dimen/_8sdp"
+        android:textStyle="bold" />
 
 
-   <LinearLayout
-       android:layout_width="wrap_content"
-       android:orientation="horizontal"
-       android:layout_marginTop="@dimen/_5sdp"
-       android:layout_alignParentEnd="true"
-       android:layout_marginEnd="@dimen/_2sdp"
-       android:layout_alignParentTop="true"
-       android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
+        android:orientation="horizontal">
 
-       <ImageView
-           android:layout_width="@dimen/_25sdp"
-           android:src="@drawable/tab_litte_line"
-           android:layout_margin="@dimen/_1sdp"
-           android:layout_height="wrap_content"/>
-       <ImageView
-           android:layout_width="@dimen/_25sdp"
-           android:layout_margin="@dimen/_1sdp"
-           android:src="@drawable/tab_litte_line"
-           android:layout_height="wrap_content"/>
-       <ImageView
-           android:layout_width="@dimen/_25sdp"
-           android:layout_margin="@dimen/_1sdp"
-           android:src="@drawable/tab_dark_line"
-           android:layout_height="wrap_content"/>
-   </LinearLayout>
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_1sdp"
+            android:src="@drawable/tab_litte_line" />
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_1sdp"
+            android:src="@drawable/tab_litte_line" />
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_1sdp"
+            android:src="@drawable/tab_dark_line" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout2"
@@ -51,7 +53,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/text_call_analysis"
         android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginRight="@dimen/_2sdp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -63,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_2sdp"
-            android:layout_weight="2"
+            android:layout_weight="1.8"
             android:background="@drawable/backround_lite_grey_border">
 
             <TextView
@@ -72,15 +73,15 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="1dp"
                 android:layout_marginTop="1dp"
+
                 android:layout_marginBottom="1dp"
                 android:layout_weight="1"
                 android:background="@drawable/custom_background_black"
-                android:gravity="center"
-                android:padding="0dp"
-                android:text="Monthly"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="center"
+                android:text="Monthly"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_7sdp"></TextView>
+                android:textSize="@dimen/_6sdp"></TextView>
 
             <TextView
                 android:id="@+id/text_Quaterly"
@@ -88,16 +89,13 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="1dp"
-                android:fontFamily="@font/satoshi_medium"
-
                 android:layout_weight="1"
                 android:background="@drawable/cutom_backround_grey"
+                android:fontFamily="@font/satoshi_medium"
                 android:gravity="center"
-                android:padding="0dp"
                 android:text="Quarterly"
                 android:textColor="@color/txt_lite_black"
-                android:textSize="@dimen/_7sdp"
-               ></TextView>
+                android:textSize="@dimen/_6sdp"></TextView>
 
             <TextView
                 android:id="@+id/text_yearly"
@@ -106,15 +104,13 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginBottom="1dp"
-                android:fontFamily="@font/satoshi_medium"
                 android:layout_weight="1"
                 android:background="@drawable/cutom_backround_grey"
+                android:fontFamily="@font/satoshi_medium"
                 android:gravity="center"
-                android:padding="0dp"
                 android:text="Yearly"
                 android:textColor="@color/txt_lite_black"
-                android:textSize="@dimen/_7sdp"
-                ></TextView>
+                android:textSize="@dimen/_6sdp"></TextView>
         </LinearLayout>
     </LinearLayout>
 
@@ -137,12 +133,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
-
                 android:layout_weight="1"
-                android:elevation="0dp"
-                app:cardCornerRadius="@dimen/_2sdp"
                 android:background="@drawable/custom_backround_layout"
-                >
+                android:elevation="0dp"
+                app:cardCornerRadius="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -154,53 +148,50 @@
                         android:id="@+id/text_Primary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_dark"
-                        android:textSize="@dimen/_7sdp"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="Primary Sales"
-                       >
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
 
                     <TextView
                         android:id="@+id/text_Primary_value"
-                        android:layout_below="@id/text_Primary"
-
                         android:layout_width="wrap_content"
+
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text_dark"
-                        android:textStyle="bold"
+                        android:layout_below="@id/text_Primary"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:fontFamily="@font/satoshi_medium"
                         android:layout_marginEnd="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="106.56L"
+                        android:textColor="@color/text_dark"
                         android:textSize="@dimen/_12sdp"
-                     >
+                        android:textStyle="bold">
 
                     </TextView>
 
 
                     <TextView
                         android:id="@+id/text_Primary_target"
-                        android:layout_below="@id/text_Primary_value"
-
                         android:layout_width="wrap_content"
+
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_regular"
-                        android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
+                        android:layout_below="@id/text_Primary_value"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_regular"
                         android:text="Target 282.2L"
                         android:textColor="#a9a8af"
-                      >
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -209,19 +200,18 @@
                         android:id="@+id/text_primary_growth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="#d4f8ef"
                         android:layout_below="@+id/text_Primary"
-                        android:fontFamily="@font/satoshi_regular"
-                        android:textColor="#00c689"
-
-                        android:padding="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_6sdp"
-                       android:textStyle="bold"
                         android:layout_toRightOf="@+id/text_Primary_value"
                         android:background="@drawable/custom_backround_layout"
+
+                        android:backgroundTint="#d4f8ef"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:padding="@dimen/_2sdp"
                         android:text="39% Growth"
+                        android:textColor="#00c689"
                         android:textSize="@dimen/_4sdp"
-                       >
+                        android:textStyle="bold">
 
                     </TextView>
                 </RelativeLayout>
@@ -232,17 +222,14 @@
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_backround_layout"
                 android:elevation="0dp"
-                app:cardCornerRadius="@dimen/_2sdp"
-                android:background="@drawable/custom_backround_layout">
+                app:cardCornerRadius="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                 >
-
-
+                    android:layout_gravity="center">
                     <TextView
                         android:id="@+id/text_secondary"
                         android:layout_width="wrap_content"
@@ -283,11 +270,11 @@
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:layout_marginEnd="@dimen/_4sdp"
-                        android:textStyle="bold"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="106.56L"
                         android:textColor="@color/text_dark"
-                        android:textSize="@dimen/_12sdp">
+                        android:textSize="@dimen/_12sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -301,10 +288,10 @@
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
                         android:fontFamily="@font/satoshi_regular"
-                        android:textStyle="bold"
                         android:text="Target 282.2L"
                         android:textColor="#a9a8af"
-                        android:textSize="@dimen/_7sdp">
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -317,9 +304,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_backround_layout"
                 android:elevation="0dp"
-                app:cardCornerRadius="@dimen/_2sdp"
-                android:background="@drawable/custom_backround_layout">
+                app:cardCornerRadius="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -331,15 +318,14 @@
                         android:id="@+id/text_RCPA1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_dark"
-                        android:textSize="@dimen/_7sdp"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="RCPA"
-                      >
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -348,52 +334,50 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_RCPA1"
-                        android:layout_toRightOf="@+id/text_RCPA1_value"
-                        android:backgroundTint="#ffe5e9"
-                        android:textColor="#fe5876"
-                        android:padding="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_6sdp"
-                        android:textStyle="bold"
+                        android:layout_toRightOf="@+id/text_RCPA1_value"
                         android:background="@drawable/custom_backround_layout"
+                        android:backgroundTint="#ffe5e9"
+                        android:padding="@dimen/_2sdp"
                         android:text="39% Growth"
+                        android:textColor="#fe5876"
                         android:textSize="@dimen/_4sdp"
-                     >
+                        android:textStyle="bold">
 
                     </TextView>
 
                     <TextView
                         android:id="@+id/text_RCPA1_value"
-                        android:layout_below="@+id/text_RCPA1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text_dark"
-                        android:textStyle="bold"
+                        android:layout_below="@+id/text_RCPA1"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:fontFamily="@font/satoshi_medium"
                         android:layout_marginEnd="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="106.56L"
+                        android:textColor="@color/text_dark"
                         android:textSize="@dimen/_12sdp"
+                        android:textStyle="bold"
 
-                       >
+                        >
 
                     </TextView>
 
 
                     <TextView
                         android:id="@+id/text_RCPA1_target"
-                        android:layout_below="@id/text_RCPA1_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_regular"
-                        android:textSize="@dimen/_7sdp"
+                        android:layout_below="@id/text_RCPA1_value"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_regular"
                         android:text="Target 282.2L"
-                        android:textStyle="bold"
                         android:textColor="#a9a8af"
-                        >
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -414,9 +398,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_backround_layout"
                 android:elevation="0dp"
-                app:cardCornerRadius="@dimen/_2sdp"
-                android:background="@drawable/custom_backround_layout">
+                app:cardCornerRadius="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -429,15 +413,14 @@
                         android:id="@+id/text_PCPM"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_dark"
-                        android:textSize="@dimen/_7sdp"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="PCPM"
-                        >
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -446,61 +429,59 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_PCPM"
-                        android:layout_toRightOf="@+id/text_PCPM_value"
-                        android:backgroundTint="#fef6df"
-                        android:textColor="#feda86"
-                        android:padding="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_6sdp"
-                        android:textStyle="bold"
+                        android:layout_toRightOf="@+id/text_PCPM_value"
                         android:background="@drawable/custom_backround_layout"
+                        android:backgroundTint="#fef6df"
+                        android:padding="@dimen/_2sdp"
                         android:text="39% Growth"
+                        android:textColor="#feda86"
                         android:textSize="@dimen/_4sdp"
-                      >
+                        android:textStyle="bold">
 
                     </TextView>
 
 
                     <TextView
                         android:id="@+id/text_PCPM_value"
-                        android:layout_below="@id/text_PCPM"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text_dark"
-                        android:textStyle="bold"
+                        android:layout_below="@id/text_PCPM"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:fontFamily="@font/satoshi_medium"
                         android:layout_marginEnd="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="106.56L"
-                        android:textSize="@dimen/_12sdp">
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_12sdp"
+                        android:textStyle="bold">
 
                     </TextView>
 
 
                     <TextView
                         android:id="@+id/text_PCPM_target"
-                        android:layout_below="@id/text_PCPM_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/satoshi_regular"
-                        android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
+                        android:layout_below="@id/text_PCPM_value"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_regular"
                         android:text="Target 282.2L"
-                        android:textColor="#a9a8af">
+                        android:textColor="#a9a8af"
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold">
 
                     </TextView>
-
 
 
                     <RelativeLayout
                         android:id="@+id/dcr_call_layout"
                         android:layout_width="match_parent"
-                        android:gravity="right"
+                        android:layout_height="match_parent"
                         android:layout_below="@+id/text_PCPM_target"
-                        android:layout_height="match_parent">
+                        android:gravity="right">
 
                         <ProgressBar
                             android:id="@+id/progress_bar_doc"
@@ -535,9 +516,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_backround_layout"
                 android:elevation="0dp"
-                app:cardCornerRadius="@dimen/_2sdp"
-                android:background="@drawable/custom_backround_layout">
+                app:cardCornerRadius="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -628,8 +609,8 @@
                         android:layout_marginBottom="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Actual"
-                        android:textSize="@dimen/_7sdp"
                         android:textColor="#00c689"
+                        android:textSize="@dimen/_7sdp"
                         android:textStyle="bold"
 
                         >
@@ -646,9 +627,9 @@
                         android:layout_marginEnd="@dimen/_2sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="282.2L"
-                        android:textSize="@dimen/_7sdp"
-
                         android:textColor="#85858f"
+
+                        android:textSize="@dimen/_7sdp"
                         android:textStyle="bold">
 
                     </TextView>
@@ -666,8 +647,8 @@
                         android:layout_marginBottom="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="26.75L"
-                        android:textSize="@dimen/_7sdp"
                         android:textColor="#00c689"
+                        android:textSize="@dimen/_7sdp"
                         android:textStyle="bold">
 
                     </TextView>
@@ -681,10 +662,9 @@
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
                 android:layout_weight="1"
-                android:elevation="0dp"
-                app:cardCornerRadius="@dimen/_2sdp"
                 android:background="@drawable/custom_backround_layout"
-                >
+                android:elevation="0dp"
+                app:cardCornerRadius="@dimen/_2sdp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

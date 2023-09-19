@@ -38,9 +38,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:gravity="center"
-        android:padding="@dimen/_1sdp"
+        android:padding="@dimen/_3sdp"
         android:background="@drawable/custom_backround_layout"
-        android:backgroundTint="#F1E4E4"
+        android:backgroundTint="@color/text_sync_bg"
         android:orientation="horizontal">
 
 
@@ -61,7 +61,7 @@
             android:layout_marginEnd="@dimen/_3sdp"
             android:textStyle="bold"
             android:textSize="@dimen/_7sdp"
-            android:textColor="#f1536e">
+            android:textColor="@color/text_sync">
 
         </TextView>
 
@@ -74,8 +74,7 @@
         android:id="@+id/Expandapleview"
         android:layout_width="match_parent"
         android:layout_below="@+id/txt_call"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:layout_above="@+id/r_layout"
         android:layout_height="match_parent"
         />
@@ -92,9 +91,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_4sdp"
             android:layout_marginTop="@dimen/_4sdp"
-            android:layout_marginEnd="@dimen/_4sdp"
             android:textSize="@dimen/_7sdp"
             android:layout_marginBottom="@dimen/_4sdp"
             android:background="@drawable/edittext_stroke"

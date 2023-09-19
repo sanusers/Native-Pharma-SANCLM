@@ -55,13 +55,15 @@
             android:id="@+id/txt_headquaters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Head Quarters"
-            android:layout_margin="@dimen/_4sdp"
-            android:padding="@dimen/_4sdp"
-            android:textSize="@dimen/_7sdp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
             android:fontFamily="@font/satoshi_medium"
+            android:padding="@dimen/_4sdp"
+            android:text="Select Head Quarters"
             android:textColor="@color/text_dark"
-            />
+            android:textSize="@dimen/_7sdp" />
 
         <ImageView
             android:layout_width="@dimen/_6sdp"

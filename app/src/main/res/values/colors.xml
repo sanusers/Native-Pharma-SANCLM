@@ -27,6 +27,8 @@
     <color name="tab_gray">#dedee0</color>
     <color name="text_3">#dddddd</color>
 
+    <color name="text_sync_bg">#ffe5e9</color>
+    <color name="text_sync">#fd4f6e</color>
 
 
 </resources>

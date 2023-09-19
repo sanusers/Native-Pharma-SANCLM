@@ -40,10 +40,14 @@
                     android:fontFamily="@font/satoshi_variable"
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_toRightOf="@+id/back_arrow"
-                    android:text="SAN Media Pvt Ltd.5"
+                    android:text="SAN Media Pvt Ltd.,"
                     android:gravity="left"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp" />
+
+
+
+
                 <ImageView
                     android:id="@+id/img_notofication"
                     android:layout_toLeftOf="@id/img_account"
@@ -124,7 +128,7 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="center"
-                        android:padding="@dimen/_3sdp"
+                        android:padding="@dimen/_5sdp"
                         android:text="September 29, 2023"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
@@ -216,6 +220,7 @@
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
                             android:id="@+id/ll_presentation"
+                            android:padding="@dimen/_2sdp"
                             android:background="@drawable/backround_text"
                             android:layout_marginEnd="@dimen/_2sdp"
                             android:layout_marginTop="@dimen/_2sdp"
@@ -261,6 +266,8 @@
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
                             android:backgroundTint="#d3e4ef"
+                            android:padding="@dimen/_2sdp"
+
                             android:background="@drawable/backround_text"
                             android:layout_margin="5dp"
 
@@ -302,6 +309,8 @@
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
+                            android:padding="@dimen/_2sdp"
+
                             android:orientation="horizontal"
                             android:backgroundTint="#f2d7db"
                             android:background="@drawable/backround_text"
@@ -344,6 +353,7 @@
                             android:layout_width="match_parent"
                             android:id="@+id/ll_analys"
                             android:orientation="horizontal"
+                            android:padding="@dimen/_2sdp"
                             android:background="@drawable/backround_text"
                             android:layout_marginEnd="@dimen/_2sdp"
                             android:layout_marginTop="@dimen/_2sdp"

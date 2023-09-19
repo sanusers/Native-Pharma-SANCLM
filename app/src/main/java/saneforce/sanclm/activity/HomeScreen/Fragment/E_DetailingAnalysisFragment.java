@@ -47,11 +47,11 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
 
 
-        int width = (int) ((((displayMetrics.widthPixels / 3) * 1.9) / 3)-20);
+        int width = (int) ((((displayMetrics.widthPixels / 3) * 1.9) / 3)-10);
         LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-        param1.setMargins(0, 5, 10, 0);
+        param1.setMargins(0, 5, 0, 10);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-        param.setMargins(10, 5, 10, 0);
+        param.setMargins(10, 5, 0, 10);
         doc_layout.setLayoutParams(param1);
         che_layout.setLayoutParams(param);
         stokiest_layout.setLayoutParams(param);
