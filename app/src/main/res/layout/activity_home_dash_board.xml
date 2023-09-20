@@ -40,37 +40,34 @@
                     android:fontFamily="@font/satoshi_variable"
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_toRightOf="@+id/back_arrow"
-                    android:text="SAN Media Pvt Ltd.,"
+                    android:text="SAN Media Pvt Ltd"
                     android:gravity="left"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp" />
 
 
-
-
                 <ImageView
                     android:id="@+id/img_notofication"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/_10sdp"
                     android:layout_toLeftOf="@id/img_account"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/notification"
-                    android:layout_marginRight="@dimen/_8sdp"
-                   >
-                </ImageView>
-                <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/img_account"
-                    android:layout_toLeftOf="@id/img_sync"
+                    android:src="@drawable/notification">
 
-                    android:src="@drawable/acount_img"
-                    android:layout_marginRight="@dimen/_8sdp"
-                >
                 </ImageView>
+
+                <ImageView
+                    android:id="@+id/img_account"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_toLeftOf="@id/img_sync"
+                    android:src="@drawable/acount_img"></ImageView>
+
                 <ImageView
                     android:id="@+id/img_sync"
                     android:src="@drawable/sync_img"
-                    android:layout_marginRight="@dimen/_8sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_width="@dimen/_20sdp"

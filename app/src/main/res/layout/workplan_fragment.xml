@@ -126,7 +126,7 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_23sdp"
         android:text="Submit"
         android:padding="@dimen/_4sdp"
         android:gravity="center"
