@@ -42,6 +42,8 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
             String status = ImageStorage.saveImage(bitmap,filePath,imageName);
             if (status != null && status.equalsIgnoreCase("success")){
                 asyncInterface.taskCompleted(true);
+            }else{
+                Log.e("test","status is null and download not success");
             }
             Log.e("test","logo image downloaded");
         }

@@ -1,10 +1,11 @@
-package saneforce.sanclm.activity.mastersync;
+package saneforce.sanclm.activity.masterSync;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -29,6 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.HomeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
@@ -56,6 +58,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     int subordinateCount = 0,subMgrCount = 0,jWorkCount= 0;
     int setupCount = 0, customSetupCount = 0;
     int apiSuccessCount = 0;
+    int itemCount = 0;
+    String origin = "";
 
     ArrayList<ArrayList<MasterSyncItemModel>> masterSyncAllModel = new ArrayList<>();
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
@@ -85,17 +89,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         sqLite.getWritableDatabase();
 
         Bundle bundle = getIntent().getExtras();
-        String origin = "";
+
         if (bundle != null){
             origin = getIntent().getExtras().getString("Origin");
         }
         Log.e("test","origin is  : " + origin);
-
-//        if (origin.equalsIgnoreCase("Login")){
-//            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//        }else {
-//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//        }
 
         Cursor cursor = sqLite.getLoginData();
         loginResponse = new LoginResponse();
@@ -127,10 +125,24 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.listedDoctor.setSelected(true);
        // masterSyncAll();
 
+        if (origin.equalsIgnoreCase("Login")){
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            masterSyncAll();
+        }else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
+        binding.lastSyncTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startActivity(new Intent(MasterSyncActivity.this,HomeDashBoard.class));
+            }
+        });
+
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                startActivity(new Intent(MasterSyncActivity.this, LoginActivity.class));
+                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
             }
         });
 
@@ -515,7 +527,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.subordinate.setSelected(false);
         binding.setup.setSelected(false);
 
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_icon, null));
+        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
         view.setSelected(true);
     }
 
@@ -575,17 +587,17 @@ public class MasterSyncActivity extends AppCompatActivity {
         masterSyncAllModel.add(setupModelArray);
         Log.e("test","masterAll size : " + masterSyncAllModel.size());
 
-        int count = 0;
+
         for (int i=0;i<masterSyncAllModel.size();i++){
             ArrayList<MasterSyncItemModel> childArray = new ArrayList<>(masterSyncAllModel.get(i));
-            count  += childArray.size();
+            itemCount  += childArray.size();
             for (int j=0;j<childArray.size();j++){
                 childArray.get(j).setPB_visibility(true);
                 masterSyncAdapter.notifyDataSetChanged();
                 sync(childArray.get(j).getMasterFor(),childArray.get(j).getRemoteTableName(),childArray,j);
             }
         }
-        Log.e("test","count : " + count);
+        Log.e("test","count : " + itemCount);
 
     }
 
@@ -644,6 +656,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 binding.lastSyncTime.setText(dateAndTime);
                                 SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
                                 sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
+
+                                if (origin.equalsIgnoreCase("Login")){
+                                    if (apiSuccessCount == itemCount){
+                                        startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                                    }
+                                }
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
                             }
@@ -660,6 +678,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                         Log.e("test","success count at error : " + apiSuccessCount);
                         masterSyncItemModels.get(position).setPB_visibility(false);
                         masterSyncAdapter.notifyDataSetChanged();
+                        if (apiSuccessCount == itemCount){
+                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                        }
 
                     }
                 });

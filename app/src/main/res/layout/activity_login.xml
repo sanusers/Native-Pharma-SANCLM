@@ -58,12 +58,12 @@
         app:layout_constraintTop_toBottomOf="parent">
 
         <LinearLayout
-            android:layout_weight="0.9"
+            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -79,7 +79,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -95,9 +95,9 @@
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_40sdp"
-                        android:src="@drawable/san_icon"
+                        android:src="@drawable/original"
                         android:layout_gravity="center"
-                        android:scaleType="fitXY"/>
+                        android:background="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -166,7 +166,7 @@
                         <ImageView
                             android:id="@+id/eyeImage"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:src="@drawable/eye_visible"
                             android:layout_gravity="center"
                             android:padding="@dimen/_7sdp"/>
@@ -182,7 +182,7 @@
                         android:textColor="@color/white"
                         android:textAllCaps="false"
                         android:fontFamily="@font/satoshi_bold"
-                        android:padding="@dimen/_3sdp"
+                        android:padding="@dimen/_4sdp"
                         android:background="@drawable/edittext_stroke"
                         app:backgroundTint="#282A3C"
                         android:layout_marginTop="@dimen/_8sdp"
@@ -266,7 +266,7 @@
                     android:layout_height="wrap_content"
                     android:text="Powered by"
                     android:textColor="@color/text_dark_65"
-                    android:textSize="@dimen/_6sdp"
+                    android:textSize="@dimen/_5sdp"
                     android:layout_gravity="center"
                     android:fontFamily="@font/satoshi_medium"
                     android:layout_marginStart="@dimen/_5sdp"
@@ -274,11 +274,10 @@
 
                 <ImageView
                     android:id="@+id/sanImg"
-                    android:layout_width="@dimen/_70sdp"
-                    android:layout_height="@dimen/_15sdp"
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_16sdp"
                     android:src="@drawable/saneforce_img"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:layout_gravity="center"/>
 
             </LinearLayout>
@@ -286,9 +285,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:layout_weight="0.9"
+            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
+
     </LinearLayout>
 
     <ProgressBar

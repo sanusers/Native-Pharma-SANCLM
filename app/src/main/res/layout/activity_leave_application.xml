@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#282A3C">
+            android:background="@color/text_dark">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -25,24 +25,21 @@
 
                 <ImageView
                     android:id="@+id/back_btn"
-                    android:layout_width="@dimen/_15sdp"
-                    android:layout_height="@dimen/_18sdp"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
                     android:layout_centerVertical="true"
-                    android:layout_gravity="right"
-                    android:src="@drawable/back_arrow_white" />
+                    android:layout_gravity="center"
+                    android:src="@drawable/back_arrow_white"
+                    android:layout_marginStart="@dimen/_8sdp"/>
 
                 <TextView
                     android:id="@+id/toolbar_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/_4sdp"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:layout_toRightOf="@+id/back_btndcr"
-                    android:gravity="bottom"
+                    android:layout_marginStart="@dimen/_16sdp"
                     android:text="Leave Application"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_10sdp"
+                    android:textSize="@dimen/_7sdp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -53,10 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbarheaddcr"
-        android:layout_marginLeft="@dimen/_8sdp"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:layout_marginRight="@dimen/_8sdp"
-        android:layout_marginBottom="@dimen/_8sdp">
+        android:padding="@dimen/_6sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -1008,7 +1002,7 @@
                                 android:padding="5dp"
                                 android:text="3 days remaining"
                                 android:textColor="#566573"
-                                android:textSize="@dimen/_5sdp" />
+                                android:textSize="@dimen/_6sdp" />
 
                         </LinearLayout>
                     </LinearLayout>

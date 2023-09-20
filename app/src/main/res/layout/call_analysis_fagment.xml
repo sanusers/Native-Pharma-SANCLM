@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/_2sdp">
 
     <RelativeLayout
         android:id="@+id/call_analysis_layout"
@@ -19,7 +20,7 @@
             android:text="Call Analysis"
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_8sdp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold" />
 
 
         <LinearLayout
@@ -51,19 +52,20 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/text_call_analysis">
+            android:layout_below="@+id/text_call_analysis"
+            android:layout_marginTop="@dimen/_7sdp">
+
             <LinearLayout
                 android:id="@+id/recyelerview1"
-                android:layout_marginTop="@dimen/_2sdp"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
                 <LinearLayout
                     android:id="@+id/ll_doc_child"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:layout_marginRight="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
                     android:background="@drawable/custom_background_green"
                     android:orientation="vertical">
 
@@ -71,7 +73,7 @@
                         android:id="@+id/txt_doc_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Docter calls"
@@ -82,26 +84,25 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_doc_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txt_name"
                             android:layout_weight="1"
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_gravity="top"
                             android:gravity="top"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
+                            android:text="111/150"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
 
 
-                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        <FrameLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
@@ -128,7 +129,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="50%"
+                                android:text="72%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -142,7 +143,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_blue"
                     android:orientation="vertical">
@@ -151,7 +151,7 @@
                         android:id="@+id/txt_che_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Chemist calls"
@@ -163,19 +163,18 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_che_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txt_name"
                             android:layout_weight="1"
                             android:layout_marginTop="@dimen/_10sdp"
 
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
+                            android:text="75/100"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
@@ -208,7 +207,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="50%"
+                                android:text="75%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -223,7 +222,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_red"
                     android:orientation="vertical">
@@ -232,7 +230,7 @@
                         android:id="@+id/txt_stock_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Stockiest Calls"
@@ -244,18 +242,17 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_stock_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txt_name"
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
+                            android:text="17/20"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
@@ -288,7 +285,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="50%"
+                                android:text="97%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -303,7 +300,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_brown"
                     android:orientation="vertical">
@@ -312,7 +308,7 @@
                         android:id="@+id/txt_unli_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Unlistered Calls"
@@ -323,18 +319,17 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_unlist_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txt_name"
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
+                            android:text="30/50"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
@@ -365,9 +360,9 @@
                             <TextView
                                 android:id="@+id/unlisted_value"
                                 android:layout_width="wrap_content"
-                                android:layout_height="35dp"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="50%"
+                                android:text="60%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -386,7 +381,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/_2sdp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/_2sdp">
 
         <TextView
             android:id="@+id/text_average_"

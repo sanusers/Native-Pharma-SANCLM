@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.HomeScreen;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -30,8 +31,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import saneforce.sanclm.Leave_Application;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.HomeScreen.Adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
+import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +47,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     TabLayout tabLayout;
     ViewpagetAdapter viewpagetAdapter;
     NavigationView navigationView;
+    ImageView masterSync;
 
 
 
@@ -55,13 +60,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_dash_board);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         pre_layout = findViewById(R.id.ll_presentation);
         slide_layout =findViewById(R.id.ll_slide);
         report_layout = findViewById(R.id.ll_report);
         anlas_layout = findViewById(R.id.ll_analys);
-
-
+        masterSync = findViewById(R.id.img_sync);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         imageView = findViewById(R.id.back_arrow);
@@ -69,38 +74,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         viewPager1 = findViewById(R.id.view_pager1);
         tabLayout = findViewById(R.id.tablelayout);
 
-
         navigationView=findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
         MenuItem menuItem = menu.findItem(R.id.nav_from);
 
-
-
-
-
         Toolbar toolbar = findViewById(R.id.Toolbar);
         setSupportActionBar(toolbar);
-
-
-
-
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
         actionBarDrawerToggle.syncState();
 
-
         viewpagetAdapter = new ViewpagetAdapter(this,1);
         viewPager.setAdapter(viewpagetAdapter);
         viewpagetAdapter = new ViewpagetAdapter(this,2);
         viewPager1.setAdapter(viewpagetAdapter);
-
-
-
-
-
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
@@ -117,7 +107,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         anlas_layout.setLayoutParams(param);
 
 
-
+        masterSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class));
+            }
+        });
 
         TabLayoutMediator tabLayoutMediator=new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
             @SuppressLint("ResourceType")
@@ -133,6 +128,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         break;
                     case 2:
                         tab.setText("Outbox");
+
+                        BadgeDrawable badgeDrawable=tab.getOrCreateBadge();
+                        badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.black));
+                        badgeDrawable.setVisible(true);
+                        badgeDrawable.setHorizontalOffset(1);
+                        badgeDrawable.setVerticalOffset(10);
+                        badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
+                        badgeDrawable.setNumber(10);
+                        badgeDrawable.setBadgeTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
 
                         break;
 
@@ -158,10 +162,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
     }
-
-
-
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -170,6 +170,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (id == R.id.nav_leave_appln) {
             Toast.makeText(this, "Leave ", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
+            return true;
+        }
+
+        if (id == R.id.nav_tour_plan) {
+            startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
             return true;
         }
 

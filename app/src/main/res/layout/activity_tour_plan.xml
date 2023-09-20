@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
+    android:id="@+id/tp_drawer"
     tools:context=".activity.tourPlan.TourPlanActivity">
 
     <RelativeLayout
@@ -27,24 +28,24 @@
                 android:backgroundTint="@color/text_dark"
                 android:minHeight="?attr/actionBarSize"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp" >
+                tools:layout_editor_absoluteY="0dp">
 
                 <ImageView
                     android:id="@+id/backArrow"
-                    android:layout_width="@dimen/_12sdp"
-                    android:layout_height="@dimen/_12sdp"
-                    android:src="@drawable/arrow_back_white"
-                    android:layout_marginStart="@dimen/_8sdp"/>
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:src="@drawable/arrow_back_white" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:fontFamily="@font/satoshi_variable"
                     android:text="Tour Plan"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_7sdp"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:fontFamily="@font/satoshi_medium"
-                    tools:ignore="SpUsage"/>
+                    tools:ignore="SpUsage" />
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -54,17 +55,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="2"
-            android:padding="20dp"
+            android:padding="@dimen/_6sdp"
             android:layout_below="@id/appBar"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true">
 
             <androidx.cardview.widget.CardView
-                android:layout_weight="1.2"
+                android:layout_weight="1.4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:cardCornerRadius="5dp"
-                app:contentPadding="20dp"
+                app:contentPadding="@dimen/_6sdp"
                 android:background="@color/white">
 
                 <RelativeLayout
@@ -85,8 +86,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:paddingStart="40dp"
-                            android:paddingEnd="40dp"
+                            android:paddingStart="@dimen/_12sdp"
+                            android:paddingEnd="@dimen/_12sdp"
                             android:background="@drawable/edittext_stroke"
                             android:backgroundTint="#EEEEEE"
                             android:layout_alignParentStart="true"
@@ -96,10 +97,11 @@
                                 android:id="@+id/calendar_prev_button"
                                 android:layout_width="@dimen/_6sdp"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/arrow_left"
+                                android:src="@drawable/less_than_gray"
                                 android:layout_gravity="center"
-                                android:paddingTop="20dp"
-                                android:paddingBottom="20dp"/>
+                                android:paddingTop="@dimen/_6sdp"
+                                android:paddingBottom="@dimen/_6sdp"
+                                app:tint="@color/black_45"/>
 
                             <TextView
                                 android:id="@+id/monthYear"
@@ -108,20 +110,22 @@
                                 android:text="October 2023"
                                 android:textSize="@dimen/_6sdp"
                                 android:textColor="@color/text_dark"
+                                android:fontFamily="@font/satoshi_medium"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="@dimen/_7sdp"
                                 android:layout_marginEnd="@dimen/_7sdp"
-                                android:paddingTop="20dp"
-                                android:paddingBottom="20dp"/>
+                                android:paddingTop="@dimen/_6sdp"
+                                android:paddingBottom="@dimen/_6sdp"
+                                tools:ignore="SpUsage"/>
 
                             <ImageView
                                 android:id="@+id/calendar_next_button"
                                 android:layout_width="@dimen/_6sdp"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/greater_than_icon"
+                                android:src="@drawable/greater_than_black"
                                 android:layout_gravity="center"
-                                android:paddingTop="20dp"
-                                android:paddingBottom="20dp"/>
+                                android:paddingTop="@dimen/_6sdp"
+                                android:paddingBottom="@dimen/_6sdp" />
 
                         </LinearLayout>
 
@@ -133,18 +137,21 @@
                             android:layout_gravity="center|end"
                             android:text="Planning..."
                             android:textColor="#00C689"
-                            android:textSize="@dimen/_5sdp" />
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"/>
 
                     </RelativeLayout>
 
                     <LinearLayout
                         android:id="@+id/calendar_header"
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:background="@drawable/top_right_left_curve"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:paddingTop="@dimen/_2sdp"
+                        android:paddingBottom="@dimen/_2sdp"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/header">
@@ -153,57 +160,78 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="SUN"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"
                             android:gravity="center_horizontal"
-                            android:textColor="#222222"
-                            android:text="SUN"/>
+                            tools:ignore="SpUsage"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="MON"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"
                             android:gravity="center_horizontal"
-                            android:textColor="#222222"
-                            android:text="MON"/>
+                            tools:ignore="SpUsage"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="TUE"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"
                             android:gravity="center_horizontal"
-                            android:textColor="#222222"
-                            android:text="TUE"/>
+                            tools:ignore="SpUsage"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="WED"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"
                             android:gravity="center_horizontal"
-                            android:textColor="#222222"
-                            android:text="WED"/>
+                            tools:ignore="SpUsage"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="THU"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"
                             android:gravity="center_horizontal"
-                            android:textColor="#222222"
-                            android:text="THU"/>
+                            tools:ignore="SpUsage"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="FRI"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"
                             android:gravity="center_horizontal"
-                            android:textColor="#222222"
-                            android:text="FRI"/>
+                            tools:ignore="SpUsage"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="SAT"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:fontFamily="@font/satoshi_variable"
                             android:gravity="center_horizontal"
-                            android:textColor="#222222"
-                            android:text="SAT"/>
+                            tools:ignore="SpUsage"/>
 
                     </LinearLayout>
 
@@ -211,47 +239,59 @@
                         android:id="@+id/calendarRecView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@id/calendar_header"/>
+                        android:layout_below="@id/calendar_header"
+                        android:layout_marginBottom="@dimen/_20sdp"/>
 
                 </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:layout_weight="0.8"
+                android:layout_weight="0.6"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginStart="20dp">
+                android:layout_marginStart="@dimen/_6sdp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    app:cardCornerRadius="5dp"
-                    app:contentPadding="20dp">
+                    app:cardCornerRadius="5dp">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/summary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Summary"
                             android:textSize="@dimen/_7sdp"
-                            android:textColor="@color/text_dark"/>
+                            android:textColor="@color/text_dark_65"
+                            android:fontFamily="@font/satoshi_variable"
+                            android:layout_marginStart="@dimen/_6sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentTop="true"
+                            tools:ignore="SpUsage"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="10dp"
-                            android:layout_marginTop="20dp"
+                            android:layout_below="@id/summary"
+                            android:layout_marginStart="@dimen/_6sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_marginEnd="@dimen/_6sdp"
+                            android:layout_marginBottom="@dimen/_6sdp"
                             android:background="@drawable/edittext_stroke"
-                            android:backgroundTint="#eeeeee">
+                            android:backgroundTint="#eeeeee"
+                            android:orientation="vertical"
+                            android:padding="@dimen/_3sdp">
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -261,11 +301,13 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="01 October 2023"
-                                    android:textSize="@dimen/_6sdp"
-                                    android:textColor="@color/text_dark"
                                     android:layout_alignParentStart="true"
-                                    android:gravity="center"/>
+                                    android:fontFamily="@font/satoshi_variable"
+                                    android:gravity="center"
+                                    android:text="01 October 2023"
+                                    android:textColor="@color/text_dark"
+                                    android:textSize="@dimen/_6sdp"
+                                    tools:ignore="SpUsage" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -273,63 +315,68 @@
                                     android:layout_alignParentEnd="true"
                                     android:layout_centerInParent="true"
                                     android:gravity="center"
+                                    android:letterSpacing="0.2"
                                     android:text="..."
                                     android:textColor="@color/text_dark"
                                     android:textSize="@dimen/_6sdp"
-                                    android:letterSpacing="0.2"/>
+                                    tools:ignore="SpUsage" />
 
                             </RelativeLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="20dp">
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:orientation="horizontal">
 
                                 <TextView
-                                    android:layout_weight="1"
                                     android:id="@+id/workType"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/satoshi_variable"
                                     android:text="Field Work"
+                                    android:textColor="@color/text_dark_65"
                                     android:textSize="@dimen/_6sdp"
-                                    android:textColor="@color/text_dark" />
+                                    tools:ignore="SpUsage" />
 
                                 <View
                                     android:layout_width="1dp"
-                                    android:layout_height="20dp"
-                                    android:background="@color/text_dark_65"
-                                    android:layout_gravity="center"/>
+                                    android:layout_height="@dimen/_6sdp"
+                                    android:layout_gravity="center"
+                                    android:background="#4D282A3C" />
 
                                 <TextView
-                                    android:layout_weight="1"
                                     android:id="@+id/hqName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="HQ - Shiva kumar"
-                                    android:textColor="@color/text_dark"
-                                    android:textSize="@dimen/_6sdp"
+                                    android:layout_weight="1"
                                     android:ellipsize="end"
-                                    android:gravity="end"/>
+                                    android:fontFamily="@font/satoshi_variable"
+                                    android:gravity="end"
+                                    android:text="HQ - Shiva kumar"
+                                    android:textColor="@color/text_dark_65"
+                                    android:textSize="@dimen/_6sdp"
+                                    tools:ignore="SpUsage" />
 
                             </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="20dp">
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:orientation="horizontal">
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/location_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
-                                        android:src="@drawable/tp_cluster_icon"
+                                        android:src="@drawable/tp_cluster_location_ic"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
@@ -338,140 +385,150 @@
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/location_image"
-                                        app:layout_constraintStart_toEndOf="@id/location_image" />
+                                        app:layout_constraintStart_toEndOf="@id/location_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/jw_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
-                                        android:src="@drawable/tp_jw_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
+                                        android:src="@drawable/tp_joint_work_ic"
+                                        app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/jw_image"
-                                        app:layout_constraintStart_toEndOf="@id/jw_image" />
+                                        app:layout_constraintStart_toEndOf="@id/jw_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/dr_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
                                         android:src="@drawable/tp_dr_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/dr_image"
-                                        app:layout_constraintStart_toEndOf="@id/dr_image" />
+                                        app:layout_constraintStart_toEndOf="@id/dr_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/chemist_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
                                         android:src="@drawable/tp_chemist_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/chemist_image"
-                                        app:layout_constraintStart_toEndOf="@id/chemist_image" />
+                                        app:layout_constraintStart_toEndOf="@id/chemist_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/stockiest_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
                                         android:src="@drawable/tp_stockiest_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/stockiest_image"
-                                        app:layout_constraintStart_toEndOf="@id/stockiest_image" />
+                                        app:layout_constraintStart_toEndOf="@id/stockiest_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -480,298 +537,130 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="20dp">
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:orientation="horizontal">
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/un_dr_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
                                         android:src="@drawable/tp_unlist_dr_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/un_dr_image"
-                                        app:layout_constraintStart_toEndOf="@id/un_dr_image" />
+                                        app:layout_constraintStart_toEndOf="@id/un_dr_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/cip_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
                                         android:src="@drawable/tp_cip_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/cip_image"
-                                        app:layout_constraintStart_toEndOf="@id/cip_image" />
+                                        app:layout_constraintStart_toEndOf="@id/cip_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
 
                                     <ImageView
                                         android:id="@+id/hospital_image"
                                         android:layout_width="@dimen/_14sdp"
                                         android:layout_height="@dimen/_14sdp"
                                         android:src="@drawable/tp_hospital_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
 
                                     <TextView
                                         android:layout_width="@dimen/_10sdp"
                                         android:layout_height="@dimen/_10sdp"
+                                        android:layout_marginStart="@dimen/_minus6sdp"
+                                        android:layout_marginBottom="@dimen/_minus4sdp"
                                         android:background="@drawable/tp_badge_circle"
+                                        android:gravity="center"
                                         android:text="0"
                                         android:textAlignment="center"
                                         android:textColor="@color/white"
+                                        android:textSize="@dimen/_5sdp"
                                         android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
                                         app:layout_constraintBottom_toTopOf="@id/hospital_image"
-                                        app:layout_constraintStart_toEndOf="@id/hospital_image" />
+                                        app:layout_constraintStart_toEndOf="@id/hospital_image"
+                                        tools:ignore="SpUsage" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content" />
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1" />
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content" />
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1" />
 
                             </LinearLayout>
 
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="10dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/edittext_stroke"
-                            android:backgroundTint="#eeeeee">
+<!--                        <androidx.recyclerview.widget.RecyclerView-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_alignParentStart="true"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:layout_below="@id/summary" />-->
 
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="02 October 2023"
-                                    android:textSize="@dimen/_6sdp"
-                                    android:textColor="@color/text_dark"
-                                    android:layout_alignParentStart="true"
-                                    android:gravity="center"/>
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_centerInParent="true"
-                                    android:gravity="center"
-                                    android:text="..."
-                                    android:textColor="@color/text_dark"
-                                    android:textSize="@dimen/_6sdp"
-                                    android:letterSpacing="0.2"/>
-
-                            </RelativeLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="20dp">
-
-                                <TextView
-                                    android:layout_weight="1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="HQ - Shiva kumar"
-                                    android:textSize="@dimen/_6sdp"
-                                    android:textColor="@color/text_dark" />
-
-                                <View
-                                    android:layout_width="1dp"
-                                    android:layout_height="20dp"
-                                    android:background="@color/text_dark_65"
-                                    android:layout_gravity="center"/>
-
-                                <TextView
-                                    android:layout_weight="1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Field Work"
-                                    android:textColor="@color/text_dark"
-                                    android:textSize="@dimen/_6sdp"
-                                    android:ellipsize="end"
-                                    android:gravity="end"/>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="20dp">
-
-                                <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
-
-                                    <ImageView
-                                        android:id="@+id/location_image1"
-                                        android:layout_width="@dimen/_14sdp"
-                                        android:layout_height="@dimen/_14sdp"
-                                        android:src="@drawable/tp_cluster_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                                    <TextView
-                                        android:layout_width="@dimen/_10sdp"
-                                        android:layout_height="@dimen/_10sdp"
-                                        android:background="@drawable/tp_badge_circle"
-                                        android:text="0"
-                                        android:textAlignment="center"
-                                        android:textColor="@color/white"
-                                        android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
-                                        app:layout_constraintBottom_toTopOf="@id/location_image1"
-                                        app:layout_constraintStart_toEndOf="@id/location_image1" />
-
-                                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                                <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
-
-                                    <ImageView
-                                        android:id="@+id/jw_image1"
-                                        android:layout_width="@dimen/_14sdp"
-                                        android:layout_height="@dimen/_14sdp"
-                                        android:src="@drawable/tp_jw_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                                    <TextView
-                                        android:layout_width="@dimen/_10sdp"
-                                        android:layout_height="@dimen/_10sdp"
-                                        android:background="@drawable/tp_badge_circle"
-                                        android:text="0"
-                                        android:textAlignment="center"
-                                        android:textColor="@color/white"
-                                        android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
-                                        app:layout_constraintBottom_toTopOf="@id/jw_image1"
-                                        app:layout_constraintStart_toEndOf="@id/jw_image1" />
-
-                                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                                <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content">
-
-                                    <ImageView
-                                        android:id="@+id/dr_image1"
-                                        android:layout_width="@dimen/_14sdp"
-                                        android:layout_height="@dimen/_14sdp"
-                                        android:src="@drawable/tp_dr_icon"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintTop_toTopOf="parent"
-                                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                                    <TextView
-                                        android:layout_width="@dimen/_10sdp"
-                                        android:layout_height="@dimen/_10sdp"
-                                        android:background="@drawable/tp_badge_circle"
-                                        android:text="0"
-                                        android:textAlignment="center"
-                                        android:textColor="@color/white"
-                                        android:textStyle="bold"
-                                        android:gravity="center"
-                                        android:layout_marginBottom="@dimen/_minus4sdp"
-                                        android:layout_marginStart="@dimen/_minus6sdp"
-                                        app:layout_constraintBottom_toTopOf="@id/dr_image1"
-                                        app:layout_constraintStart_toEndOf="@id/dr_image1" />
-
-                                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                                <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"/>
-
-                                <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_weight="1"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"/>
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                    </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
@@ -781,13 +670,15 @@
                     android:text="Send to approval"
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/white"
+                    android:fontFamily="@font/satoshi_variable"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp"
                     android:background="@drawable/edittext_stroke"
                     android:backgroundTint="#59282A3C"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage"/>
 
             </LinearLayout>
 
@@ -798,9 +689,11 @@
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="right" >
+        android:layout_gravity="end"
+        app:drawerLayoutCornerSize="0dp">
 
-        <include layout="@layout/tp_nav_drawer"/>
+        <include android:id="@+id/tp_navigation"
+            layout="@layout/tp_nav_drawer"/>
 
     </com.google.android.material.navigation.NavigationView>
 

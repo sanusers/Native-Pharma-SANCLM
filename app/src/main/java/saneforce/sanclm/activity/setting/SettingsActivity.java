@@ -182,13 +182,13 @@ public class SettingsActivity extends AppCompatActivity {
                             }
 
                             if (!licenseKeyValid){
-                                Toast.makeText(SettingsActivity.this, "Invalid license", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SettingsActivity.this, "Invalid license key", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
                     }else{
-                        Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingsActivity.this, "Invalid web url", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -234,7 +234,10 @@ public class SettingsActivity extends AppCompatActivity {
                     startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
                 }
             }).execute();
-
+        }else{
+            SharedPref.saveUrls(getApplicationContext(),enteredUrl,licenseKey,baseWebUrl,phpPathUrl,reportsUrl,slidesUrl,logoUrl,true);
+            Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         }
 
     }

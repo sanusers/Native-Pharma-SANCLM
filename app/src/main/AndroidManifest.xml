@@ -21,6 +21,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <activity android:name=".Leave_Application"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+
         <activity
         android:name=".activity.HomeScreen.HomeDashBoard"
         android:exported="true"
@@ -28,10 +32,11 @@
 
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="landscape"/>
 
         <activity
-            android:name=".activity.mastersync.MasterSyncActivity"
+            android:name=".activity.masterSync.MasterSyncActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity

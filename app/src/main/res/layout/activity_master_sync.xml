@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.mastersync.MasterSyncActivity">
+    tools:context=".activity.masterSync.MasterSyncActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -26,8 +26,8 @@
 
             <ImageView
                 android:id="@+id/backArrow"
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
                 android:src="@drawable/arrow_back_white"
                 android:layout_marginStart="@dimen/_8sdp"/>
 
@@ -37,8 +37,8 @@
                 android:text="Master Sync"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
-                android:layout_marginStart="@dimen/_8sdp"
-                android:fontFamily="@font/satoshi_medium"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:fontFamily="@font/satoshi_variable"
                 tools:ignore="SpUsage"/>
 
         </androidx.appcompat.widget.Toolbar>
@@ -74,8 +74,8 @@
                 android:textSize="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:textStyle="bold"
-                android:paddingTop="@dimen/_6sdp"
-                android:paddingBottom="@dimen/_6sdp"
+                android:paddingTop="@dimen/_7sdp"
+                android:paddingBottom="@dimen/_7sdp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 tools:ignore="SpUsage"/>
@@ -147,7 +147,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.core.widget.NestedScrollView
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:scrollbars="vertical">
@@ -185,7 +185,7 @@
                             android:id="@+id/listDrArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/greater_than_icon"
+                            android:src="@drawable/greater_than_black"
                             android:layout_gravity="center"/>
 
                     </LinearLayout>
@@ -611,7 +611,7 @@
             </androidx.core.widget.NestedScrollView>
 
             <androidx.core.widget.NestedScrollView
-                android:layout_weight="1.4"
+                android:layout_weight="1.5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:scrollbars="vertical"
@@ -697,14 +697,27 @@
                                 android:layout_height="wrap_content"
                                 android:text="Sync Listed Doctor"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_6sdp"
-                                android:fontFamily="@font/satoshi_medium"
+                                android:textSize="@dimen/_7sdp"
+                                android:fontFamily="@font/satoshi_variable"
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 android:padding="@dimen/_8sdp"
                                 android:background="@drawable/selector_box"
                                 app:backgroundTint="@color/text_dark"
                                 tools:ignore="SpUsage"/>
+
+                            <Button
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_3sdp"
+                                android:layout_marginEnd="@dimen/_3sdp"/>
+
+                            <Button
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/_3sdp"/>
 
                         </LinearLayout>
 

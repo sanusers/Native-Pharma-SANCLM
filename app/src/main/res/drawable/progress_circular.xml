@@ -20,7 +20,7 @@
                 android:useLevel="true">
                 <gradient
                     android:endColor="@color/white"
-                    android:startColor="@color/backround_graey"
+                    android:startColor="@color/background"
                     android:type="sweep" />
 
             </shape>

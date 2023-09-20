@@ -39,6 +39,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
         String date = daysOfMonth.get(holder.getAdapterPosition());
         holder.dateNo.setText(date);
+        Log.e("test","date : " + date);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

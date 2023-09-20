@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/_5sdp"
+        android:padding="@dimen/_7sdp"
         android:background="@drawable/selector_box"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,6 +30,7 @@
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
+                android:textStyle="bold"
                 android:layout_gravity="center"
                 tools:ignore="SpUsage"/>
 

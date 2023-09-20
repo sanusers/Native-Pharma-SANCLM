@@ -13,11 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,18 +28,15 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
+import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.AsyncInterface;
 import saneforce.sanclm.activity.setting.SettingsActivity;
+import saneforce.sanclm.databinding.ActivityLoginBinding;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.common.UtilityClass;
-import saneforce.sanclm.databinding.ActivityLoginBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
@@ -73,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-        getImageFromLocal(Constants.LOGO_IMAGE_NAME);
+//        getImageFromLocal(Constants.LOGO_IMAGE_NAME);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         if (fcmToken.isEmpty()){
@@ -85,6 +79,11 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPref.saveFcmToken(getApplicationContext(), s);
                 }
             });
+        }
+
+        binding.logoImg.setColorFilter(null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            binding.logoImg.setForeground(null);
         }
 
         binding.eyeImage.setOnClickListener(new View.OnClickListener() {
@@ -165,7 +164,8 @@ public class LoginActivity extends AppCompatActivity {
             File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
             String path = file.getAbsolutePath();
             Bitmap b = BitmapFactory.decodeFile(path);
-          binding.logoImg.setImageBitmap(b);
+            binding.logoImg.setImageBitmap(b);
+            binding.logoImg.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         } else {
             String baseWebUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String logoUrl = SharedPref.getLogoUrl(getApplicationContext());

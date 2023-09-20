@@ -1,9 +1,13 @@
 package saneforce.sanclm.activity.tourPlan;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +18,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import saneforce.sanclm.R;
 import saneforce.sanclm.databinding.ActivityTourPlanBinding;
 
 public class TourPlanActivity extends AppCompatActivity {
@@ -28,15 +33,31 @@ public class TourPlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityTourPlanBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         selectedDate = LocalDate.now();
         populateAdapter();
 
+        binding.backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                onBackPressed();
+            }
+        });
+
         binding.calendarNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                Log.e("test","next month clicked");
+                binding.calendarPrevButton.setEnabled(true);
+                binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
                 selectedDate = selectedDate.plusMonths(1);
+
+                if (LocalDate.now().plusMonths(1).isEqual(selectedDate)){
+                    binding.calendarNextButton.setEnabled(false);
+                    binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
+                }else{
+                    binding.calendarNextButton.setEnabled(true);
+                }
                 populateAdapter();
             }
         });
@@ -44,10 +65,24 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.calendarPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                Log.e("test","previous month clicked");
-
+                binding.calendarNextButton.setEnabled(true);
+                binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
                 selectedDate = selectedDate.minusMonths(1);
+
+                if (LocalDate.now().minusMonths(1).isEqual(selectedDate)){
+                    binding.calendarPrevButton.setEnabled(false);
+                    binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+                }else{
+                    binding.calendarPrevButton.setEnabled(true);
+                }
                 populateAdapter();
+            }
+        });
+
+        binding.tpNavigation.tpDrawerClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                binding.tpDrawer.closeDrawer(GravityCompat.END);
             }
         });
 
@@ -87,6 +122,7 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void populateAdapter(){
+        Log.e("test","populateAdapter called");
         binding.monthYear.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
 

@@ -13,7 +13,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:srcCompat="@drawable/tp_cluster_icon"
+            app:srcCompat="@drawable/tp_joint_work_ic"
             android:background="@color/pink_15"/>
 
         <TextView
