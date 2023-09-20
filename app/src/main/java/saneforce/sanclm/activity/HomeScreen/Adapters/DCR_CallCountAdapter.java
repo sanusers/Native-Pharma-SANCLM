@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
@@ -43,10 +45,8 @@ public class DCR_CallCountAdapter extends RecyclerView.Adapter<DCR_CallCountAdap
     @Override
     public void onBindViewHolder(@NonNull listDataViewholider holder, int position) {
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(with, ViewGroup.LayoutParams.MATCH_PARENT);
-
         param.setMargins(10, 10, 10, 10);
         holder.linearLayout.setLayoutParams(param);
-
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setCornerRadius(8);
 
@@ -151,8 +151,8 @@ public class DCR_CallCountAdapter extends RecyclerView.Adapter<DCR_CallCountAdap
             txt_name = itemView.findViewById(R.id.txt_name);
             txt_value = itemView.findViewById(R.id.txt_name1);
             txt_value2 = itemView.findViewById(R.id.txt_name2);
-            txt_value3 = itemView.findViewById(R.id.progressValueTextView);
-            progress_bar = itemView.findViewById(R.id.progress_bar);
+            txt_value3 = itemView.findViewById(R.id.doc_progress_value);
+            progress_bar = itemView.findViewById(R.id.progress_bar_doc);
         }
     }
 }

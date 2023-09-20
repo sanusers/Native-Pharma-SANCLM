@@ -5,16 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.HomeScreen.ModelClass.GroupModelClass;
 
 public class OutBoxAdapter extends BaseExpandableListAdapter {
 
     private LayoutInflater inflater;
     Context contxt;
 
-    public OutBoxAdapter(Context context) {
-     //   this.items = items;
+    List<GroupModelClass>  list=new ArrayList<>();
+
+    public OutBoxAdapter(Context context,List<GroupModelClass>  list) {
+
+        this.list=list;
         this.inflater = LayoutInflater.from(context);
         this.contxt = context;
     }
@@ -40,12 +49,12 @@ public class OutBoxAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getGroupId(int groupPosition) {
-        return 0;
+        return 3;
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return 0;
+        return 3;
     }
 
     @Override
@@ -59,6 +68,15 @@ public class OutBoxAdapter extends BaseExpandableListAdapter {
         View view = convertView;
         if (view == null) {
             view = inflater.inflate(R.layout.outbox_group_view, parent, false);
+
+        }
+
+        TextView isexpandStatus=view.findViewById(R.id.txt_expand_status);
+
+        if(isExpanded){
+            isexpandStatus.setText("Collapse");
+          }else {
+            isexpandStatus.setText("Expand");
         }
         return view;
     }
@@ -71,6 +89,28 @@ public class OutBoxAdapter extends BaseExpandableListAdapter {
         if (view == null) {
             view = inflater.inflate(R.layout.outbox_child_view, parent, false);
         }
+
+
+        TextView  DocName = view.findViewById(R.id.textViewLabel1);
+        TextView  datetime= view.findViewById(R.id.textViewLabel2);
+        CircleImageView imageView= view.findViewById(R.id.profile_icon);
+
+
+        DocName.setText(list.get(groupPosition).getChildItems().get(childPosition).getDocName());
+        datetime.setText(list.get(groupPosition).getChildItems().get(childPosition).getCallsDateTime());
+          String value=list.get(groupPosition).getChildItems().get(childPosition).getDocNameID();
+        if (value.equalsIgnoreCase("D")) {
+
+          imageView.setImageResource(R.drawable.doctor_img);
+        } else if (value.equalsIgnoreCase("C")) {
+
+           imageView.setImageResource(R.drawable.chemist_img);
+
+        } else if (value.equalsIgnoreCase("cip")) {
+           imageView.setImageResource(R.drawable.cip_img);
+        }
+
+
         return view;
     }
 

@@ -1,89 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-
     android:id="@+id/count_linear_layout"
-    android:orientation="vertical"
-    android:layout_margin="10dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
 
-    <TextView
-        android:text="Docter calls"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:id="@+id/txt_name"
-        android:textStyle="bold"
-        android:textSize="@dimen/_9ssp"
-        android:textColor="@color/white"
+    <LinearLayout
+        android:id="@+id/ll_sub_parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </TextView>
-
-
-    <TextView
-        android:text="55/20"
-        android:layout_below="@+id/txt_name"
-        android:id="@+id/txt_name1"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_9ssp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </TextView>
-
-
-
-    <TextView
-        android:text="ddd"
-        android:layout_below="@+id/txt_name"
-        android:id="@+id/txt_name2"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:textSize="@dimen/_7ssp"
-        android:textColor="@color/white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </TextView>
-
-
-
-
-
-
-
-    <RelativeLayout
-        android:id="@+id/dcr_call_layout"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/txt_name"
-        android:layout_toRightOf="@id/txt_name1"
-        android:layout_height="wrap_content">
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/CircularDeterminateProgressBar"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_centerInParent="true"
-            android:indeterminate="false"
-            android:padding="20dp"
-            android:rotation="-90"
-            android:progress="60"
-            android:progressDrawable="@drawable/progress_circular" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/progressValueTextView"
+            android:id="@+id/txt_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="Docter calls"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13sdp" />
+
+        <TextView
+            android:id="@+id/txt_name1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="10%"
-            android:textSize="@dimen/_5ssp"
+            android:layout_below="@+id/txt_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/satoshi_regular"
+            android:text="55/20"
             android:textColor="@color/white"
-            android:textStyle="bold" />
-    </RelativeLayout>
+            android:textSize="@dimen/_10sdp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txt_name2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/satoshi_regular"
+            android:text="ddd"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8sdp"
+            android:visibility="gone" />
+
+
+        <RelativeLayout
+            android:id="@+id/dcr_call_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_name"
+            android:layout_toRightOf="@id/txt_name1">
+
+            <ProgressBar
+                android:id="@+id/progress_bar_doc"
+                style="@style/CircularDeterminateProgressBar"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_centerInParent="true"
+                android:indeterminate="false"
+                android:padding="20dp"
+                android:progress="60"
+                android:progressDrawable="@drawable/progress_circular"
+                android:rotation="-90" />
+
+            <TextView
+                android:id="@+id/doc_progress_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="10%"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
 </RelativeLayout>
-
-

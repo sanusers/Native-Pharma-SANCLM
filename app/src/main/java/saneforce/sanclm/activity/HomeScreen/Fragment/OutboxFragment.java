@@ -9,8 +9,13 @@ import android.widget.ExpandableListView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.HomeScreen.Adapters.OutBoxAdapter;
+import saneforce.sanclm.activity.HomeScreen.ModelClass.CallsModalClass;
+import saneforce.sanclm.activity.HomeScreen.ModelClass.GroupModelClass;
 
 
 public class OutboxFragment extends Fragment {
@@ -23,10 +28,13 @@ public class OutboxFragment extends Fragment {
 
         expandableListView=v.findViewById(R.id.Expandapleview);
 
-        outBoxAdapter=new OutBoxAdapter(getActivity());
+        List<GroupModelClass> listnew=new ArrayList<>();
+        listnew.add(new GroupModelClass("September 13,2000",getData()));
+        listnew.add(new GroupModelClass("September 14,1998",getData()));
+        listnew.add(new GroupModelClass("September 15,1998",getData()));
+        outBoxAdapter=new OutBoxAdapter(getActivity(),listnew);
         expandableListView.setGroupIndicator(null);
         expandableListView.setAdapter(outBoxAdapter);
-
 
 
 
@@ -34,5 +42,19 @@ public class OutboxFragment extends Fragment {
         return v;
     }
 
+    private List<CallsModalClass> getData()
+    {
+        List<CallsModalClass> list = new ArrayList<>();
+        list.add(new CallsModalClass("Aravind Raj",
+                "2023-08-19,00:0:49",
+                "D"));
+        list.add(new CallsModalClass("Tom Latham",
+                "2023-08-19,00:0:49",
+                "C"));
+        list.add(new CallsModalClass("Dharany",
+                "2023-08-19,00:0:49",
+                "CIP"));
 
+        return list;
+    }
 }

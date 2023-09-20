@@ -28,7 +28,7 @@
 
             <ImageView
                 android:layout_width="20dp"
-                android:src="@drawable/image"
+                android:src="@drawable/image_img"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center|left"
                 android:layout_height="20dp">
@@ -71,7 +71,7 @@
 
             <ImageView
                 android:layout_width="20dp"
-                android:src="@drawable/user_time"
+                android:src="@drawable/eye_img"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center|left"
                 android:layout_height="20dp">
@@ -111,7 +111,7 @@
 
             <ImageView
                 android:layout_width="20dp"
-                android:src="@drawable/file_char_line"
+                android:src="@drawable/file_chart_img"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center|left"
                 android:layout_height="20dp">
