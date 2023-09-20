@@ -118,7 +118,7 @@
                                 android:id="@+id/calendar_next_button"
                                 android:layout_width="@dimen/_6sdp"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/arrow_right"
+                                android:src="@drawable/greater_than_icon"
                                 android:layout_gravity="center"
                                 android:paddingTop="20dp"
                                 android:paddingBottom="20dp"/>
