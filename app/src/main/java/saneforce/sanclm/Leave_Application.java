@@ -133,11 +133,11 @@ public class Leave_Application extends AppCompatActivity {
             if (Fromdate.getText().toString().equals("")) {
                 Toast.makeText(Leave_Application.this, "Select from date", Toast.LENGTH_LONG).show();
             } else {
-                if (CURRENT_DATE.equalsIgnoreCase(CURRENT_DATE)) {//tv_to_date
+                if (CURRENT_DATE.equalsIgnoreCase(from_dt)) {//tv_to_date
                     final Calendar c = Calendar.getInstance(Locale.getDefault());
                     DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
                     try {
-                        c.setTime(inputFormat.parse(CURRENT_DATE));
+                        c.setTime(inputFormat.parse(from_dt));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -204,7 +204,8 @@ public class Leave_Application extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                                 String outputDateStr = outputFormat.format(date);
-                                Todate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, outputDateStr));
+                                Todate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, outputDateStr));
+
 
 
                                 Log.d("today_date", outputDateStr);
