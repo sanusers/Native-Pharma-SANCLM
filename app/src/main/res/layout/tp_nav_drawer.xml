@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/_6sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="Add Plan"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_variable"/>
+
+        <ImageView
+            android:layout_width="@dimen/_12sdp"
+            android:layout_height="@dimen/_12sdp"
+            android:src="@drawable/close_icon" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/lineView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/text_dark_65"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="@dimen/_6sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lineView">
+
+        <TextView
+            android:id="@+id/workType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Work Type"
+            android:textSize="@dimen/_5sdp"
+            android:textColor="@color/text_dark_65"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"/>
+
+        <LinearLayout
+            android:id="@+id/workTypeSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_stroke"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/workType">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:textColor="@color/text_dark"
+                android:textSize="@dimen/_6sdp"
+                android:fontFamily="@font/satoshi_variable"/>
+            
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/arrow_down"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/hq"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Head Quarters"
+            android:textSize="@dimen/_5sdp"
+            android:textColor="@color/text_dark_65"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/workTypeSelect" />
+
+        <LinearLayout
+            android:id="@+id/hqSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_stroke"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/hq">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:textColor="@color/text_dark"
+                android:textSize="@dimen/_6sdp"
+                android:fontFamily="@font/satoshi_variable"/>
+
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/arrow_down"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/cluster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cluster"
+            android:textSize="@dimen/_5sdp"
+            android:textColor="@color/text_dark_65"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/hqSelect"/>
+
+        <LinearLayout
+            android:id="@+id/clusterSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_stroke"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/cluster">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:textColor="@color/text_dark"
+                android:textSize="@dimen/_6sdp"
+                android:fontFamily="@font/satoshi_variable"/>
+
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/arrow_down"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/JointCall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Joint Call"
+            android:textSize="@dimen/_5sdp"
+            android:textColor="@color/text_dark_65"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/clusterSelect"/>
+
+        <LinearLayout
+            android:id="@+id/jointCallSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_stroke"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/JointCall">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:textColor="@color/text_dark"
+                android:textSize="@dimen/_6sdp"
+                android:fontFamily="@font/satoshi_variable"/>
+
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/arrow_down"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/listedDr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Listed Doctor"
+            android:textSize="@dimen/_5sdp"
+            android:textColor="@color/text_dark_65"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/jointCallSelect"/>
+
+        <LinearLayout
+            android:id="@+id/listedDrSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_stroke"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/listedDr">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:textColor="@color/text_dark"
+                android:textSize="@dimen/_6sdp"
+                android:fontFamily="@font/satoshi_variable"/>
+
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/arrow_down"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/chemist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chemist"
+            android:textSize="@dimen/_5sdp"
+            android:textColor="@color/text_dark_65"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/listedDrSelect"/>
+
+        <LinearLayout
+            android:id="@+id/chemistSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_stroke"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/chemist">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:textColor="@color/text_dark"
+                android:textSize="@dimen/_6sdp"
+                android:fontFamily="@font/satoshi_variable"/>
+
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/arrow_down"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:textSize="@dimen/_6sdp"
+        android:textColor="@color/white"
+        android:background="@drawable/edittext_stroke"
+        app:backgroundTint="@color/text_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="@dimen/_6sdp"
+        app:layout_constraintHorizontal_bias="1"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
