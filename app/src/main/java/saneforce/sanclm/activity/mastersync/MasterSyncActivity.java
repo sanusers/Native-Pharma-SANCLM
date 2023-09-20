@@ -515,7 +515,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.subordinate.setSelected(false);
         binding.setup.setSelected(false);
 
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.arrow_right, null));
+        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_icon, null));
         view.setSelected(true);
     }
 

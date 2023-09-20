@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -30,7 +29,7 @@
                     android:layout_height="@dimen/_18sdp"
                     android:layout_centerVertical="true"
                     android:layout_gravity="right"
-                    android:src="@drawable/backarrow" />
+                    android:src="@drawable/back_arrow_white" />
 
                 <TextView
                     android:id="@+id/toolbar_title"
