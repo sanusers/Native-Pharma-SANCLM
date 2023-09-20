@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.mastersync;
+package saneforce.sanclm.activity.masterSync;
 
 import android.content.Intent;
 import android.database.Cursor;

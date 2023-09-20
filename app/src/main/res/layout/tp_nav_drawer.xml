@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/header"
@@ -34,7 +35,7 @@
     <View
         android:id="@+id/lineView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_1sdp"
+        android:layout_height="1dp"
         android:background="@color/text_dark_65"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,9 +54,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Work Type"
-            android:textSize="@dimen/_5sdp"
+            android:textSize="@dimen/_6sdp"
             android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_variable"
             android:gravity="start"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
@@ -68,7 +69,7 @@
             android:orientation="horizontal"
             android:background="@drawable/edittext_stroke"
             android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/workType">
@@ -80,7 +81,7 @@
                 android:text="Select"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
-                android:fontFamily="@font/satoshi_variable"/>
+                android:fontFamily="@font/satoshi_medium"/>
             
             <ImageView
                 android:layout_width="@dimen/_6sdp"
@@ -95,10 +96,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Head Quarters"
-            android:textSize="@dimen/_5sdp"
+            android:textSize="@dimen/_6sdp"
             android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_variable"
             android:gravity="start"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/workTypeSelect" />
@@ -110,7 +112,7 @@
             android:orientation="horizontal"
             android:background="@drawable/edittext_stroke"
             android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/hq">
@@ -122,7 +124,7 @@
                 android:text="Select"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
-                android:fontFamily="@font/satoshi_variable"/>
+                android:fontFamily="@font/satoshi_medium"/>
 
             <ImageView
                 android:layout_width="@dimen/_6sdp"
@@ -137,10 +139,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Cluster"
-            android:textSize="@dimen/_5sdp"
+            android:textSize="@dimen/_6sdp"
             android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_variable"
             android:gravity="start"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/hqSelect"/>
@@ -152,7 +155,7 @@
             android:orientation="horizontal"
             android:background="@drawable/edittext_stroke"
             android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/cluster">
@@ -164,7 +167,7 @@
                 android:text="Select"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
-                android:fontFamily="@font/satoshi_variable"/>
+                android:fontFamily="@font/satoshi_medium"/>
 
             <ImageView
                 android:layout_width="@dimen/_6sdp"
@@ -179,10 +182,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Joint Call"
-            android:textSize="@dimen/_5sdp"
+            android:textSize="@dimen/_6sdp"
             android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_variable"
             android:gravity="start"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/clusterSelect"/>
@@ -194,7 +198,7 @@
             android:orientation="horizontal"
             android:background="@drawable/edittext_stroke"
             android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/JointCall">
@@ -206,7 +210,7 @@
                 android:text="Select"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
-                android:fontFamily="@font/satoshi_variable"/>
+                android:fontFamily="@font/satoshi_medium"/>
 
             <ImageView
                 android:layout_width="@dimen/_6sdp"
@@ -221,10 +225,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Listed Doctor"
-            android:textSize="@dimen/_5sdp"
+            android:textSize="@dimen/_6sdp"
             android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_variable"
             android:gravity="start"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/jointCallSelect"/>
@@ -236,7 +241,7 @@
             android:orientation="horizontal"
             android:background="@drawable/edittext_stroke"
             android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/listedDr">
@@ -248,7 +253,7 @@
                 android:text="Select"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
-                android:fontFamily="@font/satoshi_variable"/>
+                android:fontFamily="@font/satoshi_medium"/>
 
             <ImageView
                 android:layout_width="@dimen/_6sdp"
@@ -263,10 +268,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Chemist"
-            android:textSize="@dimen/_5sdp"
+            android:textSize="@dimen/_6sdp"
             android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_variable"
             android:gravity="start"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/listedDrSelect"/>
@@ -278,7 +284,7 @@
             android:orientation="horizontal"
             android:background="@drawable/edittext_stroke"
             android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/chemist">
@@ -290,7 +296,7 @@
                 android:text="Select"
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
-                android:fontFamily="@font/satoshi_variable"/>
+                android:fontFamily="@font/satoshi_medium"/>
 
             <ImageView
                 android:layout_width="@dimen/_6sdp"
@@ -302,19 +308,30 @@
 
     </RelativeLayout>
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:textSize="@dimen/_6sdp"
-        android:textColor="@color/white"
-        android:background="@drawable/edittext_stroke"
-        app:backgroundTint="@color/text_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_margin="@dimen/_6sdp"
-        app:layout_constraintHorizontal_bias="1"/>
+        app:layout_constraintHorizontal_bias="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textSize="@dimen/_6sdp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/satoshi_variable"
+            android:background="@drawable/edittext_stroke"
+            app:backgroundTint="@color/text_dark"
+            android:paddingStart="@dimen/_15sdp"
+            android:paddingEnd="@dimen/_15sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"/>
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

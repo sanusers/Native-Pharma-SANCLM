@@ -134,6 +134,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     case 2:
                         tab.setText("Outbox");
 
+                        BadgeDrawable badgeDrawable=tab.getOrCreateBadge();
+                        badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.black));
+                        badgeDrawable.setVisible(true);
+                        badgeDrawable.setHorizontalOffset(1);
+                        badgeDrawable.setVerticalOffset(10);
+                        badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
+                        badgeDrawable.setNumber(10);
+                        badgeDrawable.setBadgeTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
+
                         break;
 
                 }
@@ -158,10 +167,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
     }
-
-
-
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 

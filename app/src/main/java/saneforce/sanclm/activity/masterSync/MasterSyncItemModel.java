@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.mastersync;
+package saneforce.sanclm.activity.masterSync;
 
 public class MasterSyncItemModel {
     String name = "";

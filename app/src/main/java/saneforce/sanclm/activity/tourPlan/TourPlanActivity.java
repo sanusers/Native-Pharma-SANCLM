@@ -28,6 +28,7 @@ public class TourPlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityTourPlanBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         selectedDate = LocalDate.now();
         populateAdapter();

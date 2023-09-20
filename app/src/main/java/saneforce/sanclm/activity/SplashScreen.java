@@ -9,12 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
-import saneforce.sanclm.activity.setting.SettingsActivity;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.storage.SQLite;
-import saneforce.sanclm.storage.SharedPref;
 
 
 public class SplashScreen extends AppCompatActivity {

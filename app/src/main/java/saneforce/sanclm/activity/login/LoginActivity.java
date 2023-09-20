@@ -13,11 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,18 +28,15 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.mastersync.MasterSyncActivity;
+import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.AsyncInterface;
 import saneforce.sanclm.activity.setting.SettingsActivity;
+import saneforce.sanclm.databinding.ActivityLoginBinding;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.common.UtilityClass;
-import saneforce.sanclm.databinding.ActivityLoginBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;

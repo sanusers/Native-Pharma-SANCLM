@@ -1,7 +1,4 @@
-package saneforce.sanclm.activity.mastersync;
-
-import android.widget.ProgressBar;
-import android.widget.TextView;
+package saneforce.sanclm.activity.masterSync;
 
 public interface MasterSyncItemClick {
 

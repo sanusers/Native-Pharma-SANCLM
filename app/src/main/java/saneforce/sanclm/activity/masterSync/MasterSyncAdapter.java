@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.mastersync;
+package saneforce.sanclm.activity.masterSync;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,22 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonArray;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.network.ApiInterface;
-import saneforce.sanclm.network.RetrofitClient;
-import saneforce.sanclm.storage.SharedPref;
 
 public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.MyViewHolder> {
 

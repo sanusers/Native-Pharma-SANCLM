@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.mastersync.MasterSyncActivity">
+    tools:context=".activity.masterSync.MasterSyncActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -38,7 +38,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
                 android:layout_marginStart="@dimen/_8sdp"
-                android:fontFamily="@font/satoshi_medium"
+                android:fontFamily="@font/satoshi_variable"
                 tools:ignore="SpUsage"/>
 
         </androidx.appcompat.widget.Toolbar>

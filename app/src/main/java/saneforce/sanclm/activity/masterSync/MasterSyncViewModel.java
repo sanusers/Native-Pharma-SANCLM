@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.mastersync;
+package saneforce.sanclm.activity.masterSync;
 
 import android.content.Context;
 import android.util.Log;

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_height="wrap_content"
-        android:background="@color/backround_graey"
+        android:background="@color/background"
         app:tabGravity="center"
         app:tabIndicatorColor="@color/text_dark"
         app:tabIndicatorGravity="bottom"
