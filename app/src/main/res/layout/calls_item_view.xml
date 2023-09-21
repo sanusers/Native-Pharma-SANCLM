@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_3sdp"
+        app:cardCornerRadius="@dimen/_3sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_3sdp"
+            android:background="@color/background">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_icon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center"
+
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:src="@drawable/acount_img" />
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:id="@+id/textViewLabel1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Label 1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_7sdp" />
+
+                <TextView
+                    android:layout_below="@+id/textViewLabel1"
+                    android:layout_marginTop="@dimen/_3sdp"
+
+                    android:id="@+id/textViewLabel2"
+                    android:layout_width="wrap_content"
+                    android:fontFamily="@font/satoshi_regular"
+                    android:layout_height="wrap_content"
+                    android:text="Label 2"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:textSize="@dimen/_5sdp" />
+                <TextView
+                    android:id="@+id/optionview"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:textColor="@color/black"
+                    android:gravity="right"
+                    android:text="..."
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

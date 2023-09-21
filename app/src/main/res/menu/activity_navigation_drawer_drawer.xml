@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+
+        <item
+            android:id="@+id/nav_refresh"
+            android:icon="@drawable/refresh"
+            android:fontFamily="@font/satoshi_medium"
+
+            android:title="Refresh" />
+
+        <item
+            android:id="@+id/nav_create_presentation"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/presentation"
+            android:title="Create Presentation" />
+        <item
+            android:id="@+id/nav_tour_plan"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/tourplan"
+            android:title="Tour Plan" />
+        <item
+            android:id="@+id/nav_leave_appln"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/leave"
+            android:title="Leave Application" />
+
+        <item
+            android:icon="@drawable/report"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/nav_reports"
+            android:title="Reports"
+            />
+        <item
+            android:icon="@drawable/activity"
+            android:id="@+id/nav_activity"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Activity"
+            android:visible="false"  />
+        <item
+            android:icon="@drawable/nearme"
+            android:id="@+id/nav_nearme"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Near Me" />
+
+        <item
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/survey"
+            android:id="@+id/nav_quiz"
+            android:title="Survey"
+            />
+        <item
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/nav_from"
+            android:title="Froms" />
+
+
+    </group>
+
+</menu>
