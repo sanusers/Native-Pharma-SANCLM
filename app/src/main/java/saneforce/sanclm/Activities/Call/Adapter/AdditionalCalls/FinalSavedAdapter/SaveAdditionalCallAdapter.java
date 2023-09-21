@@ -193,13 +193,13 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
 
                 AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(saveAdditionalCalls.get(position).getName(), "Select", "", ""));
                 AdditionalCallDetailedSide.adapterInputAdditionalCall = new AdapterInputAdditionalCall(context, AdditionalCallDetailedSide.addInputAdditionalCallArrayList);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(activity);
                 AdditionalCallDetailedSide.rv_add_input_list.setLayoutManager(mLayoutManager);
                 AdditionalCallDetailedSide.rv_add_input_list.setAdapter(AdditionalCallDetailedSide.adapterInputAdditionalCall);
 
                 AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(saveAdditionalCalls.get(position).getName(), "Select", "", ""));
                 AdditionalCallDetailedSide.adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(context, AdditionalCallDetailedSide.addSampleAdditionalCallArrayList);
-                RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(context);
+                RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(activity);
                 AdditionalCallDetailedSide.rv_add_sample_list.setLayoutManager(mLayoutManagerprd);
                 AdditionalCallDetailedSide.rv_add_sample_list.setAdapter(AdditionalCallDetailedSide.adapterSampleAdditionalCall);
 

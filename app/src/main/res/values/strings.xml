@@ -61,7 +61,6 @@
     <string name="nav_close">Close</string>
 
 
-
     <string name="str_app_configuration">App Configuration</string>
     <string name="str_web_url">Web URL</string>
     <string name="str_license_key">License Key</string>
@@ -77,5 +76,7 @@
     <string name="str_powered_by">Powered by</string>
     <string name="call_selection">Call Selection</string>
     <string name="highlights_selected_hq">Highlights selected HQ</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

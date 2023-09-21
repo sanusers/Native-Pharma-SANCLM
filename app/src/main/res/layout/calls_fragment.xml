@@ -129,6 +129,7 @@
       android:orientation="horizontal"
       android:layout_height="wrap_content">
     <TextView
+        android:id="@+id/tv_add_call"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_23sdp"
         android:text="Add Call"

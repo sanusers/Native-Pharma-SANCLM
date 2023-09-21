@@ -38,11 +38,15 @@ public class RCPAFragment extends Fragment {
         rv_add_rcpa_list.setAdapter(rcpaChemistAdapter);
 
         btn_add_rcpa.setOnClickListener(view -> {
-            RCPAFragmentSide.RCPAAddCompSideViewArrayList.clear();
-            RCPAAddCompAdapter rcpaAddCompAdapter = new RCPAAddCompAdapter(getActivity(), RCPAFragmentSide.RCPAAddCompSideViewArrayList);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-            RCPAFragmentSide.rv_comp_list.setLayoutManager(mLayoutManager);
-            RCPAFragmentSide.rv_comp_list.setAdapter(rcpaAddCompAdapter);
+            try {
+                RCPAFragmentSide.RCPAAddCompSideViewArrayList.clear();
+                RCPAAddCompAdapter rcpaAddCompAdapter = new RCPAAddCompAdapter(getActivity(), RCPAFragmentSide.RCPAAddCompSideViewArrayList);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                RCPAFragmentSide.rv_comp_list.setLayoutManager(mLayoutManager);
+                RCPAFragmentSide.rv_comp_list.setAdapter(rcpaAddCompAdapter);
+            } catch (Exception e) {
+
+            }
             DCRCallActivity.fragment_add_rcpa_side.setVisibility(View.VISIBLE);
         });
 

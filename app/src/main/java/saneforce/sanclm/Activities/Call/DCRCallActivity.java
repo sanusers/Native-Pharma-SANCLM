@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import saneforce.sanclm.Activities.Call.DcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.CommonClasses.CommonSharedPreference;
 import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
@@ -32,7 +33,7 @@ import saneforce.sanclm.Activities.Call.Fragments.JWOthersFragment;
 import saneforce.sanclm.Activities.Call.Fragments.ProductFragment;
 import saneforce.sanclm.Activities.Call.Fragments.RCPAFragmentSide;
 import saneforce.sanclm.Activities.Call.Pojo.CallCommonCheckedList;
-import saneforce.sanclm.Activities.Map.CallSelection.DCRSelectionList;
+import saneforce.sanclm.Activities.Map.CustSelection.TagCustSelectionList;
 
 public class DCRCallActivity extends AppCompatActivity {
 
@@ -63,11 +64,6 @@ public class DCRCallActivity extends AppCompatActivity {
         btn_final_submit = findViewById(R.id.btn_final_submit);
         img_back = findViewById(R.id.iv_back);
         tv_cust_name = findViewById(R.id.tag_cust_name);
-        fragment_add_call_details_side = findViewById(R.id.fragment_add_call_details_side);
-        fragment_add_rcpa_side = findViewById(R.id.fragment_add_rcpa_side);
-
-        // fragment_products = findViewById(R.id.fragment_products);
-        // fragment_detailed = findViewById(R.id.fragment_detailed);
 
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPreference = new CommonSharedPreference(this);
@@ -98,7 +94,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
         tv_cust_name.setText(cust_name);
         img_back.setOnClickListener(view -> {
-            Intent intent = new Intent(DCRCallActivity.this, DCRSelectionList.class);
+            Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
             startActivity(intent);
         });
 

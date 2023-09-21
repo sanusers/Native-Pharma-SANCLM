@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.Activities.tourPlan.TourPlanActivity;
-import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.Activities.TourPlan.TourPlanActivity;
+import saneforce.sanclm.Storage.SQLite;
 
 
 public class SplashScreen extends AppCompatActivity {
@@ -18,7 +18,7 @@ public class SplashScreen extends AppCompatActivity {
     SQLite sqLite;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         sqLite = new SQLite(getApplicationContext());

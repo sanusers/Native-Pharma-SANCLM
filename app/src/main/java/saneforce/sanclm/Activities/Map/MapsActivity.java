@@ -22,7 +22,7 @@ import saneforce.sanclm.CommonClasses.CommonSharedPreference;
 import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.Activities.HomeScreen.HomeDashBoard;
-import saneforce.sanclm.Activities.Map.CallSelection.DCRSelectionList;
+import saneforce.sanclm.Activities.Map.CustSelection.TagCustSelectionList;
 
 public class MapsActivity extends AppCompatActivity {
     ImageView img_arrow_right, img_arrow_left, img_refresh, img_cur_loc;
@@ -95,7 +95,7 @@ public class MapsActivity extends AppCompatActivity {
                 img_refresh.setVisibility(View.GONE);
                 DisplayDialog();
             } else {
-                Intent intent1 = new Intent(MapsActivity.this, HomeDashBoard.class);
+                Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
                 startActivity(intent1);
             }
         });
@@ -176,7 +176,7 @@ public class MapsActivity extends AppCompatActivity {
 
         btn_confirm.setOnClickListener(view -> {
             dialogTagCust.dismiss();
-            Intent intent1 = new Intent(MapsActivity.this, DCRSelectionList.class);
+            Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
             startActivity(intent1);
         });
 

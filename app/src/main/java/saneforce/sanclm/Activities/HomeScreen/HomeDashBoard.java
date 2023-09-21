@@ -2,6 +2,7 @@ package saneforce.sanclm.Activities.HomeScreen;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -28,6 +29,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import saneforce.sanclm.Activities.Map.MapsActivity;
+import saneforce.sanclm.Activities.TourPlan.TourPlanActivity;
+import saneforce.sanclm.Leave_Application;
 import saneforce.sanclm.R;
 import saneforce.sanclm.Activities.HomeScreen.Adapters.ViewpagetAdapter;
 
@@ -115,8 +119,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         anlas_layout.setLayoutParams(param);
 
 
-
-
         TabLayoutMediator tabLayoutMediator=new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
             @SuppressLint("ResourceType")
             @Override
@@ -172,7 +174,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         int id = item.getItemId();
 
         if (id == R.id.nav_leave_appln) {
-            Toast.makeText(this, "Leave ", Toast.LENGTH_LONG).show();
+         startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
+            return true;
+        }
+
+        if (id == R.id.tourPlan) {
+            startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
+            return true;
+        }
+
+        if (id == R.id.nav_nearme) {
+            startActivity(new Intent(HomeDashBoard.this, MapsActivity.class));
             return true;
         }
 

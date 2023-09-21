@@ -22,43 +22,55 @@
         tools:targetApi="31">
 
         <activity
-        android:name=".Activities.SplashScreen"
-        android:exported="true"
-        android:screenOrientation="landscape" />
+            android:name=".Activities.SplashScreen"
+            android:exported="true"
+            android:screenOrientation="landscape" />
 
         <activity
-            android:name=".Activities.Map.CallSelection.DCRSelectionList"
+            android:name=".Activities.Map.CustSelection.TagCustSelectionList"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan|adjustResize"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
 
         <activity
             android:name=".Activities.Profile.CustomerProfile"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan|adjustResize"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
 
         <activity
             android:name=".Activities.Call.DCRCallActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan|adjustResize"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
 
         <activity
-            android:name=".Activities.tourPlan.TourPlanActivity"
+            android:name=".Activities.Call.DcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
-            android:name=".Activities.masterSync.MasterSyncActivity"
+            android:name=".Activities.Map.MapsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+
+        <activity
+            android:name=".Activities.TourPlan.TourPlanActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".Activities.MasterSync.MasterSyncActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activities.login.LoginActivity"
+            android:name=".Activities.Login.LoginActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".Activities.setting.SettingsActivity"
+            android:name=".Activities.Setting.SettingsActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
@@ -75,6 +87,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
     </application>
 
