@@ -1,4 +1,4 @@
-package saneforce.sanclm.CommonClasses;
+package saneforce.sanclm.commonClasses;
 
 
 import android.app.Activity;

@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
-import saneforce.sanclm.activity.Map.CustSelection.CustList;
+import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.R;
 
 

@@ -159,17 +159,17 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:gravity="center|start"
-                            android:background="@null"
                             android:padding="@dimen/_7sdp"
+                            android:background="@null"
                             tools:ignore="SpUsage"/>
 
                         <ImageView
                             android:id="@+id/eyeImage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
                             android:src="@drawable/eye_visible"
                             android:layout_gravity="center"
-                            android:padding="@dimen/_7sdp"/>
+                            android:paddingEnd="@dimen/_5sdp"/>
 
                     </LinearLayout>
 
@@ -182,7 +182,7 @@
                         android:textColor="@color/white"
                         android:textAllCaps="false"
                         android:fontFamily="@font/satoshi_bold"
-                        android:padding="@dimen/_4sdp"
+                        android:padding="@dimen/_3sdp"
                         android:background="@drawable/edittext_stroke"
                         app:backgroundTint="#282A3C"
                         android:layout_marginTop="@dimen/_8sdp"

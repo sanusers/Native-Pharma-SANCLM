@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.Map.CustSelection.CustList;
+import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.R;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {

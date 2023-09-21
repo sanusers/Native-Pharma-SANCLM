@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Map;
+package saneforce.sanclm.activity.map;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.CommonClasses.CommonSharedPreference;
-import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.Map.CustSelection.TagCustSelectionList;
+import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 
 public class MapsActivity extends AppCompatActivity {

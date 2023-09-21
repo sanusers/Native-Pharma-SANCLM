@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Map;
+package saneforce.sanclm.activity.map;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.Profile.CustomerProfile;
+import saneforce.sanclm.activity.profile.CustomerProfile;
 
 public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHolder> {
     Context context;

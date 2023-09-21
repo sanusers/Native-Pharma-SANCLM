@@ -1,8 +1,8 @@
-package saneforce.sanclm;
+package saneforce.sanclm.activity.leave;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,11 +10,9 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -23,19 +21,15 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
+import saneforce.sanclm.R;
 import saneforce.sanclm.utility.TimeUtils;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 
 public class Leave_Application extends AppCompatActivity {
-    TextView Fromdate, Todate;
+    public static TextView Fromdate, Todate;
     TextView Head_Ltype, Head_fromdate, Head_todate,c_val,c_val1,c_val2,c_val_tol,c_val_tol_1,c_val_tol_2;
     String from_dt, To_dt, CURRENT_DATE;
     Date dateBefore;
@@ -44,6 +38,7 @@ public class Leave_Application extends AppCompatActivity {
     PieData pieData, pieData1, pieData2;
     ListView leave_request;
     ImageView back_btn;
+    CalendarViewModel calendarViewModel;
 
      String[] Array = {"Sep 13, 2023","Sep 14, 2023","Sep 15, 2023"};
     @Override
@@ -87,144 +82,27 @@ public class Leave_Application extends AppCompatActivity {
         Head_fromdate.setText(Html.fromHtml(colorText));
         Head_todate.setText(Html.fromHtml(colorText1));
         Head_Ltype.setText(Html.fromHtml(colorText2));
+        //Todate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, outputDateStr));
+        calendarViewModel= ViewModelProviders.of(this).get(CalendarViewModel.class);
+        Log.e("test","from data : " + calendarViewModel.getFromData());
+
 
         CURRENT_DATE = TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4);
         Fromdate.setOnClickListener(v -> {
-            final Calendar c = Calendar.getInstance(Locale.getDefault());
-            int mYear = c.get(Calendar.YEAR);
-            int mMonth = c.get(Calendar.MONTH);
-            int mDay = c.get(Calendar.DAY_OF_MONTH);
-            String currentDatest;
-            SimpleDateFormat sddf = new SimpleDateFormat("dd/MM/yyyy");
-            currentDatest = sddf.format(new Date());
-            DatePickerDialog datePickerDialog = new DatePickerDialog(Leave_Application.this,
-                    (view, year, monthOfYear, dayOfMonth) -> {
-                        if ((monthOfYear + 1) < 10) {
-                            if (dayOfMonth < 10) {
-                                from_dt = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
-                            } else {
-                                from_dt = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
-                            }
-                        } else {
-                            if (dayOfMonth < 10) {
-                                from_dt = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
-                            } else {
-                                from_dt = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                            }
-                        }
-                        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        String inputDateStr = from_dt;
-                        Date date = null;
-                        try {
-                            date = inputFormat.parse(inputDateStr);
-                            dateBefore = inputFormat.parse(from_dt);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        String outputDateStr1 = outputFormat.format(date);
-                        Fromdate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, outputDateStr1));
-                        Todate.setText("");
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
+//            Intent intent = new Intent(Leave_Application.this,CalendarActivity.class);
+            startActivity(new Intent(Leave_Application.this,CalendarActivity.class));
 
         });
 
 
         Todate.setOnClickListener(v -> {
-            if (Fromdate.getText().toString().equals("")) {
-                Toast.makeText(Leave_Application.this, "Select from date", Toast.LENGTH_LONG).show();
-            } else {
-                if (CURRENT_DATE.equalsIgnoreCase(from_dt)) {//tv_to_date
-                    final Calendar c = Calendar.getInstance(Locale.getDefault());
-                    DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    try {
-                        c.setTime(inputFormat.parse(from_dt));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    int mYear = c.get(Calendar.YEAR);
-                    int mMonth = c.get(Calendar.MONTH);
-                    int mDay = c.get(Calendar.DAY_OF_MONTH);
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                            new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker view, int year,
-                                                      int monthOfYear, int dayOfMonth) {
-                                    To_dt = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                                    DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                                    DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                                    String inputDateStr = To_dt;
-                                    Date date = null;
-                                    try {
-                                        date = inputFormat.parse(inputDateStr);
-                                        dateBefore = inputFormat.parse("");
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    String outputDateStr = outputFormat.format(date);
-                                    Todate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, outputDateStr));
-                                    Log.d("today_date", outputDateStr);
-                                }
-                            }, mYear, mMonth, mDay);
-                    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                    datePickerDialog.show();
-                } else {
-                    final Calendar c = Calendar.getInstance(Locale.getDefault());
-                    int mYear = c.get(Calendar.YEAR);
-                    int mMonth = c.get(Calendar.MONTH);
-                    int mDay = c.get(Calendar.DAY_OF_MONTH);
-                    String currentDatest;
-                    SimpleDateFormat sddf = new SimpleDateFormat("dd/MM/yyyy");
-                    currentDatest = sddf.format(new Date());
-
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(Leave_Application.this,
-                            (view, year, monthOfYear, dayOfMonth) -> {
-                                if ((monthOfYear + 1) < 10) {
-                                    if (dayOfMonth < 10) {
-                                        To_dt = year + "-0" + (monthOfYear + 1) + "-0" + dayOfMonth;
-                                    } else {
-                                        To_dt = year + "-0" + (monthOfYear + 1) + "-" + dayOfMonth;
-                                    }
-                                } else {
-                                    if (dayOfMonth < 10) {
-                                        To_dt = year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth;
-                                    } else {
-                                        To_dt = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                                    }
-                                }
-                                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                                DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                                String inputDateStr = To_dt;
-                                Date date = null;
-
-                                try {
-                                    date = inputFormat.parse(inputDateStr);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                String outputDateStr = outputFormat.format(date);
-                                Todate.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_12, outputDateStr));
-
-
-
-                                Log.d("today_date", outputDateStr);
-                            }, mYear, mMonth, mDay);
-
-                    long milliseconds = dateBefore.getTime();
-                    datePickerDialog.getDatePicker().setMinDate(milliseconds);
-
-
-                    datePickerDialog.show();
-                }
-            }
+            startActivity(new Intent(Leave_Application.this,CalendarActivity.class));
         });
 
         Showcasual_PieChart("5", "4", "3");
         Showcasual_PieChart2("8", "1", "5");
         Showcasual_PieChart3("4", "1", "8");
+
     }
 
 

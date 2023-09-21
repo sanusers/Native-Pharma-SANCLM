@@ -20,7 +20,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     OnDayClickInterface onDayClickInterface;
     Context context;
 
-    public CalendarAdapter (ArrayList<String> daysOfMonth, Context context,OnDayClickInterface onDayClickInterface) {
+    public CalendarAdapter () {
+    }
+
+    public CalendarAdapter (ArrayList<String> daysOfMonth, Context context, OnDayClickInterface onDayClickInterface) {
         this.daysOfMonth = daysOfMonth;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;

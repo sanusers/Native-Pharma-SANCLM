@@ -23,20 +23,24 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <activity android:name=".Leave_Application"
+        <activity
+            android:name=".activity.leave.CalendarActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape"
+            android:theme="@style/NoBackgroundNoTitleDialogTheme" />
 
         <activity
-        android:name=".activity.homeScreen.HomeDashBoard"
-        android:exported="true"
-        android:screenOrientation="landscape" />
-
+            android:name=".activity.leave.Leave_Application"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.homeScreen.HomeDashBoard"
+            android:exported="true"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
-
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.masterSync.MasterSyncActivity"
             android:exported="false"
@@ -53,37 +57,31 @@
             android:name=".activity.MainActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
-
         <activity
-            android:name=".activity.Map.CustSelection.TagCustSelectionList"
+            android:name=".activity.map.custSelection.TagCustSelectionList"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
-
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
-            android:name=".activity.Profile.CustomerProfile"
+            android:name=".activity.profile.CustomerProfile"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize" />
-
         <activity
             android:name=".activity.homeScreen.call.DCRCallActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
-
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
             android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
-            android:name=".activity.Map.MapsActivity"
+            android:name=".activity.map.MapsActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.SplashScreen"
             android:exported="true"
@@ -98,7 +96,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
     </application>
 
 </manifest>

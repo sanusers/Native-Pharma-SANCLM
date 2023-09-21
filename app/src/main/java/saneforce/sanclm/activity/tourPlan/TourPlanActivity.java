@@ -24,7 +24,7 @@ import saneforce.sanclm.databinding.ActivityTourPlanBinding;
 public class TourPlanActivity extends AppCompatActivity {
 
     private ActivityTourPlanBinding binding;
-    CalendarAdapter calendarAdapter;
+    CalendarAdapter calendarAdapter = new CalendarAdapter();
     LocalDate selectedDate;
 
 

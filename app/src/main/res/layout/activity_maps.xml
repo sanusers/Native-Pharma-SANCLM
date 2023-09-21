@@ -16,7 +16,7 @@
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintVertical_bias="1.0"
-           tools:context=".activity.Map.MapsActivity" />
+           tools:context=".activity.map.MapsActivity" />
     <View
         android:id="@+id/view_top"
         android:layout_width="match_parent"

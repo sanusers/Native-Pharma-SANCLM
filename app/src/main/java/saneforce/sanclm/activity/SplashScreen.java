@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.SettingsActivity;
@@ -33,7 +34,7 @@ public class SplashScreen extends AppCompatActivity {
             public void run () {
                 if (SharedPref.getSettingState(getApplicationContext())){
                     if (SharedPref.getLoginState(getApplicationContext())){
-                        startActivity(new Intent(SplashScreen.this, MasterSyncActivity.class));
+                        startActivity(new Intent(SplashScreen.this, HomeDashBoard.class));
                         finish();
                     }else{
                         startActivity(new Intent(SplashScreen.this, LoginActivity.class));

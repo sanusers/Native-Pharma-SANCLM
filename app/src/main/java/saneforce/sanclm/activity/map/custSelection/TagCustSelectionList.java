@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Map.CustSelection;
+package saneforce.sanclm.activity.map.custSelection;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.Map.MapsActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
 
 public class TagCustSelectionList extends AppCompatActivity {
     ImageView img_back;
