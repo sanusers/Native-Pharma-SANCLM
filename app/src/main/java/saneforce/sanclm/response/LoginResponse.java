@@ -7,7 +7,7 @@ import java.lang.Integer;
 import java.lang.String;
 
 public class LoginResponse implements Serializable {
-  private String past_leave_post = "";
+  private String past_leave_post;
 
   private String DS_name;
 

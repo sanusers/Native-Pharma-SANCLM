@@ -8,6 +8,8 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -26,7 +28,7 @@
             android:screenOrientation="landscape"/>
 
         <activity
-        android:name=".activity.HomeScreen.HomeDashBoard"
+        android:name=".activity.homeScreen.HomeDashBoard"
         android:exported="true"
         android:screenOrientation="landscape" />
 
@@ -51,6 +53,37 @@
             android:name=".activity.MainActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".activity.Map.CustSelection.TagCustSelectionList"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
+
+        <activity
+            android:name=".activity.Profile.CustomerProfile"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+
+        <activity
+            android:name=".activity.homeScreen.call.DCRCallActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
+
+        <activity
+            android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+
+        <activity
+            android:name=".activity.Map.MapsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+
         <activity
             android:name=".activity.SplashScreen"
             android:exported="true"
@@ -61,6 +94,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
     </application>
 

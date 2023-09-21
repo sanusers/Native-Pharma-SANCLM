@@ -10,6 +10,7 @@ import java.net.URLConnection;
 
 import saneforce.sanclm.activity.setting.AsyncInterface;
 
+
 public class DownloaderClass extends AsyncTask<Object,Object,Object> {
 
     private String requestUrl, imageName,filePath;
@@ -39,11 +40,9 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
     @Override
     protected void onPostExecute(Object o) {
         if (!ImageStorage.checkIfImageExists(filePath, imageName)) {
-            String status = ImageStorage.saveImage(bitmap,filePath,imageName);
+            String status = ImageStorage.saveImage(bitmap, filePath, imageName);
             if (status != null && status.equalsIgnoreCase("success")){
                 asyncInterface.taskCompleted(true);
-            }else{
-                Log.e("test","status is null and download not success");
             }
             Log.e("test","logo image downloaded");
         }

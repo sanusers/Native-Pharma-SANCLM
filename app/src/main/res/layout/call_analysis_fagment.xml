@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="@dimen/_2sdp">
+    android:paddingTop="@dimen/_5sdp">
 
     <RelativeLayout
         android:id="@+id/call_analysis_layout"
@@ -20,7 +20,7 @@
             android:text="Call Analysis"
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_8sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
 
         <LinearLayout
@@ -52,20 +52,19 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/text_call_analysis"
-            android:layout_marginTop="@dimen/_7sdp">
-
+            android:layout_below="@+id/text_call_analysis">
             <LinearLayout
                 android:id="@+id/recyelerview1"
-                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
-
                 <LinearLayout
                     android:id="@+id/ll_doc_child"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_green"
                     android:orientation="vertical">
 
@@ -73,7 +72,7 @@
                         android:id="@+id/txt_doc_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Docter calls"
@@ -84,13 +83,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_doc_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@+id/txt_name"
                             android:layout_weight="1"
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_gravity="top"
@@ -102,7 +102,7 @@
                             android:visibility="visible" />
 
 
-                        <FrameLayout
+                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
@@ -143,6 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_blue"
                     android:orientation="vertical">
@@ -151,7 +152,7 @@
                         android:id="@+id/txt_che_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Chemist calls"
@@ -163,13 +164,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_che_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@+id/txt_name"
                             android:layout_weight="1"
                             android:layout_marginTop="@dimen/_10sdp"
 
@@ -222,6 +224,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_red"
                     android:orientation="vertical">
@@ -230,7 +233,7 @@
                         android:id="@+id/txt_stock_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Stockiest Calls"
@@ -242,13 +245,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_stock_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@+id/txt_name"
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -300,6 +304,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_brown"
                     android:orientation="vertical">
@@ -308,7 +313,7 @@
                         android:id="@+id/txt_unli_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="Unlistered Calls"
@@ -319,13 +324,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/txt_unlist_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_below="@+id/txt_name"
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
@@ -381,8 +387,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/_2sdp"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/_2sdp">
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/text_average_"

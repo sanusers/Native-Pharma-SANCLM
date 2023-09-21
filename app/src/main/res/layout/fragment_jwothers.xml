@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_grey"
+    android:windowSoftInputMode="adjustResize">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_pob"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:background="@drawable/bg_white_without_border"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/constraint_feedback"
+            app:layout_constraintEnd_toStartOf="@id/constraint_feedback"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/constraint_feedback">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tag_pob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/pob_value"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@id/view_dummy_pob"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <View
+                android:id="@+id/view_dummy_pob"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:background="@color/bg_grey"
+                app:layout_constraintBottom_toTopOf="@id/ed_pob"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_pob" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/ed_pob"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:background="@drawable/bg_white"
+                android:hint="@string/enter_value"
+                android:inputType="number"
+                android:paddingHorizontal="@dimen/_6sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColorHint="@color/bg_txt_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_dummy_pob" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_feedback"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:background="@drawable/bg_white_without_border"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/constraint_pob"
+            app:layout_constraintEnd_toStartOf="@id/constraint_remarks"
+            app:layout_constraintStart_toEndOf="@id/constraint_pob"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tag_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/overall_feedback"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@id/view_dummy_feedback"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <View
+                android:id="@+id/view_dummy_feedback"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:background="@color/bg_grey"
+                app:layout_constraintBottom_toTopOf="@id/txt_feedback_sel_dummy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_feedback" />
+
+            <TextView
+                android:id="@+id/txt_feedback_sel_dummy"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:background="@drawable/border_shape_spinner"
+                android:enabled="false"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="left|center"
+                android:hint="@string/select"
+                android:paddingHorizontal="@dimen/_6sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/bg_txt_color"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:drawableEndCompat="@drawable/spin_down_arrow"
+                app:drawableTint="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_dummy_feedback" />
+
+            <Spinner
+                android:id="@+id/spin_feedback"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:background="@drawable/bg_light_trans"
+                android:paddingHorizontal="@dimen/_6sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_dummy_feedback" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_remarks"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:background="@drawable/bg_white_without_border"
+            app:layout_constraintBottom_toBottomOf="@id/constraint_feedback"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/constraint_feedback"
+            app:layout_constraintTop_toTopOf="@id/constraint_feedback">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tag_remarks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/overall_remarks"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@id/view_dummy_remark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <View
+                android:id="@+id/view_dummy_remark"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:background="@color/bg_grey"
+                app:layout_constraintBottom_toTopOf="@id/ed_remarks"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tag_remarks" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/ed_remarks"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:background="@drawable/bg_white"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:paddingHorizontal="@dimen/_6sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_dummy_remark" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_capture"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/_4sdp"
+            android:background="@drawable/bg_white_without_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/constraint_joint_work"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraint_feedback">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tag_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/capture_event"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@id/view_dummy_capture"
+                app:layout_constraintEnd_toStartOf="@id/btn_add_img_capture"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_add_img_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:background="@drawable/bg_green_dot"
+                android:drawableStart="@drawable/ic_camera"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingVertical="@dimen/_3sdp"
+                android:paddingStart="10dp"
+                android:paddingEnd="15dp"
+                android:text="@string/capture"
+                android:textColor="@color/green_2"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/tag_capture"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@id/tag_capture"
+                app:layout_constraintTop_toTopOf="@id/tag_capture"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="RtlSymmetry" />
+
+            <View
+                android:id="@+id/view_dummy_capture"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:background="@color/dark_purple"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_add_img_capture" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_img_capture"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_dummy_capture" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_joint_work"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:background="@drawable/bg_white_without_border"
+            app:layout_constraintBottom_toBottomOf="@id/constraint_capture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/constraint_capture"
+            app:layout_constraintTop_toBottomOf="@id/constraint_feedback"
+            app:layout_constraintTop_toTopOf="@id/constraint_capture">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tag_jointwork"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_bold"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/joint_work"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@id/view_dummy_jointwork"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_add_jw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:background="@drawable/bg_green_dot"
+                android:drawableStart="@drawable/iv_add"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingVertical="@dimen/_3sdp"
+                android:paddingStart="10dp"
+                android:paddingEnd="15dp"
+                android:text="@string/add"
+                android:textColor="@color/green_2"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/tag_jointwork"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@id/tag_jointwork"
+                app:layout_constraintTop_toTopOf="@id/tag_jointwork"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <View
+                android:id="@+id/view_dummy_jointwork"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:background="@color/dark_purple"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_add_jw" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_jointwork"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_dummy_jointwork" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -10,7 +10,6 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,8 +31,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import saneforce.sanclm.Utils.TimeUtils;
-import saneforce.sanclm.activity.HomeScreen.HomeDashBoard;
+import saneforce.sanclm.utility.TimeUtils;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 
 public class Leave_Application extends AppCompatActivity {
     TextView Fromdate, Todate;

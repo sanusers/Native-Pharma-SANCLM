@@ -30,8 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.HomeScreen.HomeDashBoard;
-import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
 import saneforce.sanclm.network.ApiInterface;
@@ -39,7 +38,7 @@ import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
-import saneforce.sanclm.utility.DateTimeFormat;
+import saneforce.sanclm.utility.TimeUtils;
 
 
 public class MasterSyncActivity extends AppCompatActivity {
@@ -652,7 +651,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 masterSyncItemModels.get(position).setCount(jsonArray.length());
 
                                 masterSyncAdapter.notifyDataSetChanged();
-                                String dateAndTime = DateTimeFormat.getCurrentDateTime(DateTimeFormat.FORMAT_1);
+                                String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                 binding.lastSyncTime.setText(dateAndTime);
                                 SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
                                 sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());

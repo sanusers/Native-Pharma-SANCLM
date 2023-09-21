@@ -36,7 +36,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.utility.DownloaderClass;
-import saneforce.sanclm.utility.ImageStorage;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.common.UtilityClass;
@@ -44,6 +43,7 @@ import saneforce.sanclm.databinding.ActivitySettingsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.storage.SharedPref;
+import saneforce.sanclm.utility.ImageStorage;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -224,7 +224,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         String fileDirectory = packageInfo.applicationInfo.dataDir;
         Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
-        if(!ImageStorage.checkIfImageExists(fileDirectory,imageName )) {
+        if(!ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
             Log.e("test","image not exists");
             new DownloaderClass(url, fileDirectory, imageName, new AsyncInterface() {
                 @Override
