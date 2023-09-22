@@ -32,6 +32,8 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.AsyncInterface;
 import saneforce.sanclm.activity.setting.SettingsActivity;
+import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityLoginBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -40,8 +42,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
-import saneforce.sanclm.common.Constants;
-import saneforce.sanclm.common.UtilityClass;
+
 
 
 

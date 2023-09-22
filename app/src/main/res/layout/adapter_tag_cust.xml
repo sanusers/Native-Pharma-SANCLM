@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/_110sdp"
-    android:layout_height="@dimen/_85sdp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_3sdp"
+    android:layout_marginVertical="@dimen/_2sdp"
     android:elevation="@dimen/_2sdp"
-    android:layout_margin="@dimen/_2sdp"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/_4sdp">
+    app:cardCornerRadius="@dimen/_4sdp"
+    tools:ignore="UnusedAttribute">
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_2sdp"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:background="@drawable/view_pink_border"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_1sdp"
         android:padding="@dimen/_2sdp">
 
         <TextView
@@ -21,11 +38,13 @@
             android:layout_marginVertical="1dp"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/satoshi_bold"
-            android:gravity="start"
-            android:padding="2dp"
+            android:gravity="start|top"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="2dp"
             android:text="Name"
+            android:singleLine="true"
             android:textColor="@color/dark_purple"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/txt_cat"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,14 +57,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="1dp"
-            android:fontFamily="@font/satoshi_bold"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_regular"
             android:gravity="start"
-            android:padding="2dp"
+            android:paddingVertical="3dp"
+            android:paddingHorizontal="2dp"
             android:text="@string/category"
             android:textColor="@color/light_grey_2"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginStart="@dimen/_2sdp"
             app:layout_constraintBottom_toTopOf="@id/txt_specialist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -57,14 +76,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="1dp"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="start"
-            android:padding="2dp"
             android:layout_marginStart="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_regular"
+            android:gravity="start"
+            android:paddingVertical="3dp"
+            android:paddingHorizontal="2dp"
             android:text="Cardio Surgeon"
             android:textColor="@color/light_grey_2"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/txt_address"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -78,14 +97,13 @@
             android:layout_marginVertical="@dimen/_2sdp"
             android:layout_marginStart="@dimen/_3sdp"
             android:background="@drawable/bg_light_pink"
-            android:fontFamily="@font/satoshi_bold"
+            android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
             android:paddingHorizontal="@dimen/_8sdp"
             android:paddingVertical="@dimen/_3sdp"
             android:text="Anna Nagar"
             android:textColor="@color/dark_purple"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/tag_img"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -95,13 +113,14 @@
 
         <ImageView
             android:id="@+id/tag_img"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="@dimen/_14sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:layout_marginVertical="@dimen/_2sdp"
             android:src="@drawable/img_dcr_selection_tag"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginVertical="@dimen/_1sdp"
-            app:layout_constraintTop_toBottomOf="@id/txt_address"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/txt_count"
@@ -116,15 +135,14 @@
             android:textColor="@color/dark_purple"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/txt_address"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tag_img"/>
+            app:layout_constraintTop_toTopOf="@id/tag_img"
+            app:layout_constraintBottom_toBottomOf="@id/tag_img"
+            app:layout_constraintStart_toEndOf="@id/tag_img" />
 
         <TextView
             android:id="@+id/txt_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="end"
             android:paddingHorizontal="@dimen/_3sdp"
@@ -133,11 +151,11 @@
             android:textColor="@color/pink"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintTop_toTopOf="@id/tag_img"
+            app:layout_constraintBottom_toBottomOf="@id/tag_img"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_address"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/txt_count"/>
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/txt_count" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

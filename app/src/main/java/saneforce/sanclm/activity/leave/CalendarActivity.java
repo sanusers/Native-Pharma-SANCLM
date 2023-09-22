@@ -19,10 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.utility.TimeUtils;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
-
 
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;

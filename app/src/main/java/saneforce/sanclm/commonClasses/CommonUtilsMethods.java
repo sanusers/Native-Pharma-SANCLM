@@ -1,4 +1,4 @@
-package saneforce.sanclm.CommonClasses;
+package saneforce.sanclm.commonClasses;
 
 
 import android.app.Activity;
@@ -60,7 +60,6 @@ public class CommonUtilsMethods {
         tv_name.setText(name);
         popup.setOutsideTouchable(true);
         popup.showAsDropDown(view);
-
     }
 
     public void recycleTestWithDivider(RecyclerView rv_test) {

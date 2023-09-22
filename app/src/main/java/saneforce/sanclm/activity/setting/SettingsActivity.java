@@ -34,14 +34,14 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.common.Constants;
+import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.common.UtilityClass;
 import saneforce.sanclm.databinding.ActivitySettingsBinding;
 import saneforce.sanclm.utility.ImageStorage;
 
@@ -175,7 +175,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     reportsUrl = config.getString("reportUrl");
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
-                                    downloadImage(baseWebUrl + logoUrl, Constants.LOGO_IMAGE_NAME,enteredUrl);
+                                    downloadImage(baseWebUrl + logoUrl, Constants.LOGO_IMAGE_NAME, enteredUrl);
                                     licenseKeyValid = true;
                                     break;
                                 }
