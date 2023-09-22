@@ -28,9 +28,6 @@ public class TimeUtils {
     public static final String FORMAT_14 = "yyyy-MM-01";
     public static final String FORMAT_15 = "yyyy-MM-dd 00:00:00.000";
     public static final String FORMAT_16 = "dd MMM yyyy hh:mm a";
-    public static final String FORMAT_17 = "dd MMM yyyy hh:mm a";
-    public static final String FORMAT_18 = "dd MMM yyyy hh:mm a";
-
 
 
     public static String getCurrentDateTime(String format) {

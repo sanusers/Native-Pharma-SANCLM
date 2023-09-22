@@ -123,8 +123,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         if (!dayText.equals("")) {
             String message = "Selected Date " + dayText + " " + monthYearFromDate(selectedDate);
             String date_sel=dayText + " " + monthYearFromDate(selectedDate);
-            String from_val= (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_18, date_sel));
-            Leave_Application.Fromdate.setText(from_val);
+//            String from_val= (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_18, date_sel));
+//            Leave_Application.Fromdate.setText(from_val);
             finish();
         }
     }

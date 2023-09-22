@@ -18,7 +18,6 @@ import java.util.List;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.adapters.Call_adapter;
-import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.activity.homeScreen.modelClass.CallsModalClass;
 
 
@@ -48,7 +47,7 @@ public class CallsFragment extends Fragment {
         tv_add_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+//                startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
             }
         });
 
