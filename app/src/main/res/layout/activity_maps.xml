@@ -16,7 +16,7 @@
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintVertical_bias="1.0"
-           tools:context=".activity.map.MapsActivity" />
+           tools:context=".activity.Map.MapsActivity" />
     <View
         android:id="@+id/view_top"
         android:layout_width="match_parent"
@@ -220,7 +220,7 @@
         app:layout_constraintTop_toBottomOf="@id/view_top"
         app:layout_constraintStart_toStartOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
-        app:drawableStartCompat="@drawable/iv_marker_purple" />
+        app:drawableStartCompat="@drawable/img_marker_purple" />
 
 
     <ImageView

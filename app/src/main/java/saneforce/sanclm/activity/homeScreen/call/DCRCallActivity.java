@@ -3,6 +3,7 @@ package saneforce.sanclm.activity.homeScreen.call;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,9 +18,10 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.CommonClasses.CommonSharedPreference;
+import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
@@ -63,7 +65,8 @@ public class DCRCallActivity extends AppCompatActivity {
         btn_final_submit = findViewById(R.id.btn_final_submit);
         img_back = findViewById(R.id.iv_back);
         tv_cust_name = findViewById(R.id.tag_cust_name);
-
+        fragment_add_call_details_side = findViewById(R.id.fragment_add_call_details_side);
+        fragment_add_rcpa_side = findViewById(R.id.fragment_add_rcpa_side);
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPreference = new CommonSharedPreference(this);
 
@@ -92,9 +95,26 @@ public class DCRCallActivity extends AppCompatActivity {
         }
 
         tv_cust_name.setText(cust_name);
+
         img_back.setOnClickListener(view -> {
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
             startActivity(intent);
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btn_final_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                startActivity(intent);
+            }
         });
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

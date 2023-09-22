@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.adapter.rcpa.RCPAAddCompAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.rcpa.RCPAChemistAdapter;
-import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 
 
 public class RCPAFragment extends Fragment {
@@ -38,15 +38,12 @@ public class RCPAFragment extends Fragment {
         rv_add_rcpa_list.setAdapter(rcpaChemistAdapter);
 
         btn_add_rcpa.setOnClickListener(view -> {
-            try {
-                RCPAFragmentSide.RCPAAddCompSideViewArrayList.clear();
-                RCPAAddCompAdapter rcpaAddCompAdapter = new RCPAAddCompAdapter(getActivity(), RCPAFragmentSide.RCPAAddCompSideViewArrayList);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                RCPAFragmentSide.rv_comp_list.setLayoutManager(mLayoutManager);
-                RCPAFragmentSide.rv_comp_list.setAdapter(rcpaAddCompAdapter);
-            } catch (Exception e) {
 
-            }
+            RCPAFragmentSide.RCPAAddCompSideViewArrayList.clear();
+            RCPAAddCompAdapter rcpaAddCompAdapter = new RCPAAddCompAdapter(getActivity(), RCPAFragmentSide.RCPAAddCompSideViewArrayList);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            RCPAFragmentSide.rv_comp_list.setLayoutManager(mLayoutManager);
+            RCPAFragmentSide.rv_comp_list.setAdapter(rcpaAddCompAdapter);
             DCRCallActivity.fragment_add_rcpa_side.setVisibility(View.VISIBLE);
         });
 

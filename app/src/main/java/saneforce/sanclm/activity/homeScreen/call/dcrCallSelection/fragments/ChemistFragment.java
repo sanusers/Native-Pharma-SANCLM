@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
-import saneforce.sanclm.activity.map.custSelection.CustList;
+import saneforce.sanclm.activity.Map.CustSelection.CustList;
 import saneforce.sanclm.R;
 
 
@@ -29,16 +29,16 @@ public class ChemistFragment extends Fragment {
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
 
         custListArrayList.clear();
-        custListArrayList.add(new CustList("Mohammed medicals", "Category", "Cardio Surgion", "Madurai"));
-        custListArrayList.add(new CustList("Kumkar pharmaticals", "Category", "Neurolgist", "Chennai"));
+        custListArrayList.add(new CustList("Mohammed medicals", "Category", "Cardio Surgion", "Trichy"));
+        custListArrayList.add(new CustList("Kumkar pharmaticals", "Category", "Neurolgist", "Trichy"));
         custListArrayList.add(new CustList("Aasik industried", "Category", "MBBS", "Trichy"));
-        custListArrayList.add(new CustList("jaipur Med", "Category", "Ortho Specialist", "Kanyakumari"));
+        custListArrayList.add(new CustList("jaipur Med", "Category", "Ortho Specialist", "Trichy"));
         custListArrayList.add(new CustList("Venkatesh  medicals", "Category", "Dermotologist", "Sivagangai"));
-        custListArrayList.add(new CustList("Akash Med", "Category", "MBBS", "Madurai"));
+        custListArrayList.add(new CustList("Akash Med", "Category", "MBBS", "Kerala"));
         custListArrayList.add(new CustList("Aravindh", "Category", "Ortho", "Vellore"));
-        custListArrayList.add(new CustList("Surya Vignesh Kumar indsutries ", "Category", "Dermotologist", "Kerala"));
+        custListArrayList.add(new CustList("Surya Vignesh Kumar indsutries ", "Category", "Dermotologist", "Kanyakumari"));
 
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getContext(), custListArrayList);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(),getContext(), custListArrayList);
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

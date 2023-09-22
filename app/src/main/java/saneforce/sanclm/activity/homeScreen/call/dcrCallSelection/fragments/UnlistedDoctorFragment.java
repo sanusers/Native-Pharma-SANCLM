@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
-import saneforce.sanclm.activity.map.custSelection.CustList;
+import saneforce.sanclm.activity.Map.CustSelection.CustList;
 import saneforce.sanclm.R;
 
 
@@ -31,8 +31,8 @@ public class UnlistedDoctorFragment extends Fragment {
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
 
         custListArrayList.clear();
-        custListArrayList.add(new CustList("Mohammed Ameer BashaKhan", "Category", "Cardio Surgion", "Madurai"));
-        custListArrayList.add(new CustList("Baskar Kumar Reddy", "Category", "Neurolgist", "Chennai"));
+        custListArrayList.add(new CustList("Mohammed Ameer BashaKhan", "Category", "Cardio Surgion", "Trichy"));
+        custListArrayList.add(new CustList("Baskar Kumar Reddy", "Category", "Neurolgist", "Trichy"));
         custListArrayList.add(new CustList("Aasik", "Category", "MBBS", "Trichy"));
         custListArrayList.add(new CustList("Umar Kathab Manzoor Ali", "Category", "Ortho Specialist", "Kanyakumari"));
         custListArrayList.add(new CustList("Aravindh", "Category", "Ortho", "Vellore"));
@@ -41,8 +41,7 @@ public class UnlistedDoctorFragment extends Fragment {
         custListArrayList.add(new CustList("Vamshi Kannan", "Category", "Neurolgist", "Jammu"));
         custListArrayList.add(new CustList("Madhan", "Category", "Cardiogilist", "Kanyakumari"));
 
-        Log.v("dfdfs","---" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getContext(), custListArrayList);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(),getContext(), custListArrayList);
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

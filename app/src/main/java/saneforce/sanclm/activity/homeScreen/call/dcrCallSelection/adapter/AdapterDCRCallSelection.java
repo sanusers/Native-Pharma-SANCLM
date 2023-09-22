@@ -1,9 +1,9 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +15,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.map.custSelection.CustList;
+import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.Map.CustSelection.CustList;
+import saneforce.sanclm.activity.Profile.CustomerProfile;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     Context context;
     ArrayList<CustList> custListArrayList;
+    CommonUtilsMethods commonUtilsMethods;
+    Activity activity;
 
-    public AdapterDCRCallSelection(Context context, ArrayList<CustList> custListArrayList) {
+    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> custListArrayList) {
+        this.activity = activity;
         this.context = context;
         this.custListArrayList = custListArrayList;
     }
@@ -38,15 +42,29 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
     @Override
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
-        Log.v("dfdfs","--adapter-" + custListArrayList.size());
+        commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(custListArrayList.get(position).getName());
         holder.tv_category.setText(custListArrayList.get(position).getCategory());
         holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(custListArrayList.get(position).getArea());
 
+        holder.tv_name.setOnClickListener(view -> {
+            if (holder.tv_name.getText().toString().length() > 18) {
+                commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
+            }
+        });
+
+
+        if (custListArrayList.get(position).getArea().equalsIgnoreCase("Trichy")) {
+            holder.view_top.setVisibility(View.VISIBLE);
+            holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
+        }
+
+
         holder.constraint_main.setOnClickListener(view -> {
-            Intent intent = new Intent(context, DCRCallActivity.class);
+            Intent intent = new Intent(context, CustomerProfile.class);
             intent.putExtra("cust_name", holder.tv_name.getText().toString());
+            intent.putExtra("cust_addr", holder.tv_area.getText().toString());
             context.startActivity(intent);
         });
     }
@@ -65,6 +83,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name, tv_category, tv_specialist, tv_area;
         ConstraintLayout constraint_main;
+        View view_top;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +92,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             tv_specialist = itemView.findViewById(R.id.txt_specialist);
             tv_area = itemView.findViewById(R.id.txt_address);
             constraint_main = itemView.findViewById(R.id.constraint_main);
+            view_top = itemView.findViewById(R.id.view_top);
         }
     }
 }
