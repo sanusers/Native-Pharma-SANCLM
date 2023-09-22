@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 
@@ -24,6 +24,7 @@ public class CustomerProfile extends AppCompatActivity {
     ImageView img_back;
     CommonUtilsMethods commonUtilsMethods;
     int tab_pos = 0;
+    public static String tv_custName="",tv_cust_area;
 
     @Override
     public void onBackPressed() {
@@ -46,6 +47,12 @@ public class CustomerProfile extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
         tabLayout.addTab(tabLayout.newTab().setText("Pre Call Analysis"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        Bundle extra = getIntent().getExtras();
+        if (extra != null) {
+            tv_custName = extra.getString("cust_name");
+            tv_cust_area = extra.getString("cust_addr");
+        }
 
         CustTabLayoutAdapter adapter = new CustTabLayoutAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -83,6 +90,8 @@ public class CustomerProfile extends AppCompatActivity {
         btn_start.setOnClickListener(view -> {
             if (tab_pos == 1) {
                 Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
+                intent1.putExtra("cust_name", tv_custName);
+                intent1.putExtra("cust_addr", tv_cust_area);
                 startActivity(intent1);
             }
         });

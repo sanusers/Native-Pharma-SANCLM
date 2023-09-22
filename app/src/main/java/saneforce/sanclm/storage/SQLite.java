@@ -1,4 +1,4 @@
-package saneforce.sanclm.Storage;
+package saneforce.sanclm.storage;
 
 import android.content.ContentValues;
 import android.content.Context;

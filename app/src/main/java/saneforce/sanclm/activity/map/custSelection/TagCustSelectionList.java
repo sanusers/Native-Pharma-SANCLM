@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.map.MapsActivity;
 

@@ -1,4 +1,4 @@
-package saneforce.sanclm.commonClasses;
+package saneforce.sanclm.CommonClasses;
 
 import android.content.Context;
 import android.content.SharedPreferences;

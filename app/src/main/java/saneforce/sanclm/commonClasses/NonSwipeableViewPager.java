@@ -1,4 +1,4 @@
-package saneforce.sanclm.commonClasses;
+package saneforce.sanclm.CommonClasses;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -47,7 +47,7 @@ public class NonSwipeableViewPager extends ViewPager {
         }
     }
 
-    public static class MyScroller extends Scroller {
+    public class MyScroller extends Scroller {
         public MyScroller(Context context) {
             super(context, new DecelerateInterpolator());
         }

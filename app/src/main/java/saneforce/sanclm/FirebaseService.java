@@ -6,9 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 
-import saneforce.sanclm.Storage.SharedPref;
-
 import saneforce.sanclm.storage.SharedPref;
+
 
 public class FirebaseService extends FirebaseMessagingService {
 

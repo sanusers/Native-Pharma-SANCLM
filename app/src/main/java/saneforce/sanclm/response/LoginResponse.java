@@ -1,4 +1,4 @@
-package saneforce.sanclm.Response;
+package saneforce.sanclm.response;
 
 import java.io.Serializable;
 import java.lang.Boolean;

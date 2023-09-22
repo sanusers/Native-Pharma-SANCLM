@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,7 +14,8 @@
         android:padding="@dimen/_6sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_alignParentTop="true">
 
         <TextView
             android:layout_width="0dp"
@@ -24,7 +25,8 @@
             android:text="Add Plan"
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_7sdp"
-            android:fontFamily="@font/satoshi_variable"
+            android:fontFamily="@font/satoshi_medium"
+            android:layout_gravity="center"
             tools:ignore="SpUsage"/>
 
         <ImageView
@@ -32,7 +34,8 @@
             android:layout_width="@dimen/_12sdp"
             android:layout_height="@dimen/_12sdp"
             android:src="@drawable/close_icon"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/_3sdp"/>
 
     </LinearLayout>
 
@@ -40,315 +43,418 @@
         android:id="@+id/lineView"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/text_dark_65"
+        android:background="#dbdbdb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header" />
+        app:layout_constraintTop_toBottomOf="@id/header"
+        android:layout_below="@id/header"/>
 
-    <RelativeLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="@dimen/_6sdp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_2sdp"
+        android:layout_margin="@dimen/_3sdp"
+        app:contentPadding="@dimen/_6sdp"
+        android:backgroundTint="@color/background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lineView">
+        app:layout_constraintTop_toBottomOf="@id/lineView"
+        android:layout_below="@id/lineView">
 
-        <TextView
-            android:id="@+id/workType"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Work Type"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_variable"
-            android:gravity="start"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            tools:ignore="SpUsage"/>
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lineView">
 
-        <LinearLayout
-            android:id="@+id/workTypeSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/edittext_stroke"
-            android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/workType">
+            <LinearLayout
+                android:id="@+id/session"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Session 1"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_7sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    tools:ignore="SpUsage" />
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:src="@drawable/trash_icon" />
+
+            </LinearLayout>
 
             <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:id="@+id/workType"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select"
-                android:textColor="@color/text_dark"
+                android:text="Work Type"
                 android:textSize="@dimen/_6sdp"
+                android:textColor="@color/text_dark_65"
+                android:textStyle="bold"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="start"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/session"
+                android:layout_marginTop="@dimen/_6sdp"
                 tools:ignore="SpUsage"/>
-            
-            <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/arrow_down"
-                android:layout_gravity="center"/>
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/workTypeSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_stroke"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/workType">
 
-        <TextView
-            android:id="@+id/hq"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Head Quarters"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_variable"
-            android:gravity="start"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/workTypeSelect"
-            tools:ignore="SpUsage"/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    tools:ignore="SpUsage"/>
 
-        <LinearLayout
-            android:id="@+id/hqSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/edittext_stroke"
-            android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/hq">
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
 
             <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:id="@+id/hq"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select"
-                android:textColor="@color/text_dark"
+                android:text="Head Quarters"
                 android:textSize="@dimen/_6sdp"
+                android:textColor="@color/text_dark_65"
+                android:textStyle="bold"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/workTypeSelect"
                 tools:ignore="SpUsage"/>
 
-            <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/arrow_down"
-                android:layout_gravity="center"/>
+            <LinearLayout
+                android:id="@+id/hqSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_stroke"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/hq">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    tools:ignore="SpUsage"/>
 
-        <TextView
-            android:id="@+id/cluster"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cluster"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_variable"
-            android:gravity="start"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/hqSelect"
-            tools:ignore="SpUsage"/>
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    android:layout_gravity="center"/>
 
-        <LinearLayout
-            android:id="@+id/clusterSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/edittext_stroke"
-            android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/cluster">
+            </LinearLayout>
 
             <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:id="@+id/cluster"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select"
-                android:textColor="@color/text_dark"
+                android:text="Cluster"
                 android:textSize="@dimen/_6sdp"
+                android:textColor="@color/text_dark_65"
+                android:textStyle="bold"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/hqSelect"
                 tools:ignore="SpUsage"/>
 
-            <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/arrow_down"
-                android:layout_gravity="center"/>
+            <LinearLayout
+                android:id="@+id/clusterSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_stroke"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/cluster">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    tools:ignore="SpUsage"/>
 
-        <TextView
-            android:id="@+id/JointCall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Joint Call"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_variable"
-            android:gravity="start"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/clusterSelect"
-            tools:ignore="SpUsage"/>
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    android:layout_gravity="center"/>
 
-        <LinearLayout
-            android:id="@+id/jointCallSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/edittext_stroke"
-            android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/JointCall">
+            </LinearLayout>
 
             <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:id="@+id/JointCall"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select"
-                android:textColor="@color/text_dark"
+                android:text="Joint Call"
                 android:textSize="@dimen/_6sdp"
+                android:textColor="@color/text_dark_65"
+                android:textStyle="bold"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/clusterSelect"
                 tools:ignore="SpUsage"/>
 
-            <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/arrow_down"
-                android:layout_gravity="center"/>
+            <LinearLayout
+                android:id="@+id/jointCallSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_stroke"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/JointCall">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    tools:ignore="SpUsage"/>
 
-        <TextView
-            android:id="@+id/listedDr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Listed Doctor"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_variable"
-            android:gravity="start"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/jointCallSelect"
-            tools:ignore="SpUsage"/>
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    android:layout_gravity="center"/>
 
-        <LinearLayout
-            android:id="@+id/listedDrSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/edittext_stroke"
-            android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/listedDr">
+            </LinearLayout>
 
             <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:id="@+id/listedDr"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select"
-                android:textColor="@color/text_dark"
+                android:text="Listed Doctor"
                 android:textSize="@dimen/_6sdp"
+                android:textColor="@color/text_dark_65"
+                android:textStyle="bold"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/jointCallSelect"
                 tools:ignore="SpUsage"/>
 
-            <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/arrow_down"
-                android:layout_gravity="center"/>
+            <LinearLayout
+                android:id="@+id/listedDrSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_stroke"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/listedDr">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    tools:ignore="SpUsage"/>
 
-        <TextView
-            android:id="@+id/chemist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chemist"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/text_dark_65"
-            android:fontFamily="@font/satoshi_variable"
-            android:gravity="start"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/listedDrSelect"
-            tools:ignore="SpUsage"/>
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    android:layout_gravity="center"/>
 
-        <LinearLayout
-            android:id="@+id/chemistSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/edittext_stroke"
-            android:padding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/chemist">
+            </LinearLayout>
 
             <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:id="@+id/chemist"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select"
-                android:textColor="@color/text_dark"
+                android:text="Chemist"
                 android:textSize="@dimen/_6sdp"
+                android:textColor="@color/text_dark_65"
+                android:textStyle="bold"
                 android:fontFamily="@font/satoshi_medium"
+                android:gravity="start"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/listedDrSelect"
                 tools:ignore="SpUsage"/>
 
-            <ImageView
-                android:layout_width="@dimen/_6sdp"
-                android:layout_height="@dimen/_6sdp"
-                android:src="@drawable/arrow_down"
-                android:layout_gravity="center"/>
+            <LinearLayout
+                android:id="@+id/chemistSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_stroke"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/chemist">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    tools:ignore="SpUsage"/>
 
-    </RelativeLayout>
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/arrow_down"
+                    android:layout_gravity="center"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="@dimen/_6sdp"
-        app:layout_constraintHorizontal_bias="1">
+        app:layout_constraintTop_toBottomOf="@id/cardView"
+        app:layout_constraintBottom_toBottomOf="@id/linearLayout"
+        android:layout_below="@id/cardView"
+        android:layout_above="@id/linearLayout">
 
-        <TextView
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
-            android:textSize="@dimen/_6sdp"
-            android:textColor="@color/white"
-            android:fontFamily="@font/satoshi_variable"
-            android:background="@drawable/edittext_stroke"
-            app:backgroundTint="@color/text_dark"
+            android:layout_margin="@dimen/_6sdp"
+            android:gravity="start"
+            android:background="@drawable/bg_green_dot"
             android:paddingStart="@dimen/_15sdp"
             android:paddingEnd="@dimen/_15sdp"
             android:paddingTop="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            tools:ignore="SpUsage"/>
+            android:paddingBottom="@dimen/_5sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:src="@drawable/add_icon_green"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Session"
+                android:textSize="@dimen/_6sdp"
+                android:textColor="#00C689"
+                android:fontFamily="@font/satoshi_medium"
+                android:layout_marginStart="@dimen/_3sdp"
+                tools:ignore="SpUsage"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_6sdp"
+            android:gravity="end">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:textSize="@dimen/_6sdp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/satoshi_variable"
+                android:background="@drawable/edittext_stroke"
+                app:backgroundTint="@color/text_dark"
+                android:paddingStart="@dimen/_15sdp"
+                android:paddingEnd="@dimen/_15sdp"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_5sdp"
+                tools:ignore="SpUsage"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

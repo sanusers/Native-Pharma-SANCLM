@@ -14,7 +14,7 @@ import saneforce.sanclm.R;
 
 
 public class OverviewFragment extends Fragment {
-    TextView tv_name,tv_address;
+    TextView tv_name, tv_address;
 
     @Nullable
     @Override
@@ -22,6 +22,8 @@ public class OverviewFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_overview, container, false);
         tv_name = v.findViewById(R.id.tv_name);
         tv_address = v.findViewById(R.id.tv_address);
+        tv_name.setText(CustomerProfile.tv_custName);
+        tv_address.setText(CustomerProfile.tv_cust_area);
         return v;
     }
 }

@@ -51,7 +51,7 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
         return taggedMapLists.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name, tv_address;
         ImageView img_info;
 

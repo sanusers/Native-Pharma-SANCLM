@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
-import saneforce.sanclm.activity.Map.CustSelection.CustList;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.map.custSelection.CustList;
 
 
 public class UnlistedDoctorFragment extends Fragment {

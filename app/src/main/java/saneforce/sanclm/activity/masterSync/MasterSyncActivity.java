@@ -37,9 +37,9 @@ import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
 
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
-import saneforce.sanclm.Response.LoginResponse;
-import saneforce.sanclm.Storage.SQLite;
-import saneforce.sanclm.Storage.SharedPref;
+import saneforce.sanclm.response.LoginResponse;
+import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.TimeUtils;
 
 

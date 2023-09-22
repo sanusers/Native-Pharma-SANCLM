@@ -18,14 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.CommonClasses.CommonSharedPreference;
+import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
 
 public class MapsActivity extends AppCompatActivity {
-    ImageView img_arrow_right, img_arrow_left, img_refresh, img_cur_loc,backArrow;
+    ImageView img_arrow_right, img_arrow_left, img_refresh, img_cur_loc,backArrow, iv_back;
     Button btn_tag;
     RecyclerView rv_list;
     View view_one, view_two;
@@ -63,6 +63,7 @@ public class MapsActivity extends AppCompatActivity {
 
         img_arrow_right = findViewById(R.id.img_rv_right);
         img_arrow_left = findViewById(R.id.img_rv_left);
+        iv_back = findViewById(R.id.iv_back);
         img_cur_loc = findViewById(R.id.img_cur_loc);
         img_refresh = findViewById(R.id.img_refresh_map);
         tv_tag_addr = findViewById(R.id.tv_tagged_address);
@@ -90,6 +91,18 @@ public class MapsActivity extends AppCompatActivity {
                 }
             }
         }
+
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               /* if (from.equalsIgnoreCase("tag_adapter")) {
+                    startActivity(new Intent(MapsActivity.this, TagCustSelectionList.class));
+                } else {*/
+                startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
+                //    }
+
+            }
+        });
 
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override

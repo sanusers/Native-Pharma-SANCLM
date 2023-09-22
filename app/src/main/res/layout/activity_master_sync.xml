@@ -24,12 +24,18 @@
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" >
 
-            <ImageView
+            <LinearLayout
                 android:id="@+id/backArrow"
-                android:layout_width="@dimen/_10sdp"
-                android:layout_height="@dimen/_10sdp"
-                android:src="@drawable/arrow_back_white"
-                android:layout_marginStart="@dimen/_8sdp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_6sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:src="@drawable/arrow_back_white" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -697,27 +703,31 @@
                                 android:layout_height="wrap_content"
                                 android:text="Sync Listed Doctor"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_7sdp"
+                                android:textSize="@dimen/_6sdp"
+                                android:textAllCaps="false"
                                 android:fontFamily="@font/satoshi_variable"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:padding="@dimen/_8sdp"
+                                android:padding="@dimen/_9sdp"
                                 android:background="@drawable/selector_box"
                                 app:backgroundTint="@color/text_dark"
+                                android:layout_marginEnd="@dimen/_3sdp"
                                 tools:ignore="SpUsage"/>
 
                             <Button
                                 android:layout_weight="1"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_marginStart="@dimen/_3sdp"
-                                android:layout_marginEnd="@dimen/_3sdp"/>
+                                android:layout_marginEnd="@dimen/_3sdp"
+                                android:visibility="invisible"/>
 
                             <Button
                                 android:layout_weight="1"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/_3sdp"/>
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="@dimen/_3sdp"
+                                android:visibility="invisible"/>
 
                         </LinearLayout>
 

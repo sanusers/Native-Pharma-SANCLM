@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
-import saneforce.sanclm.activity.Map.CustSelection.CustList;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.map.custSelection.CustList;
 
 
 public class ChemistFragment extends Fragment {

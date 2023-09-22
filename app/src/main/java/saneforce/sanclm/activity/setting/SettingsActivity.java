@@ -37,7 +37,7 @@ import retrofit2.Response;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
-import saneforce.sanclm.Storage.SharedPref;
+import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
