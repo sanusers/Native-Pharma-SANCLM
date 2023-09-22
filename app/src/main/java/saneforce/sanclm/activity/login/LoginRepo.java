@@ -11,8 +11,9 @@ import com.google.gson.JsonObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.network.ApiInterface;
-import saneforce.sanclm.network.RetrofitClient;
+import saneforce.sanclm.Network.ApiInterface;
+import saneforce.sanclm.Network.RetrofitClient;
+
 
 public class LoginRepo {
 

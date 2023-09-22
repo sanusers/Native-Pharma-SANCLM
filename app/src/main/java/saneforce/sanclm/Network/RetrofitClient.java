@@ -26,7 +26,7 @@ public class RetrofitClient {
                 .build();
     }
 
-    public static ApiInterface getRetrofit(Context context,String baseUrl){
+    public static ApiInterface getRetrofit(Context context, String baseUrl){
         return getClient(baseUrl).create(ApiInterface.class);
     }
 

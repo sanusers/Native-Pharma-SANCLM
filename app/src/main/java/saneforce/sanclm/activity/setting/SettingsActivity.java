@@ -35,14 +35,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.common.Constants;
+import saneforce.sanclm.Network.ApiInterface;
+import saneforce.sanclm.Network.RetrofitClient;
+import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.common.UtilityClass;
 import saneforce.sanclm.databinding.ActivitySettingsBinding;
-import saneforce.sanclm.network.ApiInterface;
-import saneforce.sanclm.network.RetrofitClient;
-import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.ImageStorage;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -160,7 +160,7 @@ public class SettingsActivity extends AppCompatActivity {
                     binding.pbConfigurationProgress.setVisibility(View.GONE);
                     if (response.isSuccessful()){
                         Log.e("test","success : "+ response.body().toString());
-                        SharedPref.saveBaseUrl(getApplicationContext(),"https://"+url+"/apps/");
+                        SharedPref.saveBaseUrl(getApplicationContext(), "https://"+url+"/apps/");
                         JSONArray jsonArray = null;
                         try {
                             jsonArray = new JSONArray(response.body().toString());
@@ -229,13 +229,13 @@ public class SettingsActivity extends AppCompatActivity {
             new DownloaderClass(url, fileDirectory, imageName, new AsyncInterface() {
                 @Override
                 public void taskCompleted (boolean status) {
-                    SharedPref.saveUrls(getApplicationContext(),enteredUrl,licenseKey,baseWebUrl,phpPathUrl,reportsUrl,slidesUrl,logoUrl,true);
+                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
                     Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
                 }
             }).execute();
         }else{
-            SharedPref.saveUrls(getApplicationContext(),enteredUrl,licenseKey,baseWebUrl,phpPathUrl,reportsUrl,slidesUrl,logoUrl,true);
+            SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
             Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         }

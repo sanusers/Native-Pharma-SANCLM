@@ -30,11 +30,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
+
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.common.Constants;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
-import saneforce.sanclm.network.ApiInterface;
-import saneforce.sanclm.network.RetrofitClient;
+
+import saneforce.sanclm.Network.ApiInterface;
+import saneforce.sanclm.Network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
