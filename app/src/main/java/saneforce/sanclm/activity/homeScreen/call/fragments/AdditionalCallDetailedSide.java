@@ -24,8 +24,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.CommonClasses.CommonSharedPreference;
-import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonclasses.CommonSharedPreference;
+import saneforce.sanclm.commonclasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall;

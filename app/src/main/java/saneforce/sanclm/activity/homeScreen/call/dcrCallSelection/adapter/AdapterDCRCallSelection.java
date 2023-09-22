@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonclasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.Map.CustSelection.CustList;
 import saneforce.sanclm.activity.Profile.CustomerProfile;

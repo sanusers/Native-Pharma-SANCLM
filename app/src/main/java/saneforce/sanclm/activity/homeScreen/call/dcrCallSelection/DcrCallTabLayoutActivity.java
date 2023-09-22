@@ -15,11 +15,11 @@ import com.google.android.material.tabs.TabLayout;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.DCRCallSelectionTabLayoutAdapter;
 import saneforce.sanclm.databinding.CallDcrSelectionBinding;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
     CallDcrSelectionBinding dcrSelectionBinding;
-    Dialog dialogFilter;
 
     @Override
     public void onBackPressed() {
@@ -40,8 +40,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(adapter);
         dcrSelectionBinding.viewPagerCallSelection.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(dcrSelectionBinding.tabLayoutCall));
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(dcrSelectionBinding.searchCust.getWindowToken(), 0);
+        /*InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(dcrSelectionBinding.searchCust.getWindowToken(), 0);*/
 
 
         dcrSelectionBinding.ivBack.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +51,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             }
         });
 
-        dcrSelectionBinding.ivFilter.setOnClickListener(new View.OnClickListener() {
+       /* dcrSelectionBinding.ivFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -77,7 +77,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                     }
                 });
             }
-        });
+        });*/
 
 
         dcrSelectionBinding.tabLayoutCall.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

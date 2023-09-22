@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonclasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.Map.MapsActivity;
 
@@ -27,7 +27,6 @@ public class TagCustSelectionList extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     EditText editTextSearch_cust;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
-
 
     @Override
     public void onBackPressed() {
@@ -86,12 +85,11 @@ public class TagCustSelectionList extends AppCompatActivity {
         custListArrayList.add(new CustList("Vamshi Kannan", "Category", "Neurolgist", "Jammu", "0/1"));
         custListArrayList.add(new CustList("Madhan", "Category", "Cardiogilist", "Kanyakumari", "1/1"));
 
-        custListAdapter = new CustListAdapter(TagCustSelectionList.this, custListArrayList);
+        custListAdapter = new CustListAdapter(TagCustSelectionList.this,TagCustSelectionList.this, custListArrayList);
         rv_cust_list.setItemAnimator(new DefaultItemAnimator());
         rv_cust_list.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
         rv_cust_list.setAdapter(custListAdapter);
     }
-
 
     private void filter(String text) {
         ArrayList<CustList> filterdNames = new ArrayList<>();

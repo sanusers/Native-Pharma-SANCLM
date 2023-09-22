@@ -82,6 +82,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_layout_call"
         app:layout_constraintVertical_bias="0.0" />
+<!--
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_visible_hq_sel"
@@ -228,6 +229,7 @@
         app:layout_constraintTop_toBottomOf="@id/tab_layout_call"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
+-->
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager_call_selection"
@@ -240,57 +242,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_cust"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout_call"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_view_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/_4sdp"
-        android:background="@color/bg_grey"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_cust"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <!--  <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          android:layout_margin="@dimen/_4sdp"
-          android:visibility="gone"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@id/search_cust"
-          app:layout_constraintVertical_bias="0.0">
-
-          <View
-              android:id="@+id/view_one"
-              android:layout_width="@dimen/_110sdp"
-              android:layout_height="@dimen/_3sdp"
-              android:background="@color/pink"/>
-
-          <View
-              android:id="@+id/view_two"
-              android:layout_width="@dimen/_110sdp"
-              android:layout_height="@dimen/_3sdp"
-              android:background="@color/pink"/>
-
-          <View
-              android:id="@+id/view_three"
-              android:layout_width="@dimen/_110sdp"
-              android:layout_height="@dimen/_3sdp"
-              android:background="@color/pink"/>
-
-          <View
-              android:id="@+id/view_four"
-              android:layout_width="@dimen/_110sdp"
-              android:layout_height="@dimen/_3sdp"
-              android:background="@color/pink"/>
-      </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

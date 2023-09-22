@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection;
+package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter;
 
 import android.content.Context;
 import android.util.Log;

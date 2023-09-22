@@ -49,7 +49,7 @@
             android:screenOrientation="landscape"/>
 
         <activity
-        android:name=".activity.homeScreen.HomeDashBoard"
+        android:name=".activity.SplashScreen"
         android:exported="true"
         android:screenOrientation="landscape" />
 
@@ -106,7 +106,7 @@
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
-            android:name=".activity.SplashScreen"
+            android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="true"
             android:screenOrientation="landscape">
             <intent-filter>

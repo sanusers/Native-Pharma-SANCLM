@@ -158,7 +158,7 @@
     <TextView
         android:id="@+id/tv_edit"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_15sdp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_2sdp"
         android:drawablePadding="@dimen/_4sdp"
         android:fontFamily="@font/satoshi_bold"
@@ -180,7 +180,7 @@
     <TextView
         android:id="@+id/tv_delete"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_15sdp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_8sdp"
         android:drawablePadding="@dimen/_4sdp"
         android:fontFamily="@font/satoshi_bold"

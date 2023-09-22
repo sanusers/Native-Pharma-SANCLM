@@ -1,41 +1,50 @@
 package saneforce.sanclm.activity.Map;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
-import saneforce.sanclm.CommonClasses.CommonSharedPreference;
-import saneforce.sanclm.CommonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonclasses.CommonSharedPreference;
+import saneforce.sanclm.commonclasses.CommonUtilsMethods;
+import saneforce.sanclm.commonclasses.GPSTrack;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.Map.CustSelection.TagCustSelectionList;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.databinding.ActivityMapsBinding;
 
-public class MapsActivity extends AppCompatActivity {
-    ImageView img_arrow_right, img_arrow_left, img_refresh, img_cur_loc,backArrow, iv_back;
-    Button btn_tag;
-    RecyclerView rv_list;
-    View view_one, view_two;
-    TextView tv_doctor, tv_chemist, tv_stockist, tv_undr, tv_tag_addr;
-    ConstraintLayout constraintShowCustList;
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    ActivityMapsBinding mapsBinding;
     TaggingAdapter taggingAdapter;
-    String from = "", tv_custName = "";
+    GPSTrack gpsTrack;
+    String from = "", tv_custName = "", laty = "", lngy = "";
     Dialog dialogTagCust;
     CommonUtilsMethods commonUtilsMethods;
     CommonSharedPreference mCommonSharedPrefrence;
+    private GoogleMap mMap;
 
     @Override
     public void onBackPressed() {
@@ -46,14 +55,24 @@ public class MapsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
+        setContentView(mapsBinding.getRoot());
+
+        //  setContentView(R.layout.activity_maps);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        assert mapFragment != null;
+        mapFragment.getMapAsync(this);
+
+        gpsTrack = new GPSTrack(this);
 
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPrefrence = new CommonSharedPreference(this);
 
         commonUtilsMethods.FullScreencall();
 
-        tv_doctor = findViewById(R.id.tag_tv_doctor);
+    /*    tv_doctor = findViewById(R.id.tag_tv_doctor);
         tv_chemist = findViewById(R.id.tag_tv_chemist);
         tv_stockist = findViewById(R.id.tag_tv_stockist);
         tv_undr = findViewById(R.id.tag_tv_undr);
@@ -70,7 +89,7 @@ public class MapsActivity extends AppCompatActivity {
         btn_tag = findViewById(R.id.btn_tag);
         rv_list = findViewById(R.id.rv_list);
         view_one = findViewById(R.id.view_one);
-        view_two = findViewById(R.id.view_two);
+        view_two = findViewById(R.id.view_two);*/
         dummyAdapter();
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -78,21 +97,21 @@ public class MapsActivity extends AppCompatActivity {
             from = extra.getString("from");
             if (!from.isEmpty()) {
                 if (from.equalsIgnoreCase("tag_adapter")) {
-                    btn_tag.setText("Tag");
-                    tv_tag_addr.setVisibility(View.VISIBLE);
-                    constraintShowCustList.setVisibility(View.GONE);
-                    img_arrow_right.setVisibility(View.GONE);
-                    rv_list.setVisibility(View.GONE);
+                    mapsBinding.btnTag.setText("Tag");
+                    mapsBinding.tvTaggedAddress.setVisibility(View.VISIBLE);
+                    mapsBinding.constraintMid.setVisibility(View.GONE);
+                    mapsBinding.imgRvRight.setVisibility(View.GONE);
+                    mapsBinding.rvList.setVisibility(View.GONE);
                 } else if (from.equalsIgnoreCase("cust_sel_list")) {
-                    tv_tag_addr.setVisibility(View.GONE);
-                    constraintShowCustList.setVisibility(View.VISIBLE);
-                    img_arrow_right.setVisibility(View.VISIBLE);
-                    rv_list.setVisibility(View.VISIBLE);
+                    mapsBinding.tvTaggedAddress.setVisibility(View.GONE);
+                    mapsBinding.constraintMid.setVisibility(View.VISIBLE);
+                    mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
+                    mapsBinding.rvList.setVisibility(View.VISIBLE);
                 }
             }
         }
 
-        iv_back.setOnClickListener(new View.OnClickListener() {
+        mapsBinding.ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                /* if (from.equalsIgnoreCase("tag_adapter")) {
@@ -104,16 +123,16 @@ public class MapsActivity extends AppCompatActivity {
             }
         });
 
-        backArrow.setOnClickListener(new View.OnClickListener() {
+     /*   backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
                 startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
             }
-        });
+        });*/
 
-        btn_tag.setOnClickListener(view -> {
+        mapsBinding.btnTag.setOnClickListener(view -> {
             if (from.equalsIgnoreCase("tag_adapter")) {
-                img_refresh.setVisibility(View.GONE);
+                mapsBinding.imgRefreshMap.setVisibility(View.GONE);
                 DisplayDialog();
             } else {
                 Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
@@ -121,44 +140,51 @@ public class MapsActivity extends AppCompatActivity {
             }
         });
 
-        img_arrow_right.setOnClickListener(view -> {
-            rv_list.setVisibility(View.GONE);
-            img_arrow_right.setVisibility(View.GONE);
-            img_arrow_left.setVisibility(View.VISIBLE);
+        mapsBinding.imgRvRight.setOnClickListener(view -> {
+            mapsBinding.rvList.setVisibility(View.GONE);
+            mapsBinding.imgRvRight.setVisibility(View.GONE);
+            mapsBinding.imgRvLeft.setVisibility(View.VISIBLE);
         });
 
-        img_arrow_left.setOnClickListener(view -> {
-            rv_list.setVisibility(View.VISIBLE);
-            img_arrow_right.setVisibility(View.VISIBLE);
-            img_arrow_left.setVisibility(View.GONE);
+        mapsBinding.imgRvLeft.setOnClickListener(view -> {
+            mapsBinding.rvList.setVisibility(View.VISIBLE);
+            mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
+            mapsBinding.imgRvLeft.setVisibility(View.GONE);
         });
 
-        tv_doctor.setOnClickListener(view -> {
-            tv_doctor.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
-            tv_chemist.setBackground(null);
-            tv_stockist.setBackground(null);
-            tv_undr.setBackground(null);
+        mapsBinding.tagTvDoctor.setOnClickListener(view -> {
+            mapsBinding.tagTvDoctor.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
+            mapsBinding.tagTvChemist.setBackground(null);
+            mapsBinding.tagTvStockist.setBackground(null);
+            mapsBinding.tagTvUndr.setBackground(null);
         });
 
-        tv_chemist.setOnClickListener(view -> {
-            tv_doctor.setBackground(null);
-            tv_chemist.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
-            tv_stockist.setBackground(null);
-            tv_undr.setBackground(null);
+        mapsBinding.tagTvChemist.setOnClickListener(view -> {
+            mapsBinding.tagTvDoctor.setBackground(null);
+            mapsBinding.tagTvChemist.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
+            mapsBinding.tagTvStockist.setBackground(null);
+            mapsBinding.tagTvUndr.setBackground(null);
         });
 
-        tv_stockist.setOnClickListener(view -> {
-            tv_doctor.setBackground(null);
-            tv_chemist.setBackground(null);
-            tv_stockist.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
-            tv_undr.setBackground(null);
+        mapsBinding.tagTvStockist.setOnClickListener(view -> {
+            mapsBinding.tagTvDoctor.setBackground(null);
+            mapsBinding.tagTvChemist.setBackground(null);
+            mapsBinding.tagTvStockist.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
+            mapsBinding.tagTvUndr.setBackground(null);
         });
 
-        tv_undr.setOnClickListener(view -> {
-            tv_doctor.setBackground(null);
-            tv_chemist.setBackground(null);
-            tv_stockist.setBackground(null);
-            tv_undr.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
+        mapsBinding.tagTvUndr.setOnClickListener(view -> {
+            mapsBinding.tagTvDoctor.setBackground(null);
+            mapsBinding.tagTvChemist.setBackground(null);
+            mapsBinding.tagTvStockist.setBackground(null);
+            mapsBinding.tagTvUndr.setBackground(getResources().getDrawable(R.drawable.bg_light_purple));
+        });
+
+        mapsBinding.imgCurLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 15.0f));
+            }
         });
     }
 
@@ -177,10 +203,10 @@ public class MapsActivity extends AppCompatActivity {
 
         taggingAdapter = new TaggingAdapter(MapsActivity.this, taggedMapListArrayList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        rv_list.setLayoutManager(mLayoutManager);
-        rv_list.setItemAnimator(new DefaultItemAnimator());
-        rv_list.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
-        rv_list.setAdapter(taggingAdapter);
+        mapsBinding.rvList.setLayoutManager(mLayoutManager);
+        mapsBinding.rvList.setItemAnimator(new DefaultItemAnimator());
+        mapsBinding.rvList.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
+        mapsBinding.rvList.setAdapter(taggingAdapter);
     }
 
     private void DisplayDialog() {
@@ -203,12 +229,43 @@ public class MapsActivity extends AppCompatActivity {
 
         btn_cancel.setOnClickListener(view -> {
             dialogTagCust.dismiss();
-            btn_tag.setText("Tag");
-            img_refresh.setVisibility(View.GONE);
-            tv_tag_addr.setVisibility(View.VISIBLE);
-            constraintShowCustList.setVisibility(View.GONE);
-            img_arrow_right.setVisibility(View.GONE);
-            rv_list.setVisibility(View.GONE);
+            mapsBinding.btnTag.setText("Tag");
+            mapsBinding.imgRefreshMap.setVisibility(View.GONE);
+            mapsBinding.tvTaggedAddress.setVisibility(View.VISIBLE);
+            mapsBinding.constraintMid.setVisibility(View.GONE);
+            mapsBinding.imgRvRight.setVisibility(View.GONE);
+            mapsBinding.rvList.setVisibility(View.GONE);
+        });
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+        gpsTrack = new GPSTrack(this);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 15.0f));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(false);
+        mMap.getUiSettings().setCompassEnabled(false);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+
+        mMap.setOnCameraMoveListener(() -> {
+            Log.v("centerLat_move", mMap.getCameraPosition().target.latitude + "");
+            laty = String.valueOf(mMap.getCameraPosition().target.latitude);
+            lngy = String.valueOf(mMap.getCameraPosition().target.longitude);
         });
     }
 }
