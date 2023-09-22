@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/_1sdp">
+
+    <TextView
+        android:id="@+id/tv_cust_name"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:maxLength="12"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:singleLine="true"
+        android:text="@string/brand_name"
+        android:textColor="@color/dark_purple"
+        android:textSize="16sp"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tag_add_data"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tag_add_data"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_1sdp"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        app:layout_constraintVertical_bias="0.0"
+        android:background="@drawable/bg_green_dot"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="@string/add_sample_input"
+        android:textColor="@color/green_2"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/tv_cust_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_img_view"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_marginVertical="@dimen/_1sdp"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:src="@drawable/arrow_right_rv"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rv_additional_calls_sample_data"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/tv_cust_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_additional_calls_sample_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_1sdp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rv_additional_calls_input_data"
+        app:layout_constraintStart_toEndOf="@id/iv_img_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_additional_calls_input_data"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_1sdp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_edit_calls"
+        app:layout_constraintStart_toEndOf="@id/rv_additional_calls_sample_data"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_edit_calls"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_1sdp"
+        android:background="@drawable/bg_light_blue"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="@string/edit"
+        android:textColor="#51AFF5"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/img_del_additional_call"
+        app:layout_constraintStart_toEndOf="@id/rv_additional_calls_input_data"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="RtlSymmetry" />
+
+    <ImageView
+        android:id="@+id/img_del_additional_call"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_4sdp"
+        android:src="@drawable/iv_del"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteY="2dp" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:background="@color/bg_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

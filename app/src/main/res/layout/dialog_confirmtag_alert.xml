@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/_140sdp"
+    android:layout_height="wrap_content"
+   android:background="@drawable/bg_light_trans">
+
+   <!-- <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_4sdp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_20sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="@dimen/_6sdp">
+
+        <ImageView
+            android:id="@+id/img_tag"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:src="@drawable/img_tag_dialog"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+        <TextView
+            android:id="@+id/txt_cust_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:gravity="start"
+            android:padding="@dimen/_3sdp"
+            android:text="Name"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:fontFamily="@font/satoshi_bold"
+            android:textColor="@color/pink"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/txt_cat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_tag" />
+
+        <TextView
+            android:id="@+id/txt_cat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:gravity="start"
+            android:padding="@dimen/_3sdp"
+            android:text="Latitude : 13.030007784569658"
+            android:fontFamily="@font/satoshi_bold"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:textStyle="bold"
+            android:singleLine="true"
+            app:layout_constraintBottom_toTopOf="@id/txt_specialist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_cust_name" />
+
+        <TextView
+            android:id="@+id/txt_specialist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:gravity="start"
+            android:padding="@dimen/_3sdp"
+            android:singleLine="true"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:text="Longitude : 80.030001184569652"
+            android:fontFamily="@font/satoshi_bold"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_cat" />
+
+
+        <TextView
+            android:id="@+id/txt_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:gravity="start"
+            android:padding="@dimen/_3sdp"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:text="No. 569, mount road, sathya murthy nagar, Teynampet, Chennai, Tamilnadu 600 018, India"
+            android:fontFamily="@font/satoshi_regular"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_specialist" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:background="@drawable/bg_border_with_pink"
+            android:text="@string/cancel"
+            android:textColor="@color/dark_purple"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:fontFamily="@font/satoshi_bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_address" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_confirm"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:background="@drawable/bg_purple"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="@string/confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_cancel"
+            app:layout_constraintTop_toBottomOf="@id/txt_address"
+            app:layout_constraintVertical_bias="1.0" />
+        <ProgressBar
+            android:indeterminate="true"
+            android:id="@+id/marker_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:indeterminateOnly="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_centerInParent="true"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
