@@ -1,4 +1,4 @@
-package saneforce.sanclm.Network;
+package saneforce.sanclm.network;
 
 import android.content.Context;
 

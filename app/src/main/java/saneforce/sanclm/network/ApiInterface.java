@@ -1,4 +1,4 @@
-package saneforce.sanclm.Network;
+package saneforce.sanclm.network;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
