@@ -31,7 +31,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import saneforce.sanclm.Leave_Application;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.Map.MapsActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;

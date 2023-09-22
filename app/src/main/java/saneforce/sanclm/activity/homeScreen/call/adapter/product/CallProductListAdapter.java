@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonclasses.CommonSharedPreference;
-import saneforce.sanclm.commonclasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;

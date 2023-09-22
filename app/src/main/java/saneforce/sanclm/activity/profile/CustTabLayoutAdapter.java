@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Profile;
+package saneforce.sanclm.activity.profile;
 
 import android.content.Context;
 

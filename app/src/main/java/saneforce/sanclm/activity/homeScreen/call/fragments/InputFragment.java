@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonclasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.input.CallInputListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.input.SaveInputCallAdapter;

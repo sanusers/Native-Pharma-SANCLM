@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
-import saneforce.sanclm.activity.Map.CustSelection.CustList;
+import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.R;
 
 

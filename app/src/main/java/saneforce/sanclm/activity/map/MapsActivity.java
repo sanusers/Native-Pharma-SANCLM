@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Map;
+package saneforce.sanclm.activity.map;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -27,11 +27,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonclasses.CommonSharedPreference;
-import saneforce.sanclm.commonclasses.CommonUtilsMethods;
-import saneforce.sanclm.commonclasses.GPSTrack;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.Map.CustSelection.TagCustSelectionList;
+import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.databinding.ActivityMapsBinding;
 

@@ -76,13 +76,13 @@
             android:screenOrientation="landscape" />
 
         <activity
-            android:name=".activity.Map.CustSelection.TagCustSelectionList"
+            android:name=".activity.map.custSelection.TagCustSelectionList"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
 
         <activity
-            android:name=".activity.Profile.CustomerProfile"
+            android:name=".activity.profile.CustomerProfile"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize" />
@@ -100,7 +100,7 @@
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
-            android:name=".activity.Map.MapsActivity"
+            android:name=".activity.map.MapsActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />

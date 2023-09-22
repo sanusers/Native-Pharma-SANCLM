@@ -1,4 +1,4 @@
-package saneforce.sanclm.commonclasses;
+package saneforce.sanclm.commonClasses;
 
 import android.content.Context;
 import android.util.AttributeSet;

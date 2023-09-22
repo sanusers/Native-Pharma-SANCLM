@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Map;
+package saneforce.sanclm.activity.map;
 
 public class TaggedMapList {
     String name;String addr;

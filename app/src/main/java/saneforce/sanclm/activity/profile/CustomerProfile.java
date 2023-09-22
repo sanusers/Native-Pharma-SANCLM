@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Profile;
+package saneforce.sanclm.activity.profile;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import saneforce.sanclm.commonclasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 

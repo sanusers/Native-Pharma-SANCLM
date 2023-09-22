@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Map.CustSelection;
+package saneforce.sanclm.activity.map.custSelection;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonclasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.Map.MapsActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 
 public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHolder> {

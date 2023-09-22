@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.Map.CustSelection;
+package saneforce.sanclm.activity.map.custSelection;
 
 public class CustList {
     String name;

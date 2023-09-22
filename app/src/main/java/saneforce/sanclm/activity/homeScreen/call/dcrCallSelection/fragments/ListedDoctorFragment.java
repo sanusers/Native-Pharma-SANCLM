@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.Map.CustSelection.CustList;
+import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 
 public class ListedDoctorFragment extends Fragment {

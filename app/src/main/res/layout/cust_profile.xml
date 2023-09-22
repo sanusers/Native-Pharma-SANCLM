@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@id/tab_layout"
         app:layout_constraintVertical_bias="0.0" />
 
-    <saneforce.sanclm.commonclasses.NonSwipeableViewPager
+    <saneforce.sanclm.commonClasses.NonSwipeableViewPager
         android:id="@+id/view_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
