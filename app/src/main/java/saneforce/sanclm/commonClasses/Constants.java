@@ -24,9 +24,11 @@ public class Constants {
     public static final String HOSPITAL = "Hospital";
     public static final String CIP = "Cip";
 
+    //Leave
     public static final String LEAVE = "Leave";
     public static final String LEAVE_STATUS = "Leave_Status";
 
+    //TP
     public static final String TP_PLAN = "Tour_Plan";
 
     //Subordinate

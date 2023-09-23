@@ -25,6 +25,8 @@ public class SharedPref {
 
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
+    public static final String HQ_NAME = "selected_hq_name";
+    public static final String HQ_CODE = "selected_hq_code";
 
 
 
@@ -129,7 +131,20 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(MASTER_LAST_SYNC,"");
     }
 
+    public static void saveHq (Context context, String name, String code){
+        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(HQ_NAME, name);
+        editor.putString(HQ_CODE, code).apply();
+    }
 
+    public static String getHqName (Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(HQ_NAME, "");
+    }
+
+    public static String getHqCode (Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(HQ_CODE, "");
+    }
 
 
 }

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.time.LocalDate;
@@ -33,6 +34,8 @@ public class TourPlanActivity extends AppCompatActivity {
     CalendarAdapter calendarAdapter = new CalendarAdapter();
     LocalDate selectedDate;
     private DrawerLayout drawerLayout;
+    private ArrayList<String> arrayList;
+    private ArrayAdapter adapter;
 
 
     @Override
@@ -49,6 +52,39 @@ public class TourPlanActivity extends AppCompatActivity {
                 populateAdapter();
             }
         },200);
+
+        arrayList=new ArrayList<>();
+        arrayList.add("A");
+        arrayList.add("Ab");
+        arrayList.add("C");
+        arrayList.add("D");
+        arrayList.add("E");
+        arrayList.add("F");
+        arrayList.add("G");
+        arrayList.add("H");
+        arrayList.add("I");
+        arrayList.add("J");
+        arrayList.add("K");
+        arrayList.add("L");
+        arrayList.add("M");
+        arrayList.add("N");
+        arrayList.add("O");
+        arrayList.add("P");
+        arrayList.add("Q");
+
+        binding.tpNavigation.searchET.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit (String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange (String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +132,16 @@ public class TourPlanActivity extends AppCompatActivity {
             @Override
             public void onClick (View view) {
                 binding.tpDrawer.closeDrawer(GravityCompat.END);
+            }
+        });
+
+        binding.tpNavigation.workTypeSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                binding.tpNavigation.listCardView.setVisibility(View.VISIBLE);
+                binding.tpNavigation.bottomBtnLayout.setVisibility(View.GONE);
+                adapter=new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1,arrayList);
+                binding.tpNavigation.listView.setAdapter(adapter);
             }
         });
 

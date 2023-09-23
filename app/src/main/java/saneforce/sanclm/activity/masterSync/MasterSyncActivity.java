@@ -1,15 +1,24 @@
 package saneforce.sanclm.activity.masterSync;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,6 +42,7 @@ import saneforce.sanclm.R;
 
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
 
 import saneforce.sanclm.network.ApiInterface;
@@ -58,9 +68,10 @@ public class MasterSyncActivity extends AppCompatActivity {
     int proSlideCount = 0,proSpeSlideCount = 0,brandSlideCount = 0, therapticCount = 0;
     int subordinateCount = 0,subMgrCount = 0,jWorkCount= 0;
     int setupCount = 0, customSetupCount = 0;
-    int apiSuccessCount = 0;
-    int itemCount = 0;
-    String origin = "";
+    int apiSuccessCount = 0,itemCount = 0;
+    String navigateFrom = "";
+    boolean mgrInitialSync = false;
+
 
     ArrayList<ArrayList<MasterSyncItemModel>> masterSyncAllModel = new ArrayList<>();
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
@@ -90,15 +101,12 @@ public class MasterSyncActivity extends AppCompatActivity {
         sqLite.getWritableDatabase();
 
         Bundle bundle = getIntent().getExtras();
-
         if (bundle != null){
-            origin = getIntent().getExtras().getString("Origin");
+            navigateFrom = getIntent().getExtras().getString("Origin");
         }
-        Log.e("test","origin is  : " + origin);
 
         Cursor cursor = sqLite.getLoginData();
         loginResponse = new LoginResponse();
-
         String loginData = "";
         if (cursor.moveToNext()){
             loginData = cursor.getString(0);
@@ -107,15 +115,16 @@ public class MasterSyncActivity extends AppCompatActivity {
         Type type = new TypeToken<LoginResponse>() {
         }.getType();
         loginResponse = new Gson().fromJson(loginData, type);
-        Log.e("test", "login data from sqlite : " + new Gson().toJson(loginResponse));
-        binding.hqName.setText(loginResponse.getHQName());
+//        Log.e("test", "login data from sqlite : " + new Gson().toJson(loginResponse));
+
         sfCode = loginResponse.getSF_Code();
         sf_type = loginResponse.getSf_type();
         division_code = loginResponse.getDivision_Code();
         subdivision_code = loginResponse.getSubdivision_code();
         designation = loginResponse.getDesig();
-        rsf = loginResponse.getSF_Code();
         state_code = loginResponse.getState_Code();
+        binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
+        rsf = SharedPref.getHqCode(MasterSyncActivity.this);
 
         try {
             //Initializing all the data array
@@ -123,27 +132,102 @@ public class MasterSyncActivity extends AppCompatActivity {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        binding.listedDoctor.setSelected(true);
-       // masterSyncAll();
 
-        if (origin.equalsIgnoreCase("Login")){
+        binding.listedDoctor.setSelected(true);
+        if (navigateFrom.equalsIgnoreCase("Login")){
+            if (designation.equalsIgnoreCase("MGR")){
+                mgrInitialSync = true;
+                sync("Subordinate","getsubordinate",subordinateModelArray,0);
+            }else{
+                masterSyncAll(false);
+            }
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            masterSyncAll();
         }else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
-
-        binding.lastSyncTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                startActivity(new Intent(MasterSyncActivity.this,HomeDashBoard.class));
-            }
-        });
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
                 startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+            }
+        });
+
+        binding.hq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+
+                try{
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                    ArrayList<String> list = new ArrayList<>();
+
+                    if (jsonArray.length() > 0){
+                        for (int i=0;i<jsonArray.length();i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            list.add(jsonObject.getString("name"));
+                        }
+                    }
+
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MasterSyncActivity.this);
+                    LayoutInflater inflater =MasterSyncActivity.this.getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+                    alertDialog.setView(dialogView);
+                    TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+                    ListView listView = dialogView.findViewById(R.id.listView);
+                    SearchView searchView = dialogView.findViewById(R.id.searchET);
+
+                    headerTxt.setText("Select HQ");
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(MasterSyncActivity.this, android.R.layout.simple_list_item_1, list);
+                    listView.setAdapter(adapter);
+                    AlertDialog dialog = alertDialog.create();
+
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit (String s) {
+                            adapter.getFilter().filter(s);
+                            return false;
+                        }
+                        @Override
+                        public boolean onQueryTextChange (String s) {
+                            adapter.getFilter().filter(s);
+                            return false;
+                        }
+                    });
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick (AdapterView<?> adapterView, View view, int position, long l) {
+                            String selectedHq = listView.getItemAtPosition(position).toString();
+                            binding.hqName.setText(selectedHq);
+                            for (int i=0;i<jsonArray.length();i++){
+                                try {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)){
+                                        rsf = jsonObject.getString("id");
+                                        SharedPref.saveHq(MasterSyncActivity.this, selectedHq, rsf);
+                                        masterSyncAll(true);
+                                        break;
+                                    }
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+
+                    alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog.show();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                UtilityClass.hideKeyboard(MasterSyncActivity.this);
+
             }
         });
 
@@ -339,9 +423,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
 
                 for (int i=0;i<arrayList.size();i++){
-                    sync(arrayList.get(i).getMasterFor(),arrayList.get(i).getRemoteTableName(),arrayList,i);
                     arrayForAdapter.get(i).setPB_visibility(true);
                     masterSyncAdapter.notifyDataSetChanged();
+                    sync(arrayList.get(i).getMasterFor(),arrayList.get(i).getRemoteTableName(),arrayList,i);
                 }
             }
         });
@@ -349,7 +433,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.masterSyncAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                masterSyncAll();
+                masterSyncAll(false);
             }
         });
 
@@ -416,11 +500,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         arrayForAdapter.addAll(doctorModelArray);
         populateAdapter(arrayForAdapter);
 
-        //Unlisted Dr
-        unlistedDrModelArray.clear();
-        MasterSyncItemModel unListModel = new MasterSyncItemModel("Unlisted Doctor",unlistedDrCount,"Doctor","getunlisteddr",Constants.UNLISTED_DOCTOR,false);
-        unlistedDrModelArray.add(unListModel);
-
         //Chemist
         chemistModelArray.clear();
         MasterSyncItemModel cheModel = new MasterSyncItemModel("Chemist",chemistCount,"Doctor","getchemist",Constants.CHEMIST,false);
@@ -430,6 +509,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         stockiestModelArray.clear();
         MasterSyncItemModel stockModel = new MasterSyncItemModel("Stockiest",stockiestCount,"Doctor","getstockist",Constants.STOCKIEST,false);
         stockiestModelArray.add(stockModel);
+
+        //Unlisted Dr
+        unlistedDrModelArray.clear();
+        MasterSyncItemModel unListModel = new MasterSyncItemModel("Unlisted Doctor",unlistedDrCount,"Doctor","getunlisteddr",Constants.UNLISTED_DOCTOR,false);
+        unlistedDrModelArray.add(unListModel);
 
         //Hospital
         hospitalModelArray.clear();
@@ -572,22 +656,35 @@ public class MasterSyncActivity extends AppCompatActivity {
         masterSyncAdapter.notifyDataSetChanged();
     }
 
-    public void masterSyncAll(){
-        masterSyncAllModel.add(doctorModelArray);
+    public void masterSyncAll(boolean hqChanged){
+        masterSyncAllModel.clear();
+        itemCount = 0;
+        apiSuccessCount = 0;
+
+        if (hqChanged){
+            MasterSyncItemModel doctor = new MasterSyncItemModel(loginResponse.getDrCap(),doctorCount,"Doctor","getdoctors",Constants.DOCTOR,false);
+            ArrayList<MasterSyncItemModel> doctorModelArray = new ArrayList<>();
+            doctorModelArray.add(doctor);
+            masterSyncAllModel.add(doctorModelArray);
+        }else{
+            masterSyncAllModel.add(doctorModelArray);
+        }
+
         masterSyncAllModel.add(chemistModelArray);
         masterSyncAllModel.add(stockiestModelArray);
         masterSyncAllModel.add(unlistedDrModelArray);
         masterSyncAllModel.add(hospitalModelArray);
         masterSyncAllModel.add(cipModelArray);
         masterSyncAllModel.add(inputModelArray);
-        masterSyncAllModel.add(productModelArray);
-        masterSyncAllModel.add(leaveModelArray);
-        masterSyncAllModel.add(tpModelArray);
-        masterSyncAllModel.add(slideModelArray);
-        masterSyncAllModel.add(subordinateModelArray);
-        masterSyncAllModel.add(setupModelArray);
-        Log.e("test","masterAll size : " + masterSyncAllModel.size());
-
+        if (!hqChanged){
+            masterSyncAllModel.add(inputModelArray);
+            masterSyncAllModel.add(productModelArray);
+            masterSyncAllModel.add(leaveModelArray);
+            masterSyncAllModel.add(tpModelArray);
+            masterSyncAllModel.add(slideModelArray);
+            masterSyncAllModel.add(subordinateModelArray);
+            masterSyncAllModel.add(setupModelArray);
+        }
 
         for (int i=0;i<masterSyncAllModel.size();i++){
             ArrayList<MasterSyncItemModel> childArray = new ArrayList<>(masterSyncAllModel.get(i));
@@ -604,92 +701,120 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void sync(String masterFor, String remoteTableName,ArrayList<MasterSyncItemModel> masterSyncItemModels,int position)  {
 
-        try {
-            String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
-            String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-            String replacedUrl = pathUrl.replaceAll("\\?.*","/");
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl+replacedUrl);
+        if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)){
+            try {
+                String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
+                String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
+                String replacedUrl = pathUrl.replaceAll("\\?.*","/");
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl+replacedUrl);
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("tableName", remoteTableName);
-            jsonObject.put("sfcode", sfCode);
-            jsonObject.put("division_code", division_code);
-            jsonObject.put("Rsf", rsf);
-            jsonObject.put("sf_type", sf_type);
-            jsonObject.put("Designation", designation);
-            jsonObject.put("state_code", state_code);
-            jsonObject.put("subdivision_code", subdivision_code);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("tableName", remoteTableName);
+                jsonObject.put("sfcode", sfCode);
+                jsonObject.put("division_code", division_code);
+                jsonObject.put("Rsf", rsf);
+                jsonObject.put("sf_type", sf_type);
+                jsonObject.put("Designation", designation);
+                jsonObject.put("state_code", state_code);
+                jsonObject.put("subdivision_code", subdivision_code);
 
 //            Log.e("test","master sync obj : " + jsonObject);
-            Call<JsonArray> call = null;
-            if (masterFor.equalsIgnoreCase("Doctor")){
-                call = apiInterface.getDrMaster(jsonObject.toString());
-            } else if (masterFor.equalsIgnoreCase("Subordinate")) {
-                call = apiInterface.getSubordinateMaster(jsonObject.toString());
-            }else if (masterFor.equalsIgnoreCase("Product")) {
-                call = apiInterface.getProductMaster(jsonObject.toString());
-            }else if (masterFor.equalsIgnoreCase("Leave")) {
-                call = apiInterface.getLeaveMaster(jsonObject.toString());
-            }else if (masterFor.equalsIgnoreCase("Slide")) {
-                call = apiInterface.getSlideMaster(jsonObject.toString());
-            }else if (masterFor.equalsIgnoreCase("Setup")) {
-                call = apiInterface.getSetupMaster(jsonObject.toString());
-            }else if (masterFor.equalsIgnoreCase("TP")) {
-                call = apiInterface.getAdditionalMaster(jsonObject.toString());
-            }
+                Call<JsonArray> call = null;
+                if (masterFor.equalsIgnoreCase("Doctor")){
+                    call = apiInterface.getDrMaster(jsonObject.toString());
+                } else if (masterFor.equalsIgnoreCase("Subordinate")) {
+                    call = apiInterface.getSubordinateMaster(jsonObject.toString());
+                }else if (masterFor.equalsIgnoreCase("Product")) {
+                    call = apiInterface.getProductMaster(jsonObject.toString());
+                }else if (masterFor.equalsIgnoreCase("Leave")) {
+                    call = apiInterface.getLeaveMaster(jsonObject.toString());
+                }else if (masterFor.equalsIgnoreCase("Slide")) {
+                    call = apiInterface.getSlideMaster(jsonObject.toString());
+                }else if (masterFor.equalsIgnoreCase("Setup")) {
+                    call = apiInterface.getSetupMaster(jsonObject.toString());
+                }else if (masterFor.equalsIgnoreCase("TP")) {
+                    call = apiInterface.getAdditionalMaster(jsonObject.toString());
+                }
 
-            if (call != null){
-                call.enqueue(new Callback<JsonArray>() {
-                    @Override
-                    public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                        masterSyncItemModels.get(position).setPB_visibility(false);
-                        apiSuccessCount ++;
-                        if (response.isSuccessful()) {
-                            Log.e("test","master for : " + masterFor + " -- " + "remote : " + remoteTableName);
-                            Log.e("test","response " + remoteTableName +" : " + response.body().toString());
-                            try {
-                                JSONArray jsonArray = new JSONArray(response.body().toString());
-                                masterSyncItemModels.get(position).setPB_visibility(false);
-                                masterSyncItemModels.get(position).setCount(jsonArray.length());
+                if (call != null){
+                    call.enqueue(new Callback<JsonArray>() {
+                        @Override
+                        public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                            masterSyncItemModels.get(position).setPB_visibility(false);
+                            apiSuccessCount ++;
+                            if (response.isSuccessful()) {
+                                  Log.e("test","response : " + masterFor + " -- " + remoteTableName +" : " + response.body().toString());
+                                try {
+                                    JSONArray jsonArray = new JSONArray(response.body().toString());
+                                    masterSyncItemModels.get(position).setPB_visibility(false);
+                                    masterSyncItemModels.get(position).setCount(jsonArray.length());
 
-                                masterSyncAdapter.notifyDataSetChanged();
-                                String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
-                                binding.lastSyncTime.setText(dateAndTime);
-                                SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
-                                sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
+                                    masterSyncAdapter.notifyDataSetChanged();
+                                    String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
+                                    binding.lastSyncTime.setText(dateAndTime);
+                                    SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
+                                    sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
 
-                                if (origin.equalsIgnoreCase("Login")){
-                                    if (apiSuccessCount == itemCount){
-                                        startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                                    if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getdoctors")){
+                                        sqLite.saveDrMaster(rsf,jsonArray.toString());
                                     }
+
+                                    if (masterFor.equalsIgnoreCase("Subordinate") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")){
+                                        if (mgrInitialSync){
+                                            setHq(jsonArray);
+                                        }
+                                    }
+
+                                    if (apiSuccessCount >= itemCount){
+                                        if (navigateFrom.equalsIgnoreCase("Login")){
+                                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
                                 }
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
                             }
-                        }
-                        masterSyncAdapter.notifyDataSetChanged();
-                        Log.e("test","success count : " + apiSuccessCount);
-
-                    }
-
-                    @Override
-                    public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                        Log.e("test","failed : " + t);
-                        apiSuccessCount++;
-                        Log.e("test","success count at error : " + apiSuccessCount);
-                        masterSyncItemModels.get(position).setPB_visibility(false);
-                        masterSyncAdapter.notifyDataSetChanged();
-                        if (apiSuccessCount == itemCount){
-                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                            masterSyncAdapter.notifyDataSetChanged();
+                            // Log.e("test","success count : " + apiSuccessCount);
                         }
 
-                    }
-                });
+                        @Override
+                        public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                            //  Log.e("test","failed : " + t);
+                            apiSuccessCount++;
+                            //  Log.e("test","success count at error : " + apiSuccessCount);
+                            masterSyncItemModels.get(position).setPB_visibility(false);
+                            masterSyncAdapter.notifyDataSetChanged();
+                            if (apiSuccessCount >= itemCount){
+                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                            }
+
+                        }
+                    });
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
             }
-
-        }catch (Exception e){
-            e.printStackTrace();
+        }else{
+            Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
-
     }
+
+
+    public void setHq(JSONArray jsonArray){
+        mgrInitialSync = false;
+        apiSuccessCount = 0;
+        if (jsonArray.length() > 0){
+            try {
+                binding.hqName.setText(jsonArray.getJSONObject(0).getString("name"));
+                rsf = jsonArray.getJSONObject(0).getString("id");
+                SharedPref.saveHq(MasterSyncActivity.this,jsonArray.getJSONObject(0).getString("name"),rsf);
+                masterSyncAll(false);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 }

@@ -21,7 +21,6 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
     Context context;
     ArrayList<MasterSyncItemModel> masterSyncItemModels;
     MasterSyncItemClick masterSyncItemClick;
-    ApiInterface apiInterface;
 
     public MasterSyncAdapter () {
     }
@@ -57,7 +56,6 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                Log.e("test","item click : " + name);
                 holder.progressBar.setVisibility(View.VISIBLE);
                 masterSyncItemClick.itemClick(data,holder.getAdapterPosition());
             }
@@ -81,52 +79,4 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         }
     }
 
-//    public void sync(String masterFor,ProgressBar progressBar,TextView count)  {
-//
-//        try {
-//            progressBar.setVisibility(View.VISIBLE);
-//            String baseUrl = SharedPref.getBaseUrl(context);
-//            String pathUrl = SharedPref.getPhpPathUrl(context);
-//            String replacedUrl = pathUrl.replace("?","/");
-//            Log.e("test","master url : "  + baseUrl + replacedUrl);
-//            Log.e("test","base url from sharePref  : " + SharedPref.getBaseUrl(context));
-//            apiInterface = RetrofitClient.getRetrofit(context, "http://crm.saneforce.in/iOSServer/db_api.php/");
-//
-//            Log.e("test","master sync obj : " + postObject);
-//            Call<JsonArray> call = null;
-//            if (masterFor.equalsIgnoreCase("Doctor")){
-//                call = apiInterface.getDrMaster(postObject.toString());
-//            } else if (masterFor.equalsIgnoreCase("Subordinate")) {
-//                call = apiInterface.getSubordinateMaster(postObject.toString());
-//            }
-//            call.enqueue(new Callback<JsonArray>() {
-//                @Override
-//                public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-//                    progressBar.setVisibility(View.GONE);
-//
-//                    if (response.isSuccessful()) {
-//                        Log.e("test","res body : " + response.body().toString());
-//                        try {
-//                            JSONArray jsonArray = new JSONArray(response.body().toString());
-//                            count.setText(String.valueOf(jsonArray.length()));
-//                        } catch (JSONException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-//                    Log.e("test","failed : " + t);
-//                    progressBar.setVisibility(View.GONE);
-//                }
-//            });
-//
-//
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//    }
 }

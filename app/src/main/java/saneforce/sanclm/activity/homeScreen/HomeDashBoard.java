@@ -31,6 +31,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import saneforce.sanclm.Leave_Application;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
@@ -179,6 +180,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (id == R.id.nav_nearme) {
             startActivity(new Intent(HomeDashBoard.this, MapsActivity.class));
             return true;
+        }
+
+        if (id == R.id.logout){
+            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
         }
 
         return true;

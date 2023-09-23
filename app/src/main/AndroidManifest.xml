@@ -45,12 +45,6 @@
         tools:targetApi="31">
 
 
-
-        <activity
-        android:name=".activity.SplashScreen"
-        android:exported="true"
-        android:screenOrientation="landscape" />
-
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
             android:exported="false"
@@ -63,10 +57,12 @@
         <activity
             android:name=".activity.login.LoginActivity"
             android:exported="false"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.setting.SettingsActivity"
             android:exported="false"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.MainActivity"
@@ -105,8 +101,13 @@
 
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+
+        <activity
+            android:name=".activity.SplashScreen"
             android:exported="true"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
