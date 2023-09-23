@@ -11,12 +11,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent1">#17000000</color>
 
     <color name="text_dark">#282A3C</color>
     <color name="text_dark_65">#A6282A3C</color>
     <color name="pink">#F1536E</color>
     <color name="background">#EEEEEE</color>
     <color name="text_dark_25">#40282A3C</color>
+
 
     <color name="dark_purple">#282A3C</color>
     <color name="light_purple">#3e3f50</color>

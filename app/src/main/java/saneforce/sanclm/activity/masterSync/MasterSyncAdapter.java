@@ -39,7 +39,7 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
     }
 
     @Override
-    public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         MasterSyncItemModel data = masterSyncItemModels.get(position);
         String name = data.getName();
         String count = String.valueOf(data.getCount());

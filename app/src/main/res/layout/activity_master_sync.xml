@@ -422,7 +422,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/leave"
+                        android:id="@+id/cluster"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -432,6 +432,38 @@
                         android:background="@drawable/selector_box"
                         android:layout_alignParentStart="true"
                         android:layout_below="@id/product">
+
+                        <TextView
+                            android:id="@+id/clusterTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Cluster"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/clusterArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/arrow_down"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/leave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@drawable/selector_box"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/cluster">
 
                         <TextView
                             android:id="@+id/leaveTxt"
@@ -452,8 +484,6 @@
                             android:src="@drawable/arrow_down"/>
 
                     </LinearLayout>
-
-
 
                     <LinearLayout
                         android:id="@+id/tourPlan"
@@ -488,6 +518,38 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/workType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_7sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@drawable/selector_box"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/tourPlan">
+
+                        <TextView
+                            android:id="@+id/workTypeTxt"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Work Type"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:id="@+id/workTypeArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/arrow_down"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/slide"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -497,7 +559,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/selector_box"
                         android:layout_alignParentStart="true"
-                        android:layout_below="@id/tourPlan" >
+                        android:layout_below="@id/workType" >
 
                         <TextView
                             android:id="@+id/slideTxt"

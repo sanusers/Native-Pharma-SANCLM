@@ -97,5 +97,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.jakewharton:butterknife:10.2.1'
     implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
+
+    //Permission
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 }
 

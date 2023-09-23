@@ -1,7 +1,6 @@
-package saneforce.sanclm.activity.tourPlan;
+package saneforce.sanclm.activity.tourPlan.calendar;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     ArrayList<String> daysOfMonth= new ArrayList<>();
     OnDayClickInterface onDayClickInterface;
     Context context;
+    int count = 0;
 
     public CalendarAdapter () {
     }
@@ -34,7 +34,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     public MyViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.calendar_cell,parent,false);
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        layoutParams.height = (int) (parent.getHeight() * 0.166666666);
+//        layoutParams.height = (int) (parent.getHeight() * 0.166666666);
         return new MyViewHolder(view);
     }
 

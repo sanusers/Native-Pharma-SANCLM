@@ -20,7 +20,6 @@ import androidx.lifecycle.Observer;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONException;
@@ -37,7 +36,6 @@ import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityLoginBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
-import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
@@ -224,6 +222,7 @@ public class LoginActivity extends AppCompatActivity {
             sqlite.saveLoginData(jsonObject.toString());
             openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
             SharedPref.saveLoginState(getApplicationContext(), true);
+            SharedPref.saveSfType(LoginActivity.this,jsonObject.getString("sf_type"),jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this,jsonObject.getString("HQName"),jsonObject.getString("SF_Code"));
             Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
             intent.putExtra("Origin","Login");

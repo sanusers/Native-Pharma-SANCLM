@@ -29,8 +29,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import saneforce.sanclm.Leave_Application;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
