@@ -26,8 +26,6 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String HQ_CODE = "hqCode";
     public static final String DOCTOR_DATA = "DrData";
 
-
-
     public SQLite (@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);
     }

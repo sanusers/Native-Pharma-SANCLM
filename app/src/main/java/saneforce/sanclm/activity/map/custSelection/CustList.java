@@ -4,22 +4,33 @@ public class CustList {
     String name;
     String category;
     String specialist;
-    String area;
-    String tagCount;
+    String town_name;
+    String maxTag;
+    String Tag;
 
-    public CustList(String name, String category, String specialist, String area) {
+    public CustList(String name, String category, String specialist, String town_name) {
         this.name = name;
         this.category = category;
         this.specialist = specialist;
-        this.area = area;
+        this.town_name = town_name;
     }
 
-    public CustList(String name, String category, String specialist, String area, String tagCount) {
+    public CustList(String name, String category, String specialist, String town_name, String tag, String maxTag) {
         this.name = name;
         this.category = category;
         this.specialist = specialist;
-        this.area = area;
-        this.tagCount = tagCount;
+        this.town_name = town_name;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+
+    }
+
+    public String getTag() {
+        return Tag;
+    }
+
+    public void setTag(String tag) {
+        Tag = tag;
     }
 
     public String getName() {
@@ -46,19 +57,19 @@ public class CustList {
         this.specialist = specialist;
     }
 
-    public String getArea() {
-        return area;
+    public String getTown_name() {
+        return town_name;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
     }
 
-    public String getTagCount() {
-        return tagCount;
+    public String getMaxTag() {
+        return maxTag;
     }
 
-    public void setTagCount(String tagCount) {
-        this.tagCount = tagCount;
+    public void setMaxTag(String maxTag) {
+        this.maxTag = maxTag;
     }
 }

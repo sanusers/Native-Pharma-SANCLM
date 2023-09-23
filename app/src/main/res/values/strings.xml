@@ -81,6 +81,9 @@
     <string name="skip_submit"><![CDATA[Skip & Submit]]></string>
     <string name="start_detaling">Start Detailing</string>
     <string name="filter_by">Filter by</string>
+    <string name="loc_not_detect"> Location cannot detected </string>
+
+
 
 
 </resources>

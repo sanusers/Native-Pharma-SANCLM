@@ -102,7 +102,7 @@ public class UnlistedDoctorFragment extends Fragment {
         ArrayList<CustList> filterdNames = new ArrayList<>();
         for (CustList s : custListArrayList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase()) ||
-                    s.getArea().toLowerCase().contains(text.toLowerCase())) {
+                    s.getTown_name().toLowerCase().contains(text.toLowerCase())) {
                 filterdNames.add(s);
             }
         }
