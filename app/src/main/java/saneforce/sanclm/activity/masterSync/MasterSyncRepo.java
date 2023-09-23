@@ -15,7 +15,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.network.ApiInterface;
-import saneforce.sanclm.network.RetrofitClient;
+
 
 public class MasterSyncRepo {
 
@@ -23,7 +23,7 @@ public class MasterSyncRepo {
         MutableLiveData<JsonArray> mutableLiveData = new MutableLiveData<>();
 
         try {
-            ApiInterface apiInterface = RetrofitClient.getRetrofit(context,baseUrl);
+            ApiInterface apiInterface = saneforce.sanclm.network.RetrofitClient.getRetrofit(context, baseUrl);
             Call<JsonArray> call = null;
             JSONObject jsonObject = new JSONObject(object);
             if (masterFor.equalsIgnoreCase("Doctor")){

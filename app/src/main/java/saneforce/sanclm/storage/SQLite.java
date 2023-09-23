@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 public class SQLite extends SQLiteOpenHelper {
+    Context context;
 
     public static final String DATA_BASE_NAME = "san_clm.db";
     public static final String LOGIN_TABLE = "login_table";
@@ -24,17 +25,15 @@ public class SQLite extends SQLiteOpenHelper {
 
 
 
-
-
     public SQLite (@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);
+        this.context = context;
     }
 
     @Override
     public void onCreate (SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LOGIN_TABLE + "(" + LOGIN_DATA + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text" + ")");
-
     }
 
     @Override
@@ -42,14 +41,12 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
         onCreate(db);
-
     }
 
     public void deleteAllTable(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + LOGIN_TABLE);
         db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE);
-
         db.close();
     }
 
@@ -100,11 +97,4 @@ public class SQLite extends SQLiteOpenHelper {
         }
         return jsonArray;
     }
-
-
-
-
-
-
-
 }

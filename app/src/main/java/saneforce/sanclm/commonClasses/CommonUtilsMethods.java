@@ -3,19 +3,32 @@ package saneforce.sanclm.commonClasses;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Parcelable;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import saneforce.sanclm.R;
 
@@ -34,6 +47,67 @@ public class CommonUtilsMethods {
     }
 
 
+    public static String gettingAddress(Activity activity, double la, double ln) {
+        Geocoder geocoder;
+        List<Address> addresses = null;
+        String address = "";
+        geocoder = new Geocoder(activity, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(la, ln, 1);
+            address = addresses.get(0).getAddressLine(0);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return address;
+    }
+
+    public static void RequestGPSPermission(Activity activity) {
+        // LocationManager locationManager = (LocationManager) activity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+        // if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        new android.app.AlertDialog.Builder(activity)
+                .setTitle("Alert")  // GPS not found
+                .setCancelable(false)
+                .setMessage("Activate the Gps to proceed futher") // Want to enable?
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public static void RequestPermissions(Activity context, String[] Permissions, boolean isRefresh) {
+
+        PermissionListener permissionlistener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                if (isRefresh)
+                    context.startActivity(context.getIntent());
+            }
+
+            @Override
+            public void onPermissionDenied(List<String> deniedPermissions) {
+            }
+        };
+
+        TedPermission.create()
+                .setPermissionListener(permissionlistener)
+                .setPermissions(Permissions)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .check();
+    }
+
+
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
         try {
             if (rv_test.getItemDecorationCount() > 0) {
@@ -42,7 +116,7 @@ public class CommonUtilsMethods {
                 }
             }
             rv_test.setItemAnimator(new DefaultItemAnimator());
-         //   rv_test.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+            //   rv_test.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
             Parcelable recyclerViewState;
             recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
             rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);

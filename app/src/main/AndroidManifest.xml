@@ -5,6 +5,7 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -44,19 +45,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <activity android:name=".Leave_Application"
-            android:exported="false"
-            android:screenOrientation="landscape"/>
-
         <activity
-        android:name=".activity.SplashScreen"
-        android:exported="true"
-        android:screenOrientation="landscape" />
+            android:name=".activity.SplashScreen"
+            android:exported="true"
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".activity.masterSync.MasterSyncActivity"
@@ -79,7 +76,7 @@
             android:name=".activity.map.custSelection.TagCustSelectionList"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
             android:name=".activity.profile.CustomerProfile"
@@ -91,7 +88,7 @@
             android:name=".activity.homeScreen.call.DCRCallActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"  />
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
             android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"

@@ -4,13 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.time.LocalDate;
@@ -19,13 +24,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.databinding.ActivityTourPlanBinding;
 
 public class TourPlanActivity extends AppCompatActivity {
 
     private ActivityTourPlanBinding binding;
-    CalendarAdapter calendarAdapter;
+    CalendarAdapter calendarAdapter = new CalendarAdapter();
     LocalDate selectedDate;
+    private DrawerLayout drawerLayout;
 
 
     @Override
@@ -36,12 +43,18 @@ public class TourPlanActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         selectedDate = LocalDate.now();
-        populateAdapter();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run () {
+                populateAdapter();
+            }
+        },200);
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                onBackPressed();
+//                onBackPressed();
+                startActivity(new Intent(TourPlanActivity.this, HomeDashBoard.class));
             }
         });
 
@@ -122,7 +135,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void populateAdapter(){
-        Log.e("test","populateAdapter called");
         binding.monthYear.setText(monthYearFromDate(selectedDate));
         ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
 
@@ -131,15 +143,14 @@ public class TourPlanActivity extends AppCompatActivity {
             public void onDayClicked (int position, String date) {
                 if(!date.equals(""))
                 {
-                    String message = "Selected Date " + date + " " + monthYearFromDate(selectedDate);
-                    Toast.makeText(TourPlanActivity.this, message, Toast.LENGTH_LONG).show();
+                    binding.tpDrawer.openDrawer(Gravity.RIGHT);
                 }
             }
         });
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
         binding.calendarRecView.setLayoutManager(layoutManager);
         binding.calendarRecView.setAdapter(calendarAdapter);
-        calendarAdapter.notifyDataSetChanged();
+//        calendarAdapter.notifyDataSetChanged();
     }
 
 }

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="#e5e7e9"
     android:screenOrientation="landscape"
-    tools:context=".Leave_Application">
+    tools:context=".activity.leave.Leave_Application">
 
     <LinearLayout
         android:id="@+id/toolbarheaddcr"

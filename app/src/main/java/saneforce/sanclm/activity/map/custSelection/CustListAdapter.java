@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,10 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHolder> {
     Context context;
@@ -27,7 +28,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
     CommonUtilsMethods commonUtilsMethods;
 
     public CustListAdapter(Activity activity, Context context, ArrayList<CustList> custListArrayList) {
-       this.activity = activity;
+        this.activity = activity;
         this.context = context;
         this.custListArrayList = custListArrayList;
     }
@@ -45,9 +46,8 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         holder.tv_name.setText(custListArrayList.get(position).getName());
         holder.tv_category.setText(custListArrayList.get(position).getCategory());
         holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
-        holder.tv_area.setText(custListArrayList.get(position).getArea());
-        holder.tv_count.setText(custListArrayList.get(position).getTagCount());
-
+        holder.tv_area.setText(custListArrayList.get(position).getTown_name());
+        holder.tv_count.setText(custListArrayList.get(position).getTag() + "/" + custListArrayList.get(position).getMaxTag());
 
         holder.tv_name.setOnClickListener(view -> {
             if (holder.tv_name.getText().toString().length() > 18) {
@@ -56,10 +56,14 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         });
 
         holder.constraint_main.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapsActivity.class);
-            intent.putExtra("from", "tag_adapter");
-            intent.putExtra("cust_name", holder.tv_name.getText().toString());
-            context.startActivity(intent);
+            if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
+                Intent intent = new Intent(context, MapsActivity.class);
+                intent.putExtra("from", "tag_adapter");
+                intent.putExtra("cust_name", holder.tv_name.getText().toString());
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(context, "Exceed the Tag limitation !!", Toast.LENGTH_SHORT).show();
+            }
         });
 
         holder.tv_view.setOnClickListener(view -> {

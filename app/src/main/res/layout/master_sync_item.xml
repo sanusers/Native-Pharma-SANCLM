@@ -30,7 +30,6 @@
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
-                android:textStyle="bold"
                 android:layout_gravity="center"
                 tools:ignore="SpUsage"/>
 
@@ -52,12 +51,14 @@
             android:text="0"
             android:textColor="@color/text_dark_65"
             android:textSize="@dimen/_5sdp"
-            android:fontFamily="@font/satoshi_bold"
+            android:textStyle="bold"
+            android:fontFamily="@font/satoshi_medium"
             android:layout_marginTop="@dimen/_3sdp"
             android:layout_gravity="bottom"
             android:gravity="bottom"
             tools:ignore="SpUsage"/>
 
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

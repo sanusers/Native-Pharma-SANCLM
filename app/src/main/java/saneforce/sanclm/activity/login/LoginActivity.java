@@ -32,16 +32,21 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.AsyncInterface;
 import saneforce.sanclm.activity.setting.SettingsActivity;
-import saneforce.sanclm.databinding.ActivityLoginBinding;
-import saneforce.sanclm.utility.DownloaderClass;
-import saneforce.sanclm.utility.ImageStorage;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
+import saneforce.sanclm.databinding.ActivityLoginBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
+import saneforce.sanclm.utility.DownloaderClass;
+import saneforce.sanclm.utility.ImageStorage;
+
+
+
+
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -130,8 +135,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick (View view) {
                 sqlite.deleteAllTable();
-                SharedPref.saveLoginState(getApplicationContext(),false);
-                SharedPref.saveSettingState(getApplicationContext(),false);
+                SharedPref.saveLoginState(getApplicationContext(), false);
+                SharedPref.saveSettingState(getApplicationContext(), false);
                 startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
 //                Cursor cursor = sqlite.getLoginData();
 //                String data = "";
@@ -228,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
                             intent.putExtra("Origin","Login");
                             startActivity(intent);
-                            SharedPref.saveLoginState(getApplicationContext(),true);
+                            SharedPref.saveLoginState(getApplicationContext(), true);
                         }else{
                             if (jsonObject2.has("msg")){
                                 Toast.makeText(LoginActivity.this,jsonObject2.getString("msg") , Toast.LENGTH_SHORT).show();
