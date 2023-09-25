@@ -1,25 +1,33 @@
 package saneforce.sanclm.activity.map;
 
+import static saneforce.sanclm.activity.map.MapsActivity.mapsBinding;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.storage.SQLiteHandler;
 import saneforce.sanclm.storage.SharedPref;
 
 public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
-    private View customView = null;
     Context context;
     ViewTagModel viewTagModels;
     SQLiteHandler db;
     TextView txtview;
     TextView txtadd, txtImage;
+    ConstraintLayout constraint_view_img;
+    CommonUtilsMethods commonUtilsMethods;
+    private View customView = null;
 
 
     public MyInfoWindowAdapter(ViewTagModel mm, Context context) {
@@ -27,6 +35,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             customView = View.inflate(context, R.layout.map_info_window, null);
             this.viewTagModels = mm;
             this.context = context;
+            commonUtilsMethods = new CommonUtilsMethods(context);
         } catch (Exception e) {
 
         }
@@ -36,61 +45,44 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(final Marker marker) {
         db = new SQLiteHandler(context);
-       // mCommonsharedpreference = new CommonSharedPreference(context);
-        String url = null;
         txtview = customView.findViewById(R.id.txt_drName);
         txtadd = customView.findViewById(R.id.txt_address);
         txtImage = customView.findViewById(R.id.btn_view_image);
+        constraint_view_img = customView.findViewById(R.id.constraint_view_img);
 
         String add = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("&") + 1);
 
         txtview.setText(marker.getSnippet().substring(0, marker.getSnippet().indexOf("&")));
-        txtadd.setText(add.trim().substring(0, add.lastIndexOf("^")));
+        //  txtadd.setText(add.trim().substring(0, add.lastIndexOf("^")));
+        txtadd.setText(add.trim().substring(0, add.lastIndexOf("$")));
+
+        String code = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("$") + 1);
+        code = code.trim().substring(0, code.lastIndexOf("^"));
+
+
         if (SharedPref.getGeotagImage(context).equalsIgnoreCase("0")) {
-            txtImage.setVisibility(View.VISIBLE);
+            constraint_view_img.setVisibility(View.VISIBLE);
             if (marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
-               // txtImage.setText(R.string.toast_no_img_found);
+                constraint_view_img.setVisibility(View.GONE);
             } else {
-               // txtImage.setText(R.string.click_view_image);
+                constraint_view_img.setVisibility(View.VISIBLE);
             }
         } else {
-            txtImage.setVisibility(View.GONE);
+            constraint_view_img.setVisibility(View.GONE);
         }
-
-
-       /* if (marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
-            btnViewImage.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_image_not));
-        } else {
-            Glide.with(context)
-                    .load(url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1))
-            .into(btnViewImage);
-          *//*  Picasso.get()
-                    .load(url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1))
-                    .error(R.drawable.activity_img)
-                    .into(btnViewImage);*//*
+        Log.v("getCode", "bf---" + code);
+        for (int i = 0; i < MapsActivity.taggedMapListArrayList.size(); i++) {
+            if (MapsActivity.taggedMapListArrayList.get(i).getCode().equalsIgnoreCase(code)) {
+                Log.v("getCode", MapsActivity.taggedMapListArrayList.get(i).getCode());
+                MapsActivity.taggedMapListArrayList.remove(i);
+                MapsActivity.taggedMapListArrayList.add(0, new TaggedMapList(txtview.getText().toString(), txtadd.getText().toString(), code, true));
+            } else {
+                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), false));
+            }
         }
-        if (btnViewImage.getDrawable() == null) {
-            Log.v("gggg", "000");
-        } else {
-            Log.v("gggg", "111");
-        }
-*/
-     /*   if (mCommonsharedpreference.getValueFromPreference("error_tag").equalsIgnoreCase("0")) {
-            btnViewImage.setImageDrawable(context.getResources().getDrawable(R.drawable.san_clm_logo));
-        } else {
-            Picasso.get()
-                    .load(url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1))
-                    .into(btnViewImage);
-        }*/
-
-
-       /* if (marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
-            btnViewImage.setImageDrawable(context.getResources().getDrawable(R.drawable.baseline_image_not));
-        } else {
-            Picasso.get()
-                    .load(url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1))
-                    .into(btnViewImage);
-        }*/
+        MapsActivity.taggingAdapter = new TaggingAdapter(context.getApplicationContext(), MapsActivity.taggedMapListArrayList);
+        commonUtilsMethods.recycleTestWithDivider(mapsBinding.rvList);
+        mapsBinding.rvList.setAdapter(MapsActivity.taggingAdapter);
 
         return customView;
     }

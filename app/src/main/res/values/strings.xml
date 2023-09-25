@@ -82,6 +82,7 @@
     <string name="start_detaling">Start Detailing</string>
     <string name="filter_by">Filter by</string>
     <string name="loc_not_detect"> Location cannot detected </string>
+    <string name="toast_no_img_found">No Image Found</string>
 
 
 

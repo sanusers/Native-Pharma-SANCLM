@@ -47,22 +47,29 @@ public class CommonUtilsMethods {
     }
 
 
-    public static String gettingAddress(Activity activity, double la, double ln) {
+    public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
         Geocoder geocoder;
         List<Address> addresses = null;
         String address = "";
         geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
-            address = addresses.get(0).getAddressLine(0);
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-            Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            if (addresses.size() > 0) {
+                address = addresses.get(0).getAddressLine(0);
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+            } else {
+                address = "No Address Found";
+            }
+
+            if (toastMsg) {
+                Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

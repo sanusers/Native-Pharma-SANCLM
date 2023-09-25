@@ -22,9 +22,15 @@ public class SharedPref {
     public static final String LOGIN_STATE = "login_state";
     public static final String DEVICE_ID = "device_id";
     public static final String FCM_TOKEN = "fcm_token";
+    public static final String SF_TYPE = "sf_type";
+    public static final String SF_CODE = "sf_code";
+    public static final String SF_NAME = "sf_name";
+    public static final String TAG_IMAGE_URL = "tag_image_url";
 
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
+    public static final String HQ_NAME = "selected_hq_name";
+    public static final String HQ_CODE = "selected_hq_code";
 
     //Map Activity
     public static final String MAP_SELECTED_TAB = "selected_tab_map";
@@ -32,7 +38,7 @@ public class SharedPref {
     //SetUp
     public static final String GEO_NEED = "geo_need";
     public static final String GEO_CHECK = "geo_check";
-    public static final String T_BASE = "t_base";
+    public static final String T_BASE = "t_base"; //TBase
     public static final String CHEMIST_NEED = "chemist_need";
     public static final String STOCKIST_NEED = "stockiest_need";
     public static final String UNDR_NEED = "undr_need";
@@ -79,7 +85,7 @@ public class SharedPref {
     public static final String DR_SAM_NEED = "dr_sam_need";
     public static final String DR_RX_QTY_MANDATORY = "dr_rx_qty_man";
     public static final String DR_SAM_QTY_MANDATORY = "dr_sam_qty_man";
-    public static final String FEEDBACK_NEED = "feedback_need";
+    public static final String FEEDBACK_NEED = "feedback_need"; //FeedNd
     public static final String CHECK_IN_OUT_NEED = "check_in_out_need";
     public static final String DR_EVENT_CAPTURE = "dr_event_capture";
     public static final String CHEMIST_EVENT_CAPTURE = "che_event_capture";
@@ -89,9 +95,9 @@ public class SharedPref {
     public static final String DR_INP_MANDATORY = "dr_inp_man";
     public static final String DR_RCPA_NEED = "dr_rcpa_need";
     public static final String CHEMIST_RCPA_NEED = "chemist_rcpa_need";
-    public static final String MULTIPLE_DR_NEED = "multiple_dr_need";
-    public static final String MAIL_NEED = "mail_need";
-    public static final String DR_DOB_DOW = "dr_dob_dow";
+    public static final String MULTIPLE_DR_NEED = "multiple_dr_need"; //multiple_doc_need
+    public static final String MAIL_NEED = "mail_need"; //mailneed
+    public static final String DR_DOB_DOW = "dr_dob_dow"; //doctor_dobdow
     public static final String DR_GEO_TAG_NEED = "dr_geo_tag_need";
     public static final String CHEMIST_GEO_TAG_NEED = "che_geo_tag_need";
     public static final String STK_GEO_TAG_NEED = "stk_geo_tag_need";
@@ -100,49 +106,52 @@ public class SharedPref {
     public static final String GEOFENCING_CIRCLE_RADIUS = "map_circle_radius";
     public static final String GEOTAG_IMAGE = "geo_tag_img";
     public static final String DEVICE_REG_ID = "device_reg_id";
-    public static final String ATTENDANCE = "attendance";
-    public static final String MCL_DETAILING = "mcl_detailing";
-    public static final String CIRCULAR = "circular";
-    public static final String DR_NEXT_VISIT = "dr_nxt_visit";
-    public static final String DR_NEXT_VISIT_MANDATORY = "dr_nxt_visit_man";
-    public static final String DR_POLICY = "dr_policy";
-    public static final String DR_CALL_TYPE = "dr_call_type";
-    public static final String DR_CALL_TYPE_MODE = "dr_call_type_mode";
-    public static final String SKIP_SLIDE_DEMO = "skip_slide_demo";
-    public static final String RATING_BASED_SLIDE = "rating_based_slide";
-    public static final String MEET_EVENT_NEED = "meet_event_need";
-    public static final String ACTIVITY_NEED = "activity_need";
-    public static final String N_ACTIVITY_NEED = "n_activity_need";
-    public static final String DR_ACTIVITY_NEED = "dr_activity_need";
-    public static final String CHEMIST_ACTIVITY_NEED = "che_activity_need";
-    public static final String STOCKIST_ACTIVITY_NEED = "stk_activity_need";
-    public static final String UN_DR_ACTIVITY_NEED = "undr_activity_need";
-    public static final String SURVEY_NEED = "survey_need";
-    public static final String DR_SURVEY_NEED = "dr_survey_need";
-    public static final String CHEMIST_SURVEY_NEED = "che_survey_need";
-    public static final String STOCKIST_SURVEY_NEED = "stk_survey_need";
-    public static final String UN_DR_SURVEY_NEED = "undr_survey_need";
-    public static final String SPEC_FILTER = "spec_filter";
-    public static final String MISSED_ENTRY = "missed_entry";
-    //  public static final String ADD_NEW_DR_NEED= "add_new_dr_need";
-    public static final String MAX_RATING_STAR = "max_rate_star";
+    public static final String SFTP_DATE = "sftp_date"; //SFTPDate
+    public static final String ATTENDANCE = "attendance"; //Attendance
+    public static final String PROFILE_MCL_DETAILING = "mcl_detailing";
+    public static final String CIRCULAR = "circular"; //circular
+    public static final String DR_NEXT_VISIT = "dr_nxt_visit"; //DrNxtVst
+    public static final String DR_NEXT_VISIT_MANDATORY = "dr_nxt_visit_man"; //DrNxtVstMd
+    public static final String DR_POLICY = "dr_policy"; //DrPolicy
+    public static final String DR_CALL_TYPE = "dr_call_type"; //DrCallTyp
+    public static final String DR_CALL_TYPE_MODE = "dr_call_type_mode";//DrCallTypMd
+    public static final String SKIP_SLIDE_DEMO = "skip_slide_demo"; //SkipSlideDemo
+    public static final String RATING_BASED_SLIDE = "rating_based_slide";//RatingBasedSlide
+    public static final String MEET_EVENT_NEED = "meet_event_need";//MeetEventNeed
+    public static final String ACTIVITY_NEED = "activity_need";//ActivityNeed
+    public static final String PRESENTATION_N_ACTIVITY_NEED = "n_activity_need";
+    public static final String DR_ACTIVITY_NEED = "dr_activity_need";//DrActivityNeed
+    public static final String CHEMIST_ACTIVITY_NEED = "che_activity_need";//ChmActivityNeed
+    public static final String STOCKIST_ACTIVITY_NEED = "stk_activity_need";//StkActivityNeed
+    public static final String UN_DR_ACTIVITY_NEED = "undr_activity_need";//NdrActivityNeed
+    public static final String SURVEY_NEED_DUPLICATE = "survey_need";//SurveyNeed
+    public static final String DR_SURVEY_NEED = "dr_survey_need";//DrSurveyNeed
+    public static final String CHEMIST_SURVEY_NEED = "che_survey_need";//ChmSurveyNeed
+    public static final String STOCKIST_SURVEY_NEED = "stk_survey_need";//StkSurveyNeed
+    public static final String UN_DR_SURVEY_NEED = "undr_survey_need";//NdrSurveyNeed
+    public static final String PRESENTATION_SPEC_FILTER = "spec_filter";
+    public static final String MISSED_ENTRY = "missed_entry";//MissedEntry
+
+    public static final String ADD_NEW_DR_NEED = "add_new_dr_need";//AddNewDrNeed
+    public static final String MAX_RATING_STAR = "max_rate_star";//MaxStarRate
     public static final String CHEMIST_RX_NEED = "chm_rx_need";
     public static final String ADD_DR = "add_dr";
     public static final String SHOW_DELETE_OPTION = "show_delete_option";
-    public static final String DETAILING_CHEM = "detailing_chem";
-    public static final String DETAILING_STOCKIST = "detailing_stk";
-    public static final String DETAILING_UN_DR = "detailing_undr";
+    public static final String DETAILING_CHEM_SKIP = "detailing_chem";
+    public static final String DETAILING_STOCKIST_SKIP = "detailing_stk";
+    public static final String DETAILING_UNDR_SKIP = "detailing_undr";
     public static final String ADD_CHEMIST = "add_chemist";
     public static final String STOCKIST_POB_NEED = "stk_pob_need";
-    public static final String UN_DR_POB_NEED = "undr_pob_need";
+    public static final String UNDR_POB_NEED = "undr_pob_need";
     public static final String TP_NEED = "tp_need";
+    public static final String SURVEY_NEED = "survey_nd";
     public static final String PAST_LEAVE_POST = "past_leave_post";
     public static final String RCPA_MANDATORY = "rcpa_man";
     public static final String QUIZ_NEED = "quiz_need";
     public static final String QUIZ_NEED_MANDATORY = "quiz_need_man";
     public static final String MISSED_DATE_MANDATORY = "missed_date_man";
-    public static final String DELAY_CONTROL = "delay_control";
-    public static final String DCR_LOCK_DAYS = "dcr_lock_days";
+    public static final String DELAY_CONTROL = "delay_control";//DlyCtrl
+    public static final String DCR_LOCK_DAYS = "dcr_lock_days";//DcrLockDays
     public static final String TP_DCR_DEVIATION = "tp_dcr_deviation";
     public static final String TP_BASED_DCR = "tp_based_dcr";
     public static final String TP_MANDATORY_NEED = "tp_based_dcr";
@@ -152,30 +161,31 @@ public class SharedPref {
     public static final String DR_JW_MANDATORY = "dr_jw_man";
     public static final String CHEMIST_JW_MANDATORY = "chemist_jw_man";
     public static final String STOCKIST_JW_MANDATORY = "stockiest_jw_man";
-    public static final String UN_DR_JW_MANDATORY = "undr_jw_man";
-    public static final String CIP_EVENT_CAPTURE = "cip_event_cap";
+    public static final String UNDR_JW_MANDATORY = "undr_jw_man";
+    public static final String DETAILING_CIP_SKIP = "cip_detailing";
+    public static final String DR_FEEDBACK_MANDATORY = "dr_feedback_man";
     public static final String DR_FEEDBACK_NEED = "dr_feedback_need";
     public static final String CHEMIST_FEEDBACK_NEED = "che_feedback_need";
     public static final String STOCKIST_FEEDBACK_NEED = "stk_feedback_need";
-    public static final String UN_DR_FEEDBACK_NEED = "undr_feedback_need";
+    public static final String UNDR_FEEDBACK_NEED = "undr_feedback_need";
     public static final String CIP_FEEDBACK_NEED = "cip_feedback_need";
     public static final String DR_POB_NEED = "dr_pob_need";
     public static final String DR_POB_MANDATORY = "dr_pob_man";
     public static final String CHEMIST_POB_NEED = "che_pob_need";
     public static final String CHEMIST_POB_MANDATORY = "che_pob_man";
     public static final String STOCKIST_POB_MANDATORY = "stk_pob_man";
-    public static final String UN_DR_POB_MANDATORY = "undr_pob_man";
+    public static final String UNDR_POB_MANDATORY = "undr_pob_man";
     public static final String CIP_POB_NEED = "cip_pob_need";
     public static final String CIP_POB_MANDATORY = "cip_pob_man";
     public static final String DR_REMARKS_NEED = "dr_remarks_need";
-    public static final String TARGET_REPORT_NEED = "target_report_need";
+    public static final String SALES_REPORT_NEED = "sales_report_need";
     public static final String VISIT_CONTROL = "visit_control";
     public static final String MULTI_CLUSTER = "multi_cluster";
     public static final String SAMPLE_VALIDATION = "sample_validation";
     public static final String INPUT_VALIDATION = "input_validation";
     public static final String LEAVE_ENTITLEMENT_NEED = "leave_entitlement_need";
-    public static final String REMINDER_NEED = "redminder_need";
-    public static final String REMINDER_PRD_MANDATORY = "redminder_prd_man";
+    public static final String REMINDER_CALL_NEED = "reminder_call_need";
+    public static final String REMINDER_CALL_PRD_MANDATORY = "reminder_call_prd_man";
 
 
     public static SharedPreferences sharedPreferences;
@@ -269,6 +279,45 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(FCM_TOKEN, "");
     }
 
+    public static void setSfType(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SF_TYPE, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SF_TYPE, token).apply();
+    }
+
+    public static String getSfType(Context context) {
+        return context.getSharedPreferences(SF_TYPE, Context.MODE_PRIVATE).getString(SF_TYPE, "");
+    }
+
+    public static void setSfCode(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SF_CODE, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SF_CODE, token).apply();
+    }
+
+    public static String getSfCode(Context context) {
+        return context.getSharedPreferences(SF_CODE, Context.MODE_PRIVATE).getString(SF_CODE, "");
+    }
+    public static void setSfName(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SF_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SF_NAME, token).apply();
+    }
+
+    public static String getSfName(Context context) {
+        return context.getSharedPreferences(SF_NAME, Context.MODE_PRIVATE).getString(SF_NAME, "");
+    }
+
+    public static void setTagImageUrl(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(TAG_IMAGE_URL, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TAG_IMAGE_URL, token).apply();
+    }
+
+    public static String getTagImageUrl(Context context) {
+        return context.getSharedPreferences(TAG_IMAGE_URL, Context.MODE_PRIVATE).getString(TAG_IMAGE_URL, "");
+    }
+
     public static void saveMasterLastSync(Context context, String date) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -277,6 +326,21 @@ public class SharedPref {
 
     public static String getLastSync(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(MASTER_LAST_SYNC, "");
+    }
+
+    public static void saveHq(Context context, String name, String code) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(HQ_NAME, name);
+        editor.putString(HQ_CODE, code).apply();
+    }
+
+    public static String getHqName(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_NAME, "");
+    }
+
+    public static String getHqCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_CODE, "");
     }
 
     public static void setGeoNeed(Context context, String status) {
@@ -596,6 +660,7 @@ public class SharedPref {
         editor.putString(CHEMIST_RCPA_MANDATORY, status).apply();
     }
 
+
     public static String getChemistRcpaMandatory(Context context) {
         return context.getSharedPreferences(CHEMIST_RCPA_MANDATORY, Context.MODE_PRIVATE).getString(CHEMIST_RCPA_MANDATORY, "");
     }
@@ -829,6 +894,7 @@ public class SharedPref {
     public static String getDrPrdMandatory(Context context) {
         return context.getSharedPreferences(DR_PRD_MANDATORY, Context.MODE_PRIVATE).getString(DR_PRD_MANDATORY, "");
     }
+
     public static void setDrInpMandatory(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(DR_INP_MANDATORY, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -868,6 +934,7 @@ public class SharedPref {
     public static String getDrGeoTagNeed(Context context) {
         return context.getSharedPreferences(DR_GEO_TAG_NEED, Context.MODE_PRIVATE).getString(DR_GEO_TAG_NEED, "");
     }
+
     public static void setChemistGeoTagNeed(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(CHEMIST_GEO_TAG_NEED, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -937,4 +1004,535 @@ public class SharedPref {
     public static String getDeviceRegId(Context context) {
         return context.getSharedPreferences(DEVICE_REG_ID, Context.MODE_PRIVATE).getString(DEVICE_REG_ID, "");
     }
+
+    public static void setProfileMclDetailing(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(PROFILE_MCL_DETAILING, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(PROFILE_MCL_DETAILING, status).apply();
+    }
+
+    public static String getProfileMclDetailing(Context context) {
+        return context.getSharedPreferences(PROFILE_MCL_DETAILING, Context.MODE_PRIVATE).getString(PROFILE_MCL_DETAILING, "");
+    }
+
+    public static void setPresentationNActivityNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(PRESENTATION_N_ACTIVITY_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(PRESENTATION_N_ACTIVITY_NEED, status).apply();
+    }
+
+    public static String getPresentationNActivityNeed(Context context) {
+        return context.getSharedPreferences(PRESENTATION_N_ACTIVITY_NEED, Context.MODE_PRIVATE).getString(PRESENTATION_N_ACTIVITY_NEED, "");
+    }
+
+    public static void setPresentationSpecFilter(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(PRESENTATION_SPEC_FILTER, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(PRESENTATION_SPEC_FILTER, status).apply();
+    }
+
+    public static String getPresentationSpecFilter(Context context) {
+        return context.getSharedPreferences(PRESENTATION_SPEC_FILTER, Context.MODE_PRIVATE).getString(PRESENTATION_SPEC_FILTER, "");
+    }
+
+    public static void setChemistRxNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CHEMIST_RX_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHEMIST_RX_NEED, status).apply();
+    }
+
+    public static String getChemistRxNeed(Context context) {
+        return context.getSharedPreferences(CHEMIST_RX_NEED, Context.MODE_PRIVATE).getString(CHEMIST_RX_NEED, "");
+    }
+
+    public static void setAddDr(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(ADD_DR, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(ADD_DR, status).apply();
+    }
+
+    public static String getAddDr(Context context) {
+        return context.getSharedPreferences(ADD_DR, Context.MODE_PRIVATE).getString(ADD_DR, "");
+    }
+
+    public static void setShowDeleteOption(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SHOW_DELETE_OPTION, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SHOW_DELETE_OPTION, status).apply();
+    }
+
+    public static String getShowDeleteOption(Context context) {
+        return context.getSharedPreferences(SHOW_DELETE_OPTION, Context.MODE_PRIVATE).getString(SHOW_DELETE_OPTION, "");
+    }
+
+    public static void setDetailingChemSkip(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DETAILING_CHEM_SKIP, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DETAILING_CHEM_SKIP, status).apply();
+    }
+
+    public static String getDetailingChemSkip(Context context) {
+        return context.getSharedPreferences(DETAILING_CHEM_SKIP, Context.MODE_PRIVATE).getString(DETAILING_CHEM_SKIP, "");
+    }
+
+    public static void setDetailingStockistSkip(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DETAILING_STOCKIST_SKIP, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DETAILING_STOCKIST_SKIP, status).apply();
+    }
+
+    public static String getDetailingStockistSkip(Context context) {
+        return context.getSharedPreferences(DETAILING_STOCKIST_SKIP, Context.MODE_PRIVATE).getString(DETAILING_STOCKIST_SKIP, "");
+    }
+
+    public static void setDetailingUndrSkip(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DETAILING_UNDR_SKIP, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DETAILING_UNDR_SKIP, status).apply();
+    }
+
+    public static String getDetailingUndrSkip(Context context) {
+        return context.getSharedPreferences(DETAILING_UNDR_SKIP, Context.MODE_PRIVATE).getString(DETAILING_UNDR_SKIP, "");
+    }
+
+    public static void setAddChemist(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(ADD_CHEMIST, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(ADD_CHEMIST, status).apply();
+    }
+
+    public static String getAddChemist(Context context) {
+        return context.getSharedPreferences(ADD_CHEMIST, Context.MODE_PRIVATE).getString(ADD_CHEMIST, "");
+    }
+
+    public static void setStockistPobNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(STOCKIST_POB_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STOCKIST_POB_NEED, status).apply();
+    }
+
+    public static String getStockistPobNeed(Context context) {
+        return context.getSharedPreferences(STOCKIST_POB_NEED, Context.MODE_PRIVATE).getString(STOCKIST_POB_NEED, "");
+    }
+
+    public static void setUndrPobNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(UNDR_POB_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(UNDR_POB_NEED, status).apply();
+    }
+
+    public static String getUndrPobNeed(Context context) {
+        return context.getSharedPreferences(UNDR_POB_NEED, Context.MODE_PRIVATE).getString(UNDR_POB_NEED, "");
+    }
+
+    public static void setTpNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(TP_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TP_NEED, status).apply();
+    }
+
+    public static String getTpNeed(Context context) {
+        return context.getSharedPreferences(TP_NEED, Context.MODE_PRIVATE).getString(TP_NEED, "");
+    }
+
+    public static void setSurveyNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SURVEY_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SURVEY_NEED, status).apply();
+    }
+
+    public static String getSurveyNeed(Context context) {
+        return context.getSharedPreferences(SURVEY_NEED, Context.MODE_PRIVATE).getString(SURVEY_NEED, "");
+    }
+
+    public static void setPastLeavePost(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(PAST_LEAVE_POST, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(PAST_LEAVE_POST, status).apply();
+    }
+
+    public static String getPastLeavePost(Context context) {
+        return context.getSharedPreferences(PAST_LEAVE_POST, Context.MODE_PRIVATE).getString(PAST_LEAVE_POST, "");
+    }
+
+    public static void setRcpaMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(RCPA_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(RCPA_MANDATORY, status).apply();
+    }
+
+    public static String getRcpaMandatory(Context context) {
+        return context.getSharedPreferences(RCPA_MANDATORY, Context.MODE_PRIVATE).getString(RCPA_MANDATORY, "");
+    }
+
+    public static void setQuizNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(QUIZ_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_NEED, status).apply();
+    }
+
+    public static String getQuizNeed(Context context) {
+        return context.getSharedPreferences(QUIZ_NEED, Context.MODE_PRIVATE).getString(QUIZ_NEED, "");
+    }
+
+    public static void setQuizNeedMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(QUIZ_NEED_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(QUIZ_NEED_MANDATORY, status).apply();
+    }
+
+    public static String getQuizNeedMandatory(Context context) {
+        return context.getSharedPreferences(QUIZ_NEED_MANDATORY, Context.MODE_PRIVATE).getString(QUIZ_NEED_MANDATORY, "");
+    }
+
+    public static void setMissedDateMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(MISSED_DATE_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(MISSED_DATE_MANDATORY, status).apply();
+    }
+
+    public static String getMissedDateMandatory(Context context) {
+        return context.getSharedPreferences(MISSED_DATE_MANDATORY, Context.MODE_PRIVATE).getString(MISSED_DATE_MANDATORY, "");
+    }
+
+    public static void setTpDcrDeviation(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(TP_DCR_DEVIATION, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TP_DCR_DEVIATION, status).apply();
+    }
+
+    public static String getTpDcrDeviation(Context context) {
+        return context.getSharedPreferences(TP_DCR_DEVIATION, Context.MODE_PRIVATE).getString(TP_DCR_DEVIATION, "");
+    }
+
+    public static void setTpBasedDcr(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(TP_BASED_DCR, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TP_BASED_DCR, status).apply();
+    }
+
+    public static String getTpBasedDcr(Context context) {
+        return context.getSharedPreferences(TP_BASED_DCR, Context.MODE_PRIVATE).getString(TP_BASED_DCR, "");
+    }
+
+    public static void setTpMandatoryNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(TP_MANDATORY_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TP_MANDATORY_NEED, status).apply();
+    }
+
+    public static String getTpMandatoryNeed(Context context) {
+        return context.getSharedPreferences(TP_MANDATORY_NEED, Context.MODE_PRIVATE).getString(TP_MANDATORY_NEED, "");
+    }
+
+    public static void setTpStartDate(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(TP_START_DATE, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TP_START_DATE, status).apply();
+    }
+
+    public static String getTpStartDate(Context context) {
+        return context.getSharedPreferences(TP_START_DATE, Context.MODE_PRIVATE).getString(TP_START_DATE, "");
+    }
+
+    public static void setTpEndDate(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(TP_END_DATE, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TP_END_DATE, status).apply();
+    }
+
+    public static String getTpEndDate(Context context) {
+        return context.getSharedPreferences(TP_END_DATE, Context.MODE_PRIVATE).getString(TP_END_DATE, "");
+    }
+
+    public static void setChemistSamQtyNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CHEMIST_SAM_QTY_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHEMIST_SAM_QTY_NEED, status).apply();
+    }
+
+    public static String getChemistSamQtyNeed(Context context) {
+        return context.getSharedPreferences(CHEMIST_SAM_QTY_NEED, Context.MODE_PRIVATE).getString(CHEMIST_SAM_QTY_NEED, "");
+    }
+
+    public static void setDrJwMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DR_JW_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DR_JW_MANDATORY, status).apply();
+    }
+
+    public static String getDrJwMandatory(Context context) {
+        return context.getSharedPreferences(DR_JW_MANDATORY, Context.MODE_PRIVATE).getString(DR_JW_MANDATORY, "");
+    }
+
+    public static void setChemistJwMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CHEMIST_JW_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHEMIST_JW_MANDATORY, status).apply();
+    }
+
+    public static String getChemistJwMandatory(Context context) {
+        return context.getSharedPreferences(CHEMIST_JW_MANDATORY, Context.MODE_PRIVATE).getString(CHEMIST_JW_MANDATORY, "");
+    }
+
+    public static void setStockistJwMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(STOCKIST_JW_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STOCKIST_JW_MANDATORY, status).apply();
+    }
+
+    public static String getStockistJwMandatory(Context context) {
+        return context.getSharedPreferences(STOCKIST_JW_MANDATORY, Context.MODE_PRIVATE).getString(STOCKIST_JW_MANDATORY, "");
+    }
+
+    public static void setUndrJwMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(UNDR_JW_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(UNDR_JW_MANDATORY, status).apply();
+    }
+
+    public static String getUndrJwMandatory(Context context) {
+        return context.getSharedPreferences(UNDR_JW_MANDATORY, Context.MODE_PRIVATE).getString(UNDR_JW_MANDATORY, "");
+    }
+
+    public static void setDetailingCipSkip(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DETAILING_CIP_SKIP, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DETAILING_CIP_SKIP, status).apply();
+    }
+
+    public static String getDetailingCipSkip(Context context) {
+        return context.getSharedPreferences(DETAILING_CIP_SKIP, Context.MODE_PRIVATE).getString(DETAILING_CIP_SKIP, "");
+    }
+
+    public static void setDrFeedbackMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DR_FEEDBACK_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DR_FEEDBACK_MANDATORY, status).apply();
+    }
+
+    public static String getDrFeedbackMandatory(Context context) {
+        return context.getSharedPreferences(DR_FEEDBACK_MANDATORY, Context.MODE_PRIVATE).getString(DR_FEEDBACK_MANDATORY, "");
+    }
+
+    public static void setDrFeedbackNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DR_FEEDBACK_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DR_FEEDBACK_NEED, status).apply();
+    }
+
+    public static String getDrFeedbackNeed(Context context) {
+        return context.getSharedPreferences(DR_FEEDBACK_NEED, Context.MODE_PRIVATE).getString(DR_FEEDBACK_NEED, "");
+    }
+
+    public static void setChemistFeedbackNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CHEMIST_FEEDBACK_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHEMIST_FEEDBACK_NEED, status).apply();
+    }
+
+    public static String getChemistFeedbackNeed(Context context) {
+        return context.getSharedPreferences(CHEMIST_FEEDBACK_NEED, Context.MODE_PRIVATE).getString(CHEMIST_FEEDBACK_NEED, "");
+    }
+
+    public static void setStockistFeedbackNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(STOCKIST_FEEDBACK_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STOCKIST_FEEDBACK_NEED, status).apply();
+    }
+
+    public static String getStockistFeedbackNeed(Context context) {
+        return context.getSharedPreferences(STOCKIST_FEEDBACK_NEED, Context.MODE_PRIVATE).getString(STOCKIST_FEEDBACK_NEED, "");
+    }
+
+    public static void setUndrFeedbackNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(UNDR_FEEDBACK_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(UNDR_FEEDBACK_NEED, status).apply();
+    }
+
+    public static String getUndrFeedbackNeed(Context context) {
+        return context.getSharedPreferences(UNDR_FEEDBACK_NEED, Context.MODE_PRIVATE).getString(UNDR_FEEDBACK_NEED, "");
+    }
+
+    public static void setCipFeedbackNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CIP_FEEDBACK_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CIP_FEEDBACK_NEED, status).apply();
+    }
+
+    public static String getCipFeedbackNeed(Context context) {
+        return context.getSharedPreferences(CIP_FEEDBACK_NEED, Context.MODE_PRIVATE).getString(CIP_FEEDBACK_NEED, "");
+    }
+
+    public static void setDrPobNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DR_POB_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DR_POB_NEED, status).apply();
+    }
+
+    public static String getDrPobNeed(Context context) {
+        return context.getSharedPreferences(DR_POB_NEED, Context.MODE_PRIVATE).getString(DR_POB_NEED, "");
+    }
+
+    public static void setDrPobMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DR_POB_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DR_POB_MANDATORY, status).apply();
+    }
+
+    public static String getDrPobMandatory(Context context) {
+        return context.getSharedPreferences(DR_POB_MANDATORY, Context.MODE_PRIVATE).getString(DR_POB_MANDATORY, "");
+    }
+
+    public static void setChemistPobNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CHEMIST_POB_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHEMIST_POB_NEED, status).apply();
+    }
+
+    public static String getChemistPobNeed(Context context) {
+        return context.getSharedPreferences(CHEMIST_POB_NEED, Context.MODE_PRIVATE).getString(CHEMIST_POB_NEED, "");
+    }
+
+    public static void setChemistPobMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CHEMIST_POB_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHEMIST_POB_MANDATORY, status).apply();
+    }
+
+    public static String getChemistPobMandatory(Context context) {
+        return context.getSharedPreferences(CHEMIST_POB_MANDATORY, Context.MODE_PRIVATE).getString(CHEMIST_POB_MANDATORY, "");
+    }
+
+    public static void setStockistPobMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(STOCKIST_POB_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(STOCKIST_POB_MANDATORY, status).apply();
+    }
+
+    public static String getStockistPobMandatory(Context context) {
+        return context.getSharedPreferences(STOCKIST_POB_MANDATORY, Context.MODE_PRIVATE).getString(STOCKIST_POB_MANDATORY, "");
+    }
+
+    public static void setUndrPobMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(UNDR_POB_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(UNDR_POB_MANDATORY, status).apply();
+    }
+
+    public static String getUndrPobMandatory(Context context) {
+        return context.getSharedPreferences(UNDR_POB_MANDATORY, Context.MODE_PRIVATE).getString(UNDR_POB_MANDATORY, "");
+    }
+
+    public static void setCipPobNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CIP_POB_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CIP_POB_NEED, status).apply();
+    }
+
+    public static String getCipPobNeed(Context context) {
+        return context.getSharedPreferences(CIP_POB_NEED, Context.MODE_PRIVATE).getString(CIP_POB_NEED, "");
+    }
+
+    public static void setCipPobMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(CIP_POB_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CIP_POB_NEED, status).apply();
+    }
+
+    public static String getCipPobMandatory(Context context) {
+        return context.getSharedPreferences(CIP_POB_MANDATORY, Context.MODE_PRIVATE).getString(CIP_POB_MANDATORY, "");
+    }
+
+    public static void setDrRemarksNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(DR_REMARKS_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DR_REMARKS_NEED, status).apply();
+    }
+
+    public static String getDrRemarksNeed(Context context) {
+        return context.getSharedPreferences(DR_REMARKS_NEED, Context.MODE_PRIVATE).getString(DR_REMARKS_NEED, "");
+    }
+
+    public static void setSalesReportNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SALES_REPORT_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SALES_REPORT_NEED, status).apply();
+    }
+
+    public static String getSalesReportNeed(Context context) {
+        return context.getSharedPreferences(SALES_REPORT_NEED, Context.MODE_PRIVATE).getString(SALES_REPORT_NEED, "");
+    }
+
+    public static void setVisitControl(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(VISIT_CONTROL, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(VISIT_CONTROL, status).apply();
+    }
+
+    public static String getVisitControl(Context context) {
+        return context.getSharedPreferences(VISIT_CONTROL, Context.MODE_PRIVATE).getString(VISIT_CONTROL, "");
+    }
+
+    public static void setMultiCluster(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(MULTI_CLUSTER, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(MULTI_CLUSTER, status).apply();
+    }
+
+    public static String getMultiCluster(Context context) {
+        return context.getSharedPreferences(MULTI_CLUSTER, Context.MODE_PRIVATE).getString(MULTI_CLUSTER, "");
+    }
+
+    public static void setSampleValidation(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SAMPLE_VALIDATION, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SAMPLE_VALIDATION, status).apply();
+    }
+
+    public static String getSampleValidation(Context context) {
+        return context.getSharedPreferences(SAMPLE_VALIDATION, Context.MODE_PRIVATE).getString(SAMPLE_VALIDATION, "");
+    }
+
+    public static void setInputValidation(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(INPUT_VALIDATION, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(INPUT_VALIDATION, status).apply();
+    }
+
+    public static String getInputValidation(Context context) {
+        return context.getSharedPreferences(INPUT_VALIDATION, Context.MODE_PRIVATE).getString(INPUT_VALIDATION, "");
+    }
+
+    public static void setLeaveEntitlementNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(LEAVE_ENTITLEMENT_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LEAVE_ENTITLEMENT_NEED, status).apply();
+    }
+
+    public static String getLeaveEntitlementNeed(Context context) {
+        return context.getSharedPreferences(LEAVE_ENTITLEMENT_NEED, Context.MODE_PRIVATE).getString(LEAVE_ENTITLEMENT_NEED, "");
+    }
+
+    public static void setReminderCallNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(REMINDER_CALL_NEED, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(REMINDER_CALL_NEED, status).apply();
+    }
+
+    public static String getReminderCallNeed(Context context) {
+        return context.getSharedPreferences(REMINDER_CALL_NEED, Context.MODE_PRIVATE).getString(REMINDER_CALL_NEED, "");
+    }
+
+    public static void setReminderCallPrdMandatory(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(REMINDER_CALL_PRD_MANDATORY, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(REMINDER_CALL_PRD_MANDATORY, status).apply();
+    }
+
+    public static String setReminderCallPrdMandatory(Context context) {
+        return context.getSharedPreferences(REMINDER_CALL_PRD_MANDATORY, Context.MODE_PRIVATE).getString(REMINDER_CALL_PRD_MANDATORY, "");
+    }
 }
+

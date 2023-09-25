@@ -8,7 +8,6 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -31,26 +30,26 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import saneforce.sanclm.Leave_Application;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
+import saneforce.sanclm.storage.SharedPref;
 
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private DrawerLayout drawerLayout;
+    public static ViewPager2 viewPager, viewPager1;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
     ImageView imageView;
-    public static ViewPager2 viewPager,viewPager1;
     TabLayout tabLayout;
     ViewpagetAdapter viewpagetAdapter;
     NavigationView navigationView;
     ImageView masterSync;
     LinearLayout pre_layout, slide_layout, report_layout, anlas_layout;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
-
-
+    private DrawerLayout drawerLayout;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -60,7 +59,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         pre_layout = findViewById(R.id.ll_presentation);
-        slide_layout =findViewById(R.id.ll_slide);
+        slide_layout = findViewById(R.id.ll_slide);
         report_layout = findViewById(R.id.ll_report);
         anlas_layout = findViewById(R.id.ll_analys);
         masterSync = findViewById(R.id.img_sync);
@@ -71,7 +70,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         viewPager1 = findViewById(R.id.view_pager1);
         tabLayout = findViewById(R.id.tablelayout);
 
-        navigationView=findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
         MenuItem menuItem = menu.findItem(R.id.nav_from);
@@ -84,16 +83,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
         actionBarDrawerToggle.syncState();
 
-        viewpagetAdapter = new ViewpagetAdapter(this,1);
+        viewpagetAdapter = new ViewpagetAdapter(this, 1);
         viewPager.setAdapter(viewpagetAdapter);
-        viewpagetAdapter = new ViewpagetAdapter(this,2);
+        viewpagetAdapter = new ViewpagetAdapter(this, 2);
         viewPager1.setAdapter(viewpagetAdapter);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        int width = (int) ((((displayMetrics.widthPixels / 3) * 1.9) / 3)-10);
+        int width = (int) ((((displayMetrics.widthPixels / 3) * 1.9) / 3) - 10);
         LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
         param1.setMargins(0, 5, 0, 0);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -106,16 +105,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         masterSync.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class));
             }
         });
 
-        TabLayoutMediator tabLayoutMediator=new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
             @SuppressLint("ResourceType")
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                switch (position){
+                switch (position) {
 
                     case 0:
                         tab.setText("Work Plan");
@@ -126,14 +125,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     case 2:
                         tab.setText("Outbox");
 
-                        BadgeDrawable badgeDrawable=tab.getOrCreateBadge();
-                        badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(),R.color.black));
+                        BadgeDrawable badgeDrawable = tab.getOrCreateBadge();
+                        badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
                         badgeDrawable.setVisible(true);
                         badgeDrawable.setHorizontalOffset(1);
                         badgeDrawable.setVerticalOffset(10);
                         badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
                         badgeDrawable.setNumber(10);
-                        badgeDrawable.setBadgeTextColor(ContextCompat.getColor(getApplicationContext(),R.color.white));
+                        badgeDrawable.setBadgeTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
 
                         break;
 
@@ -159,6 +158,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
     }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -177,8 +177,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (id == R.id.nav_nearme) {
-            startActivity(new Intent(HomeDashBoard.this, MapsActivity.class));
+            Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
+            intent.putExtra("from", "not_tagging");
+            SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
+            startActivity(intent);
             return true;
+        }
+
+        if (id == R.id.logout) {
+            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
         }
 
         return true;

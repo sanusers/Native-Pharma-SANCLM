@@ -175,6 +175,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     reportsUrl = config.getString("reportUrl");
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
+                                    SharedPref.setTagImageUrl(getApplicationContext(),"http://" + binding.etWebUrl.getText().toString().trim() + "/");
                                     downloadImage(baseWebUrl + logoUrl, Constants.LOGO_IMAGE_NAME, enteredUrl);
                                     licenseKeyValid = true;
                                     break;

@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.storage.SQLiteHandler;
@@ -35,7 +36,7 @@ public class TagCustSelectionList extends AppCompatActivity {
     ArrayList<CustList> custListArrayList = new ArrayList<>();
 
     SQLiteHandler sqLiteHandler;
-    String getCustListDB, SelectedTab;
+    String getCustListDB, SelectedTab, SfType, SfCode;
     Cursor mCursor;
 
     @Override
@@ -52,12 +53,14 @@ public class TagCustSelectionList extends AppCompatActivity {
         sqLiteHandler = new SQLiteHandler(this);
         commonUtilsMethods.FullScreencall();
         SelectedTab = SharedPref.getMapSelectedTab(TagCustSelectionList.this);
+        SfType = SharedPref.getSfType(TagCustSelectionList.this);
+        SfCode = SharedPref.getSfCode(TagCustSelectionList.this);
 
         img_back = findViewById(R.id.iv_back);
         rv_cust_list = findViewById(R.id.rv_cust_list);
         editTextSearch_cust = findViewById(R.id.search_cust);
 
-        DummyAdapter();
+        AddCustList();
 
         editTextSearch_cust.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,12 +81,12 @@ public class TagCustSelectionList extends AppCompatActivity {
 
         img_back.setOnClickListener(view -> {
             Intent intent = new Intent(TagCustSelectionList.this, MapsActivity.class);
-            intent.putExtra("from", "cust_sel_list");
+            intent.putExtra("from", "not_tagging");
             startActivity(intent);
         });
     }
 
-    private void DummyAdapter() {
+    private void AddCustList() {
         sqLiteHandler.open();
         custListArrayList.clear();
         Log.v("map_selected_tab", "---" + SharedPref.getMapSelectedTab(TagCustSelectionList.this));
@@ -91,7 +94,12 @@ public class TagCustSelectionList extends AppCompatActivity {
         switch (SelectedTab) {
             case "D":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Doctor");
+                    if (SfType.equalsIgnoreCase("1")) {
+                        mCursor = sqLiteHandler.select_doctor_list(SfCode);
+                    } else {
+
+                    }
+                    //   mCursor = sqLiteHandler.select_master_list("Doctor");
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);

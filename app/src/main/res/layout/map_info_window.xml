@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_40sdp"
+    android:layout_width="@dimen/_100sdp"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    app:cardCornerRadius="@dimen/_5sdp">
+    app:cardCornerRadius="@dimen/_3sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/_100sdp"
         android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/img_tag"
             android:layout_width="@dimen/_18sdp"
             android:layout_height="@dimen/_18sdp"
-            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_3sdp"
             android:src="@drawable/dr_img_map"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/txt_drName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,37 +26,56 @@
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="ContentDescription" />
 
-
-        <TextView
-            android:id="@+id/btn_view_image"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_view_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/view_img_map"
-            android:drawablePadding="@dimen/_3sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="@string/view"
-            android:textColor="@color/pink"
-            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@id/img_tag"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/img_tag" />
+            app:layout_constraintTop_toTopOf="@id/img_tag">
 
+            <ImageView
+                android:id="@+id/img_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_1sdp"
+                android:src="@drawable/view_img_map"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_view_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/btn_view_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_2sdp"
+                android:paddingVertical="@dimen/_1sdp"
+                android:text="@string/view"
+                android:textColor="@color/pink"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/img_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/txt_drName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:fontFamily="@font/satoshi_medium"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_bold"
             android:gravity="start"
             android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
+            android:paddingTop="@dimen/_2sdp"
+            android:paddingBottom="@dimen/_1sdp"
             android:text="Name"
             android:textColor="@color/dark_purple"
             android:textSize="14sp"
@@ -68,12 +87,13 @@
 
         <TextView
             android:id="@+id/txt_address"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
             android:fontFamily="@font/satoshi_regular"
             android:paddingHorizontal="@dimen/_3sdp"
-            android:paddingVertical="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_1sdp"
             android:singleLine="false"
             android:text="Address"
             android:textColor="@color/black"
@@ -88,4 +108,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

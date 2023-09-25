@@ -45,10 +45,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <activity
-            android:name=".activity.SplashScreen"
-            android:exported="true"
-            android:screenOrientation="landscape" />
 
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
@@ -104,8 +100,13 @@
 
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+
+        <activity
+            android:name=".activity.SplashScreen"
             android:exported="true"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

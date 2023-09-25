@@ -58,7 +58,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         holder.constraint_main.setOnClickListener(view -> {
             if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
                 Intent intent = new Intent(context, MapsActivity.class);
-                intent.putExtra("from", "tag_adapter");
+                intent.putExtra("from", "tagging");
                 intent.putExtra("cust_name", holder.tv_name.getText().toString());
                 context.startActivity(intent);
             } else {

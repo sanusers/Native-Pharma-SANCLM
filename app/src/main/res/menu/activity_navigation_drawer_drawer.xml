@@ -59,6 +59,12 @@
             android:id="@+id/nav_from"
             android:title="Froms" />
 
+        <item
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/logout"
+            android:title="Logout" />
+
 
     </group>
 

@@ -155,7 +155,7 @@ public class GPSTrack implements LocationListener {
     public double getLatitude() {
         if (location != null) {
             latitude = location.getLatitude();
-            Log.v("LATTITTUDE", String.valueOf(latitude));
+            Log.v("LATITUDE", String.valueOf(latitude));
         }
 
         // return latitude
@@ -166,7 +166,7 @@ public class GPSTrack implements LocationListener {
         if (location != null) {
             longitude = location.getLongitude();
 
-            Log.v("LATTITTUDE", String.valueOf(longitude));
+            Log.v("LATITUDE", String.valueOf(longitude));
         }
 
         // return latitude

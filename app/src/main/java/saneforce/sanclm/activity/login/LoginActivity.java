@@ -45,9 +45,6 @@ import saneforce.sanclm.utility.ImageStorage;
 
 
 
-
-
-
 public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
@@ -57,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
     String fcmToken = "";
     SQLite sqlite;
     private int passwordNotVisible=1;
-
     LoginViewModel loginViewModel = new LoginViewModel();
 
 
@@ -84,11 +80,6 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPref.saveFcmToken(getApplicationContext(), s);
                 }
             });
-        }
-
-        binding.logoImg.setColorFilter(null);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            binding.logoImg.setForeground(null);
         }
 
         binding.eyeImage.setOnClickListener(new View.OnClickListener() {
@@ -138,18 +129,6 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPref.saveLoginState(getApplicationContext(), false);
                 SharedPref.saveSettingState(getApplicationContext(), false);
                 startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
-//                Cursor cursor = sqlite.getLoginData();
-//                String data = "";
-//                LoginResponse loginResponse;
-//                if (cursor.moveToFirst()) {
-//                    data = cursor.getString(0);
-//                }
-//                cursor.close();
-//                Type type = new TypeToken<LoginResponse>() {
-//                }.getType();
-//                loginResponse = new Gson().fromJson(data, type);
-//                Log.e("test","login data from sqlite : " + new Gson().toJson(loginResponse));
-
             }
         });
 
@@ -220,23 +199,16 @@ public class LoginActivity extends AppCompatActivity {
                 public void onChanged (JsonObject jsonObject) {
                     binding.progressBar.setVisibility(View.GONE);
                     try {
-                        JSONObject jsonObject2 = new JSONObject(jsonObject.toString());
-
-                        if (jsonObject2.getBoolean("success")){
-                            String stringResponse = jsonObject.toString();
-                            LoginResponse loginResponse = new LoginResponse();
-                            loginResponse = new Gson().fromJson(stringResponse,LoginResponse.class);
-
-                            Log.e("test","login response : " + new Gson().toJson(loginResponse));
-                            sqlite.saveLoginData(stringResponse);
-                            openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
-                            Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
-                            intent.putExtra("Origin","Login");
-                            startActivity(intent);
-                            SharedPref.saveLoginState(getApplicationContext(), true);
+                        JSONObject responseObject = new JSONObject(jsonObject.toString());
+                        if (responseObject.getBoolean("success")){
+                            Log.e("test","login response : " + jsonObject.toString());
+                            SharedPref.setSfCode(getApplicationContext(), responseObject.getString("SF_Code"));
+                            SharedPref.setSfName(getApplicationContext(), responseObject.getString("SF_Name"));
+                            SharedPref.setSfType(getApplicationContext(), responseObject.getString("sf_type"));
+                            process(responseObject);
                         }else{
-                            if (jsonObject2.has("msg")){
-                                Toast.makeText(LoginActivity.this,jsonObject2.getString("msg") , Toast.LENGTH_SHORT).show();
+                            if (responseObject.has("msg")){
+                                Toast.makeText(LoginActivity.this,responseObject.getString("msg") , Toast.LENGTH_SHORT).show();
                             }
                         }
                     } catch (JSONException e) {
@@ -248,8 +220,21 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
 
         }
-
-
-
     }
+
+    public void process(JSONObject jsonObject) {
+        try {
+            sqlite.saveLoginData(jsonObject.toString());
+            openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
+            SharedPref.saveLoginState(getApplicationContext(), true);
+            SharedPref.saveHq(LoginActivity.this,jsonObject.getString("HQName"),jsonObject.getString("SF_Code"));
+            Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
+            intent.putExtra("Origin","Login");
+            startActivity(intent);
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
+    }
+
+
 }
