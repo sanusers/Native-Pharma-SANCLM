@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.map;
 
 import static saneforce.sanclm.activity.map.MapsActivity.mapsBinding;
+import static saneforce.sanclm.activity.map.MapsActivity.taggingAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -27,6 +28,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     TextView txtadd, txtImage;
     ConstraintLayout constraint_view_img;
     CommonUtilsMethods commonUtilsMethods;
+    String Drcode;
     private View customView = null;
 
 
@@ -71,20 +73,33 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             constraint_view_img.setVisibility(View.GONE);
         }
         Log.v("getCode", "bf---" + code);
+
         for (int i = 0; i < MapsActivity.taggedMapListArrayList.size(); i++) {
             if (MapsActivity.taggedMapListArrayList.get(i).getCode().equalsIgnoreCase(code)) {
                 Log.v("getCode", MapsActivity.taggedMapListArrayList.get(i).getCode());
-                MapsActivity.taggedMapListArrayList.remove(i);
-                MapsActivity.taggedMapListArrayList.add(0, new TaggedMapList(txtview.getText().toString(), txtadd.getText().toString(), code, true));
+                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), true,MapsActivity.taggedMapListArrayList.get(i).getMeters()));
+                Drcode = code;
             } else {
-                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), false));
+                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), false,MapsActivity.taggedMapListArrayList.get(i).getMeters()));
             }
         }
-        MapsActivity.taggingAdapter = new TaggingAdapter(context.getApplicationContext(), MapsActivity.taggedMapListArrayList);
-        commonUtilsMethods.recycleTestWithDivider(mapsBinding.rvList);
-        mapsBinding.rvList.setAdapter(MapsActivity.taggingAdapter);
 
+        taggingAdapter = new TaggingAdapter(context.getApplicationContext(), MapsActivity.taggedMapListArrayList);
+        commonUtilsMethods.recycleTestWithDivider(mapsBinding.rvList);
+        mapsBinding.rvList.setAdapter(taggingAdapter);
+        int position = taggingAdapter.getItemPosition(Drcode);
+        if (position >= 0) {
+            mapsBinding.rvList.scrollToPosition(position);
+        }
         return customView;
+    }
+
+    private void scrollToPosition() {
+        String eventId = "someId";
+        int position = taggingAdapter.getItemPosition(eventId);
+        if (position >= 0) {
+            mapsBinding.rvList.scrollToPosition(position);
+        }
     }
 
     @Override

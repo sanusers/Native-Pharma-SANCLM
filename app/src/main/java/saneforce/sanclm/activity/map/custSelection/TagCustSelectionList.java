@@ -7,36 +7,37 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.databinding.MapDcrSelectionBinding;
 import saneforce.sanclm.storage.SQLiteHandler;
 import saneforce.sanclm.storage.SharedPref;
 
 public class TagCustSelectionList extends AppCompatActivity {
-    ImageView img_back;
-    RecyclerView rv_cust_list;
+
+    MapDcrSelectionBinding binding;
+    List<String> HqNameList = new ArrayList<>();
+    List<String> HqCodeList = new ArrayList<>();
     CustListAdapter custListAdapter;
     CommonUtilsMethods commonUtilsMethods;
-    EditText editTextSearch_cust;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
-
     SQLiteHandler sqLiteHandler;
-    String getCustListDB, SelectedTab, SfType, SfCode;
+    String getCustListDB, SelectedTab, SfType, SfCode, SfName, SelectedHqCode, getHqList, TodayPlanSfCode;
     Cursor mCursor;
 
     @Override
@@ -47,7 +48,8 @@ public class TagCustSelectionList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dcr_selection);
+        binding = MapDcrSelectionBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         commonUtilsMethods = new CommonUtilsMethods(this);
         sqLiteHandler = new SQLiteHandler(this);
@@ -55,22 +57,33 @@ public class TagCustSelectionList extends AppCompatActivity {
         SelectedTab = SharedPref.getMapSelectedTab(TagCustSelectionList.this);
         SfType = SharedPref.getSfType(TagCustSelectionList.this);
         SfCode = SharedPref.getSfCode(TagCustSelectionList.this);
+        SfName = SharedPref.getSfName(TagCustSelectionList.this);
+        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(TagCustSelectionList.this);
+        sqLiteHandler.open();
 
-        img_back = findViewById(R.id.iv_back);
-        rv_cust_list = findViewById(R.id.rv_cust_list);
-        editTextSearch_cust = findViewById(R.id.search_cust);
+        if (SfType.equalsIgnoreCase("1")) {
+            AddCustList(SfCode);
+            binding.txtSelectedHq.setText(SfName);
+        } else {
+            SetHqAdapter();
+        }
 
-        AddCustList();
 
-        editTextSearch_cust.addTextChangedListener(new TextWatcher() {
+        binding.txtSelectedHq.setOnClickListener(view -> {
+            if (binding.hqListView.getVisibility() == View.VISIBLE) {
+                binding.hqListView.setVisibility(View.GONE);
+            } else {
+                binding.hqListView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        binding.searchCust.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -79,27 +92,68 @@ public class TagCustSelectionList extends AppCompatActivity {
             }
         });
 
-        img_back.setOnClickListener(view -> {
+        binding.ivBack.setOnClickListener(view -> {
             Intent intent = new Intent(TagCustSelectionList.this, MapsActivity.class);
             intent.putExtra("from", "not_tagging");
             startActivity(intent);
         });
+
+        binding.hqListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            SelectedHqCode = HqCodeList.get(i);
+            binding.txtSelectedHq.setText(HqNameList.get(i));
+            binding.hqListView.setVisibility(View.GONE);
+            AddCustList(SelectedHqCode);
+        });
     }
 
-    private void AddCustList() {
-        sqLiteHandler.open();
+    private void SetHqAdapter() {
+        HqNameList.clear();
+        HqCodeList.clear();
+        try {
+            Cursor curHqList = sqLiteHandler.select_master_list("Subordinate");
+            if (curHqList.getCount() > 0) {
+                while (curHqList.moveToNext()) {
+                    getHqList = curHqList.getString(1);
+                }
+            }
+
+            JSONArray jsonArray = new JSONArray(getHqList);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonHQList = jsonArray.getJSONObject(i);
+                if (TodayPlanSfCode.equalsIgnoreCase(jsonHQList.getString("id"))) {
+                    if (HqCodeList.size() != 0) {
+                        HqNameList.add(jsonHQList.getString("name"));
+                        HqCodeList.add(jsonHQList.getString("id"));
+                    } else {
+                        HqNameList.add(jsonHQList.getString("name"));
+                        HqCodeList.add(jsonHQList.getString("id"));
+                    }
+                } else {
+                    HqNameList.add(jsonHQList.getString("name"));
+                    HqCodeList.add(jsonHQList.getString("id"));
+                }
+            }
+
+            binding.hqListView.setAdapter(new ArrayAdapter<>(TagCustSelectionList.this, R.layout.listview_items, HqNameList));
+            binding.txtSelectedHq.setText(HqNameList.get(0));
+            SelectedHqCode = HqCodeList.get(0);
+            AddCustList(SelectedHqCode);
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void AddCustList(String selectedHqCode) {
         custListArrayList.clear();
         Log.v("map_selected_tab", "---" + SharedPref.getMapSelectedTab(TagCustSelectionList.this));
+        Log.v("selected_hq", "---" + SelectedHqCode);
 
         switch (SelectedTab) {
             case "D":
                 try {
-                    if (SfType.equalsIgnoreCase("1")) {
-                        mCursor = sqLiteHandler.select_doctor_list(SfCode);
-                    } else {
-
-                    }
-                    //   mCursor = sqLiteHandler.select_master_list("Doctor");
+                    binding.tagSelection.setText(SharedPref.getCaptionDr(TagCustSelectionList.this));
+                    mCursor = sqLiteHandler.select_doctor_list(selectedHqCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -113,12 +167,13 @@ public class TagCustSelectionList extends AppCompatActivity {
                                 jsonObject.getString("Town_Name"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap")));
                     }
                 } catch (Exception e) {
-
+                    Log.v("dr_tag", "---error--" + e);
                 }
 
                 break;
             case "C":
                 try {
+                    binding.tagSelection.setText(SharedPref.getCaptionChemist(TagCustSelectionList.this));
                     mCursor = sqLiteHandler.select_master_list("Chemist");
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
@@ -138,6 +193,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "S":
                 try {
+                    binding.tagSelection.setText(SharedPref.getCaptionStockist(TagCustSelectionList.this));
                     mCursor = sqLiteHandler.select_master_list("Stockiest");
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
@@ -156,6 +212,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "U":
                 try {
+                    binding.tagSelection.setText(SharedPref.getCaptionUnDr(TagCustSelectionList.this));
                     mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor");
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
@@ -176,50 +233,11 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
         }
 
-    /*    if (SharedPref.getMapSelectedTab(TagCustSelectionList.this).equalsIgnoreCase("D")) {
-            mCursor = sqLiteHandler.select_master_list("Doctor");
-        } else if (SharedPref.getMapSelectedTab(TagCustSelectionList.this).equalsIgnoreCase("C")) {
-            mCursor = sqLiteHandler.select_master_list("Chemist");
-        } else if (SharedPref.getMapSelectedTab(TagCustSelectionList.this).equalsIgnoreCase("S")) {
-            mCursor = sqLiteHandler.select_master_list("Stockiest");
-        } else if (SharedPref.getMapSelectedTab(TagCustSelectionList.this).equalsIgnoreCase("U")) {
-            mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor");
-        }
-*/
-       /* if (mCursor.getCount() > 0) {
-            while (mCursor.moveToNext()) {
-                getCustListDB = mCursor.getString(1);
-            }
-        }
-
-        try {
-            JSONArray jsonArray = new JSONArray(getCustListDB);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Category"), jsonObject.getString("Specialty"),
-                        jsonObject.getString("Town_Name"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap")));
-            }
-        } catch (Exception e) {
-
-        }*/
-
-    /*    custListArrayList.clear();
-        custListArrayList.add(new CustList("Mohammed Ameer BashaKhan", "Category", "Cardio Surgion", "Madurai", "0/1"));
-        custListArrayList.add(new CustList("Baskar Kumar Reddy", "Category", "Neurolgist", "Chennai", "1/1"));
-        custListArrayList.add(new CustList("Aasik", "Category", "MBBS", "Trichy", "0/1"));
-        custListArrayList.add(new CustList("Umar Kathab Manzoor Ali", "Category", "Ortho Specialist", "Kanyakumari", "0/1"));
-        custListArrayList.add(new CustList("Venkatesh", "Category", "Dermotologist", "Sivagangai", "1/1"));
-        custListArrayList.add(new CustList("Akash", "Category", "MBBS", "Madurai", "0/1"));
-        custListArrayList.add(new CustList("Aravindh", "Category", "Ortho", "Vellore", "1/1"));
-        custListArrayList.add(new CustList("Surya Vignesh Kumar ", "Category", "Dermotologist", "Kerala", "0/1"));
-        custListArrayList.add(new CustList("Jahir Basha", "Category", "Gynocologist", "Andhra", "1/1"));
-        custListArrayList.add(new CustList("Vamshi Kannan", "Category", "Neurolgist", "Jammu", "0/1"));
-        custListArrayList.add(new CustList("Madhan", "Category", "Cardiogilist", "Kanyakumari", "1/1"));
-*/
         custListAdapter = new CustListAdapter(TagCustSelectionList.this, TagCustSelectionList.this, custListArrayList);
-        rv_cust_list.setItemAnimator(new DefaultItemAnimator());
-        rv_cust_list.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
-        rv_cust_list.setAdapter(custListAdapter);
+        binding.rvCustList.setItemAnimator(new DefaultItemAnimator());
+        binding.rvCustList.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
+        binding.rvCustList.setAdapter(custListAdapter);
+        custListAdapter.notifyDataSetChanged();
     }
 
     private void filter(String text) {

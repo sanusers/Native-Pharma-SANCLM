@@ -10,6 +10,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -27,6 +28,9 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -159,6 +163,27 @@ public class CommonUtilsMethods {
         }
     }
 
+    public static String getCurrentTime() {
+        Date currentTime = Calendar.getInstance().getTime();;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String val = sdf.format(currentTime);
+        return val;
+    }
+    public static String getCurrentInstance() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(c.getTimeInMillis());
+    }
+
+    public static String getCurrentDateDMY() {
+        Date currentTime = Calendar.getInstance().getTime();
+        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
+        Log.v("Printing_current_time", String.valueOf(currentTime));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String val = sdf.format(currentTime);
+        Log.v("Printing_current_date", String.valueOf(val));
+        return val;
+    }
     public void setSpinText(Spinner spin, String text) {
         for (int i = 0; i < spin.getAdapter().getCount(); i++) {
             if (spin.getAdapter().getItem(i).toString().contains(text)) {

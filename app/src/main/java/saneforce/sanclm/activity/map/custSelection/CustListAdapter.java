@@ -66,11 +66,11 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             }
         });
 
-        holder.tv_view.setOnClickListener(view -> {
+        /*holder.tv_view.setOnClickListener(view -> {
             Intent intent = new Intent(context, DCRCallActivity.class);
             intent.putExtra("cust_name", holder.tv_name.getText().toString());
             context.startActivity(intent);
-        });
+        });*/
     }
 
     @Override

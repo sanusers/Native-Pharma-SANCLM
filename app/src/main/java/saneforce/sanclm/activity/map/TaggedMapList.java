@@ -4,13 +4,13 @@ public class TaggedMapList {
     String name;String addr;
     String code;
     boolean clicked;
-    String meters;
+    double meters;
 
-    public String getMeters() {
+    public double getMeters() {
         return meters;
     }
 
-    public void setMeters(String meters) {
+    public void setMeters(double meters) {
         this.meters = meters;
     }
 
@@ -30,11 +30,12 @@ public class TaggedMapList {
         this.code = code;
     }
 
-    public TaggedMapList(String name, String addr,String code,boolean clicked) {
+    public TaggedMapList(String name, String addr,String code,boolean clicked,double meters) {
         this.name = name;
         this.addr = addr;
         this.code = code;
         this.clicked = clicked;
+        this.meters = meters;
     }
 
     public String getName() {

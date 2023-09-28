@@ -1,11 +1,12 @@
 package saneforce.sanclm.activity.map;
 
+import static saneforce.sanclm.activity.map.MapsActivity.taggedMapListArrayList;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,17 +15,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import saneforce.sanclm.R;
 
 public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHolder> {
     Context context;
     ArrayList<TaggedMapList> taggedMapLists;
-   // onItemClickListener onItemClickListener;
-
-   /* public void setOnItemClickListerner(AdapterView.OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = (TaggingAdapter.onItemClickListener) onItemClickListener;
-    }*/
 
     public TaggingAdapter(Context context, ArrayList<TaggedMapList> taggedMapLists) {
         this.context = context;
@@ -42,8 +40,13 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         holder.tv_name.setText(taggedMapLists.get(position).getName());
         holder.tv_address.setText(taggedMapLists.get(position).getAddr());
+        //holder.tv_meters.setText(String.format("%s Meter", Math.round(taggedMapLists.get(position).getMeters())));
+        holder.tv_meters.setText(String.format("%s Meter", taggedMapLists.get(position).getMeters()));
+
+        Collections.sort(taggedMapLists, (c1, c2) -> Double.compare(c1.getMeters(), c2.getMeters()));
 
         if (taggedMapLists.get(position).clicked) {
             holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_pink));
@@ -51,23 +54,9 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
             holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_purple));
         }
 
-
-  /*      holder.constraint_main.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClickListener.onClick(taggedMapLists.get(holder.getAdapterPosition()).getCode());
-            }
-        });*/
-
         holder.img_info.setOnClickListener(view -> {
-
-
-
-          /*  Intent intent = new Intent(context, CustomerProfile.class);
-            context.startActivity(intent);*/
         });
     }
-
 
 
     @Override
@@ -75,14 +64,17 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
         return taggedMapLists.size();
     }
 
-/*
-    public interface onItemClickListener {
-        void onClick(String code);
+    public int getItemPosition(String code) {
+        for (int i = 0; i < taggedMapListArrayList.size(); i++) {
+            if (taggedMapListArrayList.get(i).getCode().equals(code)) {
+                return i;
+            }
+        }
+        return -1;
     }
-*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_name, tv_address;
+        TextView tv_name, tv_address, tv_meters;
         ImageView img_info;
         ConstraintLayout constraint_main;
 
@@ -90,6 +82,7 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
             super(itemView);
             tv_name = itemView.findViewById(R.id.tv_name);
             tv_address = itemView.findViewById(R.id.tv_address);
+            tv_meters = itemView.findViewById(R.id.tv_meters);
             img_info = itemView.findViewById(R.id.img_info);
             constraint_main = itemView.findViewById(R.id.constraint_list_tagged);
         }
