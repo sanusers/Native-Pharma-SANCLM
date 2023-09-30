@@ -227,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.setSfName(getApplicationContext(), jsonObject.getString("SF_Name"));
             SharedPref.setSfCode(getApplicationContext(), jsonObject.getString("SF_Code"));
             SharedPref.setSfType(getApplicationContext(), jsonObject.getString("sf_type"));
-            SharedPref.setSfType(getApplicationContext(), jsonObject.getString("Division_Code").replace(",", ""));
+            SharedPref.setDivisionCode(getApplicationContext(), jsonObject.getString("Division_Code").replace(",", ""));
             SharedPref.setStateCode(getApplicationContext(), jsonObject.getString("State_Code"));
             SharedPref.setSubdivCode(getApplicationContext(), jsonObject.getString("subdivision_code"));
             SharedPref.setDesignationName(getApplicationContext(), jsonObject.getString("Desig"));

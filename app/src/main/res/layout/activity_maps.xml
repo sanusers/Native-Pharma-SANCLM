@@ -256,6 +256,7 @@
         android:id="@+id/rv_list"
         android:layout_width="340dp"
         android:layout_height="0dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/white"

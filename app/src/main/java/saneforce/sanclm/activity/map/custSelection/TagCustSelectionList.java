@@ -64,7 +64,9 @@ public class TagCustSelectionList extends AppCompatActivity {
         if (SfType.equalsIgnoreCase("1")) {
             AddCustList(SfCode);
             binding.txtSelectedHq.setText(SfName);
+            binding.txtSelectedHq.setEnabled(false);
         } else {
+            binding.txtSelectedHq.setEnabled(true);
             SetHqAdapter();
         }
 
@@ -153,7 +155,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "D":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionDr(TagCustSelectionList.this));
-                    mCursor = sqLiteHandler.select_doctor_list(selectedHqCode);
+                    mCursor = sqLiteHandler.select_master_list("Doctor_"+selectedHqCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -163,9 +165,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray(getCustListDB);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Category"), jsonObject.getString("Specialty"),
-                                jsonObject.getString("Town_Name"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap")));
-                    }
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"),
+                                jsonObject.getString("Town_Name"),jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap")));
+                   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ }
                 } catch (Exception e) {
                     Log.v("dr_tag", "---error--" + e);
                 }
@@ -174,7 +176,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "C":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionChemist(TagCustSelectionList.this));
-                    mCursor = sqLiteHandler.select_master_list("Chemist");
+                    mCursor = sqLiteHandler.select_master_list("Chemist_"+selectedHqCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -194,7 +196,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "S":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionStockist(TagCustSelectionList.this));
-                    mCursor = sqLiteHandler.select_master_list("Stockiest");
+                    mCursor = sqLiteHandler.select_master_list("Stockiest_"+selectedHqCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -213,7 +215,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "U":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionUnDr(TagCustSelectionList.this));
-                    mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor");
+                    mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor_"+selectedHqCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -223,8 +225,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray(getCustListDB);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"),
-                                jsonObject.getString("Town_Name"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap")));
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"),
+                                jsonObject.getString("Town_Name"),jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap")));
                     }
                 } catch (Exception e) {
 

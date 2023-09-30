@@ -25,7 +25,7 @@ public class SQLiteHandler {
         return db.rawQuery(" SELECT * FROM " + saneforce.sanclm.storage.SQLite.MASTER_SYNC_TABLE+ " WHERE " + saneforce.sanclm.storage.SQLite.MASTER_KEY + " = '" + tableName + "' ", null);
     }
 
-    public Cursor select_doctor_list(String hq_code) {
+   /* public Cursor select_doctor_list(String hq_code) {
         return db.rawQuery(" SELECT * FROM " + saneforce.sanclm.storage.SQLite.DOCTOR_MASTER_TABLE+ " WHERE " + saneforce.sanclm.storage.SQLite.HQ_CODE + " = '" + hq_code + "' ", null);
-    }
+    }*/
 }

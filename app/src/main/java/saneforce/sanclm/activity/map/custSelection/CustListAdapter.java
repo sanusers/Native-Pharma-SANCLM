@@ -59,7 +59,10 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
                 Intent intent = new Intent(context, MapsActivity.class);
                 intent.putExtra("from", "tagging");
-                intent.putExtra("cust_name", holder.tv_name.getText().toString());
+                intent.putExtra("cust_name", custListArrayList.get(position).getName());
+                intent.putExtra("cust_code",custListArrayList.get(position).get)
+                intent.putExtra("town_name",custListArrayList.get(position).getTown_name());
+                intent.putExtra("town_code",custListArrayList.get(position).get)
                 context.startActivity(intent);
             } else {
                 Toast.makeText(context, "Exceed the Tag limitation !!", Toast.LENGTH_SHORT).show();

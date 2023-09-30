@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaDrm;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -125,12 +127,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
+
         sqLiteHandler = new SQLiteHandler(this);
 
+        Bundle extra = getIntent().getExtras();
+
+        if (extra != null) {
+            tv_custName = extra.getString("cust_name");
+            from_tagging = extra.getString("from");
+        }
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPrefrence = new CommonSharedPreference(this);
@@ -151,13 +156,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding.tagTvStockist.setText(SharedPref.getCaptionStockist(MapsActivity.this));
         mapsBinding.tagTvUndr.setText(SharedPref.getCaptionUnDr(MapsActivity.this));
 
-        Log.v("map_selected_tab", SharedPref.getTagImageUrl(MapsActivity.this));
-        Bundle extra = getIntent().getExtras();
+        Log.v("map_selected_tab", Selected + "--" + from_tagging + "---" +SfType);
 
-        if (extra != null) {
-            tv_custName = extra.getString("cust_name");
-            from_tagging = extra.getString("from");
-        }
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        assert mapFragment != null;
+        mapFragment.getMapAsync(this);
 
         mapsBinding.ivBack.setOnClickListener(view -> {
             if (mapsBinding.btnTag.getText().toString().equalsIgnoreCase("Tag")) {
@@ -339,6 +343,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonImage.put("division_code", DivCode);
             if (SfType.equalsIgnoreCase("1")) {
                 jsonImage.put("Rsf", SfCode);
+            } else {
+                jsonImage.put("Rsf", TodayPlanSfCode);
             }
             jsonImage.put("sf_type", SfType);
             jsonImage.put("Designation", Designation);
@@ -346,6 +352,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonImage.put("subdivision_code", SubDivisionCode);
         } catch (Exception e) {
 
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("tableName", "save_geo");
+            jsonObject.put("lat", laty);
+            jsonObject.put("long", lngy);
+            jsonObject.put("cuscode", drcode);
+            jsonObject.put("divcode", DivCode);
+            jsonObject.put("cust", cust);
+            jsonObject.put("tagged_time", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
+            jsonObject.put("image_name", imageName);
+            jsonObject.put("sfname", );
+            jsonObject.put("sfcode", SfCode);
+            jsonObject.put("addr", address);
+            //jsonObject.put("tagged_cust_HQ", commonSharedPreference.getValueFromPreference("sub_sf_code"));
+            jsonObject.put("tagged_cust_HQ", commonSharedPreference.getValueFromPreference("joint_sf_code"));
+            jsonObject.put("cust_name", drname);
+            jsonObject.put("mode", CommonUtils.TAG_APP_MODE);
+            jsonObject.put("version", CommonUtils.TAG_APP_VERSION);
+            jsonObject.put("towncode", towncode);
+            jsonObject.put("townname", townname);
+            //   jsonObject.put("imgpath", outputFileUri);
+            //{"divcode":"19","cuscode":"45437","long":"80.2652184292674","lat":"13.034855187423728","cust":"D"}
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         btn_confirm.setOnClickListener(view -> {
@@ -383,6 +415,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("SetTextI18n")
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        Log.v("hhh","---");
         mMap = googleMap;
         gpsTrack = new GPSTrack(this);
         laty = gpsTrack.getLatitude();
@@ -390,14 +423,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 15.0f));
         if (from_tagging.equalsIgnoreCase("tagging")) {
+            Log.v("hhh","-000--");
             mapsBinding.btnTag.setText("Tag");
             mapsBinding.tvTaggedAddress.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.GONE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);
             mapsBinding.rvList.setVisibility(View.GONE);
 
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 15.0f));
+
             LatLng latLng = new LatLng(laty, lngy);
             marker = mMap.addMarker(new MarkerOptions().position(latLng).
                     icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
@@ -416,16 +451,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
 
         } else if (from_tagging.equalsIgnoreCase("not_tagging")) {
+            Log.v("hhh","-111--" + Selected + "--"+SfType+"---"+SfCode);
             if (SfType.equalsIgnoreCase("1")) {
                 TabSelected(Selected, SfCode);
             } else {
                 TabSelected(Selected, TodayPlanSfCode);
             }
 
-            mapsBinding.tvTaggedAddress.setVisibility(View.GONE);
+            /*mapsBinding.tvTaggedAddress.setVisibility(View.GONE);
             mapsBinding.constraintMid.setVisibility(View.VISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
-            mapsBinding.rvList.setVisibility(View.VISIBLE);
+            mapsBinding.rvList.setVisibility(View.VISIBLE);*/
 
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setScrollGesturesEnabled(true);
@@ -448,7 +484,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (selected) {
             case "D":
                 try {
-                    mCursor = sqLiteHandler.select_doctor_list(sfCode);
+                    mCursor = sqLiteHandler.select_master_list("Doctor_"+sfCode);
+                    Log.v("ggg", "count---" + mCursor.getCount());
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -483,7 +520,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "C":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Chemist");
+                    mCursor = sqLiteHandler.select_master_list("Chemist_"+sfCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -516,7 +553,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "S":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Stockiest");
+                    mCursor = sqLiteHandler.select_master_list("Stockiest_"+sfCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -550,7 +587,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "U":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor");
+                    mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor_"+sfCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
@@ -639,6 +676,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.rvList.setItemAnimator(new DefaultItemAnimator());
             mapsBinding.rvList.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
             mapsBinding.rvList.setAdapter(taggingAdapter);
+
+            Log.v("hhh","---" + taggedMapListArrayList.size());
+            if (taggedMapListArrayList.size() > 0) {
+                mapsBinding.rvList.setVisibility(View.VISIBLE);
+                mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
+                mapsBinding.imgRvLeft.setVisibility(View.GONE);
+            } else {
+                mapsBinding.rvList.setVisibility(View.GONE);
+                mapsBinding.imgRvRight.setVisibility(View.GONE);
+                mapsBinding.imgRvLeft.setVisibility(View.VISIBLE);
+            }
 
             addCircle(mMap);
         } catch (Exception e) {
