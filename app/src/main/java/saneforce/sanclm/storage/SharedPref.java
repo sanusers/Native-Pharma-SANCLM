@@ -44,6 +44,10 @@ public class SharedPref {
 
     //Map Activity
     public static final String MAP_SELECTED_TAB = "selected_tab_map";
+    public static final String TAGGED_SUCCESSFULLY = "tagged_successfully";
+    public static final String CUSTOMER_POSITION = "cust_pos";
+    public static final String SelectedHqCode = "selected_hq_code";
+    public static final String SelectedHqName = "selected_hq_name";
 
     //HomeDashboard
     //MyDayPlan
@@ -260,11 +264,12 @@ public class SharedPref {
     public static String getLogoUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGO_URL, "");
     }
-    public static void saveSfType(Context context,String type,String sfCode){
-        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+
+    public static void saveSfType(Context context, String type, String sfCode) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SF_TYPE,type);
-        editor.putString(SF_CODE,sfCode).apply();
+        editor.putString(SF_TYPE, type);
+        editor.putString(SF_CODE, sfCode).apply();
     }
 
 
@@ -406,7 +411,6 @@ public class SharedPref {
     public static String getEmployeeId(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(EMPLOYEE_ID, "");
     }
-
 
 
     public static void setUserName(Context context, String token) {
@@ -850,6 +854,26 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(MAP_SELECTED_TAB, "");
     }
 
+    public static void setTaggedSuccessfully(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TAGGED_SUCCESSFULLY, status).apply();
+    }
+
+    public static String getTaggedSuccessfully(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAGGED_SUCCESSFULLY, "");
+    }
+    public static void setCustomerPosition(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CUSTOMER_POSITION, status).apply();
+    }
+
+    public static String getCustomerPosition(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CUSTOMER_POSITION, "");
+    }
+
+
     public static void setTodayDayPlanSfCode(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -858,6 +882,27 @@ public class SharedPref {
 
     public static String getTodayDayPlanSfCode(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanSfCode, "");
+    }
+
+
+    public static void setSelectedHqCode(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SelectedHqCode, status).apply();
+    }
+
+    public static String getSelectedHqCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedHqCode, "");
+    }
+
+    public static void setSelectedHqName(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SelectedHqName, status).apply();
+    }
+
+    public static String getSelectedHqName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedHqName, "");
     }
 
 

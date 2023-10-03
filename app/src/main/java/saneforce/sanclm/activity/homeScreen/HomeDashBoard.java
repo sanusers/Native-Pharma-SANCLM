@@ -180,6 +180,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
             intent.putExtra("from", "not_tagging");
             SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
+            SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
             startActivity(intent);
             return true;
         }

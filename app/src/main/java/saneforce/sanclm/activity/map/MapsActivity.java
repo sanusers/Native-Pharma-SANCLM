@@ -13,7 +13,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.MediaDrm;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,6 +47,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,14 +56,28 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
+import id.zelory.compressor.Compressor;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
+import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.databinding.ActivityMapsBinding;
+import saneforce.sanclm.network.ApiInterface;
+import saneforce.sanclm.network.RetrofitClient;
+import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SQLiteHandler;
 import saneforce.sanclm.storage.SharedPref;
 
@@ -75,17 +89,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("StaticFieldLeak")
     public static TaggingAdapter taggingAdapter;
     public static ArrayList<TaggedMapList> taggedMapListArrayList = new ArrayList<>();
-    private final int transparent = 0x17000000;
+    private final int transparent = 0x15000000;
+  //  private final int transparent = 0xFFFFF0F2;
     ViewTagModel mm = null;
     Uri outputFileUri;
+    ApiInterface api_interface;
     Double distanceTag;
+    SQLite sqLite;
     Marker marker;
     LocationManager locationManager;
     GPSTrack gpsTrack;
-    Cursor mCursor;
     SQLiteHandler sqLiteHandler;
-    String getCustListDB, SfType, img_url, cust_address, Selected, SfCode, DivCode, TodayPlanSfCode, RSFCode, Designation, StateCode, SubDivisionCode, drcode, filePath = "", imageName = "", taggedTime = "";
-    String from_tagging = "", tv_custName = "", l;
+    String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, Selected, SfCode, DivCode, SelectedSFCode, TodayPlanSfCode, RSFCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
+    String from_tagging = "", l;
     double laty, lngy, limitKm = 0.5;
     Dialog dialogTagCust;
 
@@ -127,22 +143,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
 
-
         sqLiteHandler = new SQLiteHandler(this);
-
-        Bundle extra = getIntent().getExtras();
-
-        if (extra != null) {
-            tv_custName = extra.getString("cust_name");
-            from_tagging = extra.getString("from");
-        }
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPrefrence = new CommonSharedPreference(this);
+        sqLite = new SQLite(getApplicationContext());
 
+        Bundle extra = getIntent().getExtras();
+        if (extra != null) {
+            from_tagging = extra.getString("from");
+            cust_name = extra.getString("cust_name");
+            cust_code = extra.getString("cust_code");
+            town_code = extra.getString("town_code");
+            town_name = extra.getString("town_name");
+        }
+
+        String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
+        String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
+        String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+        api_interface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
+        SharedPref.setTaggedSuccessfully(MapsActivity.this, "false");
         Selected = SharedPref.getMapSelectedTab(MapsActivity.this);
         limitKm = Double.parseDouble(SharedPref.getGeofencingCircleRadius(MapsActivity.this));
         SfType = SharedPref.getSfType(MapsActivity.this);
+        SfName = SharedPref.getSfName(MapsActivity.this);
         SfCode = SharedPref.getSfCode(MapsActivity.this);
         DivCode = SharedPref.getDivisionCode(MapsActivity.this);
         Designation = SharedPref.getDesignationName(MapsActivity.this);
@@ -150,13 +174,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SubDivisionCode = SharedPref.getSubdivCode(MapsActivity.this);
         img_url = SharedPref.getTagImageUrl(MapsActivity.this);
         TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(MapsActivity.this);
+        SelectedSFCode = SharedPref.getSelectedHqCode(MapsActivity.this);
+
+        if (SelectedSFCode.isEmpty()) {
+            try {
+                JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Subordinate");
+                for (int i = 0; i < 1; i++) {
+                    JSONObject jsonHQList = jsonArray.getJSONObject(0);
+                    SelectedSFCode = jsonHQList.getString("id");
+                    SharedPref.setSelectedHqName(MapsActivity.this, jsonHQList.getString("name"));
+                }
+            } catch (Exception e) {
+
+            }
+        }
 
         mapsBinding.tagTvDoctor.setText(SharedPref.getCaptionDr(MapsActivity.this));
         mapsBinding.tagTvChemist.setText(SharedPref.getCaptionChemist(MapsActivity.this));
         mapsBinding.tagTvStockist.setText(SharedPref.getCaptionStockist(MapsActivity.this));
         mapsBinding.tagTvUndr.setText(SharedPref.getCaptionUnDr(MapsActivity.this));
 
-        Log.v("map_selected_tab", Selected + "--" + from_tagging + "---" +SfType);
+        Log.v("map_selected_tab", Selected + "--" + from_tagging + "---" + SfType + "---" + SelectedSFCode);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -165,12 +203,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mapsBinding.ivBack.setOnClickListener(view -> {
             if (mapsBinding.btnTag.getText().toString().equalsIgnoreCase("Tag")) {
-                startActivity(new Intent(MapsActivity.this, TagCustSelectionList.class));
+                SharedPref.setCustomerPosition(MapsActivity.this, "");
+                finish();
+                // startActivity(new Intent(MapsActivity.this, TagCustSelectionList.class));
             } else {
+                SharedPref.setTaggedSuccessfully(MapsActivity.this, "");
+                SharedPref.setCustomerPosition(MapsActivity.this, "");
+                SharedPref.setSelectedHqCode(MapsActivity.this, "");
+                SharedPref.setSelectedHqName(MapsActivity.this, "");
                 startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
             }
         });
-
 
         mapsBinding.btnTag.setOnClickListener(view -> {
             if (from_tagging.equalsIgnoreCase("tagging")) {
@@ -205,19 +248,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mapsBinding.tagTvDoctor.setOnClickListener(view -> {
-            TabSelected("D", SfCode);
+            if (SfType.equalsIgnoreCase("1"))
+                TabSelected("D", SfCode);
+            else TabSelected("D", SelectedSFCode);
         });
 
         mapsBinding.tagTvChemist.setOnClickListener(view -> {
-            TabSelected("C", SfCode);
+            if (SfType.equalsIgnoreCase("1"))
+                TabSelected("C", SfCode);
+            else TabSelected("C", SelectedSFCode);
         });
 
         mapsBinding.tagTvStockist.setOnClickListener(view -> {
-            TabSelected("S", SfCode);
+            if (SfType.equalsIgnoreCase("1"))
+                TabSelected("S", SfCode);
+            else TabSelected("S", SelectedSFCode);
         });
 
         mapsBinding.tagTvUndr.setOnClickListener(view -> {
-            TabSelected("U", SfCode);
+            if (SfType.equalsIgnoreCase("1"))
+                TabSelected("U", SfCode);
+            else TabSelected("U", SelectedSFCode);
         });
 
         mapsBinding.imgRefreshMap.setOnClickListener(new View.OnClickListener() {
@@ -234,11 +285,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(String.valueOf(laty)), Double.parseDouble(String.valueOf(lngy)), true);
                 }
                 LatLng latLng = new LatLng(laty, lngy);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
             }
         });
 
-        mapsBinding.imgCurLoc.setOnClickListener(view -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 15.0f)));
+        mapsBinding.imgCurLoc.setOnClickListener(view -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f)));
     }
 
     public void captureFileLower() {
@@ -255,8 +306,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
-        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(getExternalCacheDir().getPath(), SfCode + "_" + drcode + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
-        imageName = SfCode + "_" + drcode + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
+        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(getExternalCacheDir().getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
+        imageName = SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
         taggedTime = CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime();
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -296,6 +347,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         CircleOptions circle = new CircleOptions()
                 .center(latLng)
                 .radius(limitKm * 1000.0)
+                .strokeWidth(4)
                 .strokeColor(Color.RED)
                 .fillColor(transparent)
                 .clickable(true);
@@ -334,7 +386,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button btn_cancel = dialogTagCust.findViewById(R.id.btn_cancel);
         TextView tv_cust_name = dialogTagCust.findViewById(R.id.txt_cust_name);
 
-        tv_cust_name.setText(tv_custName);
+        tv_cust_name.setText(cust_name);
 
         JSONObject jsonImage = new JSONObject();
         try {
@@ -344,7 +396,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (SfType.equalsIgnoreCase("1")) {
                 jsonImage.put("Rsf", SfCode);
             } else {
-                jsonImage.put("Rsf", TodayPlanSfCode);
+                jsonImage.put("Rsf", SelectedSFCode);
             }
             jsonImage.put("sf_type", SfType);
             jsonImage.put("Designation", Designation);
@@ -359,31 +411,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonObject.put("tableName", "save_geo");
             jsonObject.put("lat", laty);
             jsonObject.put("long", lngy);
-            jsonObject.put("cuscode", drcode);
+            jsonObject.put("cuscode", cust_code);
             jsonObject.put("divcode", DivCode);
-            jsonObject.put("cust", cust);
+            jsonObject.put("cust", Selected);
             jsonObject.put("tagged_time", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
             jsonObject.put("image_name", imageName);
-            jsonObject.put("sfname", );
+            jsonObject.put("sfname", SfName);
             jsonObject.put("sfcode", SfCode);
-            jsonObject.put("addr", address);
-            //jsonObject.put("tagged_cust_HQ", commonSharedPreference.getValueFromPreference("sub_sf_code"));
-            jsonObject.put("tagged_cust_HQ", commonSharedPreference.getValueFromPreference("joint_sf_code"));
-            jsonObject.put("cust_name", drname);
-            jsonObject.put("mode", CommonUtils.TAG_APP_MODE);
-            jsonObject.put("version", CommonUtils.TAG_APP_VERSION);
-            jsonObject.put("towncode", towncode);
-            jsonObject.put("townname", townname);
-            //   jsonObject.put("imgpath", outputFileUri);
-            //{"divcode":"19","cuscode":"45437","long":"80.2652184292674","lat":"13.034855187423728","cust":"D"}
+            jsonObject.put("addr", mapsBinding.tvTaggedAddress.getText().toString());
+            if (SfType.equalsIgnoreCase("1")) {
+                jsonObject.put("tagged_cust_HQ", SfCode);
+            } else {
+                jsonObject.put("tagged_cust_HQ", "");
+            }
+            jsonObject.put("cust_name", cust_name);
+            jsonObject.put("mode", Constants.APP_MODE);
+            jsonObject.put("version", Constants.APP_VERSION);
+            jsonObject.put("towncode", town_code);
+            jsonObject.put("townname", town_name);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         btn_confirm.setOnClickListener(view -> {
-            dialogTagCust.dismiss();
-            Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
-            startActivity(intent1);
+            if (SharedPref.getGeotagImage(MapsActivity.this).equalsIgnoreCase("0")) {
+                CallImageAPI(jsonImage.toString(), jsonObject.toString());
+            } else {
+                CallAPIGeo(jsonObject.toString());
+            }
+          /*  Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
+            startActivity(intent1);*/
         });
 
         btn_cancel.setOnClickListener(view -> {
@@ -395,6 +452,141 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.imgRvRight.setVisibility(View.GONE);
             mapsBinding.rvList.setVisibility(View.GONE);
         });
+    }
+
+
+    public HashMap<String, RequestBody> field(String val) {
+        HashMap<String, RequestBody> xx = new HashMap<String, RequestBody>();
+        xx.put("data", createFromString(val));
+        return xx;
+    }
+
+    private RequestBody createFromString(String txt) {
+        return RequestBody.create(MultipartBody.FORM, txt);
+    }
+
+    public MultipartBody.Part convertimg(String tag, String path) {
+        Log.d("pathaa1", tag + "-" + path);
+        MultipartBody.Part yy = null;
+        try {
+            File file;
+            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+                file = new Compressor(getApplicationContext()).compressToFile(new File(path));
+                Log.d("pathaa2", tag + "-" + path);
+            } else {
+                file = new File(path);
+            }
+            RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
+            yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+
+            Log.d("pathaa3", String.valueOf(yy));
+        } catch (Exception e) {
+        }
+        return yy;
+    }
+
+    private void CallAPIGeo(String jsonTag) {
+        Call<JsonObject> callSaveGeo = null;
+        callSaveGeo = api_interface.saveMapGeoTag(jsonTag);
+        callSaveGeo.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonSaveRes = new JSONObject(response.body().toString());
+                        if (jsonSaveRes.getString("success").equalsIgnoreCase("true") &&
+                                jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
+                            Toast.makeText(MapsActivity.this, "Tagged Successfully", Toast.LENGTH_SHORT).show();
+                            dialogTagCust.dismiss();
+                            CallAPIList(Selected);
+                          /*  Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
+                            intent1.putExtra("cus_pos", position);*/
+                            SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
+                            finish();
+                            //startActivity(intent1);
+                        } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") &&
+                                jsonSaveRes.getString("Msg").equalsIgnoreCase("You have reached the maximum tags...")) {
+                            Toast.makeText(MapsActivity.this, jsonSaveRes.getString("Msg"), Toast.LENGTH_SHORT).show();
+                            dialogTagCust.dismiss();
+                        } else {
+                            Toast.makeText(MapsActivity.this, "Something went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                            dialogTagCust.dismiss();
+                        }
+                    } catch (Exception e) {
+                        dialogTagCust.dismiss();
+                    }
+                } else {
+                    Toast.makeText(MapsActivity.this, "Response Failed", Toast.LENGTH_SHORT).show();
+                    dialogTagCust.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                dialogTagCust.dismiss();
+            }
+        });
+
+    }
+
+    private void CallAPIList(String CustSelected) {
+        String sfCode;
+        if (SfType.equalsIgnoreCase("1")) {
+            sfCode = SfCode;
+        } else {
+            sfCode = SelectedSFCode;
+        }
+        if (CustSelected.equalsIgnoreCase("D")) {
+            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Doctor", "getdoctors", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+        } else if (CustSelected.equalsIgnoreCase("C")) {
+            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Chemist", "getchemist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+        } else if (CustSelected.equalsIgnoreCase("S")) {
+            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Stockiest", "getstockist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+        } else if (CustSelected.equalsIgnoreCase("U")) {
+            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Unlisted_Doctor", "getunlisteddr", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+        }
+    }
+
+    private void CallImageAPI(String jsonImage, String jsonTag) {
+        try {
+            Call<JsonObject> callImage = null;
+            HashMap<String, RequestBody> values = field(jsonImage);
+            MultipartBody.Part imgg = convertimg("UploadImg", filePath);
+            callImage = api_interface.imgUploadMap(values, imgg);
+
+            callImage.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    Log.v("img_tag", response + "---" + response.body().toString() + "---" + response.message() + "---" + call);
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonImgRes = new JSONObject(response.body().toString());
+                            Log.v("img_tag", jsonImgRes.getString("success"));
+                            if (jsonImgRes.getString("success").equalsIgnoreCase("true") &&
+                                    jsonImgRes.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                                CallAPIGeo(jsonTag);
+                            } else {
+                                dialogTagCust.dismiss();
+                                Toast.makeText(MapsActivity.this, "Tag Failed! Try Again", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            Log.v("img_tag", e.toString());
+                            dialogTagCust.dismiss();
+                        }
+                    } else {
+                        dialogTagCust.dismiss();
+                        Toast.makeText(MapsActivity.this, "Something went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    dialogTagCust.dismiss();
+                }
+            });
+        } catch (Exception e) {
+            dialogTagCust.dismiss();
+        }
     }
 
     @Override
@@ -415,7 +607,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("SetTextI18n")
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        Log.v("hhh","---");
+        Log.v("hhh", "---");
         mMap = googleMap;
         gpsTrack = new GPSTrack(this);
         laty = gpsTrack.getLatitude();
@@ -423,15 +615,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 15.0f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
         if (from_tagging.equalsIgnoreCase("tagging")) {
-            Log.v("hhh","-000--");
+            Log.v("hhh", "-000--");
             mapsBinding.btnTag.setText("Tag");
+            mapsBinding.tagSelection.setText("Tagging" + " -- > " + cust_name);
             mapsBinding.tvTaggedAddress.setVisibility(View.VISIBLE);
             mapsBinding.constraintMid.setVisibility(View.GONE);
             mapsBinding.imgRvRight.setVisibility(View.GONE);
             mapsBinding.rvList.setVisibility(View.GONE);
-
 
             LatLng latLng = new LatLng(laty, lngy);
             marker = mMap.addMarker(new MarkerOptions().position(latLng).
@@ -451,13 +643,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
 
         } else if (from_tagging.equalsIgnoreCase("not_tagging")) {
-            Log.v("hhh","-111--" + Selected + "--"+SfType+"---"+SfCode);
+            Log.v("hhh", "-111--" + Selected + "--" + SfType + "---" + SfCode + "---" + SelectedSFCode);
             if (SfType.equalsIgnoreCase("1")) {
                 TabSelected(Selected, SfCode);
             } else {
-                TabSelected(Selected, TodayPlanSfCode);
+                TabSelected(Selected, SelectedSFCode);
             }
-
             /*mapsBinding.tvTaggedAddress.setVisibility(View.GONE);
             mapsBinding.constraintMid.setVisibility(View.VISIBLE);
             mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
@@ -481,17 +672,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         laty = gpsTrack.getLatitude();
         lngy = gpsTrack.getLongitude();
         sqLiteHandler.open();
+        Log.v("final_assigned", "-111--" + selected + "--" + SfType + "---" + SfCode + "---" + SelectedSFCode);
         switch (selected) {
             case "D":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Doctor_"+sfCode);
+                  /*  mCursor = sqLiteHandler.select_master_list("Doctor_" + sfCode);
                     Log.v("ggg", "count---" + mCursor.getCount());
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
                         }
                     }
-                    JSONArray jsonArray = new JSONArray(getCustListDB);
+                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + sfCode);
                     Log.v("ggg", "len---" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -499,7 +692,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Log.v("ggg", jsonObject.getString("Name"));
                         if (!jsonObject.getString("Lat").trim().isEmpty() || !jsonObject.getString("Long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("Lat"),
+                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"),"1", jsonObject.getString("Lat"),
                                         jsonObject.getString("Long"), cust_address, jsonObject.getString("img_name"),
                                         jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                             } else {
@@ -507,7 +700,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("Lat"),
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"),"1", jsonObject.getString("Lat"),
                                             jsonObject.getString("Long"), cust_address, jsonObject.getString("img_name"),
                                             jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
@@ -520,19 +713,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "C":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Chemist_"+sfCode);
+                 /*   mCursor = sqLiteHandler.select_master_list("Chemist_" + sfCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
                         }
                     }
-                    JSONArray jsonArray = new JSONArray(getCustListDB);
+                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Chemist_" + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
                         if (!jsonObject.getString("lat").trim().isEmpty() || !jsonObject.getString("long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("lat"),
+                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2",jsonObject.getString("lat"),
                                         jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"),
                                         jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                             } else {
@@ -540,7 +734,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("lat"),
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2",jsonObject.getString("lat"),
                                             jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"),
                                             jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
@@ -553,20 +747,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "S":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Stockiest_"+sfCode);
+                   /* mCursor = sqLiteHandler.select_master_list("Stockiest_" + sfCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
                         }
                     }
 
-                    JSONArray jsonArray = new JSONArray(getCustListDB);
+                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Stockiest_" + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
                         if (!jsonObject.getString("lat").trim().isEmpty() || !jsonObject.getString("long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("lat"),
+                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "3",jsonObject.getString("lat"),
                                         jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"),
                                         jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                             } else {
@@ -574,7 +769,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("lat"),
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "3",jsonObject.getString("lat"),
                                             jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"),
                                             jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
@@ -587,20 +782,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "U":
                 try {
-                    mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor_"+sfCode);
+                   /* mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor_" + sfCode);
                     if (mCursor.getCount() > 0) {
                         while (mCursor.moveToNext()) {
                             getCustListDB = mCursor.getString(1);
                         }
                     }
 
-                    JSONArray jsonArray = new JSONArray(getCustListDB);
+                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Unlisted_Doctor_" + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addr");
                         if (!jsonObject.getString("lat").trim().isEmpty() || !jsonObject.getString("long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
-                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("lat"),
+                                list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4",jsonObject.getString("lat"),
                                         jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("img_name"),
                                         jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                             } else {
@@ -608,7 +804,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), jsonObject.getString("lat"),
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"),"4", jsonObject.getString("lat"),
                                             jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("img_name"),
                                             jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
@@ -629,10 +825,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Location.distanceBetween(Double.parseDouble(mm.getLat()), Double.parseDouble(mm.getLng()), laty, lngy, distance);
 
                 if (distance[0] < limitKm * 1000.0) {
-                    taggedMapListArrayList.add(new TaggedMapList(mm.getName(), mm.getAddress(), mm.getCode(), false, getDistanceMeteres(laty, lngy, Double.parseDouble(mm.getLat()), Double.parseDouble(mm.getLng()))));
+                    taggedMapListArrayList.add(new TaggedMapList(mm.getName(),mm.getType(), mm.getAddress(), mm.getCode(), false, getDistanceMeteres(laty, lngy, Double.parseDouble(mm.getLat()), Double.parseDouble(mm.getLng()))));
                 }
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 15.0f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
                 marker = mMap.addMarker(new MarkerOptions().position(latLng).snippet(mm.getName() + "&" + mm.getAddress() + "$" + mm.getCode() + "^" + mm.getImageName()).
                         icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
 
@@ -676,8 +872,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.rvList.setItemAnimator(new DefaultItemAnimator());
             mapsBinding.rvList.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
             mapsBinding.rvList.setAdapter(taggingAdapter);
+            Collections.sort(taggedMapListArrayList, Comparator.comparingDouble(TaggedMapList::getMeters));
 
-            Log.v("hhh","---" + taggedMapListArrayList.size());
+            Log.v("hhh", "---" + taggedMapListArrayList.size());
             if (taggedMapListArrayList.size() > 0) {
                 mapsBinding.rvList.setVisibility(View.VISIBLE);
                 mapsBinding.imgRvRight.setVisibility(View.VISIBLE);

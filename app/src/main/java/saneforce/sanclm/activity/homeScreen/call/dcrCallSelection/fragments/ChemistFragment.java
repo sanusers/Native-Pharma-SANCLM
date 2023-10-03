@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +14,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.R;
+import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
 
 
 public class ChemistFragment extends Fragment {
@@ -35,6 +43,9 @@ public class ChemistFragment extends Fragment {
     ImageButton iv_filter;
     ImageView img_close;
     Button btn_apply;
+    SQLite sqLite;
+    String SfCode, SfType;
+    JSONArray jsonArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,18 +54,34 @@ public class ChemistFragment extends Fragment {
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
         ed_search = v.findViewById(R.id.search_cust);
         iv_filter = v.findViewById(R.id.iv_filter);
+        SfCode = SharedPref.getSfCode(getContext());
+        SfType = SharedPref.getSfType(getContext());
+        sqLite = new SQLite(getContext());
 
         custListArrayList.clear();
-        custListArrayList.add(new CustList("Mohammed medicals", "Category", "Cardio Surgion", "Trichy"));
-        custListArrayList.add(new CustList("Kumkar pharmaticals", "Category", "Neurolgist", "Trichy"));
-        custListArrayList.add(new CustList("Aasik industried", "Category", "MBBS", "Trichy"));
-        custListArrayList.add(new CustList("jaipur Med", "Category", "Ortho Specialist", "Trichy"));
-        custListArrayList.add(new CustList("Venkatesh  medicals", "Category", "Dermotologist", "Sivagangai"));
-        custListArrayList.add(new CustList("Akash Med", "Category", "MBBS", "Kerala"));
-        custListArrayList.add(new CustList("Aravindh", "Category", "Ortho", "Vellore"));
-        custListArrayList.add(new CustList("Surya Vignesh Kumar indsutries ", "Category", "Dermotologist", "Kanyakumari"));
+        try {
+            if (SfType.equalsIgnoreCase("1")) {
+                jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + SfCode);
+            }
+            Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
+            if (jsonArray.length() == 0) {
+                if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
+                    Toast.makeText(getActivity(), "Kindly Select Again!", Toast.LENGTH_SHORT).show();
+                    //  MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
+                } else {
+                    Toast.makeText(getActivity(), Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(),getContext(), custListArrayList);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),"2", "Category", "Specialty",
+                        jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
+            }
+        } catch (Exception e) {
+
+        }
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList);
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

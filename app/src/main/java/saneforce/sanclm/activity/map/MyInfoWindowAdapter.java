@@ -77,10 +77,10 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         for (int i = 0; i < MapsActivity.taggedMapListArrayList.size(); i++) {
             if (MapsActivity.taggedMapListArrayList.get(i).getCode().equalsIgnoreCase(code)) {
                 Log.v("getCode", MapsActivity.taggedMapListArrayList.get(i).getCode());
-                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), true,MapsActivity.taggedMapListArrayList.get(i).getMeters()));
+                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getType(),MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), true,MapsActivity.taggedMapListArrayList.get(i).getMeters()));
                 Drcode = code;
             } else {
-                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), false,MapsActivity.taggedMapListArrayList.get(i).getMeters()));
+                MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(),MapsActivity.taggedMapListArrayList.get(i).getType(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), false,MapsActivity.taggedMapListArrayList.get(i).getMeters()));
             }
         }
 

@@ -3,7 +3,7 @@ package saneforce.sanclm.commonClasses;
 public class Constants {
 
     public static final String BASE_URL = "https://";
-    public static final String APP_VERSION = "V2.0.8";
+    public static final String APP_VERSION = "V2.0.10";
     public static final String APP_MODE = "Android-Edet";
 
     //Local storage
@@ -23,6 +23,7 @@ public class Constants {
     public static final String STOCKIEST = "Stockiest_";
     public static final String HOSPITAL = "Hospital_";
     public static final String CIP = "Cip_";
+    public static final String NO_DATA_AVAILABLE = "no_data_available";
 
     //Leave
     public static final String LEAVE = "Leave";
@@ -59,6 +60,8 @@ public class Constants {
     //Setup
     public static final String SETUP = "Setup";
     public static final String CUSTOM_SETUP = "Custom_setup";
+
+
 
     //-------------------------------------------------------------
 

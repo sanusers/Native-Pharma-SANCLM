@@ -46,7 +46,7 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
         //holder.tv_meters.setText(String.format("%s Meter", Math.round(taggedMapLists.get(position).getMeters())));
         holder.tv_meters.setText(String.format("%s Meter", taggedMapLists.get(position).getMeters()));
 
-        Collections.sort(taggedMapLists, (c1, c2) -> Double.compare(c1.getMeters(), c2.getMeters()));
+       // Collections.sort(taggedMapLists, Comparator.comparingDouble(TaggedMapList::getMeters));
 
         if (taggedMapLists.get(position).clicked) {
             holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_pink));

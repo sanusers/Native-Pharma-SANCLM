@@ -20,6 +20,7 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.storage.SharedPref;
 
 public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHolder> {
     Context context;
@@ -60,9 +61,11 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 Intent intent = new Intent(context, MapsActivity.class);
                 intent.putExtra("from", "tagging");
                 intent.putExtra("cust_name", custListArrayList.get(position).getName());
-                intent.putExtra("cust_code",custListArrayList.get(position).get)
-                intent.putExtra("town_name",custListArrayList.get(position).getTown_name());
-                intent.putExtra("town_code",custListArrayList.get(position).get)
+                intent.putExtra("cust_code", custListArrayList.get(position).getCode());
+                intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
+                intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
+                // intent.putExtra("cus_pos", Integer.parseInt(custListArrayList.get(position).getPosition()));
+                SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
                 context.startActivity(intent);
             } else {
                 Toast.makeText(context, "Exceed the Tag limitation !!", Toast.LENGTH_SHORT).show();
