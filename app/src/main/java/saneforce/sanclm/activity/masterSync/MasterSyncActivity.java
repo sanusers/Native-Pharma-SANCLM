@@ -40,12 +40,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
-
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
@@ -115,7 +113,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             Log.v("table_json", jsonObject.toString());
 
             Call<JsonArray> call = null;
-                call = apiInterface.getDrMaster(jsonObject.toString());
+            call = apiInterface.getDrMaster(jsonObject.toString());
 
             SQLite finalSqLite = sqLite;
             call.enqueue(new Callback<JsonArray>() {
@@ -190,6 +188,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         subdivision_code = loginResponse.getSubdivision_code();
         designation = loginResponse.getDesig();
         state_code = loginResponse.getState_Code();
+        Log.v("hqname",SharedPref.getHqName(MasterSyncActivity.this));
         binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
         rsf = SharedPref.getHqCode(MasterSyncActivity.this); // Rsf is HQ code
 
@@ -210,12 +209,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
 
-        binding.backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-            }
-        });
+        binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
 
         binding.hq.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -843,7 +837,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                 jsonObject.put("tableName", remoteTableName);
                 jsonObject.put("sfcode", sfCode);
                 jsonObject.put("division_code", division_code);
-                jsonObject.put("Rsf", rsf);
+             /*   if(SharedPref.getSfType(getApplicationContext()).equalsIgnoreCase("1")) {
+                    jsonObject.put("Rsf", sfCode);
+                } else {*/
+                    jsonObject.put("Rsf", rsf);
+             //   }
                 jsonObject.put("sf_type", sfType);
                 jsonObject.put("Designation", designation);
                 jsonObject.put("state_code", state_code);
@@ -996,6 +994,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         SharedPref.setLeaveEntitlementNeed(getApplicationContext(), jsonSetup.getString("Leave_entitlement_need"));
                                         SharedPref.setReminderCallNeed(getApplicationContext(), jsonSetup.getString("RmdrNeed"));
                                         SharedPref.setReminderCallPrdMandatory(getApplicationContext(), jsonSetup.getString("Remainder_prd_Md"));
+                                        SharedPref.setGeotagApprovalNeed(getApplicationContext(), jsonSetup.getString("GeoTagApprovalNeed"));
 
                                     } catch (Exception e) {
 

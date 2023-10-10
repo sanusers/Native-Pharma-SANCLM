@@ -1,8 +1,11 @@
 package saneforce.sanclm.activity.homeScreen;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -28,13 +31,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import saneforce.sanclm.Leave_Application;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
+import saneforce.sanclm.activity.presentation.CreatePresentation;
+import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.storage.SharedPref;
 
 
@@ -49,7 +56,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     NavigationView navigationView;
     ImageView masterSync;
     LinearLayout pre_layout, slide_layout, report_layout, anlas_layout;
+    CommonUtilsMethods commonUtilsMethods;
+    LocationManager locationManager;
     private DrawerLayout drawerLayout;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
+            }
+        } else {
+            CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
+        }
+        commonUtilsMethods.FullScreencall();
+    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -57,7 +80,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_dash_board);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        commonUtilsMethods = new CommonUtilsMethods(this);
+        commonUtilsMethods.FullScreencall();
         pre_layout = findViewById(R.id.ll_presentation);
         slide_layout = findViewById(R.id.ll_slide);
         report_layout = findViewById(R.id.ll_report);
@@ -73,7 +97,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
-        MenuItem menuItem = menu.findItem(R.id.nav_from);
+        MenuItem menuItem = menu.findItem(R.id.nav_form);
 
         Toolbar toolbar = findViewById(R.id.Toolbar);
         setSupportActionBar(toolbar);
@@ -102,58 +126,44 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         report_layout.setLayoutParams(param);
         anlas_layout.setLayoutParams(param);
 
+        pre_layout.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
 
-        masterSync.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class));
-            }
-        });
+        masterSync.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
 
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                switch (position) {
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Work Plan");
+                    break;
+                case 1:
+                    tab.setText("Calls");
+                    break;
+                case 2:
+                    tab.setText("Outbox");
+                    BadgeDrawable badgeDrawable = tab.getOrCreateBadge();
+                    badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                    badgeDrawable.setVisible(true);
+                    badgeDrawable.setHorizontalOffset(1);
+                    badgeDrawable.setVerticalOffset(10);
+                    badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
+                    badgeDrawable.setNumber(10);
+                    badgeDrawable.setBadgeTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                    break;
 
-                    case 0:
-                        tab.setText("Work Plan");
-                        break;
-                    case 1:
-                        tab.setText("Calls");
-                        break;
-                    case 2:
-                        tab.setText("Outbox");
-
-                        BadgeDrawable badgeDrawable = tab.getOrCreateBadge();
-                        badgeDrawable.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-                        badgeDrawable.setVisible(true);
-                        badgeDrawable.setHorizontalOffset(1);
-                        badgeDrawable.setVerticalOffset(10);
-                        badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
-                        badgeDrawable.setNumber(10);
-                        badgeDrawable.setBadgeTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-
-                        break;
-
-                }
             }
         });
         tabLayoutMediator.attach();
 
         imageView.setBackgroundResource(R.drawable.bars_sort_img);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    imageView.setBackgroundResource(R.drawable.bars_sort_img);
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                    imageView.setBackgroundResource(R.drawable.cross_img);
+        imageView.setOnClickListener(v -> {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                imageView.setBackgroundResource(R.drawable.bars_sort_img);
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START);
+                imageView.setBackgroundResource(R.drawable.cross_img);
 
-                }
             }
         });
 
@@ -162,17 +172,25 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-
         int id = item.getItemId();
 
         if (id == R.id.nav_leave_appln) {
-            Toast.makeText(this, "Leave ", Toast.LENGTH_LONG).show();
             startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
             return true;
         }
 
         if (id == R.id.nav_tour_plan) {
             startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
+            return true;
+        }
+
+        if (id == R.id.nav_approvals) {
+            startActivity(new Intent(HomeDashBoard.this, ApprovalsActivity.class));
+            return true;
+        }
+
+        if (id == R.id.nav_create_presentation) {
+            startActivity(new Intent(HomeDashBoard.this, CreatePresentation.class));
             return true;
         }
 

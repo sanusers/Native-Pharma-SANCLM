@@ -1,14 +1,14 @@
 package saneforce.sanclm.activity.map.custSelection;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -20,7 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import saneforce.sanclm.R;
@@ -36,37 +35,42 @@ import saneforce.sanclm.storage.SQLiteHandler;
 import saneforce.sanclm.storage.SharedPref;
 
 public class TagCustSelectionList extends AppCompatActivity {
-
-    MapDcrSelectionBinding binding;
+    @SuppressLint("StaticFieldLeak")
+    public static MapDcrSelectionBinding binding;
     List<String> HqNameList = new ArrayList<>();
     List<String> HqCodeList = new ArrayList<>();
     CustListAdapter custListAdapter;
     CommonUtilsMethods commonUtilsMethods;
     SQLite sqLite;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
+    ArrayList<CustList> custListArrayNew = new ArrayList<>();
     SQLiteHandler sqLiteHandler;
     ApiInterface apiInterface;
-    String getCustListDB, SelectedTab, SfType, SfCode, SfName, SelectedHqCode, getHqList, TodayPlanSfCode;
-    Cursor mCursor;
-    int pos;
+    ArrayAdapter arrayAdapter;
+    String SelectedTab, SfType, SfCode, SfName, SelectedHqCode, SelectedHqName, getHqList, TodayPlanSfCode;
+
 
     @Override
     public void onBackPressed() {
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onStart() {
+        Log.v("onstart", "-000-");
         super.onStart();
         try {
             if (SharedPref.getTaggedSuccessfully(TagCustSelectionList.this).equalsIgnoreCase("true")) {
+                Log.v("onstart", "-111-");
                 CustList mm = custListArrayList.get(Integer.parseInt(SharedPref.getCustomerPosition(TagCustSelectionList.this)));
                 int yy = Integer.parseInt(mm.getTag()) + 1;
+                mm.setGeoTagStatus("1");
                 mm.setTag(String.valueOf(yy));
                 custListAdapter.notifyDataSetChanged();
                 SharedPref.setTaggedSuccessfully(TagCustSelectionList.this, "false");
             }
         } catch (Exception e) {
-
+            Log.v("onstart", e.toString());
         }
     }
 
@@ -104,7 +108,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             binding.txtSelectedHq.setText(SfName);
             binding.txtSelectedHq.setEnabled(false);
         } else {
-            binding.txtSelectedHq.setEnabled(false);
+            //  binding.txtSelectedHq.setEnabled(false);
             binding.txtSelectedHq.setEnabled(true);
             if (SharedPref.getTpBasedDcr(TagCustSelectionList.this).equalsIgnoreCase("0")) {
                 binding.txtSelectedHq.setEnabled(false);
@@ -112,12 +116,48 @@ public class TagCustSelectionList extends AppCompatActivity {
             SetHqAdapter();
         }
 
+        binding.dummyView.setOnClickListener(view -> {
+            binding.constraintHqList.setVisibility(View.GONE);
+            binding.dummyView.setVisibility(View.GONE);
+            hideKeyboard();
+        });
 
         binding.txtSelectedHq.setOnClickListener(view -> {
-            if (binding.hqListView.getVisibility() == View.VISIBLE) {
-                binding.hqListView.setVisibility(View.GONE);
+            hideKeyboard();
+            if (binding.constraintHqList.getVisibility() == View.VISIBLE) {
+                binding.constraintHqList.setVisibility(View.GONE);
+                binding.dummyView.setVisibility(View.VISIBLE);
             } else {
-                binding.hqListView.setVisibility(View.VISIBLE);
+                binding.constraintHqList.setVisibility(View.VISIBLE);
+                binding.dummyView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        binding.imgClose.setOnClickListener(view -> {
+            hideKeyboard();
+            binding.constraintHqList.setVisibility(View.GONE);
+            binding.dummyView.setVisibility(View.GONE);
+        });
+
+        binding.clrSearchCustTxt.setOnClickListener(view -> {
+            binding.searchCust.setText("");
+            hideKeyboard();
+        });
+
+        binding.searchHq.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                TagCustSelectionList.this.arrayAdapter.getFilter().filter(editable);
             }
         });
 
@@ -144,9 +184,10 @@ public class TagCustSelectionList extends AppCompatActivity {
         });
 
         binding.hqListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            binding.txtSelectedHq.setText(HqNameList.get(i));
-            binding.hqListView.setVisibility(View.GONE);
+            binding.constraintHqList.setVisibility(View.GONE);
             SelectedHqCode = HqCodeList.get(i);
+            SelectedHqName = HqNameList.get(i);
+            binding.txtSelectedHq.setText(SelectedHqName);
             SharedPref.setSelectedHqCode(TagCustSelectionList.this, SelectedHqCode);
             SharedPref.setSelectedHqName(TagCustSelectionList.this, HqNameList.get(i));
             AddCustList(SelectedHqCode);
@@ -154,21 +195,12 @@ public class TagCustSelectionList extends AppCompatActivity {
     }
 
     private void SetHqAdapter() {
-
         HqNameList.clear();
         HqCodeList.clear();
         SelectedHqCode = SharedPref.getSelectedHqCode(TagCustSelectionList.this);
-        Log.v("dddd", "-1sds-" + SelectedHqCode);
+        SelectedHqName = SharedPref.getSelectedHqName(TagCustSelectionList.this);
+        Log.v("dddd", "-1sds-" + SelectedHqCode + "---" + SelectedHqName);
         try {
-          /*  Cursor curHqList = sqLiteHandler.select_master_list("Subordinate");
-            if (curHqList.getCount() > 0) {
-                while (curHqList.moveToNext()) {
-                    getHqList = curHqList.getString(1);
-                }
-            }
-
-            JSONArray jsonArray = new JSONArray(getHqList);*/
-
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Subordinate");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonHQList = jsonArray.getJSONObject(i);
@@ -186,12 +218,13 @@ public class TagCustSelectionList extends AppCompatActivity {
                 }
             }
 
-            binding.hqListView.setAdapter(new ArrayAdapter<>(TagCustSelectionList.this, R.layout.listview_items, HqNameList));
-            binding.txtSelectedHq.setText(SharedPref.getSelectedHqName(TagCustSelectionList.this));
+            arrayAdapter = new ArrayAdapter(TagCustSelectionList.this, R.layout.listview_items, HqNameList);
+            binding.hqListView.setAdapter(arrayAdapter);
+            binding.txtSelectedHq.setText(SelectedHqName);
             if (SelectedHqCode.isEmpty()) {
                 SelectedHqCode = HqCodeList.get(0);
+                SelectedHqName = HqNameList.get(0);
             }
-            // SelectedHqCode = HqCodeList.get(0);
             AddCustList(SelectedHqCode);
 
         } catch (Exception e) {
@@ -199,6 +232,12 @@ public class TagCustSelectionList extends AppCompatActivity {
         }
     }
 
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(binding.searchCust.getWindowToken(), 0);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     private void AddCustList(String selectedHqCode) {
         custListArrayList.clear();
         Log.v("map_selected_tab", "---" + SharedPref.getMapSelectedTab(TagCustSelectionList.this));
@@ -208,14 +247,6 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "D":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionDr(TagCustSelectionList.this));
-                  /*  mCursor = sqLiteHandler.select_master_list("Doctor_" + selectedHqCode);
-                    if (mCursor.getCount() > 0) {
-                        while (mCursor.moveToNext()) {
-                            getCustListDB = mCursor.getString(1);
-                        }
-                    }
-
-                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
                     JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + selectedHqCode);
                     Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
                     if (jsonArray.length() == 0) {
@@ -228,8 +259,28 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"),
-                                jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
+                      /*  if (jsonObject.getString("Code").equalsIgnoreCase("24482") && jsonObject.getString("uRwID").equalsIgnoreCase("2")) {
+                            jsonObject.put("cust_status", "1");
+                        }
+
+                        if (jsonObject.getString("Code").equalsIgnoreCase("24526") && jsonObject.getString("uRwID").equalsIgnoreCase("4")) {
+                            jsonObject.put("cust_status", "1");
+                        }
+
+                        if (jsonObject.getString("Code").equalsIgnoreCase("24517") && jsonObject.getString("uRwID").equalsIgnoreCase("2")) {
+                            jsonObject.put("cust_status", "1");
+                        }
+
+                        if (jsonObject.getString("Code").equalsIgnoreCase("24574")) {
+                            jsonObject.put("cust_status", "1");
+                        }
+
+                        if (jsonObject.getString("Code").equalsIgnoreCase("24543")) {
+                            jsonObject.put("cust_status", "1");
+                        }
+*/
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
                     }
                 } catch (Exception e) {
                     Log.v("dr_tag", "---error--" + e);
@@ -239,14 +290,6 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "C":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionChemist(TagCustSelectionList.this));
-                  /*  mCursor = sqLiteHandler.select_master_list("Chemist_" + selectedHqCode);
-                    if (mCursor.getCount() > 0) {
-                        while (mCursor.moveToNext()) {
-                            getCustListDB = mCursor.getString(1);
-                        }
-                    }
-
-                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
                     JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Chemist_" + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
@@ -258,8 +301,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),SelectedTab, "Category", "Specialty",
-                                jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
                     }
                 } catch (Exception e) {
 
@@ -268,13 +311,6 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "S":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionStockist(TagCustSelectionList.this));
-               /*     mCursor = sqLiteHandler.select_master_list("Stockiest_" + selectedHqCode);
-                    if (mCursor.getCount() > 0) {
-                        while (mCursor.moveToNext()) {
-                            getCustListDB = mCursor.getString(1);
-                        }
-                    }
-                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
                     JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Stockiest_" + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
@@ -286,8 +322,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),SelectedTab, "Category", "Specialty",
-                                jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+
                     }
                 } catch (Exception e) {
 
@@ -296,14 +333,6 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "U":
                 try {
                     binding.tagSelection.setText(SharedPref.getCaptionUnDr(TagCustSelectionList.this));
-                  /*  mCursor = sqLiteHandler.select_master_list("Unlisted_Doctor_" + selectedHqCode);
-                    if (mCursor.getCount() > 0) {
-                        while (mCursor.moveToNext()) {
-                            getCustListDB = mCursor.getString(1);
-                        }
-                    }
-
-                    JSONArray jsonArray = new JSONArray(getCustListDB);*/
                     JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Unlisted_Doctor_" + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
@@ -315,8 +344,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"),
-                                jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
                     }
                 } catch (Exception e) {
 
@@ -324,7 +353,25 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
         }
 
-        custListAdapter = new CustListAdapter(TagCustSelectionList.this, TagCustSelectionList.this, custListArrayList);
+
+        int count = custListArrayList.size();
+        for (int i = 0; i < count; i++) {
+            for (int j = i + 1; j < count; j++) {
+                if (custListArrayList.get(i).getCode().equalsIgnoreCase(custListArrayList.get(j).getCode())) {
+                    if (custListArrayList.get(i).getMaxTag().equalsIgnoreCase("0")) {
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getGeoTagStatus()));
+                    } else if (custListArrayList.get(i).getMaxTag().equalsIgnoreCase("1") || custListArrayList.get(i).getMaxTag().equalsIgnoreCase("2") || custListArrayList.get(i).getMaxTag().equalsIgnoreCase("3") || custListArrayList.get(i).getMaxTag().equalsIgnoreCase("4") || custListArrayList.get(i).getMaxTag().equalsIgnoreCase("5") || custListArrayList.get(i).getMaxTag().equalsIgnoreCase("6") || custListArrayList.get(i).getMaxTag().equalsIgnoreCase("7") || custListArrayList.get(i).getMaxTag().equalsIgnoreCase("8")) {
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), String.valueOf(Integer.parseInt(custListArrayList.get(i).getMaxTag()) + 1), String.valueOf(i), custListArrayList.get(i).getGeoTagStatus()));
+                    }
+                    custListArrayList.remove(j--);
+                    count--;
+                } else {
+                    custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getGeoTagStatus()));
+                }
+            }
+        }
+
+        custListAdapter = new CustListAdapter(TagCustSelectionList.this, TagCustSelectionList.this, custListArrayList, custListArrayNew);
         binding.rvCustList.setItemAnimator(new DefaultItemAnimator());
         binding.rvCustList.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
         binding.rvCustList.setAdapter(custListAdapter);
@@ -332,12 +379,22 @@ public class TagCustSelectionList extends AppCompatActivity {
     }
 
     private void filter(String text) {
-        ArrayList<CustList> filterdNames = new ArrayList<>();
+        ArrayList<CustList> filtered_names = new ArrayList<>();
         for (CustList s : custListArrayList) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+            String values = s.getTag() + "/" + s.getMaxTag();
+            String Status = "";
+
+         /*   if (s.getGeoTagStatus().equalsIgnoreCase("0")) {
+                Status = "approved";
+            } else*/
+            if (s.getGeoTagStatus().equalsIgnoreCase("1")) {
+                Status = "pending";
+            }
+
+            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getTag().toLowerCase().contains(text.toLowerCase()) || s.getMaxTag().toLowerCase().contains(text.toLowerCase()) || values.toLowerCase().contains(text.toLowerCase()) || Status.toLowerCase().contains(text.toLowerCase())) {
+                filtered_names.add(s);
             }
         }
-        custListAdapter.filterList(filterdNames);
+        custListAdapter.filterList(filtered_names);
     }
 }

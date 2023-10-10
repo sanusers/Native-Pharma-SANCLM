@@ -354,7 +354,7 @@
                     <TextView
                         android:visibility="gone"
 
-                        android:id="@+id/chemist"
+                        android:id="@+id/llLeaveApproval"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/listedDrSelect"
@@ -375,7 +375,7 @@
                         android:id="@+id/chemistSelect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/chemist"
+                        android:layout_below="@id/llLeaveApproval"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="@dimen/_2sdp"

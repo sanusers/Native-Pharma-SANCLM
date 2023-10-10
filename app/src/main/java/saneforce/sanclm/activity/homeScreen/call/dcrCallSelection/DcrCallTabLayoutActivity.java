@@ -1,25 +1,21 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
 
-import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.DCRCallSelectionTabLayoutAdapter;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.CallDcrSelectionBinding;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
     CallDcrSelectionBinding dcrSelectionBinding;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     public void onBackPressed() {
@@ -30,6 +26,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dcrSelectionBinding = CallDcrSelectionBinding.inflate(getLayoutInflater());
         setContentView(dcrSelectionBinding.getRoot());
+        commonUtilsMethods = new CommonUtilsMethods(this);
+        commonUtilsMethods.FullScreencall();
 
         dcrSelectionBinding.tabLayoutCall.addTab(dcrSelectionBinding.tabLayoutCall.newTab().setText("Listed Doctor"));
         dcrSelectionBinding.tabLayoutCall.addTab(dcrSelectionBinding.tabLayoutCall.newTab().setText("Chemist"));
@@ -44,12 +42,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(dcrSelectionBinding.searchCust.getWindowToken(), 0);*/
 
 
-        dcrSelectionBinding.ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class));
-            }
-        });
+        dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
 
        /* dcrSelectionBinding.ivFilter.setOnClickListener(new View.OnClickListener() {
             @Override

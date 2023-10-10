@@ -38,6 +38,19 @@
         <item name="colorControlActivated">@color/gold_yellow</item>
     </style>
 
+    <style name="popupMenuStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/dark_purple</item>
+        <item name="fontFamily">@font/satoshi_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+    </style>
+
+    <style name="PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">
+        <item name="android:divider">@color/bg_grey_2</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
     <style name="Theme.ProgressBar" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/background</item>
@@ -86,6 +99,15 @@
         <item name="windowActionBar">false</item>
         <!-- Other dialog customizations if needed -->
     </style>
+
+    <style name="Theme.SANCLM.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.SANCLM.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.SANCLM.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.telecom.Call;
 
 public class SharedPref {
 
@@ -18,6 +19,7 @@ public class SharedPref {
     public static final String REPORTS_URL = "reports_url";
     public static final String SLIDES_URL = "slides_url";
     public static final String LOGO_URL = "logo_url";
+    public static final String CALL_API_URL = "call_api_url";
 
 
     //Login
@@ -39,8 +41,8 @@ public class SharedPref {
 
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
-    public static final String HQ_NAME = "selected_hq_name";
-    public static final String HQ_CODE = "selected_hq_code";
+    public static final String HQ_NAME = "hq_name";
+    public static final String HQ_CODE = "hq_code";
 
     //Map Activity
     public static final String MAP_SELECTED_TAB = "selected_tab_map";
@@ -48,6 +50,8 @@ public class SharedPref {
     public static final String CUSTOMER_POSITION = "cust_pos";
     public static final String SelectedHqCode = "selected_hq_code";
     public static final String SelectedHqName = "selected_hq_name";
+    public static final String SelectedCustLat = "selected_cust_lat";
+    public static final String SelectedCustLng = "selected_cust_lng";
 
     //HomeDashboard
     //MyDayPlan
@@ -212,6 +216,11 @@ public class SharedPref {
     public static final String LEAVE_ENTITLEMENT_NEED = "leave_entitlement_need";
     public static final String REMINDER_CALL_NEED = "reminder_call_need";
     public static final String REMINDER_CALL_PRD_MANDATORY = "reminder_call_prd_man";
+    public static final String GEOTAG_APPROVAL_NEED = "geotag_approval_need";
+    public static final String CIP_NEED = "cip_need";
+    public static final String CAPTION_CIP = "cap_cip";
+
+    public static final String HOSPITAL_NEED = "cip_need";
 
 
     public static SharedPreferences sharedPreferences;
@@ -339,6 +348,16 @@ public class SharedPref {
 
     public static String getSfCode(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SF_CODE, "");
+    }
+
+    public static void setCallApiUrl(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CALL_API_URL, token).apply();
+    }
+
+    public static String getCallApiUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CALL_API_URL, "");
     }
 
     public static void setSfName(Context context, String token) {
@@ -644,6 +663,27 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(UNDR_NEED, "");
     }
 
+    public static void setCipNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CIP_NEED, status).apply();
+    }
+
+    public static String getCipNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CIP_NEED, "");
+    }
+
+    public static void setHospitalNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(HOSPITAL_NEED, status).apply();
+    }
+
+    public static String getHospitalNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(HOSPITAL_NEED, "");
+    }
+
+
     public static void setDrPrdNeed(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -762,6 +802,16 @@ public class SharedPref {
 
     public static String getCaptionUnDr(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CAPTION_UNDR, "");
+    }
+
+    public static void setCaptionCip(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CAPTION_CIP, status).apply();
+    }
+
+    public static String getCaptionCip(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CAPTION_CIP, "");
     }
 
     public static void setCaptionDrPrd(Context context, String status) {
@@ -903,6 +953,27 @@ public class SharedPref {
 
     public static String getSelectedHqName(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedHqName, "");
+    }
+
+
+    public static void setSelectedCustLat(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SelectedCustLat, status).apply();
+    }
+
+    public static String getSelectedCustLat(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedCustLat, "");
+    }
+
+    public static void setSelectedCustLng(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SelectedCustLng, status).apply();
+    }
+
+    public static String getSelectedCustLng(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedCustLng, "");
     }
 
 
@@ -1835,6 +1906,16 @@ public class SharedPref {
 
     public static String setReminderCallPrdMandatory(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(REMINDER_CALL_PRD_MANDATORY, "");
+    }
+
+    public static void setGeotagApprovalNeed(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(GEOTAG_APPROVAL_NEED, status).apply();
+    }
+
+    public static String getGeotagApprovalNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(GEOTAG_APPROVAL_NEED, "");
     }
 }
 

@@ -18,6 +18,7 @@
     <color name="pink">#F1536E</color>
     <color name="background">#EEEEEE</color>
     <color name="text_dark_25">#40282A3C</color>
+    <color name="text_dark_10">#12FD0B0B</color>
 
 
     <color name="dark_purple">#282A3C</color>
@@ -28,6 +29,7 @@
     <color name="bg_txt_color">#8E8C8C</color>
     <color name="bg_grey">#EEEEEE</color>
     <color name="light_green">#4B00C689</color>
+    <color name="light_cement">#B4B4BB</color>
     <color name="green_2">#00C689</color>
     <color name="ash_pecalltext">#b8b8b8</color>
     <color name="gold_yellow">#FFD700</color>

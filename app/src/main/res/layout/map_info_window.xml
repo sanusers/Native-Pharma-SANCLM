@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/_100sdp"
     android:layout_height="wrap_content"
+    app:cardElevation="3dp"
     android:background="@color/white"
     app:cardCornerRadius="@dimen/_3sdp">
 
@@ -17,7 +18,7 @@
             android:layout_height="@dimen/_18sdp"
             android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_3sdp"
-            android:src="@drawable/dr_img_map"
+            android:src="@drawable/map_dr_img"
             app:layout_constraintBottom_toTopOf="@id/txt_drName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -91,14 +92,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginBottom="@dimen/_2sdp"
-            android:fontFamily="@font/satoshi_regular"
+            android:fontFamily="@font/satoshi_medium"
             android:paddingHorizontal="@dimen/_3sdp"
             android:paddingVertical="@dimen/_1sdp"
             android:singleLine="false"
             android:text="Address"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:textStyle="bold"
+            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -108,4 +109,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>

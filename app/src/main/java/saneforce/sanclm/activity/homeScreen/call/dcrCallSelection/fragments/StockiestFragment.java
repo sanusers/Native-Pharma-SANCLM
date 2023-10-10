@@ -32,6 +32,7 @@ import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.R;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
 
 
 public class StockiestFragment extends Fragment {
@@ -53,11 +54,15 @@ public class StockiestFragment extends Fragment {
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
         ed_search = v.findViewById(R.id.search_cust);
         iv_filter = v.findViewById(R.id.iv_filter);
+        SfCode = SharedPref.getSfCode(getContext());
+        SfType = SharedPref.getSfType(getContext());
+        sqLite = new SQLite(getContext());
+
 
         custListArrayList.clear();
         try {
             if (SfType.equalsIgnoreCase("1")) {
-                jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + SfCode);
+                jsonArray = sqLite.getMasterSyncDataByKey("Stockiest_" + SfCode);
             }
             Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
             if (jsonArray.length() == 0) {
@@ -76,7 +81,7 @@ public class StockiestFragment extends Fragment {
             }
 
         } catch (Exception e) {
-
+            Log.v("jsonarray", "-error--" + e);
         }
         Log.v("dfdfs","---" + custListArrayList.size());
         adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(),getContext(), custListArrayList);

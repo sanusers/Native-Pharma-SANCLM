@@ -85,11 +85,11 @@ public class DCRCallActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Product"));
         tabLayout.addTab(tabLayout.newTab().setText("Inputs"));
         tabLayout.addTab(tabLayout.newTab().setText("Additional Calls"));
-        if (cust_type.equalsIgnoreCase("1") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
+      /*  if (cust_type.equalsIgnoreCase("1") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
             tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
         } else if (cust_type.equalsIgnoreCase("2") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
             tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
-        }
+        }*/
         tabLayout.addTab(tabLayout.newTab().setText("JFW/Others"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
@@ -102,7 +102,6 @@ public class DCRCallActivity extends AppCompatActivity {
         DCRCallTabLayoutAdapter adapter = new DCRCallTabLayoutAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
 
         tv_cust_name.setText(cust_name);
 

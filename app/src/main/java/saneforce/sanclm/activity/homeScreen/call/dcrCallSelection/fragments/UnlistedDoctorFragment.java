@@ -32,6 +32,7 @@ import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.R;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
 
 
 public class UnlistedDoctorFragment extends Fragment {
@@ -54,11 +55,14 @@ public class UnlistedDoctorFragment extends Fragment {
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
         ed_search = v.findViewById(R.id.search_cust);
         iv_filter = v.findViewById(R.id.iv_filter);
+        SfCode = SharedPref.getSfCode(getContext());
+        SfType = SharedPref.getSfType(getContext());
+        sqLite = new SQLite(getContext());
 
         custListArrayList.clear();
         try {
             if (SfType.equalsIgnoreCase("1")) {
-                jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + SfCode);
+                jsonArray = sqLite.getMasterSyncDataByKey("Unlisted_Doctor_" + SfCode);
             }
 
             Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
@@ -72,11 +76,11 @@ public class UnlistedDoctorFragment extends Fragment {
             }
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"),"4", jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"),
+                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"),
                         jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
             }
         } catch (Exception e) {
-
+            Log.v("jsonarray", "-error--" + e);
         }
 
         adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList);

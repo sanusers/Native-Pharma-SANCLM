@@ -61,7 +61,7 @@ public class ChemistFragment extends Fragment {
         custListArrayList.clear();
         try {
             if (SfType.equalsIgnoreCase("1")) {
-                jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + SfCode);
+                jsonArray = sqLite.getMasterSyncDataByKey("Chemist_" + SfCode);
             }
             Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
             if (jsonArray.length() == 0) {

@@ -237,6 +237,7 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra("Origin", "Login");
             startActivity(intent);
         } catch (Exception exception) {
+            Log.v("error_login",exception.toString());
             exception.printStackTrace();
         }
     }
