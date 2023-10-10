@@ -22,9 +22,6 @@ import saneforce.sanclm.activity.HomeScreen.ModelClass.CallsModalClass;
 public class CallsFragment extends Fragment {
 
     Call_adapter adapter;
-
-  Resources resources;
-
     RecyclerView recyclerView;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.calls_fragment, container, false);
@@ -45,13 +42,13 @@ public class CallsFragment extends Fragment {
     private List<CallsModalClass> getData()
     {
         List<CallsModalClass> list = new ArrayList<>();
-        list.add(new CallsModalClass("Aravind Raj",
+        list.add(new CallsModalClass("Aravind Raj (Doctor)",
                 "2023-08-19,00:0:49",
                 "D"));
-        list.add(new CallsModalClass("Tom Latham",
+        list.add(new CallsModalClass("Tom Latham (Chemist)",
                 "2023-08-19,00:0:49",
                 "C"));
-        list.add(new CallsModalClass("Dharany",
+        list.add(new CallsModalClass("Dharany (CIP)",
                 "2023-08-19,00:0:49",
                 "CIP"));
 

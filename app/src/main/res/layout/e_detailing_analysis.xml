@@ -7,11 +7,12 @@
     <RelativeLayout
         android:id="@+id/call_analysis_layout"
         android:layout_width="match_parent"
+        android:visibility="visible"
         android:layout_height="match_parent"
         android:layout_weight="2">
 
         <TextView
-            android:id="@+id/text_call_analysis"
+            android:id="@+id/text_label_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
@@ -50,13 +51,14 @@
         <HorizontalScrollView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_below="@+id/text_call_analysis"
+            android:layout_below="@+id/text_label_name"
             android:layout_height="match_parent"
             >
             <LinearLayout
-                android:id="@+id/recyelerview1"
+                android:id="@+id/ll_analyis_layout"
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_2sdp"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
@@ -240,13 +242,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:layout_weight="1">
         <TextView
             android:id="@+id/text_average_"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="@dimen/_2sdp"
             android:fontFamily="@font/satoshi_medium"
             android:textStyle="bold"
             android:text="Specialty"
@@ -256,6 +258,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/ll_grap_layout"
+            android:orientation="vertical"
             android:layout_below="@+id/text_average_"
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_5sdp"

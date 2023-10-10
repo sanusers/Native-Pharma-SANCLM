@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:text="Label 2"
                     android:layout_marginBottom="@dimen/_3sdp"
-                    android:textSize="@dimen/_5sdp" />
+                    android:textSize="@dimen/_6sdp" />
                 <TextView
                     android:id="@+id/optionview"
                     android:layout_width="wrap_content"

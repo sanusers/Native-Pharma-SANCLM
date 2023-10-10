@@ -3,23 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tablelayout"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_25sdp"
         android:background="@color/backround_graey"
         app:tabGravity="center"
         app:tabIndicatorColor="@color/text_dark"
         app:tabIndicatorGravity="bottom"
-        app:tabIndicatorHeight="2dp"
+        app:tabIndicatorHeight="1dp"
         app:tabSelectedTextColor="@color/text_dark"
         app:tabMode="fixed"
         app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
         app:tabTextColor="@color/text_dark_65" />
     <View
+        android:id="@+id/view_dummy"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#9e9ea5" />
+        android:layout_height="0.5dp"
+        android:background="#9e9ea5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tablelayout"
+        app:layout_constraintVertical_bias="0.0" />
+
 </LinearLayout>
+
+
+
+

@@ -63,4 +63,5 @@ public class ViewpagetAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return 3;
     }
+
 }
