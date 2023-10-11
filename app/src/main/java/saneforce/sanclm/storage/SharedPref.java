@@ -20,7 +20,6 @@ public class SharedPref {
     public static final String LOGO_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
 
-
     //Login
     public static final String LOGIN_STATE = "login_state";
     public static final String DEVICE_ID = "device_id";

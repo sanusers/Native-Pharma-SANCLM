@@ -814,12 +814,16 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     JSONArray jsonArray = new JSONArray(response.body().toString());
                                     masterSyncItemModels.get(position).setPB_visibility(false);
                                     masterSyncItemModels.get(position).setCount(jsonArray.length());
-
                                     masterSyncAdapter.notifyDataSetChanged();
                                     String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                     binding.lastSyncTime.setText(dateAndTime);
                                     SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
-                                    sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
+
+                                    if (jsonArray.length() == 0) {
+                                        sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), Constants.NO_DATA_AVAILABLE);
+                                    } else {
+                                        sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString());
+                                    }
 
                                     if (masterFor.equalsIgnoreCase("Subordinate") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")){
                                         if (mgrInitialSync){
@@ -862,7 +866,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     public void setHq(JSONArray jsonArray){
         mgrInitialSync = false;

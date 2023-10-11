@@ -27,7 +27,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -51,17 +50,16 @@ import saneforce.sanclm.storage.SharedPref;
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
-    ImageView backArrow;
-
-    public static ViewPager2 viewPager, viewPager1;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
     ImageView imageView;
+    public static ViewPager2 viewPager;
+    public static CustomViewPager viewPager1;
     TabLayout tabLayout;
     ViewpagetAdapter viewpagetAdapter;
     NavigationView navigationView;
-    ImageView masterSync;
     LinearLayout pre_layout, slide_layout, report_layout, anlas_layout;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
     public static int DeviceWith;
+    ImageView masterSync;
 
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
@@ -92,29 +90,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         slide_layout = findViewById(R.id.ll_slide);
         report_layout = findViewById(R.id.ll_report);
         anlas_layout = findViewById(R.id.ll_analys);
-        masterSync = findViewById(R.id.img_sync);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
-        backArrow = findViewById(R.id.back_arrow);
+        imageView = findViewById(R.id.back_arrow);
         viewPager = findViewById(R.id.view_pager);
-//        viewPager1 = findViewById(R.id.view_pager1);
+        viewPager1 = findViewById(R.id.view_pager1);
         tabLayout = findViewById(R.id.tablelayout);
-
         navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        Menu menu = navigationView.getMenu();
-        navigationView = findViewById(R.id.nav_view);
+        masterSync = findViewById(R.id.img_sync);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith=displayMetrics.widthPixels;
 
-
         DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
         layoutParams.width = DeviceWith/3;// You can replace R.dimen.navigation_drawer_width with the width you want
         navigationView.setLayoutParams(layoutParams);
-
 
         Toolbar toolbar = findViewById(R.id.Toolbar);
         setSupportActionBar(toolbar);
@@ -130,9 +122,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         viewpagetAdapter = new ViewpagetAdapter(this, 1);
         viewPager.setAdapter(viewpagetAdapter);
 
-//        CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
-//        viewPager1.setAdapter(adapter);
-//
+        CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
+        viewPager1.setAdapter(adapter);
 
         int width = (int) ((((DeviceWith / 3) * 1.9) / 3) - 13);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -149,11 +140,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         setupCustomTab(tabLayout, 1, "Calls", false);
         setupCustomTab(tabLayout, 2, "Outbox", true);
 
-        pre_layout.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
 
-        masterSync.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
-
-   // Listener
         // Listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -175,6 +162,48 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
+
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                imageView.setBackgroundResource(R.drawable.cross_img);
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                imageView.setBackgroundResource(R.drawable.bars_sort_img);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    imageView.setBackgroundResource(R.drawable.bars_sort_img);
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                    imageView.setBackgroundResource(R.drawable.cross_img);
+
+                }
+            }
+        });
+
+        pre_layout.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
+
+        masterSync.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
+
+
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
