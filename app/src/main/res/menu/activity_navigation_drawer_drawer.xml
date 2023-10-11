@@ -36,6 +36,13 @@
 
             android:title="Leave Application" />
 
+
+        <item
+            android:icon="@drawable/nearme"
+            android:id="@+id/nav_approvals"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="@string/approvals" />
+
         <item
             android:icon="@drawable/report"
             android:textSize="@dimen/_7sdp"
@@ -57,6 +64,8 @@
             android:fontFamily="@font/satoshi_medium"
             android:title="Near Me" />
 
+
+
         <item
             android:textSize="@dimen/_7sdp"
             android:fontFamily="@font/satoshi_medium"
@@ -68,8 +77,14 @@
             android:textSize="@dimen/_7sdp"
             android:icon="@drawable/form"
             android:fontFamily="@font/satoshi_medium"
-            android:id="@+id/nav_from"
-            android:title="Froms" />
+            android:id="@+id/nav_form"
+            android:title="Forms" />
+
+        <item
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/logout"
+            android:title="Logout" />
 
         <item
             android:icon="@drawable/form"

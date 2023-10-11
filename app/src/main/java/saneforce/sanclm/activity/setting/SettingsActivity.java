@@ -79,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
                 url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s","");
                 licenseKey = binding.etLicenseKey.getText().toString().trim();
                 deviceId = binding.tvDeviceId.getText().toString();
-                
+
                 if (url.isEmpty()){
                     binding.etWebUrl.requestFocus();
                     Toast.makeText(SettingsActivity.this, "Enter URL", Toast.LENGTH_SHORT).show();
@@ -97,7 +97,6 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
         });
 

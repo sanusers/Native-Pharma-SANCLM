@@ -32,7 +32,6 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         this.custListArrayList = custListArrayList;
     }
 
-
     @NonNull
     @Override
     public AdapterDCRCallSelection.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,8 +62,11 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
         holder.constraint_main.setOnClickListener(view -> {
             Intent intent = new Intent(context, CustomerProfile.class);
-            intent.putExtra("cust_name", holder.tv_name.getText().toString());
-            intent.putExtra("cust_addr", holder.tv_area.getText().toString());
+            intent.putExtra("cust_name", custListArrayList.get(position).getName());
+            intent.putExtra("cust_code", custListArrayList.get(position).getCode());
+            intent.putExtra("cust_type", custListArrayList.get(position).getType());
+            intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
+            intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
             context.startActivity(intent);
         });
     }

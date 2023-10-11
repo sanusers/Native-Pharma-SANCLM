@@ -35,6 +35,7 @@ import saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragmentSide;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.storage.SharedPref;
 
 public class DCRCallActivity extends AppCompatActivity {
 
@@ -48,7 +49,7 @@ public class DCRCallActivity extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     CommonSharedPreference mCommonSharedPreference;
     int tab_pos = 0;
-    String cust_name;
+    String cust_name, cust_code, town_name, town_code, cust_type;
 
     @Override
     public void onBackPressed() {
@@ -70,12 +71,25 @@ public class DCRCallActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPreference = new CommonSharedPreference(this);
 
+        Bundle extra = getIntent().getExtras();
+        if (extra != null) {
+            cust_name = extra.getString("cust_name");
+            cust_code = extra.getString("cust_code");
+            town_code = extra.getString("town_code");
+            town_name = extra.getString("town_name");
+            cust_type = extra.getString("cust_type");
+        }
+
         commonUtilsMethods.FullScreencall();
         tabLayout.addTab(tabLayout.newTab().setText("Detailed"));
         tabLayout.addTab(tabLayout.newTab().setText("Product"));
         tabLayout.addTab(tabLayout.newTab().setText("Inputs"));
         tabLayout.addTab(tabLayout.newTab().setText("Additional Calls"));
-        tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
+      /*  if (cust_type.equalsIgnoreCase("1") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
+            tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
+        } else if (cust_type.equalsIgnoreCase("2") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
+            tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
+        }*/
         tabLayout.addTab(tabLayout.newTab().setText("JFW/Others"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
@@ -88,11 +102,6 @@ public class DCRCallActivity extends AppCompatActivity {
         DCRCallTabLayoutAdapter adapter = new DCRCallTabLayoutAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-        Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            cust_name = extra.getString("cust_name");
-        }
 
         tv_cust_name.setText(cust_name);
 

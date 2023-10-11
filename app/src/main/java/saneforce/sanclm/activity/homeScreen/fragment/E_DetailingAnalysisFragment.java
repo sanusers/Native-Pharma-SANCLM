@@ -49,28 +49,23 @@ public class E_DetailingAnalysisFragment extends Fragment {
         stokiest_layout.setLayoutParams(param);
         unlistered_layout.setLayoutParams(param);
 
+//        ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                HomeDashBoard.viewPager1.setScrollEnabled(false);
+//                return false;
+//            }
+//        });
 
 
-
-
-        ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                HomeDashBoard.viewPager1.setScrollEnabled(false);
-                return false;
-            }
-        });
-
-
-
-        ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                HomeDashBoard.viewPager1.setScrollEnabled(true);
-                return false;
-            }
-        });
+//        ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                HomeDashBoard.viewPager1.setScrollEnabled(true);
+//                return false;
+//            }
+//        });
 
 
         return v;

@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.approvals.ApprovalsActivity">
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        android:background="@color/dark_purple"
+        app:layout_constraintBottom_toTopOf="@id/constraint_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:cropToPadding="true"
+        android:gravity="center"
+        android:src="@drawable/iv_back"
+        app:layout_constraintBottom_toBottomOf="@id/view_top"
+        app:layout_constraintRight_toLeftOf="@id/tag_header"
+        app:layout_constraintStart_toStartOf="@id/view_top"
+        app:layout_constraintTop_toTopOf="@id/view_top"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tag_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:padding="@dimen/_2sdp"
+        android:text="@string/approvals"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/view_top"
+        app:layout_constraintLeft_toRightOf="@id/iv_back"
+        app:layout_constraintTop_toTopOf="@id/view_top"
+        tools:ignore="TextSizeCheck" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_data"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#ececec"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_top">
+
+
+        <LinearLayout
+            android:id="@+id/ll_list"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="@dimen/_6sdp"
+            android:weightSum="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ececec">
+
+                <LinearLayout
+                    android:id="@+id/llTpApprovals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/selector_box"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_7sdp">
+
+                    <TextView
+                        android:id="@+id/listedtp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Tour Plan"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                    <ImageView
+                        android:id="@+id/tpArrow"
+                        android:layout_width="@dimen/_6sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/arrow_down" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llLeaveApproval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llTpApprovals"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/selector_box"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_7sdp">
+
+                    <TextView
+                        android:id="@+id/TxtLeave"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Leave"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                    <ImageView
+                        android:id="@+id/leaveArrow"
+                        android:layout_width="@dimen/_6sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:src="@drawable/arrow_down" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llDcrApproval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llLeaveApproval"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/selector_box"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_7sdp">
+
+                    <TextView
+                        android:id="@+id/dcrTxt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="DCR"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                    <ImageView
+                        android:id="@+id/dcrArrow"
+                        android:layout_width="@dimen/_6sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:src="@drawable/arrow_down" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llDeviateApproval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llDcrApproval"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/selector_box"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_7sdp">
+
+                    <TextView
+                        android:id="@+id/deviateTxt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Deviation"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                    <ImageView
+                        android:id="@+id/deviateArrow"
+                        android:layout_width="@dimen/_6sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:src="@drawable/arrow_down" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llGeoTagApproval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/llDeviateApproval"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/selector_box"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_7sdp">
+
+                    <TextView
+                        android:id="@+id/geotagTxt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="GeoTag"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                    <ImageView
+                        android:id="@+id/geoTagArrow"
+                        android:layout_width="@dimen/_6sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:src="@drawable/arrow_down" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_tpList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="@dimen/_6sdp"
+            android:background="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ll_list"
+            app:layout_constraintTop_toBottomOf="@id/view_top"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <LinearLayout
+                android:id="@+id/rl_tp_listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/view_dummy_tp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txt_tp_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:singleLine="true"
+                    android:text="Name"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_tp_month"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:singleLine="true"
+                    android:text="Month"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_tp_year"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:singleLine="true"
+                    android:text="Year"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_tp_view"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:background="@drawable/bg_purple"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:singleLine="true"
+                    android:text="View"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_dummy_tp"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:background="@color/bg_txt_color"
+                app:layout_constraintBottom_toTopOf="@id/rv_tourPlanList"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rl_tp_listView" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_tourPlanList"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_dummy_tp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_leaveList"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/_6sdp"
+            android:background="@color/white"
+            android:padding="@dimen/_6sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ll_list"
+            app:layout_constraintTop_toBottomOf="@id/view_top" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_DcrList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="@dimen/_6sdp"
+            android:background="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ll_list"
+            app:layout_constraintTop_toBottomOf="@id/view_top"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <LinearLayout
+                android:id="@+id/ll_dcr_listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/view_dummy_tp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txt_dcr_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:singleLine="true"
+                    android:text="Name"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_dcr_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:singleLine="true"
+                    android:text="Dcr Date"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_dcr_view"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:background="@drawable/bg_purple"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:singleLine="true"
+                    android:text="View"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_dummy_dcr"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:background="@color/bg_txt_color"
+                app:layout_constraintBottom_toTopOf="@id/rv_DcrList"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_dcr_listView" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_DcrList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:padding="@dimen/_6sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_dummy_dcr" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_TagList"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:padding="@dimen/_6sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ll_list"
+            app:layout_constraintTop_toBottomOf="@id/view_top" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -82,6 +82,24 @@
     <string name="start_detaling">Start Detailing</string>
     <string name="filter_by">Filter by</string>
     <string name="loc_not_detect"> Location cannot detected </string>
+    <string name="toast_no_img_found">No Image Found</string>
+    <string name="hq_sel">HeadQuater Selection</string>
+    <string name="presentation">Presentation</string>
+    <string name="create_presentation">Create Presentation</string>
+    <string name="title_activity_create_presentation">CreatePresentation</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="tag">Tag</string>
+    <string name="approvals">Approvals</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
+
 
 
 </resources>

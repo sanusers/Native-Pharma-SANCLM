@@ -46,7 +46,6 @@ import saneforce.sanclm.databinding.ActivityTourPlanBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
-import saneforce.sanclm.storage.SharedPref;
 
 public class TourPlanActivity extends AppCompatActivity {
     private ActivityTourPlanBinding binding;
@@ -323,7 +322,7 @@ public class TourPlanActivity extends AppCompatActivity {
         designation = loginResponse.getDesig();
         state_code = loginResponse.getState_Code();
         sfType = loginResponse.getSf_type();
-        hq_code = SharedPref.getHqCode(TourPlanActivity.this); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
+//        hq_code = SharedPref.getHqCode(TourPlanActivity.this); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
 
         //Tour Plan setup
         try {

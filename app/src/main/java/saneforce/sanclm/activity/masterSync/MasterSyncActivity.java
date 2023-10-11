@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.masterSync;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -55,8 +56,6 @@ import saneforce.sanclm.utility.TimeUtils;
 
 
 public class MasterSyncActivity extends AppCompatActivity {
-
-
 
     ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
@@ -878,6 +877,69 @@ public class MasterSyncActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static void callList(SQLite sqLite, ApiInterface apiInterface, Context context, String masterFor, String tablename, String sfCode, String DivCode, String RSF, String SfType, String Designation, String StateCode, String SubDivCode) {
+        try {
+            sqLite = new SQLite(context);
+            sqLite.getWritableDatabase();
+            String baseUrl = SharedPref.getBaseWebUrl(context);
+            String pathUrl = SharedPref.getPhpPathUrl(context);
+            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+            apiInterface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("tableName", tablename);
+            jsonObject.put("sfcode", sfCode);
+            jsonObject.put("division_code", DivCode);
+            jsonObject.put("Rsf", RSF);
+            jsonObject.put("sf_type", SfType);
+            jsonObject.put("Designation", Designation);
+            jsonObject.put("state_code", StateCode);
+            jsonObject.put("subdivision_code", SubDivCode);
+            Log.v("table_json", jsonObject.toString());
+
+            Call<JsonArray> call = null;
+            call = apiInterface.getDrMaster(jsonObject.toString());
+
+            SQLite finalSqLite = sqLite;
+            call.enqueue(new Callback<JsonArray>() {
+                @Override
+                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                    Log.v("table_json", response.body().toString());
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(response.body().toString());
+                            if (SfType.equalsIgnoreCase("1")) {
+                                if (jsonArray.length() == 0) {
+                                    finalSqLite.saveMasterSyncData(masterFor + "_" + sfCode, Constants.NO_DATA_AVAILABLE);
+                                } else {
+                                    finalSqLite.saveMasterSyncData(masterFor + "_" + sfCode, jsonArray.toString());
+                                }
+                            } else {
+                                if (jsonArray.length() == 0) {
+                                    finalSqLite.saveMasterSyncData(masterFor + "_" + RSF, Constants.NO_DATA_AVAILABLE);
+                                } else {
+                                    finalSqLite.saveMasterSyncData(masterFor + "_" + RSF, jsonArray.toString());
+                                }
+
+                            }
+
+                        } catch (Exception e) {
+                            Log.v("table_json", "error---" + e);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonArray> call, Throwable t) {
+
+                }
+            });
+
+        } catch (Exception e) {
+
         }
     }
 

@@ -6,6 +6,15 @@ public class ViewTagModel {
     String address;
     String imageName;
     String townName;
+    String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getCode() {
         return code;
@@ -103,9 +112,10 @@ public class ViewTagModel {
         this.townCode = townCode;
     }
 
-    public ViewTagModel(String code, String name, String lat, String lng, String address, String imageName, String townName, String townCode) {
+    public ViewTagModel(String code, String name,String type, String lat, String lng, String address, String imageName, String townName, String townCode) {
         this.code = code;
         this.name = name;
+        this.type = type;
         this.lat = lat;
         this.lng = lng;
         this.address = address;

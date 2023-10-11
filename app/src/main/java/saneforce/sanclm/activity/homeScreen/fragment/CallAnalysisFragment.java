@@ -21,8 +21,6 @@ public class CallAnalysisFragment extends Fragment {
     LinearLayout doc_layout, che_layout, stokiest_layout, unlistered_layout,ll_grab_layout,ll_calls_layout;
 
 
-
-
 @SuppressLint("MissingInflatedId")
 @Nullable
     @Override
@@ -52,24 +50,24 @@ public class CallAnalysisFragment extends Fragment {
 
 
 
-    ll_calls_layout.setOnTouchListener(new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
+//    ll_calls_layout.setOnTouchListener(new View.OnTouchListener() {
+//        @Override
+//        public boolean onTouch(View v, MotionEvent event) {
+//
+//            HomeDashBoard.viewPager1.setScrollEnabled(false);
+//            return false;
+//        }
+//    });
 
-            HomeDashBoard.viewPager1.setScrollEnabled(false);
-            return false;
-        }
-    });
 
 
-
-    ll_grab_layout.setOnTouchListener(new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            HomeDashBoard.viewPager1.setScrollEnabled(true);
-            return false;
-        }
-    });
+//    ll_grab_layout.setOnTouchListener(new View.OnTouchListener() {
+//        @Override
+//        public boolean onTouch(View v, MotionEvent event) {
+//            HomeDashBoard.viewPager1.setScrollEnabled(true);
+//            return false;
+//        }
+//    });
 
         return v;
     }

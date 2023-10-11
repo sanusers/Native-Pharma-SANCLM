@@ -43,7 +43,7 @@
         android:padding="@dimen/_2sdp"
         android:text="Listed Doctor"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintLeft_toRightOf="@id/iv_back"
