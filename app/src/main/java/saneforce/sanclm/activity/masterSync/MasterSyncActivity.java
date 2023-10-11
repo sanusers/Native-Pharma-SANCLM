@@ -44,8 +44,8 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
-import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
 
+import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;

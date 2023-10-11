@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:width="@dimen/_100sdp" android:height="@dimen/_25sdp"> <!-- Set your desired width and height -->
+    <item android:width="@dimen/_200sdp" android:height="@dimen/_25sdp"> <!-- Set your desired width and height -->
         <shape android:shape="rectangle">
             <solid android:color="@color/white" />
         </shape>
@@ -10,7 +10,7 @@
         <shape>
             <solid android:color="@android:color/transparent" />
             <stroke
-                android:width="1dp"
+                android:width="0.5dp"
                 android:color="#40282A3C" />
         </shape>
 

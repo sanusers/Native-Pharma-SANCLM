@@ -6,7 +6,7 @@
 <androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_gravity="center_horizontal"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/_23sdp">
     <RelativeLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -32,6 +32,7 @@
         android:layout_gravity="end"
         android:layout_width="wrap_content"
         android:text="Expand"
+        android:textColor="@color/black_45"
         android:layout_alignParentRight="true"
         android:layout_height="wrap_content">
     </TextView>

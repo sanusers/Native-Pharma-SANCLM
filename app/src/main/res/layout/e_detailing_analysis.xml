@@ -2,17 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/_2sdp">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/call_analysis_layout"
         android:layout_width="match_parent"
+        android:visibility="visible"
         android:layout_height="match_parent"
         android:layout_weight="2">
 
         <TextView
-            android:id="@+id/text_call_analysis"
+            android:id="@+id/text_label_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
@@ -49,21 +49,25 @@
         </LinearLayout>
 
         <HorizontalScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_below="@+id/text_call_analysis"
+            android:layout_below="@+id/text_label_name"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_7sdp">
-
+            >
             <LinearLayout
-                android:id="@+id/recyelerview1"
-                android:layout_width="wrap_content"
+                android:id="@+id/ll_analyis_layout"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_2sdp"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
 
                 <LinearLayout
                     android:id="@+id/ll_doc_child"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_green"
                     android:orientation="vertical">
@@ -105,6 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_blue"
                     android:orientation="vertical">
@@ -145,6 +150,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_red"
                     android:orientation="vertical">
@@ -189,6 +195,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:background="@drawable/custom_background_brown"
                     android:orientation="vertical">
@@ -235,8 +242,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/_2sdp">
+        android:layout_marginEnd="@dimen/_2sdp"
+        android:layout_weight="1">
         <TextView
             android:id="@+id/text_average_"
             android:layout_width="wrap_content"
@@ -251,6 +258,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/ll_grap_layout"
+            android:orientation="vertical"
             android:layout_below="@+id/text_average_"
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginBottom="@dimen/_5sdp"

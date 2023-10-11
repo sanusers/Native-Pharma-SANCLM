@@ -29,29 +29,28 @@ public class OutboxFragment extends Fragment {
         expandableListView=v.findViewById(R.id.Expandapleview);
 
         List<GroupModelClass> listnew=new ArrayList<>();
-        listnew.add(new GroupModelClass("September 13,2000",getData()));
+        listnew.add(new GroupModelClass("September 13,1998",getData()));
         listnew.add(new GroupModelClass("September 14,1998",getData()));
-        listnew.add(new GroupModelClass("September 15,1998",getData()));
+        listnew.add(new GroupModelClass("September 1,1998",getData()));
         outBoxAdapter=new OutBoxAdapter(getActivity(),listnew);
         expandableListView.setGroupIndicator(null);
         expandableListView.setAdapter(outBoxAdapter);
-
-
 
 
         return v;
     }
 
     private List<CallsModalClass> getData()
+
     {
         List<CallsModalClass> list = new ArrayList<>();
-        list.add(new CallsModalClass("Aravind Raj",
+        list.add(new CallsModalClass("Aravind Raj (Doctor)",
                 "2023-08-19,00:0:49",
                 "D"));
-        list.add(new CallsModalClass("Tom Latham",
+        list.add(new CallsModalClass("Tom Latham (Chemist)",
                 "2023-08-19,00:0:49",
                 "C"));
-        list.add(new CallsModalClass("Dharany",
+        list.add(new CallsModalClass("Dharany (CIP)",
                 "2023-08-19,00:0:49",
                 "CIP"));
 
