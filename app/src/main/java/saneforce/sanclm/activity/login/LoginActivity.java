@@ -42,6 +42,7 @@ import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
 
 
+
 public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
@@ -50,11 +51,12 @@ public class LoginActivity extends AppCompatActivity {
     PackageInfo packageInfo;
     String fcmToken = "";
     SQLite sqlite;
+    private int passwordNotVisible=1;
     LoginViewModel loginViewModel = new LoginViewModel();
-    private int passwordNotVisible = 1;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -67,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 //        getImageFromLocal(Constants.LOGO_IMAGE_NAME);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        if (fcmToken.isEmpty()) {
+        if (fcmToken.isEmpty()){
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<String>() {
                 @Override
                 public void onSuccess(String s) {
@@ -80,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.eyeImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 if (passwordNotVisible == 1) {
                     binding.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     binding.eyeImage.setImageDrawable(getResources().getDrawable(R.drawable.eye_hide));
@@ -97,21 +99,21 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 UtilityClass.hideKeyboard(LoginActivity.this);
-                String userId = binding.userId.getText().toString().trim().replaceAll("\\s", "");
-                String password = binding.password.getText().toString().trim().replaceAll("\\s", "");
+                String userId = binding.userId.getText().toString().trim().replaceAll("\\s","");
+                String password = binding.password.getText().toString().trim().replaceAll("\\s","");
 
-                if (userId.isEmpty()) {
+                if (userId.isEmpty()){
                     binding.userId.requestFocus();
                     Toast.makeText(LoginActivity.this, "Enter userId", Toast.LENGTH_SHORT).show();
                 } else if (password.isEmpty()) {
                     binding.password.requestFocus();
                     Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
-                        login(userId, password);
-                    } else {
+                }else{
+                    if (UtilityClass.isNetworkAvailable(LoginActivity.this)){
+                        login(userId,password);
+                    }else{
                         Toast.makeText(LoginActivity.this, "Internet is not available", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -120,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.clearData.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick (View view) {
                 sqlite.deleteAllTable();
                 SharedPref.saveLoginState(getApplicationContext(), false);
                 SharedPref.saveSettingState(getApplicationContext(), false);
@@ -130,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void getImageFromLocal(String imageName) {
+    public void getImageFromLocal(String imageName){
         packageManager = this.getPackageManager();
         String packageName = this.getPackageName();
         try {
@@ -139,9 +141,9 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String fileDirectory = packageInfo.applicationInfo.dataDir;
-        Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
-        if (ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
-            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName);
+        Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
+        if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
+            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
             String path = file.getAbsolutePath();
             Bitmap b = BitmapFactory.decodeFile(path);
             binding.logoImg.setImageBitmap(b);
@@ -149,12 +151,12 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             String baseWebUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String logoUrl = SharedPref.getLogoUrl(getApplicationContext());
-            if (!baseWebUrl.equals("") && !logoUrl.equals("")) {
+            if (!baseWebUrl.equals("") && !logoUrl.equals("")){
                 new DownloaderClass(baseWebUrl + logoUrl, fileDirectory, imageName, new AsyncInterface() {
                     @Override
-                    public void taskCompleted(boolean status) {
-                        if (ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
-                            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName);
+                    public void taskCompleted (boolean status) {
+                        if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
+                            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
                             String path = file.getAbsolutePath();
                             Bitmap b = BitmapFactory.decodeFile(path);
                             binding.logoImg.setImageBitmap(b);
@@ -167,15 +169,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void login(String userId, String password) {
+    public void login(String userId,String password)  {
 
         try {
             binding.progressBar.setVisibility(View.VISIBLE);
             String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
             String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-            Log.e("test", "login url : " + baseUrl + replacedUrl);
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
+            String replacedUrl = pathUrl.replaceAll("\\?.*","/");
+            Log.e("test","login url : "  + baseUrl + replacedUrl);
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl+replacedUrl);
 
             String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
             JSONObject jsonObject = new JSONObject();
@@ -189,20 +191,19 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("AppDeviceRegId", fcmToken);
             jsonObject.put("location", "0.0 : 0.0");
 
-            Log.e("test", "master obj : " + jsonObject);
-            loginViewModel.loginProcess(getApplicationContext(), baseUrl + replacedUrl, jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonObject>() {
+            Log.e("test","master obj : " + jsonObject);
+            loginViewModel.loginProcess(getApplicationContext(),baseUrl+replacedUrl,jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonObject>() {
                 @Override
-                public void onChanged(JsonObject jsonObject) {
+                public void onChanged (JsonObject jsonObject) {
                     binding.progressBar.setVisibility(View.GONE);
                     try {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
-                        if (responseObject.getBoolean("success")) {
-                            Log.e("test", "login response : " + jsonObject);
-                            SharedPref.setUserName(getApplicationContext(), userId);
+                        if (responseObject.getBoolean("success")){
+                            Log.e("test","login response : " + jsonObject.toString());
                             process(responseObject);
-                        } else {
-                            if (responseObject.has("msg")) {
-                                Toast.makeText(LoginActivity.this, responseObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                        }else{
+                            if (responseObject.has("msg")){
+                                Toast.makeText(LoginActivity.this,responseObject.getString("msg") , Toast.LENGTH_SHORT).show();
                             }
                         }
                     } catch (JSONException e) {
@@ -210,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             });
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
 
         }
@@ -233,11 +234,11 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.setDesignationName(getApplicationContext(), jsonObject.getString("Desig"));
             SharedPref.setDrGeoTagNeed(getApplicationContext(), jsonObject.getString("GEOTagNeed"));
             SharedPref.setEmployeeId(getApplicationContext(), jsonObject.getString("Employee_Id"));
-            Intent intent = new Intent(LoginActivity.this, MasterSyncActivity.class);
-            intent.putExtra("Origin", "Login");
+
+            Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
+            intent.putExtra("Origin","Login");
             startActivity(intent);
-        } catch (Exception exception) {
-            Log.v("error_login",exception.toString());
+        }catch (Exception exception){
             exception.printStackTrace();
         }
     }

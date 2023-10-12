@@ -15,32 +15,33 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
-import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.activity.homeScreen.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.DCRCallTabLayoutAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.input.CallInputListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.product.CallProductListAdapter;
+import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallFragment;
+import saneforce.sanclm.activity.homeScreen.call.fragments.DetailedFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
+import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragmentSide;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
-import saneforce.sanclm.storage.SharedPref;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class DCRCallActivity extends AppCompatActivity {
 
     public static FragmentContainerView fragment_add_call_details_side, fragment_add_rcpa_side;
     public static ConstraintLayout constraint_dcr;
+    DCRCallTabLayoutAdapter viewPagerAdapter;
     TabLayout tabLayout;
     ViewPager viewPager;
     Button btn_cancel, btn_final_submit;
@@ -81,17 +82,28 @@ public class DCRCallActivity extends AppCompatActivity {
         }
 
         commonUtilsMethods.FullScreencall();
-        tabLayout.addTab(tabLayout.newTab().setText("Detailed"));
+        viewPagerAdapter = new DCRCallTabLayoutAdapter(getSupportFragmentManager());
+        viewPagerAdapter.add(new DetailedFragment(), "Detailed");
+        viewPagerAdapter.add(new ProductFragment(), "Product");
+        viewPagerAdapter.add(new InputFragment(), "Inputs");
+        viewPagerAdapter.add(new RCPAFragment(), "RCPA");
+        viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
+        viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+        /*    *//*  tabLayout.addTab(tabLayout.newTab().setText("Detailed"));
         tabLayout.addTab(tabLayout.newTab().setText("Product"));
         tabLayout.addTab(tabLayout.newTab().setText("Inputs"));
-        tabLayout.addTab(tabLayout.newTab().setText("Additional Calls"));
-      /*  if (cust_type.equalsIgnoreCase("1") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
+        tabLayout.addTab(tabLayout.newTab().setText("Additional Calls"));*//*
+         *//*  if (cust_type.equalsIgnoreCase("1") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
             tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
         } else if (cust_type.equalsIgnoreCase("2") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
             tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
-        }*/
+        }*//*
         tabLayout.addTab(tabLayout.newTab().setText("JFW/Others"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
 
         AddProductsData();
         AddInputData();
@@ -99,9 +111,6 @@ public class DCRCallActivity extends AppCompatActivity {
         AddRCPAData();
         AddJWData();
 
-        DCRCallTabLayoutAdapter adapter = new DCRCallTabLayoutAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tv_cust_name.setText(cust_name);
 
@@ -220,6 +229,5 @@ public class DCRCallActivity extends AppCompatActivity {
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Arizon 700", false, "SL"));
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Terracite", false, "SM"));
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Paracemetol", false, "SM/SL"));
-
     }
 }

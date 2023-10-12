@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_4sdp"
+        app:cardCornerRadius="@dimen/_2sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_6sdp"
+            android:paddingEnd="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:background="@color/background">
+
+            <LinearLayout
+                android:id="@+id/session"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/sessionNo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Session 1"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_7sdp"
+                    android:paddingTop="@dimen/_6sdp"
+                    android:paddingBottom="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/workTypeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/session">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Work Type"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/workTypeField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hqLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/workTypeLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Head Quarters"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/hqField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/clusterLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/hqLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Cluster"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/clusterField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/jcLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/clusterLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Joint Call"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/jcField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/listedDrLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/jcLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Listed Doctor"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/listedDrField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/chemistLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/listedDrLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Chemist"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/chemistField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/stockiestLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/chemistLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Stockiest"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/stockiestField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/unListedDrLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/stockiestLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="UnListed Doctor"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/unListedDrField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cipLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/unListedDrLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="CIP"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/cipField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hospLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/cipLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Hospital"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/hospField"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Select"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

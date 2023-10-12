@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.tourPlan;
+package saneforce.sanclm.activity.tourPlan.calendar;
 
 public interface OnDayClickInterface {
 

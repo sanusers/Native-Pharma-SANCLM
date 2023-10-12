@@ -97,6 +97,8 @@ public class CommonUtilsMethods {
                 .show();
     }
 
+
+
     public static void RequestPermissions(Activity context, String[] Permissions, boolean isRefresh) {
 
         PermissionListener permissionlistener = new PermissionListener() {
@@ -206,4 +208,5 @@ public class CommonUtilsMethods {
             decorView.setSystemUiVisibility(uiOptions);
         }
     }
+
 }

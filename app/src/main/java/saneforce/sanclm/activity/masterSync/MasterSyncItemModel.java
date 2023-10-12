@@ -8,6 +8,10 @@ public class MasterSyncItemModel {
     String localTableKeyName ="";
     boolean PB_visibility = false;
 
+    public MasterSyncItemModel(){
+
+    }
+
 
     public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, boolean PB_visibility) {
         this.name = name;
@@ -18,6 +22,10 @@ public class MasterSyncItemModel {
         this.PB_visibility = PB_visibility;
     }
 
+    public MasterSyncItemModel (String remoteTableName, String localTableKeyName) {
+        this.remoteTableName = remoteTableName;
+        this.localTableKeyName = localTableKeyName;
+    }
 
     public String getName () {
         return name;

@@ -34,9 +34,10 @@ public class SalesAnalysisFragment extends Fragment {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
-                txt_month.setTextColor(Color.parseColor("#5b5a67"));
+
+                txt_month.setTextColor(Color.parseColor("#4e4e5c"));
                 txt_yearly.setTextColor(Color.WHITE);
-                txt_quaterly.setTextColor(Color.parseColor("#5b5a67"));
+                txt_quaterly.setTextColor(Color.parseColor("#4e4e5c"));
 
 
                 txt_month.setBackgroundResource(R.drawable.cutom_backround_grey);
@@ -49,8 +50,8 @@ public class SalesAnalysisFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 txt_month.setTextColor(Color.WHITE);
-                txt_yearly.setTextColor(Color.parseColor("#5b5a67"));
-                txt_quaterly.setTextColor(Color.parseColor("#5b5a67"));
+                txt_yearly.setTextColor(Color.parseColor("#4e4e5c"));
+                txt_quaterly.setTextColor(Color.parseColor("#4e4e5c"));
 
                 txt_month.setBackgroundResource(R.drawable.custom_background_black);
                 txt_yearly.setBackgroundResource(R.drawable.cutom_backround_grey);
@@ -61,8 +62,8 @@ public class SalesAnalysisFragment extends Fragment {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
-                txt_month.setTextColor(Color.parseColor("#5b5a67"));
-                txt_yearly.setTextColor(Color.parseColor("#5b5a67"));
+                txt_month.setTextColor(Color.parseColor("#4e4e5c"));
+                txt_yearly.setTextColor(Color.parseColor("#4e4e5c"));
                 txt_quaterly.setTextColor(Color.WHITE);
 
                 txt_quaterly.setBackgroundResource(R.drawable.custom_background_black);

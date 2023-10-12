@@ -60,11 +60,9 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
 
-
     <string name="str_app_configuration">App Configuration</string>
     <string name="str_web_url">Web URL</string>
     <string name="str_license_key">License Key</string>
-
 
     <string name="str_enter_url">Enter URL</string>
     <string name="str_enter_license">Enter License</string>
@@ -99,6 +97,5 @@
     <string name="approvals">Approvals</string>
     <string name="reject">Reject</string>
     <string name="accept">Accept</string>
-
 
 </resources>

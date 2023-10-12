@@ -2,9 +2,16 @@ package saneforce.sanclm.activity;
 
 import android.os.Bundle;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import saneforce.sanclm.databinding.ActivityMainBinding;
+
+
+
+
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
 
 
     }

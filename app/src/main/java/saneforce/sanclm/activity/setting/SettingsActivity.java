@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.setting;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -125,14 +127,21 @@ public class SettingsActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         AlertDialog dialog = alertDialog.create();
 
-        listView.setOnItemClickListener((adapterView, view, position, l) -> {
-            String selectedLang = listView.getItemAtPosition(position).toString();
-            Log.e("test", "selected language : " + selectedLang);
-            binding.tvLanguage.setText(selectedLang);
-            dialog.dismiss();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String selectedLang = listView.getItemAtPosition(position).toString();
+                Log.e("test", "selected language : " + selectedLang);
+                dialog.dismiss();
+            }
         });
 
-        alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         dialog.show();
 
@@ -165,7 +174,6 @@ public class SettingsActivity extends AppCompatActivity {
                                     reportsUrl = config.getString("reportUrl");
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
-                                    SharedPref.setTagImageUrl(getApplicationContext(), "http://" + binding.etWebUrl.getText().toString().trim() + "/");
                                     downloadImage(baseWebUrl + logoUrl, Constants.LOGO_IMAGE_NAME, enteredUrl);
                                     licenseKeyValid = true;
                                     break;
@@ -235,7 +243,5 @@ public class SettingsActivity extends AppCompatActivity {
             SharedPref.setCallApiUrl(SettingsActivity.this, baseUrl + replacedUrl);
             startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         }
-
     }
-
 }

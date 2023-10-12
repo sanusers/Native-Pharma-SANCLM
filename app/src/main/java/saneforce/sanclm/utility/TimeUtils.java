@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -28,6 +29,8 @@ public class TimeUtils {
     public static final String FORMAT_14 = "yyyy-MM-01";
     public static final String FORMAT_15 = "yyyy-MM-dd 00:00:00.000";
     public static final String FORMAT_16 = "dd MMM yyyy hh:mm a";
+    public static final String FORMAT_17 = "dd MMMM yyyy";
+
 
 
     public static String getCurrentDateTime(String format) {
@@ -35,7 +38,6 @@ public class TimeUtils {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return simpleDateFormat.format(new Date(timestampMilliseconds));
     }
-
 
     public static String GetCurrentTimeStamp(String mFormat) {
         String stringDate;
@@ -74,18 +76,19 @@ public class TimeUtils {
         return Str_Date;
     }
 
-    public static String GetConvertedDate(String CurrentFormat, String RequiredFormat, String mDate) {
-        SimpleDateFormat CurrentDateFormat = new SimpleDateFormat(CurrentFormat, Locale.ENGLISH);
-        SimpleDateFormat RequiredDateFormat = new SimpleDateFormat(RequiredFormat, Locale.ENGLISH);
-        String OutputDate = null;
+    public static String GetConvertedDate(String currentFormat, String requiredFormat, String mDate) {
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat(currentFormat, Locale.ENGLISH);
+        SimpleDateFormat requiredDateFormat = new SimpleDateFormat(requiredFormat, Locale.ENGLISH);
+        String outputDate = null;
         try {
-            Date ConvertedDate = CurrentDateFormat.parse(mDate);
-            OutputDate = RequiredDateFormat.format(Objects.requireNonNull(ConvertedDate));
-            Log.d(TAG, "Formatted Date : " + OutputDate);
+            Date ConvertedDate = currentDateFormat.parse(mDate);
+            outputDate = requiredDateFormat.format(Objects.requireNonNull(ConvertedDate));
+            Log.d(TAG, "Formatted Date : " + outputDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return OutputDate;
+
+        return outputDate;
     }
 
     public static boolean GetIsBetweenDate(String mGivenDate, String mStartDate, String mEndDate) {
