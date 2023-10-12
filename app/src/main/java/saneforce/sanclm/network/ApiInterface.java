@@ -20,11 +20,11 @@ import retrofit2.http.Url;
 public interface ApiInterface {
 
     @GET
-    Call<JsonArray> configuration(@Url String url);
+    Call<JsonArray> configuration (@Url String url);
 
     @FormUrlEncoded
     @POST("?axn=action/login")
-    Call<JsonObject> login(@Field("data") String userData);
+    Call<JsonObject> login (@Field("data") String userData);
 
     @FormUrlEncoded
     @POST("?axn=table/dcrmasterdata")
@@ -37,7 +37,6 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("?axn=table/products")
     Call<JsonArray> getProductMaster(@Field("data") String postObj);
-
     @FormUrlEncoded
     @POST("?axn=get/leave")
     Call<JsonArray> getLeaveMaster(@Field("data") String postObj);

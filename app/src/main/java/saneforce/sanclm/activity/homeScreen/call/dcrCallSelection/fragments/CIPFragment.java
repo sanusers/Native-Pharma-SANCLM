@@ -35,7 +35,7 @@ import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
-public class ListedDoctorFragment extends Fragment {
+public class CIPFragment extends Fragment {
     RecyclerView rv_list;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     AdapterDCRCallSelection adapterDCRCallSelection;
@@ -52,7 +52,7 @@ public class ListedDoctorFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_listed_doctor, container, false);
+        View v = inflater.inflate(R.layout.fragment_cip, container, false);
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
         ed_search = v.findViewById(R.id.search_cust);
         iv_filter = v.findViewById(R.id.iv_filter);
@@ -109,9 +109,9 @@ public class ListedDoctorFragment extends Fragment {
         custListArrayList.clear();
         try {
             if (SfType.equalsIgnoreCase("1")) {
-                jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + SfCode);
+                jsonArray = sqLite.getMasterSyncDataByKey("CIP_" + SfCode);
             } else {
-                jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + TodayPlanSfCode);
+                jsonArray = sqLite.getMasterSyncDataByKey("CIP_" + TodayPlanSfCode);
             }
 
             Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);

@@ -205,7 +205,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-
         mapsBinding.tagTvDoctor.setText(SharedPref.getCaptionDr(MapsActivity.this));
         if (SharedPref.getChemistNeed(MapsActivity.this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvChemist.setVisibility(View.VISIBLE);
@@ -931,7 +930,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.rvList.setAdapter(taggingAdapter);
             Collections.sort(taggedMapListArrayList, Comparator.comparingDouble(TaggedMapList::getMeters));
 
-            Log.v("hhh", "---" + taggedMapListArrayList.size());
+            Log.v("dfdfs", "--map-" + taggedMapListArrayList.size());
             if (taggedMapListArrayList.size() > 0) {
                 mapsBinding.rvList.setVisibility(View.VISIBLE);
                 mapsBinding.imgRvRight.setVisibility(View.VISIBLE);

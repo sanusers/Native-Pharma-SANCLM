@@ -57,7 +57,6 @@
             android:name=".activity.leave.CalendarActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
             android:exported="false"
@@ -104,29 +103,28 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
-            android:name=".activity.presentation.Presentation"
+            android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:screenOrientation="landscape" />
+
         <activity
             android:name=".activity.leave.Leave_Application"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+
         <activity
-            android:name=".activity.approvals.ApprovalsActivity"
+            android:name=".activity.presentation.Presentation"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+
         <activity
             android:name=".activity.presentation.CreatePresentation"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-        <activity
-            android:name=".activity.homeScreen.HomeDashBoard"
-            android:exported="false"
-            android:screenOrientation="landscape" />
+
         <activity
             android:name=".activity.SplashScreen"
             android:exported="true"
@@ -141,7 +139,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="saneforce.sanclm.fileprovider"
@@ -152,5 +149,6 @@
                 android:resource="@xml/filepaths" />
         </provider>
     </application>
+
 
 </manifest>

@@ -12,19 +12,20 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
+import saneforce.sanclm.activity.presentation.Presentation;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
 public class CustomerProfile extends AppCompatActivity {
+    public static String tv_custName = "", tv_cust_area;
     TabLayout tabLayout;
     ViewPager viewPager;
     Button btn_skip, btn_start;
     ImageView img_back;
     CommonUtilsMethods commonUtilsMethods;
     int tab_pos = 0;
-    public static String tv_custName="",tv_cust_area;
 
     @Override
     public void onBackPressed() {
@@ -59,8 +60,8 @@ public class CustomerProfile extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //Disable Touch Event in Tab
-        LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
-        for(int i = 0; i < tabStrip.getChildCount(); i++) {
+        LinearLayout tabStrip = ((LinearLayout) tabLayout.getChildAt(0));
+        for (int i = 0; i < tabStrip.getChildCount(); i++) {
             tabStrip.getChildAt(i).setOnTouchListener((v, event) -> true);
         }
 
@@ -85,15 +86,15 @@ public class CustomerProfile extends AppCompatActivity {
             }
         });
 
-        btn_skip.setOnClickListener(view -> viewPager.setCurrentItem(1));
+        btn_skip.setOnClickListener(view -> {
+            Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
+            intent1.putExtra("cust_name", tv_custName);
+            intent1.putExtra("cust_addr", tv_cust_area);
+            startActivity(intent1);
+        });
 
         btn_start.setOnClickListener(view -> {
-            if (tab_pos == 1) {
-                Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
-                intent1.putExtra("cust_name", tv_custName);
-                intent1.putExtra("cust_addr", tv_cust_area);
-                startActivity(intent1);
-            }
+            startActivity(new Intent(CustomerProfile.this, Presentation.class));
         });
 
         img_back.setOnClickListener(view -> finish());

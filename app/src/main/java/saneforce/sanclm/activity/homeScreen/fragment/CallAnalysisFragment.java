@@ -20,7 +20,6 @@ public class CallAnalysisFragment extends Fragment {
 
     LinearLayout doc_layout, che_layout, stokiest_layout, unlistered_layout,ll_grab_layout,ll_calls_layout;
 
-
 @SuppressLint("MissingInflatedId")
 @Nullable
     @Override

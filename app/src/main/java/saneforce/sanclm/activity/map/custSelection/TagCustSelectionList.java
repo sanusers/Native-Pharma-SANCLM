@@ -277,8 +277,7 @@ public class TagCustSelectionList extends AppCompatActivity {
 
                         if (jsonObject.getString("Code").equalsIgnoreCase("24543")) {
                             jsonObject.put("cust_status", "1");
-                        }
-*/
+                        }*/
                         custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
                         custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
                     }
@@ -383,15 +382,21 @@ public class TagCustSelectionList extends AppCompatActivity {
         for (CustList s : custListArrayList) {
             String values = s.getTag() + "/" + s.getMaxTag();
             String Status = "";
+            String Views = "";
 
          /*   if (s.getGeoTagStatus().equalsIgnoreCase("0")) {
                 Status = "approved";
             } else*/
+
             if (s.getGeoTagStatus().equalsIgnoreCase("1")) {
                 Status = "pending";
             }
 
-            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getTag().toLowerCase().contains(text.toLowerCase()) || s.getMaxTag().toLowerCase().contains(text.toLowerCase()) || values.toLowerCase().contains(text.toLowerCase()) || Status.toLowerCase().contains(text.toLowerCase())) {
+            if (Integer.parseInt(s.getMaxTag()) <= Integer.parseInt(s.getTag())) {
+                Views = " view";
+            }
+
+            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getTag().toLowerCase().contains(text.toLowerCase()) || s.getMaxTag().toLowerCase().contains(text.toLowerCase()) || values.toLowerCase().contains(text.toLowerCase()) || Status.toLowerCase().contains(text.toLowerCase()) || Views.toLowerCase().contains(text.toLowerCase())) {
                 filtered_names.add(s);
             }
         }
