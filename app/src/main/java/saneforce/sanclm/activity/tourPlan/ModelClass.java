@@ -7,19 +7,43 @@ import java.util.List;
 
 public class ModelClass implements Serializable {
 
+  private String dayNo = "";
   private String date = "";
-
+  private String day = "";
   private Boolean onEdit = false;
-
   private ArrayList<ModelClass.SessionList> sessionList;
 
   public ModelClass () {
   }
 
-  public ModelClass (String date, Boolean onEdit, ArrayList<ModelClass.SessionList> sessionList) {
+  public ModelClass (String dayNo,String date,String day, Boolean onEdit, ArrayList<ModelClass.SessionList> sessionList) {
+    this.dayNo = dayNo;
     this.date = date;
+    this.day = day;
     this.onEdit = onEdit;
     this.sessionList = sessionList;
+  }
+
+  public ModelClass (ModelClass modelClass) {
+    this.dayNo = modelClass.getDayNo();
+    this.date = modelClass.getDate();
+    this.day = modelClass.getDay();
+    this.onEdit = modelClass.getOnEdit();
+
+    this.sessionList = new ArrayList<ModelClass.SessionList>();
+    for (ModelClass.SessionList session : modelClass.sessionList) {
+      ModelClass.SessionList copySession = new ModelClass.SessionList(session);
+      this.sessionList.add(copySession);
+    }
+
+  }
+
+  public String getDayNo () {
+    return dayNo;
+  }
+
+  public void setDayNo (String dayNo) {
+    this.dayNo = dayNo;
   }
 
   public String getDate() {
@@ -28,6 +52,14 @@ public class ModelClass implements Serializable {
 
   public void setDate(String date) {
     this.date = date;
+  }
+
+  public String getDay () {
+    return day;
+  }
+
+  public void setDay (String day) {
+    this.day = day;
   }
 
   public Boolean getOnEdit() {
@@ -90,6 +122,62 @@ public class ModelClass implements Serializable {
       this.hospital = hospital;
     }
 
+    public SessionList (SessionList sessionList) {
+      this.layoutVisible = sessionList.getLayoutVisible();
+      this.isVisible = sessionList.getVisible();
+      this.workType = new WorkType(sessionList.getWorkType());
+      this.HQ = new SubClass(sessionList.getHQ());
+
+      this.cluster = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.JC = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.listedDr = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.chemist = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.stockiest = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.unListedDr = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.Cip = new ArrayList<ModelClass.SessionList.SubClass>();
+      this.hospital = new ArrayList<ModelClass.SessionList.SubClass>();
+
+      for (ModelClass.SessionList.SubClass cluster : sessionList.getCluster()) {
+        ModelClass.SessionList.SubClass copyCluster = new ModelClass.SessionList.SubClass(cluster);
+        this.cluster.add(copyCluster);
+      }
+
+      for (ModelClass.SessionList.SubClass jc : sessionList.getJC()) {
+        ModelClass.SessionList.SubClass copyJc = new ModelClass.SessionList.SubClass(jc);
+        this.JC.add(copyJc);
+      }
+
+      for (ModelClass.SessionList.SubClass listedDr : sessionList.getListedDr()) {
+        ModelClass.SessionList.SubClass copyListedDr = new ModelClass.SessionList.SubClass(listedDr);
+        this.listedDr.add(copyListedDr);
+      }
+
+      for (ModelClass.SessionList.SubClass chemist : sessionList.getChemist()) {
+        ModelClass.SessionList.SubClass copyChemist = new ModelClass.SessionList.SubClass(chemist);
+        this.chemist.add(copyChemist);
+      }
+
+      for (ModelClass.SessionList.SubClass stockiest : sessionList.getStockiest()) {
+        ModelClass.SessionList.SubClass copyStockiest = new ModelClass.SessionList.SubClass(stockiest);
+        this.stockiest.add(copyStockiest);
+      }
+
+      for (ModelClass.SessionList.SubClass unListedDr : sessionList.getUnListedDr()) {
+        ModelClass.SessionList.SubClass copyUnListedDr = new ModelClass.SessionList.SubClass(unListedDr);
+        this.unListedDr.add(copyUnListedDr);
+      }
+
+      for (ModelClass.SessionList.SubClass cip : sessionList.getCip()) {
+        ModelClass.SessionList.SubClass copyCip = new ModelClass.SessionList.SubClass(cip);
+        this.Cip.add(copyCip);
+      }
+
+      for (ModelClass.SessionList.SubClass hospital : sessionList.getHospital()) {
+        ModelClass.SessionList.SubClass copyHospital = new ModelClass.SessionList.SubClass(hospital);
+        this.hospital.add(copyHospital);
+      }
+
+    }
 
     public String getLayoutVisible () {
       return layoutVisible;
@@ -194,9 +282,17 @@ public class ModelClass implements Serializable {
 
       private String Code = "";
 
+      public SubClass () {
+      }
+
       public SubClass (String name, String code) {
         this.name = name;
         Code = code;
+      }
+
+      public SubClass (SubClass subClass) {
+        this.name = subClass.getName();
+        Code = subClass.getCode();
       }
 
       public String getName() {
@@ -225,11 +321,21 @@ public class ModelClass implements Serializable {
 
       private String Code = "";
 
+      public WorkType () {
+      }
+
       public WorkType (String FWFlg, String name, String terrSlFlg, String code) {
         this.FWFlg = FWFlg;
         this.name = name;
         TerrSlFlg = terrSlFlg;
         Code = code;
+      }
+
+      public WorkType (WorkType workType) {
+        this.FWFlg = workType.getFWFlg();
+        this.name = workType.getName();
+        this.TerrSlFlg = workType.getTerrSlFlg();
+        this.Code = workType.getCode();
       }
 
       public String getFWFlg() {

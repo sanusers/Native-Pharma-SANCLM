@@ -13,7 +13,7 @@ import saneforce.sanclm.activity.setting.AsyncInterface;
 
 public class DownloaderClass extends AsyncTask<Object,Object,Object> {
 
-    private String requestUrl, imageName,filePath;
+    private final String requestUrl,imageName,filePath;
     private Bitmap bitmap;
     public AsyncInterface asyncInterface ;
 

@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.tourPlan.ModelClass;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
-    ArrayList<String> daysOfMonth= new ArrayList<>();
+    ArrayList<ModelClass> daysOfMonth= new ArrayList<>();
     OnDayClickInterface onDayClickInterface;
     Context context;
     int count = 0;
@@ -23,7 +24,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     public CalendarAdapter () {
     }
 
-    public CalendarAdapter (ArrayList<String> daysOfMonth, Context context, OnDayClickInterface onDayClickInterface) {
+    public CalendarAdapter (ArrayList<ModelClass> daysOfMonth, Context context, OnDayClickInterface onDayClickInterface) {
         this.daysOfMonth = daysOfMonth;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
@@ -40,13 +41,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
 
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
-        String date = daysOfMonth.get(holder.getAdapterPosition());
+        String date = daysOfMonth.get(holder.getAdapterPosition()).getDayNo();
         holder.dateNo.setText(date);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                onDayClickInterface.onDayClicked(holder.getAdapterPosition(),date);
+                onDayClickInterface.onDayClicked(holder.getAdapterPosition(),date,daysOfMonth.get(holder.getAbsoluteAdapterPosition()));
             }
         });
     }

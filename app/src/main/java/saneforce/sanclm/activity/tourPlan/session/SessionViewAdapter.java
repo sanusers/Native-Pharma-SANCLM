@@ -65,6 +65,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
            holder.hqTV.setText(holder.data.getHQ().getName());
        }
 
+       //Cluster
        if (holder.data.getCluster().size() > 0){
            StringBuilder clusterName = new StringBuilder();
            for (int i=0;i<holder.clusterModelArray.size();i++){
@@ -81,6 +82,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
            holder.clusterLayout.setVisibility(View.GONE);
        }
 
+        //Joint Work
         if (holder.data.getJC().size() > 0){
             StringBuilder jcName = new StringBuilder();
             for (int i=0;i<holder.jcModelArray.size();i++){
@@ -97,6 +99,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.jcLayout.setVisibility(View.GONE);
         }
 
+        //Listed Dr
         if (holder.data.getListedDr().size() > 0){
             StringBuilder drName = new StringBuilder();
             for (int i=0;i<holder.listedDrModelArray.size();i++){
@@ -113,6 +116,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.drLayout.setVisibility(View.GONE);
         }
 
+        //Chemist
         if (holder.data.getChemist().size() > 0){
             StringBuilder chemistName = new StringBuilder();
             for (int i=0;i<holder.chemistModelArray.size();i++){
@@ -129,6 +133,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.chemistLayout.setVisibility(View.GONE);
         }
 
+        //Stockiest
         if (holder.data.getStockiest().size() > 0){
             StringBuilder stockiestName = new StringBuilder();
             for (int i=0;i<holder.stockiestModelArray.size();i++){
@@ -145,6 +150,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.stockiestLayout.setVisibility(View.GONE);
         }
 
+        //Unlisted Dr
         if (holder.data.getUnListedDr().size() > 0){
             StringBuilder unListedDrName = new StringBuilder();
             for (int i=0;i<holder.unListedDrModelArray.size();i++){
@@ -161,6 +167,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.unListedDrLayout.setVisibility(View.GONE);
         }
 
+        //Cip
         if (holder.data.getCip().size() > 0){
             StringBuilder cipName = new StringBuilder();
             for (int i=0;i<holder.cipModelArray.size();i++){
@@ -177,6 +184,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             holder.cipLayout.setVisibility(View.GONE);
         }
 
+        //Hospital
         if (holder.data.getHospital().size() > 0){
             StringBuilder hospName = new StringBuilder();
             for (int i=0;i<holder.hospitalModelArray.size();i++){
@@ -219,7 +227,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
         ArrayList<ModelClass.SessionList.SubClass> hospitalModelArray ;
 
         public ModelClass.SessionList data = new ModelClass.SessionList();
-        public JSONArray sessionItemAdapterArray = new JSONArray();
+
 
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);

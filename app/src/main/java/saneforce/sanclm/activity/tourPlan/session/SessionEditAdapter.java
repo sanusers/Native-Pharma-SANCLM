@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -30,6 +32,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -345,7 +349,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }catch (JSONException e){
                         throw new RuntimeException(e);
                     }
-                    holder.sessionItemAdapterArray = filteredArray;
+                    holder.sessionItemAdapterArray = sortArray(filteredArray);
                     populateSessionAdapter(holder,holder.sessionItemAdapterArray, false);
                     changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, false);
                     holder.fieldSelected = true;
@@ -370,7 +374,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.hqJsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                             addCheckBox(holder.hqJsonArray);
                         }
-                        holder.sessionItemAdapterArray = holder.hqJsonArray;
+                        holder.sessionItemAdapterArray = sortArray(holder.hqJsonArray);
                         populateSessionAdapter(holder,holder.sessionItemAdapterArray, false);
                         changeUIState(holder, holder.hqLayout, holder.hqArrow, false);
                         holder.fieldSelected = true;
@@ -1115,6 +1119,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public JSONArray prepareSessionAdapterArray(JSONArray jsonArray,JSONArray jsonArray1){
+
          jsonArray1 = new JSONArray();
         try {
             for (int i=0;i<jsonArray.length();i++){
@@ -1126,13 +1131,44 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     jsonArray1.put(object);
                 }
             }
+
         } catch (JSONException e){
             throw new RuntimeException(e);
         }
-        return jsonArray1;
+        return sortArray(jsonArray1);
+    }
+
+    public JSONArray sortArray(JSONArray jsonArray1){
+
+        try {
+            JsonArray jsonArray = new JsonParser().parse(String.valueOf(jsonArray1)).getAsJsonArray();
+            List<JsonElement> list = new ArrayList<>();
+            for (JsonElement element : jsonArray) {
+                list.add(element);
+            }
+            Collections.sort(list, new Comparator<JsonElement>() {
+                @Override
+                public int compare(JsonElement e1, JsonElement e2) {
+                    String v1 = e1.getAsJsonObject().get("Name").getAsString();
+                    String v2 = e2.getAsJsonObject().get("Name").getAsString();
+                    return v1.compareTo(v2);
+                }
+            });
+
+            // Convert the sorted List back into a JsonArray
+            JsonArray sortedJsonArray = new JsonArray();
+            for (JsonElement element : list) {
+                sortedJsonArray.add(element);
+            }
+
+            return new JSONArray(sortedJsonArray.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void populateSessionAdapter(MyViewHolder holder, JSONArray jsonArray, boolean checkBoxNeed){
+
         sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, context, checkBoxNeed, new SessionItemInterface() {
             @Override
             public void itemClicked (JSONArray jsonArray, JSONObject jsonObject) {
