@@ -698,7 +698,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         RelativeLayout relativeLayout;
         CardView parentCarView,listCardView;
         RecyclerView itemRecView;
-
         boolean fieldSelected = false;
         MyViewHolder viewHolder;
 
@@ -726,7 +725,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public JSONArray unListedDrJsonArray = new JSONArray();
         public JSONArray cipJsonArray = new JSONArray();
         public JSONArray hospJsonArray = new JSONArray();
-
         public JSONArray sessionItemAdapterArray = new JSONArray();
 
         String hq_code ="",selectedHq = "",hqNeed = "",clusterNeed = "";
