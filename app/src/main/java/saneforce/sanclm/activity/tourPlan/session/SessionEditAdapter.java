@@ -162,7 +162,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.hqNeed = "1"; // 1 - No
             holder.clusterNeed = "1";
         }
-
         workTypeBasedUI(holder,holder.sessionData);
 
         //HQ
@@ -176,7 +175,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         if (!holder.selectedHq.equals("")){
             getDataFromLocal(holder,holder.selectedHq);
         }
-
 
         //Cluster
         StringBuilder clusterName = new StringBuilder();
@@ -700,7 +698,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         RelativeLayout relativeLayout;
         CardView parentCarView,listCardView;
         RecyclerView itemRecView;
-
         boolean fieldSelected = false;
         MyViewHolder viewHolder;
 
@@ -728,7 +725,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public JSONArray unListedDrJsonArray = new JSONArray();
         public JSONArray cipJsonArray = new JSONArray();
         public JSONArray hospJsonArray = new JSONArray();
-
         public JSONArray sessionItemAdapterArray = new JSONArray();
 
         String hq_code ="",selectedHq = "",hqNeed = "",clusterNeed = "";

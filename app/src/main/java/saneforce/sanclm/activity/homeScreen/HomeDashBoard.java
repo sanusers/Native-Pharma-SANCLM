@@ -1,12 +1,14 @@
 package saneforce.sanclm.activity.homeScreen;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
@@ -32,6 +35,7 @@ import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
@@ -40,6 +44,7 @@ import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.storage.SharedPref;
+
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -51,10 +56,25 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     TabLayout tabLayout;
     ViewpagetAdapter viewpagetAdapter;
     NavigationView navigationView;
-    ImageView masterSync;
     LinearLayout pre_layout, slide_layout, report_layout, anlas_layout;
+    ImageView masterSync;
     CommonUtilsMethods commonUtilsMethods;
+    LocationManager locationManager;
     private DrawerLayout drawerLayout;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
+            }
+        } else {
+            CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
+        }
+        commonUtilsMethods.FullScreencall();
+    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -62,26 +82,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_dash_board);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        commonUtilsMethods = new CommonUtilsMethods(this);
+        commonUtilsMethods.FullScreencall();
         pre_layout = findViewById(R.id.ll_presentation);
         slide_layout = findViewById(R.id.ll_slide);
         report_layout = findViewById(R.id.ll_report);
         anlas_layout = findViewById(R.id.ll_analys);
-        masterSync = findViewById(R.id.img_sync);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         imageView = findViewById(R.id.back_arrow);
         viewPager = findViewById(R.id.view_pager);
-//        viewPager1 = findViewById(R.id.view_pager1);
+        viewPager1 = findViewById(R.id.view_pager1);
         tabLayout = findViewById(R.id.tablelayout);
-
         navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        Menu menu = navigationView.getMenu();
-        MenuItem menuItem = menu.findItem(R.id.nav_from);
-        navigationView = findViewById(R.id.nav_view);
-        commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreencall();
+        masterSync = findViewById(R.id.img_sync);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
@@ -104,11 +118,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         imageView.setBackgroundResource(R.drawable.bars_sort_img);
 
         viewpagetAdapter = new ViewpagetAdapter(this, 1);
-        viewpagetAdapter = new ViewpagetAdapter(this, 1);
         viewPager.setAdapter(viewpagetAdapter);
 
         CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
-        // viewPager1.setAdapter(adapter);
+        viewPager1.setAdapter(adapter);
 
         int width = (int) ((((DeviceWith / 3) * 1.9) / 3) - 13);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -125,9 +138,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         setupCustomTab(tabLayout, 1, "Calls", false);
         setupCustomTab(tabLayout, 2, "Outbox", true);
 
-        pre_layout.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
-
-        masterSync.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
 
         // Listener
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -151,7 +161,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -174,7 +183,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,25 +197,24 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
+        pre_layout.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
+
+        masterSync.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
+
+
     }
 
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
 
         int id = item.getItemId();
 
-        if (id == R.id.nav_tour_plan) {
-            startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
+        if (id == R.id.nav_leave_appln) {
+            startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
             return true;
         }
 
-        if (id == R.id.nav_nearme) {
-            Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
-            intent.putExtra("from", "not_tagging");
-            SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
-            SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
-            startActivity(intent);
+        if (id == R.id.nav_tour_plan) {
+            startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
             return true;
         }
 
@@ -221,9 +228,27 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
+        if (id == R.id.nav_nearme) {
+            Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
+            intent.putExtra("from", "not_tagging");
+            MapsActivity.SelectedTab = "D";
+            if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null")) {
+                MapsActivity.SelectedHqCode = "";
+                MapsActivity.SelectedHqName = "";
+            } else {
+                MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
+                MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
+            }
+            //SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
+            //  SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
+            startActivity(intent);
+            return true;
+        }
+
         if (id == R.id.logout) {
             startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
         }
+
 
         return true;
     }
@@ -245,5 +270,4 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 }
-
 

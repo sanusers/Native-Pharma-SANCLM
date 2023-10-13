@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class CallProductListAdapter extends RecyclerView.Adapter<CallProductListAdapter.ViewHolder> {
     public static int pos;
@@ -35,13 +35,13 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
     Activity activity;
 
 
-    public CallProductListAdapter(Activity activity,Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
+    public CallProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
         this.activity = activity;
         this.context = context;
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
     }
 
-    public CallProductListAdapter(Activity activity,Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList, ArrayList<SaveCallProductList> saveCallProductListArrayList) {
+    public CallProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList, ArrayList<SaveCallProductList> saveCallProductListArrayList) {
         this.activity = activity;
         this.context = context;
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
@@ -74,6 +74,14 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
         holder.tv_category.setVisibility(View.VISIBLE);
         holder.tv_category.setText(callCommonCheckedListArrayList.get(position).getCategory());
 
+        if (callCommonCheckedListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
+            holder.tv_category.setText("SL");
+        } else if (callCommonCheckedListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
+            holder.tv_category.setText("SM");
+        } else if (callCommonCheckedListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
+            holder.tv_category.setText("SL/SM");
+        }
+
         holder.checkBox.setChecked(callCommonCheckedListArrayList.get(position).isCheckedItem());
 
         if (holder.checkBox.isChecked()) {
@@ -88,6 +96,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
             }
         }
 
+
         if (holder.tv_category.getText().toString().equalsIgnoreCase("P1") || holder.tv_category.getText().toString().equalsIgnoreCase("P2")) {
             holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_priority));
             holder.tv_category.setBackground(context.getResources().getDrawable(R.drawable.bg_priority));
@@ -97,7 +106,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
         } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SL")) {
             holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_sale));
             holder.tv_category.setBackground(context.getResources().getDrawable(R.drawable.bg_sale));
-        } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SM/SL")) {
+        } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SL/SM")) {
             holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_sale_sample));
             holder.tv_category.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample));
         }
@@ -105,7 +114,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
 
         holder.tv_name.setOnClickListener(view -> {
             if (holder.tv_name.getText().toString().length() > 12) {
-                commonUtilsMethods.displayPopupWindow(activity,context,view, callCommonCheckedListArrayList.get(position).getName());
+                commonUtilsMethods.displayPopupWindow(activity, context, view, callCommonCheckedListArrayList.get(position).getName());
             }
         });
 
@@ -119,7 +128,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
                 mcommonSharedPreference.setValueToPreference("checked_prd", false);
                 callCommonCheckedListArrayList.get(position).setCheckedItem(true);
                 saveCallProductListArrayList.add(new SaveCallProductList(callCommonCheckedListArrayList.get(position).getName(), "20", "", "", "", true));
-                AssignRecyclerView(activity,context, saveCallProductListArrayList, callCommonCheckedListArrayList);
+                AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
             } else {
                 holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -129,7 +138,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
                 mcommonSharedPreference.setValueToPreference("unselect_data_prd", callCommonCheckedListArrayList.get(position).getName());
                 callCommonCheckedListArrayList.get(position).setCheckedItem(false);
                 commonUtilsMethods.recycleTestWithDivider(ProductFragment.rv_list_prod);
-                AssignRecyclerView(activity,context, saveCallProductListArrayList, callCommonCheckedListArrayList);
+                AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
                 saveProductCallAdapter.notifyDataSetChanged();
             }
         });
@@ -147,8 +156,8 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
         popup.showAsDropDown(view);
     }*/
 
-    private void AssignRecyclerView(Activity activity,Context context, ArrayList<SaveCallProductList> saveCallProductListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
-        saveProductCallAdapter = new SaveProductCallAdapter(activity,context, saveCallProductListArrayList, callCommonCheckedListArrayList);
+    private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallProductList> saveCallProductListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
+        saveProductCallAdapter = new SaveProductCallAdapter(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
         commonUtilsMethods.recycleTestWithDivider(ProductFragment.rv_list_prod);
         ProductFragment.rv_list_prod.setAdapter(saveProductCallAdapter);
     }

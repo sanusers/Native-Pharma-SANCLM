@@ -6,6 +6,16 @@ public class SaveCallInputList {
 
     String inp_qty;
 
+    String inp_code;
+
+    public String getInp_code() {
+        return inp_code;
+    }
+
+    public void setInp_code(String inp_code) {
+        this.inp_code = inp_code;
+    }
+
     public String getInput_name() {
         return input_name;
     }

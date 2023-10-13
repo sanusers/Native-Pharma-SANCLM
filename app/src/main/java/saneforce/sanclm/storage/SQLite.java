@@ -91,6 +91,7 @@ public class SQLite extends SQLiteOpenHelper {
         if (cursor.moveToNext()){
             data = cursor.getString(1);
         }
+
         JSONArray jsonArray = new JSONArray();
         try {
             if (!data.equals("")){

@@ -34,8 +34,8 @@ public class E_DetailingAnalysisFragment extends Fragment {
         che_layout = v.findViewById(R.id.ll_che_child);
         stokiest_layout = v.findViewById(R.id.ll_stock_child);
         unlistered_layout = v.findViewById(R.id.ll_unli_child);
-        //ll_analyis_layout = v.findViewById(R.id.ll_analyis_layout);
-        //ll_grap_layout = v.findViewById(R.id.ll_grap_layout);
+        ll_analyis_layout = v.findViewById(R.id.ll_analyis_layout);
+        ll_grap_layout = v.findViewById(R.id.ll_grap_layout);
 
 
 
@@ -49,28 +49,23 @@ public class E_DetailingAnalysisFragment extends Fragment {
         stokiest_layout.setLayoutParams(param);
         unlistered_layout.setLayoutParams(param);
 
+//        ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                HomeDashBoard.viewPager1.setScrollEnabled(false);
+//                return false;
+//            }
+//        });
 
 
-
-
-        ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                HomeDashBoard.viewPager1.setScrollEnabled(false);
-                return false;
-            }
-        });
-
-
-
-        ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                HomeDashBoard.viewPager1.setScrollEnabled(true);
-                return false;
-            }
-        });
+//        ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                HomeDashBoard.viewPager1.setScrollEnabled(true);
+//                return false;
+//            }
+//        });
 
 
         return v;

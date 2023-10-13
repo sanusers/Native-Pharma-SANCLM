@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter;
 
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -15,10 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.activity.profile.CustomerProfile;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     Context context;
@@ -53,11 +56,43 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             }
         });
 
+        for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
+            if (custListArrayList.get(position).getType().equalsIgnoreCase("3")) {
+                if (custListArrayList.get(position).getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
+                    holder.view_top.setVisibility(View.VISIBLE);
+                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
+                    break;
+                } else {
+                    holder.view_top.setVisibility(View.GONE);
+                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
+                }
+            } else {
+                if (custListArrayList.get(position).getTown_code().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
+                    holder.view_top.setVisibility(View.VISIBLE);
+                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
+                    break;
+                } else {
+                    holder.view_top.setVisibility(View.GONE);
+                    holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
+                }
+            }
+        }
 
-        if (custListArrayList.get(position).getTown_name().equalsIgnoreCase("Trichy")) {
+      /*  for (int i = 0; i < TodayPlanClusterList.size(); i++) {
+            if (TodayPlanClusterList.get(i).equalsIgnoreCase(custListArrayList.get(position).getTown_code())) {
+                Log.v("Tod", TodayPlanClusterList.get(i) + "---" + custListArrayList.get(position).getTown_code());
+                holder.view_top.setVisibility(View.VISIBLE);
+                holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
+            } else {
+                holder.view_top.setVisibility(View.GONE);
+                holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
+            }
+        }*/
+
+       /* if (custListArrayList.get(position).getTown_code().equalsIgnoreCase("Trichy")) {
             holder.view_top.setVisibility(View.VISIBLE);
             holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
-        }
+        }*/
 
 
         holder.constraint_main.setOnClickListener(view -> {
@@ -67,6 +102,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             intent.putExtra("cust_type", custListArrayList.get(position).getType());
             intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
             intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
+            intent.putExtra("sf_code", TodayPlanSfCode);
             context.startActivity(intent);
         });
     }

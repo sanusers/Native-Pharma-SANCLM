@@ -68,7 +68,7 @@
             android:layout_weight="1.3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/testdrawable"
+            android:background="@drawable/one_side_stroke"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp">
 

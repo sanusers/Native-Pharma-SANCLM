@@ -15,6 +15,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
@@ -36,6 +39,8 @@ import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragmentSide;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.storage.SQLite;
 
 public class DCRCallActivity extends AppCompatActivity {
 
@@ -49,8 +54,9 @@ public class DCRCallActivity extends AppCompatActivity {
     TextView tv_cust_name;
     CommonUtilsMethods commonUtilsMethods;
     CommonSharedPreference mCommonSharedPreference;
+    SQLite sqLite;
     int tab_pos = 0;
-    String cust_name, cust_code, town_name, town_code, cust_type;
+    String cust_name, cust_code, town_name, town_code, cust_type, sf_code;
 
     @Override
     public void onBackPressed() {
@@ -71,6 +77,7 @@ public class DCRCallActivity extends AppCompatActivity {
         fragment_add_rcpa_side = findViewById(R.id.fragment_add_rcpa_side);
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPreference = new CommonSharedPreference(this);
+        sqLite = new SQLite(this);
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -79,6 +86,7 @@ public class DCRCallActivity extends AppCompatActivity {
             town_code = extra.getString("town_code");
             town_name = extra.getString("town_name");
             cust_type = extra.getString("cust_type");
+            sf_code = extra.getString("sf_code");
         }
 
         commonUtilsMethods.FullScreencall();
@@ -186,6 +194,18 @@ public class DCRCallActivity extends AppCompatActivity {
         SaveAdditionalCallAdapter.nestedAddSampleCallDetails = new ArrayList<>();
         SaveAdditionalCallAdapter.nestedAddInputCallDetails = new ArrayList<>();
 
+        try {
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + sf_code);
+            Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + sf_code);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), false));
+            }
+
+        } catch (Exception e) {
+
+        }
+/*
         AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Aasik", false));
         AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Aravindh", false));
         AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Eman", false));
@@ -193,14 +213,23 @@ public class DCRCallActivity extends AppCompatActivity {
         AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Vignesh", false));
         AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Joseph", false));
         AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Philip", false));
-        AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Govindh", false));
+        AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList("Govindh", false));*/
     }
 
     private void AddInputData() {
         InputFragment.callCommonCheckedListArrayList = new ArrayList<>();
         CallInputListAdapter.saveCallInputListArrayList = new ArrayList<>();
+        try {
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.INPUT);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
+            }
 
-        InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Pen", false));
+        } catch (Exception e) {
+
+        }
+        /*InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Pen", false));
         InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Marker", false));
         InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Key Chain", false));
         InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Keyboard", false));
@@ -212,15 +241,23 @@ public class DCRCallActivity extends AppCompatActivity {
         InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Jacket", false));
         InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Bat", false));
         InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Toys", false));
-        InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Plastic Bar", false));
+        InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Plastic Bar", false));*/
     }
 
     private void AddProductsData() {
-
         ProductFragment.callCommonCheckedListArrayList = new ArrayList<>();
         CallProductListAdapter.saveCallProductListArrayList = new ArrayList<>();
+        try {
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false, jsonObject.getString("Product_Mode")));
+            }
 
-        ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("AtriFlam Tuesday data Para", false, "P1"));
+        } catch (Exception e) {
+
+        }
+       /* ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("AtriFlam Tuesday data Para", false, "P1"));
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Insat", false, "SM"));
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Meff", false, "SL"));
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Sucraz", false, "P2"));
@@ -228,6 +265,6 @@ public class DCRCallActivity extends AppCompatActivity {
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Calch 500", false, "SM/SL"));
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Arizon 700", false, "SL"));
         ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Terracite", false, "SM"));
-        ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Paracemetol", false, "SM/SL"));
+        ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList("Paracemetol", false, "SM/SL"));*/
     }
 }

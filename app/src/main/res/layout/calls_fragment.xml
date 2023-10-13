@@ -136,6 +136,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textSize="@dimen/_7sdp"
+        android:textAllCaps="false"
+        android:textStyle="bold"
         android:fontFamily="@font/satoshi_medium"
         android:layout_marginRight="@dimen/_3sdp"
         android:textColor="@color/black"
@@ -146,24 +148,27 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_23sdp"
         android:layout_weight="1"
-        android:gravity="center"
-        android:fontFamily="@font/satoshi_medium"
         android:background="@drawable/background_button_border_black"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
         android:text="Add Activity"
-        android:textSize="@dimen/_7sdp"
+        android:textAllCaps="false"
         android:textColor="@color/black"
-       />
+        android:textSize="@dimen/_7sdp"
+        android:textStyle="bold" />
 
   </LinearLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="@dimen/_23sdp"
         android:layout_below="@+id/linear"
-        android:fontFamily="@font/satoshi_variable"
+        android:textAllCaps="false"
+        android:fontFamily="@font/satoshi_medium"
         android:background="@drawable/edittext_stroke"
         android:textColor="@color/white"
         android:text="Final Sumit"
+        android:textStyle="bold"
         android:textSize="@dimen/_7sdp"
         app:backgroundTint="#282A3C" />
 

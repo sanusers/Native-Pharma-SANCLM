@@ -46,7 +46,6 @@ import saneforce.sanclm.databinding.ActivityTourPlanBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
-import saneforce.sanclm.storage.SharedPref;
 
 public class TourPlanActivity extends AppCompatActivity {
     private ActivityTourPlanBinding binding;
@@ -60,7 +59,7 @@ public class TourPlanActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
 
     String sfName = "",sfCode = "",division_code = "",sfType = "",hq_code ="",designation = "",state_code ="",subdivision_code = "";
-    String addSessionNeed= "",addSessionCount = "";
+    String addSessionNeed= "",addSessionCount = "",FW_meetup_mandatory = "";
 
     ModelClass sessionModelClass = new ModelClass();
     ArrayList<ModelClass.SessionList> sessionListArrayList = new ArrayList<>();
@@ -191,24 +190,34 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (modelClass.getWorkType().getName().isEmpty()){
                             isEmpty = true;
                             position = i;
-                            Toast.makeText(TourPlanActivity.this, "Select Work type", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(TourPlanActivity.this, "Complete Session " + (i + 1), Toast.LENGTH_SHORT).show();
                             break;
                         } else if (modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
                             if (modelClass.getHQ().getName().isEmpty()){
                                 isEmpty = true;
                                 position = i;
-                                Toast.makeText(TourPlanActivity.this, "Select Head Quarters", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(TourPlanActivity.this, "Select Head Quarters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                                 break;
                             } else if (modelClass.getCluster().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                Toast.makeText(TourPlanActivity.this, "Select Clusters", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(TourPlanActivity.this, "Select Clusters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                                 break;
-                            } else if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
+                            } else if (FW_meetup_mandatory.equals("0")) {
+                                if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
+                                        modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+                                    isEmpty = true;
+                                    position = i;
+                                    Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
+                        } else if (FW_meetup_mandatory.equals("0")) {
+                            if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
                                     modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                Toast.makeText(TourPlanActivity.this, "Select any masters", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                                 break;
                             }
                         }
@@ -253,7 +262,17 @@ public class TourPlanActivity extends AppCompatActivity {
                             position = i;
                             Toast.makeText(TourPlanActivity.this, "Select Clusters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                             break;
-                        } else if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
+                        } else if (FW_meetup_mandatory.equals("0")) {
+                            if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
+                                    modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+                                isEmpty = true;
+                                position = i;
+                                Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        }
+                    } else if (FW_meetup_mandatory.equals("0")) {
+                        if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
                                 modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
                             isEmpty = true;
                             position = i;
@@ -265,7 +284,19 @@ public class TourPlanActivity extends AppCompatActivity {
 
                 if (!isEmpty){
                     binding.tpDrawer.closeDrawer(GravityCompat.END);
-                    summaryArrayList.add(sessionModelClass);
+                    boolean added = false;
+                    for (int i=0;i< summaryArrayList.size();i++){
+                        if (summaryArrayList.get(i).getDate().equalsIgnoreCase(sessionModelClass.getDate())){
+                            summaryArrayList.remove(i);
+                            summaryArrayList.add(i,sessionModelClass);
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    if (!added){
+                        summaryArrayList.add(sessionModelClass);
+                    }
                     populateSummaryAdapter(summaryArrayList);
                 }else{
                     scrollToPosition(position,true);
@@ -323,7 +354,7 @@ public class TourPlanActivity extends AppCompatActivity {
         designation = loginResponse.getDesig();
         state_code = loginResponse.getState_Code();
         sfType = loginResponse.getSf_type();
-        hq_code = SharedPref.getHqCode(TourPlanActivity.this); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
+//        hq_code = SharedPref.getHqCode(TourPlanActivity.this); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
 
         //Tour Plan setup
         try {
@@ -332,6 +363,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 addSessionNeed = jsonObject.getString("AddsessionNeed");
                 addSessionCount = jsonObject.getString("AddsessionCount");
+                FW_meetup_mandatory = jsonObject.getString("FW_meetup_mandatory");
             }
 
             if (addSessionNeed.equalsIgnoreCase("0")){
@@ -434,35 +466,6 @@ public class TourPlanActivity extends AppCompatActivity {
         return date.format(formatter);
     }
 
-    public void populateCalendarAdapter (){
-        binding.monthYear.setText(monthYearFromDate(localDate));
-        ArrayList<String> daysInMonth = daysInMonthArray(localDate);
-
-        calendarAdapter = new CalendarAdapter(daysInMonth, TourPlanActivity.this, new OnDayClickInterface() {
-            @Override
-            public void onDayClicked (int position, String date) {
-                if(!date.equals(""))
-                {
-                    binding.tpDrawer.openDrawer(GravityCompat.END);
-                    String selectedDate = date + " " +  monthYearFromDate(localDate) ;
-
-                    sessionListArrayList = new ArrayList<>();
-                    sessionListArrayList.add(prepareClassForTpAdapter());
-                    sessionModelClass = new ModelClass(selectedDate,true,sessionListArrayList);
-                    populateSessionEditAdapter(sessionModelClass);
-                    binding.tpNavigation.addEditDate.setText("Add Plan");
-
-//                    String message = "Selected Date " + date + " " + monthYearFromDate(selectedDate);
-//                    Toast.makeText(TourPlanActivity.this, message, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
-        binding.calendarRecView.setLayoutManager(layoutManager);
-        binding.calendarRecView.setAdapter(calendarAdapter);
-        calendarAdapter.notifyDataSetChanged();
-    }
-
     public ModelClass.SessionList prepareClassForTpAdapter(){
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("","","","");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("","");
@@ -481,6 +484,46 @@ public class TourPlanActivity extends AppCompatActivity {
 //        sessionArrayLists.add(sessionList);
 
         return sessionList;
+    }
+
+    public void populateCalendarAdapter (){
+        binding.monthYear.setText(monthYearFromDate(localDate));
+        ArrayList<String> daysInMonth = daysInMonthArray(localDate);
+
+        calendarAdapter = new CalendarAdapter(daysInMonth, TourPlanActivity.this, new OnDayClickInterface() {
+            @Override
+            public void onDayClicked (int position, String date) {
+                if(!date.equals(""))
+                {
+                    binding.tpDrawer.openDrawer(GravityCompat.END);
+                    String selectedDate = date + " " +  monthYearFromDate(localDate) ;
+
+                    boolean added = false;
+                    for (int i=0;i<summaryArrayList.size();i++){
+                        if (summaryArrayList.get(i).getDate().equalsIgnoreCase(selectedDate)){ // if selected date is already available in summary
+                            populateSessionEditAdapter(summaryArrayList.get(i));
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    if (!added){ // if not in summary
+                        sessionListArrayList = new ArrayList<>();
+                        sessionListArrayList.add(prepareClassForTpAdapter());
+                        sessionModelClass = new ModelClass(selectedDate,true,sessionListArrayList);
+                        populateSessionEditAdapter(sessionModelClass);
+                    }
+                    binding.tpNavigation.addEditDate.setText("Add Plan");
+
+//                    String message = "Selected Date " + date + " " + monthYearFromDate(selectedDate);
+//                    Toast.makeText(TourPlanActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
+        binding.calendarRecView.setLayoutManager(layoutManager);
+        binding.calendarRecView.setAdapter(calendarAdapter);
+        calendarAdapter.notifyDataSetChanged();
     }
 
     public void populateSessionEditAdapter (ModelClass arrayList){

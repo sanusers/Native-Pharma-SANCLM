@@ -35,7 +35,7 @@
                 app:layout_constraintVertical_bias="0.0">
 
                 <TextView
-                    android:id="@+id/tv_hide_hq_sel"
+                    android:id="@+id/tv_hq_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_light_pink_2"

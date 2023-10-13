@@ -103,7 +103,6 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
         });
 
@@ -174,6 +173,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     reportsUrl = config.getString("reportUrl");
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
+                                    SharedPref.setTagImageUrl(getApplicationContext(), "http://" + binding.etWebUrl.getText().toString().trim() + "/");
                                     downloadImage(baseWebUrl + logoUrl, Constants.LOGO_IMAGE_NAME, enteredUrl);
                                     licenseKeyValid = true;
                                     break;
@@ -225,14 +225,17 @@ public class SettingsActivity extends AppCompatActivity {
         Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
         if (!ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
             Log.e("test", "image not exists");
-            new DownloaderClass(url, fileDirectory, imageName, status -> {
-                SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
-                Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
-                String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
-                String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-                String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-                SharedPref.setCallApiUrl(SettingsActivity.this, baseUrl + replacedUrl);
-                startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+            new DownloaderClass(url, fileDirectory, imageName, new AsyncInterface() {
+                @Override
+                public void taskCompleted(boolean status) {
+                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
+                    Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
+                    String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
+                    String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
+                    String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
+                    SharedPref.setCallApiUrl(SettingsActivity.this, baseUrl + replacedUrl);
+                    startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+                }
             }).execute();
         } else {
             SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
@@ -244,4 +247,5 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         }
     }
+
 }

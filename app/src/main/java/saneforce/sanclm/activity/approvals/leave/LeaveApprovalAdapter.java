@@ -61,8 +61,6 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             tv_address = item.findViewById(R.id.tv_address);
             btn_accept = item.findViewById(R.id.btn_accept);
             btn_reject = item.findViewById(R.id.btn_reject);
-
-
         }
     }
 }

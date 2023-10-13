@@ -1,7 +1,17 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.CheGeoTag;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.GeoTagApproval;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfName;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TpBasedDcr;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.laty;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.limitKm;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.lngy;
+
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -22,16 +33,24 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
+import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
@@ -46,10 +65,8 @@ public class ChemistFragment extends Fragment {
     ImageView img_close;
     Button btn_apply;
     SQLite sqLite;
-    String SfCode, SfType, TodayPlanSfCode;
     JSONArray jsonArray;
-    double laty, lngy, limitKm = 0.5;
-    GPSTrack gpsTrack;
+    TextView tv_hqName;
 
 
     @Override
@@ -58,14 +75,10 @@ public class ChemistFragment extends Fragment {
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
         ed_search = v.findViewById(R.id.search_cust);
         iv_filter = v.findViewById(R.id.iv_filter);
-        SfCode = SharedPref.getSfCode(getContext());
-        SfType = SharedPref.getSfType(getContext());
+        tv_hqName = v.findViewById(R.id.tv_hq_name);
+        tv_hqName.setText(TodayPlanSfName);
+
         sqLite = new SQLite(getContext());
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(requireContext());
-        limitKm = Double.parseDouble(SharedPref.getGeofencingCircleRadius(requireContext()));
-        gpsTrack = new GPSTrack(requireContext());
-        laty = gpsTrack.getLatitude();
-        lngy = gpsTrack.getLongitude();
 
         SetupAdapter();
 
@@ -75,6 +88,7 @@ public class ChemistFragment extends Fragment {
         iv_filter.setOnClickListener(view -> {
             dialogFilter = new Dialog(getActivity());
             dialogFilter.setContentView(R.layout.popup_dcr_filter);
+            dialogFilter.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogFilter.setCancelable(false);
             dialogFilter.show();
 
@@ -106,14 +120,11 @@ public class ChemistFragment extends Fragment {
         return v;
     }
 
+
     private void SetupAdapter() {
         custListArrayList.clear();
         try {
-            if (SfType.equalsIgnoreCase("1")) {
-                jsonArray = sqLite.getMasterSyncDataByKey("Chemist_" + SfCode);
-            } else {
-                jsonArray = sqLite.getMasterSyncDataByKey("Chemist_" + TodayPlanSfCode);
-            }
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
 
             Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
             if (jsonArray.length() == 0) {
@@ -127,9 +138,9 @@ public class ChemistFragment extends Fragment {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (SharedPref.getDrGeoTagNeed(requireContext()).equalsIgnoreCase("1")) {
+                if (CheGeoTag.equalsIgnoreCase("1")) {
                     if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
-                        if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
+                        if (GeoTagApproval.equalsIgnoreCase("0")) {
                             Log.v("dfdfs", "--11-");
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);
@@ -148,7 +159,7 @@ public class ChemistFragment extends Fragment {
                         }
                     }
                 } else {
-                    if (SharedPref.getTpBasedDcr(requireContext()).equalsIgnoreCase("0")) {
+                    if (TpBasedDcr.equalsIgnoreCase("0")) {
                         Log.v("dfdfs", "--33-");
                         if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
                             custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "2", "Category", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
@@ -164,8 +175,11 @@ public class ChemistFragment extends Fragment {
             for (int i = 0; i < count; i++) {
                 for (int j = i + 1; j < count; j++) {
                     if (custListArrayList.get(i).getCode().equalsIgnoreCase(custListArrayList.get(j).getCode())) {
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), "1", custListArrayList.get(i).getCategory(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i)));
                         custListArrayList.remove(j--);
                         count--;
+                    } else {
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), "1", custListArrayList.get(i).getCategory(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i)));
                     }
                 }
             }
@@ -179,6 +193,7 @@ public class ChemistFragment extends Fragment {
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);
+        Collections.sort(custListArrayList, Comparator.comparing(CustList::getTown_name));
     }
 
     private void filter(String text) {
