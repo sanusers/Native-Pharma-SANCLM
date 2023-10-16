@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp">
+
+    <TextView
+        android:id="@+id/headerTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Select"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorPrimary"
+        android:visibility="visible" />
+
+    <SearchView
+        android:id="@+id/searchET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="@string/search"
+        android:textSize="@dimen/_6sdp"
+        android:iconifiedByDefault="false"
+        android:textColor="@color/text_dark_25"
+        android:background="@drawable/edittext_stroke"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:focusable="false"/>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/text_dark"
+        android:dividerHeight="1dp"
+        android:padding="5dp"
+        android:layout_marginTop="@dimen/_3sdp">
+
+    </ListView>
+</LinearLayout>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.homeScreen.call.dcrCallSelection.fragments.StockiestFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            android:layout_marginTop="@dimen/_1sdp"
+            app:layout_constraintBottom_toTopOf="@id/constraint_rv">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_hide_hq"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:layout_margin="@dimen/_6sdp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/search_cust"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
+
+                <TextView
+                    android:id="@+id/tv_hide_hq_sel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_light_pink_2"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start|center"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:text="@string/highlights_selected_hq"
+                    android:textColor="@color/pink"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlSymmetry,TextContrastCheck" />
+
+                <View
+                    android:id="@+id/view_one"
+                    android:layout_width="@dimen/_2sdp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/view_pink_border"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/search_cust"
+                android:layout_width="@dimen/_130sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:layout_margin="@dimen/_6sdp"
+                android:layout_marginVertical="5dp"
+                android:background="@drawable/border_shape_spinner"
+                android:drawableStart="@drawable/grey_search"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="@string/search"
+                android:imeOptions="actionDone"
+                android:paddingHorizontal="20dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/light_grey"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_filter"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="TextContrastCheck" />
+
+            <ImageButton
+                android:id="@+id/iv_filter"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:layout_margin="@dimen/_6sdp"
+                android:background="@drawable/bg_purple"
+                android:src="@drawable/iv_filter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/tv_filter_count"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_3sdp"
+                android:background="@drawable/bg_green_round"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_4ssp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:background="@color/bg_grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraint_top">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_cust_list_selection"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/bg_grey"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
