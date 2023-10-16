@@ -440,8 +440,7 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putString(STATE_CODE, token).apply();
     }
-
- /*   public static void saveSetups(Context context, String geoNeed, String geoChk, String CheNeed, String StkistNeed, String UndrNeed, String DrPrdNeed,
+    /*   public static void saveSetups(Context context, String geoNeed, String geoChk, String CheNeed, String StkistNeed, String UndrNeed, String DrPrdNeed,
                                   String DrInpNeed, String ChePrdNeed, String CheInpNeed, String StkPrdNeed, String StkInpNeed,
                                   String UndrPrdNeed, String UndrInpNeed, String CapDr, String CapChe, String CapStk, String CapUndr, String CapDrPrd,
                                   String CapChePrd, String CapStkPrd, String CapUndrPrd, String CapDrInp, String CapCheInp, String CapStkInp, String CapUndrInp,
