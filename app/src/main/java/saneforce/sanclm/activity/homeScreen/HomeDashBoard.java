@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -43,6 +44,7 @@ import saneforce.sanclm.activity.presentation.CreatePresentation;
 import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.storage.SharedPref;
 
 
@@ -229,20 +231,24 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (id == R.id.nav_nearme) {
-            Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
-            intent.putExtra("from", "not_tagging");
-            MapsActivity.SelectedTab = "D";
-            if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null")) {
-                MapsActivity.SelectedHqCode = "";
-                MapsActivity.SelectedHqName = "";
+            if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
+                intent.putExtra("from", "not_tagging");
+                MapsActivity.SelectedTab = "D";
+                if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null")) {
+                    MapsActivity.SelectedHqCode = "";
+                    MapsActivity.SelectedHqName = "";
+                } else {
+                    MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
+                    MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
+                }
+                //SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
+                //  SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
+                startActivity(intent);
+                return true;
             } else {
-                MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
-                MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
+                Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
             }
-            //SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
-            //  SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
-            startActivity(intent);
-            return true;
         }
 
         if (id == R.id.logout) {
