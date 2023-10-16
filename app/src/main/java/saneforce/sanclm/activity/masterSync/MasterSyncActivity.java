@@ -41,11 +41,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
-
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -74,6 +73,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     int apiSuccessCount = 0,itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
+    CommonUtilsMethods commonUtilsMethods;
 
     ArrayList<ArrayList<MasterSyncItemModel>> masterSyncAllModel = new ArrayList<>();
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
@@ -117,8 +117,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (navigateFrom.equalsIgnoreCase("Login")){
             if (sfType.equalsIgnoreCase("2")){ //MGR
                 mgrInitialSync = true;
-                sync("Subordinate","getsubordinate",subordinateModelArray,0); // to get all the HQ list initially only for MGR
-            }else{
+                sync("Subordinate", "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
+            } else {
                 masterSyncAll(false);
             }
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -460,7 +460,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         }.getType();
         loginResponse = new Gson().fromJson(loginData, type);
 
-        sfType = SharedPref.getSfType(MasterSyncActivity.this);
+        sfType = loginResponse.getSf_type();
         sfCode = loginResponse.getSF_Code();
         division_code = loginResponse.getDivision_Code();
         subdivision_code = loginResponse.getSubdivision_code();
@@ -478,13 +478,13 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.unlistedDoctorTxt.setText(loginResponse.getNLCap());
 
         binding.listedDoctor.setSelected(true);
-        doctorCount =  sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
-        specialityCount =  sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
-        qualificationCount =  sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION).length();
-        categoryCount =  sqLite.getMasterSyncDataByKey(Constants.CATEGORY).length();
-        departmentCount =  sqLite.getMasterSyncDataByKey(Constants.DEPARTMENT).length();
-        classCount =  sqLite.getMasterSyncDataByKey(Constants.CLASS).length();
-        feedbackCount =  sqLite.getMasterSyncDataByKey(Constants.FEEDBACK).length();
+        doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
+        specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
+        qualificationCount = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION).length();
+        categoryCount = sqLite.getMasterSyncDataByKey(Constants.CATEGORY).length();
+        departmentCount = sqLite.getMasterSyncDataByKey(Constants.DEPARTMENT).length();
+        classCount = sqLite.getMasterSyncDataByKey(Constants.CLASS).length();
+        feedbackCount = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK).length();
         unlistedDrCount = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + rsf).length();
         chemistCount = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + rsf).length();
         stockiestCount = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + rsf).length();
@@ -737,13 +737,13 @@ public class MasterSyncActivity extends AppCompatActivity {
             masterSyncAllModel.add(setupModelArray);
         }
 
-        for (int i=0;i<masterSyncAllModel.size();i++){
+        for (int i=0; i<masterSyncAllModel.size(); i++) {
             ArrayList<MasterSyncItemModel> childArray = new ArrayList<>(masterSyncAllModel.get(i));
-            itemCount  += childArray.size();
-            for (int j=0;j<childArray.size();j++){
-                if (hqChanged){
-                    if (childArray.get(j).getMasterFor().equalsIgnoreCase("Doctor")){
-                        if (j == 0){ // Doctor is always at position 0 . no need to sync others which are along with Dr like speciality,qualification etc..
+            itemCount += childArray.size();
+            for (int j=0; j<childArray.size(); j++) {
+                if (hqChanged) {
+                    if (childArray.get(j).getMasterFor().equalsIgnoreCase("Doctor")) {
+                        if (j == 0) { // Doctor is always at position 0 . no need to sync others which are along with Dr like speciality,qualification etc..
                             childArray.get(j).setPB_visibility(true);
                             masterSyncAdapter.notifyDataSetChanged();
                             sync(childArray.get(j).getMasterFor(),childArray.get(j).getRemoteTableName(),childArray,j);
@@ -809,11 +809,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                             masterSyncItemModels.get(position).setPB_visibility(false);
                             apiSuccessCount ++;
                             if (response.isSuccessful()) {
-                                  Log.e("test","response : " + masterFor + " -- " + remoteTableName +" : " + response.body().toString());
+                                Log.e("test", "response : " + masterFor + " -- " + remoteTableName + " : " + response.body().toString());
                                 try {
                                     JSONArray jsonArray = new JSONArray(response.body().toString());
                                     masterSyncItemModels.get(position).setPB_visibility(false);
                                     masterSyncItemModels.get(position).setCount(jsonArray.length());
+
                                     masterSyncAdapter.notifyDataSetChanged();
                                     String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                     binding.lastSyncTime.setText(dateAndTime);

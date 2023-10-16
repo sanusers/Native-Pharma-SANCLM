@@ -18,12 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
 public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdapter.ViewHolder> {
@@ -107,7 +107,7 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
         holder.img_del_inp.setOnClickListener(view -> {
             for (int j = 0; j < checked_arraylist.size(); j++) {
                 if (checked_arraylist.get(j).getName().equalsIgnoreCase(saveCallInputLists.get(position).getInput_name())) {
-                    checked_arraylist.set(j, new CallCommonCheckedList(saveCallInputLists.get(position).getInput_name(), false));
+                    checked_arraylist.set(j, new CallCommonCheckedList(saveCallInputLists.get(position).getInput_name(), saveCallInputLists.get(position).getInp_code(), false));
                 }
             }
 

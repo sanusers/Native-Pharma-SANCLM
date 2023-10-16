@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.telecom.Call;
 
 public class SharedPref {
 
@@ -38,23 +37,20 @@ public class SharedPref {
     public static final String SUBDIV_CODE = "subdiv_code";
     public static final String TAG_IMAGE_URL = "tag_image_url";
 
+
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
     public static final String HQ_NAME = "hq_name";
     public static final String HQ_CODE = "hq_code";
 
     //Map Activity
-    public static final String MAP_SELECTED_TAB = "selected_tab_map";
     public static final String TAGGED_SUCCESSFULLY = "tagged_successfully";
     public static final String CUSTOMER_POSITION = "cust_pos";
-    public static final String SelectedHqCode = "selected_hq_code";
-    public static final String SelectedHqName = "selected_hq_name";
-    public static final String SelectedCustLat = "selected_cust_lat";
-    public static final String SelectedCustLng = "selected_cust_lng";
 
     //HomeDashboard
     //MyDayPlan
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
+    public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
 
 
@@ -317,8 +313,8 @@ public class SharedPref {
         editor.putString(FCM_TOKEN, token).apply();
     }
 
-    public static String getFcmToken(Context context){
-        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(FCM_TOKEN,"");
+    public static String getFcmToken(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(FCM_TOKEN, "");
     }
 
     public static String getStateCode(Context context) {
@@ -352,24 +348,40 @@ public class SharedPref {
         editor.putString(USER_NAME, token).apply();
     }
 
+    public static void saveSfType(Context context, String type, String sfCode) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SF_TYPE, type);
+        editor.putString(SF_CODE, sfCode).apply();
+    }
+
+    public static String getSfType(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SF_TYPE, "");
+    }
+
+    public static String getSfCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SF_CODE, "");
+    }
+
+
+    public static String getLastSync(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(MASTER_LAST_SYNC, "");
+    }
+
+    public static void setSfName(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SF_NAME, token).apply();
+    }
+
+    public static void setSfCode(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(USER_NAME, token).apply();
+    }
+
     public static String getUserName(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(USER_NAME, "");
-    }
-
-
-    public static void saveSfType(Context context,String type,String sfCode){
-        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SF_TYPE,type);
-        editor.putString(SF_CODE,sfCode).apply();
-    }
-
-    public static String getSfType(Context context){
-        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(SF_TYPE,"");
-    }
-
-    public static String getSfCode(Context context){
-        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(SF_CODE,"");
     }
 
     public static void saveMasterLastSync(Context context,String date){
@@ -378,24 +390,14 @@ public class SharedPref {
         editor.putString(MASTER_LAST_SYNC,date).apply();
     }
 
-    public static String getLastSync(Context context){
-        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(MASTER_LAST_SYNC,"");
-    }
-
-    public static void setCallApiUrl(Context context, String token) {
+    public static void setSfType(Context context, String token) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(CALL_API_URL, token).apply();
+        editor.putString(SF_TYPE, token).apply();
     }
 
     public static String getCallApiUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CALL_API_URL, "");
-    }
-
-    public static void setSfName(Context context, String token) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SF_NAME, token).apply();
     }
 
     public static String getSfName(Context context) {
@@ -647,6 +649,7 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(UNDR_NEED, "");
     }
 
+
     public static void setCipNeed(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -696,55 +699,26 @@ public class SharedPref {
     public static String getTodayDayPlanClusterCode(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterCode, "");
     }
+
     public static void setTodayDayPlanSfCode(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(TodayDayPlanSfCode, status).apply();
     }
+
     public static String getTodayDayPlanSfCode(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanSfCode, "");
     }
-    public static void setSelectedHqCode(Context context, String status) {
+
+    public static void setTodayDayPlanSfName(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SelectedHqCode, status).apply();
+        editor.putString(TodayDayPlanSfName, status).apply();
     }
 
-    public static String getSelectedHqCode(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedHqCode, "");
+    public static String getTodayDayPlanSfName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanSfName, "");
     }
-
-    public static void setSelectedHqName(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SelectedHqName, status).apply();
-    }
-
-    public static String getSelectedHqName(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedHqName, "");
-    }
-
-
-    public static void setSelectedCustLat(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SelectedCustLat, status).apply();
-    }
-
-    public static String getSelectedCustLat(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedCustLat, "");
-    }
-
-    public static void setSelectedCustLng(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SelectedCustLng, status).apply();
-    }
-
-    public static String getSelectedCustLng(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SelectedCustLng, "");
-    }
-
 
     public static void setProfileMclDetailing(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -1497,17 +1471,6 @@ public class SharedPref {
         return context.getSharedPreferences(CAPTION_UN_DR_INP, MODE_PRIVATE).getString(CAPTION_UN_DR_INP, "");
     }
 
-    public static void setMapSelectedTab(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(MAP_SELECTED_TAB, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(MAP_SELECTED_TAB, status).apply();
-    }
-
-    public static String getMapSelectedTab(Context context) {
-        return context.getSharedPreferences(MAP_SELECTED_TAB, MODE_PRIVATE).getString(MAP_SELECTED_TAB, "");
-    }
-
-
     public static void setDrJwNeed(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(DR_JW_NEED, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -1798,6 +1761,7 @@ public class SharedPref {
     public static String getDrPrdMandatory(Context context) {
         return context.getSharedPreferences(DR_PRD_MANDATORY, MODE_PRIVATE).getString(DR_PRD_MANDATORY, "");
     }
+
     public static void setDrInpMandatory(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(DR_INP_MANDATORY, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -1837,6 +1801,7 @@ public class SharedPref {
     public static String getDrGeoTagNeed(Context context) {
         return context.getSharedPreferences(DR_GEO_TAG_NEED, MODE_PRIVATE).getString(DR_GEO_TAG_NEED, "");
     }
+
     public static void setChemistGeoTagNeed(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(CHEMIST_GEO_TAG_NEED, MODE_PRIVATE);
         editor = sharedPreferences.edit();

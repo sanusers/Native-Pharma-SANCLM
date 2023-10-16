@@ -14,7 +14,7 @@
         <View
             android:id="@+id/view_top"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/_2sdp"
+            android:layout_height="@dimen/_1sdp"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:background="@drawable/view_pink_border"
             android:visibility="invisible"

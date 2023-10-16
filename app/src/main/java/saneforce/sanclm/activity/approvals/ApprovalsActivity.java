@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.approvals;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,11 +14,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -33,6 +37,8 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.ActivityApprovalsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
+import saneforce.sanclm.response.LoginResponse;
+import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
@@ -45,6 +51,8 @@ public class ApprovalsActivity extends AppCompatActivity {
     JSONObject jsonTp = new JSONObject();
     JSONObject jsonLeave = new JSONObject();
     ApiInterface api_interface;
+    LoginResponse loginResponse;
+    SQLite sqLite;
     String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode;
 
     @Override
@@ -67,13 +75,9 @@ public class ApprovalsActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.FullScreencall();
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-        SfType = SharedPref.getSfType(ApprovalsActivity.this);
-        SfName = SharedPref.getSfName(ApprovalsActivity.this);
-        SfCode = SharedPref.getSfCode(ApprovalsActivity.this);
-        DivCode = SharedPref.getDivisionCode(ApprovalsActivity.this);
-        Designation = SharedPref.getDesignationName(ApprovalsActivity.this);
-        StateCode = SharedPref.getStateCode(ApprovalsActivity.this);
-        SubDivisionCode = SharedPref.getSubdivCode(ApprovalsActivity.this);
+        sqLite = new SQLite(getApplicationContext());
+
+        getRequiredData();
 
         approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
 
@@ -145,6 +149,27 @@ public class ApprovalsActivity extends AppCompatActivity {
             approvalsBinding.constraintDcrList.setVisibility(View.GONE);
             approvalsBinding.rvTagList.setVisibility(View.VISIBLE);
         });
+    }
+
+    private void getRequiredData() {
+        Cursor cursor = sqLite.getLoginData();
+        loginResponse = new LoginResponse();
+        String loginData = "";
+        if (cursor.moveToNext()) {
+            loginData = cursor.getString(0);
+        }
+        cursor.close();
+        Type type = new TypeToken<LoginResponse>() {
+        }.getType();
+        loginResponse = new Gson().fromJson(loginData, type);
+
+        SfType = loginResponse.getSf_type();
+        SfCode = loginResponse.getSF_Code();
+        SfName = loginResponse.getSF_Name();
+        DivCode = loginResponse.getDivision_Code();
+        SubDivisionCode = loginResponse.getSubdivision_code();
+        Designation = loginResponse.getDesig();
+        StateCode = loginResponse.getState_Code();
     }
 
     private void CallApiLeave() {

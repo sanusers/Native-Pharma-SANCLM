@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -32,37 +32,37 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
-import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.activity.map.MapsActivity;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
 import saneforce.sanclm.activity.leave.Leave_Application;
+import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.presentation.CreatePresentation;
 import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.storage.SharedPref;
 
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private DrawerLayout drawerLayout;
-    ImageView imageView;
     public static ViewPager2 viewPager;
     public static CustomViewPager viewPager1;
+    public static int DeviceWith;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
+    ImageView imageView;
     TabLayout tabLayout;
     ViewpagetAdapter viewpagetAdapter;
     NavigationView navigationView;
     LinearLayout pre_layout, slide_layout, report_layout, anlas_layout;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
-    public static int DeviceWith;
     ImageView masterSync;
-
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onResume() {
@@ -102,10 +102,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-        DeviceWith=displayMetrics.widthPixels;
+        DeviceWith = displayMetrics.widthPixels;
 
         DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
-        layoutParams.width = DeviceWith/3;// You can replace R.dimen.navigation_drawer_width with the width you want
+        layoutParams.width = DeviceWith / 3;// You can replace R.dimen.navigation_drawer_width with the width you want
         navigationView.setLayoutParams(layoutParams);
 
         Toolbar toolbar = findViewById(R.id.Toolbar);
@@ -231,15 +231,27 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (id == R.id.nav_nearme) {
-            Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
-            intent.putExtra("from", "not_tagging");
-            SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
-            SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
-            startActivity(intent);
-            return true;
+            if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+                Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
+                intent.putExtra("from", "not_tagging");
+                MapsActivity.SelectedTab = "D";
+                if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null")) {
+                    MapsActivity.SelectedHqCode = "";
+                    MapsActivity.SelectedHqName = "";
+                } else {
+                    MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
+                    MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
+                }
+                //SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
+                //  SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
+                startActivity(intent);
+                return true;
+            } else {
+                Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        if (id == R.id.logout){
+        if (id == R.id.logout) {
             startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
         }
 

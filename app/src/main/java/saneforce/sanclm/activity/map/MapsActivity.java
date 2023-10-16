@@ -6,13 +6,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -48,13 +48,16 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +82,9 @@ import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.databinding.ActivityMapsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
+import saneforce.sanclm.response.CustomSetupResponse;
+import saneforce.sanclm.response.LoginResponse;
+import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SQLiteHandler;
 import saneforce.sanclm.storage.SharedPref;
@@ -94,6 +100,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static ViewTagModel mm = null;
     public static Marker marker;
     public static GoogleMap mMap;
+    public static String SelectedTab, SelectedHqCode, SelectedHqName;
+    public static String from_tagging = "", GeoTagImageNeed = "", GeoTagApprovalNeed = "", TaggedLaty, TaggedLngy, TaggedAddr;
+    public static boolean isTagged = false;
     Uri outputFileUri;
     ApiInterface api_interface;
     Double distanceTag;
@@ -101,8 +110,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     LocationManager locationManager;
     GPSTrack gpsTrack;
     SQLiteHandler sqLiteHandler;
-    String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, Selected, SfCode, DivCode, SelectedHqCode, SelectedHqName, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
-    String from_tagging = "";
+    LoginResponse loginResponse;
+    SetupResponse setUpResponse;
+    CustomSetupResponse customSetupResponse;
+    String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double laty, lngy, limitKm = 0.5;
     Dialog dialogTagCust;
     CommonUtilsMethods commonUtilsMethods;
@@ -175,74 +186,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-        SharedPref.setTaggedSuccessfully(MapsActivity.this, "false");
-        Selected = SharedPref.getMapSelectedTab(MapsActivity.this);
-        limitKm = Double.parseDouble(SharedPref.getGeofencingCircleRadius(MapsActivity.this));
-        SfType = SharedPref.getSfType(MapsActivity.this);
-        SfName = SharedPref.getSfName(MapsActivity.this);
-        SfCode = SharedPref.getSfCode(MapsActivity.this);
-        DivCode = SharedPref.getDivisionCode(MapsActivity.this);
-        Designation = SharedPref.getDesignationName(MapsActivity.this);
-        StateCode = SharedPref.getStateCode(MapsActivity.this);
-        SubDivisionCode = SharedPref.getSubdivCode(MapsActivity.this);
-        img_url = SharedPref.getTagImageUrl(MapsActivity.this);
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(MapsActivity.this);
-        SelectedHqCode = SharedPref.getSelectedHqCode(MapsActivity.this);
-        SelectedHqName = SharedPref.getSelectedHqName(MapsActivity.this);
+        isTagged = false;
+        //  SharedPref.setTaggedSuccessfully(MapsActivity.this, "false");
 
-        if (SelectedHqCode.isEmpty()) {
-            try {
-                JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Subordinate");
-                for (int i = 0; i < 1; i++) {
-                    JSONObject jsonHQList = jsonArray.getJSONObject(0);
-                    SelectedHqCode = jsonHQList.getString("id");
-                    SelectedHqName = jsonHQList.getString("name");
-                    SharedPref.setSelectedHqCode(MapsActivity.this, SelectedHqCode);
-                    SharedPref.setSelectedHqName(MapsActivity.this, SelectedHqName);
-                }
-            } catch (Exception e) {
+        getRequiredData();
 
-            }
-        }
-
-        mapsBinding.tagTvDoctor.setText(SharedPref.getCaptionDr(MapsActivity.this));
-        if (SharedPref.getChemistNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-            mapsBinding.tagTvChemist.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvChemist.setText(SharedPref.getCaptionChemist(MapsActivity.this));
-        }
-
-        if (SharedPref.getStockistNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-            mapsBinding.tagTvStockist.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvStockist.setText(SharedPref.getCaptionStockist(MapsActivity.this));
-        }
-
-        if (SharedPref.getUndrNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-            mapsBinding.tagTvUndr.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvUndr.setText(SharedPref.getCaptionUnDr(MapsActivity.this));
-        }
-
-        if (SharedPref.getCipNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-            mapsBinding.tagTvCip.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvCip.setText(SharedPref.getCaptionCip(MapsActivity.this));
-        }
-
-        if (SharedPref.getHospitalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
-            mapsBinding.tagTvCip.setVisibility(View.VISIBLE);
-        }
-
-
-        Log.v("map_selected_tab", Selected + "--" + from_tagging + "---" + SfType + "---" + SelectedHqCode);
-
+        Log.v("map_selected_tab", SelectedTab + "--" + from_tagging + "---" + SfType + "---" + SelectedHqCode);
 
         mapsBinding.ivBack.setOnClickListener(view -> {
             if (from_tagging.equalsIgnoreCase("not_tagging")) {
-                SharedPref.setTaggedSuccessfully(MapsActivity.this, "");
-                SharedPref.setCustomerPosition(MapsActivity.this, "");
-                SharedPref.setSelectedHqCode(MapsActivity.this, "");
-                SharedPref.setSelectedHqName(MapsActivity.this, "");
+                isTagged = false;
+                //SharedPref.setTaggedSuccessfully(MapsActivity.this, "");
+                TagCustSelectionList.SelectedCustPos = "";
+                // SharedPref.setCustomerPosition(MapsActivity.this, "");
+                SelectedHqCode = "";
+                SelectedHqName = "";
+                // SharedPref.setSelectedHqCode(MapsActivity.this, "");
+                //SharedPref.setSelectedHqName(MapsActivity.this, "");
                 startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
             } else {
-                SharedPref.setCustomerPosition(MapsActivity.this, "");
+                TagCustSelectionList.SelectedCustPos = "";
+                //SharedPref.setCustomerPosition(MapsActivity.this, "");
                 finish();
             }
         });
@@ -250,7 +214,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding.btnTag.setOnClickListener(view -> {
             if (from_tagging.equalsIgnoreCase("tagging")) {
                 mapsBinding.imgRefreshMap.setVisibility(View.GONE);
-                if (SharedPref.getGeotagImage(getApplicationContext()).equalsIgnoreCase("0")) {
+                if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                     if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, 5);
                     } else {
@@ -327,6 +291,104 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding.imgCurLoc.setOnClickListener(view -> mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f)));
     }
 
+    private void getRequiredData() {
+        Cursor cursor = sqLite.getLoginData();
+        loginResponse = new LoginResponse();
+        String loginData = "";
+        if (cursor.moveToNext()) {
+            loginData = cursor.getString(0);
+        }
+        cursor.close();
+        Type type = new TypeToken<LoginResponse>() {
+        }.getType();
+        loginResponse = new Gson().fromJson(loginData, type);
+
+        SfType = loginResponse.getSf_type();
+        SfCode = loginResponse.getSF_Code();
+        SfName = loginResponse.getSF_Name();
+        DivCode = loginResponse.getDivision_Code();
+        SubDivisionCode = loginResponse.getSubdivision_code();
+        Designation = loginResponse.getDesig();
+        StateCode = loginResponse.getState_Code();
+
+        //    Selected = SharedPref.getMapSelectedTab(MapsActivity.this);
+        img_url = SharedPref.getTagImageUrl(MapsActivity.this);
+        // SelectedHqCode = SharedPref.getSelectedHqCode(MapsActivity.this);
+        //   SelectedHqName = SharedPref.getSelectedHqName(MapsActivity.this);
+
+        if (SelectedHqCode.isEmpty()) {
+            try {
+                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                for (int i = 0; i < 1; i++) {
+                    JSONObject jsonHQList = jsonArray.getJSONObject(0);
+                    SelectedHqCode = jsonHQList.getString("id");
+                    SelectedHqName = jsonHQList.getString("name");
+                 /*   SharedPref.setSelectedHqCode(MapsActivity.this, SelectedHqCode);
+                    SharedPref.setSelectedHqName(MapsActivity.this, SelectedHqName);*/
+                }
+            } catch (Exception e) {
+
+            }
+        }
+
+        try {
+            JSONArray jsonArray = new JSONArray();
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject setupData = jsonArray.getJSONObject(0);
+                setUpResponse = new SetupResponse();
+                Type typeSetup = new TypeToken<SetupResponse>() {
+                }.getType();
+                setUpResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+
+                mapsBinding.tagTvDoctor.setText(setUpResponse.getCaptionDr());
+
+                if (setUpResponse.getChemistNeed().equalsIgnoreCase("0")) {
+                    mapsBinding.tagTvChemist.setVisibility(View.VISIBLE);
+                    mapsBinding.tagTvChemist.setText(setUpResponse.getCaptionChemist());
+                }
+
+                if (setUpResponse.getStockistNeed().equalsIgnoreCase("0")) {
+                    mapsBinding.tagTvStockist.setVisibility(View.VISIBLE);
+                    mapsBinding.tagTvStockist.setText(setUpResponse.getCaptionStockist());
+                }
+
+                if (setUpResponse.getUnDrNeed().equalsIgnoreCase("0")) {
+                    mapsBinding.tagTvUndr.setVisibility(View.VISIBLE);
+                    mapsBinding.tagTvUndr.setText(setUpResponse.getCaptionUndr());
+                }
+
+                if (setupData.has("cip_need")) {
+                    if (setUpResponse.getCIPNeed().equalsIgnoreCase("0")) {
+                        mapsBinding.tagTvCip.setVisibility(View.VISIBLE);
+                        mapsBinding.tagTvCip.setText(setUpResponse.getCaptionCip());
+                    }
+                }
+
+                GeoTagImageNeed = setUpResponse.getGeoTagImageNeed();
+                GeoTagApprovalNeed = setUpResponse.getGeoTagApprovalNeed();
+                limitKm = Double.parseDouble(setUpResponse.getMapGeoFenceCircleRad());
+            }
+
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject CustsetupData = jsonArray.getJSONObject(0);
+
+                customSetupResponse = new CustomSetupResponse();
+                Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
+                }.getType();
+                customSetupResponse = new Gson().fromJson(String.valueOf(CustsetupData), typeCustomSetup);
+
+                if (customSetupResponse.getHospNeed().equalsIgnoreCase("0")) {
+                    mapsBinding.tagTvHospital.setVisibility(View.VISIBLE);
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void captureFileLower() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
@@ -350,7 +412,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void TabSelected(String CustSelected, String sfCode) {
-        SharedPref.setMapSelectedTab(MapsActivity.this, CustSelected);
+        ///  SharedPref.setMapSelectedTab(MapsActivity.this, CustSelected);
+        SelectedTab = CustSelected;
         AddTaggedDetails(CustSelected, sfCode);
         if (CustSelected.equalsIgnoreCase("D")) {
             mapsBinding.tagTvDoctor.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_light_purple));
@@ -470,8 +533,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonObject.put("lat", laty);
             jsonObject.put("long", lngy);
             jsonObject.put("cuscode", cust_code);
-            jsonObject.put("divcode", DivCode);
-            jsonObject.put("cust", Selected);
+            jsonObject.put("divcode", DivCode.replace(",", "").trim());
+            jsonObject.put("cust", SelectedTab);
             jsonObject.put("tagged_time", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
             jsonObject.put("image_name", imageName);
             jsonObject.put("sfname", SfName);
@@ -480,14 +543,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (SfType.equalsIgnoreCase("1")) {
                 jsonObject.put("tagged_cust_HQ", SfCode);
             } else {
-                jsonObject.put("tagged_cust_HQ", "");
+                jsonObject.put("tagged_cust_HQ", SelectedHqCode);
             }
             jsonObject.put("cust_name", cust_name);
             jsonObject.put("mode", Constants.APP_MODE);
             jsonObject.put("version", Constants.APP_VERSION);
             jsonObject.put("towncode", town_code);
             jsonObject.put("townname", town_name);
-            if (SharedPref.getGeotagApprovalNeed(MapsActivity.this).equalsIgnoreCase("0")) {
+            if (GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                 jsonObject.put("status", "1");
             } else {
                 jsonObject.put("status", "0");
@@ -497,7 +560,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         btn_confirm.setOnClickListener(view -> {
-            if (SharedPref.getGeotagImage(MapsActivity.this).equalsIgnoreCase("0")) {
+            if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                 CallImageAPI(jsonImage.toString(), jsonObject.toString());
             } else {
                 CallAPIGeo(jsonObject.toString());
@@ -562,6 +625,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void CallAPIGeo(String jsonTag) {
+        Log.v("test", jsonTag);
         Call<JsonObject> callSaveGeo = null;
         callSaveGeo = api_interface.saveMapGeoTag(jsonTag);
         callSaveGeo.enqueue(new Callback<JsonObject>() {
@@ -573,8 +637,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
                             Toast.makeText(MapsActivity.this, "Tagged Successfully", Toast.LENGTH_SHORT).show();
                             dialogTagCust.dismiss();
-                            CallAPIList(Selected);
-                            SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
+                            CallAPIList(SelectedTab);
+                            isTagged = true;
+                            TaggedLaty = String.valueOf(laty);
+                            TaggedLngy = String.valueOf(lngy);
+                            TaggedAddr = mapsBinding.tvTaggedAddress.getText().toString();
+                            //SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
                             finish();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("Msg").equalsIgnoreCase("You have reached the maximum tags...")) {
                             Toast.makeText(MapsActivity.this, jsonSaveRes.getString("Msg"), Toast.LENGTH_SHORT).show();
@@ -726,22 +794,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.tvCustName.setText(cust_name);
 
             int getCount = 0;
-            for (int i = 0; i < CustListAdapter.getCustListNew.size(); i++) {
-                LatLng latLng = new LatLng(Double.parseDouble(CustListAdapter.getCustListNew.get(i).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(i).getLongitude()));
-                mMap.addMarker(new MarkerOptions().position(latLng).snippet(CustListAdapter.getCustListNew.get(i).getAddress()).title(cust_name).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
-                getCount = i;
-            }
+            if (CustListAdapter.getCustListNew.size() > 0) {
+                for (int i = 0; i < CustListAdapter.getCustListNew.size(); i++) {
+                    Log.v("latttlng", CustListAdapter.getCustListNew.get(i).getLatitude() + "---" + CustListAdapter.getCustListNew.get(i).getLongitude());
+                    if (!CustListAdapter.getCustListNew.get(i).getLatitude().isEmpty() && !CustListAdapter.getCustListNew.get(i).getLongitude().isEmpty()) {
+                        LatLng latLng = new LatLng(Double.parseDouble(CustListAdapter.getCustListNew.get(i).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(i).getLongitude()));
+                        mMap.addMarker(new MarkerOptions().position(latLng).snippet(CustListAdapter.getCustListNew.get(i).getAddress()).title(cust_name).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
+                        getCount = i;
+                    }
+                }
 
-            mapsBinding.tvTaggedAddress.setText(CustListAdapter.getCustListNew.get(0).getAddress());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 10.0f));
-            double getDistance = getDistanceMeteres(laty, lngy, Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude()));
-            if (getDistance > 1000) {
-                getDistance = getDistance / 1000;
-                DecimalFormat decfor = new DecimalFormat("0.00");
-                getDistance = Double.valueOf(decfor.format(getDistance));
-                mapsBinding.tvMeters.setText(String.format("%s \n Kms", getDistance));
+                mapsBinding.tvTaggedAddress.setText(CustListAdapter.getCustListNew.get(0).getAddress());
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 10.0f));
+                double getDistance = getDistanceMeteres(laty, lngy, Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude()));
+                if (getDistance > 1000) {
+                    getDistance = getDistance / 1000;
+                    DecimalFormat decfor = new DecimalFormat("0.00");
+                    getDistance = Double.valueOf(decfor.format(getDistance));
+                    mapsBinding.tvMeters.setText(String.format("%s \n Kms", getDistance));
+                } else {
+                    mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));
+                }
             } else {
-                mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));
+                Toast.makeText(MapsActivity.this, "No Data Available", Toast.LENGTH_SHORT).show();
             }
 
             mMap.setMyLocationEnabled(true);
@@ -753,11 +828,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setRotateGesturesEnabled(true);
 
         } else if (from_tagging.equalsIgnoreCase("not_tagging")) {
-            Log.v("hhh", "-111--" + Selected + "--" + SfType + "---" + SfCode + "---" + SelectedHqCode);
+            Log.v("hhh", "-111--" + SelectedTab + "--" + SfType + "---" + SfCode + "---" + SelectedHqCode);
             if (SfType.equalsIgnoreCase("1")) {
-                TabSelected(Selected, SfCode);
+                TabSelected(SelectedTab, SfCode);
             } else {
-                TabSelected(Selected, SelectedHqCode);
+                TabSelected(SelectedTab, SelectedHqCode);
                 mapsBinding.tvHqName.setVisibility(View.VISIBLE);
                 mapsBinding.tvHqName.setText(SelectedHqName);
             }
@@ -784,7 +859,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (selected) {
             case "D":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + sfCode);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + sfCode);
                     Log.v("ggg", "len---" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -809,7 +884,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "C":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Chemist_" + sfCode);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -832,7 +907,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "S":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Stockiest_" + sfCode);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -855,7 +930,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "U":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Unlisted_Doctor_" + sfCode);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addr");
@@ -896,7 +971,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(mm, MapsActivity.this));
             }
 
-            if (SharedPref.getGeotagImage(MapsActivity.this).equalsIgnoreCase("0")) {
+            if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                 mMap.setOnInfoWindowClickListener(marker -> {
                     Dialog dialog = new Dialog(MapsActivity.this);
                     dialog.setContentView(R.layout.map_img_layout);
@@ -928,6 +1003,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.rvList.setItemAnimator(new DefaultItemAnimator());
             mapsBinding.rvList.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
             mapsBinding.rvList.setAdapter(taggingAdapter);
+
             Collections.sort(taggedMapListArrayList, Comparator.comparingDouble(TaggedMapList::getMeters));
 
             Log.v("dfdfs", "--map-" + taggedMapListArrayList.size());
@@ -989,12 +1065,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));
             }
-        } /*else if (from_tagging.equalsIgnoreCase("not_tagging")) {
-            marker.showInfoWindow();
-            SharedPref.setSelectedCustLat(MapsActivity.this, String.valueOf(marker.getPosition().latitude));
-            SharedPref.setSelectedCustLng(MapsActivity.this, String.valueOf(marker.getPosition().longitude));
-            Log.v("dfddf", marker.getPosition().latitude + "---" + marker.getPosition().longitude);
-        }*/
+        }
         return true;
     }
 

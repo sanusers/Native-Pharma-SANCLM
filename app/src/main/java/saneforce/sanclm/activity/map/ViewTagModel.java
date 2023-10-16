@@ -7,6 +7,19 @@ public class ViewTagModel {
     String imageName;
     String townName;
     String type;
+    String townCode;
+
+    public ViewTagModel(String code, String name, String type, String lat, String lng, String address, String imageName, String townName, String townCode) {
+        this.code = code;
+        this.name = name;
+        this.type = type;
+        this.lat = lat;
+        this.lng = lng;
+        this.address = address;
+        this.imageName = imageName;
+        this.townName = townName;
+        this.townCode = townCode;
+    }
 
     public String getType() {
         return type;
@@ -112,26 +125,10 @@ public class ViewTagModel {
         this.townCode = townCode;
     }
 
-    public ViewTagModel(String code, String name,String type, String lat, String lng, String address, String imageName, String townName, String townCode) {
-        this.code = code;
-        this.name = name;
-        this.type = type;
-        this.lat = lat;
-        this.lng = lng;
-        this.address = address;
-        this.imageName = imageName;
-        this.townName = townName;
-        this.townCode = townCode;
-    }
-
-    String townCode;
-
-
     @Override
     public boolean equals(Object obj) {
         ViewTagModel dt = (ViewTagModel) obj;
-        if (name == null)
-            return false;
+        if (name == null) return false;
         return dt.name.equals(name);
     }
 }

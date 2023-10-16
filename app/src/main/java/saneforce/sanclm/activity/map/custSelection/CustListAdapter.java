@@ -120,7 +120,8 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 intent.putExtra("cust_code", custListArrayList.get(position).getCode());
                 intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
                 intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
-                SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
+                TagCustSelectionList.SelectedCustPos = custListArrayList.get(position).getPosition();
+                //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
                 context.startActivity(intent);
             } else {
                 Toast.makeText(context, "Exceed the Tag limitation !!", Toast.LENGTH_SHORT).show();
@@ -135,7 +136,11 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 getCustListNew.clear();
                 for (int m = 0; m < custListArrayListNew.size(); m++) {
                     if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
-                        getCustListNew.add(new CustList(custListArrayListNew.get(m).getLatitude(), custListArrayListNew.get(m).getLongitude(), custListArrayListNew.get(m).getAddress()));
+                        if (!custListArrayListNew.get(m).getLatitude().isEmpty() && !custListArrayListNew.get(m).getLongitude().isEmpty()) {
+                            getCustListNew.add(new CustList(custListArrayListNew.get(m).getLatitude(), custListArrayListNew.get(m).getLongitude(), custListArrayListNew.get(m).getAddress()));
+                        } else {
+                            getCustListNew.add(new CustList(custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress()));
+                        }
                     }
                 }
                 intent.putExtra("from", "view_tagged");

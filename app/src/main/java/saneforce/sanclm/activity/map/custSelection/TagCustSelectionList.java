@@ -3,6 +3,7 @@ package saneforce.sanclm.activity.map.custSelection;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,9 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +35,8 @@ import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.MapDcrSelectionBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
+import saneforce.sanclm.response.LoginResponse;
+import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SQLiteHandler;
 import saneforce.sanclm.storage.SharedPref;
@@ -37,6 +44,7 @@ import saneforce.sanclm.storage.SharedPref;
 public class TagCustSelectionList extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static MapDcrSelectionBinding binding;
+    public static String SelectedCustPos;
     List<String> HqNameList = new ArrayList<>();
     List<String> HqCodeList = new ArrayList<>();
     CustListAdapter custListAdapter;
@@ -47,7 +55,9 @@ public class TagCustSelectionList extends AppCompatActivity {
     SQLiteHandler sqLiteHandler;
     ApiInterface apiInterface;
     ArrayAdapter arrayAdapter;
-    String SelectedTab, SfType, SfCode, SfName, SelectedHqCode, SelectedHqName, getHqList, TodayPlanSfCode;
+    LoginResponse loginResponse;
+    SetupResponse setUpResponse;
+    String SelectedTab, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SelectedHqCode, SelectedHqName, DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption, TpBasedDcr;
 
 
     @Override
@@ -60,14 +70,22 @@ public class TagCustSelectionList extends AppCompatActivity {
         Log.v("onstart", "-000-");
         super.onStart();
         try {
-            if (SharedPref.getTaggedSuccessfully(TagCustSelectionList.this).equalsIgnoreCase("true")) {
-                Log.v("onstart", "-111-");
-                CustList mm = custListArrayList.get(Integer.parseInt(SharedPref.getCustomerPosition(TagCustSelectionList.this)));
+            // if (SharedPref.getTaggedSuccessfully(TagCustSelectionList.this).equalsIgnoreCase("true")) {
+            if (MapsActivity.isTagged) {
+                //  CustList mm = custListArrayList.get(Integer.parseInt(SharedPref.getCustomerPosition(TagCustSelectionList.this)));
+                CustList mm = custListArrayList.get(Integer.parseInt(SelectedCustPos));
                 int yy = Integer.parseInt(mm.getTag()) + 1;
-                mm.setGeoTagStatus("1");
                 mm.setTag(String.valueOf(yy));
+                if (MapsActivity.GeoTagApprovalNeed.equalsIgnoreCase("0")) {
+                    mm.setGeoTagStatus("1");
+                }
+                Log.v("latttlng", "--taggedonstart--" + MapsActivity.TaggedLaty + "---" + MapsActivity.TaggedLngy);
+                mm.setLatitude(String.valueOf(MapsActivity.TaggedLaty));
+                mm.setLongitude(String.valueOf(MapsActivity.TaggedLngy));
+                mm.setAddress(String.valueOf(MapsActivity.TaggedAddr));
                 custListAdapter.notifyDataSetChanged();
-                SharedPref.setTaggedSuccessfully(TagCustSelectionList.this, "false");
+                MapsActivity.isTagged = false;
+                // SharedPref.setTaggedSuccessfully(TagCustSelectionList.this, "false");
             }
         } catch (Exception e) {
             Log.v("onstart", e.toString());
@@ -82,25 +100,20 @@ public class TagCustSelectionList extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         commonUtilsMethods = new CommonUtilsMethods(this);
-        String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
+      /*  String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
         String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
         String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
+        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);*/
+        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+
         sqLiteHandler = new SQLiteHandler(this);
         sqLiteHandler.open();
         sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods.FullScreencall();
-        SelectedTab = SharedPref.getMapSelectedTab(TagCustSelectionList.this);
-        SfType = SharedPref.getSfType(TagCustSelectionList.this);
-        SfCode = SharedPref.getSfCode(TagCustSelectionList.this);
-        SfName = SharedPref.getSfName(TagCustSelectionList.this);
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(TagCustSelectionList.this);
+        //   SelectedTab = SharedPref.getMapSelectedTab(TagCustSelectionList.this);
 
 
-      /*  Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            pos = extra.getInt("cus_pos");
-        }*/
+        getRequiredData();
 
 
         if (SfType.equalsIgnoreCase("1")) {
@@ -108,9 +121,8 @@ public class TagCustSelectionList extends AppCompatActivity {
             binding.txtSelectedHq.setText(SfName);
             binding.txtSelectedHq.setEnabled(false);
         } else {
-            //  binding.txtSelectedHq.setEnabled(false);
             binding.txtSelectedHq.setEnabled(true);
-            if (SharedPref.getTpBasedDcr(TagCustSelectionList.this).equalsIgnoreCase("0")) {
+            if (TpBasedDcr.equalsIgnoreCase("0")) {
                 binding.txtSelectedHq.setEnabled(false);
             }
             SetHqAdapter();
@@ -188,17 +200,66 @@ public class TagCustSelectionList extends AppCompatActivity {
             SelectedHqCode = HqCodeList.get(i);
             SelectedHqName = HqNameList.get(i);
             binding.txtSelectedHq.setText(SelectedHqName);
-            SharedPref.setSelectedHqCode(TagCustSelectionList.this, SelectedHqCode);
-            SharedPref.setSelectedHqName(TagCustSelectionList.this, HqNameList.get(i));
+            MapsActivity.SelectedHqName = HqNameList.get(i);
+            MapsActivity.SelectedHqCode = SelectedHqCode;
+            /*SharedPref.setSelectedHqCode(TagCustSelectionList.this, SelectedHqCode);
+            SharedPref.setSelectedHqName(TagCustSelectionList.this, HqNameList.get(i));*/
             AddCustList(SelectedHqCode);
         });
+    }
+
+    private void getRequiredData() {
+        try {
+            SelectedTab = MapsActivity.SelectedTab;
+            Cursor cursor = sqLite.getLoginData();
+            loginResponse = new LoginResponse();
+            String loginData = "";
+            if (cursor.moveToNext()) {
+                loginData = cursor.getString(0);
+            }
+            cursor.close();
+            Type type = new TypeToken<LoginResponse>() {
+            }.getType();
+            loginResponse = new Gson().fromJson(loginData, type);
+            SfType = loginResponse.getSf_type();
+            SfCode = loginResponse.getSF_Code();
+            SfName = loginResponse.getSF_Name();
+            DivCode = loginResponse.getDivision_Code();
+            SubDivisionCode = loginResponse.getSubdivision_code();
+            Designation = loginResponse.getDesig();
+            StateCode = loginResponse.getState_Code();
+
+
+            JSONArray jsonArray = new JSONArray();
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject setupData = jsonArray.getJSONObject(0);
+
+                setUpResponse = new SetupResponse();
+                Type typeSetup = new TypeToken<SetupResponse>() {
+                }.getType();
+                setUpResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+                DrCaption = setUpResponse.getCaptionDr();
+                ChemistCaption = setUpResponse.getCaptionChemist();
+                StockistCaption = setUpResponse.getCaptionStockist();
+                UndrCaption = setUpResponse.getCaptionUndr();
+                if (setupData.has("cip_need")) {
+                    CipCaption = setUpResponse.getCaptionCip();
+                }
+                TpBasedDcr = setUpResponse.getTpBasedDcr();
+            }
+        } catch (Exception e) {
+
+        }
     }
 
     private void SetHqAdapter() {
         HqNameList.clear();
         HqCodeList.clear();
-        SelectedHqCode = SharedPref.getSelectedHqCode(TagCustSelectionList.this);
-        SelectedHqName = SharedPref.getSelectedHqName(TagCustSelectionList.this);
+        SelectedHqCode = MapsActivity.SelectedHqCode;
+        SelectedHqName = MapsActivity.SelectedHqName;
+      /*  SelectedHqCode = SharedPref.getSelectedHqCode(TagCustSelectionList.this);
+        SelectedHqName = SharedPref.getSelectedHqName(TagCustSelectionList.this);*/
         Log.v("dddd", "-1sds-" + SelectedHqCode + "---" + SelectedHqName);
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Subordinate");
@@ -240,19 +301,19 @@ public class TagCustSelectionList extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void AddCustList(String selectedHqCode) {
         custListArrayList.clear();
-        Log.v("map_selected_tab", "---" + SharedPref.getMapSelectedTab(TagCustSelectionList.this));
+        Log.v("map_selected_tab", "---" + SelectedTab);
         Log.v("selected_hq", "---" + SelectedHqCode);
 
         switch (SelectedTab) {
             case "D":
                 try {
-                    binding.tagSelection.setText(SharedPref.getCaptionDr(TagCustSelectionList.this));
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Doctor_" + selectedHqCode);
+                    binding.tagSelection.setText(DrCaption);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR+ selectedHqCode);
                     Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                             Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
+                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }
@@ -288,12 +349,12 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "C":
                 try {
-                    binding.tagSelection.setText(SharedPref.getCaptionChemist(TagCustSelectionList.this));
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Chemist_" + selectedHqCode);
+                    binding.tagSelection.setText(ChemistCaption);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                             Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Chemist", "getchemist", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
+                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Chemist", "getchemist", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }
@@ -309,12 +370,12 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "S":
                 try {
-                    binding.tagSelection.setText(SharedPref.getCaptionStockist(TagCustSelectionList.this));
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Stockiest_" + selectedHqCode);
+                    binding.tagSelection.setText(StockistCaption);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                             Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Stockiest", "getstockist", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
+                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Stockiest", "getstockist", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }
@@ -331,12 +392,12 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "U":
                 try {
-                    binding.tagSelection.setText(SharedPref.getCaptionUnDr(TagCustSelectionList.this));
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Unlisted_Doctor_" + selectedHqCode);
+                    binding.tagSelection.setText(UndrCaption);
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                             Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Unlisted_Doctor", "getunlisteddr", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
+                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Unlisted_Doctor", "getunlisteddr", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }

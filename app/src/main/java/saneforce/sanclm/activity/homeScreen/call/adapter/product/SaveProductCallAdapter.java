@@ -145,7 +145,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
             // Log.v("getpos", "----" + callProductListArrayList.size());
             for (int j = 0; j < callCommonCheckedListArrayList.size(); j++) {
                 if (callCommonCheckedListArrayList.get(j).getName().equalsIgnoreCase(productListArrayList.get(position).getName())) {
-                    callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), false, callCommonCheckedListArrayList.get(j).getCategory()));
+                    callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(),false, callCommonCheckedListArrayList.get(j).getCategory()));
                 }
             }
 

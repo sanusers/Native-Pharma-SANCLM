@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.profile;
 
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -90,6 +92,7 @@ public class CustomerProfile extends AppCompatActivity {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
             intent1.putExtra("cust_name", tv_custName);
             intent1.putExtra("cust_addr", tv_cust_area);
+            intent1.putExtra("sf_code", TodayPlanSfCode);
             startActivity(intent1);
         });
 

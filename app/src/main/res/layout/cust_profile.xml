@@ -109,18 +109,18 @@
         android:textColor="@color/dark_purple"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/btn_start_det"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintTop_toBottomOf="@id/view_pager"/>
+        app:layout_constraintEnd_toStartOf="@id/btn_start_det"
+        app:layout_constraintTop_toBottomOf="@id/view_pager"
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_start_det"
         android:layout_width="@dimen/_60sdp"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_5sdp"
         android:layout_marginStart="@dimen/_3sdp"
         android:layout_marginEnd="@dimen/_6sdp"
-        android:layout_marginVertical="@dimen/_5sdp"
         android:layout_toEndOf="@id/btn_skip"
         android:background="@drawable/bg_purple"
         android:fontFamily="@font/satoshi_bold"
@@ -130,57 +130,57 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_pager" />
-
-
-  <!--  <RelativeLayout
-        android:id="@+id/rl_btns"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_24sdp"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_pager">
+        app:layout_constraintTop_toBottomOf="@id/view_pager"
+        app:layout_constraintVertical_bias="1.0" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_skip"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginVertical="@dimen/_5sdp"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:background="@drawable/bg_border_with_pink"
-            android:fontFamily="@font/satoshi_bold"
-            android:text="@string/skip_submit"
-            android:textAllCaps="false"
-            android:textColor="@color/dark_purple"
-            android:textSize="14sp"
-            android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_start_det"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginHorizontal="@dimen/_2sdp"
-            android:layout_marginVertical="@dimen/_5sdp"
-            android:layout_toEndOf="@id/btn_skip"
-            android:background="@drawable/bg_purple"
-            android:fontFamily="@font/satoshi_bold"
-            android:singleLine="true"
-            android:text="@string/start_detaling"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-    </RelativeLayout>-->
+    <!--  <RelativeLayout
+          android:id="@+id/rl_btns"
+          android:layout_width="@dimen/_200sdp"
+          android:layout_height="wrap_content"
+          android:layout_marginHorizontal="@dimen/_24sdp"
+          android:orientation="horizontal"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="1.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/view_pager">
+
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_skip"
+              android:layout_width="@dimen/_60sdp"
+              android:layout_height="wrap_content"
+              android:layout_alignParentStart="true"
+              android:layout_alignParentTop="true"
+              android:layout_marginVertical="@dimen/_5sdp"
+              android:layout_marginEnd="@dimen/_10sdp"
+              android:background="@drawable/bg_border_with_pink"
+              android:fontFamily="@font/satoshi_bold"
+              android:text="@string/skip_submit"
+              android:textAllCaps="false"
+              android:textColor="@color/dark_purple"
+              android:textSize="14sp"
+              android:textStyle="bold" />
+
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_start_det"
+              android:layout_width="@dimen/_60sdp"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:layout_alignParentEnd="true"
+              android:layout_marginHorizontal="@dimen/_2sdp"
+              android:layout_marginVertical="@dimen/_5sdp"
+              android:layout_toEndOf="@id/btn_skip"
+              android:background="@drawable/bg_purple"
+              android:fontFamily="@font/satoshi_bold"
+              android:singleLine="true"
+              android:text="@string/start_detaling"
+              android:textAllCaps="false"
+              android:textColor="@color/white"
+              android:textSize="14sp"
+              android:textStyle="bold" />
+      </RelativeLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

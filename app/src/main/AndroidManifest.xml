@@ -114,6 +114,12 @@
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
+            android:name=".activity.approvals.ApprovalsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+
+        <activity
             android:name=".activity.presentation.Presentation"
             android:exported="false"
             android:screenOrientation="landscape"

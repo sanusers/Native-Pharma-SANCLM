@@ -16,7 +16,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
-
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -42,7 +41,6 @@ import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.utility.ImageStorage;
 
 
-
 public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
@@ -51,9 +49,8 @@ public class LoginActivity extends AppCompatActivity {
     PackageInfo packageInfo;
     String fcmToken = "";
     SQLite sqlite;
-    private int passwordNotVisible=1;
     LoginViewModel loginViewModel = new LoginViewModel();
-
+    private int passwordNotVisible = 1;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -69,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 //        getImageFromLocal(Constants.LOGO_IMAGE_NAME);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        if (fcmToken.isEmpty()){
+        if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<String>() {
                 @Override
                 public void onSuccess(String s) {
@@ -222,10 +219,11 @@ public class LoginActivity extends AppCompatActivity {
             sqlite.saveLoginData(jsonObject.toString());
             openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
             SharedPref.saveLoginState(getApplicationContext(), true);
-            SharedPref.saveSfType(LoginActivity.this,jsonObject.getString("sf_type"),jsonObject.getString("SF_Code"));
-            SharedPref.saveHq(LoginActivity.this,jsonObject.getString("HQName"),jsonObject.getString("SF_Code"));
-            Intent intent = new Intent(LoginActivity.this,MasterSyncActivity.class);
-            intent.putExtra("Origin","Login");
+            SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
+            SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
+
+            Intent intent = new Intent(LoginActivity.this, MasterSyncActivity.class);
+            intent.putExtra("Origin", "Login");
             startActivity(intent);
         }catch (Exception exception){
             exception.printStackTrace();

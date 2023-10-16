@@ -14,6 +14,66 @@ public class CustList {
     String latitude;
     String longitude;
     String address;
+    boolean isClusterAvailable;
+    String geoTagStatus;
+
+    public boolean isClusterAvailable() {
+        return isClusterAvailable;
+    }
+
+    public void setClusterAvailable(boolean clusterAvailable) {
+        isClusterAvailable = clusterAvailable;
+    }
+
+    public CustList(String latitude, String longitude, String address) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+    }
+
+    public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.specialist = specialist;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+    }
+
+    public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position, boolean isClusterAvailable) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.specialist = specialist;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+        this.isClusterAvailable = isClusterAvailable;
+    }
+
+    public CustList(String name, String code, String type, String category, String specialist, String latitude, String longitude, String address, String town_name, String towncode, String tag, String maxTag, String position, String geoTagStatus) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.specialist = specialist;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+        this.geoTagStatus = geoTagStatus;
+    }
 
     public String getGeoTagStatus() {
         return geoTagStatus;
@@ -23,16 +83,8 @@ public class CustList {
         this.geoTagStatus = geoTagStatus;
     }
 
-    String geoTagStatus;
-
     public String getLatitude() {
         return latitude;
-    }
-
-    public CustList(String latitude, String longitude,String address) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.address = address;
     }
 
     public void setLatitude(String latitude) {
@@ -55,42 +107,12 @@ public class CustList {
         this.type = type;
     }
 
-
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position) {
-        this.name = name;
-        this.code = code;
-        this.type = type;
-        this.category = category;
-        this.specialist = specialist;
-        this.town_name = town_name;
-        this.town_code = towncode;
-        this.Tag = tag;
-        this.maxTag = maxTag;
-        this.position = position;
-    }
-    public CustList(String name, String code, String type, String category, String specialist,String latitude,String longitude, String address,String town_name, String towncode, String tag, String maxTag, String position,String geoTagStatus) {
-        this.name = name;
-        this.code = code;
-        this.type = type;
-        this.category = category;
-        this.specialist = specialist;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.address = address;
-        this.town_name = town_name;
-        this.town_code = towncode;
-        this.Tag = tag;
-        this.maxTag = maxTag;
-        this.position = position;
-        this.geoTagStatus = geoTagStatus;
     }
 
     public String getCode() {
