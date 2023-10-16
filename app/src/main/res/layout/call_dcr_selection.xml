@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="?actionBarSize"
         android:layout_marginStart="@dimen/_6sdp"
-        android:layout_marginTop="@dimen/_6sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:background="@color/bg_grey"
         android:maxWidth="@dimen/_120sdp"
         app:layout_constraintBottom_toTopOf="@id/view_dummy"

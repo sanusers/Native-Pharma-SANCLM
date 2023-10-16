@@ -4,8 +4,7 @@
     android:layout_width="@dimen/_300sdp"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/_4sdp"
-    xmlns:tools="http://schemas.android.com/tools">
+    app:cardCornerRadius="@dimen/_4sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,11 +15,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
             android:padding="@dimen/_4sdp"
             android:text="@string/filter_by"
-            android:layout_marginTop="@dimen/_3sdp"
             android:textColor="@color/dark_purple"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -42,114 +41,221 @@
             app:layout_constraintTop_toTopOf="@id/tv_head_filter" />
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_speciality"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_conditions"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_20sdp"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_marginTop="@dimen/_4sdp"
-            app:layout_constraintEnd_toStartOf="@id/constraint_cardio"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/btn_add_condition"
+            app:layout_constraintEnd_toStartOf="@id/img_del"
             app:layout_constraintStart_toStartOf="@id/tv_head_filter"
             app:layout_constraintTop_toBottomOf="@id/tv_head_filter"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:id="@+id/txt_hq_speciality_dummy"
-                tools:ignore="HardcodedText,RtlHardcoded"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@drawable/border_shape_spinner"
-                android:enabled="false"
-                android:fontFamily="@font/satoshi_medium"
-                android:gravity="left|center"
-                android:hint="Speciality"
-                android:paddingHorizontal="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                app:drawableEndCompat="@drawable/spin_down_arrow"
-                app:drawableTint="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <!--   <androidx.constraintlayout.widget.ConstraintLayout
+               android:id="@+id/constraint_speciality"
+               android:layout_width="0dp"
+               android:layout_height="@dimen/_20sdp"
+               android:layout_marginStart="@dimen/_2sdp"
+               android:layout_marginTop="@dimen/_4sdp"
+               app:layout_constraintEnd_toStartOf="@id/constraint_category"
+               app:layout_constraintStart_toStartOf="@id/tv_head_filter"
+               app:layout_constraintTop_toBottomOf="@id/tv_head_filter"
+               app:layout_constraintVertical_bias="0.0">
 
-            <Spinner
-                android:id="@+id/spin_speciality"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_light_trans"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+               <TextView
+                   android:id="@+id/txt_hq_speciality_dummy"
+                   tools:ignore="HardcodedText,RtlHardcoded"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:layout_gravity="center"
+                   android:background="@drawable/border_shape_spinner"
+                   android:enabled="false"
+                   android:fontFamily="@font/satoshi_medium"
+                   android:gravity="left|center"
+                   android:hint="Speciality"
+                   android:paddingHorizontal="@dimen/_10sdp"
+                   android:paddingVertical="@dimen/_2sdp"
+                   android:textColor="@color/black"
+                   android:textColorHint="@color/black"
+                   android:textSize="14sp"
+                   android:textStyle="normal"
+                   app:drawableEndCompat="@drawable/spin_down_arrow"
+                   app:drawableTint="@color/black"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_cardio"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_20sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:layout_marginEnd="@dimen/_25sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/constraint_speciality"
-            app:layout_constraintTop_toBottomOf="@id/tv_head_filter"
-            app:layout_constraintVertical_bias="0.0">
+               <Spinner
+                   android:id="@+id/spin_speciality"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:background="@drawable/bg_light_trans"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+           </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/txt_hq_cardio_dummy"
-                tools:ignore="HardcodedText,RtlHardcoded"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@drawable/border_shape_spinner"
-                android:enabled="false"
-                android:fontFamily="@font/satoshi_medium"
-                android:gravity="left|center"
-                android:hint="Cardio"
-                android:paddingHorizontal="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                app:drawableEndCompat="@drawable/spin_down_arrow"
-                app:drawableTint="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+           <androidx.constraintlayout.widget.ConstraintLayout
+               android:id="@+id/constraint_category"
+               android:layout_width="0dp"
+               android:layout_height="@dimen/_20sdp"
+               android:layout_marginStart="@dimen/_5sdp"
+               android:layout_marginTop="@dimen/_4sdp"
+               android:layout_marginEnd="@dimen/_25sdp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toEndOf="@id/constraint_speciality"
+               app:layout_constraintTop_toBottomOf="@id/tv_head_filter"
+               app:layout_constraintVertical_bias="0.0">
 
-            <Spinner
-                android:id="@+id/spin_cardio"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_light_trans"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+               <TextView
+                   android:id="@+id/txt_hq_category_dummy"
+                   tools:ignore="HardcodedText,RtlHardcoded"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:layout_gravity="center"
+                   android:background="@drawable/border_shape_spinner"
+                   android:enabled="false"
+                   android:fontFamily="@font/satoshi_medium"
+                   android:gravity="left|center"
+                   android:hint="Cardio"
+                   android:paddingHorizontal="@dimen/_10sdp"
+                   android:paddingVertical="@dimen/_2sdp"
+                   android:textColor="@color/black"
+                   android:textColorHint="@color/black"
+                   android:textSize="14sp"
+                   android:textStyle="normal"
+                   app:drawableEndCompat="@drawable/spin_down_arrow"
+                   app:drawableTint="@color/black"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+               <Spinner
+                   android:id="@+id/spin_category"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:background="@drawable/bg_light_trans"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+
+           </androidx.constraintlayout.widget.ConstraintLayout>
+
+           <androidx.constraintlayout.widget.ConstraintLayout
+               android:id="@+id/constraint_qualification"
+               android:layout_width="0dp"
+               android:layout_height="@dimen/_20sdp"
+               android:layout_marginStart="@dimen/_2sdp"
+               android:layout_marginTop="@dimen/_4sdp"
+               android:visibility="gone"
+               app:layout_constraintEnd_toStartOf="@id/constraint_class"
+               app:layout_constraintStart_toStartOf="@id/tv_head_filter"
+               app:layout_constraintTop_toBottomOf="@id/constraint_speciality"
+               app:layout_constraintVertical_bias="0.0">
+
+               <TextView
+                   android:id="@+id/txt_hq_qualification_dummy"
+                   tools:ignore="HardcodedText,RtlHardcoded"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:layout_gravity="center"
+                   android:background="@drawable/border_shape_spinner"
+                   android:enabled="false"
+                   android:fontFamily="@font/satoshi_medium"
+                   android:gravity="left|center"
+                   android:hint="Speciality"
+                   android:paddingHorizontal="@dimen/_10sdp"
+                   android:paddingVertical="@dimen/_2sdp"
+                   android:textColor="@color/black"
+                   android:textColorHint="@color/black"
+                   android:textSize="14sp"
+                   android:textStyle="normal"
+                   app:drawableEndCompat="@drawable/spin_down_arrow"
+                   app:drawableTint="@color/black"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+
+               <Spinner
+                   android:id="@+id/spin_qualification"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:background="@drawable/bg_light_trans"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+           </androidx.constraintlayout.widget.ConstraintLayout>
+
+           <androidx.constraintlayout.widget.ConstraintLayout
+               android:id="@+id/constraint_class"
+               android:layout_width="0dp"
+               android:layout_height="@dimen/_20sdp"
+               android:layout_marginStart="@dimen/_5sdp"
+               android:layout_marginTop="@dimen/_4sdp"
+               android:layout_marginEnd="@dimen/_25sdp"
+               android:visibility="gone"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toEndOf="@id/constraint_qualification"
+               app:layout_constraintTop_toBottomOf="@id/constraint_category"
+               app:layout_constraintVertical_bias="0.0">
+
+               <TextView
+                   android:id="@+id/txt_hq_class_dummy"
+                   tools:ignore="HardcodedText,RtlHardcoded"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:layout_gravity="center"
+                   android:background="@drawable/border_shape_spinner"
+                   android:enabled="false"
+                   android:fontFamily="@font/satoshi_medium"
+                   android:gravity="left|center"
+                   android:hint="@string/category"
+                   android:paddingHorizontal="@dimen/_10sdp"
+                   android:paddingVertical="@dimen/_2sdp"
+                   android:textColor="@color/black"
+                   android:textColorHint="@color/black"
+                   android:textSize="14sp"
+                   android:textStyle="normal"
+                   app:drawableEndCompat="@drawable/spin_down_arrow"
+                   app:drawableTint="@color/black"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+
+               <Spinner
+                   android:id="@+id/spin_class"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:background="@drawable/bg_light_trans"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+
+           </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         <ImageView
             android:id="@+id/img_del"
             android:layout_width="@dimen/_18sdp"
             android:layout_height="@dimen/_18sdp"
-            android:layout_marginHorizontal="@dimen/_5sdp"
-            android:layout_marginVertical="@dimen/_1sdp"
+            android:layout_margin="@dimen/_5sdp"
             android:layout_marginEnd="@dimen/_2sdp"
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_4sdp"
             android:src="@drawable/iv_del"
-            app:layout_constraintBottom_toBottomOf="@id/constraint_cardio"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/constraint_cardio" />
+            app:layout_constraintStart_toEndOf="@id/rv_conditions"
+            app:layout_constraintTop_toBottomOf="@id/img_close"
+            app:layout_constraintVertical_bias="0.0" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_add_condition"
@@ -170,7 +276,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/tv_head_filter"
-            app:layout_constraintTop_toBottomOf="@id/constraint_speciality" />
+            app:layout_constraintTop_toBottomOf="@id/rv_conditions" />
 
 
         <RelativeLayout
