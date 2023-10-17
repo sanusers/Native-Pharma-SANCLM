@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/_2sdp">
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="true"
+        android:text="Name"
+        android:layout_weight="1"
+        android:textColor="@color/dark_purple"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_month"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="true"
+        android:text="Month"
+        android:layout_weight="1"
+        android:textColor="@color/dark_purple"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_year"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="true"
+        android:text="Year"
+        android:layout_weight="1"
+        android:textColor="@color/dark_purple"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_view"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:gravity="center"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="true"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:background="@drawable/bg_purple"
+        android:text="View"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

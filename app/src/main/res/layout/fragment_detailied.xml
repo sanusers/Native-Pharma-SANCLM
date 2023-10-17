@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginVertical="@dimen/_6sdp"
+    android:background="@drawable/bg_white_without_border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:layout_marginVertical="@dimen/_6sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tag_brand_name"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/brand_name"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tag_rating"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tag_rating"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_1sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/rating"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tag_feedback"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tag_brand_name"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteY="2dp" />
+
+            <TextView
+                android:id="@+id/tag_feedback"
+                android:layout_width="@dimen/_90sdp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/feedback"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tag_timeline"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tag_rating"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteY="2dp" />
+
+            <TextView
+                android:id="@+id/tag_timeline"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="@string/timeline"
+                android:textColor="@color/dark_purple"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tag_feedback"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteY="2dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/view_dummy"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:background="@color/dark_purple"
+            app:layout_constraintBottom_toTopOf="@id/rv_detailing_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraint_main"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_detailing_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_bias="0.0"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            app:layout_constraintTop_toBottomOf="@id/view_dummy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginVertical="@dimen/_4sdp"
+    android:background="@drawable/bg_white_without_border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tag_rcpa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rcpa"
+            android:textSize="16sp"
+            android:fontFamily="@font/satoshi_bold"
+            android:layout_margin="@dimen/_8sdp"
+            android:textColor="@color/dark_purple"
+            android:padding="@dimen/_2sdp"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintBottom_toTopOf="@id/rv_add_rcpa_call_list"
+            app:layout_constraintEnd_toStartOf="@id/btn_add_rcpa"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_add_rcpa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_rcpa"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            app:layout_constraintVertical_bias="0.0"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_12sdp"
+            android:layout_margin="@dimen/_4sdp"
+            android:textColor="@color/white"
+            android:paddingVertical="@dimen/_2sdp"
+            app:layout_constraintBottom_toTopOf="@id/rv_add_rcpa_call_list"
+            android:background="@drawable/bg_purple"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_add_rcpa_call_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/_2sdp"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@id/btn_add_rcpa"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

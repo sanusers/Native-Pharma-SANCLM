@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "181318048632",
+    "project_id": "sanclm",
+    "storage_bucket": "sanclm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181318048632:android:9dc02f9b82baecf2acc68d",
+        "android_client_info": {
+          "package_name": "saneforce.sanclm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181318048632-2q23bk6kne7mp1jtisvr269m09ftup0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_XpFtbfRuHIzCr1EZSJ7OyFJDclvOuXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181318048632-2q23bk6kne7mp1jtisvr269m09ftup0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
