@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,26 +121,30 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
 
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (holder.checkBox.isChecked()) {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+            Log.v("sdd", "00");
+            if (holder.checkBox.isPressed()) {
+                Log.v("sdd", "11");
+                if (holder.checkBox.isChecked()) {
+                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+                    }
+                    mcommonSharedPreference.setValueToPreference("checked_prd", false);
+                    callCommonCheckedListArrayList.get(position).setCheckedItem(true);
+                    saveCallProductListArrayList.add(new SaveCallProductList(callCommonCheckedListArrayList.get(position).getName(), "20", "", "", "", true));
+                    AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
+                } else {
+                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
+                    }
+                    mcommonSharedPreference.setValueToPreference("checked_prd", true);
+                    mcommonSharedPreference.setValueToPreference("unselect_data_prd", callCommonCheckedListArrayList.get(position).getName());
+                    callCommonCheckedListArrayList.get(position).setCheckedItem(false);
+                    commonUtilsMethods.recycleTestWithDivider(ProductFragment.rv_list_prod);
+                    AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
+                    saveProductCallAdapter.notifyDataSetChanged();
                 }
-                mcommonSharedPreference.setValueToPreference("checked_prd", false);
-                callCommonCheckedListArrayList.get(position).setCheckedItem(true);
-                saveCallProductListArrayList.add(new SaveCallProductList(callCommonCheckedListArrayList.get(position).getName(), "20", "", "", "", true));
-                AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
-            } else {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                }
-                mcommonSharedPreference.setValueToPreference("checked_prd", true);
-                mcommonSharedPreference.setValueToPreference("unselect_data_prd", callCommonCheckedListArrayList.get(position).getName());
-                callCommonCheckedListArrayList.get(position).setCheckedItem(false);
-                commonUtilsMethods.recycleTestWithDivider(ProductFragment.rv_list_prod);
-                AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
-                saveProductCallAdapter.notifyDataSetChanged();
             }
         });
     }

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/constraint"
     android:layout_height="wrap_content">
 
     <TextView
@@ -24,10 +25,25 @@
         android:textStyle="normal"
         app:drawableEndCompat="@drawable/spin_down_arrow"
         app:drawableTint="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rv_filter_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="HardcodedText,RtlHardcoded" />
+
+    <ListView
+        android:id="@+id/rv_filter_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        android:background="#ffffff"
+        android:divider="#e4e2e2"
+        android:dividerHeight="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/txt_condition_name"
+        app:layout_constraintStart_toStartOf="@id/txt_condition_name"
+        app:layout_constraintTop_toBottomOf="@id/txt_condition_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

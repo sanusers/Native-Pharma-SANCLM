@@ -14,18 +14,19 @@
             android:id="@+id/constraint_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_1sdp"
+            app:layout_constraintBottom_toTopOf="@id/constraint_rv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            android:layout_marginTop="@dimen/_1sdp"
-            app:layout_constraintBottom_toTopOf="@id/constraint_rv">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_hide_hq"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
                 android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/search_cust"
@@ -69,8 +70,8 @@
                 android:id="@+id/search_cust"
                 android:layout_width="@dimen/_130sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
                 android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:background="@drawable/border_shape_spinner"
                 android:drawableStart="@drawable/grey_search"
                 android:drawablePadding="@dimen/_5sdp"
@@ -90,8 +91,8 @@
                 android:id="@+id/iv_filter"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
                 android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:background="@drawable/bg_purple"
                 android:src="@drawable/iv_filter"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -110,16 +111,17 @@
                 android:layout_marginEnd="@dimen/_3sdp"
                 android:background="@drawable/bg_green_round"
                 android:gravity="center"
-                android:text="5"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_4ssp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_rv"
             android:layout_width="match_parent"
@@ -136,11 +138,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/bg_grey"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

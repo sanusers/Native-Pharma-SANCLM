@@ -16,14 +16,12 @@ public class CustList {
     String address;
     boolean isClusterAvailable;
     String geoTagStatus;
-
-    public boolean isClusterAvailable() {
-        return isClusterAvailable;
-    }
-
-    public void setClusterAvailable(boolean clusterAvailable) {
-        isClusterAvailable = clusterAvailable;
-    }
+    String wedding_date;
+    String mobile;
+    String email;
+    String qualification;
+    String dob;
+    String phone;
 
     public CustList(String latitude, String longitude, String address) {
         this.latitude = latitude;
@@ -43,6 +41,29 @@ public class CustList {
         this.maxTag = maxTag;
         this.position = position;
     }
+
+    public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.specialist = specialist;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.dob = dob;
+        this.wedding_date = wed_date;
+        this.email = email;
+        this.mobile = mobile;
+        this.phone = phone;
+        this.qualification = qualification;
+    }
+
 
     public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position, boolean isClusterAvailable) {
         this.name = name;
@@ -73,6 +94,63 @@ public class CustList {
         this.maxTag = maxTag;
         this.position = position;
         this.geoTagStatus = geoTagStatus;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getWedding_date() {
+        return wedding_date;
+    }
+
+    public void setWedding_date(String wedding_date) {
+        this.wedding_date = wedding_date;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getQualification() {
+        return qualification;
+    }
+
+    public void setQualification(String qualification) {
+        this.qualification = qualification;
+    }
+
+
+    public boolean isClusterAvailable() {
+        return isClusterAvailable;
+    }
+
+    public void setClusterAvailable(boolean clusterAvailable) {
+        isClusterAvailable = clusterAvailable;
     }
 
     public String getGeoTagStatus() {

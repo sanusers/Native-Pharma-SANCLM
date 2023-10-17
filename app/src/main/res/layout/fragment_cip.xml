@@ -110,7 +110,7 @@
                 android:layout_marginEnd="@dimen/_3sdp"
                 android:background="@drawable/bg_green_round"
                 android:gravity="center"
-                android:text="5"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_4ssp"
                 app:layout_constraintTop_toTopOf="parent"

@@ -85,25 +85,27 @@ public class CallAddCustListAdapter extends RecyclerView.Adapter<CallAddCustList
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
           //  SaveAdditionalCallAdapter.nestedAddSampleCallDetails.clear();
           //  SaveAdditionalCallAdapter.nestedAddInputCallDetails.clear();
-            if (holder.checkBox.isChecked()) {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+            if (holder.checkBox.isPressed()) {
+                if (holder.checkBox.isChecked()) {
+                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+                    }
+                    mCommonSharedPreference.setValueToPreference("checked_add_call", false);
+                    checked_arrayList.get(position).setCheckedItem(true);
+                    saveAdditionalCallArrayList.add(new SaveAdditionalCall(checked_arrayList.get(position).getName()));
+                    AssignRecyclerView(activity, context, saveAdditionalCallArrayList, checked_arrayList);
+                } else {
+                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
+                    }
+                    mCommonSharedPreference.setValueToPreference("checked_add_call", true);
+                    mCommonSharedPreference.setValueToPreference("unselect_data_add_call", checked_arrayList.get(position).getName());
+                    checked_arrayList.get(position).setCheckedItem(false);
+                    AssignRecyclerView(activity, context, saveAdditionalCallArrayList, checked_arrayList);
+                    AdaptersaveAdditionalCall.notifyDataSetChanged();
                 }
-                mCommonSharedPreference.setValueToPreference("checked_add_call", false);
-                checked_arrayList.get(position).setCheckedItem(true);
-                saveAdditionalCallArrayList.add(new SaveAdditionalCall(checked_arrayList.get(position).getName()));
-                AssignRecyclerView(activity,context, saveAdditionalCallArrayList, checked_arrayList);
-            } else {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                }
-                mCommonSharedPreference.setValueToPreference("checked_add_call", true);
-                mCommonSharedPreference.setValueToPreference("unselect_data_add_call", checked_arrayList.get(position).getName());
-                checked_arrayList.get(position).setCheckedItem(false);
-                AssignRecyclerView(activity,context, saveAdditionalCallArrayList, checked_arrayList);
-                AdaptersaveAdditionalCall.notifyDataSetChanged();
             }
         });
     }

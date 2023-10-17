@@ -48,14 +48,11 @@ public class PopupFilterAdapter extends BaseAdapter {
         TextView txt_content = view.findViewById(R.id.txt_content);
         txt_content.setText(filterList.get(i));
 
-        txt_content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AdapterFilterSelection.dialog.dismiss();
-                ListedDoctorFragment.ArrayFilteredList.set(selectedPos, new FilterDataList(filterList.get(i), selectedPos));
-                ListedDoctorFragment.adapterFilterSelection.notifyDataSetChanged();
-                // AdapterFilterSelection.ViewHolder.tv_conditions.setText(filterList.get(i));
-            }
+        txt_content.setOnClickListener(view1 -> {
+            AdapterFilterSelection.dialog.dismiss();
+            ListedDoctorFragment.ArrayFilteredList.set(selectedPos, new FilterDataList(filterList.get(i), selectedPos));
+            ListedDoctorFragment.adapterFilterSelection.notifyDataSetChanged();
+            // AdapterFilterSelection.ViewHolder.tv_conditions.setText(filterList.get(i));
         });
 
         return view;

@@ -25,7 +25,6 @@ import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.Unli
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
-
 import saneforce.sanclm.databinding.CallDcrSelectionBinding;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.response.SetupResponse;
@@ -76,9 +75,10 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUndr);
         }
 
+        Log.v("dfsdf", "---" + viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
         dcrSelectionBinding.tabLayoutCall.setupWithViewPager(dcrSelectionBinding.viewPagerCallSelection);
-
+        dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
         dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
     }
 

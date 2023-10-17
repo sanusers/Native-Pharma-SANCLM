@@ -16,30 +16,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
-public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdapter.ViewHolder>{
-    Context context;
+public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdapter.ViewHolder> {
     public static ArrayList<SaveCallInputList> saveCallInputListArrayList;
+    Context context;
     ArrayList<CallCommonCheckedList> checked_arrayList;
     SaveInputCallAdapter saveInputCallAdapter;
     CommonSharedPreference mCommonSharedPreference;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
 
-    public CallInputListAdapter(Activity activity,Context context, ArrayList<CallCommonCheckedList> checked_arrayList) {
-       this.activity = activity;
+    public CallInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList) {
+        this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
     }
 
-    public CallInputListAdapter(Activity activity,Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveCallInputList> saveCallInputLists) {
+    public CallInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveCallInputList> saveCallInputLists) {
         this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
@@ -76,52 +76,57 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
 
         holder.tv_name.setOnClickListener(view -> {
             if (holder.tv_name.getText().toString().length() > 12) {
-                commonUtilsMethods.displayPopupWindow(activity,context,view, checked_arrayList.get(position).getName());
+                commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName());
             }
         });
 
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (holder.checkBox.isChecked()) {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+            if (holder.checkBox.isPressed()) {
+                if (holder.checkBox.isChecked()) {
+                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+                    }
+                    mCommonSharedPreference.setValueToPreference("checked_input", false);
+                    checked_arrayList.get(position).setCheckedItem(true);
+                    saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(position).getName(), "", "20"));
+                    AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
+                } else {
+                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
+                    }
+                    mCommonSharedPreference.setValueToPreference("checked_input", true);
+                    mCommonSharedPreference.setValueToPreference("unselect_data_inp", checked_arrayList.get(position).getName());
+                    checked_arrayList.get(position).setCheckedItem(false);
+                    AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
+                    saveInputCallAdapter.notifyDataSetChanged();
                 }
-                mCommonSharedPreference.setValueToPreference("checked_input", false);
-                checked_arrayList.get(position).setCheckedItem(true);
-                saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(position).getName(), "","20"));
-                AssignRecyclerView(activity,context,saveCallInputListArrayList, checked_arrayList);
-            } else {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                }
-                mCommonSharedPreference.setValueToPreference("checked_input", true);
-                mCommonSharedPreference.setValueToPreference("unselect_data_inp", checked_arrayList.get(position).getName());
-                checked_arrayList.get(position).setCheckedItem(false);
-                AssignRecyclerView(activity,context,saveCallInputListArrayList, checked_arrayList);
-                saveInputCallAdapter.notifyDataSetChanged();
             }
         });
     }
 
-    private void AssignRecyclerView(Activity activity,Context context, ArrayList<SaveCallInputList> saveCallInputListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
-        saveInputCallAdapter = new SaveInputCallAdapter(activity,context, saveCallInputListArrayList, callCommonCheckedListArrayList);
+    private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
+        saveInputCallAdapter = new SaveInputCallAdapter(activity, context, saveCallInputListArrayList, callCommonCheckedListArrayList);
         commonUtilsMethods.recycleTestWithDivider(InputFragment.rv_list_input);
         InputFragment.rv_list_input.setAdapter(saveInputCallAdapter);
     }
 
     @Override
     public int getItemCount() {
-            return checked_arrayList.size();
+        return checked_arrayList.size();
     }
+
     public void filterList(ArrayList<CallCommonCheckedList> filterdNames) {
         this.checked_arrayList = filterdNames;
         notifyDataSetChanged();
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name;
         CheckBox checkBox;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_name = itemView.findViewById(R.id.tv_data_name);

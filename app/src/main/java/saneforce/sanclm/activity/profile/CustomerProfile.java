@@ -21,11 +21,12 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
 public class CustomerProfile extends AppCompatActivity {
-    public static String tv_custName = "", tv_cust_area;
+    public static String tv_custName = "", tv_cust_area,tv_custCode="";
     TabLayout tabLayout;
     ViewPager viewPager;
     Button btn_skip, btn_start;
     ImageView img_back;
+    public static boolean isDetailingRequired;
     CommonUtilsMethods commonUtilsMethods;
     int tab_pos = 0;
 
@@ -51,11 +52,12 @@ public class CustomerProfile extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Pre Call Analysis"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        Bundle extra = getIntent().getExtras();
+      /*  Bundle extra = getIntent().getExtras();
         if (extra != null) {
+            tv_custCode = extra.getString("cust_code");
             tv_custName = extra.getString("cust_name");
             tv_cust_area = extra.getString("cust_addr");
-        }
+        }*/
 
         CustTabLayoutAdapter adapter = new CustTabLayoutAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -90,14 +92,16 @@ public class CustomerProfile extends AppCompatActivity {
 
         btn_skip.setOnClickListener(view -> {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
-            intent1.putExtra("cust_name", tv_custName);
+            isDetailingRequired = false;
+         /*   intent1.putExtra("cust_name", tv_custName);
             intent1.putExtra("cust_addr", tv_cust_area);
-            intent1.putExtra("sf_code", TodayPlanSfCode);
+            intent1.putExtra("sf_code", TodayPlanSfCode);*/
             startActivity(intent1);
         });
 
         btn_start.setOnClickListener(view -> {
             startActivity(new Intent(CustomerProfile.this, Presentation.class));
+            isDetailingRequired = true;
         });
 
         img_back.setOnClickListener(view -> finish());
