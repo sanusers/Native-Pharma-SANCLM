@@ -37,9 +37,15 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("?axn=table/products")
     Call<JsonArray> getProductMaster(@Field("data") String postObj);
+
     @FormUrlEncoded
     @POST("?axn=get/leave")
     Call<JsonArray> getLeaveMaster(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=home")
+    Call<JsonArray> getDCRMaster(@Field("data") String postObj);
+
 
     @FormUrlEncoded
     @POST("?axn=table/slides")
@@ -68,5 +74,18 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("?axn=get/approvals")
     Call<JsonArray> getLeaveApprovalList(@Field("data") String GetLeaveList);
+
+
+    @FormUrlEncoded
+    @POST("?axn=home")
+    Call<JsonArray> getcalldetails(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=get/leave")
+    Call<JsonArray> getLeavesetdata(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=save/leavemodule")
+    Call<JsonArray> getleavesave(@Field("data") String postObj);
 
 }

@@ -73,11 +73,64 @@
             android:textSize="@dimen/_7sdp"
             android:title="Froms" />
 
+            android:title="Leave Application" />
+
+
+        <item
+            android:icon="@drawable/nearme"
+            android:id="@+id/nav_approvals"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="@string/approvals" />
+
+        <item
+            android:icon="@drawable/report"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/nav_reports"
+            android:title="Reports"
+            />
+        <item
+            android:icon="@drawable/activity"
+            android:id="@+id/nav_activity"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Activity"
+            android:visible="false"  />
+        <item
+            android:icon="@drawable/nearme"
+            android:id="@+id/nav_nearme"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Near Me" />
+
+
+
+        <item
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/survey"
+            android:id="@+id/nav_quiz"
+            android:title="Survey"
+            />
+        <item
+            android:textSize="@dimen/_7sdp"
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/nav_form"
+            android:title="Forms" />
+
         <item
             android:icon="@drawable/form"
             android:fontFamily="@font/satoshi_medium"
             android:id="@+id/logout"
             android:title="Logout" />
+
+        <item
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/logout"
+            android:title="Logout" />
+
 
     </group>
 

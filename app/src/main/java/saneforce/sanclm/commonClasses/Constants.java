@@ -29,6 +29,10 @@ public class Constants {
     public static final String LEAVE = "Leave";
     public static final String LEAVE_STATUS = "Leave_Status";
 
+    //DCR
+    public static final String DCR = "DCR";
+
+
     //WorkType
     public static final String WORK_TYPE = "Work_Type";
     public static final String HOLIDAY = "Holiday";
@@ -60,6 +64,8 @@ public class Constants {
     //Setup
     public static final String SETUP = "Setup";
     public static final String CUSTOM_SETUP = "Custom_setup";
+
+
 
     //-------------------------------------------------------------
 

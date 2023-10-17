@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -98,7 +99,6 @@
                             android:layout_gravity="top"
                             android:gravity="top"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
@@ -122,16 +122,14 @@
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
                                 android:max="100"
-                                android:progress="75"
                                 android:progressDrawable="@drawable/progress_circular_doctor"
                                 android:rotation="-90" />
 
                             <TextView
-                                android:id="@+id/dcc_value"
+                                android:id="@+id/txt_doc_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="75%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -178,7 +176,6 @@
                             android:layout_marginTop="@dimen/_10sdp"
 
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
@@ -202,16 +199,14 @@
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
                                 android:max="100"
-                                android:progress="50"
                                 android:progressDrawable="@drawable/progress_circular_chemist"
                                 android:rotation="-90" />
 
                             <TextView
-                                android:id="@+id/che_value"
+                                android:id="@+id/txt_che_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="50%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -258,7 +253,6 @@
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
@@ -282,16 +276,14 @@
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
                                 android:max="100"
-                                android:progress="25"
                                 android:progressDrawable="@drawable/progress_circular_stockiest"
                                 android:rotation="-90" />
 
                             <TextView
-                                android:id="@+id/stock_value"
+                                android:id="@+id/txt_stock_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="25%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -337,7 +329,6 @@
                             android:layout_marginTop="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="55/20"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
@@ -361,16 +352,14 @@
                                 android:layout_margin="@dimen/_3sdp"
                                 android:indeterminate="false"
                                 android:max="100"
-                                android:progress="50"
                                 android:progressDrawable="@drawable/progress_circular"
                                 android:rotation="-90" />
 
                             <TextView
-                                android:id="@+id/unlisted_value"
+                                android:id="@+id/txt_unlisted_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="50%"
                                 android:textColor="@android:color/white"
                                 android:textSize="@dimen/_7sdp" />
                         </FrameLayout>
@@ -412,18 +401,14 @@
             android:textColor="@color/txt_lite_black"
             android:textSize="@dimen/_7sdp" />
 
-        <LinearLayout
+        <include
+            layout="@layout/linecharmap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_below="@+id/text_average_"
-            android:id="@+id/ll_grab_layout"
             android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:background="@drawable/custom_backround_layout"
-            android:backgroundTint="@color/white">
+            android:layout_marginBottom="@dimen/_5sdp" />
 
-        </LinearLayout>
 
     </RelativeLayout>
 

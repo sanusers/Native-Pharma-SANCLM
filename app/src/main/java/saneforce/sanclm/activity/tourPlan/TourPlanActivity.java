@@ -99,7 +99,8 @@ public class TourPlanActivity extends AppCompatActivity {
 //            @Override
 //            public void run () {
                 populateCalendarAdapter(dayWiseArrayCurrentMonth);
-//        }, 100);
+//            }
+//        },100);
 
         binding.tpDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
@@ -630,7 +631,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 if(!date.equals("")) {
                     binding.tpDrawer.openDrawer(GravityCompat.END);
                     String selectedDate = date + " " +  monthYearFromDate(localDate) ;
-                    populateSessionEditAdapter(modelClass);
+                    ModelClass modelClass1 = new ModelClass(modelClass);
+                    populateSessionEditAdapter(modelClass1);
                     binding.tpNavigation.addEditDate.setText("Add Plan");
                 }
             }
@@ -732,6 +734,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 modelClasses.add(modelClass);
             }
         }
+
+        Log.e("test","size : " + modelClasses.size());
 
         summaryAdapter = new SummaryAdapter(modelClasses, TourPlanActivity.this, new SummaryInterface() {
             @Override

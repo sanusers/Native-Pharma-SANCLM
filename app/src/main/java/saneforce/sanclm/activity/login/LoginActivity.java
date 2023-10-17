@@ -221,6 +221,9 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
+            SharedPref.setDivisionCode(getApplicationContext(), jsonObject.getString("Division_Code").replace(",", ""));
+            SharedPref.setDesignationName(getApplicationContext(), jsonObject.getString("Desig"));
+            SharedPref.setStateCode(getApplicationContext(), jsonObject.getString("State_Code"));
 
             Intent intent = new Intent(LoginActivity.this, MasterSyncActivity.class);
             intent.putExtra("Origin", "Login");

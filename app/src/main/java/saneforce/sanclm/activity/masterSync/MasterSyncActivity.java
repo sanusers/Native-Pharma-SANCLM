@@ -64,7 +64,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     LoginResponse loginResponse;
     String sfCode = "",division_code = "",sfType = "",rsf ="",designation = "",state_code ="",subdivision_code = "";
     int doctorCount = 0,specialityCount = 0,qualificationCount = 0,categoryCount = 0,departmentCount = 0,classCount = 0,feedbackCount = 0;
-    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpCount =0,clusterCount = 0;
+    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpCount =0,clusterCount = 0,dcrCount = 0;
     int productCount = 0, proCatCount = 0,brandCount = 0, compProCount = 0;
     int workTypeCount = 0,holidayCount = 0,weeklyOfCount = 0;
     int proSlideCount = 0,proSpeSlideCount = 0,brandSlideCount = 0, therapticCount = 0;
@@ -88,6 +88,8 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> clusterModelArray = new ArrayList<>();
 
     ArrayList<MasterSyncItemModel> leaveModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> dcrModelArray = new ArrayList<>();
+
     ArrayList<MasterSyncItemModel> workTypeModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> tpModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> slideModelArray = new ArrayList<>();
@@ -332,6 +334,18 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         });
 
+        binding.dcr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                listItemClicked(binding.dcrArrow,binding.dcr);
+                binding.childSync.setText("Sync DCR");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(dcrModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+        });
+
         binding.workType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -418,6 +432,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayList.addAll(clusterModelArray);
                 }else if (binding.leave.isSelected()) {
                     arrayList.addAll(leaveModelArray);
+                } else if (binding.dcr.isSelected()) {
+                    arrayList.addAll(dcrModelArray);
                 }else if (binding.workType.isSelected()) {
                     arrayList.addAll(workTypeModelArray);
                 }else if (binding.tourPlan.isSelected()) {
@@ -493,6 +509,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         inputCount = sqLite.getMasterSyncDataByKey(Constants.INPUT).length();
         leaveCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE).length();
         leaveStatusCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS).length();
+        dcrCount = sqLite.getMasterSyncDataByKey(Constants.DCR).length();
         workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
         holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
         weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
@@ -589,6 +606,11 @@ public class MasterSyncActivity extends AppCompatActivity {
         leaveModelArray.add(leaveModel);
         leaveModelArray.add(leaveStatusModel);
 
+        //DCR
+        dcrModelArray.clear();
+        MasterSyncItemModel dcrModel = new MasterSyncItemModel("DCR",dcrCount,"Home","gethome",Constants.DCR,false);
+        dcrModelArray.add(dcrModel);
+
         //Work Type
         workTypeModelArray.clear();
         MasterSyncItemModel workType = new MasterSyncItemModel("Work Type",workTypeCount,"Doctor","getworktype",Constants.WORK_TYPE,false);
@@ -642,6 +664,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.productArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.clusterArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.leaveArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+        binding.dcrArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.workTypeArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.tpArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.slideArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
@@ -658,6 +681,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.product.setSelected(false);
         binding.cluster.setSelected(false);
         binding.leave.setSelected(false);
+        binding.dcr.setSelected(false);
         binding.workType.setSelected(false);
         binding.tourPlan.setSelected(false);
         binding.slide.setSelected(false);
@@ -693,6 +717,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), clusterModelArray, position);
                 }else if (binding.leave.isSelected()) {
                     sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), leaveModelArray, position);
+                }else if (binding.dcr.isSelected()) {
+                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), dcrModelArray, position);
                 }else if (binding.workType.isSelected()) {
                     sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), workTypeModelArray, position);
                 }else if (binding.tourPlan.isSelected()) {
@@ -730,6 +756,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             masterSyncAllModel.add(inputModelArray);
             masterSyncAllModel.add(productModelArray);
             masterSyncAllModel.add(leaveModelArray);
+            masterSyncAllModel.add(dcrModelArray);
             masterSyncAllModel.add(workTypeModelArray);
             masterSyncAllModel.add(tpModelArray);
             masterSyncAllModel.add(slideModelArray);
@@ -797,6 +824,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                     call = apiInterface.getProductMaster(jsonObject.toString());
                 }else if (masterFor.equalsIgnoreCase("Leave")) {
                     call = apiInterface.getLeaveMaster(jsonObject.toString());
+                }else if (masterFor.equalsIgnoreCase("Home")) {
+                    call = apiInterface.getDCRMaster(jsonObject.toString());
                 }else if (masterFor.equalsIgnoreCase("Slide")) {
                     call = apiInterface.getSlideMaster(jsonObject.toString());
                 }else if (masterFor.equalsIgnoreCase("Setup")) {
@@ -830,6 +859,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         if (mgrInitialSync){
                                             setHq(jsonArray);
                                         }
+                                    } else if (masterFor.equalsIgnoreCase("Setup")) {
+                                        JSONObject jsonSetup = jsonArray.getJSONObject(0);
+//                                        SharedPref.setGeotagImage(getApplicationContext(), jsonSetup.getString("geoTagImg"));
+//                                        SharedPref.setGeotagApprovalNeed(getApplicationContext(), jsonSetup.getString("GeoTagApprovalNeed"));
                                     }
 
                                     if (apiSuccessCount >= itemCount){
@@ -910,7 +943,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             SQLite finalSqLite = sqLite;
             call.enqueue(new Callback<JsonArray>() {
                 @Override
-                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                     Log.v("table_json", response.body().toString());
                     if (response.isSuccessful()) {
                         try {
@@ -933,7 +966,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                         }
                     }
                 }
-
                 @Override
                 public void onFailure(Call<JsonArray> call, Throwable t) {
 

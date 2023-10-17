@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,13 @@ import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
 import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
+import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
+import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
+import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
+import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.presentation.CreatePresentation;
 import saneforce.sanclm.activity.presentation.Presentation;
@@ -55,6 +63,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static int DeviceWith;
     public ActionBarDrawerToggle actionBarDrawerToggle;
     ImageView imageView;
+    private DrawerLayout drawerLayout;
     TabLayout tabLayout;
     ViewpagetAdapter viewpagetAdapter;
     NavigationView navigationView;
@@ -62,7 +71,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ImageView masterSync;
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
-    private DrawerLayout drawerLayout;
+
+
+
 
     @Override
     protected void onResume() {
@@ -104,8 +115,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith = displayMetrics.widthPixels;
 
+//        DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
+//        layoutParams.width = DeviceWith / 3;// You can replace R.dimen.navigation_drawer_width with the width you want
+//        DeviceWith=displayMetrics.widthPixels;
+
         DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
-        layoutParams.width = DeviceWith / 3;// You can replace R.dimen.navigation_drawer_width with the width you want
+        layoutParams.width = DeviceWith/3;// You can replace R.dimen.navigation_drawer_width with the width you want
         navigationView.setLayoutParams(layoutParams);
 
         Toolbar toolbar = findViewById(R.id.Toolbar);
@@ -125,7 +140,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
         viewPager1.setAdapter(adapter);
 
-        int width = (int) ((((DeviceWith / 3) * 1.9) / 3) - 13);
+        int width = (int) ((((DeviceWith / 3) * 2) /3)-30);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
         param.setMargins(0, 5, 10, 0);
 

@@ -40,7 +40,7 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
 
 
-        int width = (int) ((((HomeDashBoard.DeviceWith/ 3) * 1.9) / 3)-13);
+        int width = (int) ((((HomeDashBoard.DeviceWith / 3) * 2) / 3)-30);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
         param.setMargins(0, 5, 10, 0);
 
@@ -49,23 +49,23 @@ public class E_DetailingAnalysisFragment extends Fragment {
         stokiest_layout.setLayoutParams(param);
         unlistered_layout.setLayoutParams(param);
 
-//        ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                HomeDashBoard.viewPager1.setScrollEnabled(false);
-//                return false;
-//            }
-//        });
+        ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                HomeDashBoard.viewPager1.setScrollEnabled(false);
+                return false;
+            }
+        });
 
 
-//        ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                HomeDashBoard.viewPager1.setScrollEnabled(true);
-//                return false;
-//            }
-//        });
+        ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                HomeDashBoard.viewPager1.setScrollEnabled(true);
+                return false;
+            }
+        });
 
 
         return v;

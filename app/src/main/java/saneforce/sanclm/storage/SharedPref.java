@@ -390,10 +390,10 @@ public class SharedPref {
         editor.putString(MASTER_LAST_SYNC,date).apply();
     }
 
-    public static void setSfType(Context context, String token) {
+    public static void setCallApiUrl(Context context, String token) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SF_TYPE, token).apply();
+        editor.putString(CALL_API_URL, token).apply();
     }
 
     public static String getCallApiUrl(Context context) {

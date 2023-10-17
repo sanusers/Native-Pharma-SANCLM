@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_150sdp"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="right"
+    android:background="@drawable/border_white"
+    android:orientation="vertical"
+    tools:showIn="navigation_view1">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/headtext_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.7"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_6sdp"
+                    android:text="Listed doctor"
+                    android:textColor="#282A3C"
+                    android:textSize="@dimen/_8sdp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/close_sideview"
+                    android:layout_width="@dimen/_19sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_gravity="center"
+                    android:layout_weight=".3"
+                    android:src="@drawable/close_icon"
+
+                    />
+            </LinearLayout>
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:background="@drawable/edittext_stroke"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="@dimen/_7sdp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:src="@drawable/grey_search" />
+
+        <EditText
+            android:id="@+id/et_Custsearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lineid"
+            android:layout_margin="@dimen/_1sdp"
+
+            android:background="@null"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="left"
+            android:hint="Search "
+            android:inputType="text"
+            android:padding="@dimen/_5sdp"
+            android:textSize="@dimen/_6sdp" />
+
+
+    </LinearLayout>
+
+
+    <!-- RecyclerView to display apps -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/app_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/et_Custsearch"
+        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:visibility="gone"/>
+
+
+    <ListView
+        android:id="@+id/cutumdailog_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp"
+        android:visibility="gone">
+
+    </ListView>
+
+
+</LinearLayout>

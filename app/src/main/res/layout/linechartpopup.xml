@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:background="@color/Green_45"
+    android:padding="@dimen/_5sdp"
+    android:id="@+id/rl_popllayout"
+    android:layout_margin="@dimen/_3sdp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Total Calls"
+        android:id="@+id/text_totalcalls"
+        android:fontFamily="@font/satoshi_medium"
+        android:textStyle="bold"
+        android:textSize="@dimen/_6sdp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="180"
+         android:id="@+id/text_total_call_count"
+        android:layout_below="@+id/text_totalcalls"
+        android:fontFamily="@font/satoshi_medium"
+        android:textStyle="bold"
+        android:textSize="@dimen/_5sdp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <View
+        android:layout_toRightOf="@id/text_totalcalls"
+        android:layout_width="1dp"
+        android:id="@+id/text_linview"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:background="@color/white"
+      />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="AvgCalls"
+        android:layout_toRightOf="@id/text_linview"
+        android:fontFamily="@font/satoshi_medium"
+        android:textStyle="bold"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:textSize="@dimen/_6sdp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="60"
+        android:layout_below="@+id/text_totalcalls"
+        android:layout_toRightOf="@id/text_linview"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:id="@+id/text_call_count"
+
+        android:fontFamily="@font/satoshi_medium"
+        android:textStyle="bold"
+        android:textSize="@dimen/_5sdp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+</RelativeLayout>
+</RelativeLayout>

@@ -55,8 +55,10 @@
 
         <activity
             android:name=".activity.leave.CalendarActivity"
-            android:exported="false"
-            android:screenOrientation="landscape" />
+            android:exported="true"
+            android:screenOrientation="landscape"
+            android:theme="@style/NoBackgroundNoTitleDialogTheme" />
+
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
             android:exported="false"
@@ -102,10 +104,6 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-        <activity
-            android:name=".activity.homeScreen.HomeDashBoard"
-            android:exported="false"
-            android:screenOrientation="landscape" />
 
         <activity
             android:name=".activity.leave.Leave_Application"
@@ -141,10 +139,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.homeScreen.HomeDashBoard"
+            android:exported="false"
+            android:screenOrientation="landscape" >
+
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="saneforce.sanclm.fileprovider"
