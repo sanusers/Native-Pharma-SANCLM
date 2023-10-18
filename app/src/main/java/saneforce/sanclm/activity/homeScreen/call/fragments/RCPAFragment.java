@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,7 +46,7 @@ public class RCPAFragment extends Fragment {
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             RCPAFragmentSide.rv_comp_list.setLayoutManager(mLayoutManager);
             RCPAFragmentSide.rv_comp_list.setAdapter(rcpaAddCompAdapter);
-            DCRCallActivity.fragment_add_rcpa_side.setVisibility(View.VISIBLE);
+            dcrcallBinding.fragmentAddRcpaSide.setVisibility(View.VISIBLE);
         });
 
         return v;

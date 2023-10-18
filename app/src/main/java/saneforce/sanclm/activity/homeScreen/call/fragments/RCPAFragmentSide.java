@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -98,13 +100,13 @@ public class RCPAFragmentSide extends Fragment {
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             RCPAFragment.rv_add_rcpa_list.setLayoutManager(mLayoutManager);
             RCPAFragment.rv_add_rcpa_list.setAdapter(rcpaChemistAdapter);
-            DCRCallActivity.fragment_add_rcpa_side.setVisibility(View.GONE);
+            dcrcallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
         });
 
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DCRCallActivity.fragment_add_rcpa_side.setVisibility(View.GONE);
+                dcrcallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
             }
         });
         btn_add_competitor.setOnClickListener(view -> {

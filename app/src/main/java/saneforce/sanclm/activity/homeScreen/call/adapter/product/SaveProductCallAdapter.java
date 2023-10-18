@@ -18,12 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCallAdapter.ViewHolder> {
     public static int pos;
@@ -39,7 +39,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
         this.context = context;
     }
 
-    public SaveProductCallAdapter(Activity activity,Context context, ArrayList<SaveCallProductList> productListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
+    public SaveProductCallAdapter(Activity activity, Context context, ArrayList<SaveCallProductList> productListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
         this.activity = activity;
         this.context = context;
         this.productListArrayList = productListArrayList;
@@ -69,7 +69,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
 
         holder.tv_prd_name.setOnClickListener(view -> {
             if (holder.tv_prd_name.getText().toString().length() > 12) {
-                commonUtilsMethods.displayPopupWindow(activity,context,view, productListArrayList.get(position).getName());
+                commonUtilsMethods.displayPopupWindow(activity, context, view, productListArrayList.get(position).getName());
             }
         });
         holder.ed_samplesQty.addTextChangedListener(new TextWatcher() {
@@ -145,11 +145,11 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
             // Log.v("getpos", "----" + callProductListArrayList.size());
             for (int j = 0; j < callCommonCheckedListArrayList.size(); j++) {
                 if (callCommonCheckedListArrayList.get(j).getName().equalsIgnoreCase(productListArrayList.get(position).getName())) {
-                    callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(),false, callCommonCheckedListArrayList.get(j).getCategory()));
+                    callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(), false, callCommonCheckedListArrayList.get(j).getCategory()));
                 }
             }
 
-            callProductListAdapter = new CallProductListAdapter(activity,context, callCommonCheckedListArrayList, productListArrayList);
+            callProductListAdapter = new CallProductListAdapter(activity, context, callCommonCheckedListArrayList, productListArrayList);
             commonUtilsMethods.recycleTestWithDivider(ProductFragment.rv_list_data);
             ProductFragment.rv_list_data.setAdapter(callProductListAdapter);
             removeAt(position);

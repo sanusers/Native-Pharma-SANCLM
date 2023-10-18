@@ -1,23 +1,22 @@
 package saneforce.sanclm.activity.homeScreen.call;
 
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
+import static saneforce.sanclm.activity.profile.CustomerProfile.isDetailingRequired;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
@@ -37,26 +36,27 @@ import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragmentSide;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.databinding.ActivityDcrcallBinding;
+import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 
 public class DCRCallActivity extends AppCompatActivity {
 
-    public static FragmentContainerView fragment_add_call_details_side, fragment_add_rcpa_side;
-    public static ConstraintLayout constraint_dcr;
+
+    public static ArrayList<CustList> CallActivityCustDetails;
     DCRCallTabLayoutAdapter viewPagerAdapter;
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    Button btn_cancel, btn_final_submit;
-    ImageView img_back;
-    TextView tv_cust_name;
+   @SuppressLint("StaticFieldLeak")
+   public static ActivityDcrcallBinding dcrcallBinding;
     CommonUtilsMethods commonUtilsMethods;
     CommonSharedPreference mCommonSharedPreference;
     SQLite sqLite;
     int tab_pos = 0;
-    String cust_name, cust_code, town_name, town_code, cust_type, sf_code;
+    SetupResponse setUpResponse;
+    String capDrPrd, capChemPrd, capStkPrd, capUndrPrd, capCipPrd, capDrInp, capChemInp, capStkInp, capUndrInp, drRCPANeed, ChemRCPANeed;
 
     @Override
     public void onBackPressed() {
@@ -65,53 +65,49 @@ public class DCRCallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dcrcall);
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPager = findViewById(R.id.view_pager);
-        btn_cancel = findViewById(R.id.btn_cancel);
-        constraint_dcr = findViewById(R.id.constraint_dcr);
-        btn_final_submit = findViewById(R.id.btn_final_submit);
-        img_back = findViewById(R.id.iv_back);
-        tv_cust_name = findViewById(R.id.tag_cust_name);
-        fragment_add_call_details_side = findViewById(R.id.fragment_add_call_details_side);
-        fragment_add_rcpa_side = findViewById(R.id.fragment_add_rcpa_side);
+        dcrcallBinding = ActivityDcrcallBinding.inflate(getLayoutInflater());
+        setContentView(dcrcallBinding.getRoot());
+
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPreference = new CommonSharedPreference(this);
         sqLite = new SQLite(this);
+        commonUtilsMethods.FullScreencall();
 
-        Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            cust_name = extra.getString("cust_name");
-            cust_code = extra.getString("cust_code");
-            town_code = extra.getString("town_code");
-            town_name = extra.getString("town_name");
-            cust_type = extra.getString("cust_type");
-            sf_code = extra.getString("sf_code");
+        getRequiredData();
+
+        viewPagerAdapter = new DCRCallTabLayoutAdapter(getSupportFragmentManager());
+
+        if (isDetailingRequired) {
+            viewPagerAdapter.add(new DetailedFragment(), "Detailed");
+        }
+        if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+            viewPagerAdapter.add(new ProductFragment(), capDrPrd);
+            viewPagerAdapter.add(new InputFragment(), capDrInp);
+            viewPagerAdapter.add(new RCPAFragment(), "RCPA");
+            viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
+            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
+            viewPagerAdapter.add(new ProductFragment(), capChemPrd);
+            viewPagerAdapter.add(new InputFragment(), capChemInp);
+            viewPagerAdapter.add(new RCPAFragment(), "RCPA");
+            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+            viewPagerAdapter.add(new ProductFragment(), capStkPrd);
+            viewPagerAdapter.add(new InputFragment(), capStkInp);
+            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
+            viewPagerAdapter.add(new ProductFragment(), capUndrPrd);
+            viewPagerAdapter.add(new InputFragment(), capUndrInp);
+            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
+            viewPagerAdapter.add(new ProductFragment(), "Product");
+            viewPagerAdapter.add(new InputFragment(), "Input");
+            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
         }
 
-        commonUtilsMethods.FullScreencall();
-        viewPagerAdapter = new DCRCallTabLayoutAdapter(getSupportFragmentManager());
-        viewPagerAdapter.add(new DetailedFragment(), "Detailed");
-        viewPagerAdapter.add(new ProductFragment(), "Product");
-        viewPagerAdapter.add(new InputFragment(), "Inputs");
-        viewPagerAdapter.add(new RCPAFragment(), "RCPA");
-        viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
-        viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-        /*    *//*  tabLayout.addTab(tabLayout.newTab().setText("Detailed"));
-        tabLayout.addTab(tabLayout.newTab().setText("Product"));
-        tabLayout.addTab(tabLayout.newTab().setText("Inputs"));
-        tabLayout.addTab(tabLayout.newTab().setText("Additional Calls"));*//*
-         *//*  if (cust_type.equalsIgnoreCase("1") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
-            tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
-        } else if (cust_type.equalsIgnoreCase("2") && SharedPref.getDrRcpaNeed(DCRCallActivity.this).equalsIgnoreCase("1")) {
-            tabLayout.addTab(tabLayout.newTab().setText("RCPA"));
-        }*//*
-        tabLayout.addTab(tabLayout.newTab().setText("JFW/Others"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
+        dcrcallBinding.viewPager.setAdapter(viewPagerAdapter);
+        dcrcallBinding.tabLayout.setupWithViewPager(dcrcallBinding.viewPager);
+        dcrcallBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
         AddProductsData();
         AddInputData();
@@ -119,56 +115,55 @@ public class DCRCallActivity extends AppCompatActivity {
         AddRCPAData();
         AddJWData();
 
+        dcrcallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
 
-        tv_cust_name.setText(cust_name);
-
-        img_back.setOnClickListener(view -> {
+        dcrcallBinding.ivBack.setOnClickListener(view -> {
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
             startActivity(intent);
         });
 
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
-                startActivity(intent);
-            }
+        dcrcallBinding.btnCancel.setOnClickListener(view -> {
+            Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+            startActivity(intent);
         });
 
-        btn_final_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                startActivity(intent);
-            }
+        dcrcallBinding.btnFinalSubmit.setOnClickListener(view -> {
+            Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+            startActivity(intent);
         });
+    }
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Log.v("getfrag", "----" + tab.getPosition());
-                mCommonSharedPreference.setValueToPreference("tab_pos_dcr", String.valueOf(tab.getPosition()));
-                tab_pos = tab.getPosition();
-             /*   if (tab_pos == 0) {
-                    fragment_detailed.setVisibility(View.VISIBLE);
-                    fragment_products.setVisibility(View.GONE);
-                } else if (tab_pos == 1) {
-                    fragment_detailed.setVisibility(View.GONE);
-                    fragment_products.setVisibility(View.VISIBLE);
-                }*/
-                viewPager.setCurrentItem(tab.getPosition());
+    private void getRequiredData() {
+        try {
+            JSONArray jsonArray = new JSONArray();
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject setupData = jsonArray.getJSONObject(0);
+                setUpResponse = new SetupResponse();
+                Type typeSetup = new TypeToken<SetupResponse>() {
+                }.getType();
+                setUpResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+
+                if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+                    capDrPrd = setUpResponse.getCaptionDrPrd();
+                    capDrInp = setUpResponse.getCaptionDrInp();
+                    drRCPANeed = setUpResponse.getDrRcpaNeed();
+                } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
+                    capChemPrd = setUpResponse.getCaptionChemistPrd();
+                    capChemInp = setUpResponse.getCaptionChemistInp();
+                    ChemRCPANeed = setUpResponse.getChemistRcpaNeed();
+                } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+                    capStkPrd = setUpResponse.getCaptionStokistPrd();
+                    capStkInp = setUpResponse.getCaptionStokistInp();
+                } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
+                    capUndrPrd = setUpResponse.getCaptionUndrPrd();
+                    capUndrInp = setUpResponse.getCaptionUndrInp();
+                }
             }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+        } catch (Exception e) {
 
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        }
     }
 
     private void AddJWData() {
@@ -195,8 +190,8 @@ public class DCRCallActivity extends AppCompatActivity {
         SaveAdditionalCallAdapter.nestedAddInputCallDetails = new ArrayList<>();
 
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + sf_code);
-            Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + sf_code);
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
+            Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), false));

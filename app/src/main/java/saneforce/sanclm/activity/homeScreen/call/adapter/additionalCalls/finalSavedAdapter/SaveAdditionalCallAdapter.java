@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter;
 
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -16,25 +18,22 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall;
-import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallFragment;
+import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.NestedAddInputCallDetails;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.NestedAddSampleCallDetails;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.SaveAdditionalCall;
-import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.commonClasses.CommonSharedPreference;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAdditionalCallAdapter.ViewHolder> {
     public static int pos;
@@ -203,15 +202,11 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
                 AdditionalCallDetailedSide.rv_add_sample_list.setLayoutManager(mLayoutManagerprd);
                 AdditionalCallDetailedSide.rv_add_sample_list.setAdapter(AdditionalCallDetailedSide.adapterSampleAdditionalCall);
 
-                DCRCallActivity.fragment_add_call_details_side.setVisibility(View.VISIBLE);
+                dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.VISIBLE);
             }
         });
-        holder.tv_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DCRCallActivity.fragment_add_call_details_side.setVisibility(View.VISIBLE);
-            }
-        });
+
+        holder.tv_edit.setOnClickListener(view -> dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.VISIBLE));
 
     }
 
@@ -244,7 +239,7 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
     }
 
     private void AssignRVInputSampleSingle(RecyclerView rv_nested_calls_input_data, RecyclerView rv_nested_calls_sample_data, int adapterPosition) {
-        Log.v("pos","---"+ saveAdditionalCalls.get(adapterPosition).getName());
+        Log.v("pos", "---" + saveAdditionalCalls.get(adapterPosition).getName());
         dummyNestedInput.clear();
         dummyNestedSample.clear();
         if (nestedAddInputCallDetails.size() > 0) {

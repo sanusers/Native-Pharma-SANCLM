@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -113,7 +115,8 @@ public class AdditionalCallDetailedSide extends Fragment {
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DCRCallActivity.fragment_add_call_details_side.setVisibility(View.GONE);
+                dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE);
+
             }
         });
 
@@ -159,7 +162,7 @@ public class AdditionalCallDetailedSide extends Fragment {
              commonUtilsMethods.recycleTestWithoutDivider(SaveAdditionalCallAdapter.rv_nested_calls_input_data);
              commonUtilsMethods.recycleTestWithoutDivider(SaveAdditionalCallAdapter.rv_nested_calls_sample_data);
             AdditionalCallFragment.rv_add_call_list.setAdapter(saveAdditionalCallAdapter);
-            DCRCallActivity.fragment_add_call_details_side.setVisibility(View.GONE);
+            dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE);
         });
         return v;
     }

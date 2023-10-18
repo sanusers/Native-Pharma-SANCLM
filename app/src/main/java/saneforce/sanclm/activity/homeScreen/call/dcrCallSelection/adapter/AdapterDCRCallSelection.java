@@ -1,7 +1,5 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter;
 
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.activity.profile.CustomerProfile;
@@ -96,13 +95,19 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
 
         holder.constraint_main.setOnClickListener(view -> {
+            DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
+        //    DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).get));
+
+            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getPosition(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getDob(), custListArrayList.get(position).getWedding_date(), custListArrayList.get(position).getEmail(), custListArrayList.get(position).getMobile(), custListArrayList.get(position).getPhone(), custListArrayList.get(position).getQualification()));
+
+
             Intent intent = new Intent(context, CustomerProfile.class);
-            intent.putExtra("cust_name", custListArrayList.get(position).getName());
+        /*  intent.putExtra("cust_name", custListArrayList.get(position).getName());
             intent.putExtra("cust_code", custListArrayList.get(position).getCode());
             intent.putExtra("cust_type", custListArrayList.get(position).getType());
             intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
             intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
-            intent.putExtra("sf_code", TodayPlanSfCode);
+            intent.putExtra("sf_code", TodayPlanSfCode);*/
             context.startActivity(intent);
         });
     }
