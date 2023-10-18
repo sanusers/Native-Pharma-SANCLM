@@ -234,7 +234,8 @@ public class SettingsActivity extends AppCompatActivity {
                     String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
                     String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
                     SharedPref.setCallApiUrl(SettingsActivity.this, baseUrl + replacedUrl);*/
-                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replace("\\?.*", "/"));
+                    String replacedUrl = phpPathUrl.replaceAll("\\?.*", "/");
+                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + replacedUrl);
                     startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
                 }
             }).execute();
@@ -245,7 +246,8 @@ public class SettingsActivity extends AppCompatActivity {
             String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
             String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
             SharedPref.setCallApiUrl(SettingsActivity.this, baseUrl + replacedUrl);*/
-            SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replace("\\?.*", "/"));
+            String replacedUrl = phpPathUrl.replaceAll("\\?.*", "/");
+            SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + replacedUrl);
             startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         }
     }

@@ -102,6 +102,7 @@
     <string name="speciality">Speciality</string>
     <string name="territory">Territory</string>
     <string name="class_filter">Class</string>
+    <string name="promoted">Promoted</string>
 
 
 </resources>

@@ -21,6 +21,27 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="switch_theme" parent="Theme.AppCompat.Light">
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">@color/pink</item>
+
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/pink</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated,
+             which is used to tint widgets -->
+        <item name="colorAccent">@color/white</item>
+
+        <item name="colorControlNormal">@color/pink</item>
+        <item name="colorSwitchThumbNormal">@color/pink</item>
+        <item name="colorControlActivated">@color/green_2</item>
+        <item name="colorOnBackground">@color/pink</item>
+
+        <!-- You can also set colorControlNormal, colorControlActivated
+             colorControlHighlight, and colorSwitchThumbNormal. -->
+
+    </style>
+
     <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:fontFamily">@font/satoshi_bold</item>
         <item name="android:textStyle">bold</item>

@@ -37,6 +37,7 @@
     <color name="bg_grey_2">#C9CACE</color>
     <color name="bg_light_cement">#E9EAEB</color>
     <color name="text_qty_prd">#60626F</color>
+    <color name="text_grey">#6C6D79</color>
     <color name="bg_lite_blue">#E2F1FD</color>
     <color name="bg_blue">#3DA5F4</color>
     <color name="cheked_txt_color">#282A3C</color>

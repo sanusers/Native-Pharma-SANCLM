@@ -96,11 +96,30 @@
                     android:textColor="@color/dark_purple"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tag_stock"
+                    app:layout_constraintEnd_toStartOf="@+id/tag_promoted"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tag_promoted"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:paddingHorizontal="@dimen/_4sdp"
+                    android:paddingVertical="@dimen/_3sdp"
+                    android:text="@string/promoted"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tag_stock"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/tag_prd_name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteY="2dp" />
+
 
                 <TextView
                     android:id="@+id/tag_stock"
@@ -116,7 +135,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tag_samples"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/tag_prd_name"
+                    app:layout_constraintStart_toEndOf="@+id/tag_promoted"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_editor_absoluteY="2dp" />
 

@@ -38,6 +38,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tv_image_name.setText(callCaptureImageLists.get(position).getImg_name());
         holder.ed_img_desc.setText(callCaptureImageLists.get(position).getImg_description());
+
         holder.img_view.setImageBitmap(callCaptureImageLists.get(position).getImg_view());
 
         holder.img_del_img.setOnClickListener(view -> removeAt(holder.getAdapterPosition()));

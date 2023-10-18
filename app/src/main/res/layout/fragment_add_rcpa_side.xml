@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -18,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_add_rcpa_1"
         android:layout_width="0dp"
@@ -42,7 +42,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_header"
@@ -78,13 +77,13 @@
                 android:id="@+id/img_close"
                 android:layout_width="@dimen/_10sdp"
                 android:layout_height="@dimen/_10sdp"
-                android:src="@drawable/img_close"
                 android:layout_marginEnd="@dimen/_6sdp"
+                android:src="@drawable/img_close"
+                app:layout_constraintBottom_toBottomOf="@id/tv_tag_header"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@id/tv_tag_header"
-                app:layout_constraintTop_toTopOf="@id/tv_tag_header"
-                app:layout_constraintBottom_toBottomOf="@id/tv_tag_header"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="@id/tv_tag_header" />
 
             <View
                 android:id="@+id/view_dummy"
@@ -100,9 +99,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_2sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="@dimen/_2sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/constraint_header"
             app:layout_constraintVertical_bias="0.0">
@@ -119,49 +118,34 @@
                 android:text="@string/chemist_name"
                 android:textColor="@color/bg_txt_color"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/constraint_spin_chemist"
+                app:layout_constraintBottom_toTopOf="@id/tv_select_chemist"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_spin_chemist"
+            <TextView
+                android:id="@+id/tv_select_chemist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/_2sdp"
                 android:layout_marginVertical="@dimen/_1sdp"
+                android:background="@drawable/border_shape_spinner"
+                android:drawableEnd="@drawable/spin_down_arrow"
+                android:drawablePadding="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="left|center"
+                android:hint="@string/select"
+                android:padding="@dimen/_6sdp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="14sp"
+                android:textStyle="normal"
                 app:layout_constraintBottom_toTopOf="@id/tag_product_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tag_chemist_name">
-
-                <Spinner
-                    android:id="@+id/spin_chemist_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_20sdp"
-                    android:background="@drawable/border_shape_spinner"
-                    android:paddingHorizontal="@dimen/_2sdp"
-                    android:paddingVertical="@dimen/_2sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginEnd="@dimen/_4sdp"
-                    android:padding="@dimen/_2sdp"
-                    android:src="@drawable/spin_down_arrow"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toBottomOf="@id/tag_chemist_name" />
 
 
             <TextView
@@ -176,47 +160,72 @@
                 android:text="@string/our_prd_name"
                 android:textColor="@color/bg_txt_color"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/constraint_spin_products"
+                app:layout_constraintBottom_toTopOf="@id/tv_select_product"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/constraint_spin_chemist" />
+                app:layout_constraintTop_toBottomOf="@id/tv_select_chemist" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_spin_products"
+
+            <TextView
+                android:id="@+id/tv_select_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/_2sdp"
                 android:layout_marginVertical="@dimen/_1sdp"
+                android:background="@drawable/border_shape_spinner"
+                android:drawableEnd="@drawable/spin_down_arrow"
+                android:drawablePadding="@dimen/_4sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="left|center"
+                android:hint="@string/select"
+                android:padding="@dimen/_6sdp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@id/constraint_mid"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tag_product_name">
+                app:layout_constraintTop_toBottomOf="@id/tag_product_name" />
 
-                <Spinner
-                    android:id="@+id/spin_products_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_20sdp"
-                    android:background="@drawable/border_shape_spinner"
-                    android:paddingHorizontal="@dimen/_2sdp"
-                    android:paddingVertical="@dimen/_2sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginEnd="@dimen/_4sdp"
-                    android:padding="@dimen/_2sdp"
-                    android:src="@drawable/spin_down_arrow"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- <androidx.constraintlayout.widget.ConstraintLayout
+                 android:id="@+id/constraint_spin_products"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginHorizontal="@dimen/_2sdp"
+                 android:layout_marginVertical="@dimen/_1sdp"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintTop_toBottomOf="@id/tag_product_name">
+
+                 <Spinner
+                     android:id="@+id/spin_products_name"
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/_20sdp"
+                     android:background="@drawable/border_shape_spinner"
+                     android:paddingHorizontal="@dimen/_2sdp"
+                     android:paddingVertical="@dimen/_2sdp"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="0.0"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toTopOf="parent" />
+
+                 <ImageView
+                     android:layout_width="@dimen/_10sdp"
+                     android:layout_height="@dimen/_15sdp"
+                     android:layout_marginEnd="@dimen/_4sdp"
+                     android:padding="@dimen/_2sdp"
+                     android:src="@drawable/spin_down_arrow"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="1.0"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toTopOf="parent" />
+             </androidx.constraintlayout.widget.ConstraintLayout>-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_mid"
@@ -226,7 +235,7 @@
                 app:layout_constraintBottom_toTopOf="@id/btn_add_conmpetitor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/constraint_spin_products">
+                app:layout_constraintTop_toBottomOf="@id/tv_select_product">
 
                 <TextView
                     android:id="@+id/tag_qty"
@@ -283,15 +292,15 @@
                     android:layout_marginHorizontal="@dimen/_2sdp"
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:background="@drawable/bg_light_grey_border"
-                    android:fontFamily="@font/satoshi_bold"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="center|start"
                     android:hint="@string/enter_qty"
                     android:imeOptions="actionGo"
-                    android:gravity="center|start"
                     android:inputType="number"
                     android:paddingHorizontal="@dimen/_2sdp"
                     android:paddingVertical="@dimen/_3sdp"
                     android:textColor="@color/dark_purple"
-                    android:textColorHint="@color/light_grey"
+                    android:textColorHint="@color/black"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tv_rate"
@@ -306,8 +315,8 @@
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:background="@drawable/bg_light_grey_border"
                     android:fontFamily="@font/satoshi_bold"
-                    android:paddingHorizontal="@dimen/_2sdp"
                     android:gravity="center|start"
+                    android:paddingHorizontal="@dimen/_2sdp"
                     android:paddingVertical="@dimen/_3sdp"
                     android:textColor="@color/bg_txt_color"
                     android:textSize="14sp"
@@ -324,9 +333,9 @@
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:background="@drawable/bg_light_grey_border"
                     android:fontFamily="@font/satoshi_bold"
+                    android:gravity="center|start"
                     android:paddingHorizontal="@dimen/_2sdp"
                     android:paddingVertical="@dimen/_3sdp"
-                    android:gravity="center|start"
                     android:textColor="@color/bg_txt_color"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -356,21 +365,49 @@
                 app:layout_constraintStart_toStartOf="@id/tag_chemist_name"
                 app:layout_constraintTop_toBottomOf="@id/constraint_mid" />
 
+            <ListView
+                android:id="@+id/lv_chemist"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_100sdp"
+                android:background="@color/white"
+                android:divider="@color/light_grey"
+                android:dividerHeight="1dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/tv_select_chemist"
+                app:layout_constraintStart_toStartOf="@id/tv_select_chemist"
+                app:layout_constraintTop_toBottomOf="@id/tv_select_chemist"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ListView
+                android:id="@+id/lv_product"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_100sdp"
+                android:background="@color/white"
+                android:divider="@color/light_grey"
+                android:dividerHeight="1dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/tv_select_product"
+                app:layout_constraintStart_toStartOf="@id/tv_select_product"
+                app:layout_constraintTop_toBottomOf="@id/tv_select_product"
+                app:layout_constraintVertical_bias="0.0" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_add_rcpa"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="@dimen/_1sdp"
-                android:visibility="visible"
-                app:stackFromEnd="true"
                 android:clipToPadding="false"
-                app:reverseLayout="true"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@id/btn_save_rcpa"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btn_add_conmpetitor"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                app:reverseLayout="true"
+                app:stackFromEnd="true" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_save_rcpa"
