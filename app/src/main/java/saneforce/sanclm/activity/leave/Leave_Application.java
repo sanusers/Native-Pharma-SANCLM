@@ -530,7 +530,7 @@ public class Leave_Application extends AppCompatActivity {
                     JSONObject jsonObject1 = jsonArray1.getJSONObject(i1);
                     String Ltype = (jsonObject1.getString("Leave_Name"));
 
-                    if (jsonObject.getString("Leave_code").equals(jsonObject1.getString("Leave_code"))) {
+                     if (jsonObject.getString("Leave_code").equals(jsonObject1.getString("Leave_code"))) {
                         Leave_modelclass tackleave = new Leave_modelclass(jsonObject1.getString("Leave_Name"), (jsonObject.getString("Elig")),
                                 (jsonObject.getString("Taken")), (jsonObject.getString("Avail")),
                                 jsonObject.getString("Leave_Type_Code"));

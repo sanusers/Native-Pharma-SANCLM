@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -49,6 +50,7 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
 
         if (data.isPB_visibility()){
             holder.progressBar.setVisibility(View.VISIBLE);
+            holder.failedIcon.setVisibility(View.GONE);
         }else {
             holder.progressBar.setVisibility(View.GONE);
         }
@@ -57,6 +59,7 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
             @Override
             public void onClick (View view) {
                 holder.progressBar.setVisibility(View.VISIBLE);
+                holder.failedIcon.setVisibility(View.GONE);
                 masterSyncItemClick.itemClick(data,holder.getAdapterPosition());
             }
         });
@@ -70,11 +73,13 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         TextView name,count;
         ProgressBar progressBar;
+        ImageView failedIcon;
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             count = itemView.findViewById(R.id.count);
             progressBar = itemView.findViewById(R.id.progressBar);
+            failedIcon = itemView.findViewById(R.id.syncFailedImage);
 
         }
     }

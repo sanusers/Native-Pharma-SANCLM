@@ -84,6 +84,8 @@ public class ModelClass implements Serializable {
 
     private Boolean isVisible = false;
 
+    private String remarks = "";
+
     private ModelClass.SessionList.WorkType workType;
 
     private ModelClass.SessionList.SubClass HQ;
@@ -107,9 +109,10 @@ public class ModelClass implements Serializable {
     public SessionList () {
     }
 
-    public SessionList (String layoutVisible, Boolean isVisible, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass HQ, List<ModelClass.SessionList.SubClass> subClass, List<ModelClass.SessionList.SubClass> JC, List<ModelClass.SessionList.SubClass> listedDr, List<ModelClass.SessionList.SubClass> chemist, List<ModelClass.SessionList.SubClass> stockiest, List<ModelClass.SessionList.SubClass> unListedDr, List<ModelClass.SessionList.SubClass> cip, List<ModelClass.SessionList.SubClass> hospital) {
+    public SessionList (String layoutVisible, Boolean isVisible,String remarks, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass HQ, List<ModelClass.SessionList.SubClass> subClass, List<ModelClass.SessionList.SubClass> JC, List<ModelClass.SessionList.SubClass> listedDr, List<ModelClass.SessionList.SubClass> chemist, List<ModelClass.SessionList.SubClass> stockiest, List<ModelClass.SessionList.SubClass> unListedDr, List<ModelClass.SessionList.SubClass> cip, List<ModelClass.SessionList.SubClass> hospital) {
       this.layoutVisible = layoutVisible;
       this.isVisible = isVisible;
+      this.remarks = remarks;
       this.workType = workType;
       this.HQ = HQ;
       this.cluster = subClass;
@@ -125,6 +128,7 @@ public class ModelClass implements Serializable {
     public SessionList (SessionList sessionList) {
       this.layoutVisible = sessionList.getLayoutVisible();
       this.isVisible = sessionList.getVisible();
+      this.remarks = sessionList.getRemarks();
       this.workType = new WorkType(sessionList.getWorkType());
       this.HQ = new SubClass(sessionList.getHQ());
 
@@ -193,6 +197,14 @@ public class ModelClass implements Serializable {
 
     public void setVisible (Boolean visible) {
       isVisible = visible;
+    }
+
+    public String getRemarks () {
+      return remarks;
+    }
+
+    public void setRemarks (String remarks) {
+      this.remarks = remarks;
     }
 
     public ModelClass.SessionList.WorkType getWorkType () {

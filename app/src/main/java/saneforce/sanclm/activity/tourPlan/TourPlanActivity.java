@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.ColorSpace;
 import android.icu.util.LocaleData;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -94,11 +95,13 @@ public class TourPlanActivity extends AppCompatActivity {
         localDate = LocalDate.now();
         uiInitialization();
         dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
+//        new Async().execute(localDate);
 
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run () {
                 populateCalendarAdapter(dayWiseArrayCurrentMonth);
+
 //            }
 //        },100);
 
@@ -618,7 +621,7 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-        return new ModelClass.SessionList("", true, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+        return new ModelClass.SessionList("", true,"", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     public void populateCalendarAdapter (ArrayList<ModelClass> arrayList){
@@ -668,7 +671,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,"",workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
                 arrayList.getSessionList().remove(position);
                 arrayList.getSessionList().add(position,modelClass);
 
@@ -690,7 +693,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                    ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                    ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,"",workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
                     arrayList.getSessionList().remove(position);
                     arrayList.getSessionList().add(modelClass);
                 }
@@ -735,8 +738,6 @@ public class TourPlanActivity extends AppCompatActivity {
             }
         }
 
-        Log.e("test","size : " + modelClasses.size());
-
         summaryAdapter = new SummaryAdapter(modelClasses, TourPlanActivity.this, new SummaryInterface() {
             @Override
             public void onClick (ModelClass arrayList, int position) {
@@ -748,6 +749,7 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.summaryRecView.setLayoutManager(layoutManager);
         binding.summaryRecView.setAdapter(summaryAdapter);
         summaryAdapter.notifyDataSetChanged();
+
     }
 
     public void scrollToPosition(int position,boolean fieldEmpty){
@@ -775,5 +777,46 @@ public class TourPlanActivity extends AppCompatActivity {
     protected void onResume () {
         super.onResume();
 //        uiInitialization();
+    }
+
+    private class Async extends AsyncTask<LocalDate, Void, ArrayList<ModelClass>>{
+
+        @Override
+        protected ArrayList<ModelClass> doInBackground (LocalDate... localDates) {
+            ArrayList<ModelClass> modelClasses = new ArrayList<>();
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDates[0]));
+            String monthYear = monthYearFromDate(localDates[0]);
+
+            for (String day : days) {
+                if (!day.isEmpty()){
+                    String date = day + " " + monthYear  ;
+                    Date date1 = new Date(date);
+                    String dayName = formatter.format(date1);
+                    ModelClass.SessionList sessionList = new ModelClass.SessionList();
+                    sessionList = prepareClassForTpAdapter();
+                    for (String holiday : holidaysDay){
+                        if (holiday.equalsIgnoreCase(dayName)){
+                            sessionList.setWorkType(weeklyOffModel);
+                        }
+                    }
+                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                    sessionLists.add(sessionList);
+                    ModelClass modelClass = new ModelClass(day,date,dayName,true,sessionLists);
+                    modelClasses.add(modelClass);
+                } else {
+                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                    ModelClass modelClass = new ModelClass(day,"","",true,sessionLists);
+                    modelClasses.add(modelClass);
+                }
+            }
+            return modelClasses;
+        }
+
+        @Override
+        protected void onPostExecute (ArrayList<ModelClass> modelClasses) {
+            super.onPostExecute(modelClasses);
+            Log.e("test","size in onPostExecute : " + modelClasses.size());
+        }
     }
 }

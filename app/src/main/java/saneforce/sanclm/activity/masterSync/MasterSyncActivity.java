@@ -525,7 +525,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         therapticCount = sqLite.getMasterSyncDataByKey(Constants.THERAPTIC_SLIDE).length();
         subordinateCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE).length();
         subMgrCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE_MGR).length();
-        jWorkCount = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK).length();
+        jWorkCount = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + rsf).length();
         setupCount = sqLite.getMasterSyncDataByKey(Constants.SETUP).length();
         customSetupCount = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP).length();
         prepareArray(rsf);
@@ -640,7 +640,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         subordinateModelArray.clear();
         MasterSyncItemModel subModel = new MasterSyncItemModel("Subordinate",subordinateCount,"Subordinate","getsubordinate",Constants.SUBORDINATE,false);
         MasterSyncItemModel subMgrModel = new MasterSyncItemModel("Subordinate MGR",subMgrCount,"Subordinate","getsubordinatemgr",Constants.SUBORDINATE_MGR,false);
-        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Joint Work",jWorkCount,"Subordinate","getjointwork",Constants.JOINT_WORK,false);
+        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Joint Work",jWorkCount,"Subordinate","getjointwork",Constants.JOINT_WORK + hqCode,false);
         subordinateModelArray.add(subModel);
         subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
@@ -651,6 +651,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel customSetupModel = new MasterSyncItemModel("Custom Setup",customSetupCount,"Setup","getcustomsetup",Constants.CUSTOM_SETUP,false);
         setupModelArray.add(setupModel);
         setupModelArray.add(customSetupModel);
+
     }
 
     public void listItemClicked(ImageView imageView, LinearLayout view){
@@ -743,7 +744,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         itemCount = 0;
         apiSuccessCount = 0;
 
-        //Whenever hq changed true , we need to sync only dr,chemist,stockiest,unListDr,hosp,cip and cluster
+        //Whenever hq changed true , we need to sync only dr,chemist,stockiest,unListDr,hosp,cip,cluster and joint work
         masterSyncAllModel.add(doctorModelArray);
         masterSyncAllModel.add(chemistModelArray);
         masterSyncAllModel.add(stockiestModelArray);
@@ -751,6 +752,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         masterSyncAllModel.add(hospitalModelArray);
         masterSyncAllModel.add(cipModelArray);
         masterSyncAllModel.add(clusterModelArray);
+        masterSyncAllModel.add(subordinateModelArray);
 
         if (!hqChanged){
             masterSyncAllModel.add(inputModelArray);
@@ -760,7 +762,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             masterSyncAllModel.add(workTypeModelArray);
             masterSyncAllModel.add(tpModelArray);
             masterSyncAllModel.add(slideModelArray);
-            masterSyncAllModel.add(subordinateModelArray);
             masterSyncAllModel.add(setupModelArray);
         }
 
@@ -775,7 +776,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                             masterSyncAdapter.notifyDataSetChanged();
                             sync(childArray.get(j).getMasterFor(),childArray.get(j).getRemoteTableName(),childArray,j);
                         }
-                    }else{
+                    } else if (childArray.get(j).getMasterFor().equalsIgnoreCase("Subordinate")) {
+                        if (j == 2){ // Joint work is at index 2 in Subordinate array
+                            childArray.get(j).setPB_visibility(true);
+                            masterSyncAdapter.notifyDataSetChanged();
+                            sync(childArray.get(j).getMasterFor(),childArray.get(j).getRemoteTableName(),childArray,j);
+                        }
+                    } else{
                         childArray.get(j).setPB_visibility(true);
                         masterSyncAdapter.notifyDataSetChanged();
                         sync(childArray.get(j).getMasterFor(),childArray.get(j).getRemoteTableName(),childArray,j);
@@ -810,7 +817,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 jsonObject.put("Designation", designation);
                 jsonObject.put("state_code", state_code);
                 jsonObject.put("subdivision_code", subdivision_code);
-                if (masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getholiday") || masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getweeklyoff")){
+                if (remoteTableName.equalsIgnoreCase("getholiday") || remoteTableName.equalsIgnoreCase("getweeklyoff")){
                     jsonObject.put("year",Year.now().getValue());
                 }
 
@@ -880,13 +887,15 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                            //  Log.e("test","failed : " + t);
+                              Log.e("test","failed : " + t);
                             apiSuccessCount++;
                             //  Log.e("test","success count at error : " + apiSuccessCount);
                             masterSyncItemModels.get(position).setPB_visibility(false);
                             masterSyncAdapter.notifyDataSetChanged();
                             if (apiSuccessCount >= itemCount){
-                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                                if (navigateFrom.equalsIgnoreCase("Login")){
+                                    startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                                }
                             }
 
                         }

@@ -13,7 +13,7 @@ public class MasterSyncItemModel {
     }
 
 
-    public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, boolean PB_visibility) {
+    public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, boolean PB_visibility ) {
         this.name = name;
         this.count = count;
         this.masterFor = masterFor;
@@ -23,6 +23,12 @@ public class MasterSyncItemModel {
     }
 
     public MasterSyncItemModel (String remoteTableName, String localTableKeyName) {
+        this.remoteTableName = remoteTableName;
+        this.localTableKeyName = localTableKeyName;
+    }
+
+    public MasterSyncItemModel (String masterFor, String remoteTableName, String localTableKeyName) {
+        this.masterFor = masterFor;
         this.remoteTableName = remoteTableName;
         this.localTableKeyName = localTableKeyName;
     }
@@ -74,4 +80,5 @@ public class MasterSyncItemModel {
     public void setPB_visibility (boolean PB_visibility) {
         this.PB_visibility = PB_visibility;
     }
+
 }

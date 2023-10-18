@@ -241,12 +241,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             int stockiest_current_callcount=sqLite.getcurrentmonth_calls_count("3");
             int unlistered_current_callcount=sqLite.getcurrentmonth_calls_count("4");
 
-
-
-            doc_call_count.setText(Doctor_list.length()+" / "+String.valueOf(doc_current_callcount));
-            che_call_count.setText(Chemist_list.length()+" / "+String.valueOf(che_current_callcount));
-            stockiest_call_count.setText( Stockiest_list.length()+" / "+String.valueOf(stockiest_current_callcount));
-            unlisted_call_count.setText(unlistered_list.length()+" / "+String.valueOf(unlistered_current_callcount));
+            doc_call_count.setText(String.valueOf(doc_current_callcount)+" / "+Doctor_list.length());
+            che_call_count.setText(String.valueOf(che_current_callcount)+" / "+Chemist_list.length());
+            stockiest_call_count.setText( String.valueOf(stockiest_current_callcount)+" / "+Stockiest_list.length());
+            unlisted_call_count.setText(String.valueOf(unlistered_current_callcount)+" / "+unlistered_list.length());
 
             int doc_progress_value,che_progress_value,stockiest_progress_value,unilistered_progress_value;
 
@@ -254,8 +252,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             che_progress_value=computePercent(che_current_callcount,Chemist_list.length());
             stockiest_progress_value=computePercent(stockiest_current_callcount,Stockiest_list.length());
             unilistered_progress_value=computePercent(unlistered_current_callcount,unlistered_list.length());
-
-
 
             txt_doc_progress_value.setText(String.valueOf(doc_progress_value)+"%");
             txt_che_progress_value.setText(String.valueOf(che_progress_value)+"%");
@@ -266,8 +262,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             che_progress_bar.setProgress(che_progress_value);
             stock_progress_bar.setProgress(stockiest_progress_value);
             unlist_progress_bar.setProgress(unilistered_progress_value);
-
-
 
             lineChart.clear();
             LinecharLoad("1");
@@ -496,6 +490,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         xAxis.setLabelCount(8,true);
         xAxis.disableGridDashedLine();
         xAxis.setDrawGridLines(false);
+        xAxis.setTextSize(getResources().getDimension(R.dimen._2sdp));
         xAxis.setAvoidFirstLastClipping(true);
 
         final ArrayList<String> xAxisLabel = new ArrayList<> ();
@@ -511,9 +506,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {
-
-
-
                 if (ispast2month) {
                     if (value == 0f) {
                         return "";
@@ -580,6 +572,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         leftYAxis.setDrawAxisLine(false);
         leftYAxis.setDrawGridLines(true);
         leftYAxis.setDrawLimitLinesBehindData(true);
+        leftYAxis.setTextSize(getResources().getDimension(R.dimen._2sdp));
         leftYAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getAxisLabel(float value, AxisBase axis) {

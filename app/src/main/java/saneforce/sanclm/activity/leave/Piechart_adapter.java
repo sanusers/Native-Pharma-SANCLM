@@ -54,16 +54,11 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         final Leave_modelclass pie_value = chart_list.get(position);
-
-
-
         String L_Taken = pie_value.getTakenleave();
         String L_Elgable = pie_value.getEligable();
         String L_Avalable = pie_value.getAvaolable();
 
         Log.d("chart", pie_value + "---" + L_Taken +"--"+L_Elgable+"--"+L_Avalable);
-
-
 
         Chartview(holder.pieChart,pie_value.getL_type(),pie_value.getAvaolable(),pie_value.getEligable(),pie_value.getTakenleave(),holder.c_val,holder.c_val_tol, holder.ltype_name,pie_value.getLtype(),
                 holder. LOP,holder.chartview_value);

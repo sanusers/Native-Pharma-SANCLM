@@ -19,7 +19,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     ArrayList<ModelClass> daysOfMonth= new ArrayList<>();
     OnDayClickInterface onDayClickInterface;
     Context context;
-    int count = 0;
 
     public CalendarAdapter () {
     }

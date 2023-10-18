@@ -70,7 +70,8 @@
         <activity
             android:name=".activity.login.LoginActivity"
             android:exported="false"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".activity.setting.SettingsActivity"
             android:exported="false"

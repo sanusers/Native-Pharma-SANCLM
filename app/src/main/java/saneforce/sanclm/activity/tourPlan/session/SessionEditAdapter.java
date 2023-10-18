@@ -3,11 +3,15 @@ package saneforce.sanclm.activity.tourPlan.session;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -113,7 +117,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     }
 
-
     @NonNull
     @Override
     public SessionEditAdapter.MyViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType) {
@@ -124,6 +127,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     @Override
     public void onBindViewHolder (@NonNull SessionEditAdapter.MyViewHolder holder, int position) {
 
+        holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         holder.viewHolder = holder;
         holder.sessionData = inputData.getSessionList().get(holder.getAbsoluteAdapterPosition());
         holder.clusterModelArray = new ArrayList<>(holder.sessionData.getCluster());
@@ -166,7 +171,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.hqNeed = "1"; // 1 - No
             holder.clusterNeed = "1";
         }
-        workTypeBasedUI(holder,holder.sessionData);
+        workTypeBasedUI(holder,holder.sessionData,true);
 
         //HQ
         if (holder.sessionData.getHQ().getName().equals("")){
@@ -298,6 +303,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.hospField.setText(hospName);
         }
         prepareInputData(holder.hospitalModelArray,holder.hospJsonArray);
+        holder.remarks.setText(holder.sessionData.getRemarks());
 
         holder.searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -436,7 +442,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }else{
                     if (!holder.fieldSelected){
                         if (holder.jointCallJsonArray.length() <= 0){
-                            holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK);
+                            holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + holder.selectedHq);
                             addCheckBox(holder.jointCallJsonArray);
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else{
@@ -676,6 +682,38 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
+        holder.remarks.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (holder.remarks.hasFocus()) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction (TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                   holder.sessionData.setRemarks(holder.remarks.getText().toString());
+                }
+                return false;
+            }
+        });
+
+        holder.remarks.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange (View view, boolean b) {
+                if (!b){
+                    holder.sessionData.setRemarks(holder.remarks.getText().toString());
+                }
+            }
+        });
+
         holder.sessionDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -696,9 +734,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public ImageView searchClearIcon;
         public TextView workTypeField,hqField,clusterField,jcField,drField,chemistField,stockiestField,unListedDrField,cipField,hospField;
         public TextView clusterCount,jcCount,drCount,chemistCount,stockiestCount,unListedDrCount,cipCount,hospCount;
-        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout;
+        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout,remarksLayout;
         public ImageView workTypeArrow,hqArrow,clusterArrow,jcArrow,drArrow,chemistArrow,stockiestArrow,unListedDrArrow,cipArrow,hospArrow;
-        EditText searchET;
+        EditText searchET,remarks;
         RelativeLayout relativeLayout;
         CardView parentCarView,listCardView;
         RecyclerView itemRecView;
@@ -753,6 +791,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             unListedDrLayout = itemView.findViewById(R.id.unListedDrLayout);
             cipLayout = itemView.findViewById(R.id.cipLayout);
             hospLayout = itemView.findViewById(R.id.hospLayout);
+            remarksLayout = itemView.findViewById(R.id.remarkLayout);
+            remarks = itemView.findViewById(R.id.remarkET);
 
             workTypeArrow = itemView.findViewById(R.id.workTypeArrow);
             hqArrow = itemView.findViewById(R.id.hqArrow);
@@ -791,7 +831,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void workTypeBasedUI (MyViewHolder holder,ModelClass.SessionList session){
+    public void workTypeBasedUI (MyViewHolder holder,ModelClass.SessionList session,boolean bool){
 
         String workType = session.getWorkType().getFWFlg();
 
@@ -950,41 +990,43 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         }
 
-         switch (session.getLayoutVisible()){
-            case Constants.CLUSTER:{
-                changeUIState(holder, holder.clusterLayout, holder.clusterArrow, false);
-                break;
+        if (bool){
+            switch (session.getLayoutVisible()){
+                case Constants.CLUSTER:{
+                    changeUIState(holder, holder.clusterLayout, holder.clusterArrow, false);
+                    break;
+                }
+                case Constants.JOINT_WORK:{
+                    changeUIState(holder, holder.jcLayout, holder.jcArrow, false);
+                    break;
+                }
+                case Constants.DOCTOR:{
+                    changeUIState(holder, holder.drLayout, holder.drArrow, false);
+                    break;
+                }
+                case Constants.CHEMIST:{
+                    changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
+                    break;
+                }
+                case Constants.STOCKIEST:{
+                    changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
+                    break;
+                }
+                case Constants.UNLISTED_DOCTOR:{
+                    changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
+                    break;
+                }
+                case Constants.CIP:{
+                    changeUIState(holder, holder.cipLayout, holder.cipArrow, false);
+                    break;
+                }
+                case Constants.HOSPITAL:{
+                    changeUIState(holder, holder.hospLayout, holder.hospArrow, false);
+                    break;
+                }
             }
-            case Constants.JOINT_WORK:{
-                changeUIState(holder, holder.jcLayout, holder.jcArrow, false);
-                break;
-            }
-            case Constants.DOCTOR:{
-                changeUIState(holder, holder.drLayout, holder.drArrow, false);
-                break;
-            }
-            case Constants.CHEMIST:{
-                changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
-                break;
-            }
-            case Constants.STOCKIEST:{
-                changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
-                break;
-            }
-            case Constants.UNLISTED_DOCTOR:{
-                changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
-                break;
-            }
-            case Constants.CIP:{
-                changeUIState(holder, holder.cipLayout, holder.cipArrow, false);
-                break;
-            }
-            case Constants.HOSPITAL:{
-                changeUIState(holder, holder.hospLayout, holder.hospArrow, false);
-                break;
-            }
-
         }
+
 
     }
 
@@ -996,7 +1038,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
 
         holder.clusterJsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hqCode);
-        holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK);
+        holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + hqCode);
         holder.listedDrJsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + hqCode);
         holder.chemistJsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + hqCode);
         holder.stockiestJsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + hqCode);
@@ -1032,13 +1074,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void prepareMasterToSync(String hqCode){
         masterSyncArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel("getdoctors", Constants.DOCTOR + hqCode);
-        MasterSyncItemModel cheModel = new MasterSyncItemModel("getchemist",Constants.CHEMIST + hqCode);
-        MasterSyncItemModel stockModel = new MasterSyncItemModel("getstockist",Constants.STOCKIEST + hqCode);
-        MasterSyncItemModel unListModel = new MasterSyncItemModel("getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode);
-        MasterSyncItemModel hospModel = new MasterSyncItemModel("gethospital",Constants.HOSPITAL + hqCode);
-        MasterSyncItemModel ciModel = new MasterSyncItemModel("getcip",Constants.CIP + hqCode);
-        MasterSyncItemModel cluster = new MasterSyncItemModel("getterritory",Constants.CLUSTER + hqCode);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor","getdoctors", Constants.DOCTOR + hqCode);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor","getchemist",Constants.CHEMIST + hqCode);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor","getstockist",Constants.STOCKIEST + hqCode);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor","getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode);
+        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor","gethospital",Constants.HOSPITAL + hqCode);
+        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor","getcip",Constants.CIP + hqCode);
+        MasterSyncItemModel cluster = new MasterSyncItemModel("Doctor","getterritory",Constants.CLUSTER + hqCode);
+        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Subordinate","getjointwork",Constants.JOINT_WORK + hqCode);
+
         masterSyncArray.add(doctorModel);
         masterSyncArray.add(cheModel);
         masterSyncArray.add(stockModel);
@@ -1046,6 +1090,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         masterSyncArray.add(hospModel);
         masterSyncArray.add(ciModel);
         masterSyncArray.add(cluster);
+        masterSyncArray.add(jWorkModel);
         for (int i=0;i<masterSyncArray.size();i++){
             sync(masterSyncArray.get(i),hqCode);
         }
@@ -1071,7 +1116,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 jsonObject.put("subdivision_code", subdivision_code);
 
 //                Log.e("test","master sync obj in TP : " + jsonObject);
-                Call<JsonArray> call =  apiInterface.getDrMaster(jsonObject.toString());
+                Call<JsonArray> call = null;
+                if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Doctor")){
+                    call = apiInterface.getDrMaster(jsonObject.toString());
+                } else if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Subordinate")) {
+                    call = apiInterface.getSubordinateMaster(jsonObject.toString());
+                }
+
                 if (call != null){
                     call.enqueue(new Callback<JsonArray>() {
                         @Override
@@ -1402,68 +1453,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         if (allLayoutVisible){
             holder.workTypeLayout.setVisibility(View.VISIBLE);
+            holder.remarksLayout.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.down_arrow));
             holder.listCardView.setVisibility(View.GONE);
             TourPlanActivity.addSaveBtnLayout.setVisibility(View.VISIBLE);
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
 
-            if (holder.hqNeed.equals("0")){
-                holder.hqLayout.setVisibility(View.VISIBLE);
-            }else if (holder.hqNeed.equals("1")){
-                holder.hqLayout.setVisibility(View.GONE);
-            }else{
-                holder.hqLayout.setVisibility(View.VISIBLE);
-            }
-
-            if (holder.clusterNeed.equals("0")){
-                holder.clusterLayout.setVisibility(View.VISIBLE);
-            }else if (holder.clusterNeed.equals("1")){
-                holder.clusterLayout.setVisibility(View.GONE);
-            } else{
-                holder.clusterLayout.setVisibility(View.VISIBLE);
-            }
-
-            if (jwNeed.equalsIgnoreCase("0")){
-                holder.jcLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.jcLayout.setVisibility(View.GONE);
-            }
-
-            if (drNeed.equalsIgnoreCase("0")){
-                holder.drLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.drLayout.setVisibility(View.GONE);
-            }
-
-            if (chemistNeed.equalsIgnoreCase("0")){
-                holder.chemistLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.chemistLayout.setVisibility(View.GONE);
-            }
-
-            if (stockiestNeed.equalsIgnoreCase("0")){
-                holder.stockiestLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.stockiestLayout.setVisibility(View.GONE);
-            }
-
-            if (unListedDrNeed.equalsIgnoreCase("0")){
-                holder.unListedDrLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.unListedDrLayout.setVisibility(View.GONE);
-            }
-
-            if (cipNeed.equalsIgnoreCase("0")){
-                holder.cipLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.cipLayout.setVisibility(View.GONE);
-            }
-
-            if (hospNeed.equalsIgnoreCase("0")){
-                holder.hospLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.hospLayout.setVisibility(View.GONE);
-            }
+            workTypeBasedUI(holder,holder.sessionData,false);
         } else{
             holder.workTypeLayout.setVisibility(View.GONE);
             holder.hqLayout.setVisibility(View.GONE);
@@ -1475,6 +1471,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.unListedDrLayout.setVisibility(View.GONE);
             holder.cipLayout.setVisibility(View.GONE);
             holder.hospLayout.setVisibility(View.GONE);
+            holder.remarksLayout.setVisibility(View.GONE);
             holder.listCardView.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.up_arrow));

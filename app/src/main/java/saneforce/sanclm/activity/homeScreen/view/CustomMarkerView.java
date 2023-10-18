@@ -36,7 +36,6 @@ public class CustomMarkerView extends MarkerView implements CustomMarkerView1 {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
 
-
         Call_count.setText(String.valueOf(highlight.getY()).replace("."," "));
         Total_Call_count.setText(String.valueOf(sqLite.gettotalcallscount(cus)));
 

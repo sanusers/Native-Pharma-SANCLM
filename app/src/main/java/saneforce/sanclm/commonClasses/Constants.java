@@ -44,7 +44,7 @@ public class Constants {
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";
     public static final String SUBORDINATE_MGR = "Subordinate_Mgr";
-    public static final String JOINT_WORK = "Joint_Work";
+    public static final String JOINT_WORK = "Joint_Work_";
 
     //Product
     public static final String PRODUCT = "Product";

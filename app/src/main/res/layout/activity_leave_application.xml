@@ -528,6 +528,8 @@
                                             android:id="@+id/et_te"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
+                                            android:layout_marginTop="@dimen/_4sdp"
+                                            android:paddingBottom="@dimen/_2sdp"
                                             android:layout_marginEnd="@dimen/_1sdp"
                                             android:fontFamily="@font/satoshi_medium"
                                             android:gravity="left"
@@ -703,42 +705,4 @@
     <include
         layout="@layout/side_screen" />
 
-
 </androidx.drawerlayout.widget.DrawerLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
