@@ -52,7 +52,9 @@ import saneforce.sanclm.activity.presentation.CreatePresentation;
 import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
+import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 
@@ -71,6 +73,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ImageView masterSync;
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
+    SQLite sqLite;
 
 
 
@@ -97,6 +100,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.FullScreencall();
+        sqLite = new SQLite(HomeDashBoard.this);
+        sqLite.getWritableDatabase();
         pre_layout = findViewById(R.id.ll_presentation);
         slide_layout = findViewById(R.id.ll_slide);
         report_layout = findViewById(R.id.ll_report);
@@ -114,6 +119,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith = displayMetrics.widthPixels;
+
 
 //        DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
 //        layoutParams.width = DeviceWith / 3;// You can replace R.dimen.navigation_drawer_width with the width you want

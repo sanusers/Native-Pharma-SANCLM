@@ -1,6 +1,7 @@
 package saneforce.sanclm.network;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -28,32 +29,32 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("?axn=table/dcrmasterdata")
-    Call<JsonArray> getDrMaster(@Field("data") String postObj);
+    Call<JsonElement> getDrMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/subordinates")
-    Call<JsonArray> getSubordinateMaster(@Field("data") String postObj);
+    Call<JsonElement> getSubordinateMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/products")
-    Call<JsonArray> getProductMaster(@Field("data") String postObj);
+    Call<JsonElement> getProductMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=get/leave")
-    Call<JsonArray> getLeaveMaster(@Field("data") String postObj);
+    Call<JsonElement> getLeaveMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=home")
-    Call<JsonArray> getDCRMaster(@Field("data") String postObj);
+    Call<JsonElement> getDCRMaster(@Field("data") String postObj);
 
 
     @FormUrlEncoded
     @POST("?axn=table/slides")
-    Call<JsonArray> getSlideMaster(@Field("data") String postObj);
+    Call<JsonElement> getSlideMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/setups")
-    Call<JsonArray> getSetupMaster(@Field("data") String postObj);
+    Call<JsonElement> getSetupMaster(@Field("data") String postObj);
 
 
     @FormUrlEncoded

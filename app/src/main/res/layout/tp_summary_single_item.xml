@@ -26,7 +26,7 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="Date"
                 android:textSize="@dimen/_5sdp"
                 android:textColor="@color/text_dark"
                 android:fontFamily="@font/satoshi_variable"
@@ -40,11 +40,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
                 android:gravity="center"
+                android:letterSpacing="0.2"
                 android:text="..."
                 android:textColor="@color/text_dark"
                 android:textSize="@dimen/_6sdp"
-                android:letterSpacing="0.2"
-                tools:ignore="SpUsage"/>
+                tools:ignore="SpUsage" />
 
         </RelativeLayout>
 
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:layout_marginTop="@dimen/_4sdp">
 
             <TextView
                 android:id="@+id/workTypeLabel"

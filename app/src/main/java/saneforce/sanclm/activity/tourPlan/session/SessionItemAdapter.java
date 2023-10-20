@@ -24,8 +24,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     private JSONArray forFilter ;
     private JSONArray supportArray = new JSONArray();
     JSONObject jsonObject = null;
-    private Context context = null;
-    private boolean checkBoxVisibility = false,isAllSelected = false;
+    private boolean checkBoxVisibility = false;
 
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
@@ -34,10 +33,9 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
 
     }
 
-    public SessionItemAdapter (JSONArray arrayList, Context context, boolean checkBoxVisibility, SessionItemInterface sessionItemInterface) {
+    public SessionItemAdapter (JSONArray arrayList, boolean checkBoxVisibility, SessionItemInterface sessionItemInterface) {
         this.jsonArray = arrayList;
         this.forFilter = arrayList;
-        this.context = context;
         this.checkBoxVisibility = checkBoxVisibility;
         this.sessionItemInterface = sessionItemInterface;
     }
@@ -68,7 +66,6 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-
                 try{
                     if (!holder.checkBox.isChecked()){
                         holder.checkBox.setChecked(true);
@@ -81,10 +78,8 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                 }catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
             }
         });
-
 
     }
 
@@ -102,7 +97,6 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-
         CheckBox checkBox;
         TextView textView;
 
@@ -121,7 +115,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
             FilterResults results=new FilterResults();
             try {
                 JSONArray filteredArray=new JSONArray();
-                if(charSequence!=null && charSequence.length()>0){
+                if(charSequence!=null && charSequence.length() > 0){
                     supportArray = new JSONArray();
                     for(int i = 0; i< jsonArray.length(); i++){
                         if((jsonArray.getJSONObject(i).getString("Name").toUpperCase()).contains(charSequence.toString().toUpperCase())) {

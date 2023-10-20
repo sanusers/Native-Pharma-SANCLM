@@ -6,25 +6,30 @@ public class MasterSyncItemModel {
     String masterFor = "";
     String remoteTableName = "";
     String localTableKeyName ="";
-    boolean PB_visibility = false;
+    boolean PBarVisibility = false;
+    int syncSuccess = 0;
 
     public MasterSyncItemModel(){
 
     }
 
-
-    public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, boolean PB_visibility ) {
+    public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, boolean PBarVisibility) {
         this.name = name;
         this.count = count;
         this.masterFor = masterFor;
         this.remoteTableName = remoteTableName;
         this.localTableKeyName = localTableKeyName;
-        this.PB_visibility = PB_visibility;
+        this.PBarVisibility = PBarVisibility;
     }
 
-    public MasterSyncItemModel (String remoteTableName, String localTableKeyName) {
+    public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, int syncSuccess, boolean PBarVisibility) {
+        this.name = name;
+        this.count = count;
+        this.masterFor = masterFor;
         this.remoteTableName = remoteTableName;
         this.localTableKeyName = localTableKeyName;
+        this.syncSuccess = syncSuccess;
+        this.PBarVisibility = PBarVisibility;
     }
 
     public MasterSyncItemModel (String masterFor, String remoteTableName, String localTableKeyName) {
@@ -73,12 +78,19 @@ public class MasterSyncItemModel {
         this.remoteTableName = remoteTableName;
     }
 
-    public boolean isPB_visibility () {
-        return PB_visibility;
+    public boolean isPBarVisibility () {
+        return PBarVisibility;
     }
 
-    public void setPB_visibility (boolean PB_visibility) {
-        this.PB_visibility = PB_visibility;
+    public void setPBarVisibility (boolean PBarVisibility) {
+        this.PBarVisibility = PBarVisibility;
     }
 
+    public int getSyncSuccess () {
+        return syncSuccess;
+    }
+
+    public void setSyncSuccess (int syncSuccess) {
+        this.syncSuccess = syncSuccess;
+    }
 }

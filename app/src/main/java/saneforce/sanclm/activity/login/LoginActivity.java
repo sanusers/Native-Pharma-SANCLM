@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     PackageManager packageManager;
     PackageInfo packageInfo;
     String fcmToken = "";
-    SQLite sqlite;
+    SQLite sqLite;
     LoginViewModel loginViewModel = new LoginViewModel();
     private int passwordNotVisible = 1;
 
@@ -58,8 +58,8 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        sqlite = new SQLite(getApplicationContext());
-        sqlite.getWritableDatabase();
+        sqLite = new SQLite(getApplicationContext());
+        sqLite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.clearData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                sqlite.deleteAllTable();
+                sqLite.deleteAllTable();
                 SharedPref.saveLoginState(getApplicationContext(), false);
                 SharedPref.saveSettingState(getApplicationContext(), false);
                 startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
@@ -216,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void process(JSONObject jsonObject) {
         try {
-            sqlite.saveLoginData(jsonObject.toString());
+            sqLite.saveLoginData(jsonObject.toString());
             openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));

@@ -23,7 +23,6 @@ public class Constants {
     public static final String STOCKIEST = "Stockiest_";
     public static final String HOSPITAL = "Hospital_";
     public static final String CIP = "Cip_";
-    public static final String NO_DATA_AVAILABLE = "no_data_available";
 
     //Leave
     public static final String LEAVE = "Leave";
@@ -31,7 +30,6 @@ public class Constants {
 
     //DCR
     public static final String DCR = "DCR";
-
 
     //WorkType
     public static final String WORK_TYPE = "Work_Type";
@@ -48,6 +46,7 @@ public class Constants {
 
     //Product
     public static final String PRODUCT = "Product";
+    public static final String PRODUCT_CATEGORY = "Product_Category";
     public static final String BRAND = "Brand";
     public static final String COMPETITOR_PROD = "Competitor_Product";
     public static final String INPUT = "input";
@@ -65,7 +64,9 @@ public class Constants {
     public static final String SETUP = "Setup";
     public static final String CUSTOM_SETUP = "Custom_setup";
 
-
+    //Master sync No data
+    public static final String NO_DATA_AVAILABLE = "no_data_available";
+//    public static final String SYNC_FAILED = "sync_failed";
 
     //-------------------------------------------------------------
 

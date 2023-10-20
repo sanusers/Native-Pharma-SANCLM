@@ -4,17 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -23,16 +17,14 @@ import saneforce.sanclm.activity.tourPlan.ModelClass;
 
 public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.MyViewHolder> {
 
-    public ModelClass arrayList = new ModelClass();
-    Context context;
+    public ModelClass inputDataModel = new ModelClass();
 
 
     public SessionViewAdapter () {
     }
 
-    public SessionViewAdapter (ModelClass arrayList, Context context) {
-        this.arrayList = arrayList;
-        this.context = context;
+    public SessionViewAdapter (ModelClass inputDataModel) {
+        this.inputDataModel = inputDataModel;
     }
 
     @NonNull
@@ -46,7 +38,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
     public void onBindViewHolder (@NonNull SessionViewAdapter.MyViewHolder holder, int position) {
 
 
-        holder.data = arrayList.getSessionList().get(holder.getAbsoluteAdapterPosition());
+        holder.data = inputDataModel.getSessionList().get(holder.getAbsoluteAdapterPosition());
         holder.clusterModelArray = new ArrayList<>(holder.data.getCluster());
         holder.jcModelArray = new ArrayList<>(holder.data.getJC());
         holder.listedDrModelArray = new ArrayList<>(holder.data.getListedDr());
@@ -58,6 +50,12 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
         holder.sessionNoTxt.setText("Session " +  (position + 1));
        holder.workTypeTV.setText(holder.data.getWorkType().getName());
+
+       if (!holder.data.getRemarks().isEmpty()) {
+           holder.remarksTV.setText(holder.data.getRemarks());
+       } else {
+           holder.remarksLayout.setVisibility(View.GONE);
+       }
 
        if (holder.data.getHQ().getName().equals("")){
            holder.hqLayout.setVisibility(View.GONE);
@@ -206,15 +204,15 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
 
     @Override
     public int getItemCount () {
-        return arrayList.getSessionList().size();
+        return inputDataModel.getSessionList().size();
     }
 
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView sessionNoTxt;
-        public TextView workTypeTV,hqTV,clusterTV,jcTV,drTV,chemistTV,stockiestTV,unListedDrTV,cipTV,hospTV;
-        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout;
+        public TextView workTypeTV,hqTV,clusterTV,jcTV,drTV,chemistTV,stockiestTV,unListedDrTV,cipTV,hospTV,remarksTV;
+        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout,remarksLayout;
 
         //Input data
         ArrayList<ModelClass.SessionList.SubClass> clusterModelArray ;
@@ -244,6 +242,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             unListedDrLayout = itemView.findViewById(R.id.unListedDrLayout);
             cipLayout = itemView.findViewById(R.id.cipLayout);
             hospLayout = itemView.findViewById(R.id.hospLayout);
+            remarksLayout = itemView.findViewById(R.id.remarksLayout);
 
             workTypeTV = itemView.findViewById(R.id.workTypeField);
             hqTV = itemView.findViewById(R.id.hqField);
@@ -255,6 +254,7 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
             unListedDrTV= itemView.findViewById(R.id.unListedDrField);
             cipTV = itemView.findViewById(R.id.cipField);
             hospTV = itemView.findViewById(R.id.hospField);
+            remarksTV = itemView.findViewById(R.id.remarksField);
 
         }
 

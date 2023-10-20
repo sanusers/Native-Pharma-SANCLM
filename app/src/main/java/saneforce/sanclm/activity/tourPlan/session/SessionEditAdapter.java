@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
@@ -1027,7 +1028,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         }
 
-
     }
 
     public void getDataFromLocal(MyViewHolder holder, String hqCode){
@@ -1116,7 +1116,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 jsonObject.put("subdivision_code", subdivision_code);
 
 //                Log.e("test","master sync obj in TP : " + jsonObject);
-                Call<JsonArray> call = null;
+                Call<JsonElement> call = null;
                 if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Doctor")){
                     call = apiInterface.getDrMaster(jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Subordinate")) {
@@ -1124,23 +1124,47 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }
 
                 if (call != null){
-                    call.enqueue(new Callback<JsonArray>() {
+                    call.enqueue(new Callback<JsonElement>() {
                         @Override
-                        public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                        public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
+                            boolean success = false;
                             if (response.isSuccessful()) {
 //                                Log.e("test","response : " + masterSyncItemModel.getRemoteTableName() +" : " + response.body().toString());
                                 try {
-                                    JSONArray jsonArray = new JSONArray(response.body().toString());
-                                    sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(),jsonArray.toString());
+                                    JsonElement jsonElement = response.body();
+                                    JSONArray jsonArray = new JSONArray();
+                                    if (!jsonElement.isJsonNull()){
+                                        if (jsonElement.isJsonArray()){
+                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            success = true;
+                                        } else if (jsonElement.isJsonObject()) {
+                                            JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+                                            if (!jsonObject1.has("success")){ // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
+                                                jsonArray.put(jsonObject1);
+                                                success = true;
+                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
+                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(),1);
+                                            }
+                                        }
+
+                                        if (success){
+                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(),jsonArray.toString(),0);
+                                        }
+                                    } else {
+                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(),1);
+                                    }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
                             }
                         }
                         @Override
-                        public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                        public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
+                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(),1);
                         }
                     });
                 }
@@ -1220,7 +1244,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void populateSessionAdapter(MyViewHolder holder, JSONArray jsonArray, boolean checkBoxNeed){
 
-        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, context, checkBoxNeed, new SessionItemInterface() {
+        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
             @Override
             public void itemClicked (JSONArray jsonArray, JSONObject jsonObject) {
                 try {
