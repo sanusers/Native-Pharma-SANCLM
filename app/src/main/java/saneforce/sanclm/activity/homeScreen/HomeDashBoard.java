@@ -275,13 +275,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         img_account.setOnClickListener(v -> {
 
-            if (valid_no.equals("")) {
-                valid_no = "1";
-                showPopup(img_account, "");
-            } else {
-                valid_no = "";
-                showPopup(img_account, "1");
-            }
+
+                showPopup(img_account);
+
+
+
+
 
         });
 
@@ -289,7 +288,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
     @SuppressLint("WrongConstant")
-    public void showPopup(ImageView viewed_img, String val) {
+    public void showPopup(ImageView viewed_img) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.FullScreencall();
