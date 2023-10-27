@@ -524,8 +524,8 @@ public class Leave_Application extends AppCompatActivity {
             Chart_list.clear();
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
             JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
-            String lstatus = String.valueOf(jsonArray);
-            if (lstatus.equals("[]")) {
+            String lstatus = (jsonArray.get(0).toString());
+            if (lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
                 chart_layout.setVisibility(View.GONE);
                 mtcard.setVisibility(View.VISIBLE);
             } else {

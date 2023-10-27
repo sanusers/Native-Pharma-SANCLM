@@ -74,11 +74,11 @@
             android:textSize="@dimen/_7sdp"
             android:title="Survey" />
         <item
-            android:id="@+id/nav_from"
+            android:id="@+id/nav_forms"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/form"
             android:textSize="@dimen/_7sdp"
-            android:title="Froms" />
+            android:title="Forms" />
 
             android:title="Leave Application" />
 
@@ -119,12 +119,6 @@
             android:id="@+id/nav_quiz"
             android:title="Survey"
             />
-        <item
-            android:textSize="@dimen/_7sdp"
-            android:icon="@drawable/form"
-            android:fontFamily="@font/satoshi_medium"
-            android:id="@+id/nav_form"
-            android:title="Forms" />
 
         <item
             android:icon="@drawable/form"
