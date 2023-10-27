@@ -175,7 +175,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
                                     SharedPref.setTagImageUrl(getApplicationContext(), "http://" + binding.etWebUrl.getText().toString().trim() + "/");
-                                    downloadImage(baseWebUrl + logoUrl, Constants.LOGO_IMAGE_NAME, enteredUrl);
+                                    downloadImage(baseWebUrl + logoUrl, logoUrl, enteredUrl);
                                     licenseKeyValid = true;
                                     break;
                                 }
@@ -196,7 +196,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                     Log.e("test","failed : " + t.toString());
                     hitCount++;
-                    if (hitCount <2){
+                    if (hitCount < 2){
                         configuration("http://" + url + "/apps/");
                     }else{
                         binding.pbConfigurationProgress.setVisibility(View.GONE);
@@ -208,7 +208,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception exception){
-            Log.e("test","excep : " + exception);
+            throw new RuntimeException(exception);
         }
 
 

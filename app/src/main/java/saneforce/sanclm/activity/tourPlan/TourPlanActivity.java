@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.tourPlan;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -34,6 +36,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.tourPlan.calendar.CalendarAdapter;
@@ -47,11 +52,15 @@ import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityTourPlanBinding;
 import saneforce.sanclm.network.ApiInterface;
+import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
 
 public class TourPlanActivity extends AppCompatActivity {
     private ActivityTourPlanBinding binding;
+    ApiInterface apiInterface;
+    SQLite sqLite;
     public static LinearLayout addSaveBtnLayout,clrSaveBtnLayout;
 
     CalendarAdapter calendarAdapter = new CalendarAdapter();
@@ -65,8 +74,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     ModelClass.SessionList.WorkType weeklyOffModel = new ModelClass.SessionList.WorkType();
     ModelClass.SessionList.WorkType holidayModel = new ModelClass.SessionList.WorkType();
-    ApiInterface apiInterface;
-    SQLite sqLite;
+
     LocalDate localDate;
     private DrawerLayout drawerLayout;
     String sfName = "",sfCode = "",division_code = "",sfType = "",designation = "",state_code ="",subdivision_code = "";
@@ -98,6 +106,7 @@ public class TourPlanActivity extends AppCompatActivity {
 //            }
 //        },100);
 
+        getTPData();
         binding.tpDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         binding.tpDrawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -841,6 +850,51 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.tpNavigation.tpSessionRecView.scrollToPosition(position);
             }
         },50);
+    }
+
+    public void getTPData() {
+
+        try {
+            if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)){
+
+                apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("tableName","getall_tp");
+                jsonObject.put("sfcode","MR1932");
+                jsonObject.put("division_code","8,");
+                jsonObject.put("Rsf","MR0026");
+                jsonObject.put( "sf_type","1");
+                jsonObject.put("Designation","TBM");
+                jsonObject.put("state_code","28");
+                jsonObject.put("subdivision_code","62,");
+                jsonObject.put("tp_month","10,");
+                jsonObject.put("tp_year","2023,");
+
+                Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        Log.e("test","getTp response : " + response.body());
+                        if (response.body() != null){
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        Log.e("test","error getTp : " + t);
+                    }
+                });
+
+
+
+            } else {
+                Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override

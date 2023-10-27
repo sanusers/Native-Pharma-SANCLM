@@ -23,6 +23,8 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -61,8 +63,14 @@
 
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
-            android:exported="false"
-            android:screenOrientation="landscape" />
+            android:exported="true"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="saneforce.sanclm.activity.tourPlan.TourPlanActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activity.masterSync.MasterSyncActivity"
             android:exported="false"
@@ -140,12 +148,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape" />
 
-        </activity>
+        <service
+            android:name=".services.FirebaseService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

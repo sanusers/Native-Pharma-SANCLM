@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -16,6 +17,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 
 public interface ApiInterface {
@@ -47,7 +49,6 @@ public interface ApiInterface {
     @POST("?axn=home")
     Call<JsonElement> getDCRMaster(@Field("data") String postObj);
 
-
     @FormUrlEncoded
     @POST("?axn=table/slides")
     Call<JsonElement> getSlideMaster(@Field("data") String postObj);
@@ -55,7 +56,6 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("?axn=table/setups")
     Call<JsonElement> getSetupMaster(@Field("data") String postObj);
-
 
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")
@@ -76,7 +76,6 @@ public interface ApiInterface {
     @POST("?axn=get/approvals")
     Call<JsonArray> getLeaveApprovalList(@Field("data") String GetLeaveList);
 
-
     @FormUrlEncoded
     @POST("?axn=home")
     Call<JsonArray> getcalldetails(@Field("data") String postObj);
@@ -88,5 +87,10 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("?axn=save/leavemodule")
     Call<JsonArray> getleavesave(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=get/tp")
+    Call<JsonElement> getTP(@Field("data") String postObj);
+
 
 }

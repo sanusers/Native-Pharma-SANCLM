@@ -50,13 +50,9 @@ public class ImageStorage {
         File file = ImageStorage.getImage(filePath + "/images/", imageName );
         if (file != null){
             String path = file.getAbsolutePath();
-            if (path != null)
-                b = BitmapFactory.decodeFile(path);
+            b = BitmapFactory.decodeFile(path);
 
-            if (b == null || b.equals("")) {
-                return false;
-            }
-            return true;
+            return b != null && !b.equals("");
 
         }
 
