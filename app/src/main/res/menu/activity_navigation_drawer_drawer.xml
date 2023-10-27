@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+
+        <item
+            android:id="@+id/nav_refresh"
+            android:icon="@drawable/refresh"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Refresh" />
+
+        <item
+            android:id="@+id/nav_create_presentation"
+            android:fontFamily="@font/satoshi_medium"
+            android:textSize="@dimen/_7sdp"
+            android:icon="@drawable/presentation"
+            android:title="Create Presentation" />
+        <item
+            android:id="@+id/nav_tour_plan"
+            android:textSize="@dimen/_1sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/tourplan"
+            android:title="Tour Plan" />
+        <item
+            android:id="@+id/nav_leave_appln"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/leave"
+            android:title="Leave Application" />
+
+        <item
+            android:id="@+id/nav_approvals"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/leave"
+            android:textSize="@dimen/_7sdp"
+            android:title="@string/approvals" />
+
+        <item
+            android:id="@+id/nav_reports"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/report"
+            android:textSize="@dimen/_7sdp"
+            android:title="Reports" />
+        <item
+            android:id="@+id/nav_activity"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/activity"
+            android:textSize="@dimen/_7sdp"
+            android:title="Activity"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_nearme"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/nearme"
+            android:textSize="@dimen/_7sdp"
+            android:title="Near Me" />
+
+        <item
+            android:id="@+id/nav_quiz"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/survey"
+            android:textSize="@dimen/_7sdp"
+            android:title="Survey" />
+        <item
+            android:id="@+id/nav_from"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/form"
+            android:textSize="@dimen/_7sdp"
+            android:title="Froms" />
+
+            android:title="Leave Application" />
+
+
+        <item
+            android:icon="@drawable/nearme"
+            android:id="@+id/nav_approvals"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="@string/approvals" />
+
+        <item
+            android:icon="@drawable/report"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/nav_reports"
+            android:title="Reports"
+            />
+        <item
+            android:icon="@drawable/activity"
+            android:id="@+id/nav_activity"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Activity"
+            android:visible="false"  />
+        <item
+            android:icon="@drawable/nearme"
+            android:id="@+id/nav_nearme"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Near Me" />
+
+
+
+        <item
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/survey"
+            android:id="@+id/nav_quiz"
+            android:title="Survey"
+            />
+        <item
+            android:textSize="@dimen/_7sdp"
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/nav_form"
+            android:title="Forms" />
+
+        <item
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/logout"
+            android:title="Logout" />
+
+        <item
+            android:icon="@drawable/form"
+            android:fontFamily="@font/satoshi_medium"
+            android:id="@+id/logout"
+            android:title="Logout" />
+
+
+    </group>
+
+</menu>

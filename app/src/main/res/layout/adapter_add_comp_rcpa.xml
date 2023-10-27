@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_1sdp"
+    android:background="#E9EAEB">
+
+    <TextView
+        android:id="@+id/tv_prd_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="@string/product_name"
+        android:textColor="@color/bg_txt_color"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/tag_comp_cmpy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tag_comp_cmpy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="@string/competitor_company"
+        android:textColor="@color/bg_txt_color"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/constraint_comp_cmpny"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_prd_name" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_comp_cmpny"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        app:layout_constraintBottom_toTopOf="@id/tag_comp_brand"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tag_comp_cmpy">
+
+        <Spinner
+            android:id="@+id/spin_comp_cmpny"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:background="@drawable/border_shape_spinner"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/spin_down_arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tag_comp_brand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="@string/comp_brand"
+        android:textColor="@color/bg_txt_color"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/constraint_comp_brand"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint_comp_cmpny" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_comp_brand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        app:layout_constraintBottom_toTopOf="@id/constraint_mid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tag_comp_brand">
+
+        <Spinner
+            android:id="@+id/spin_comp_brand"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:background="@drawable/border_shape_spinner"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/spin_down_arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_mid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_1sdp"
+        app:layout_constraintBottom_toTopOf="@id/tag_remarks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint_comp_brand">
+
+        <TextView
+            android:id="@+id/tag_qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="@string/qty"
+            android:textColor="@color/bg_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/ed_qty_comp"
+            app:layout_constraintEnd_toStartOf="@id/tag_rate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tag_rate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="@string/rate"
+            android:textColor="@color/bg_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_rate"
+            app:layout_constraintEnd_toStartOf="@id/tag_value"
+            app:layout_constraintStart_toEndOf="@id/tag_qty"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tag_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="@string/value"
+            android:textColor="@color/bg_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tag_rate"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/ed_qty_comp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_1sdp"
+            android:background="@drawable/bg_light_grey_border"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:textColor="@color/dark_purple"
+            android:textSize="14sp"
+            android:imeOptions="actionDone"
+            android:hint="@string/enter_qty"
+            android:gravity="center|start"
+            android:textColorHint="@color/light_grey"
+            android:inputType="numberPassword"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_rate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tag_qty"
+            tools:ignore="Autofill" />
+
+        <TextView
+            android:id="@+id/tv_rate"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_1sdp"
+            android:background="@drawable/bg_light_grey_border"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:textColor="@color/bg_txt_color"
+            android:textSize="14sp"
+            android:gravity="center|start"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_value"
+            app:layout_constraintStart_toEndOf="@id/ed_qty_comp"
+            app:layout_constraintTop_toBottomOf="@id/tag_rate" />
+
+        <TextView
+            android:id="@+id/tv_value"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_1sdp"
+            android:background="@drawable/bg_light_grey_border"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:gravity="center|start"
+            android:textColor="@color/bg_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_rate"
+            app:layout_constraintTop_toBottomOf="@id/tag_value" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tag_remarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="@string/remarks"
+        android:textColor="@color/bg_txt_color"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint_mid" />
+
+    <EditText
+        android:id="@+id/ed_remarks"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:maxLines="3"
+        android:inputType="text"
+        android:gravity="start"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_1sdp"
+        android:background="@drawable/bg_light_grey_border"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_2sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:imeOptions="actionDone"
+        android:textColor="@color/dark_purple"
+        android:textSize="14sp"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tag_remarks"
+        android:importantForAutofill="no"
+        tools:ignore="Autofill,LabelFor" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
