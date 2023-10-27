@@ -14,7 +14,6 @@ import com.google.gson.JsonArray;
 import org.json.JSONArray;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -25,7 +24,7 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String DATA_BASE_NAME = "san_clm.db";
     public static final String LOGIN_TABLE = "login_table";
     public static final String LOGIN_DATA = "login_data";
-    private static final String LINECHAT_DATA = "LINECHAT_DATA";
+    private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
 
 
     //Master Sync
@@ -48,6 +47,7 @@ public class SQLite extends SQLiteOpenHelper {
     private static final String LINECHAR_SF_CODE = "LINECHAR_SF_CODE";
     private static final String LINECHAR_TRANS_SLNO = "LINECHAR_TRANS_SLNO";
     private static final String LINECHAR_AMSLNO = "LINECHAR_AMSLNO";
+    private static final String LINECHAR_FM_INDICATOR = "LINECHAR_FM_INDICATOR";
 
 
     public SQLite (@Nullable Context context) {
@@ -58,20 +58,9 @@ public class SQLite extends SQLiteOpenHelper {
     public void onCreate (SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LOGIN_TABLE + "(" + LOGIN_DATA + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text," + SYNC_STATUS + " INTEGER" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINECHAT_DATA + " (" +
-                LINECHAR_CUSTCODE + " TEXT, " +
-                LINECHAR_CUSTTYPE + " TEXT, " +
-                LINECHAR_DCR_DT + " TEXT, " +
-                LINECHAR_MONTH_NAME + " TEXT, " +
-                LINECHAR_MNTH + " TEXT, " +
-                LINECHAR_YR + " TEXT, " +
-                LINECHAR_CUSTNAME + " TEXT, " +
-                LINECHAR_TOWN_CODE + " TEXT, " +
-                LINECHAR_TOWN_NAME + " TEXT, " +
-                LINECHAR_DCR_FLAG + " TEXT, " +
-                LINECHAR_SF_CODE + " TEXT, " +
-                LINECHAR_TRANS_SLNO + " TEXT, " +
-                LINECHAR_AMSLNO + " TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + " (" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
+                LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
+                LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
 
     }
 
@@ -79,6 +68,7 @@ public class SQLite extends SQLiteOpenHelper {
     public void onUpgrade (SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + LINE_CHAT_DATA_TABLE);
 
         onCreate(db);
     }
@@ -87,6 +77,7 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + LOGIN_TABLE);
         db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE);
+        db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
 
         db.close();
     }
@@ -211,10 +202,8 @@ public class SQLite extends SQLiteOpenHelper {
 
 
     // insertdata Linechart
-    public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName,
-                                   String mnth, String yr, String custName, String townCode,
-                                   String townName, String dcrFlag, String sfCode, String transSlNo,
-                                   String amslNo) {
+    public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode,
+                                   String townName, String dcrFlag, String sfCode, String transSlNo, String amslNo,String fw_indicater) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(LINECHAR_CUSTCODE, custCode);
@@ -229,16 +218,17 @@ public class SQLite extends SQLiteOpenHelper {
         values.put(LINECHAR_DCR_FLAG, dcrFlag);
         values.put(LINECHAR_SF_CODE, sfCode);
         values.put(LINECHAR_TRANS_SLNO, transSlNo);
+        values.put(LINECHAR_FM_INDICATOR, fw_indicater);
         values.put(LINECHAR_AMSLNO, amslNo);
 
-        db.insert(LINECHAT_DATA, null, values);
+        db.insert(LINE_CHAT_DATA_TABLE, null, values);
         db.close();
     }
 
 
     public void clearLinecharTable() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + LINECHAT_DATA);
+        db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
         db.close();
     }
 
@@ -247,55 +237,50 @@ public class SQLite extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         String currentYearMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(new Date());
-        String query = "SELECT COUNT(*) FROM " + LINECHAT_DATA +
-                " WHERE strftime('%Y-%m', " + LINECHAR_DCR_DT + ") = '" + currentYearMonth + "'" +
-                " AND " + LINECHAR_CUSTTYPE + " = '" + CustType + "'";
+        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE strftime('%Y-%m', " + LINECHAR_DCR_DT + ") = '" + currentYearMonth + "'" + " AND " + LINECHAR_CUSTTYPE + " = '" + CustType + "'";
 
         Cursor cursor = db.rawQuery(query, null);
-
         int count = 0;
         if (cursor != null) {
             cursor.moveToFirst();
             count = cursor.getInt(0);
             cursor.close();
         }
-
         db.close();
-
         return count;
     };
 
 
-
-    public int gettotalcallscount(String CustType){
-
+    public int getcalls_count_by_range(String startDate, String endDate, String custType) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT COUNT(*) FROM " + LINECHAT_DATA +
-                " WHERE " + LINECHAR_CUSTTYPE + " = '" + CustType + "'";
-        Cursor cursor = db.rawQuery(query, null);
 
+        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " + " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
+
+        Cursor cursor = db.rawQuery(query, null);
         int count = 0;
         if (cursor != null) {
             cursor.moveToFirst();
             count = cursor.getInt(0);
             cursor.close();
         }
-
         db.close();
-
         return count;
     };
 
+//    public int getHalfMonthDataCount(String startDate, String endDate, String custType) {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        String query = "SELECT COUNT(*) FROM " + LINECHAT_DATA +
+//                " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " +
+//                " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " ;
+//    }
 
-
-
-
-    public int getHalfMonthDataCount(String startDate, String endDate, String custType) {
+    public int getfeildworkcount(String startDate, String endDate ) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT COUNT(*) FROM " + LINECHAT_DATA +
-                " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " +
-                " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " +
-                " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
+        String custType="0";
+        String Fieldwork="F";
+
+        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " +
+                " AND " + LINECHAR_FM_INDICATOR + " = '" + Fieldwork + "' "+ " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
         Cursor cursor = db.rawQuery(query, null);
 
         int count = 0;
@@ -304,19 +289,14 @@ public class SQLite extends SQLiteOpenHelper {
             count = cursor.getInt(0);
             cursor.close();
         }
-
         db.close();
-
         return count;
     }
 
+
     public boolean isMonthDataAvailableForCustType(String custType, String month) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        String query = "SELECT COUNT(*) FROM " + LINECHAT_DATA +
-                " WHERE " + LINECHAR_CUSTTYPE + " = '" + custType + "'" +
-                " AND " + LINECHAR_MNTH + " = '" + month + "'";
-
+        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_CUSTTYPE + " = '" + custType + "'" + " AND " + LINECHAR_MNTH + " = '" + month + "'";
         Cursor cursor = db.rawQuery(query, null);
 
         int count = 0;
@@ -325,10 +305,7 @@ public class SQLite extends SQLiteOpenHelper {
             count = cursor.getInt(0);
             cursor.close();
         }
-
         db.close();
-
-
         return count > 0;
     }
 

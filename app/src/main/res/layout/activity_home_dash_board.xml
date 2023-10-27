@@ -193,6 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
+                    android:id="@+id/rl_quick_link"
                     android:layout_marginRight="@dimen/_2sdp"
                     android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_weight="5">

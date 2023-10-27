@@ -14,9 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +80,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
 
+    RelativeLayout rl_quick_link;
+
 
     @Override
     protected void onResume() {
@@ -116,15 +120,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         navigationView = findViewById(R.id.nav_view);
         masterSync = findViewById(R.id.img_sync);
 
+        rl_quick_link = findViewById(R.id.rl_quick_link);
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith = displayMetrics.widthPixels;
 
         Log.e("test","fcm token : " + SharedPref.getFcmToken(HomeDashBoard.this));
-//        DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
-//        layoutParams.width = DeviceWith / 3;// You can replace R.dimen.navigation_drawer_width with the width you want
-//        DeviceWith=displayMetrics.widthPixels;
+
+
 
         DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
         layoutParams.width = DeviceWith/3;// You can replace R.dimen.navigation_drawer_width with the width you want
@@ -163,7 +168,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         setupCustomTab(tabLayout, 2, "Outbox", true);
 
 
+
+
+
         // Listener
+        ViewTreeObserver vto = rl_quick_link.getViewTreeObserver();
+
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                int getlayout  = rl_quick_link.getMeasuredWidth();
+                int width = (int) (getlayout/ 3-8);
+                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+                param.setMargins(0, 5, 10, 0);
+                pre_layout.setLayoutParams(param);
+                slide_layout.setLayoutParams(param);
+                report_layout.setLayoutParams(param);
+                anlas_layout.setLayoutParams(param);
+
+
+            }
+        });
+
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

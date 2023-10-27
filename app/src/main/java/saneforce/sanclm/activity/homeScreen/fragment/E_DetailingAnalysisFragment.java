@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +23,7 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
     LinearLayout doc_layout, che_layout, stokiest_layout, unlistered_layout,ll_analyis_layout,ll_grap_layout;
 
-
+    RelativeLayout e_detailing_layout;
 
 
     @SuppressLint("MissingInflatedId")
@@ -36,18 +38,30 @@ public class E_DetailingAnalysisFragment extends Fragment {
         unlistered_layout = v.findViewById(R.id.ll_unli_child);
         ll_analyis_layout = v.findViewById(R.id.ll_analyis_layout);
         ll_grap_layout = v.findViewById(R.id.ll_grap_layout);
+        e_detailing_layout = v.findViewById(R.id.e_detailing_layout);
 
 
+        ViewTreeObserver vto = e_detailing_layout.getViewTreeObserver();
+
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                int getlayout  = e_detailing_layout.getMeasuredWidth();
 
 
-        int width = (int) ((((HomeDashBoard.DeviceWith / 3) * 2) / 3)-30);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-        param.setMargins(0, 5, 10, 0);
+                int width = (int) (getlayout/ 3-8);
+                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+                param.setMargins(0, 5, 10, 0);
+                doc_layout.setLayoutParams(param);
+                che_layout.setLayoutParams(param);
+                stokiest_layout.setLayoutParams(param);
+                unlistered_layout.setLayoutParams(param);
 
-        doc_layout.setLayoutParams(param);
-        che_layout.setLayoutParams(param);
-        stokiest_layout.setLayoutParams(param);
-        unlistered_layout.setLayoutParams(param);
+
+            }
+        });
+
 
         ll_analyis_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override

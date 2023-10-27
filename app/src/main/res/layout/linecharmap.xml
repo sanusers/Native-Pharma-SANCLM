@@ -7,21 +7,22 @@
     android:background="@color/white"
     android:layout_height="match_parent">
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart"
-            android:layout_above="@id/ll_monthlayout"
-            android:layout_width="match_parent"
-            android:layout_marginStart="@dimen/_7sdp"
-            android:background="@color/white"
-            android:layout_height="@dimen/_100sdp"
-          />
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ll_monthlayout"
+        android:layout_marginStart="@dimen/_7sdp"
+        android:background="@color/white" />
 
     <LinearLayout
         android:id="@+id/ll_monthlayout"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/_5sdp"
         android:background="@color/white"
-        android:layout_height="@dimen/_15sdp"
+        android:layout_weight="4"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/_35sdp"
         android:layout_marginEnd="@dimen/_20sdp"
@@ -33,7 +34,7 @@
             android:layout_weight="1"
             android:backgroundTint="#dfdfe2"
             android:background="@drawable/custom_backround_layout"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_regular"
             android:gravity="center"
             android:text="June"
             android:layout_marginStart="@dimen/_10sdp"
@@ -49,11 +50,10 @@
             android:layout_weight="1"
             android:backgroundTint="#dfdfe2"
             android:background="@drawable/custom_backround_layout"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_regular"
             android:gravity="center"
-            android:text="July"
+            android:text=""
             android:id="@+id/text_past_month"
-
             android:layout_marginStart="@dimen/_5sdp"
             android:textAllCaps="false"
             android:layout_marginEnd="@dimen/_5sdp"
@@ -67,9 +67,9 @@
             android:layout_weight="1"
             android:backgroundTint="#dfdfe2"
             android:background="@drawable/custom_backround_layout"
-            android:fontFamily="@font/satoshi_medium"
+            android:fontFamily="@font/satoshi_regular"
             android:gravity="center"
-            android:text="August"
+            android:text=""
             android:id="@+id/text_current_month"
 
             android:layout_marginEnd="@dimen/_10sdp"
