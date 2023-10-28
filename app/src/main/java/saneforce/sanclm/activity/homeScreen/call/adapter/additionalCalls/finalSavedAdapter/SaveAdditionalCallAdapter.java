@@ -145,9 +145,10 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
             }
         });
 
-        if (mCommonsharedpreference.getBooleanValueFromPreference("checked_add_call") && !mCommonsharedpreference.getValueFromPreference("unselect_data_add_call").isEmpty()) {
+        //  if (mCommonsharedpreference.getBooleanValueFromPreference("checked_add_call") && !mCommonsharedpreference.getValueFromPreference("unselect_data_add_call").isEmpty()) {
+        if (CallAddCustListAdapter.isCheckedAddCall && !CallAddCustListAdapter.UnSelectedDrCode.isEmpty()) {
             for (int i = 0; i < saveAdditionalCalls.size(); i++) {
-                if (mCommonsharedpreference.getValueFromPreference("unselect_data_add_call").equalsIgnoreCase(saveAdditionalCalls.get(position).getName())) {
+                if (CallAddCustListAdapter.UnSelectedDrCode.equalsIgnoreCase(saveAdditionalCalls.get(position).getName())) {
                     new CountDownTimer(200, 200) {
                         public void onTick(long millisUntilFinished) {
                         }
@@ -155,7 +156,8 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
                         public void onFinish() {
                             pos = position;
                             removeAt(position);
-                            mCommonsharedpreference.setValueToPreference("checked_add_call", false);
+                            CallAddCustListAdapter.isCheckedAddCall = false;
+                            //   mCommonsharedpreference.setValueToPreference("checked_add_call", false);
                         }
                     }.start();
                     break;
@@ -165,16 +167,14 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
 
 
         holder.tv_name.setOnClickListener(view -> {
-            if (holder.tv_name.getText().toString().length() > 12) {
                 commonUtilsMethods.displayPopupWindow(activity, context, view, saveAdditionalCalls.get(position).getName());
-            }
         });
 
 
         holder.img_del_add_call.setOnClickListener(view -> {
             for (int j = 0; j < checked_arrayList.size(); j++) {
                 if (checked_arrayList.get(j).getName().equalsIgnoreCase(saveAdditionalCalls.get(position).getName())) {
-                    checked_arrayList.set(j, new CallCommonCheckedList(saveAdditionalCalls.get(position).getName(), false));
+                    checked_arrayList.set(j, new CallCommonCheckedList(saveAdditionalCalls.get(position).getName(),saveAdditionalCalls.get(position).getCode(), false));
                 }
             }
 

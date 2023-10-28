@@ -6,6 +6,7 @@ public class CustList {
     String code;
     String town_code;
     String category;
+    String categoryCode;
     String specialist;
     String position;
     String town_name;
@@ -22,6 +23,15 @@ public class CustList {
     String qualification;
     String dob;
     String phone;
+
+    public CustList(String name, String code) {
+        this.name = name;
+        this.code = code;
+    }
+
+    public CustList(String code) {
+        this.code = code;
+    }
 
     public CustList(String latitude, String longitude, String address) {
         this.latitude = latitude;
@@ -42,11 +52,12 @@ public class CustList {
         this.position = position;
     }
 
-    public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification) {
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification) {
         this.name = name;
         this.code = code;
         this.type = type;
         this.category = category;
+        this.categoryCode = categoryCode;
         this.specialist = specialist;
         this.town_name = town_name;
         this.town_code = towncode;
@@ -63,7 +74,6 @@ public class CustList {
         this.phone = phone;
         this.qualification = qualification;
     }
-
 
     public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position, boolean isClusterAvailable) {
         this.name = name;
@@ -94,6 +104,14 @@ public class CustList {
         this.maxTag = maxTag;
         this.position = position;
         this.geoTagStatus = geoTagStatus;
+    }
+
+    public String getCategoryCode() {
+        return categoryCode;
+    }
+
+    public void setCategoryCode(String categoryCode) {
+        this.categoryCode = categoryCode;
     }
 
     public String getDob() {

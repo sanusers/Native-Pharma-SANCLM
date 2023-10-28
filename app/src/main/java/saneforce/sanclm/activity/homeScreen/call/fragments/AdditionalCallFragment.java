@@ -32,7 +32,6 @@ public class AdditionalCallFragment extends Fragment {
     CallAddCustListAdapter callAddCustListAdapter;
     EditText editTextSearch;
     SaveAdditionalCallAdapter saveAdditionalCallAdapter;
-    CommonSharedPreference mCommonSharedPreference;
 
     @Nullable
     @Override
@@ -41,7 +40,6 @@ public class AdditionalCallFragment extends Fragment {
         rv_list_data = v.findViewById(R.id.rv_check_data_list);
         rv_add_call_list = v.findViewById(R.id.rv_list_additional);
         editTextSearch = v.findViewById(R.id.search_add_call);
-        mCommonSharedPreference = new CommonSharedPreference(getActivity());
         dummyAdapter();
 
         editTextSearch.addTextChangedListener(new TextWatcher() {

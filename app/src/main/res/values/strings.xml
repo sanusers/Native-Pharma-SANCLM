@@ -103,6 +103,9 @@
     <string name="territory">Territory</string>
     <string name="class_filter">Class</string>
     <string name="promoted">Promoted</string>
+    <string name="fb_selection">Feedback Selection</string>
+    <string name="jw_selction">JointWork Selection</string>
+    <string name="ok">Ok</string>
 
 
 </resources>

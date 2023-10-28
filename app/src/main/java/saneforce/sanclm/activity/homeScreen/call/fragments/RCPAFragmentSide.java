@@ -2,8 +2,11 @@ package saneforce.sanclm.activity.homeScreen.call.fragments;
 
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,7 +65,12 @@ public class RCPAFragmentSide extends Fragment {
     SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
+    CardView listChemist, listProduct;
+    EditText edSearch_chemist, edSearch_product;
+    ArrayAdapter<String> dataAdapterChem;
+    ArrayAdapter<String> dataAdapterPrd;
 
+    @SuppressLint("ResourceType")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,36 +88,80 @@ public class RCPAFragmentSide extends Fragment {
         lv_prd = v.findViewById(R.id.lv_product);
         tv_sel_chem = v.findViewById(R.id.tv_select_chemist);
         tv_sel_prd = v.findViewById(R.id.tv_select_product);
+        listChemist = v.findViewById(R.id.listCv_chemist);
+        edSearch_chemist = v.findViewById(R.id.searchChemist);
+        listProduct = v.findViewById(R.id.listCv_product);
+        edSearch_product = v.findViewById(R.id.searchProduct);
         sqLite = new SQLite(getContext());
         mCommonsharedPreference = new CommonSharedPreference(getActivity());
 
         AddListViewData();
         tv_sel_chem.setOnClickListener(view -> {
-            if (lv_chemist.getVisibility() == View.VISIBLE) {
-                lv_chemist.setVisibility(View.GONE);
+            if (listChemist.getVisibility() == View.VISIBLE) {
+                listChemist.setVisibility(View.GONE);
+                tv_sel_chem.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spin_down_arrow, 0);
             } else {
-                lv_chemist.setVisibility(View.VISIBLE);
+                tv_sel_chem.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
+                listChemist.setVisibility(View.VISIBLE);
             }
         });
 
         lv_chemist.setOnItemClickListener((adapterView, view, i, l) -> {
             tv_sel_chem.setText(lv_chemist.getItemAtPosition(i).toString());
-            lv_chemist.setVisibility(View.GONE);
+            listChemist.setVisibility(View.GONE);
+            tv_sel_chem.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
             chem_names = lv_chemist.getItemAtPosition(i).toString();
         });
 
+        edSearch_chemist.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                dataAdapterChem.getFilter().filter(editable.toString());
+            }
+        });
+
         tv_sel_prd.setOnClickListener(view -> {
-            if (lv_prd.getVisibility() == View.VISIBLE) {
-                lv_prd.setVisibility(View.GONE);
+            if (listProduct.getVisibility() == View.VISIBLE) {
+                tv_sel_prd.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spin_down_arrow, 0);
+                listProduct.setVisibility(View.GONE);
             } else {
-                lv_prd.setVisibility(View.VISIBLE);
+                tv_sel_prd.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
+                listProduct.setVisibility(View.VISIBLE);
             }
         });
 
         lv_prd.setOnItemClickListener((adapterView, view, i, l) -> {
             tv_sel_prd.setText(lv_prd.getItemAtPosition(i).toString());
-            lv_prd.setVisibility(View.GONE);
+            listProduct.setVisibility(View.GONE);
+            tv_sel_prd.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spin_down_arrow, 0);
             PrdName = lv_prd.getItemAtPosition(i).toString();
+        });
+
+        edSearch_product.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                dataAdapterPrd.getFilter().filter(editable.toString());
+            }
         });
 
         tv_dummy.setOnClickListener(view -> {
@@ -168,7 +221,7 @@ public class RCPAFragmentSide extends Fragment {
                 ChemSpinnerList.add(jsonObject.getString("Name"));
             }
 
-            ArrayAdapter<String> dataAdapterChem = new ArrayAdapter<>(getActivity(), R.layout.listview_items, ChemSpinnerList);
+            dataAdapterChem = new ArrayAdapter<>(getActivity(), R.layout.listview_items, ChemSpinnerList);
             lv_chemist.setAdapter(dataAdapterChem);
 
        /* spin_chemist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -242,7 +295,7 @@ public class RCPAFragmentSide extends Fragment {
             }
         });*/
 
-            ArrayAdapter<String> dataAdapterPrd = new ArrayAdapter<>(getActivity(), R.layout.listview_items, PrdSpinnerList);
+            dataAdapterPrd = new ArrayAdapter<>(getActivity(), R.layout.listview_items, PrdSpinnerList);
             lv_prd.setAdapter(dataAdapterPrd);
         } catch (Exception e) {
 
@@ -274,8 +327,8 @@ public class RCPAFragmentSide extends Fragment {
         rcpa_Added_list.add(new RCPAAddedCompList(chem_names, PrdName, "", "", "", "", "", ""));
 
         rcpaAddCompAdapter = new RCPAAddCompAdapter(getActivity(), getContext(), RCPAAddCompSideViewArrayList, rcpa_Added_list);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        rv_comp_list.setLayoutManager(mLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        rv_comp_list.setLayoutManager(linearLayoutManager);
         rv_comp_list.setAdapter(rcpaAddCompAdapter);
     }
 }

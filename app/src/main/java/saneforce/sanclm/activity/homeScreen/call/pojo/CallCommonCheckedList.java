@@ -5,6 +5,23 @@ public class CallCommonCheckedList {
     String name;
     String category;
     String code;
+    String town_code,town_name;
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
 
     public CallCommonCheckedList(String name) {
         this.name = name;
@@ -21,6 +38,19 @@ public class CallCommonCheckedList {
         this.checkedItem = checkedItem;
         this.code = code;
         this.name = name;
+    }
+
+    public CallCommonCheckedList(String name, String code) {
+        this.name = name;
+        this.code = code;
+    }
+
+    public CallCommonCheckedList(String name, String code, String town_name, String town_code, boolean checkedItem) {
+        this.checkedItem = checkedItem;
+        this.code = code;
+        this.name = name;
+        this.town_code = town_code;
+        this.town_name = town_name;
     }
 
     public CallCommonCheckedList(String name,boolean checkedItem) {

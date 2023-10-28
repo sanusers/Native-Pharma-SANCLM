@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
@@ -60,14 +61,19 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         mCommonsharedpreference = new CommonSharedPreference(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
+
+      /*  if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
+            holder.tv_input_stk.setVisibility(View.VISIBLE);
+        } else {
+            holder.tv_input_stk.setVisibility(View.GONE);
+        }*/
+
         holder.tv_inp_name.setText(saveCallInputLists.get(position).getInput_name());
         holder.tv_input_stk.setText(String.valueOf(saveCallInputLists.get(position).getInput_stk()));
         holder.ed_inpQty.setText(String.valueOf(saveCallInputLists.get(position).getInp_qty()));
 
         holder.tv_inp_name.setOnClickListener(view -> {
-            if (holder.tv_inp_name.getText().toString().length() > 12) {
-                commonUtilsMethods.displayPopupWindow(activity, context, view, saveCallInputLists.get(position).getInput_name());
-            }
+            commonUtilsMethods.displayPopupWindow(activity, context, view, saveCallInputLists.get(position).getInput_name());
         });
 
         holder.ed_inpQty.addTextChangedListener(new TextWatcher() {
@@ -83,12 +89,20 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), editable.toString(), saveCallInputLists.get(holder.getAdapterPosition()).getInput_stk()));
+             /*   if (!editable.toString().isEmpty()) {
+                    int entered_qty = Integer.parseInt(editable.toString());
+                    int final_value = Integer.parseInt(saveCallInputLists.get(position).getInput_stk()) - entered_qty;
+                    holder.ed_inpQty.setText(String.valueOf(final_value));
+                    saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), editable.toString(), saveCallInputLists.get(holder.getAdapterPosition()).getInput_stk()));
+                }*/
+                saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), editable.toString(), saveCallInputLists.get(holder.getAdapterPosition()).getInput_stk()));
+
             }
         });
-        if (mCommonsharedpreference.getBooleanValueFromPreference("checked_input") && !mCommonsharedpreference.getValueFromPreference("unselect_data_inp").isEmpty()) {
+
+        if (CallInputListAdapter.isCheckedInp && !CallInputListAdapter.UnSelectedInpCode.isEmpty()) {
             for (int i = 0; i < saveCallInputLists.size(); i++) {
-                if (mCommonsharedpreference.getValueFromPreference("unselect_data_inp").equalsIgnoreCase(saveCallInputLists.get(position).getInput_name())) {
+                if (CallInputListAdapter.UnSelectedInpCode.equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
                     new CountDownTimer(200, 200) {
                         public void onTick(long millisUntilFinished) {
                         }
@@ -96,7 +110,7 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
                         public void onFinish() {
                             pos = position;
                             removeAt(position);
-                            mCommonsharedpreference.setValueToPreference("checked_input", false);
+                            CallInputListAdapter.isCheckedInp = false;
                         }
                     }.start();
                     break;
@@ -111,18 +125,9 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
                 }
             }
 
-           /* commonUtilsMethods.recycleTest(InputFragment.rv_list_data);
-            callInputListAdapter = new CallInputListAdapter(context, checked_arraylist,saveCallInputLists);
-            InputFragment.rv_list_data.setItemAnimator(new DefaultItemAnimator());
-            InputFragment.rv_list_data.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-            Parcelable recyclerViewState;
-            recyclerViewState = InputFragment.rv_list_data.getLayoutManager().onSaveInstanceState();
-            InputFragment.rv_list_data.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-            InputFragment.rv_list_data.setAdapter(callInputListAdapter);
-            removeAt(position);*/
             callInputListAdapter = new CallInputListAdapter(activity, context, checked_arraylist, saveCallInputLists);
-            commonUtilsMethods.recycleTestWithDivider(InputFragment.rv_list_data);
-            InputFragment.rv_list_data.setAdapter(callInputListAdapter);
+            commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvCheckDataList);
+            InputFragment.fragmentInputBinding.rvCheckDataList.setAdapter(callInputListAdapter);
             removeAt(position);
         });
     }

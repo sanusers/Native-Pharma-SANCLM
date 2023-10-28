@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
@@ -26,6 +27,8 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdapter.ViewHolder> {
     public static ArrayList<SaveCallInputList> saveCallInputListArrayList;
+    public static boolean isCheckedInp;
+    public static String UnSelectedInpCode = "";
     Context context;
     ArrayList<CallCommonCheckedList> checked_arrayList;
     SaveInputCallAdapter saveInputCallAdapter;
@@ -62,6 +65,7 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
         holder.tv_name.setText(checked_arrayList.get(position).getName());
         holder.checkBox.setChecked(checked_arrayList.get(position).isCheckedItem());
 
+
         if (holder.checkBox.isChecked()) {
             holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -75,9 +79,7 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
         }
 
         holder.tv_name.setOnClickListener(view -> {
-            if (holder.tv_name.getText().toString().length() > 12) {
-                commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName());
-            }
+            commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName());
         });
 
 
@@ -88,17 +90,20 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
                     }
-                    mCommonSharedPreference.setValueToPreference("checked_input", false);
+                    isCheckedInp = false;
+                    // mCommonSharedPreference.setValueToPreference("checked_input", false);
                     checked_arrayList.get(position).setCheckedItem(true);
-                    saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(position).getName(), "", "20"));
+                    saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), "", "20"));
                     AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
                 } else {
                     holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
                     }
-                    mCommonSharedPreference.setValueToPreference("checked_input", true);
-                    mCommonSharedPreference.setValueToPreference("unselect_data_inp", checked_arrayList.get(position).getName());
+                    isCheckedInp = true;
+                    UnSelectedInpCode = checked_arrayList.get(position).getCode();
+                    // mCommonSharedPreference.setValueToPreference("checked_input", true);
+                    // mCommonSharedPreference.setValueToPreference("unselect_data_inp", checked_arrayList.get(position).getName());
                     checked_arrayList.get(position).setCheckedItem(false);
                     AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
                     saveInputCallAdapter.notifyDataSetChanged();
@@ -109,8 +114,8 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
         saveInputCallAdapter = new SaveInputCallAdapter(activity, context, saveCallInputListArrayList, callCommonCheckedListArrayList);
-        commonUtilsMethods.recycleTestWithDivider(InputFragment.rv_list_input);
-        InputFragment.rv_list_input.setAdapter(saveInputCallAdapter);
+        commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvListInput);
+        InputFragment.fragmentInputBinding.rvListInput.setAdapter(saveInputCallAdapter);
     }
 
     @Override

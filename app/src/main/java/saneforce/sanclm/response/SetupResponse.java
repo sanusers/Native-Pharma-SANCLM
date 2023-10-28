@@ -158,9 +158,9 @@ public class SetupResponse implements Serializable {
     @SerializedName("addChm")
     private String AddingChemist;
     @SerializedName("Stk_Pob_Need")
-    private String StockistPobNeed;
+    private String StockistRxNeed;
     @SerializedName("Ul_Pob_Need")
-    private String UndrPobNeed;
+    private String UndrRxNeed;
     @SerializedName("tp_need")
     private String TpNeed;
     @SerializedName("SurveyNd")
@@ -186,7 +186,7 @@ public class SetupResponse implements Serializable {
     @SerializedName("Tp_End_Date")
     private String TpEndDate;
     @SerializedName("chmsamQty_need")
-    private String ChemistSamQtyNeed;
+    private String ChemistSamNeed;
     @SerializedName("Doc_jointwork_Mandatory_Need")
     private String DrJwMandatory;
     @SerializedName("Chm_jointwork_Mandatory_Need")
@@ -858,20 +858,20 @@ public class SetupResponse implements Serializable {
         AddingChemist = addingChemist;
     }
 
-    public String getStockistPobNeed() {
-        return StockistPobNeed;
+    public String getStockistRxNeed() {
+        return StockistRxNeed;
     }
 
-    public void setStockistPobNeed(String stockistPobNeed) {
-        StockistPobNeed = stockistPobNeed;
+    public void setStockistRxNeed(String stockistRxNeed) {
+        StockistRxNeed = stockistRxNeed;
     }
 
-    public String getUndrPobNeed() {
-        return UndrPobNeed;
+    public String getUndrRxNeed() {
+        return UndrRxNeed;
     }
 
-    public void setUndrPobNeed(String undrPobNeed) {
-        UndrPobNeed = undrPobNeed;
+    public void setUndrRxNeed(String undrRxNeed) {
+        UndrRxNeed = undrRxNeed;
     }
 
     public String getTpNeed() {
@@ -970,12 +970,12 @@ public class SetupResponse implements Serializable {
         TpEndDate = tpEndDate;
     }
 
-    public String getChemistSamQtyNeed() {
-        return ChemistSamQtyNeed;
+    public String getChemistSamNeed() {
+        return ChemistSamNeed;
     }
 
-    public void setChemistSamQtyNeed(String chemistSamQtyNeed) {
-        ChemistSamQtyNeed = chemistSamQtyNeed;
+    public void setChemistSamNeed(String chemistSamNeed) {
+        ChemistSamNeed = chemistSamNeed;
     }
 
     public String getDrJwMandatory() {

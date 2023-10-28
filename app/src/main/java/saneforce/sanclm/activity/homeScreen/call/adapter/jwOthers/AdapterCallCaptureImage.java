@@ -1,13 +1,18 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.jwOthers;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +48,12 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
         holder.img_del_img.setOnClickListener(view -> removeAt(holder.getAdapterPosition()));
 
-
+        holder.img_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showImage(callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view());
+            }
+        });
         holder.tv_image_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -57,7 +67,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view()));
+                callCaptureImageLists.set(holder.getAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getAdapterPosition()).getSystemImgName()));
             }
         });
 
@@ -74,7 +84,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view()));
+                callCaptureImageLists.set(holder.getAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getAdapterPosition()).getSystemImgName()));
             }
         });
     }
@@ -82,6 +92,25 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     @Override
     public int getItemCount() {
         return callCaptureImageLists.size();
+    }
+
+    public void showImage(Bitmap img_view) {
+        Dialog builder = new Dialog(context);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.setCancelable(true);
+        builder.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+      /*  builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });*/
+
+        ImageView imageView = new ImageView(context);
+        imageView.setImageBitmap(img_view);
+        // builder.addContentView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
+        builder.show();
     }
 
     public void removeAt(int position) {

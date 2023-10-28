@@ -1,13 +1,11 @@
 package saneforce.sanclm.activity.profile;
 
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -21,14 +19,15 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
 public class CustomerProfile extends AppCompatActivity {
-    public static String tv_custName = "", tv_cust_area,tv_custCode="";
+    public static String tv_custName = "", tv_cust_area, tv_custCode = "";
+    public static boolean isDetailingRequired;
+    public static boolean isPreAnalysisCalled = false;
     TabLayout tabLayout;
     ViewPager viewPager;
     Button btn_skip, btn_start;
     ImageView img_back;
-    public static boolean isDetailingRequired;
     CommonUtilsMethods commonUtilsMethods;
-    int tab_pos = 0;
+    CustTabLayoutAdapter viewPagerAdapter;
 
     @Override
     public void onBackPressed() {
@@ -45,38 +44,25 @@ public class CustomerProfile extends AppCompatActivity {
         btn_skip = findViewById(R.id.btn_skip);
         btn_start = findViewById(R.id.btn_start_det);
         img_back = findViewById(R.id.iv_back);
-
+        isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(this);
         commonUtilsMethods.FullScreencall();
-        tabLayout.addTab(tabLayout.newTab().setText("Overview"));
-        tabLayout.addTab(tabLayout.newTab().setText("Pre Call Analysis"));
+        viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
+        viewPagerAdapter.add(new OverviewFragment(), "Overview");
+        viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-      /*  Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            tv_custCode = extra.getString("cust_code");
-            tv_custName = extra.getString("cust_name");
-            tv_cust_area = extra.getString("cust_addr");
-        }*/
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
-        CustTabLayoutAdapter adapter = new CustTabLayoutAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-        //Disable Touch Event in Tab
-        LinearLayout tabStrip = ((LinearLayout) tabLayout.getChildAt(0));
-        for (int i = 0; i < tabStrip.getChildCount(); i++) {
-            tabStrip.getChildAt(i).setOnTouchListener((v, event) -> true);
-        }
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tab_pos = tab.getPosition();
-               /* if (tab_pos == 0) {
-
-                }*/
-                viewPager.setCurrentItem(tab.getPosition());
+                Log.v("sa", String.valueOf(tab.getPosition()));
+                if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
+                    PreCallAnalysisFragment.CallPreCallAPI();
+                }
             }
 
             @Override
@@ -89,6 +75,21 @@ public class CustomerProfile extends AppCompatActivity {
 
             }
         });
+
+      /*  Bundle extra = getIntent().getExtras();
+        if (extra != null) {
+            tv_custCode = extra.getString("cust_code");
+            tv_custName = extra.getString("cust_name");
+            tv_cust_area = extra.getString("cust_addr");
+        }*/
+
+
+        //Disable Touch Event in Tab
+       /* LinearLayout tabStrip = ((LinearLayout) tabLayout.getChildAt(0));
+        for (int i = 0; i < tabStrip.getChildCount(); i++) {
+            tabStrip.getChildAt(i).setOnTouchListener((v, event) -> true);
+        }
+        */
 
         btn_skip.setOnClickListener(view -> {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
@@ -106,4 +107,5 @@ public class CustomerProfile extends AppCompatActivity {
 
         img_back.setOnClickListener(view -> finish());
     }
+
 }
