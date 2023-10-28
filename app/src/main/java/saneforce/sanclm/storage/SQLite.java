@@ -9,15 +9,21 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.response.LoginResponse;
 
 public class SQLite extends SQLiteOpenHelper {
 
@@ -97,6 +103,24 @@ public class SQLite extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + LOGIN_TABLE, null);
     }
 
+    public LoginResponse getLoginData(boolean bool){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + LOGIN_TABLE,null);
+        String data = "";
+        LoginResponse loginResponse = new LoginResponse();
+        if (cursor.moveToNext()){
+            data = cursor.getString(0);
+        }
+        cursor.close();
+        if (!data.equals("")){
+            Type type = new TypeToken<LoginResponse>() {
+            }.getType();
+            loginResponse = new Gson().fromJson(data,type);
+            return loginResponse;
+        }
+        return loginResponse;
+    }
+
     //-------------------------- Master ----------------------------------------
     public void saveMasterSyncData(String key, String values,int syncStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -113,6 +137,12 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
+    public boolean getMasterSyncDataOfHQ(String key){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
+        return cursor.moveToNext();
+    }
+
     public JSONArray getMasterSyncDataByKey(String key) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
@@ -120,22 +150,16 @@ public class SQLite extends SQLiteOpenHelper {
         if (cursor.moveToNext()){
             data = cursor.getString(1);
         }
+        cursor.close();
 
         JSONArray jsonArray = new JSONArray();
-        JsonArray jsonArray1 = new JsonArray();
         try {
             if (data != null){
-                if (data.equals(Constants.NO_DATA_AVAILABLE)) {
-                    jsonArray1.add(Constants.NO_DATA_AVAILABLE);
-                } else {
-                    return new JSONArray(data.toString());
-                }
+                return jsonArray = new JSONArray(data.toString());
             }
-            jsonArray = new JSONArray(jsonArray1.toString());
         }catch (Exception exception){
             exception.printStackTrace();
         }
-        cursor.close();
         return jsonArray;
     }
 

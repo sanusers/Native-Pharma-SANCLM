@@ -63,7 +63,9 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-//        getImageFromLocal(Constants.LOGO_IMAGE_NAME);
+        String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
+        String[] splitLogoUrl = logoUrl.split("/");
+        getImageFromLocal(splitLogoUrl[splitLogoUrl.length - 1]);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         if (fcmToken.isEmpty()) {
@@ -146,10 +148,9 @@ public class LoginActivity extends AppCompatActivity {
             binding.logoImg.setImageBitmap(b);
             binding.logoImg.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         } else {
-            String baseWebUrl = SharedPref.getBaseWebUrl(getApplicationContext());
-            String logoUrl = SharedPref.getLogoUrl(getApplicationContext());
-            if (!baseWebUrl.equals("") && !logoUrl.equals("")){
-                new DownloaderClass(baseWebUrl + logoUrl, fileDirectory, imageName, new AsyncInterface() {
+            String url = SharedPref.getCallApiUrl(getApplicationContext());
+            if (!url.equals("")){
+                new DownloaderClass(url, fileDirectory, imageName, new AsyncInterface() {
                     @Override
                     public void taskCompleted (boolean status) {
                         if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {

@@ -77,7 +77,7 @@
             android:textSize="@dimen/_7sdp"
             android:icon="@drawable/form"
             android:fontFamily="@font/satoshi_medium"
-            android:id="@+id/nav_form"
+            android:id="@+id/nav_forms"
             android:title="Forms" />
 
         <item

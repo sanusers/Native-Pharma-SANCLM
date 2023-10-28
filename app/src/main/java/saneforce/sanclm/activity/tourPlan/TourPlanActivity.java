@@ -461,16 +461,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void uiInitialization(){
 
-        Cursor cursor = sqLite.getLoginData();
         LoginResponse loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()){
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         sfName = loginResponse.getSF_Name();
         sfCode = loginResponse.getSF_Code();

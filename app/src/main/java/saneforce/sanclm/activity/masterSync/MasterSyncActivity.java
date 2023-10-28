@@ -481,16 +481,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void uiInitialization() {
 
-        Cursor cursor = sqLite.getLoginData();
         loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()){
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         sfType = loginResponse.getSf_type();
         sfCode = loginResponse.getSF_Code();
@@ -509,40 +501,40 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.stockiestTxt.setText(loginResponse.getStkCap());
         binding.unlistedDoctorTxt.setText(loginResponse.getNLCap());
 
-        doctorCount = getDataFromLocalTable(Constants.DOCTOR + rsf);
-        specialityCount = getDataFromLocalTable(Constants.SPECIALITY);
-        qualificationCount = getDataFromLocalTable(Constants.QUALIFICATION);
-        categoryCount = getDataFromLocalTable(Constants.CATEGORY);
-        departmentCount = getDataFromLocalTable(Constants.DEPARTMENT);
-        classCount = getDataFromLocalTable(Constants.CLASS);
-        feedbackCount = getDataFromLocalTable(Constants.FEEDBACK);
-        unlistedDrCount = getDataFromLocalTable(Constants.UNLISTED_DOCTOR + rsf);
-        chemistCount = getDataFromLocalTable(Constants.CHEMIST + rsf);
-        stockiestCount = getDataFromLocalTable(Constants.STOCKIEST + rsf);
-        hospitalCount = getDataFromLocalTable(Constants.HOSPITAL + rsf) ; //sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
-        cipCount = getDataFromLocalTable(Constants.CIP + rsf);
-        inputCount = getDataFromLocalTable(Constants.INPUT);
-        leaveCount = getDataFromLocalTable(Constants.LEAVE);
-        leaveStatusCount = getDataFromLocalTable(Constants.LEAVE_STATUS);
-        dcrCount = getDataFromLocalTable(Constants.DCR);
-        workTypeCount = getDataFromLocalTable(Constants.WORK_TYPE);
-        holidayCount = getDataFromLocalTable(Constants.HOLIDAY);
-        weeklyOfCount = getDataFromLocalTable(Constants.WEEKLY_OFF);
-        tpCount = getDataFromLocalTable(Constants.TP_PLAN);
-        productCount = getDataFromLocalTable(Constants.PRODUCT);
-        proCatCount = getDataFromLocalTable(Constants.PRODUCT_CATEGORY);
-        brandCount = getDataFromLocalTable(Constants.BRAND);
-        compProCount = getDataFromLocalTable(Constants.COMPETITOR_PROD);
-        clusterCount = getDataFromLocalTable(Constants.CLUSTER + rsf);
-        proSlideCount = getDataFromLocalTable(Constants.PROD_SLIDE);
-        proSpeSlideCount = getDataFromLocalTable(Constants.SPL_SLIDE);
-        brandSlideCount = getDataFromLocalTable(Constants.BRAND_SLIDE);
-        therapticCount = getDataFromLocalTable(Constants.THERAPTIC_SLIDE);
-        subordinateCount = getDataFromLocalTable(Constants.SUBORDINATE);
-        subMgrCount = getDataFromLocalTable(Constants.SUBORDINATE_MGR);
-        jWorkCount = getDataFromLocalTable(Constants.JOINT_WORK + rsf);
-        setupCount = getDataFromLocalTable(Constants.SETUP);
-        customSetupCount = getDataFromLocalTable(Constants.CUSTOM_SETUP);
+        doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
+        specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
+        qualificationCount = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION).length();
+        categoryCount = sqLite.getMasterSyncDataByKey(Constants.CATEGORY).length();
+        departmentCount = sqLite.getMasterSyncDataByKey(Constants.DEPARTMENT).length();
+        classCount = sqLite.getMasterSyncDataByKey(Constants.CLASS).length();
+        feedbackCount = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK).length();
+        unlistedDrCount = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + rsf).length();
+        chemistCount = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + rsf).length();
+        stockiestCount = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + rsf).length();
+        hospitalCount = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf) .length();
+        cipCount = sqLite.getMasterSyncDataByKey(Constants.CIP + rsf).length();
+        inputCount = sqLite.getMasterSyncDataByKey(Constants.INPUT).length();
+        leaveCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE).length();
+        leaveStatusCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS).length();
+        dcrCount = sqLite.getMasterSyncDataByKey(Constants.DCR).length();
+        workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
+        holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
+        weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
+        tpCount = sqLite.getMasterSyncDataByKey(Constants.TP_PLAN).length();
+        productCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length();
+        proCatCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT_CATEGORY).length();
+        brandCount = sqLite.getMasterSyncDataByKey(Constants.BRAND).length();
+        compProCount = sqLite.getMasterSyncDataByKey(Constants.COMPETITOR_PROD).length();
+        clusterCount = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + rsf).length();
+        proSlideCount = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length();
+        proSpeSlideCount = sqLite.getMasterSyncDataByKey(Constants.SPL_SLIDE).length();
+        brandSlideCount = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE).length();
+        therapticCount = sqLite.getMasterSyncDataByKey(Constants.THERAPTIC_SLIDE).length();
+        subordinateCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE).length();
+        subMgrCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE_MGR).length();
+        jWorkCount = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + rsf).length();
+        setupCount = sqLite.getMasterSyncDataByKey(Constants.SETUP).length();
+        customSetupCount = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP).length();
 
         doctorStatus = sqLite.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
         specialityStatus = sqLite.getMasterSyncStatusByKey(Constants.SPECIALITY);
@@ -703,24 +695,6 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         passDataToAdapter();
 
-    }
-
-    public int getDataFromLocalTable(String key){
-        int count = 0;
-        try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(key);
-            if (jsonArray.length() == 1){ // when jsonArray length is 1 ,we check weather it has actual JSONObject or Constants.no_data_available
-                String data = (String) jsonArray.get(0).toString();
-                if (!data.equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) { // to check weather the value is equal to sync_failed
-                    count = jsonArray.length();
-                }
-            } else {
-                count = jsonArray.length();
-            }
-        } catch (JSONException e){
-            throw new RuntimeException(e);
-        }
-        return count;
     }
 
     public void listItemClicked(ImageView imageView, LinearLayout view){
@@ -965,12 +939,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                             binding.lastSyncTime.setText(dateAndTime);
                                             SharedPref.saveMasterLastSync(getApplicationContext(),dateAndTime );
-
-                                            if (jsonArray.length() == 0) {
-                                                sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), Constants.NO_DATA_AVAILABLE,0);
-                                            } else {
-                                                sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(),0);
-                                            }
+                                            sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(),0);
 
                                             if (masterFor.equalsIgnoreCase("Subordinate") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")){
                                                 if (mgrInitialSync){
@@ -1013,7 +982,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             Log.e("test","failed : " + t);
                             apiSuccessCount++;
                             //  Log.e("test","success count at error : " + apiSuccessCount);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),1);
+                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),  1);
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             masterSyncAdapter.notifyDataSetChanged();
@@ -1087,19 +1056,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
                                 jsonArray.put(jsonObject2);
                             }
-                            if (SfType.equalsIgnoreCase("1")) {
-                                if (jsonArray.length() == 0) {
-                                    finalSqLite.saveMasterSyncData(masterFor + "_" + sfCode, Constants.NO_DATA_AVAILABLE,0);
-                                } else {
-                                    finalSqLite.saveMasterSyncData(masterFor + "_" + sfCode, jsonArray.toString(),0);
-                                }
-                            } else {
-                                if (jsonArray.length() == 0) {
-                                    finalSqLite.saveMasterSyncData(masterFor + "_" + RSF, Constants.NO_DATA_AVAILABLE,0);
-                                } else {
-                                    finalSqLite.saveMasterSyncData(masterFor + "_" + RSF, jsonArray.toString(),0);
-                                }
-                            }
+
+                            finalSqLite.saveMasterSyncData(masterFor + "_" + sfCode, jsonArray.toString(),0);
+
                         } catch (Exception e) {
                             Log.v("table_json", "error---" + e);
                         }

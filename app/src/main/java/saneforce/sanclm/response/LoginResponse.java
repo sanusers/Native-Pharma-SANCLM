@@ -7,531 +7,531 @@ import java.lang.Integer;
 import java.lang.String;
 
 public class LoginResponse implements Serializable {
-  private String past_leave_post;
+  private String past_leave_post = "";
 
-  private String DS_name;
+  private String DS_name = "";
 
-  private String ChmSmpCap;
+  private String ChmSmpCap = "";
 
-  private String Prod_Stk_Need;
+  private String Prod_Stk_Need = "";
 
-  private String Order_caption;
+  private String Order_caption = "";
 
-  private String Expenseneed;
+  private String Expenseneed = "";
 
-  private String Taxname_caption;
+  private String Taxname_caption = "";
 
-  private String secondary_order_discount;
+  private String secondary_order_discount = "";
 
-  private String Ul_Pob_Mandatory_Need;
+  private String Ul_Pob_Mandatory_Need = "";
 
-  private String DrNeed;
+  private String DrNeed = "";
 
-  private String edit_holiday;
+  private String edit_holiday = "";
 
-  private String Territory_VstNd;
+  private String Territory_VstNd = "";
 
-  private String mydayplan_need;
+  private String mydayplan_need = "";
 
-  private String NextVst;
+  private String NextVst = "";
 
-  private String CIPPOBMd;
+  private String CIPPOBMd = "";
 
-  private String Chm_cluster_based;
+  private String Chm_cluster_based = "";
 
-  private String Approveneed;
+  private String Approveneed = "";
 
-  private String DrRxNd;
+  private String DrRxNd = "";
 
-  private String CipEvent_Md;
+  private String CipEvent_Md = "";
 
-  private String CustSrtNd;
+  private String CustSrtNd = "";
 
-  private String OtherNd;
+  private String OtherNd = "";
 
-  private String DrEvent_Md;
+  private String DrEvent_Md = "";
 
-  private String prdfdback;
+  private String prdfdback = "";
 
-  private String MRHlfDy;
+  private String MRHlfDy = "";
 
-  private String Primary_order;
+  private String Primary_order = "";
 
-  private String Sample_Val_Qty;
+  private String Sample_Val_Qty = "";
 
-  private String SFNeed;
+  private String SFNeed = "";
 
-  private String SQNeed;
+  private String SQNeed = "";
 
-  private String circular;
+  private String circular = "";
 
-  private String sequential_dcr;
+  private String sequential_dcr = "";
 
-  private String Sep_RcpaNd;
+  private String Sep_RcpaNd = "";
 
-  private String stp;
+  private String stp = "";
 
-  private String DFNeed;
+  private String DFNeed = "";
 
-  private String State_Code;
+  private String State_Code = "";
 
-  private String HINeed;
+  private String HINeed = "";
 
-  private String hosp_need;
+  private String hosp_need = "";
 
-  private String Tp_End_Date;
+  private String Tp_End_Date = "";
 
-  private String Primary_order_caption;
+  private String Primary_order_caption = "";
 
-  private String CPNeed;
+  private String CPNeed = "";
 
-  private String CipSrtNd;
+  private String CipSrtNd = "";
 
-  private String HQName;
+  private String HQName = "";
 
-  private String wrk_area_Name;
+  private String wrk_area_Name = "";
 
-  private String HQNeed;
+  private String HQNeed = "";
 
-  private String product_pob_need;
+  private String product_pob_need = "";
 
-  private String Appr_Mandatory_Need;
+  private String Appr_Mandatory_Need = "";
 
-  private String Currentday_TPplanned;
+  private String Currentday_TPplanned = "";
 
-  private String DrRxQCap;
+  private String DrRxQCap = "";
 
-  private String MGRHlfDy;
+  private String MGRHlfDy = "";
 
-  private String Product_Rate_Editable;
+  private String Product_Rate_Editable = "";
 
-  private String CENeed;
+  private String CENeed = "";
 
-  private String DQNeed;
+  private String DQNeed = "";
 
-  private String ChmRCPA_competitor_Need;
+  private String ChmRCPA_competitor_Need = "";
 
-  private String CINeed;
+  private String CINeed = "";
 
-  private String Terr_based_Tag;
+  private String Terr_based_Tag = "";
 
-  private String RCPA_unit_nd;
+  private String RCPA_unit_nd = "";
 
-  private String call_report_to_date;
+  private String call_report_to_date = "";
 
-  private String HFNeed;
+  private String HFNeed = "";
 
-  private String Doc_Pob_Need;
+  private String Doc_Pob_Need = "";
 
-  private String quiz_need;
+  private String quiz_need = "";
 
-  private String ChmCap;
+  private String ChmCap = "";
 
-  private String StkQCap;
+  private String StkQCap = "";
 
-  private String CIPPOBNd;
+  private String CIPPOBNd = "";
 
-  private String geoTagImg;
+  private String geoTagImg = "";
 
-  private String pro_det_need;
+  private String pro_det_need = "";
 
-  private String SF_User_Name;
+  private String SF_User_Name = "";
 
-  private String SF_Name;
+  private String SF_Name = "";
 
-  private String sfEmail;
+  private String sfEmail = "";
 
-  private String currentDay;
+  private String currentDay = "";
 
-  private String days;
+  private String days = "";
 
-  private String CHEBase;
+  private String CHEBase = "";
 
-  private String Rcpa_Competitor_extra;
+  private String Rcpa_Competitor_extra = "";
 
-  private String ques_need;
+  private String ques_need = "";
 
-  private String entryFormMgr;
+  private String entryFormMgr = "";
 
-  private String Android_Detailing;
+  private String Android_Detailing = "";
 
-  private String sample_validation;
+  private String sample_validation = "";
 
-  private String Stk_Pob_Mandatory_Need;
+  private String Stk_Pob_Mandatory_Need = "";
 
-  private String DINeed;
+  private String DINeed = "";
 
   private SFTPDate SFTPDate;
 
-  private String CIP_PNeed;
+  private String CIP_PNeed = "";
 
-  private String call_report_from_date;
+  private String call_report_from_date = "";
 
-  private String Stk_jointwork_Mandatory_Need;
+  private String Stk_jointwork_Mandatory_Need = "";
 
-  private String SurveyNd;
+  private String SurveyNd = "";
 
-  private String UlDrEvent_Md;
+  private String UlDrEvent_Md = "";
 
-  private String tp_need;
+  private String tp_need = "";
 
-  private String SrtNd;
+  private String SrtNd = "";
 
-  private String RcpaMd;
+  private String RcpaMd = "";
 
-  private String multi_cluster;
+  private String multi_cluster = "";
 
-  private String Cluster_Cap;
+  private String Cluster_Cap = "";
 
-  private String Secondary_order_caption;
+  private String Secondary_order_caption = "";
 
-  private String quiz_need_mandt;
+  private String quiz_need_mandt = "";
 
-  private String No_of_TP_View;
+  private String No_of_TP_View = "";
 
-  private String ios_app;
+  private String ios_app = "";
 
   private Boolean success;
 
-  private String call_feed_enterable;
+  private String call_feed_enterable = "";
 
-  private String quiz_heading;
+  private String quiz_heading = "";
 
-  private String SPNeed;
+  private String SPNeed = "";
 
   private Double DisRad;
 
-  private String travelDistance_Need;
+  private String travelDistance_Need = "";
 
-  private String input_validation;
+  private String input_validation = "";
 
-  private String Ul_Pob_Need;
+  private String Ul_Pob_Need = "";
 
-  private String GEOTagNeedche;
+  private String GEOTagNeedche = "";
 
-  private String product_pob_need_msg;
+  private String product_pob_need_msg = "";
 
-  private String CQNeed;
+  private String CQNeed = "";
 
-  private String entryFormNeed;
+  private String entryFormNeed = "";
 
-  private String RcpaNd;
+  private String RcpaNd = "";
 
-  private String ExpenceNd_mandatory;
+  private String ExpenceNd_mandatory = "";
 
-  private String pob_minvalue;
+  private String pob_minvalue = "";
 
-  private String NLSmpQCap;
+  private String NLSmpQCap = "";
 
-  private String Chm_RCPA_Need;
+  private String Chm_RCPA_Need = "";
 
-  private String Detailing_type;
+  private String Detailing_type = "";
 
-  private String HPNeed;
+  private String HPNeed = "";
 
-  private String Doc_jointwork_Need;
+  private String Doc_jointwork_Need = "";
 
-  private String ChmRxQty;
+  private String ChmRxQty = "";
 
-  private String Ul_Product_caption;
+  private String Ul_Product_caption = "";
 
-  private String Leave_entitlement_need;
+  private String Leave_entitlement_need = "";
 
-  private String NPNeed;
+  private String NPNeed = "";
 
-  private String doc_business_value;
+  private String doc_business_value = "";
 
-  private String ChmNeed;
+  private String ChmNeed = "";
 
-  private String DlyCtrl;
+  private String DlyCtrl = "";
 
-  private String DrSmpQCap;
+  private String DrSmpQCap = "";
 
-  private String Attendance;
+  private String Attendance = "";
 
-  private String SFStat;
+  private String SFStat = "";
 
-  private String doc_business_product;
+  private String doc_business_product = "";
 
-  private String Stk_cluster_based;
+  private String Stk_cluster_based = "";
 
-  private String doctor_dobdow;
+  private String doctor_dobdow = "";
 
-  private String GEOTagNeed;
+  private String GEOTagNeed = "";
 
-  private String Doc_cluster_based;
+  private String Doc_cluster_based = "";
 
-  private String prod_det_need;
+  private String prod_det_need = "";
 
-  private String Chm_jointwork_Mandatory_Need;
+  private String Chm_jointwork_Mandatory_Need = "";
 
-  private String edit_weeklyoff;
+  private String edit_weeklyoff = "";
 
-  private String Chm_Pob_Need;
+  private String Chm_Pob_Need = "";
 
-  private String tracking_time;
+  private String tracking_time = "";
 
-  private String LeaveStatus;
+  private String LeaveStatus = "";
 
-  private String Stk_Pob_Need;
+  private String Stk_Pob_Need = "";
 
-  private String Location_track;
+  private String Location_track = "";
 
-  private String TP_Mandatory_Need;
+  private String TP_Mandatory_Need = "";
 
-  private String Doc_Product_caption;
+  private String Doc_Product_caption = "";
 
-  private String chmsamQty_need;
+  private String chmsamQty_need = "";
 
-  private String multiple_doc_need;
+  private String multiple_doc_need = "";
 
-  private String UsrDfd_UserName;
+  private String UsrDfd_UserName = "";
 
-  private String SF_Code;
+  private String SF_Code = "";
 
-  private String NextVst_Mandatory_Need;
+  private String NextVst_Mandatory_Need = "";
 
-  private String CIP_FNeed;
+  private String CIP_FNeed = "";
 
-  private String Stk_jointwork_Need;
+  private String Stk_jointwork_Need = "";
 
-  private String Pwdsetup;
+  private String Pwdsetup = "";
 
-  private String Division_Code;
+  private String Division_Code = "";
 
-  private String dcr_doc_business_product;
+  private String dcr_doc_business_product = "";
 
-  private String Dcr_firstselfie;
+  private String Dcr_firstselfie = "";
 
-  private String Target_report_md;
+  private String Target_report_md = "";
 
-  private String Catneed;
+  private String Catneed = "";
 
-  private String GeoNeed;
+  private String GeoNeed = "";
 
-  private String tp_new;
+  private String tp_new = "";
 
-  private String faq;
+  private String faq = "";
 
-  private String TPDCR_Deviation_Appr_Status;
+  private String TPDCR_Deviation_Appr_Status = "";
 
-  private String Secondary_order;
+  private String Secondary_order = "";
 
-  private String HospEvent_Md;
+  private String HospEvent_Md = "";
 
-  private String Input_Val_Qty;
+  private String Input_Val_Qty = "";
 
-  private String dashboard;
+  private String dashboard = "";
 
-  private String TPDCR_Deviation;
+  private String TPDCR_Deviation = "";
 
-  private String RCPAQty_Need;
+  private String RCPAQty_Need = "";
 
-  private String SF_Password;
+  private String SF_Password = "";
 
-  private String dayplan_tp_based;
+  private String dayplan_tp_based = "";
 
-  private String app_device_id;
+  private String app_device_id = "";
 
-  private String DrSmpQMd;
+  private String DrSmpQMd = "";
 
-  private String sf_emp_id;
+  private String sf_emp_id = "";
 
-  private String Stk_Product_caption;
+  private String Stk_Product_caption = "";
 
-  private String Doc_Input_caption;
+  private String Doc_Input_caption = "";
 
-  private String Ul_jointwork_Need;
+  private String Ul_jointwork_Need = "";
 
-  private String DrInpMd;
+  private String DrInpMd = "";
 
-  private String RcpaMd_Mgr;
+  private String RcpaMd_Mgr = "";
 
-  private String Campneed;
+  private String Campneed = "";
 
-  private String sfMobile;
+  private String sfMobile = "";
 
-  private String Order_management;
+  private String Order_management = "";
 
-  private String sf_type;
+  private String sf_type = "";
 
-  private String GEOTagNeedunlst;
+  private String GEOTagNeedunlst = "";
 
-  private String DeviceRegId;
+  private String DeviceRegId = "";
 
-  private String NQNeed;
+  private String NQNeed = "";
 
-  private String DENeed;
+  private String DENeed = "";
 
-  private String Detailing_chem;
+  private String Detailing_chem = "";
 
-  private String ExpenceNd;
+  private String ExpenceNd = "";
 
-  private String quote_Text;
+  private String quote_Text = "";
 
-  private String cntRemarks;
+  private String cntRemarks = "";
 
-  private String NLCap;
+  private String NLCap = "";
 
-  private String StkCap;
+  private String StkCap = "";
 
-  private String Android_App;
+  private String Android_App = "";
 
-  private String desig_Code;
+  private String desig_Code = "";
 
-  private String GeoChk;
+  private String GeoChk = "";
 
-  private String StkNeed;
+  private String StkNeed = "";
 
-  private String DrRcpaQMd;
+  private String DrRcpaQMd = "";
 
-  private String DeviceId_Need;
+  private String DeviceId_Need = "";
 
-  private String ChmEvent_Md;
+  private String ChmEvent_Md = "";
 
-  private String RmdrNeed;
+  private String RmdrNeed = "";
 
-  private String prod_remark;
+  private String prod_remark = "";
 
-  private String NFNeed;
+  private String NFNeed = "";
 
-  private String TPbasedDCR;
+  private String TPbasedDCR = "";
 
-  private String CIP_QNeed;
+  private String CIP_QNeed = "";
 
-  private String HosPOBNd;
+  private String HosPOBNd = "";
 
-  private String Desig;
+  private String Desig = "";
 
-  private String expense_need;
+  private String expense_need = "";
 
-  private String MsdEntry;
+  private String MsdEntry = "";
 
-  private String myplnRmrksMand;
+  private String myplnRmrksMand = "";
 
-  private String MCLDet;
+  private String MCLDet = "";
 
-  private String ios_Detailing;
+  private String ios_Detailing = "";
 
-  private String DrPrdMd;
+  private String DrPrdMd = "";
 
-  private String Chm_Pob_Mandatory_Need;
+  private String Chm_Pob_Mandatory_Need = "";
 
-  private String hosp_caption;
+  private String hosp_caption = "";
 
-  private String CIP_jointwork_Need;
+  private String CIP_jointwork_Need = "";
 
-  private String Remainder_prd_Md;
+  private String Remainder_prd_Md = "";
 
-  private String ChmQCap;
+  private String ChmQCap = "";
 
-  private String Doc_Pob_Mandatory_Need;
+  private String Doc_Pob_Mandatory_Need = "";
 
-  private String Chm_Input_caption;
+  private String Chm_Input_caption = "";
 
-  private String prod_remark_md;
+  private String prod_remark_md = "";
 
-  private String SENeed;
+  private String SENeed = "";
 
-  private String HosPOBMd;
+  private String HosPOBMd = "";
 
-  private String Tp_Start_Date;
+  private String Tp_Start_Date = "";
 
-  private String UlDoc_cluster_based;
+  private String UlDoc_cluster_based = "";
 
-  private String mailneed;
+  private String mailneed = "";
 
-  private String ActivityNd;
+  private String ActivityNd = "";
 
-  private String Employee_Id;
+  private String Employee_Id = "";
 
-  private String chm_ad_qty;
+  private String chm_ad_qty = "";
 
-  private String subdivision_code;
+  private String subdivision_code = "";
 
-  private String DrFeedMd;
+  private String DrFeedMd = "";
 
-  private String NINeed;
+  private String NINeed = "";
 
-  private String DcrLockDays;
+  private String DcrLockDays = "";
 
-  private String DrCap;
+  private String DrCap = "";
 
-  private String CIP_ENeed;
+  private String CIP_ENeed = "";
 
-  private String CmpgnNeed;
+  private String CmpgnNeed = "";
 
-  private String VstNd;
+  private String VstNd = "";
 
-  private String Chm_jointwork_Need;
+  private String Chm_jointwork_Need = "";
 
-  private String NLRxQCap;
+  private String NLRxQCap = "";
 
-  private String SINeed;
+  private String SINeed = "";
 
-  private String Remainder_geo;
+  private String Remainder_geo = "";
 
-  private String CFNeed;
+  private String CFNeed = "";
 
-  private String missedDateMand;
+  private String missedDateMand = "";
 
-  private String DrRCPA_competitor_Need;
+  private String DrRCPA_competitor_Need = "";
 
-  private String TempNd;
+  private String TempNd = "";
 
-  private String GEOTagNeedstock;
+  private String GEOTagNeedstock = "";
 
-  private String StkEvent_Md;
+  private String StkEvent_Md = "";
 
-  private String UNLNeed;
+  private String UNLNeed = "";
 
-  private String Ul_Input_caption;
+  private String Ul_Input_caption = "";
 
-  private String DPNeed;
+  private String DPNeed = "";
 
-  private String DrSampNd;
+  private String DrSampNd = "";
 
-  private String CIP_Caption;
+  private String CIP_Caption = "";
 
-  private String Target_report_Nd;
+  private String Target_report_Nd = "";
 
-  private String Ul_jointwork_Mandatory_Need;
+  private String Ul_jointwork_Mandatory_Need = "";
 
-  private String Stk_Input_caption;
+  private String Stk_Input_caption = "";
 
-  private String Remainder_call_cap;
+  private String Remainder_call_cap = "";
 
-  private String DrRxQMd;
+  private String DrRxQMd = "";
 
-  private String refDoc;
+  private String refDoc = "";
 
-  private String cip_need;
+  private String cip_need = "";
 
-  private String NENeed;
+  private String NENeed = "";
 
-  private String Doc_jointwork_Mandatory_Need;
+  private String Doc_jointwork_Mandatory_Need = "";
 
-  private String call_report;
+  private String call_report = "";
 
-  private String misc_expense_need;
+  private String misc_expense_need = "";
 
-  private String Gst_option;
+  private String Gst_option = "";
 
-  private String primarysec_need;
+  private String primarysec_need = "";
 
-  private String Chm_Product_caption;
+  private String Chm_Product_caption = "";
 
-  private String TBase;
+  private String TBase = "";
 
-  private String rcpaextra;
+  private String rcpaextra = "";
 
-  private String CIP_INeed;
+  private String CIP_INeed = "";
 
-  private String HENeed;
+  private String HENeed = "";
 
-  private String TPDCR_MGRAppr;
+  private String TPDCR_MGRAppr = "";
 
-  private String GeoTagNeedcip;
+  private String GeoTagNeedcip = "";
 
   public String getPast_leave_post() {
     return this.past_leave_post;

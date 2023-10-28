@@ -78,16 +78,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         this.sessionInterface = sessionInterface;
 
         sqLite = new SQLite(context);
-        Cursor cursor = sqLite.getLoginData();
         LoginResponse loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()){
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         sfCode = loginResponse.getSF_Code();
         division_code = loginResponse.getDivision_Code();
@@ -106,7 +98,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 chemistNeed = jsonArray.getJSONObject(i).getString("ChmNeed");
                 jwNeed = jsonArray.getJSONObject(i).getString("JWNeed");
                 stockiestNeed = jsonArray.getJSONObject(i).getString("StkNeed");
-                unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
+                if (jsonArray.getJSONObject(i).has("UnDrNeed")){
+                    unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
+                }
                 cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
                 hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
                 FW_meetup_mandatory = jsonArray.getJSONObject(i).getString("FW_meetup_mandatory");
@@ -115,7 +109,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }catch (JSONException e){
             throw new RuntimeException(e);
         }
-
     }
 
     @NonNull
@@ -1032,8 +1025,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void getDataFromLocal(MyViewHolder holder, String hqCode){
 
-        holder.clusterJsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hqCode);
-        if (holder.clusterJsonArray.length() <= 0){
+        if (!sqLite.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)){
             prepareMasterToSync(hqCode);
         }
 

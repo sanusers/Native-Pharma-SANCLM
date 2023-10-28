@@ -78,6 +78,7 @@ import java.util.Locale;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.changepassword.Change_passwordActivity;
+import saneforce.sanclm.activity.forms.Forms_activity;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
@@ -141,7 +142,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
         }
-        commonUtilsMethods.FullScreencall();
+//        commonUtilsMethods.FullScreencall();
     }
 
     @SuppressLint("MissingInflatedId")
@@ -149,12 +150,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_dash_board);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreencall();
         sqLite = new SQLite(HomeDashBoard.this);
-        dialog1=new Dialog(this);
         sqLite.getWritableDatabase();
+        dialog = new Dialog(this);
+        dialog1=new Dialog(this);
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//        commonUtilsMethods = new CommonUtilsMethods(this);
+//        commonUtilsMethods.FullScreencall();
         pre_layout = findViewById(R.id.ll_presentation);
         slide_layout = findViewById(R.id.ll_slide);
         report_layout = findViewById(R.id.ll_report);
@@ -318,26 +320,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         View popupView = layoutInflater.inflate(R.layout.user_details, null);
         final PopupWindow popupWindow = new PopupWindow(
                 popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-
-        popupWindow.showAtLocation(viewed_img, Gravity.RIGHT, 43, -168);
+        popupWindow.showAtLocation(viewed_img, Gravity.RIGHT, 85, -148);
 
         TextView user_name = popupView.findViewById(R.id.user_name);
         TextView sf_name = popupView.findViewById(R.id.sf_name);
         TextView clut = popupView.findViewById(R.id.clut);
         LinearLayout l_click = popupView.findViewById(R.id.change_passwrd);
         LinearLayout user_logout = popupView.findViewById(R.id.user_logout);
-        LinearLayout user_view = popupView.findViewById(R.id.user_view);
 
-            Cursor cursor = sqLite.getLoginData();
-            loginResponse = new LoginResponse();
-            String loginData = "";
-            if (cursor.moveToNext()) {
-                loginData = cursor.getString(0);
-            }
-            cursor.close();
-            Type type = new TypeToken<LoginResponse>() {
-            }.getType();
-            loginResponse = new Gson().fromJson(loginData, type);
+
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData(true);
 
             l_click.setOnClickListener(new Button.OnClickListener() {
                 @Override
@@ -345,6 +338,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     popupWindow.dismiss();
                 }
             });
+        l_click.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
 
             user_logout.setOnClickListener(v -> {
                 startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
@@ -355,12 +354,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             user_name.setText(username);
             sf_name.setText(user_roll);
             clut.setText(hq_name);
+        user_logout.setOnClickListener(v -> {
+            startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
+        });
 
-            // TODO Auto-generated method stub
-            l_click.setOnClickListener(v -> {
-                popupWindow.dismiss();
-                changepassword();
-            });
+        // TODO Auto-generated method stub
+        l_click.setOnClickListener(v -> {
+            popupWindow.dismiss();
+            changepassword();
+        });
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        // TODO Auto-generated method stub
+        l_click.setOnClickListener(v -> {
+            popupWindow.dismiss();
+            changepassword();
+        });
+
         popupWindow.setFocusable(true);
         popupWindow.update();
     }
@@ -369,24 +379,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @SuppressLint({"MissingInflatedId", "WrongConstant"})
     public void changepassword() {
 
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        commonUtilsMethods = new CommonUtilsMethods(this);
+        commonUtilsMethods.FullScreencall();
 
-        Cursor cursor = sqLite.getLoginData();
         loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()) {
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         dialog1.setContentView(R.layout.change_password);
 
         Window window1 = dialog1.getWindow();
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreencall();
+
 
         if (window1 != null) {
             WindowManager.LayoutParams layoutParams = window1.getAttributes();
@@ -491,27 +494,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
 
-//        View dialogView = inflater.inflate(R.layout.change_password, null);
-//        EditText old_password = dialogView.findViewById(R.id.old_pass);
-//        ImageView old_view = dialogView.findViewById(R.id.oldpas_icon);
-//        ImageView newpass_view = dialogView.findViewById(R.id.noepass_icon);
-//        EditText new_password = dialogView.findViewById(R.id.newpasswrd);
-//        EditText remain_password = dialogView.findViewById(R.id.repeatpass);
-//        LinearLayout update = dialogView.findViewById(R.id.update);
-//        ImageView cls_but = dialogView.findViewById(R.id.close);
-//        ImageView oldpas_icon = dialogView.findViewById(R.id.oldpas_icon);
-//
-//        dialogBuilder.setView(dialogView);
-
-//        final AlertDialog alertDialog = dialogBuilder.create();
-
-
-//                // TODO Auto-generated method stub
         cls_but.setOnClickListener(v -> {
             dialog1.dismiss();
-
         });
-
 
         dialog1.show();
 
@@ -541,6 +526,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
+        if (id == R.id.nav_forms) {
+            startActivity(new Intent(HomeDashBoard.this, Forms_activity.class));
+            return true;
+        }
+
         if (id == R.id.nav_create_presentation) {
             startActivity(new Intent(HomeDashBoard.this, CreatePresentation.class));
             return true;
@@ -558,8 +548,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
                     MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
                 }
-                //SharedPref.setMapSelectedTab(HomeDashBoard.this, "D");
-                //  SharedPref.setSelectedHqCode(HomeDashBoard.this, SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this));
+
                 startActivity(intent);
                 return true;
             } else {
@@ -569,8 +558,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         return true;
     }
-
-
     private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText, boolean isTabTitleInvisible) {
         TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
         if (tab != null) {

@@ -292,16 +292,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getRequiredData() {
-        Cursor cursor = sqLite.getLoginData();
+
         loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()) {
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         SfType = loginResponse.getSf_type();
         SfCode = loginResponse.getSF_Code();

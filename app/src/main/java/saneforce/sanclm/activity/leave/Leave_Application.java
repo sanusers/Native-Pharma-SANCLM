@@ -342,17 +342,8 @@ public class Leave_Application extends AppCompatActivity {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
-            Cursor cursor = sqLite.getLoginData();
             loginResponse = new LoginResponse();
-            String loginData = "";
-            if (cursor.moveToNext()) {
-                loginData = cursor.getString(0);
-            }
-            cursor.close();
-            Type type = new TypeToken<LoginResponse>() {
-            }.getType();
-            loginResponse = new Gson().fromJson(loginData, type);
-
+            loginResponse = sqLite.getLoginData(true);
 
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
@@ -524,8 +515,8 @@ public class Leave_Application extends AppCompatActivity {
             Chart_list.clear();
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
             JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
-            String lstatus = String.valueOf(jsonArray);
-            if (lstatus.equals("no_data_available")) {
+            String lstatus = (jsonArray.get(0).toString());
+            if (lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
                 chart_layout.setVisibility(View.GONE);
                 mtcard.setVisibility(View.VISIBLE);
             } else {
@@ -578,16 +569,9 @@ public class Leave_Application extends AppCompatActivity {
             if (bundle != null) {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
-            Cursor cursor = sqLite.getLoginData();
+
             loginResponse = new LoginResponse();
-            String loginData = "";
-            if (cursor.moveToNext()) {
-                loginData = cursor.getString(0);
-            }
-            cursor.close();
-            Type type = new TypeToken<LoginResponse>() {
-            }.getType();
-            loginResponse = new Gson().fromJson(loginData, type);
+            loginResponse = sqLite.getLoginData(true);
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
 

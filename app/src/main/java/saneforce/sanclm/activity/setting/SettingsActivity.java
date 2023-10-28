@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 
@@ -38,6 +39,8 @@ import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
+import saneforce.sanclm.response.LoginResponse;
+import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.R;
@@ -66,6 +69,10 @@ public class SettingsActivity extends AppCompatActivity {
         deviceId = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
+
+        SQLite sqLite = new SQLite(this);
+        LoginResponse loginResponse = sqLite.getLoginData(true);
+        Log.e("test","res : " + new Gson().toJson(loginResponse));
 
         binding.tvLanguage.setOnClickListener(new View.OnClickListener() {
             @Override
