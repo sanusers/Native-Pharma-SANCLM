@@ -13,12 +13,14 @@ import saneforce.sanclm.activity.setting.AsyncInterface;
 
 public class DownloaderClass extends AsyncTask<Object,Object,Object> {
 
-    private final String requestUrl,imageName,filePath;
+    private String requestUrl, imageName,filePath;
     private Bitmap bitmap;
     public AsyncInterface asyncInterface ;
 
+    public DownloaderClass () {
+    }
 
-    public DownloaderClass (String requestUrl, String filepath, String imageName,AsyncInterface asyncInterface) {
+    public DownloaderClass (String requestUrl, String filepath, String imageName, AsyncInterface asyncInterface) {
         this.requestUrl = requestUrl;
         this.filePath = filepath;
         this.imageName = imageName;
@@ -32,6 +34,7 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
             URLConnection conn = url.openConnection();
             bitmap = BitmapFactory.decodeStream(conn.getInputStream());
         } catch (Exception ex) {
+            asyncInterface.taskCompleted(false);
             ex.printStackTrace();
         }
         return null;
@@ -43,8 +46,8 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
             String status = ImageStorage.saveImage(bitmap, filePath, imageName);
             if (status != null && status.equalsIgnoreCase("success")){
                 asyncInterface.taskCompleted(true);
+                Log.e("test","logo image downloaded");
             }
-            Log.e("test","logo image downloaded");
         }
     }
 }

@@ -31,12 +31,10 @@ public class ImageStorage {
     public static File getImage(String filepath,String imageName) {
         File mediaImage = null;
         try {
-
             File myDir = new File(filepath,imageName);
             if (!myDir.exists()){
                 return null;
             }
-
             mediaImage = new File(myDir.getPath());
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,11 +49,8 @@ public class ImageStorage {
         if (file != null){
             String path = file.getAbsolutePath();
             b = BitmapFactory.decodeFile(path);
-
             return b != null && !b.equals("");
-
         }
-
         return false;
     }
 }

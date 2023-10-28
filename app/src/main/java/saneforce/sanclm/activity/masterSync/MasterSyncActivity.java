@@ -137,10 +137,11 @@ public class MasterSyncActivity extends AppCompatActivity {
             } else {
                 masterSyncAll(false);
             }
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        }else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
+//        else {
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//        }
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -976,9 +977,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     setHq(jsonArray);
                                                 }
                                             } else if (masterSyncItemModels.get(position).getName().equalsIgnoreCase("Setup")) {
-                                                JSONObject jsonSetup = jsonArray.getJSONObject(0);
-                                                SharedPref.setGeotagImage(getApplicationContext(), jsonSetup.getString("geoTagImg"));
-                                                SharedPref.setGeotagApprovalNeed(getApplicationContext(), jsonSetup.getString("GeoTagApprovalNeed"));
+                                                if (jsonArray.length() > 0){
+                                                    JSONObject jsonSetup = jsonArray.getJSONObject(0);
+                                                    if (jsonSetup.has("geoTagImg"))
+                                                        SharedPref.setGeotagImage(getApplicationContext(), jsonSetup.getString("geoTagImg"));
+                                                    if (jsonSetup.has("GeoTagApprovalNeed"))
+                                                        SharedPref.setGeotagApprovalNeed(getApplicationContext(), jsonSetup.getString("GeoTagApprovalNeed"));
+                                                }
                                             }
                                         }
 

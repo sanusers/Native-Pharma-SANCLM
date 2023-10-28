@@ -26,13 +26,11 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String LOGIN_DATA = "login_data";
     private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
 
-
     //Master Sync
     public static final String MASTER_SYNC_TABLE = "master_sync_data";
     public static final String MASTER_KEY = "master_key";
     public static final String MASTER_VALUE = "master_value";
     public static final String SYNC_STATUS = "sync_status"; // 0 - success, 1 - failed
-
 
     private static final String LINECHAR_CUSTCODE = "LINECHAR_CUSTCODE";
     private static final String LINECHAR_CUSTTYPE = "LINECHAR_CUSTTYPE";
@@ -48,7 +46,6 @@ public class SQLite extends SQLiteOpenHelper {
     private static final String LINECHAR_TRANS_SLNO = "LINECHAR_TRANS_SLNO";
     private static final String LINECHAR_AMSLNO = "LINECHAR_AMSLNO";
     private static final String LINECHAR_FM_INDICATOR = "LINECHAR_FM_INDICATOR";
-
 
     public SQLite (@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);

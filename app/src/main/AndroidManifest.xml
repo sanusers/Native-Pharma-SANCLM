@@ -56,6 +56,10 @@
         tools:targetApi="31">
 
         <activity
+            android:name=".activity.myresource.MyResource_Activity"
+            android:exported="true"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".activity.leave.CalendarActivity"
             android:exported="true"
             android:screenOrientation="landscape"
@@ -161,6 +165,16 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name="saneforce.sanclm.activity.myresource.MyResource_mapview"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name="saneforce.sanclm.activity.changepassword.Change_passwordActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

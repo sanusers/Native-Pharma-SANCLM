@@ -66,7 +66,6 @@ public class Constants {
 
     //Master sync No data
     public static final String NO_DATA_AVAILABLE = "no_data_available";
-//    public static final String SYNC_FAILED = "sync_failed";
 
 
     //-------------------------------------------------------------

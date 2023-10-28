@@ -161,7 +161,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }).execute();
             }
-
         }
     }
 
@@ -217,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
     public void process(JSONObject jsonObject) {
         try {
             sqLite.saveLoginData(jsonObject.toString());
-            openOrCreateDatabase("san_clm.db", MODE_PRIVATE, null);
+            openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));

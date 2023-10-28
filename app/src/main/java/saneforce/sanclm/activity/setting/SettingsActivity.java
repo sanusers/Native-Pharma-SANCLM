@@ -49,6 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     ActivitySettingsBinding binding;
     ApiInterface apiInterface;
+    DownloaderClass downloaderClass = new DownloaderClass();
+    AsyncInterface asyncInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
     String deviceId = "", url = "", licenseKey ="",divisionCode = "",baseWebUrl="", phpPathUrl ="",reportsUrl="", slidesUrl ="",logoUrl="";
@@ -175,7 +177,8 @@ public class SettingsActivity extends AppCompatActivity {
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
                                     SharedPref.setTagImageUrl(getApplicationContext(), "http://" + binding.etWebUrl.getText().toString().trim() + "/");
-                                    downloadImage(baseWebUrl + logoUrl, logoUrl, enteredUrl);
+                                    String[] splitUrl = logoUrl.split("/");
+                                    downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length -1], enteredUrl);
                                     licenseKeyValid = true;
                                     break;
                                 }
@@ -211,7 +214,6 @@ public class SettingsActivity extends AppCompatActivity {
             throw new RuntimeException(exception);
         }
 
-
     }
 
     public void downloadImage(String url,String imageName,String enteredUrl){
@@ -224,23 +226,34 @@ public class SettingsActivity extends AppCompatActivity {
         }
         String fileDirectory = packageInfo.applicationInfo.dataDir;
         Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
-        if(!ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
+
+        asyncInterface = new AsyncInterface() {
+            @Override
+            public void taskCompleted (boolean status) {
+                downloaderClass.cancel(true);
+                SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run () {
+                        Toast.makeText(getApplicationContext(), "Configured Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
+                startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+            }
+        };
+
+        if(!ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
             Log.e("test","image not exists");
-            new DownloaderClass(url, fileDirectory, imageName, new AsyncInterface() {
-                @Override
-                public void taskCompleted (boolean status) {
-                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
-                    Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
-                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
-                    startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
-                }
-            }).execute();
+            downloaderClass = (DownloaderClass) new DownloaderClass(url, fileDirectory, imageName, asyncInterface).execute();
         }else{
+            Log.e("test","image exists");
             SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
             Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
             SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
             startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         }
+
 
     }
 

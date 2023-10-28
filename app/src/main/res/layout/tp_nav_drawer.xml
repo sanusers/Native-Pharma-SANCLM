@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/_6sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,15 +27,23 @@
             android:textSize="@dimen/_7sdp"
             android:fontFamily="@font/satoshi_medium"
             android:layout_gravity="center"
+            android:padding="@dimen/_6sdp"
             tools:ignore="SpUsage"/>
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/tp_drawer_closeIcon"
-            android:layout_width="@dimen/_12sdp"
-            android:layout_height="@dimen/_12sdp"
-            android:src="@drawable/close_icon"
-            android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/_3sdp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/_6sdp"
+            android:paddingEnd="@dimen/_6sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_12sdp"
+                android:layout_height="@dimen/_12sdp"
+                android:src="@drawable/close_icon"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

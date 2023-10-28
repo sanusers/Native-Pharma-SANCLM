@@ -97,7 +97,6 @@
                             android:id="@+id/Leave"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/_2sdp"
                             android:layout_weight="55"
                             android:background="@drawable/border_white"
                             android:orientation="vertical">
@@ -498,7 +497,22 @@
                         </LinearLayout>
 
 
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/mtcard"
+                            android:layout_marginTop="-2dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#fdfefe"
+                            android:layout_weight="35"
+                            android:visibility="gone"
+
+                            />
+
+
+
+
                         <LinearLayout
+                            android:id="@+id/chart_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -533,7 +547,7 @@
                                             android:layout_marginEnd="@dimen/_1sdp"
                                             android:fontFamily="@font/satoshi_medium"
                                             android:gravity="left"
-                                            android:text="Leave Availability"
+                                            android:text="Leave Taken"
                                             android:textColor="#282A3C"
                                             android:textSize="@dimen/_8sdp"
                                             android:textStyle="bold" />
@@ -545,15 +559,13 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="@dimen/_1sdp"
-                                        android:layout_marginBottom="@dimen/_1sdp"
-                                        >
+                                        android:layout_marginBottom="@dimen/_1sdp">
 
                                         <androidx.recyclerview.widget.RecyclerView
                                             android:id="@+id/RL_piechart"
                                             android:scrollbars="horizontal"
                                             android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            >
+                                            android:layout_height="wrap_content">
 
                                         </androidx.recyclerview.widget.RecyclerView>
 
@@ -687,7 +699,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/submit_button"
-                            android:fontFamily="@font/satoshi_medium"
+                            android:fontFamily="@font/satoshi_bold"
                             android:gravity="center"
                             android:padding="@dimen/_5sdp"
                             android:text="Submit"
@@ -705,4 +717,42 @@
     <include
         layout="@layout/side_screen" />
 
+
 </androidx.drawerlayout.widget.DrawerLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

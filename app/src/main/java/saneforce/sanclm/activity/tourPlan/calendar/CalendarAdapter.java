@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.calendar_cell,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tp_calendar_cell, parent, false);
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
 //        layoutParams.height = (int) (parent.getHeight() * 0.166666666);
         return new MyViewHolder(view);
@@ -46,6 +47,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+//                holder.parentLayout.setBackgroundColor(context.getResources().getColor(R.color.green_2));
                 onDayClickInterface.onDayClicked(holder.getAdapterPosition(),date,daysOfMonth.get(holder.getAbsoluteAdapterPosition()));
             }
         });
@@ -59,9 +61,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView dateNo;
+        ConstraintLayout parentLayout;
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             dateNo = itemView.findViewById(R.id.dateNo);
+            parentLayout = itemView.findViewById(R.id.parentLayout);
         }
     }
 }

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -58,7 +59,7 @@ import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.Constants;
-import saneforce.sanclm.databinding.ActivityLoginBinding;
+
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
@@ -72,8 +73,8 @@ public class Leave_Application extends AppCompatActivity {
     EditText ed_Address, ed_Reason, et_Custsearch;
 
     ApiInterface apiInterface;
-    ActivityLoginBinding binding;
-    LinearLayout back_btn;
+
+    LinearLayout back_btn, chart_layout;
     LoginResponse loginResponse;
 
     ImageView close_sideview;
@@ -99,6 +100,7 @@ public class Leave_Application extends AppCompatActivity {
     ApiInterface apiService;
     String l_address = "", l_reason = "";
     Piechart_adapter piechart_adapter;
+    CardView mtcard;
 
     @SuppressLint("WrongConstant")
     @Override
@@ -114,6 +116,7 @@ public class Leave_Application extends AppCompatActivity {
         Head_todate = findViewById(R.id.Head_todate);
         Head_fromdate = findViewById(R.id.Head_fromdate);
         back_btn = findViewById(R.id.backArrow);
+        chart_layout = findViewById(R.id.chart_layout);
         leave_details = findViewById(R.id.leave_details);
         l_days = findViewById(R.id.l_days);
         txt_Attachement = findViewById(R.id.txt_Attachement);
@@ -128,6 +131,7 @@ public class Leave_Application extends AppCompatActivity {
         balance_days = findViewById(R.id.balance_days);
         RL_piechart = findViewById(R.id.RL_piechart);
         submit_leave = findViewById(R.id.submit_leave);
+        mtcard = findViewById(R.id.mtcard);
 
         dailog_list.setVisibility(View.VISIBLE);
         l_sideview.closeDrawer(Gravity.END);
@@ -203,22 +207,21 @@ public class Leave_Application extends AppCompatActivity {
         AvailableLeave();
 
 
-
     }
 
-    public void leave_applydates(){
+    public void leave_applydates() {
         ltypecount.clear();
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
-            String days="";
+            String days = "";
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String dates = jsonObject.getString("Created_Date");
-                    JSONObject jsonval=new JSONObject(dates);
-                    if(days.equals("")){
+                    JSONObject jsonval = new JSONObject(dates);
+                    if (days.equals("")) {
                         days = (jsonval.getString("date"));
-                        String dval= TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
+                        String dval = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
                         ltypecount.add(dval);
                     }
                 }
@@ -228,7 +231,6 @@ public class Leave_Application extends AppCompatActivity {
         }
 
     }
-
 
 
     @SuppressLint("WrongConstant")
@@ -244,7 +246,7 @@ public class Leave_Application extends AppCompatActivity {
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             Log.d("L-type", String.valueOf(jsonArray));
-            String days="";
+            String days = "";
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -255,11 +257,11 @@ public class Leave_Application extends AppCompatActivity {
 
                     String dates = jsonObject.getString("Created_Date");
 
-                    JSONObject jsonval=new JSONObject(dates);
-                    if(days.equals("")){
+                    JSONObject jsonval = new JSONObject(dates);
+                    if (days.equals("")) {
                         days = (jsonval.getString("date"));
 
-                        String dval= TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
+                        String dval = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_22, TimeUtils.FORMAT_4, days);
 
                         ltypecount.add(dval);
                     }
@@ -522,33 +524,39 @@ public class Leave_Application extends AppCompatActivity {
             Chart_list.clear();
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
             JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
-            Log.d("Leave_data", jsonArray + "--" + jsonArray1);
+            String lstatus = String.valueOf(jsonArray);
+            if (lstatus.equals("no_data_available")) {
+                chart_layout.setVisibility(View.GONE);
+                mtcard.setVisibility(View.VISIBLE);
+            } else {
+//                Log.d("Leave_data", jsonArray + "--" + jsonArray1);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i1 = 0; i1 < jsonArray1.length(); i1++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        JSONObject jsonObject1 = jsonArray1.getJSONObject(i1);
+                        String Ltype = (jsonObject1.getString("Leave_Name"));
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                for (int i1 = 0; i1 < jsonArray1.length(); i1++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    JSONObject jsonObject1 = jsonArray1.getJSONObject(i1);
-                    String Ltype = (jsonObject1.getString("Leave_Name"));
-
-                     if (jsonObject.getString("Leave_code").equals(jsonObject1.getString("Leave_code"))) {
-                        Leave_modelclass tackleave = new Leave_modelclass(jsonObject1.getString("Leave_Name"), (jsonObject.getString("Elig")),
-                                (jsonObject.getString("Taken")), (jsonObject.getString("Avail")),
-                                jsonObject.getString("Leave_Type_Code"));
+                        if (jsonObject.getString("Leave_code").equals(jsonObject1.getString("Leave_code"))) {
+                            Leave_modelclass tackleave = new Leave_modelclass(jsonObject1.getString("Leave_Name"), (jsonObject.getString("Elig")),
+                                    (jsonObject.getString("Taken")), (jsonObject.getString("Avail")),
+                                    jsonObject.getString("Leave_Type_Code"));
 
 //                            leave_modelclass tackleave=new leave_modelclass(jsonObject1.getString("Leave_Name"),"6","5","10");
-                        Chart_list.add(tackleave);
+                            Chart_list.add(tackleave);
 
 
-                        Collections.reverse(Chart_list);
-                        Piechart_adapter chart_details = new Piechart_adapter(Leave_Application.this, Chart_list);
+//                        Collections.reverse(Chart_list);
+                            Piechart_adapter chart_details = new Piechart_adapter(Leave_Application.this, Chart_list);
 
-                        RL_piechart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-                        RL_piechart.setItemAnimator(new DefaultItemAnimator());
-                        RL_piechart.setAdapter(chart_details);
-                        chart_details.notifyDataSetChanged();
+                            RL_piechart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                            RL_piechart.setItemAnimator(new DefaultItemAnimator());
+                            RL_piechart.setAdapter(chart_details);
+                            chart_details.notifyDataSetChanged();
 
+                        }
                     }
                 }
+
             }
 
 

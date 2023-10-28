@@ -54,11 +54,16 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         final Leave_modelclass pie_value = chart_list.get(position);
+
+
+
         String L_Taken = pie_value.getTakenleave();
         String L_Elgable = pie_value.getEligable();
         String L_Avalable = pie_value.getAvaolable();
 
         Log.d("chart", pie_value + "---" + L_Taken +"--"+L_Elgable+"--"+L_Avalable);
+
+
 
         Chartview(holder.pieChart,pie_value.getL_type(),pie_value.getAvaolable(),pie_value.getEligable(),pie_value.getTakenleave(),holder.c_val,holder.c_val_tol, holder.ltype_name,pie_value.getLtype(),
                 holder. LOP,holder.chartview_value);
@@ -105,8 +110,12 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 
         if(L_Available.equals("CL")){
             colors.clear();
+
             colors.add(Color.rgb(217, 217, 217));
-            colors.add(Color.rgb(133, 193, 233));
+            colors.add(Color.rgb(0, 198, 137));
+
+
+
             int Total_dates = Integer.parseInt(L_Elgable);
             int Apply_dates = Integer.parseInt(taken);
 
@@ -125,10 +134,13 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             chart.setData(pieData);
             chart.setUsePercentValues(false);
             chart.setDrawHoleEnabled(true);
+
+
+
             chart.setCenterTextSize(15f);
             chart.setCenterTextColor(Color.rgb(0, 0, 0));
             chart.setTransparentCircleRadius(40f);
-            chart.setHoleRadius(90f);
+            chart.setHoleRadius(89f);
             chart.animateXY(1400, 1400);
             String bal_val= String.valueOf(Balance_date);
             c_val.setText(bal_val);
@@ -137,8 +149,9 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 
         } else if (L_Available.equals("PL")) {
             colors1.clear();
+
             colors1.add(Color.rgb(217, 217, 217));
-            colors1.add(Color.rgb(241, 83, 110));
+            colors1.add(Color.rgb(133, 193, 233));
 
             int Total_dates = Integer.parseInt(L_Elgable);
             int Apply_dates = Integer.parseInt(taken);
@@ -161,7 +174,7 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             chart.setCenterTextSize(15f);
             chart.setCenterTextColor(Color.rgb(0, 0, 0));
             chart.setTransparentCircleRadius(40f);
-            chart.setHoleRadius(90f);
+            chart.setHoleRadius(89f);
             chart.animateXY(1400, 1400);
             String bal_val= String.valueOf(Balance_date);
             c_val.setText(bal_val);
@@ -170,14 +183,13 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
 
         }else if (L_Available.equals("SL")) {
             colors2.clear();
-
             colors2.add(Color.rgb(217, 217, 217));
-            colors2.add(Color.rgb(0, 198, 137));
+            colors2.add(Color.rgb(241, 83, 110));
 
             int Total_dates = Integer.parseInt(L_Elgable);
             int Apply_dates = Integer.parseInt(taken);
-
             int Balance_date = Total_dates-Apply_dates;
+
             ArrayList<PieEntry> lve_list = new ArrayList<PieEntry>();
             PieEntry pieEntry = new PieEntry(Apply_dates, "");
             lve_list.add(pieEntry);
@@ -195,7 +207,7 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             chart.setCenterTextSize(15f);
             chart.setCenterTextColor(Color.rgb(0, 0, 0));
             chart.setTransparentCircleRadius(40f);
-            chart.setHoleRadius(90f);
+            chart.setHoleRadius(89f);
             chart.animateXY(1400, 1400);
             String bal_val= String.valueOf(Balance_date);
             c_val.setText(bal_val);
@@ -225,7 +237,7 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             chart.setCenterTextSize(15f);
             chart.setCenterTextColor(Color.rgb(0, 0, 0));
             chart.setTransparentCircleRadius(40f);
-            chart.setHoleRadius(90f);
+            chart.setHoleRadius(89f);
             pieDataSet3.setColors(colors3);
             pieData3.setValueTextSize(0f);
             pieData3.setValueTextColor(Color.WHITE);

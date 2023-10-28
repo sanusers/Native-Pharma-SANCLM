@@ -117,6 +117,9 @@
         <!-- Other dialog customizations if needed -->
     </style>
 
+    <style name="NoBackground" parent="Theme.AppCompat.Dialog">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 
     <style name="Theme.SANCLM.NoActionBar">
         <item name="windowActionBar">false</item>
