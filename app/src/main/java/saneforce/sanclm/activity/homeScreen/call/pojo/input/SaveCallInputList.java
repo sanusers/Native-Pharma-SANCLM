@@ -40,8 +40,9 @@ public class SaveCallInputList {
         this.input_stk = input_stk;
     }
 
-    public SaveCallInputList(String input_name, String inp_qty, String input_stk) {
+    public SaveCallInputList(String input_name,String inp_code, String inp_qty, String input_stk) {
         this.input_name = input_name;
+        this.inp_code = inp_code;
         this.inp_qty = inp_qty;
         this.input_stk = input_stk;
     }

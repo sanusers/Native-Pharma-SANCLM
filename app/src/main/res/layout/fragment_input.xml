@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/bg_grey"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_grey">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,10 +14,10 @@
             android:id="@+id/constraint_list_prod"
             android:layout_width="@dimen/_120sdp"
             android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/_2sdp"
             android:layout_marginHorizontal="@dimen/_1sdp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginVertical="@dimen/_2sdp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -26,13 +26,16 @@
                 android:id="@+id/search_input"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginBottom="@dimen/_1sdp"
                 android:layout_marginHorizontal="@dimen/_1sdp"
+                android:layout_marginBottom="@dimen/_1sdp"
                 android:background="@drawable/border_shape_spinner"
                 android:drawableStart="@drawable/grey_search"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="@string/search"
+                android:imeOptions="actionDone"
                 android:paddingHorizontal="20dp"
+                android:singleLine="true"
+                android:maxLines="1"
                 android:textColor="@color/black"
                 android:textColorHint="@color/light_grey"
                 android:textSize="14sp"
@@ -47,13 +50,13 @@
                 android:id="@+id/rv_check_data_list"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/_1sdp"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/bg_white_without_border"
-                android:layout_marginHorizontal="@dimen/_1sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/search_input"/>
+                app:layout_constraintTop_toBottomOf="@id/search_input" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -78,9 +81,9 @@
                 android:layout_marginTop="@dimen/_2sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintVertical_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
 
                 <TextView
                     android:id="@+id/tag_input_name"
@@ -137,7 +140,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/tag_stock"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteY="2dp"  />
+                    tools:layout_editor_absoluteY="2dp" />
 
                 <TextView
                     android:id="@+id/tag_dummy"
@@ -163,8 +166,8 @@
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="@dimen/_2sdp"
                 android:layout_marginTop="@dimen/_2sdp"
-                app:layout_constraintBottom_toTopOf="@id/rv_list_input"
                 android:background="@color/dark_purple"
+                app:layout_constraintBottom_toTopOf="@id/rv_list_input"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/constraint_main"
                 app:layout_constraintVertical_bias="0.0" />

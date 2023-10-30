@@ -1,13 +1,12 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,43 +16,67 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
-import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.adapter.product.CallProductListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.product.SaveProductCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
-import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.databinding.FragmentProductsBinding;
 import saneforce.sanclm.storage.SQLite;
 
 public class ProductFragment extends Fragment {
-    public static RecyclerView rv_list_data;
-    public static RecyclerView rv_list_prod;
+
+    @SuppressLint("StaticFieldLeak")
+    public static FragmentProductsBinding productsBinding;
     public static ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList;
     CallProductListAdapter callProductListAdapter;
     SaveProductCallAdapter saveProductCallAdapter;
-    EditText editTextSearch;
     SQLite sqLite;
-    CommonSharedPreference mcommonSharedPreference;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_products, container, false);
-        Log.v("fragment", "products");
-        rv_list_data = v.findViewById(R.id.rv_check_data_list);
-        rv_list_prod = v.findViewById(R.id.rv_list_prd);
-        editTextSearch = v.findViewById(R.id.search_prd);
+        productsBinding = FragmentProductsBinding.inflate(inflater);
+        View v = productsBinding.getRoot();
         sqLite = new SQLite(getContext());
-        AddProductList();
-        mcommonSharedPreference = new CommonSharedPreference(getContext());
-        mcommonSharedPreference.setValueToPreference("unselect_data_prd", "");
 
-        editTextSearch.addTextChangedListener(new TextWatcher() {
+      /*  if (DCRCallActivity.SampleValidation.equalsIgnoreCase("0")) {
+            productsBinding.tagStock.setVisibility(View.VISIBLE);
+        } else {
+            productsBinding.tagStock.setVisibility(View.GONE);
+        }*/
+
+        HiddenVisibleFunction();
+
+       /* if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") && DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
+            productsBinding.tagSamples.setVisibility(View.VISIBLE);
+        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2") && DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0")) {
+            productsBinding.tagSamples.setVisibility(View.VISIBLE);
+        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+            productsBinding.tagSamples.setVisibility(View.VISIBLE);
+        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+            productsBinding.tagSamples.setVisibility(View.VISIBLE);
+        } else {
+            productsBinding.tagSamples.setVisibility(View.GONE);
+        }
+
+        if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
+            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
+            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
+            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
+            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+        } else {
+            productsBinding.tagRxQty.setVisibility(View.GONE);
+        }*/
+
+
+        AddProductList();
+
+        productsBinding.searchPrd.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -72,20 +95,58 @@ public class ProductFragment extends Fragment {
         return v;
     }
 
+    private void HiddenVisibleFunction() {
+        switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
+            case "1":
+                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
+                    productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                }
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
+                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                break;
+            case "2":
+                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0")) {
+                    productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                }
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
+                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                break;
+            case "3":
+                productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
+                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                break;
+            case "4":
+                productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
+                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                }
+                break;
+            default:
+                productsBinding.tagSamples.setVisibility(View.GONE);
+                productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
     private void AddProductList() {
         callProductListAdapter = new CallProductListAdapter(getActivity(), getContext(), callCommonCheckedListArrayList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        rv_list_data.setLayoutManager(mLayoutManager);
-        rv_list_data.setItemAnimator(new DefaultItemAnimator());
-        rv_list_data.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        rv_list_data.setAdapter(callProductListAdapter);
+        productsBinding.rvCheckDataList.setLayoutManager(mLayoutManager);
+        productsBinding.rvCheckDataList.setItemAnimator(new DefaultItemAnimator());
+        productsBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        productsBinding.rvCheckDataList.setAdapter(callProductListAdapter);
 
         saveProductCallAdapter = new SaveProductCallAdapter(getActivity(), getContext(), CallProductListAdapter.saveCallProductListArrayList, callCommonCheckedListArrayList);
         RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(getActivity());
-        rv_list_prod.setLayoutManager(mLayoutManagerprd);
-        rv_list_prod.setItemAnimator(new DefaultItemAnimator());
-        rv_list_prod.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        rv_list_prod.setAdapter(saveProductCallAdapter);
+        productsBinding.rvListPrd.setLayoutManager(mLayoutManagerprd);
+        productsBinding.rvListPrd.setItemAnimator(new DefaultItemAnimator());
+        productsBinding.rvListPrd.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        productsBinding.rvListPrd.setAdapter(saveProductCallAdapter);
     }
 
     private void filter(String text) {

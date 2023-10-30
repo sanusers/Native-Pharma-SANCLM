@@ -110,7 +110,7 @@
             android:name=".activity.homeScreen.call.DCRCallActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
             android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"

@@ -258,6 +258,10 @@ public class ListedDoctorFragment extends Fragment {
                     territoryTxt = "Territory";
                 }
 
+                if (count == 0) {
+                    SetupAdapter("", "");
+                }
+
                 tv_filterCount.setText(String.valueOf(count));
 
              /*   int count = 0;
@@ -419,11 +423,11 @@ public class ListedDoctorFragment extends Fragment {
             for (int i = 0; i < count; i++) {
                 for (int j = i + 1; j < count; j++) {
                     if (custListArrayList.get(i).getCode().equalsIgnoreCase(custListArrayList.get(j).getCode())) {
-                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), "1", custListArrayList.get(i).getCategory(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(),custListArrayList.get(i).getDob(),custListArrayList.get(i).getWedding_date(),custListArrayList.get(i).getEmail(),custListArrayList.get(i).getMobile(),custListArrayList.get(i).getPhone(),custListArrayList.get(i).getQualification()));
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification()));
                         custListArrayList.remove(j--);
                         count--;
                     } else {
-                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), "1", custListArrayList.get(i).getCategory(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(),custListArrayList.get(i).getDob(),custListArrayList.get(i).getWedding_date(),custListArrayList.get(i).getEmail(),custListArrayList.get(i).getMobile(),custListArrayList.get(i).getPhone(),custListArrayList.get(i).getQualification()));
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification()));
                     }
                 }
             }
@@ -445,36 +449,28 @@ public class ListedDoctorFragment extends Fragment {
             if (DrGeoTag.equalsIgnoreCase("1")) {
                 if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
                     if (GeoTagApproval.equalsIgnoreCase("0")) {
-                        Log.v("dfdfs", "--11-");
                         float[] distance = new float[2];
                         Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), laty, lngy, distance);
                         if (distance[0] < limitKm * 1000.0) {
                             if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
-                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"),
-                                        jsonObject.getString("DOB"),jsonObject.getString("DOW"),jsonObject.getString("DrEmail"),jsonObject.getString("Mobile"),jsonObject.getString("Phone"),jsonObject.getString("DrDesig")));
+                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig")));
                             }
                         }
                     } else {
-                        Log.v("dfdfs", "--22-");
                         float[] distance = new float[2];
                         Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), laty, lngy, distance);
                         if (distance[0] < limitKm * 1000.0) {
-                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"),
-                                    jsonObject.getString("DOB"),jsonObject.getString("DOW"),jsonObject.getString("DrEmail"),jsonObject.getString("Mobile"),jsonObject.getString("Phone"),jsonObject.getString("DrDesig")));
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig")));
                         }
                     }
                 }
             } else {
                 if (TpBasedDcr.equalsIgnoreCase("0")) {
-                    Log.v("dfdfs", "--33-");
                     if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"),
-                                jsonObject.getString("DOB"),jsonObject.getString("DOW"),jsonObject.getString("DrEmail"),jsonObject.getString("Mobile"),jsonObject.getString("Phone"),jsonObject.getString("DrDesig")));
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig")));
                     }
                 } else {
-                    Log.v("dfdfs", "--44-");
-                    custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"),
-                            jsonObject.getString("DOB"),jsonObject.getString("DOW"),jsonObject.getString("DrEmail"),jsonObject.getString("Mobile"),jsonObject.getString("Phone"),jsonObject.getString("DrDesig")));
+                    custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig")));
                 }
             }
         } catch (Exception e) {

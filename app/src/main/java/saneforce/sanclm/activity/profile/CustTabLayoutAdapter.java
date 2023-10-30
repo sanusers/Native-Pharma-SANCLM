@@ -1,37 +1,42 @@
 package saneforce.sanclm.activity.profile;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustTabLayoutAdapter extends FragmentPagerAdapter {
-    Context mContext;
-    int mTotalTabs;
-    public CustTabLayoutAdapter(Context context , FragmentManager fragmentManager , int totalTabs) {
-        super(fragmentManager);
-        mContext = context;
-        mTotalTabs = totalTabs;
+    private final List<Fragment> fragments = new ArrayList<>();
+    private final List<String> fragmentTitle = new ArrayList<>();
+
+    public CustTabLayoutAdapter(@NonNull FragmentManager fm) {
+        super(fm);
+    }
+
+    public void add(Fragment fragment, String title) {
+        fragments.add(fragment);
+        fragmentTitle.add(title);
+    }
+
+    @Override
+    public int getCount() {
+        return fragments.size();
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return new OverviewFragment();
-            case 1:
-                return new PreCallAnalysisFragment();
-            default:
-                return null;
-        }
+        return fragments.get(position);
     }
 
+
+    @Nullable
     @Override
-    public int getCount() {
-        return mTotalTabs;
+    public CharSequence getPageTitle(int position) {
+        return fragmentTitle.get(position);
     }
-
 }

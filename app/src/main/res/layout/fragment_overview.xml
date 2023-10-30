@@ -32,10 +32,10 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/satoshi_regular"
-            android:gravity="center"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
+            android:fontFamily="@font/satoshi_regular"
+            android:gravity="center"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_2sdp"
             android:text="Aasik"
@@ -213,6 +213,7 @@
             android:id="@+id/tv_qualify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
             android:fontFamily="@font/satoshi_regular"
             android:gravity="center"
             android:paddingHorizontal="@dimen/_4sdp"
@@ -221,9 +222,8 @@
             android:textColor="@color/bg_txt_color"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/tv_tag_category"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_name"
+            app:layout_constraintStart_toStartOf="@id/tv_tag_qualify"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_name" />
 
         <TextView
@@ -355,21 +355,21 @@
         <TextView
             android:id="@+id/tv_address"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_30sdp"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_regular"
-            android:gravity="center"
+            android:gravity="start|top|center"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="false"
             android:text="Thennur, Trichy"
             android:textColor="@color/bg_txt_color"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_tag_qualify"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_address" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

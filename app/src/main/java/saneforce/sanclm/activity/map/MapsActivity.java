@@ -384,11 +384,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void captureFileLower() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
-        //outputFileUri = FileProvider.getUriForFile(FeedbackActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(getExternalCacheDir().getPath(), "pickImageResult"+System.currentTimeMillis()+".jpeg"));
-        //Log.v("priniting_uri",outputFileUri.toString()+" output "+outputFileUri.getPath()+" raw_msg "+getExternalCacheDir().getPath());
-        //content://com.saneforce.sbiapplication.fileprovider/shared_video/Android/data/com.saneforce.sbiapplication/cache/pickImageResult.jpeg
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(intent, 19);
     }
@@ -621,7 +616,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v("test", jsonTag);
         Call<JsonObject> callSaveGeo = null;
         callSaveGeo = api_interface.saveMapGeoTag(jsonTag);
-        callSaveGeo.enqueue(new Callback<JsonObject>() {
+            callSaveGeo.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {

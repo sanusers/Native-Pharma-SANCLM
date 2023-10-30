@@ -173,20 +173,44 @@
             app:layout_constraintStart_toEndOf="@id/tv_tag_last_visit"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <!-- <ListView
+             android:id="@+id/lv_tag_promoted_prd"
+             android:layout_width="@dimen/_120sdp"
+             android:layout_height="0dp"
+             android:layout_marginHorizontal="@dimen/_4sdp"
+             android:layout_marginVertical="@dimen/_1sdp"
+             android:fontFamily="@font/satoshi_regular"
+             android:gravity="center"
+             android:paddingHorizontal="@dimen/_4sdp"
+             android:paddingVertical="@dimen/_2sdp"
+             android:textColor="@color/bg_txt_color"
+             android:textSize="14sp"
+             android:textStyle="bold"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="@id/tv_tag_prd_promoted"
+             app:layout_constraintTop_toBottomOf="@id/tv_tag_prd_promoted" />
+ -->
         <TextView
             android:id="@+id/tv_prd_promoted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/satoshi_regular"
-            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:layout_marginVertical="@dimen/_1sdp"
+            android:fontFamily="@font/satoshi_regular"
+            android:gravity="start|center|top"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_2sdp"
-            android:text="Horlicks,boost"
+            android:singleLine="false"
+            android:text="No Products Promoted"
             android:textColor="@color/bg_txt_color"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/tv_tag_prd_promoted"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_prd_promoted" />
 

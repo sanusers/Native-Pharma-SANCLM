@@ -1,7 +1,13 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide.JwList;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,126 +19,145 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
-import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.adapter.jwOthers.AdapterCallCaptureImage;
 import saneforce.sanclm.activity.homeScreen.call.adapter.jwOthers.AdapterCallJointWorkList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCaptureImageList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.databinding.FragmentJwothersBinding;
+import saneforce.sanclm.storage.SQLite;
 
 
 public class JWOthersFragment extends Fragment {
     public static ArrayList<CallCaptureImageList> callCaptureImageLists;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
+    @SuppressLint("StaticFieldLeak")
+    public static FragmentJwothersBinding jwothersBinding;
+    public static String filePath = "", imageName = "";
+    @SuppressLint("StaticFieldLeak")
+    public static AdapterCallCaptureImage adapterCallCaptureImage;
+    public static Uri outputFileUri;
     AdapterCallJointWorkList adapterCallJointWorkList;
-    AdapterCallCaptureImage adapterCallCaptureImage;
-    Uri outputFileUri;
-    String filePath = "", imageName = "";
-    RecyclerView rv_image_capture, rv_jointwork;
-    TextView btn_add_capture, btn_add_jointwork;
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1888 && resultCode == Activity.RESULT_OK) {
-            int captureSize = callCaptureImageLists.size() + 1;
-          //  imageName = "img_capture_DCR_" + captureSize;
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            callCaptureImageLists.add(0,new CallCaptureImageList("", "", photo));
-
-            adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-            rv_image_capture.setLayoutManager(mLayoutManager);
-            rv_image_capture.setItemAnimator(new DefaultItemAnimator());
-            rv_image_capture.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-            rv_image_capture.setAdapter(adapterCallCaptureImage);
+    SQLite sqLite;
+    CommonUtilsMethods commonUtilsMethods;
 
 
-          /*  String finalPath = "/storage/emulated/0";
-            filePath = outputFileUri.getPath();
-            filePath = filePath.substring(1);
-            filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-
-            Matrix mat = new Matrix();
-            mat.postRotate(Integer.parseInt("270"));
-            Bitmap bMapRotate = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), mat, true);*/
-
-
-            // imageView.setImageBitmap(photo);
-
-        }
-    }
-
-
+    @SuppressLint("NotifyDataSetChanged")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_jwothers, container, false);
+        jwothersBinding = FragmentJwothersBinding.inflate(inflater);
+        View v = jwothersBinding.getRoot();
+        sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(getActivity());
 
-        Log.v("fragment", "jointworks");
-        rv_image_capture = v.findViewById(R.id.rv_img_capture);
-        rv_jointwork = v.findViewById(R.id.rv_jointwork);
-        btn_add_capture = v.findViewById(R.id.btn_add_img_capture);
-        btn_add_jointwork = v.findViewById(R.id.btn_add_jw);
-
-
-        DummyAdapter();
+        HiddenVisibleFunction();
+        SetupAdapter();
 
 
-        btn_add_capture.setOnClickListener(view -> {
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 5);
+        jwothersBinding.tvFeedback.setOnClickListener(view -> {
+            dcrcallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
+        });
+
+        jwothersBinding.btnAddJw.setOnClickListener(view -> {
+            dcrcallBinding.fragmentSelectJwSide.setVisibility(View.VISIBLE);
+            HideKeyboard();
+        });
+
+        jwothersBinding.tvFeedback.setOnClickListener(view -> {
+            HideKeyboard();
+            dcrcallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
+        });
+
+        jwothersBinding.btnAddImgCapture.setOnClickListener(view -> {
+            if (callCaptureImageLists.size() < 2) {
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 5);
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        captureFile();
+                    } else captureFileLower();
+                }
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    captureFile();
-                } else captureFileLower();
+                Toast.makeText(getContext(), "Not able to Add more Images", Toast.LENGTH_SHORT).show();
             }
-          /*  Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, CAMERA_REQUEST);*/
         });
         return v;
     }
 
-    private void DummyAdapter() {
+    private void HideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(jwothersBinding.btnAddJw.getWindowToken(), 0);
+    }
+
+    private void HiddenVisibleFunction() {
+        if (DCRCallActivity.PobNeed.equalsIgnoreCase("0")) {
+            jwothersBinding.constraintPob.setVisibility(View.VISIBLE);
+        } else {
+            jwothersBinding.constraintPob.setVisibility(View.GONE);
+        }
+
+        if (DCRCallActivity.OverallFeedbackNeed.equalsIgnoreCase("0")) {
+            jwothersBinding.constraintFeedback.setVisibility(View.VISIBLE);
+        } else {
+            jwothersBinding.constraintFeedback.setVisibility(View.GONE);
+        }
+
+        if (DCRCallActivity.EventCaptureNeed.equalsIgnoreCase("0")) {
+            jwothersBinding.constraintCapture.setVisibility(View.VISIBLE);
+        } else {
+            jwothersBinding.constraintCapture.setVisibility(View.GONE);
+        }
+
+        if (DCRCallActivity.JwNeed.equalsIgnoreCase("0")) {
+            jwothersBinding.constraintJointWork.setVisibility(View.VISIBLE);
+        } else {
+            jwothersBinding.constraintJointWork.setVisibility(View.GONE);
+        }
+    }
+
+    private void SetupAdapter() {
         adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        rv_image_capture.setLayoutManager(mLayoutManager);
-        rv_image_capture.setItemAnimator(new DefaultItemAnimator());
-        rv_image_capture.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        rv_image_capture.setAdapter(adapterCallCaptureImage);
+        jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+        jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+        jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
 
-
-        adapterCallJointWorkList = new AdapterCallJointWorkList(getActivity(), callAddedJointList);
+        adapterCallJointWorkList = new AdapterCallJointWorkList(getContext(), getActivity(), callAddedJointList, JwList);
         RecyclerView.LayoutManager mLayoutManagerJW = new LinearLayoutManager(getActivity());
-        rv_jointwork.setLayoutManager(mLayoutManagerJW);
-        rv_jointwork.setItemAnimator(new DefaultItemAnimator());
-        rv_jointwork.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        rv_jointwork.setAdapter(adapterCallJointWorkList);
+        jwothersBinding.rvJointwork.setLayoutManager(mLayoutManagerJW);
+        jwothersBinding.rvJointwork.setItemAnimator(new DefaultItemAnimator());
+        jwothersBinding.rvJointwork.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        jwothersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
     }
 
 
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      /*   Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
-        outputFileUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".fileprovider", new File(getContext().getExternalCacheDir().getPath(), "1234.jpeg"));
-
-        Log.v("priniting_uri", " output " + outputFileUri.getPath());
+        outputFileUri = FileProvider.getUriForFile(requireContext(), getActivity().getPackageName() + ".fileprovider", new File(getContext().getExternalCacheDir().getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
+        imageName = "E_" + SfCode + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);*/
-
+        //intent.putExtra(MediaStore.EXTRA_OUTPUT,picUri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(intent, 1888);
     }
 
@@ -145,5 +170,33 @@ public class JWOthersFragment extends Fragment {
         //intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(intent, 19);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1888 && resultCode == Activity.RESULT_OK) {
+                String finalPath = "/storage/emulated/0";
+                //   Uri imageUri = data.getData();
+                //  Bitmap photo = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
+                Bitmap photo = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), outputFileUri);
+                filePath = outputFileUri.getPath();
+                filePath = filePath.substring(1);
+                filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+                String result = String.valueOf(resultCode);
+                if (result.equalsIgnoreCase("-1")) {
+                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
+                    adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                    jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+                    jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+                    jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+                    jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("imagerror", "--" + e);
+        }
     }
 }

@@ -152,7 +152,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:layout_marginVertical="@dimen/_5sdp"
-            android:background="@drawable/bg_sale_sample"
+            android:background="@drawable/bg_border_with_pink"
             android:fontFamily="@font/satoshi_bold"
             android:text="@string/cancel"
             android:textAllCaps="false"
@@ -223,5 +223,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_add_rcpa_side" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_select_fb_side"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.FeedbackSelectionSide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout="@layout/fragment_select_fb_side"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_select_fb_side" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_select_jw_side"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout="@layout/fragment_select_jw_side"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_select_jw_side" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

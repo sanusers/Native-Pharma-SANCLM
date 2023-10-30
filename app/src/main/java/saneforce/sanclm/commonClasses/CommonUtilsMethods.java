@@ -2,6 +2,7 @@ package saneforce.sanclm.commonClasses;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -191,7 +193,20 @@ public class CommonUtilsMethods {
         }
     }
 
+    public static ProgressDialog createProgressDialog(Context context) {
+        ProgressDialog dialog = new ProgressDialog(context);
+        try {
+            dialog.show();
+        } catch (WindowManager.BadTokenException e) {
 
+        }
+        dialog.setCancelable(false);
+        dialog.setIndeterminate(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.loading_progress);
+        // dialog.setMessage(Message);
+        return dialog;
+    }
     public void FullScreencall() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) {

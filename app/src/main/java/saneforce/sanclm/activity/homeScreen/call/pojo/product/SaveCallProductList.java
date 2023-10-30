@@ -4,6 +4,32 @@ public class SaveCallProductList {
     String name;
     String stock;
     String code;
+    boolean isCliked;
+    String category;
+    String from_call;
+    String sample_qty;
+    String rx_qty;
+    String rcpa_qty;
+    String promoted;
+
+    public String getPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(String promoted) {
+        this.promoted = promoted;
+    }
+
+    public SaveCallProductList(String name, String code, String stock, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
+        this.name = name;
+        this.code = code;
+        this.stock = stock;
+        this.sample_qty = sample_qty;
+        this.rx_qty = rx_qty;
+        this.rcpa_qty = rcpa_qty;
+        this.promoted = promoted;
+        this.isCliked = isCliked;
+    }
 
     public String getCode() {
         return code;
@@ -75,22 +101,5 @@ public class SaveCallProductList {
 
     public void setRcpa_qty(String rcpa_qty) {
         this.rcpa_qty = rcpa_qty;
-    }
-
-    boolean isCliked;
-    String category;
-    String from_call;
-
-    String sample_qty;
-    String rx_qty;
-    String rcpa_qty;
-
-    public SaveCallProductList(String name, String stock, String sample_qty, String rx_qty, String rcpa_qty, boolean isCliked) {
-        this.name = name;
-        this.stock = stock;
-        this.sample_qty = sample_qty;
-        this.rx_qty = rx_qty;
-        this.rcpa_qty = rcpa_qty;
-        this.isCliked = isCliked;
     }
 }

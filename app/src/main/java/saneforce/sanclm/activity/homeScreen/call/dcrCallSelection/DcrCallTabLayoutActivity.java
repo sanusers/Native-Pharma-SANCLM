@@ -32,7 +32,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
-    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StokistGeoTag, UndrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UndrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUndr;
+    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StokistGeoTag, UndrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UndrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUndr;
     public static double laty, lngy, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
@@ -83,18 +83,16 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     }
 
     private void getRequiredData() {
-        Log.v("fff", "000");
         try {
             gpsTrack = new GPSTrack(this);
             laty = gpsTrack.getLatitude();
             lngy = gpsTrack.getLongitude();
-            Log.v("fff", "-00--" + "111");
-
             loginResponse = new LoginResponse();
             loginResponse = sqLite.getLoginData(true);
 
             SfType = loginResponse.getSf_type();
             SfCode = loginResponse.getSF_Code();
+            SfName = loginResponse.getSF_Name();
 
             JSONArray jsonArray = new JSONArray();
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
@@ -125,7 +123,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 } else {
                     CipNeed = "1";
                 }
-
                 StockistNeed = setupResponse.getStockistNeed();
                 CapStockist = setupResponse.getCaptionStockist();
                 UndrNeed = setupResponse.getUnDrNeed();
@@ -134,6 +131,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             Log.v("fff", "-00--" + TodayPlanSfCode);
             if (SfType.equalsIgnoreCase("1")) {
                 TodayPlanSfCode = SfCode;
+                TodayPlanSfName = SfName;
             } else {
                 TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
                 TodayPlanSfName = SharedPref.getTodayDayPlanSfName(this);

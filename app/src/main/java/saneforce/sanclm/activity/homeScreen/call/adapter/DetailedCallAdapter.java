@@ -44,9 +44,7 @@ public class DetailedCallAdapter extends RecyclerView.Adapter<DetailedCallAdapte
         holder.tv_timeline.setText(callDetailingLists.get(position).getTimeline());
         holder.ratingBar.setRating(Float.parseFloat(callDetailingLists.get(position).getRating()));
         holder.tv_brand_name.setOnClickListener(view -> {
-            if (holder.tv_brand_name.getText().toString().length() > 12) {
                 commonUtilsMethods.displayPopupWindow(activity, context, view, callDetailingLists.get(position).getBrand_name());
-            }
         });
     }
 

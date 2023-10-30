@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,13 +105,10 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         }
 
         holder.tv_name.setOnClickListener(view -> {
-            if (holder.tv_name.getText().toString().length() > 18) {
-                commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
-            }
+            commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
         });
 
         holder.constraint_main.setOnClickListener(view -> {
-            Log.v("ggg", "-adapter---" + custListArrayList.get(position).getPosition());
             if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
                 Intent intent = new Intent(context, MapsActivity.class);
                 intent.putExtra("from", "tagging");

@@ -100,21 +100,15 @@ public class TagCustSelectionList extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         commonUtilsMethods = new CommonUtilsMethods(this);
-      /*  String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
-        String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-        String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-        apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);*/
+
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
         sqLiteHandler = new SQLiteHandler(this);
         sqLiteHandler.open();
         sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods.FullScreencall();
-        //   SelectedTab = SharedPref.getMapSelectedTab(TagCustSelectionList.this);
-
 
         getRequiredData();
-
 
         if (SfType.equalsIgnoreCase("1")) {
             AddCustList(SfCode);
