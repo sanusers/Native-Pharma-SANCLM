@@ -100,8 +100,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
             }
         }
 
-
-        if (holder.tv_category.getText().toString().equalsIgnoreCase("P1") || holder.tv_category.getText().toString().equalsIgnoreCase("P2")) {
+        if (holder.tv_category.getText().toString().contains("P")) {
             holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_priority));
             holder.tv_category.setBackground(context.getResources().getDrawable(R.drawable.bg_priority));
         } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SM")) {

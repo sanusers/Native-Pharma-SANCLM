@@ -1,10 +1,10 @@
 package saneforce.sanclm.activity.masterSync;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.network.ApiInterface;
 
 public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.MyViewHolder> {
 
@@ -47,8 +46,13 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         holder.name.setText(name);
         holder.count.setText(count);
 
-        if (data.isPB_visibility()){
+        if (data.syncSuccess == 1){
+            holder.syncErrorIcon.setVisibility(View.VISIBLE);
+        }
+
+        if (data.isPBarVisibility()){
             holder.progressBar.setVisibility(View.VISIBLE);
+            holder.syncErrorIcon.setVisibility(View.GONE);
         }else {
             holder.progressBar.setVisibility(View.GONE);
         }
@@ -57,6 +61,7 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
             @Override
             public void onClick (View view) {
                 holder.progressBar.setVisibility(View.VISIBLE);
+                holder.syncErrorIcon.setVisibility(View.GONE);
                 masterSyncItemClick.itemClick(data,holder.getAdapterPosition());
             }
         });
@@ -70,11 +75,13 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         TextView name,count;
         ProgressBar progressBar;
+        ImageView syncErrorIcon;
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             count = itemView.findViewById(R.id.count);
             progressBar = itemView.findViewById(R.id.progressBar);
+            syncErrorIcon = itemView.findViewById(R.id.syncFailedImage);
 
         }
     }

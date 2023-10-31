@@ -30,7 +30,13 @@ public class TimeUtils {
     public static final String FORMAT_15 = "yyyy-MM-dd 00:00:00.000";
     public static final String FORMAT_16 = "dd MMM yyyy hh:mm a";
     public static final String FORMAT_17 = "dd MMMM yyyy";
-
+    public static final String FORMAT_18 = "MMM dd,yyyy";
+    public static final String FORMAT_19 = "dd MMM yyyy";
+    public static final String FORMAT_20 = "E MMM dd HH:mm:ss z yyyy";
+    public static final String FORMAT_21 = "yyyy-M-d";
+    public static final String FORMAT_22 = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+    public static final String FORMAT_23 = "MMMMM yyyy";
+    public static final String FORMAT_24 = "yyyy-MM";
 
 
     public static String getCurrentDateTime(String format) {

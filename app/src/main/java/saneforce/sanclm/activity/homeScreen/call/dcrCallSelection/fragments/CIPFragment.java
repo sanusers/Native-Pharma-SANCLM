@@ -118,15 +118,15 @@ public class CIPFragment extends Fragment {
         custListArrayList.clear();
         try {
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CIP + DcrCallTabLayoutActivity.TodayPlanSfCode);
-            Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
-            if (jsonArray.length() == 0) {
+            Log.v("call", "-cip_full_length-" + jsonArray.length());
+           /* if (jsonArray.length() == 0) {
                 if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                    // Toast.makeText(getActivity(), "Kindly Select Again!", Toast.LENGTH_SHORT).show();
                     //  MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
                 } else {
                     Toast.makeText(getActivity(), Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                 }
-            }
+            }*/
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -177,10 +177,10 @@ public class CIPFragment extends Fragment {
             }
 
         } catch (Exception e) {
-            Log.v("dfdfs", "---" + e);
+            Log.v("call", "-cip--error--" + e);
         }
 
-        Log.v("dfdfs", "---" + custListArrayList.size());
+        Log.v("call", "-cip--size--" + custListArrayList.size());
         adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList);
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));

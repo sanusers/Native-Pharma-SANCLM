@@ -225,7 +225,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_marginLeft="@dimen/_2sdp"
                                     android:layout_marginRight="@dimen/_2sdp"
-                                    android:background="@drawable/custom_background_red"
+                                    android:background="@drawable/custom_background_pink"
                                     android:orientation="vertical">
 
                                         <TextView
@@ -306,7 +306,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_marginLeft="@dimen/_2sdp"
                                     android:layout_marginRight="@dimen/_2sdp"
-                                    android:background="@drawable/custom_background_brown"
+                                    android:background="@drawable/custom_background_yellow"
                                     android:orientation="vertical">
 
                                         <TextView

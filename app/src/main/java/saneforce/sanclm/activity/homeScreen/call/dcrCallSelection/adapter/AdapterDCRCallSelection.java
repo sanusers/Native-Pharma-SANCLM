@@ -50,7 +50,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         holder.tv_area.setText(custListArrayList.get(position).getTown_name());
 
         holder.tv_name.setOnClickListener(view -> {
-                commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
+            commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
         });
 
         for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
@@ -86,30 +86,12 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             }
         }*/
 
-       /* if (custListArrayList.get(position).getTown_code().equalsIgnoreCase("Trichy")) {
-            holder.view_top.setVisibility(View.VISIBLE);
-            holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
-        }*/
-
 
         holder.constraint_main.setOnClickListener(view -> {
             DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getCategoryCode(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getPosition(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getDob(), custListArrayList.get(position).getWedding_date(), custListArrayList.get(position).getEmail(), custListArrayList.get(position).getMobile(), custListArrayList.get(position).getPhone(), custListArrayList.get(position).getQualification()));
+            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getCategoryCode(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getPosition(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getDob(), custListArrayList.get(position).getWedding_date(), custListArrayList.get(position).getEmail(), custListArrayList.get(position).getMobile(), custListArrayList.get(position).getPhone(), custListArrayList.get(position).getQualification(), custListArrayList.get(position).getPriorityPrdCode()));
             Intent intent = new Intent(context, CustomerProfile.class);
             context.startActivity(intent);
-         /*   for (int i = 0; i < DcrCallTabLayoutActivity.SaveTodayCalledList.size(); i++) {
-                if (DcrCallTabLayoutActivity.SaveTodayCalledList.get(i).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
-                    Toast.makeText(context, "Already Visited Today", Toast.LENGTH_SHORT).show();
-                    break;
-                } else {
-                    DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-                    DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getPosition(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getDob(), custListArrayList.get(position).getWedding_date(), custListArrayList.get(position).getEmail(), custListArrayList.get(position).getMobile(), custListArrayList.get(position).getPhone(), custListArrayList.get(position).getQualification()));
-                    Intent intent = new Intent(context, CustomerProfile.class);
-                    context.startActivity(intent);
-                    break;
-                }
-            }*/
-
         });
     }
 

@@ -37,6 +37,7 @@ public class SharedPref {
     public static final String SUBDIV_CODE = "subdiv_code";
     public static final String TAG_IMAGE_URL = "tag_image_url";
 
+
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
     public static final String HQ_NAME = "hq_name";
@@ -217,6 +218,7 @@ public class SharedPref {
     public static final String HOSPITAL_NEED = "hos_need";
 
 
+
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
 
@@ -346,11 +348,6 @@ public class SharedPref {
         editor.putString(USER_NAME, token).apply();
     }
 
-    public static String getUserName(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(USER_NAME, "");
-    }
-
-
     public static void saveSfType(Context context, String type, String sfCode) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -366,24 +363,9 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(SF_CODE, "");
     }
 
-    public static void saveMasterLastSync(Context context, String date) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(MASTER_LAST_SYNC, date).apply();
-    }
 
     public static String getLastSync(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(MASTER_LAST_SYNC, "");
-    }
-
-    public static void setCallApiUrl(Context context, String token) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(CALL_API_URL, token).apply();
-    }
-
-    public static String getCallApiUrl(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CALL_API_URL, "");
     }
 
     public static void setSfName(Context context, String token) {
@@ -395,13 +377,27 @@ public class SharedPref {
     public static void setSfCode(Context context, String token) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SF_CODE, token).apply();
+        editor.putString(USER_NAME, token).apply();
     }
 
-    public static void setSfType(Context context, String token) {
+    public static String getUserName(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(USER_NAME, "");
+    }
+
+    public static void saveMasterLastSync(Context context,String date){
+        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(MASTER_LAST_SYNC,date).apply();
+    }
+
+    public static void setCallApiUrl(Context context, String token) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SF_TYPE, token).apply();
+        editor.putString(CALL_API_URL, token).apply();
+    }
+
+    public static String getCallApiUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CALL_API_URL, "");
     }
 
     public static String getSfName(Context context) {
@@ -444,8 +440,7 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putString(STATE_CODE, token).apply();
     }
-
- /*   public static void saveSetups(Context context, String geoNeed, String geoChk, String CheNeed, String StkistNeed, String UndrNeed, String DrPrdNeed,
+    /*   public static void saveSetups(Context context, String geoNeed, String geoChk, String CheNeed, String StkistNeed, String UndrNeed, String DrPrdNeed,
                                   String DrInpNeed, String ChePrdNeed, String CheInpNeed, String StkPrdNeed, String StkInpNeed,
                                   String UndrPrdNeed, String UndrInpNeed, String CapDr, String CapChe, String CapStk, String CapUndr, String CapDrPrd,
                                   String CapChePrd, String CapStkPrd, String CapUndrPrd, String CapDrInp, String CapCheInp, String CapStkInp, String CapUndrInp,
@@ -589,19 +584,18 @@ public class SharedPref {
     }*/
 
 
-    public static void saveHq(Context context, String name, String code) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+    public static void saveHq (Context context, String name, String code){
+        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(HQ_NAME, name);
         editor.putString(HQ_CODE, code).apply();
     }
-
-    public static String getHqName(Context context) {
-        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_NAME, "");
+    public static String getHqName (Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(HQ_NAME, "");
     }
 
-    public static String getHqCode(Context context) {
-        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_CODE, "");
+    public static String getHqCode (Context context){
+        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(HQ_CODE, "");
     }
 
     public static void setGeoNeed(Context context, String status) {
@@ -653,6 +647,7 @@ public class SharedPref {
     public static String getUndrNeed(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(UNDR_NEED, "");
     }
+
 
     public static void setCipNeed(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

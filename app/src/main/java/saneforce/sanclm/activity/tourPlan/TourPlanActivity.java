@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.tourPlan;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
@@ -11,13 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -25,14 +29,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
-import saneforce.sanclm.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanclm.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanclm.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.sanclm.activity.tourPlan.session.SessionInterface;
@@ -44,30 +52,34 @@ import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityTourPlanBinding;
 import saneforce.sanclm.network.ApiInterface;
+import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
 
 public class TourPlanActivity extends AppCompatActivity {
     private ActivityTourPlanBinding binding;
+    ApiInterface apiInterface;
+    SQLite sqLite;
     public static LinearLayout addSaveBtnLayout,clrSaveBtnLayout;
 
     CalendarAdapter calendarAdapter = new CalendarAdapter();
     SummaryAdapter summaryAdapter = new SummaryAdapter();
-    ApiInterface apiInterface;
-    SQLite sqLite;
-    LocalDate localDate;
-    private DrawerLayout drawerLayout;
-
-    String sfName = "",sfCode = "",division_code = "",sfType = "",hq_code ="",designation = "",state_code ="",subdivision_code = "";
-    String addSessionNeed= "",addSessionCount = "",FW_meetup_mandatory = "";
-
-    ModelClass sessionModelClass = new ModelClass();
-    ArrayList<ModelClass.SessionList> sessionListArrayList = new ArrayList<>();
-    ArrayList<ModelClass> summaryArrayList = new ArrayList<>();
-    ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
-
     SessionEditAdapter sessionEditAdapter = new SessionEditAdapter();
     SessionViewAdapter sessionViewAdapter = new SessionViewAdapter();
+    public static ArrayList<ModelClass> dayWiseArrayCurrentMonth = new ArrayList<>();
+    ArrayList<ModelClass> dayWiseArrayPrevMonth = new ArrayList<>();
+    ArrayList<ModelClass> dayWiseArrayNextMonth = new ArrayList<>();
+    ArrayList<String> holidaysDay = new ArrayList<>();
+
+    ModelClass.SessionList.WorkType weeklyOffModel = new ModelClass.SessionList.WorkType();
+    ModelClass.SessionList.WorkType holidayModel = new ModelClass.SessionList.WorkType();
+
+    LocalDate localDate;
+    private DrawerLayout drawerLayout;
+    String sfName = "",sfCode = "",division_code = "",sfType = "",designation = "",state_code ="",subdivision_code = "";
+    String drNeed = "" , maxDocCount = "",addSessionNeed= "", addSessionCountLimit = "",FW_meetup_mandatory = "" ,holidayMode = "" , weeklyOffCaption = "",holidayEditable = "",weeklyOffEditable = "";
+    int monthInAdapter = 0; // 0 - current month , 1 - next month , -1 - previous month
 
 
     @Override
@@ -79,16 +91,22 @@ public class TourPlanActivity extends AppCompatActivity {
         sqLite = new SQLite(getApplicationContext());
         addSaveBtnLayout = binding.tpNavigation.addSaveLayout;
         clrSaveBtnLayout = binding.tpNavigation.clrSaveBtnLayout;
-        uiInitialization();
 
         localDate = LocalDate.now();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run () {
-                populateCalendarAdapter();
-            }
-        }, 200);
+        uiInitialization();
+        dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
+//        new Async().execute(localDate);
 
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run () {
+        populateCalendarAdapter(dayWiseArrayCurrentMonth);
+        populateSummaryAdapter(dayWiseArrayCurrentMonth);
+
+//            }
+//        },100);
+
+        getTPData();
         binding.tpDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         binding.tpDrawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -128,8 +146,24 @@ public class TourPlanActivity extends AppCompatActivity {
                 }else{
                     binding.calendarNextButton.setEnabled(true);
                 }
-                populateCalendarAdapter();
 
+                if (localDate.isEqual(LocalDate.now())){
+                    if (dayWiseArrayCurrentMonth.size() == 0){
+                        dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
+                    }
+                    populateCalendarAdapter(dayWiseArrayCurrentMonth);
+                    populateSummaryAdapter(dayWiseArrayCurrentMonth);
+
+                    monthInAdapter = 0;
+                } else if (localDate.isEqual(LocalDate.now().plusMonths(1))) {
+                    if (dayWiseArrayNextMonth.size() == 0){
+                        dayWiseArrayNextMonth = prepareModelClassForMonth(localDate);
+                    }
+                    populateCalendarAdapter(dayWiseArrayNextMonth);
+                    populateSummaryAdapter(dayWiseArrayNextMonth);
+
+                    monthInAdapter = 1;
+                }
             }
         });
 
@@ -139,14 +173,28 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.calendarNextButton.setEnabled(true);
                 binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
                 localDate = localDate.minusMonths(1);
-
                 if (LocalDate.now().minusMonths(1).isEqual(localDate)){
                     binding.calendarPrevButton.setEnabled(false);
                     binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
                 }else{
                     binding.calendarPrevButton.setEnabled(true);
                 }
-                populateCalendarAdapter();
+
+                if (localDate.isEqual(LocalDate.now())){
+                    if (dayWiseArrayCurrentMonth.size() == 0){
+                        dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
+                    }
+                    populateCalendarAdapter(dayWiseArrayCurrentMonth);
+                    populateSummaryAdapter(dayWiseArrayCurrentMonth);
+                    monthInAdapter = 0;
+                } else if (localDate.isEqual(LocalDate.now().minusMonths(1))) {
+                    if (dayWiseArrayPrevMonth.size() == 0){
+                        dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate);
+                    }
+                    populateCalendarAdapter(dayWiseArrayPrevMonth);
+                    populateSummaryAdapter(dayWiseArrayPrevMonth);
+                    monthInAdapter = -1;
+                }
             }
         });
 
@@ -160,20 +208,16 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.tpNavigation.itemClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-
                 SessionEditAdapter.MyViewHolder viewHolder = (SessionEditAdapter.MyViewHolder) binding.tpNavigation.tpSessionRecView.findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
                 sessionEditAdapter.clearCheckBox(viewHolder);
-
             }
         });
 
-        binding.tpNavigation.childSave.setOnClickListener(new View.OnClickListener() {
+        binding.tpNavigation.checkBoxSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-
                 SessionEditAdapter.MyViewHolder viewHolder = (SessionEditAdapter.MyViewHolder)  binding.tpNavigation.tpSessionRecView.findViewHolderForAdapterPosition(sessionEditAdapter.itemPosition);
                 sessionEditAdapter.saveCheckedItem(viewHolder);
-
             }
         });
 
@@ -184,49 +228,82 @@ public class TourPlanActivity extends AppCompatActivity {
                 boolean isEmpty = false;
                 int position = 0;
 
-                if (sessionModelClass.getSessionList().size() < Integer.parseInt(addSessionCount)){
-                    for (int i = 0; i< sessionModelClass.getSessionList().size(); i++){
-                        ModelClass.SessionList modelClass = sessionModelClass.getSessionList().get(i);
-                        if (modelClass.getWorkType().getName().isEmpty()){
+                ModelClass modelClass = SessionEditAdapter.inputData;
+                ArrayList<ModelClass.SessionList> sessionLists = modelClass.getSessionList();
+                if (sessionLists.size() < Integer.parseInt(addSessionCountLimit)){
+                    for (int i = 0; i< sessionLists.size(); i++){
+                        ModelClass.SessionList modelClass1 = sessionLists.get(i);
+                        if (modelClass1.getWorkType().getName().isEmpty()){
                             isEmpty = true;
                             position = i;
                             Toast.makeText(TourPlanActivity.this, "Complete Session " + (i + 1), Toast.LENGTH_SHORT).show();
                             break;
-                        } else if (modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
-                            if (modelClass.getHQ().getName().isEmpty()){
+                        } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
+                            if (modelClass1.getHQ().getName().isEmpty()){
                                 isEmpty = true;
                                 position = i;
                                 Toast.makeText(TourPlanActivity.this, "Select Head Quarters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                                 break;
-                            } else if (modelClass.getCluster().size() == 0) {
+                            } else if (modelClass1.getCluster().size() == 0) {
                                 isEmpty = true;
                                 position = i;
                                 Toast.makeText(TourPlanActivity.this, "Select Clusters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                                 break;
-                            } else if (FW_meetup_mandatory.equals("0")) {
-                                if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
-                                        modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+                            } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                                if (FW_meetup_mandatory.equals("0")) {
+                                    if (drNeed.equals("0")){
+                                        if (modelClass1.getListedDr().size() == 0){
+                                            isEmpty = true;
+                                            position = i;
+                                            Toast.makeText(TourPlanActivity.this, "Select Listed Doctor in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                            break;
+                                        } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDocCount)){
+                                            isEmpty = true;
+                                            position = i;
+                                            Toast.makeText(TourPlanActivity.this, "You have selected the doctors more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
+                                            break;
+                                        }
+                                    }
+
+                                    if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 &&
+                                            modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
+                                        isEmpty = true;
+                                        position = i;
+                                        Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
+                                }
+                            }
+                        } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                            if (FW_meetup_mandatory.equals("0")) {
+                                if (drNeed.equals("0")){
+                                    if (modelClass1.getListedDr().size() == 0){
+                                        isEmpty = true;
+                                        position = i;
+                                        Toast.makeText(TourPlanActivity.this, "Select Listed Doctor in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        break;
+                                    } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDocCount)){
+                                        isEmpty = true;
+                                        position = i;
+                                        Toast.makeText(TourPlanActivity.this, "You have selected the doctors more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
+                                }
+                                if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 &&
+                                        modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                     isEmpty = true;
                                     position = i;
                                     Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                                     break;
                                 }
                             }
-                        } else if (FW_meetup_mandatory.equals("0")) {
-                            if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
-                                    modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
-                                isEmpty = true;
-                                position = i;
-                                Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
-                                break;
-                            }
                         }
                     }
 
                     if (!isEmpty){
-                        sessionModelClass.getSessionList().add(prepareClassForTpAdapter());
-                        populateSessionEditAdapter(sessionModelClass);
-                        scrollToPosition(sessionModelClass.getSessionList().size()-1, false);
+                        sessionLists.add(prepareClassForTpAdapter());
+                        populateSessionEditAdapter(modelClass);
+                        scrollToPosition(modelClass.getSessionList().size()-1, false);
                     }else{
                         scrollToPosition(position,true);
                     }
@@ -244,8 +321,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 boolean isEmpty = false;
                 int position = 0;
 
-                for (int i = 0; i< sessionModelClass.getSessionList().size(); i++){
-                    ModelClass.SessionList modelClass = sessionModelClass.getSessionList().get(i);
+                ModelClass inputModelClass = SessionEditAdapter.inputData;
+                ArrayList<ModelClass.SessionList> sessionLists = inputModelClass.getSessionList();
+                for (int i = 0; i< sessionLists.size(); i++){
+                    ModelClass.SessionList modelClass = sessionLists.get(i);
                     if (modelClass.getWorkType().getName().isEmpty()){
                         isEmpty = true;
                         position = i;
@@ -262,7 +341,46 @@ public class TourPlanActivity extends AppCompatActivity {
                             position = i;
                             Toast.makeText(TourPlanActivity.this, "Select Clusters in session " + (i + 1), Toast.LENGTH_SHORT).show();
                             break;
-                        } else if (FW_meetup_mandatory.equals("0")) {
+                        } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                            if (FW_meetup_mandatory.equals("0")) {
+                                if (drNeed.equals("0")) {
+                                    if (modelClass.getListedDr().size() == 0){
+                                        isEmpty = true;
+                                        position = i;
+                                        Toast.makeText(TourPlanActivity.this, "Select Listed Doctor in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        break;
+                                    } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDocCount)){
+                                        isEmpty = true;
+                                        position = i;
+                                        Toast.makeText(TourPlanActivity.this, "You have selected the doctors more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        break;
+                                    }
+                                }
+
+                                if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
+                                        modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+                                    isEmpty = true;
+                                    position = i;
+                                    Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                        if (FW_meetup_mandatory.equals("0")) {
+                            if (drNeed.equals("0")){
+                                if (modelClass.getListedDr().size() == 0){
+                                    isEmpty = true;
+                                    position = i;
+                                    Toast.makeText(TourPlanActivity.this, "Select Listed Doctor in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                    break;
+                                } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDocCount)){
+                                    isEmpty = true;
+                                    position = i;
+                                    Toast.makeText(TourPlanActivity.this, "You have selected the doctors more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
                             if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
                                     modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
                                 isEmpty = true;
@@ -271,33 +389,41 @@ public class TourPlanActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                    } else if (FW_meetup_mandatory.equals("0")) {
-                        if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
-                                modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
-                            isEmpty = true;
-                            position = i;
-                            Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
-                            break;
-                        }
                     }
                 }
 
                 if (!isEmpty){
                     binding.tpDrawer.closeDrawer(GravityCompat.END);
-                    boolean added = false;
-                    for (int i=0;i< summaryArrayList.size();i++){
-                        if (summaryArrayList.get(i).getDate().equalsIgnoreCase(sessionModelClass.getDate())){
-                            summaryArrayList.remove(i);
-                            summaryArrayList.add(i,sessionModelClass);
-                            added = true;
-                            break;
+
+                    if (monthInAdapter == 0){
+                        for (int i=0;i<dayWiseArrayCurrentMonth.size();i++){
+                            if (dayWiseArrayCurrentMonth.get(i).getDate().equalsIgnoreCase(inputModelClass.getDate())){
+                                dayWiseArrayCurrentMonth.remove(i);
+                                dayWiseArrayCurrentMonth.add(i,inputModelClass);
+                                break;
+                            }
                         }
+                        populateSummaryAdapter(dayWiseArrayCurrentMonth);
+                    } else if (monthInAdapter == 1) {
+                        for (int i=0;i<dayWiseArrayNextMonth.size();i++){
+                            if (dayWiseArrayNextMonth.get(i).getDate().equalsIgnoreCase(inputModelClass.getDate())){
+                                dayWiseArrayNextMonth.remove(i);
+                                dayWiseArrayNextMonth.add(i,inputModelClass);
+                                break;
+                            }
+                        }
+                        populateSummaryAdapter(dayWiseArrayNextMonth);
+                    } else if (monthInAdapter == -1) {
+                        for (int i=0;i<dayWiseArrayPrevMonth.size();i++){
+                            if (dayWiseArrayPrevMonth.get(i).getDate().equalsIgnoreCase(inputModelClass.getDate())){
+                                dayWiseArrayPrevMonth.remove(i);
+                                dayWiseArrayPrevMonth.add(i,inputModelClass);
+                                break;
+                            }
+                        }
+                        populateSummaryAdapter(dayWiseArrayPrevMonth);
                     }
 
-                    if (!added){
-                        summaryArrayList.add(sessionModelClass);
-                    }
-                    populateSummaryAdapter(summaryArrayList);
                 }else{
                     scrollToPosition(position,true);
                 }
@@ -326,26 +452,17 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.tpNavigation.sessionEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                binding.tpNavigation.addEditDate.setText("Edit (" + sessionViewAdapter.arrayList.getDate() + ")");
-                populateSessionEditAdapter(sessionViewAdapter.arrayList);
+                binding.tpNavigation.addEditDate.setText("Edit (" + sessionViewAdapter.inputDataModel.getDate() + ")");
+                populateSessionEditAdapter(sessionViewAdapter.inputDataModel);
             }
         });
-
 
     }
 
     public void uiInitialization(){
 
-        Cursor cursor = sqLite.getLoginData();
         LoginResponse loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()){
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         sfName = loginResponse.getSF_Name();
         sfCode = loginResponse.getSF_Code();
@@ -361,17 +478,72 @@ public class TourPlanActivity extends AppCompatActivity {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_PLAN);
             for (int i=0;i<jsonArray.length();i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
+                drNeed = jsonObject.getString("DrNeed");
+                maxDocCount = jsonObject.getString("max_doc");
                 addSessionNeed = jsonObject.getString("AddsessionNeed");
-                addSessionCount = jsonObject.getString("AddsessionCount");
-                FW_meetup_mandatory = jsonObject.getString("FW_meetup_mandatory");
+                addSessionCountLimit = jsonObject.getString("AddsessionCount");
+//                FW_meetup_mandatory = jsonObject.getString("FW_meetup_mandatory");
+                FW_meetup_mandatory = "0";
+                holidayEditable = jsonObject.getString("Holiday_Editable");
+                weeklyOffEditable = jsonObject.getString("Weeklyoff_Editable");
             }
 
-            if (addSessionNeed.equalsIgnoreCase("0")){
+            if (addSessionNeed.equalsIgnoreCase("0")){ // if else changed temporarily
                 binding.tpNavigation.addSession.setVisibility(View.GONE);
             } else {
                 binding.tpNavigation.addSession.setVisibility(View.VISIBLE);
             }
 
+            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF);
+            for (int i=0;i<weeklyOff.length();i++){
+                JSONObject jsonObject = weeklyOff.getJSONObject(i);
+                holidayMode = jsonObject.getString("Holiday_Mode");
+                weeklyOffCaption = jsonObject.getString("WTname");
+            }
+            String[] holidayModeArray = holidayMode.split(",");
+            holidaysDay = new ArrayList<>();
+            for (String str : holidayModeArray) {
+                switch (str) {
+                    case "0" : {
+                        holidaysDay.add("Sunday");
+                        break;
+                    }
+                    case "1" : {
+                        holidaysDay.add("Monday");
+                        break;
+                    }
+                    case "2" : {
+                        holidaysDay.add("Tuesday");
+                        break;
+                    }
+                    case "3" : {
+                        holidaysDay.add("Wednesday");
+                        break;
+                    }
+                    case "4" : {
+                        holidaysDay.add("Thursday");
+                        break;
+                    }
+                    case "5" : {
+                        holidaysDay.add("Friday");
+                        break;
+                    }
+                    case "6" : {
+                        holidaysDay.add("Saturday");
+                        break;
+                    }
+                }
+            }
+
+            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+            for (int i=0;i<workTypeArray.length();i++){
+                JSONObject jsonObject = workTypeArray.getJSONObject(i);
+                if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off")) {
+                    weeklyOffModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"),jsonObject.getString("Name"),jsonObject.getString("TerrSlFlg"),jsonObject.getString("Code"));
+                } else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday")) {
+                    holidayModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"),jsonObject.getString("Name"),jsonObject.getString("TerrSlFlg"),jsonObject.getString("Code"));
+                }
+            }
 
         }catch (JSONException e){
             throw new RuntimeException(e);
@@ -466,6 +638,38 @@ public class TourPlanActivity extends AppCompatActivity {
         return date.format(formatter);
     }
 
+    public ArrayList<ModelClass> prepareModelClassForMonth(LocalDate localDate1){
+
+        ArrayList<ModelClass> modelClasses = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+        ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate1));
+        String monthYear = monthYearFromDate(localDate1);
+
+        for (String day : days) {
+            if (!day.isEmpty()){
+                String date = day + " " + monthYear  ;
+                Date date1 = new Date(date);
+                String dayName = formatter.format(date1);
+                ModelClass.SessionList sessionList = new ModelClass.SessionList();
+                sessionList = prepareClassForTpAdapter();
+                for (String holiday : holidaysDay){
+                    if (holiday.equalsIgnoreCase(dayName)){ // add weekly off object when the day is holiday
+                        sessionList.setWorkType(weeklyOffModel);
+                    }
+                }
+                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                sessionLists.add(sessionList);
+                ModelClass modelClass = new ModelClass(day,date,dayName,true,sessionLists);
+                modelClasses.add(modelClass);
+            } else {
+                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                ModelClass modelClass = new ModelClass(day,"","",true,sessionLists);
+                modelClasses.add(modelClass);
+            }
+        }
+        return modelClasses;
+    }
+
     public ModelClass.SessionList prepareClassForTpAdapter(){
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("","","","");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("","");
@@ -479,44 +683,28 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-//        ArrayList<ModelClass.SessionList> sessionArrayLists = new ArrayList<>();
-        ModelClass.SessionList sessionList = new ModelClass.SessionList("",true,workType,hq,clusterArray,jcArray,drArray,chemistArray,stockArray,unListedDrArray,cipArray,hospArray);
-//        sessionArrayLists.add(sessionList);
-
-        return sessionList;
+        return new ModelClass.SessionList("", true,"", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
-    public void populateCalendarAdapter (){
+    public void populateCalendarAdapter (ArrayList<ModelClass> arrayList){
         binding.monthYear.setText(monthYearFromDate(localDate));
-        ArrayList<String> daysInMonth = daysInMonthArray(localDate);
 
-        calendarAdapter = new CalendarAdapter(daysInMonth, TourPlanActivity.this, new OnDayClickInterface() {
+        calendarAdapter = new CalendarAdapter(arrayList, TourPlanActivity.this, new OnDayClickInterface() {
             @Override
-            public void onDayClicked (int position, String date) {
-                if(!date.equals(""))
-                {
+            public void onDayClicked (int position, String date,ModelClass modelClass) {
+
+                if(!date.equals("")) {
                     binding.tpDrawer.openDrawer(GravityCompat.END);
                     String selectedDate = date + " " +  monthYearFromDate(localDate) ;
-
-                    boolean added = false;
-                    for (int i=0;i<summaryArrayList.size();i++){
-                        if (summaryArrayList.get(i).getDate().equalsIgnoreCase(selectedDate)){ // if selected date is already available in summary
-                            populateSessionEditAdapter(summaryArrayList.get(i));
-                            added = true;
-                            break;
-                        }
+                    if (!modelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("")) {
+                        binding.tpNavigation.addEditDate.setText(modelClass.getDate());
+                        ModelClass modelClass1 = new ModelClass(modelClass);
+                        populateSessionViewAdapter(modelClass1);
+                    } else {
+                        binding.tpNavigation.addEditDate.setText("Add Plan");
+                        ModelClass modelClass1 = new ModelClass(modelClass);
+                        populateSessionEditAdapter(modelClass1);
                     }
-
-                    if (!added){ // if not in summary
-                        sessionListArrayList = new ArrayList<>();
-                        sessionListArrayList.add(prepareClassForTpAdapter());
-                        sessionModelClass = new ModelClass(selectedDate,true,sessionListArrayList);
-                        populateSessionEditAdapter(sessionModelClass);
-                    }
-                    binding.tpNavigation.addEditDate.setText("Add Plan");
-
-//                    String message = "Selected Date " + date + " " + monthYearFromDate(selectedDate);
-//                    Toast.makeText(TourPlanActivity.this, message, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -524,6 +712,9 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.calendarRecView.setLayoutManager(layoutManager);
         binding.calendarRecView.setAdapter(calendarAdapter);
         calendarAdapter.notifyDataSetChanged();
+
+//        populateSummaryAdapter(arrayList);
+
     }
 
     public void populateSessionEditAdapter (ModelClass arrayList){
@@ -531,13 +722,13 @@ public class TourPlanActivity extends AppCompatActivity {
         sessionEditAdapter = new SessionEditAdapter(arrayList, TourPlanActivity.this, new SessionInterface() {
             @Override
             public void deleteClicked (ModelClass arrayList, int position) {
-                sessionModelClass.getSessionList().remove(position);
-                populateSessionEditAdapter(sessionModelClass);
+                SessionEditAdapter.inputData.getSessionList().remove(position);
+                populateSessionEditAdapter(SessionEditAdapter.inputData);
             }
 
             @Override
             public void fieldWorkSelected (ModelClass arrayList, int position) {
-
+                ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
                 ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("","");
                 ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
@@ -548,9 +739,9 @@ public class TourPlanActivity extends AppCompatActivity {
                 ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                 ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,arrayList.getSessionList().get(position).getWorkType(), hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,"",workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
                 arrayList.getSessionList().remove(position);
-                arrayList.getSessionList().add(modelClass);
+                arrayList.getSessionList().add(position,modelClass);
 
                 populateSessionEditAdapter(arrayList);
                 scrollToPosition(position,false);
@@ -559,6 +750,8 @@ public class TourPlanActivity extends AppCompatActivity {
             @Override
             public void hqChanged (ModelClass arrayList, int position,boolean changed) {
                 if (changed){
+                    ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(arrayList.getSessionList().get(position).getWorkType());
+                    ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(arrayList.getSessionList().get(position).getHQ());
                     ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
@@ -568,7 +761,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
                     ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
 
-                    ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,arrayList.getSessionList().get(position).getWorkType(), arrayList.getSessionList().get(position).getHQ(), clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+                    ModelClass.SessionList modelClass = new ModelClass.SessionList("",true,"",workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
                     arrayList.getSessionList().remove(position);
                     arrayList.getSessionList().add(modelClass);
                 }
@@ -589,23 +782,40 @@ public class TourPlanActivity extends AppCompatActivity {
         sessionEditAdapter.notifyDataSetChanged();
         addSaveBtnLayout.setVisibility(View.VISIBLE);
         binding.tpNavigation.editLayout.setVisibility(View.GONE);
-
     }
 
-    public void populateSessionViewAdapter(ModelClass arrayList){
+    public void populateSessionViewAdapter(ModelClass modelClass){
         binding.tpDrawer.openDrawer(GravityCompat.END);
-        sessionViewAdapter = new SessionViewAdapter(arrayList,TourPlanActivity.this);
+        sessionViewAdapter = new SessionViewAdapter(modelClass);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(TourPlanActivity.this);
         binding.tpNavigation.tpSessionRecView.setLayoutManager(layoutManager);
         binding.tpNavigation.tpSessionRecView.setAdapter(sessionViewAdapter);
         sessionViewAdapter.notifyDataSetChanged();
         addSaveBtnLayout.setVisibility(View.GONE);
         clrSaveBtnLayout.setVisibility(View.GONE);
-        binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
+        if (modelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Weekly Off")){
+            if (weeklyOffEditable.equals("0")){
+                binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
+            }
+        } else if (modelClass.getSessionList().get(0).getWorkType().getName().equalsIgnoreCase("Holiday")){
+            if (holidayEditable.equals("0")){
+                binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
+            }
+        } else {
+            binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     public void populateSummaryAdapter(ArrayList<ModelClass> arrayList){
-        summaryAdapter = new SummaryAdapter(arrayList, TourPlanActivity.this, new SummaryInterface() {
+
+        ArrayList<ModelClass> modelClasses = new ArrayList<>();
+        for (ModelClass modelClass : arrayList) {
+            if (!modelClass.getDayNo().isEmpty()){
+                modelClasses.add(modelClass);
+            }
+        }
+
+        summaryAdapter = new SummaryAdapter(modelClasses, TourPlanActivity.this, new SummaryInterface() {
             @Override
             public void onClick (ModelClass arrayList, int position) {
                 populateSessionViewAdapter(arrayList);
@@ -616,6 +826,7 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.summaryRecView.setLayoutManager(layoutManager);
         binding.summaryRecView.setAdapter(summaryAdapter);
         summaryAdapter.notifyDataSetChanged();
+
     }
 
     public void scrollToPosition(int position,boolean fieldEmpty){
@@ -628,21 +839,106 @@ public class TourPlanActivity extends AppCompatActivity {
                     holder.itemView.findViewById(R.id.relativeLayout).setSelected(true);
                     }
                 }
-
                 binding.tpNavigation.tpSessionRecView.scrollToPosition(position);
             }
         },50);
     }
 
+    public void getTPData() {
+
+        try {
+            if (UtilityClass.isNetworkAvailable(TourPlanActivity.this)){
+
+                apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("tableName","getall_tp");
+                jsonObject.put("sfcode","MR1932");
+                jsonObject.put("division_code","8,");
+                jsonObject.put("Rsf","MR0026");
+                jsonObject.put( "sf_type","1");
+                jsonObject.put("Designation","TBM");
+                jsonObject.put("state_code","28");
+                jsonObject.put("subdivision_code","62,");
+                jsonObject.put("tp_month","10,");
+                jsonObject.put("tp_year","2023,");
+
+                Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        Log.e("test","getTp response : " + response.body());
+                        if (response.body() != null){
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        Log.e("test","error getTp : " + t);
+                    }
+                });
+
+
+
+            } else {
+                Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     @Override
     protected void onStart () {
         super.onStart();
-        uiInitialization();
+//        uiInitialization();
     }
 
     @Override
     protected void onResume () {
         super.onResume();
-        uiInitialization();
+//        uiInitialization();
+    }
+
+    private class Async extends AsyncTask<LocalDate, Void, ArrayList<ModelClass>>{
+
+        @Override
+        protected ArrayList<ModelClass> doInBackground (LocalDate... localDates) {
+            ArrayList<ModelClass> modelClasses = new ArrayList<>();
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDates[0]));
+            String monthYear = monthYearFromDate(localDates[0]);
+
+            for (String day : days) {
+                if (!day.isEmpty()){
+                    String date = day + " " + monthYear  ;
+                    Date date1 = new Date(date);
+                    String dayName = formatter.format(date1);
+                    ModelClass.SessionList sessionList = new ModelClass.SessionList();
+                    sessionList = prepareClassForTpAdapter();
+                    for (String holiday : holidaysDay){
+                        if (holiday.equalsIgnoreCase(dayName)){
+                            sessionList.setWorkType(weeklyOffModel);
+                        }
+                    }
+                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                    sessionLists.add(sessionList);
+                    ModelClass modelClass = new ModelClass(day,date,dayName,true,sessionLists);
+                    modelClasses.add(modelClass);
+                } else {
+                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                    ModelClass modelClass = new ModelClass(day,"","",true,sessionLists);
+                    modelClasses.add(modelClass);
+                }
+            }
+            return modelClasses;
+        }
+
+        @Override
+        protected void onPostExecute (ArrayList<ModelClass> modelClasses) {
+            super.onPostExecute(modelClasses);
+            Log.e("test","size in onPostExecute : " + modelClasses.size());
+        }
     }
 }

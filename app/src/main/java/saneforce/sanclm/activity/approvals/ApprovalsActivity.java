@@ -58,7 +58,7 @@ public class ApprovalsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        commonUtilsMethods.FullScreencall();
+       // commonUtilsMethods.FullScreencall();
     }
 
     @Override
@@ -72,8 +72,8 @@ public class ApprovalsActivity extends AppCompatActivity {
         approvalsBinding = ActivityApprovalsBinding.inflate(getLayoutInflater());
         setContentView(approvalsBinding.getRoot());
 
-        commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreencall();
+       // commonUtilsMethods = new CommonUtilsMethods(this);
+       // commonUtilsMethods.FullScreencall();
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
 
@@ -152,16 +152,9 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void getRequiredData() {
-        Cursor cursor = sqLite.getLoginData();
+
         loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()) {
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         SfType = loginResponse.getSf_type();
         SfCode = loginResponse.getSF_Code();

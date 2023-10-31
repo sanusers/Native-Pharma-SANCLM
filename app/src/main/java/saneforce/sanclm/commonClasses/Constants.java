@@ -6,9 +6,6 @@ public class Constants {
     public static final String APP_VERSION = "V2.0.8";
     public static final String APP_MODE = "Android-Edet";
 
-    //Local storage
-    public static final String LOGO_IMAGE_NAME = "logo.png";
-
     //----------------------------------------------------
     //Master sync table key names
     public static final String DOCTOR = "Doctor_";
@@ -23,11 +20,13 @@ public class Constants {
     public static final String STOCKIEST = "Stockiest_";
     public static final String HOSPITAL = "Hospital_";
     public static final String CIP = "Cip_";
-    public static final String NO_DATA_AVAILABLE = "no_data_available";
 
     //Leave
     public static final String LEAVE = "Leave";
     public static final String LEAVE_STATUS = "Leave_Status";
+
+    //DCR
+    public static final String DCR = "DCR";
 
     //WorkType
     public static final String WORK_TYPE = "Work_Type";
@@ -40,10 +39,11 @@ public class Constants {
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";
     public static final String SUBORDINATE_MGR = "Subordinate_Mgr";
-    public static final String JOINT_WORK = "Joint_Work";
+    public static final String JOINT_WORK = "Joint_Work_";
 
     //Product
     public static final String PRODUCT = "Product";
+    public static final String PRODUCT_CATEGORY = "Product_Category";
     public static final String BRAND = "Brand";
     public static final String COMPETITOR_PROD = "Competitor_Product";
     public static final String INPUT = "input";
@@ -60,6 +60,10 @@ public class Constants {
     //Setup
     public static final String SETUP = "Setup";
     public static final String CUSTOM_SETUP = "Custom_setup";
+
+    //Master sync No data
+    public static final String NO_DATA_AVAILABLE = "no_data_available";
+
 
     //-------------------------------------------------------------
 

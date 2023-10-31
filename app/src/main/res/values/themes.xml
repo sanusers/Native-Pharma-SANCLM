@@ -45,7 +45,7 @@
     <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:fontFamily">@font/satoshi_bold</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="tab_text_one" parent="@android:style/TextAppearance.Widget.TabWidget">
@@ -137,6 +137,19 @@
         <item name="windowActionBar">false</item>
         <!-- Other dialog customizations if needed -->
     </style>
+
+    <style name="NoBackground" parent="Theme.AppCompat.Dialog">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.SANCLM.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.SANCLM.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.SANCLM.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

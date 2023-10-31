@@ -1,7 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -26,13 +25,14 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.databinding.CallDcrSelectionBinding;
+import saneforce.sanclm.response.CustomSetupResponse;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
-    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StokistGeoTag, UndrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UndrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUndr;
+    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StokistGeoTag, UndrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UndrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUndr, HospNeed;
     public static double laty, lngy, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
@@ -42,6 +42,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     DCRCallSelectionTabLayoutAdapter viewPagerAdapter;
     SQLite sqLite;
     GPSTrack gpsTrack;
+    CustomSetupResponse customSetupResponse;
 
     @Override
     public void onBackPressed() {
@@ -52,8 +53,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dcrSelectionBinding = CallDcrSelectionBinding.inflate(getLayoutInflater());
         setContentView(dcrSelectionBinding.getRoot());
-        commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreencall();
+      //  commonUtilsMethods = new CommonUtilsMethods(this);
+        //commonUtilsMethods.FullScreencall();
         sqLite = new SQLite(this);
 
         getRequiredData();
@@ -87,16 +88,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             gpsTrack = new GPSTrack(this);
             laty = gpsTrack.getLatitude();
             lngy = gpsTrack.getLongitude();
-            Cursor cursor = sqLite.getLoginData();
             loginResponse = new LoginResponse();
-            String loginData = "";
-            if (cursor.moveToNext()) {
-                loginData = cursor.getString(0);
-            }
-            cursor.close();
-            Type type = new TypeToken<LoginResponse>() {
-            }.getType();
-            loginResponse = new Gson().fromJson(loginData, type);
+            loginResponse = sqLite.getLoginData(true);
 
             SfType = loginResponse.getSf_type();
             SfCode = loginResponse.getSF_Code();
@@ -112,7 +105,12 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }.getType();
                 setupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
                 limitKm = Double.parseDouble(setupResponse.getMapGeoFenceCircleRad());
-                GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
+                if (setupData.has("GeoTagApprovalNeed")) {
+                    GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
+                } else {
+                    GeoTagApproval = "1";
+                }
+              //  GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
                 TpBasedDcr = setupResponse.getTpBasedDcr();
 
                 DrGeoTag = setupResponse.getDrGeoTagNeed();
@@ -135,6 +133,18 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 CapStockist = setupResponse.getCaptionStockist();
                 UndrNeed = setupResponse.getUnDrNeed();
                 CapUndr = setupResponse.getCaptionUndr();
+            }
+
+
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject CustsetupData = jsonArray.getJSONObject(0);
+
+                customSetupResponse = new CustomSetupResponse();
+                Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
+                }.getType();
+                customSetupResponse = new Gson().fromJson(String.valueOf(CustsetupData), typeCustomSetup);
+                HospNeed = customSetupResponse.getHospNeed();
             }
             Log.v("fff", "-00--" + TodayPlanSfCode);
             if (SfType.equalsIgnoreCase("1")) {

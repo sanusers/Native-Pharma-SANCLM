@@ -73,7 +73,7 @@ public class AdditionalCallDetailedSide extends Fragment {
         tv_dummy = v.findViewById(R.id.tv_dummy);
         commonUtilsMethods = new CommonUtilsMethods(getActivity());
         mCommonsharedPreference = new CommonSharedPreference(getActivity());
-        commonUtilsMethods.FullScreencall();
+       // commonUtilsMethods.FullScreencall();
         tabLayout.addTab(tabLayout.newTab().setText("Input"));
         tabLayout.addTab(tabLayout.newTab().setText("Sample"));
 

@@ -351,10 +351,10 @@
                 <TextView
                     android:id="@+id/unListedDrField"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Select"
+                    android:text=""
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_6sdp"
                     android:layout_marginTop="@dimen/_3sdp"
@@ -394,7 +394,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Select"
+                    android:text=""
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_6sdp"
                     android:layout_marginTop="@dimen/_3sdp"
@@ -435,13 +435,55 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/satoshi_medium"
-                    android:text="Select"
+                    android:text=""
                     android:textColor="@color/text_dark"
                     android:textSize="@dimen/_6sdp"
                     android:layout_marginTop="@dimen/_3sdp"
                     tools:ignore="SpUsage" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/remarksLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/hospLayout"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/text_dark_25" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="start"
+                    android:text="Remarks"
+                    android:textColor="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <TextView
+                    android:id="@+id/remarksField"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text=""
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    tools:ignore="SpUsage" />
+
+            </LinearLayout>
+
 
         </RelativeLayout>
 

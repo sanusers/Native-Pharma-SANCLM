@@ -68,5 +68,12 @@
     <color name="text_sync_bg">#ffe5e9</color>
     <color name="text_sync">#fd4f6e</color>
 
+    <color name="yellow_45">#ffbc40</color>
+    <color name="charline_color">#dddde0</color>
+
+    <color name="Trendy_Pink_45">#72526f</color>
+    <color name="gray_45">#8c8c94</color>
+
+    2a293b
 
 </resources>

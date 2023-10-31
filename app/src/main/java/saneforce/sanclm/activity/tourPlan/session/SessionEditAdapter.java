@@ -3,11 +3,15 @@ package saneforce.sanclm.activity.tourPlan.session;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +26,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -30,6 +37,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -69,16 +78,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         this.sessionInterface = sessionInterface;
 
         sqLite = new SQLite(context);
-        Cursor cursor = sqLite.getLoginData();
         LoginResponse loginResponse = new LoginResponse();
-        String loginData = "";
-        if (cursor.moveToNext()){
-            loginData = cursor.getString(0);
-        }
-        cursor.close();
-        Type type = new TypeToken<LoginResponse>() {
-        }.getType();
-        loginResponse = new Gson().fromJson(loginData, type);
+        loginResponse = sqLite.getLoginData(true);
 
         sfCode = loginResponse.getSF_Code();
         division_code = loginResponse.getDivision_Code();
@@ -97,7 +98,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 chemistNeed = jsonArray.getJSONObject(i).getString("ChmNeed");
                 jwNeed = jsonArray.getJSONObject(i).getString("JWNeed");
                 stockiestNeed = jsonArray.getJSONObject(i).getString("StkNeed");
-                unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
+                if (jsonArray.getJSONObject(i).has("UnDrNeed")){
+                    unListedDrNeed = jsonArray.getJSONObject(i).getString("UnDrNeed");
+                }
                 cipNeed = jsonArray.getJSONObject(i).getString("Cip_Need");
                 hospNeed = jsonArray.getJSONObject(i).getString("HospNeed");
                 FW_meetup_mandatory = jsonArray.getJSONObject(i).getString("FW_meetup_mandatory");
@@ -106,9 +109,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }catch (JSONException e){
             throw new RuntimeException(e);
         }
-
     }
-
 
     @NonNull
     @Override
@@ -120,6 +121,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     @Override
     public void onBindViewHolder (@NonNull SessionEditAdapter.MyViewHolder holder, int position) {
 
+        holder.remarks.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        holder.remarks.setRawInputType(InputType.TYPE_CLASS_TEXT);
         holder.viewHolder = holder;
         holder.sessionData = inputData.getSessionList().get(holder.getAbsoluteAdapterPosition());
         holder.clusterModelArray = new ArrayList<>(holder.sessionData.getCluster());
@@ -162,7 +165,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.hqNeed = "1"; // 1 - No
             holder.clusterNeed = "1";
         }
-        workTypeBasedUI(holder,holder.sessionData);
+        workTypeBasedUI(holder,holder.sessionData,true);
 
         //HQ
         if (holder.sessionData.getHQ().getName().equals("")){
@@ -294,6 +297,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.hospField.setText(hospName);
         }
         prepareInputData(holder.hospitalModelArray,holder.hospJsonArray);
+        holder.remarks.setText(holder.sessionData.getRemarks());
 
         holder.searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -345,7 +349,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     }catch (JSONException e){
                         throw new RuntimeException(e);
                     }
-                    holder.sessionItemAdapterArray = filteredArray;
+                    holder.sessionItemAdapterArray = sortArray(filteredArray);
                     populateSessionAdapter(holder,holder.sessionItemAdapterArray, false);
                     changeUIState(holder, holder.workTypeLayout, holder.workTypeArrow, false);
                     holder.fieldSelected = true;
@@ -370,7 +374,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                             holder.hqJsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                             addCheckBox(holder.hqJsonArray);
                         }
-                        holder.sessionItemAdapterArray = holder.hqJsonArray;
+                        holder.sessionItemAdapterArray = sortArray(holder.hqJsonArray);
                         populateSessionAdapter(holder,holder.sessionItemAdapterArray, false);
                         changeUIState(holder, holder.hqLayout, holder.hqArrow, false);
                         holder.fieldSelected = true;
@@ -432,7 +436,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }else{
                     if (!holder.fieldSelected){
                         if (holder.jointCallJsonArray.length() <= 0){
-                            holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK);
+                            holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + holder.selectedHq);
                             addCheckBox(holder.jointCallJsonArray);
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else{
@@ -672,6 +676,38 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
+        holder.remarks.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (holder.remarks.hasFocus()) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction (TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                   holder.sessionData.setRemarks(holder.remarks.getText().toString());
+                }
+                return false;
+            }
+        });
+
+        holder.remarks.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange (View view, boolean b) {
+                if (!b){
+                    holder.sessionData.setRemarks(holder.remarks.getText().toString());
+                }
+            }
+        });
+
         holder.sessionDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -692,9 +728,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public ImageView searchClearIcon;
         public TextView workTypeField,hqField,clusterField,jcField,drField,chemistField,stockiestField,unListedDrField,cipField,hospField;
         public TextView clusterCount,jcCount,drCount,chemistCount,stockiestCount,unListedDrCount,cipCount,hospCount;
-        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout;
+        public LinearLayout sessionDelete,workTypeLayout,hqLayout,clusterLayout,jcLayout,drLayout,chemistLayout,stockiestLayout,unListedDrLayout,cipLayout,hospLayout,remarksLayout;
         public ImageView workTypeArrow,hqArrow,clusterArrow,jcArrow,drArrow,chemistArrow,stockiestArrow,unListedDrArrow,cipArrow,hospArrow;
-        EditText searchET;
+        EditText searchET,remarks;
         RelativeLayout relativeLayout;
         CardView parentCarView,listCardView;
         RecyclerView itemRecView;
@@ -749,6 +785,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             unListedDrLayout = itemView.findViewById(R.id.unListedDrLayout);
             cipLayout = itemView.findViewById(R.id.cipLayout);
             hospLayout = itemView.findViewById(R.id.hospLayout);
+            remarksLayout = itemView.findViewById(R.id.remarkLayout);
+            remarks = itemView.findViewById(R.id.remarkET);
 
             workTypeArrow = itemView.findViewById(R.id.workTypeArrow);
             hqArrow = itemView.findViewById(R.id.hqArrow);
@@ -787,7 +825,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    public void workTypeBasedUI (MyViewHolder holder,ModelClass.SessionList session){
+    public void workTypeBasedUI (MyViewHolder holder,ModelClass.SessionList session,boolean bool){
 
         String workType = session.getWorkType().getFWFlg();
 
@@ -946,53 +984,53 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         }
 
-         switch (session.getLayoutVisible()){
-            case Constants.CLUSTER:{
-                changeUIState(holder, holder.clusterLayout, holder.clusterArrow, false);
-                break;
+        if (bool){
+            switch (session.getLayoutVisible()){
+                case Constants.CLUSTER:{
+                    changeUIState(holder, holder.clusterLayout, holder.clusterArrow, false);
+                    break;
+                }
+                case Constants.JOINT_WORK:{
+                    changeUIState(holder, holder.jcLayout, holder.jcArrow, false);
+                    break;
+                }
+                case Constants.DOCTOR:{
+                    changeUIState(holder, holder.drLayout, holder.drArrow, false);
+                    break;
+                }
+                case Constants.CHEMIST:{
+                    changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
+                    break;
+                }
+                case Constants.STOCKIEST:{
+                    changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
+                    break;
+                }
+                case Constants.UNLISTED_DOCTOR:{
+                    changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
+                    break;
+                }
+                case Constants.CIP:{
+                    changeUIState(holder, holder.cipLayout, holder.cipArrow, false);
+                    break;
+                }
+                case Constants.HOSPITAL:{
+                    changeUIState(holder, holder.hospLayout, holder.hospArrow, false);
+                    break;
+                }
             }
-            case Constants.JOINT_WORK:{
-                changeUIState(holder, holder.jcLayout, holder.jcArrow, false);
-                break;
-            }
-            case Constants.DOCTOR:{
-                changeUIState(holder, holder.drLayout, holder.drArrow, false);
-                break;
-            }
-            case Constants.CHEMIST:{
-                changeUIState(holder, holder.chemistLayout, holder.chemistArrow, false);
-                break;
-            }
-            case Constants.STOCKIEST:{
-                changeUIState(holder, holder.stockiestLayout, holder.stockiestArrow, false);
-                break;
-            }
-            case Constants.UNLISTED_DOCTOR:{
-                changeUIState(holder, holder.unListedDrLayout, holder.unListedDrArrow, false);
-                break;
-            }
-            case Constants.CIP:{
-                changeUIState(holder, holder.cipLayout, holder.cipArrow, false);
-                break;
-            }
-            case Constants.HOSPITAL:{
-                changeUIState(holder, holder.hospLayout, holder.hospArrow, false);
-                break;
-            }
-
         }
 
     }
 
     public void getDataFromLocal(MyViewHolder holder, String hqCode){
 
-        holder.clusterJsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hqCode);
-        if (holder.clusterJsonArray.length() <= 0){
+        if (!sqLite.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)){
             prepareMasterToSync(hqCode);
         }
 
         holder.clusterJsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hqCode);
-        holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK);
+        holder.jointCallJsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + hqCode);
         holder.listedDrJsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + hqCode);
         holder.chemistJsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + hqCode);
         holder.stockiestJsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + hqCode);
@@ -1028,13 +1066,15 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void prepareMasterToSync(String hqCode){
         masterSyncArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel("getdoctors", Constants.DOCTOR + hqCode);
-        MasterSyncItemModel cheModel = new MasterSyncItemModel("getchemist",Constants.CHEMIST + hqCode);
-        MasterSyncItemModel stockModel = new MasterSyncItemModel("getstockist",Constants.STOCKIEST + hqCode);
-        MasterSyncItemModel unListModel = new MasterSyncItemModel("getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode);
-        MasterSyncItemModel hospModel = new MasterSyncItemModel("gethospital",Constants.HOSPITAL + hqCode);
-        MasterSyncItemModel ciModel = new MasterSyncItemModel("getcip",Constants.CIP + hqCode);
-        MasterSyncItemModel cluster = new MasterSyncItemModel("getterritory",Constants.CLUSTER + hqCode);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor","getdoctors", Constants.DOCTOR + hqCode);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor","getchemist",Constants.CHEMIST + hqCode);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor","getstockist",Constants.STOCKIEST + hqCode);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor","getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode);
+        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor","gethospital",Constants.HOSPITAL + hqCode);
+        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor","getcip",Constants.CIP + hqCode);
+        MasterSyncItemModel cluster = new MasterSyncItemModel("Doctor","getterritory",Constants.CLUSTER + hqCode);
+        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Subordinate","getjointwork",Constants.JOINT_WORK + hqCode);
+
         masterSyncArray.add(doctorModel);
         masterSyncArray.add(cheModel);
         masterSyncArray.add(stockModel);
@@ -1042,6 +1082,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         masterSyncArray.add(hospModel);
         masterSyncArray.add(ciModel);
         masterSyncArray.add(cluster);
+        masterSyncArray.add(jWorkModel);
         for (int i=0;i<masterSyncArray.size();i++){
             sync(masterSyncArray.get(i),hqCode);
         }
@@ -1067,25 +1108,55 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 jsonObject.put("subdivision_code", subdivision_code);
 
 //                Log.e("test","master sync obj in TP : " + jsonObject);
-                Call<JsonArray> call =  apiInterface.getDrMaster(jsonObject.toString());
-                if (call != null){
-                    call.enqueue(new Callback<JsonArray>() {
-                        @Override
-                        public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                Call<JsonElement> call = null;
+                if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Doctor")){
+                    call = apiInterface.getDrMaster(jsonObject.toString());
+                } else if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Subordinate")) {
+                    call = apiInterface.getSubordinateMaster(jsonObject.toString());
+                }
 
+                if (call != null){
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+
+                            boolean success = false;
                             if (response.isSuccessful()) {
 //                                Log.e("test","response : " + masterSyncItemModel.getRemoteTableName() +" : " + response.body().toString());
                                 try {
-                                    JSONArray jsonArray = new JSONArray(response.body().toString());
-                                    sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(),jsonArray.toString());
+                                    JsonElement jsonElement = response.body();
+                                    JSONArray jsonArray = new JSONArray();
+                                    if (!jsonElement.isJsonNull()){
+                                        if (jsonElement.isJsonArray()){
+                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            success = true;
+                                        } else if (jsonElement.isJsonObject()) {
+                                            JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+                                            if (!jsonObject1.has("success")){ // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
+                                                jsonArray.put(jsonObject1);
+                                                success = true;
+                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
+                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(),1);
+                                            }
+                                        }
+
+                                        if (success){
+                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(),jsonArray.toString(),0);
+                                        }
+                                    } else {
+                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(),1);
+                                    }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
                             }
                         }
                         @Override
-                        public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                        public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
+                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(),1);
                         }
                     });
                 }
@@ -1115,6 +1186,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public JSONArray prepareSessionAdapterArray(JSONArray jsonArray,JSONArray jsonArray1){
+
          jsonArray1 = new JSONArray();
         try {
             for (int i=0;i<jsonArray.length();i++){
@@ -1126,14 +1198,45 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     jsonArray1.put(object);
                 }
             }
+
         } catch (JSONException e){
             throw new RuntimeException(e);
         }
-        return jsonArray1;
+        return sortArray(jsonArray1);
+    }
+
+    public JSONArray sortArray(JSONArray jsonArray1){
+
+        try {
+            JsonArray jsonArray = new JsonParser().parse(String.valueOf(jsonArray1)).getAsJsonArray();
+            List<JsonElement> list = new ArrayList<>();
+            for (JsonElement element : jsonArray) {
+                list.add(element);
+            }
+            Collections.sort(list, new Comparator<JsonElement>() {
+                @Override
+                public int compare(JsonElement e1, JsonElement e2) {
+                    String v1 = e1.getAsJsonObject().get("Name").getAsString();
+                    String v2 = e2.getAsJsonObject().get("Name").getAsString();
+                    return v1.compareTo(v2);
+                }
+            });
+
+            // Convert the sorted List back into a JsonArray
+            JsonArray sortedJsonArray = new JsonArray();
+            for (JsonElement element : list) {
+                sortedJsonArray.add(element);
+            }
+
+            return new JSONArray(sortedJsonArray.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void populateSessionAdapter(MyViewHolder holder, JSONArray jsonArray, boolean checkBoxNeed){
-        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, context, checkBoxNeed, new SessionItemInterface() {
+
+        sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
             @Override
             public void itemClicked (JSONArray jsonArray, JSONObject jsonObject) {
                 try {
@@ -1366,68 +1469,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
         if (allLayoutVisible){
             holder.workTypeLayout.setVisibility(View.VISIBLE);
+            holder.remarksLayout.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.down_arrow));
             holder.listCardView.setVisibility(View.GONE);
             TourPlanActivity.addSaveBtnLayout.setVisibility(View.VISIBLE);
             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.GONE);
 
-            if (holder.hqNeed.equals("0")){
-                holder.hqLayout.setVisibility(View.VISIBLE);
-            }else if (holder.hqNeed.equals("1")){
-                holder.hqLayout.setVisibility(View.GONE);
-            }else{
-                holder.hqLayout.setVisibility(View.VISIBLE);
-            }
-
-            if (holder.clusterNeed.equals("0")){
-                holder.clusterLayout.setVisibility(View.VISIBLE);
-            }else if (holder.clusterNeed.equals("1")){
-                holder.clusterLayout.setVisibility(View.GONE);
-            } else{
-                holder.clusterLayout.setVisibility(View.VISIBLE);
-            }
-
-            if (jwNeed.equalsIgnoreCase("0")){
-                holder.jcLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.jcLayout.setVisibility(View.GONE);
-            }
-
-            if (drNeed.equalsIgnoreCase("0")){
-                holder.drLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.drLayout.setVisibility(View.GONE);
-            }
-
-            if (chemistNeed.equalsIgnoreCase("0")){
-                holder.chemistLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.chemistLayout.setVisibility(View.GONE);
-            }
-
-            if (stockiestNeed.equalsIgnoreCase("0")){
-                holder.stockiestLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.stockiestLayout.setVisibility(View.GONE);
-            }
-
-            if (unListedDrNeed.equalsIgnoreCase("0")){
-                holder.unListedDrLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.unListedDrLayout.setVisibility(View.GONE);
-            }
-
-            if (cipNeed.equalsIgnoreCase("0")){
-                holder.cipLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.cipLayout.setVisibility(View.GONE);
-            }
-
-            if (hospNeed.equalsIgnoreCase("0")){
-                holder.hospLayout.setVisibility(View.VISIBLE);
-            }else{
-                holder.hospLayout.setVisibility(View.GONE);
-            }
+            workTypeBasedUI(holder,holder.sessionData,false);
         } else{
             holder.workTypeLayout.setVisibility(View.GONE);
             holder.hqLayout.setVisibility(View.GONE);
@@ -1439,6 +1487,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             holder.unListedDrLayout.setVisibility(View.GONE);
             holder.cipLayout.setVisibility(View.GONE);
             holder.hospLayout.setVisibility(View.GONE);
+            holder.remarksLayout.setVisibility(View.GONE);
             holder.listCardView.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.VISIBLE);
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.up_arrow));

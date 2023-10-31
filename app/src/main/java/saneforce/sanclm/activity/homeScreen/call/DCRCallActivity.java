@@ -9,7 +9,6 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -108,9 +107,8 @@ public class DCRCallActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(this);
         mCommonSharedPreference = new CommonSharedPreference(this);
         progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
-        progressDialog.dismiss();
         sqLite = new SQLite(this);
-        commonUtilsMethods.FullScreencall();
+        //  commonUtilsMethods.FullScreencall();
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
         getRequiredData();
@@ -504,16 +502,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void getRequiredData() {
         try {
-            Cursor cursor = sqLite.getLoginData();
             loginResponse = new LoginResponse();
-            String loginData = "";
-            if (cursor.moveToNext()) {
-                loginData = cursor.getString(0);
-            }
-            cursor.close();
-            Type type = new TypeToken<LoginResponse>() {
-            }.getType();
-            loginResponse = new Gson().fromJson(loginData, type);
+            loginResponse = sqLite.getLoginData(true);
 
             SfType = loginResponse.getSf_type();
             SfCode = loginResponse.getSF_Code();
@@ -710,17 +700,34 @@ public class DCRCallActivity extends AppCompatActivity {
         ProductFragment.callCommonCheckedListArrayList = new ArrayList<>();
         CallProductListAdapter.saveCallProductListArrayList = new ArrayList<>();
         try {
+          /*  JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
+            int Priority_count = 1;
+            String prdcodes = "";
+            for (int j = 0; j < jsonArray1.length(); j++) {
+                JSONObject jsonObject1 = jsonArray1.getJSONObject(j);
+                if (jsonObject1.getString("Code").equalsIgnoreCase(CallActivityCustDetails.get(0).getCode())) {
+                    prdcodes = jsonObject1.getString("Product_Code");
+                }
+            }*/
+
+            Log.v("prdds", "prioritycode---" + CallActivityCustDetails.get(0).getPriorityPrdCode());
+            int Priority_count = 1;
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false, jsonObject.getString("Product_Mode")));
+                if (CallActivityCustDetails.get(0).getPriorityPrdCode().contains(jsonObject.getString("Code"))) {
+                    ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false, "P" + Priority_count++));
+                } else {
+                    ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false, jsonObject.getString("Product_Mode")));
+                }
             }
         } catch (Exception e) {
 
         }
 
+        Log.v("prdds", "final_size---" + ProductFragment.callCommonCheckedListArrayList.size());
         for (int i = 0; i < ProductFragment.callCommonCheckedListArrayList.size(); i++) {
-            if (ProductFragment.callCommonCheckedListArrayList.get(i).getCategory().equalsIgnoreCase("P1")) {
+            if (ProductFragment.callCommonCheckedListArrayList.get(i).getCategory().contains("P")) {
                 Collections.sort(ProductFragment.callCommonCheckedListArrayList, Comparator.comparing(CallCommonCheckedList::getCategory));
             }
         }

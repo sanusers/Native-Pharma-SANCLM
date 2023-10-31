@@ -28,7 +28,6 @@ import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 public class AdditionalCallFragment extends Fragment {
     public static RecyclerView rv_list_data, rv_add_call_list;
     public static ArrayList<CallCommonCheckedList> custListArrayList;
-
     CallAddCustListAdapter callAddCustListAdapter;
     EditText editTextSearch;
     SaveAdditionalCallAdapter saveAdditionalCallAdapter;

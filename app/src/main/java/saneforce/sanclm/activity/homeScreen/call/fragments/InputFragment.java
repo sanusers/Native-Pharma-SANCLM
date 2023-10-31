@@ -42,7 +42,7 @@ public class InputFragment extends Fragment {
         fragmentInputBinding = FragmentInputBinding.inflate(inflater);
         View v = fragmentInputBinding.getRoot();
         Log.v("fragment", "inputs");
-        mCommonSharedPreference = new CommonSharedPreference(getActivity());
+        mCommonSharedPreference = new CommonSharedPreference(requireContext());
         dummyAdapter();
 
       /*  if (DCRCallActivity.InputValidation.equalsIgnoreCase("0")) {

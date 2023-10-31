@@ -52,23 +52,23 @@
                     android:layout_marginTop="@dimen/_2sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_2sdp"
-                    android:layout_toLeftOf="@id/img_account"
-                    android:src="@drawable/notification">
+                    android:layout_toLeftOf="@id/img_sync"
+                    android:src="@drawable/notification"/>
 
-                </ImageView>
 
                 <ImageView
-                    android:id="@+id/img_account"
+                    android:id="@+id/img_sync"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/_2sdp"
                     android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_2sdp"
-                    android:layout_toLeftOf="@id/img_sync"
-                    android:src="@drawable/acount_img"></ImageView>
+                    android:layout_marginBottom="@dimen/_1sdp"
+                    android:layout_toLeftOf="@id/img_account"
+                    android:src="@drawable/sync_img"/>
+
 
                 <ImageView
-                    android:id="@+id/img_sync"
+                    android:id="@+id/img_account"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -76,7 +76,15 @@
                     android:layout_marginTop="@dimen/_2sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_2sdp"
-                    android:src="@drawable/sync_img"></ImageView>
+                    android:src="@drawable/acount_img"/>
+
+            <RelativeLayout
+                android:id="@+id/img_account1"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
+                android:layout_below="@+id/img_account"
+                android:background="@drawable/triangle_view" />
+
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </RelativeLayout>
@@ -100,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/_4sdp"
-                android:layout_weight="1.7"
+                android:layout_weight="1.8"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -190,6 +198,7 @@
                 </LinearLayout>
 
                 <RelativeLayout
+                    android:id="@+id/rl_quick_link"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_2sdp"
@@ -237,7 +246,7 @@
                                     android:layout_height="@dimen/_9sdp"
                                     android:layout_gravity="center|left"
                                     android:layout_marginLeft="@dimen/_5sdp"
-                                    android:src="@drawable/image_img"></ImageView>
+                                    android:src="@drawable/image_img"/>
 
 
                                 <TextView
@@ -250,14 +259,14 @@
                                     android:gravity="left"
                                     android:text="Presentation"
                                     android:textColor="@color/black_45"
-                                    android:textSize="@dimen/_7sdp"></TextView>
+                                    android:textSize="@dimen/_7sdp"/>
 
                                 <ImageView
                                     android:layout_width="@dimen/_8sdp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center|right"
                                     android:layout_marginEnd="@dimen/_5sdp"
-                                    android:src="@drawable/arrow_right_"></ImageView>
+                                    android:src="@drawable/arrow_right_"/>
 
                             </LinearLayout>
 
@@ -276,7 +285,7 @@
                                     android:layout_height="@dimen/_9sdp"
                                     android:layout_gravity="center|left"
                                     android:layout_marginStart="@dimen/_5sdp"
-                                    android:src="@drawable/eye_img"></ImageView>
+                                    android:src="@drawable/eye_img"/>
 
 
                                 <TextView
@@ -318,7 +327,7 @@
                                     android:layout_height="@dimen/_9sdp"
                                     android:layout_gravity="center|left"
                                     android:layout_marginStart="@dimen/_5sdp"
-                                    android:src="@drawable/file_chart_img"></ImageView>
+                                    android:src="@drawable/file_chart_img"/>
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -362,7 +371,7 @@
                                     android:layout_height="@dimen/_9sdp"
                                     android:layout_gravity="center|left"
                                     android:layout_marginStart="@dimen/_5sdp"
-                                    android:src="@drawable/image_img"></ImageView>
+                                    android:src="@drawable/image_img"/>
 
 
                                 <TextView
@@ -375,7 +384,7 @@
                                     android:gravity="left"
                                     android:text="Analysis"
                                     android:textColor="@color/black_45"
-                                    android:textSize="@dimen/_7sdp"></TextView>
+                                    android:textSize="@dimen/_7sdp"/>
 
                                 <ImageView
                                     android:layout_width="@dimen/_8sdp"
@@ -410,6 +419,9 @@
             app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
             app:itemTextColor="@color/black_45"
             app:menu="@menu/activity_navigation_drawer_drawer" />
+
+
+
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

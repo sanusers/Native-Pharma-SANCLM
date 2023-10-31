@@ -106,6 +106,7 @@
     <string name="fb_selection">Feedback Selection</string>
     <string name="jw_selction">JointWork Selection</string>
     <string name="ok">Ok</string>
+    <string name="toast_do_master_sync">Kindly do Master Sync</string>
 
 
 </resources>

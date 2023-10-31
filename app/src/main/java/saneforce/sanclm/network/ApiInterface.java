@@ -1,6 +1,11 @@
 package saneforce.sanclm.network;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
@@ -19,6 +24,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import saneforce.sanclm.activity.profile.DCRLastVisitDetails;
 
@@ -33,27 +39,31 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("?axn=table/dcrmasterdata")
-    Call<JsonArray> getDrMaster(@Field("data") String postObj);
+    Call<JsonElement> getDrMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/subordinates")
-    Call<JsonArray> getSubordinateMaster(@Field("data") String postObj);
+    Call<JsonElement> getSubordinateMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/products")
-    Call<JsonArray> getProductMaster(@Field("data") String postObj);
+    Call<JsonElement> getProductMaster(@Field("data") String postObj);
+
     @FormUrlEncoded
     @POST("?axn=get/leave")
-    Call<JsonArray> getLeaveMaster(@Field("data") String postObj);
+    Call<JsonElement> getLeaveMaster(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=home")
+    Call<JsonElement> getDCRMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/slides")
-    Call<JsonArray> getSlideMaster(@Field("data") String postObj);
+    Call<JsonElement> getSlideMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/setups")
-    Call<JsonArray> getSetupMaster(@Field("data") String postObj);
-
+    Call<JsonElement> getSetupMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")
@@ -74,6 +84,23 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("?axn=get/approvals")
     Call<JsonArray> getLeaveApprovalList(@Field("data") String GetLeaveList);
+
+    @FormUrlEncoded
+    @POST("?axn=home")
+    Call<JsonArray> getcalldetails(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=get/leave")
+    Call<JsonArray> getLeavesetdata(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=save/leavemodule")
+    Call<JsonArray> getleavesave(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=get/tp")
+    Call<JsonElement> getTP(@Field("data") String postObj);
+
 
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")
