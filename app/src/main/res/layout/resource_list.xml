@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/Click_Res"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/listcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:padding="@dimen/_3sdp"
+            android:text="022"
+            android:textColor="#282A3C"
+            android:textSize="@dimen/_6sdp"
+            android:textStyle="bold" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/Res_Table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".7">
+
+
+                    <TextView
+                        android:id="@+id/Res_Name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="AA Chauhan"
+                        android:textColor="#282A3C"
+                        android:padding="@dimen/_3sdp"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/Res_Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.3"
+                    android:gravity="right"
+                    android:padding="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_6sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="2.5sp"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:src="@drawable/pencil" />
+
+                    <TextView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Edit"
+                        android:textColor="#3DA5F4"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Res_Table1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Res_Table"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/Res_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Category"
+                    android:textColor="#808B96"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/Res_specialty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Specialty"
+                    android:textColor="#808B96"
+
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/Res_rx"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Rx"
+                    android:textColor="#808B96"
+                    android:textSize="@dimen/_6sdp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/Res_Table2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Res_Table1"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/Res_culter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_weight=".7"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="Cluster Name"
+                    android:textColor="#808B96"
+                    android:textSize="@dimen/_6sdp"
+
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/Res_View"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_weight="1.3"
+                    android:gravity="right"
+                    android:padding="@dimen/_2sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:layout_marginRight="@dimen/_2sdp"
+                        android:src="@drawable/mapmarker" />
+
+                    <TextView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="View"
+                        android:textColor="#F1536E"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Res_Table2"
+        android:layout_marginLeft="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_1sdp"
+        android:background="#282A3CA6"
+        android:orientation="vertical"
+        android:padding=".4dp" />
+
+
+</LinearLayout>

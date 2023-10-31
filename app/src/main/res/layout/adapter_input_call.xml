@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/_1sdp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_input_name"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="@string/input_name"
+        android:singleLine="true"
+        android:textColor="@color/dark_purple"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_input_stk"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_input_stk"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:textColor="@color/text_qty_prd"
+        android:textSize="16sp"
+        android:background="@drawable/bg_light_grey_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ed_input_qty"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_input_name"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteY="2dp" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/ed_input_qty"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:background="@drawable/bg_light_grey_border"
+        android:textColor="@color/text_qty_prd"
+        android:textSize="16sp"
+        android:inputType="number"
+        android:maxLength="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/img_del_input"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_input_stk"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteY="2dp"  />
+
+    <ImageView
+        android:id="@+id/img_del_input"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:paddingVertical="@dimen/_4sdp"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:src="@drawable/iv_del"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ed_input_qty"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteY="2dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
