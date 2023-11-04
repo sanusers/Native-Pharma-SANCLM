@@ -60,6 +60,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     SQLite sqLite;
     LoginResponse loginResponse;
     String sfCode = "",division_code = "",sfType = "",rsf ="",designation = "",state_code ="",subdivision_code = "";
+    String cheNeed = "",stockiestNeed = "",unListedDrNeed = "",hospNeed = "",cipNeed = "",rcpaNeed = "",tpNeed = "";
 
     int doctorCount = 0,specialityCount = 0,qualificationCount = 0,categoryCount = 0,departmentCount = 0,classCount = 0,feedbackCount = 0;
     int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpCount =0,clusterCount = 0;
@@ -486,6 +487,13 @@ public class MasterSyncActivity extends AppCompatActivity {
         subdivision_code = loginResponse.getSubdivision_code();
         designation = loginResponse.getDesig();
         state_code = loginResponse.getState_Code();
+        cheNeed =loginResponse.getChmNeed();
+        stockiestNeed = loginResponse.getStkNeed();
+        unListedDrNeed = loginResponse.getUNLNeed();
+        cipNeed = loginResponse.getCIP_PNeed();
+        hospNeed = loginResponse.getHosp_need();
+        rcpaNeed = loginResponse.getRcpaNd();
+        tpNeed = loginResponse.getTp_need();
         binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
         rsf = SharedPref.getHqCode(MasterSyncActivity.this); // Rsf is HQ code
 
@@ -601,28 +609,43 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Chemist
         chemistModelArray.clear();
-        MasterSyncItemModel cheModel = new MasterSyncItemModel(loginResponse.getChmCap(),chemistCount,Constants.DOCTOR,"getchemist",Constants.CHEMIST + hqCode,chemistStatus,false);
-        chemistModelArray.add(cheModel);
+        if (cheNeed.equalsIgnoreCase("0")){
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(loginResponse.getChmCap(),chemistCount,Constants.DOCTOR,"getchemist",Constants.CHEMIST + hqCode,chemistStatus,false);
+            chemistModelArray.add(cheModel);
+        }else
+            binding.chemist.setVisibility(View.GONE);
 
         //Stockiest
         stockiestModelArray.clear();
-        MasterSyncItemModel stockModel = new MasterSyncItemModel(loginResponse.getStkCap(),stockiestCount,Constants.DOCTOR,"getstockist",Constants.STOCKIEST + hqCode,stockiestStatus,false);
-        stockiestModelArray.add(stockModel);
+        if (stockiestNeed.equalsIgnoreCase("0")){
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(loginResponse.getStkCap(),stockiestCount,Constants.DOCTOR,"getstockist",Constants.STOCKIEST + hqCode,stockiestStatus,false);
+            stockiestModelArray.add(stockModel);
+        }else
+            binding.stockiest.setVisibility(View.GONE);
 
         //Unlisted Dr
         unlistedDrModelArray.clear();
-        MasterSyncItemModel unListModel = new MasterSyncItemModel(loginResponse.getNLCap(),unlistedDrCount,Constants.DOCTOR,"getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode,unlistedDrStatus,false);
-        unlistedDrModelArray.add(unListModel);
+        if (unListedDrNeed.equalsIgnoreCase("0")){
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(loginResponse.getNLCap(),unlistedDrCount,Constants.DOCTOR,"getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode,unlistedDrStatus,false);
+            unlistedDrModelArray.add(unListModel);
+        }else
+            binding.unlistedDoctor.setVisibility(View.GONE);
 
         //Hospital
         hospitalModelArray.clear();
-        MasterSyncItemModel hospModel = new MasterSyncItemModel(loginResponse.getHosp_caption(),hospitalCount,Constants.DOCTOR,"gethospital",Constants.HOSPITAL + hqCode,hospitalStatus,false);
-        hospitalModelArray.add(hospModel);
+        if (hospNeed.equalsIgnoreCase("0")){
+            MasterSyncItemModel hospModel = new MasterSyncItemModel(loginResponse.getHosp_caption(),hospitalCount,Constants.DOCTOR,"gethospital",Constants.HOSPITAL + hqCode,hospitalStatus,false);
+            hospitalModelArray.add(hospModel);
+        }else
+            binding.hospital.setVisibility(View.GONE);
 
         //CIP
         cipModelArray.clear();
-        MasterSyncItemModel ciModel = new MasterSyncItemModel(loginResponse.getCIP_Caption(),cipCount,Constants.DOCTOR,"getcip",Constants.CIP + hqCode,cipStatus,false);
-        cipModelArray.add(ciModel);
+        if (cipNeed.equalsIgnoreCase("0")){
+            MasterSyncItemModel ciModel = new MasterSyncItemModel(loginResponse.getCIP_Caption(),cipCount,Constants.DOCTOR,"getcip",Constants.CIP + hqCode,cipStatus,false);
+            cipModelArray.add(ciModel);
+        }else
+            binding.cip.setVisibility(View.GONE);
 
         //Cluster
         clusterModelArray.clear();
@@ -639,11 +662,13 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel proModel = new MasterSyncItemModel(Constants.PRODUCT,productCount,Constants.PRODUCT,"getproducts",Constants.PRODUCT,productStatus,false);
         MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY,proCatCount,Constants.PRODUCT,"",Constants.PRODUCT_CATEGORY,proCatStatus,false);
         MasterSyncItemModel brandModel = new MasterSyncItemModel(Constants.BRAND,brandCount,Constants.PRODUCT,"getbrands",Constants.BRAND,brandStatus,false);
-        MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD,compProCount,Constants.PRODUCT,"getcompdet",Constants.COMPETITOR_PROD,compProStatus,false);
         productModelArray.add(proModel);
         productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
-        productModelArray.add(compProductModel);
+        if (rcpaNeed.equalsIgnoreCase("0")){
+            MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD,compProCount,Constants.PRODUCT,"getcompdet",Constants.COMPETITOR_PROD,compProStatus,false);
+            productModelArray.add(compProductModel);
+        }
 
         //Leave
         leaveModelArray.clear();
@@ -674,8 +699,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Tour Plan
         tpModelArray.clear();
-        MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup",tpCount,Constants.SETUP,"gettpsetup",Constants.TP_PLAN,tpStatus,false);
-        tpModelArray.add(tp);
+        if (tpNeed.equalsIgnoreCase("0")){
+            MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup",tpCount,Constants.SETUP,"gettpsetup",Constants.TP_PLAN,tpStatus,false);
+            tpModelArray.add(tp);
+        }else
+            binding.tourPlan.setVisibility(View.GONE);
 
         //Slide
         slideModelArray.clear();
