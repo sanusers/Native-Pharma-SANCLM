@@ -76,7 +76,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         this.sessionInterface = sessionInterface;
 
         sqLite = new SQLite(context);
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         sfCode = loginResponse.getSF_Code();
         division_code = loginResponse.getDivision_Code();
@@ -1075,14 +1075,14 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     public void prepareMasterToSync(String hqCode){
         masterSyncArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor","getdoctors", Constants.DOCTOR + hqCode);
-        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor","getchemist",Constants.CHEMIST + hqCode);
-        MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor","getstockist",Constants.STOCKIEST + hqCode);
-        MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor","getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode);
-        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor","gethospital",Constants.HOSPITAL + hqCode);
-        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor","getcip",Constants.CIP + hqCode);
-        MasterSyncItemModel cluster = new MasterSyncItemModel("Doctor","getterritory",Constants.CLUSTER + hqCode);
-        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Subordinate","getjointwork",Constants.JOINT_WORK + hqCode);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel(Constants.DOCTOR,"getdoctors", Constants.DOCTOR + hqCode);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel(Constants.DOCTOR,"getchemist",Constants.CHEMIST + hqCode);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel(Constants.DOCTOR,"getstockist",Constants.STOCKIEST + hqCode);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel(Constants.DOCTOR,"getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode);
+        MasterSyncItemModel hospModel = new MasterSyncItemModel(Constants.DOCTOR,"gethospital",Constants.HOSPITAL + hqCode);
+        MasterSyncItemModel ciModel = new MasterSyncItemModel(Constants.DOCTOR,"getcip",Constants.CIP + hqCode);
+        MasterSyncItemModel cluster = new MasterSyncItemModel(Constants.DOCTOR,"getterritory",Constants.CLUSTER + hqCode);
+        MasterSyncItemModel jWorkModel = new MasterSyncItemModel(Constants.SUBORDINATE,"getjointwork",Constants.JOINT_WORK + hqCode);
 
         masterSyncArray.add(doctorModel);
         masterSyncArray.add(cheModel);
@@ -1118,9 +1118,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
 //                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
-                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")){
+                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.DOCTOR)){
                     call = apiInterface.getDrMaster(jsonObject.toString());
-                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
+                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase(Constants.SUBORDINATE)) {
                     call = apiInterface.getSubordinateMaster(jsonObject.toString());
                 }
 

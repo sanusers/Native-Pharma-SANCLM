@@ -343,7 +343,7 @@ public class Leave_Application extends AppCompatActivity {
             }
 
             loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData(true);
+            loginResponse = sqLite.getLoginData();
 
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
@@ -571,7 +571,7 @@ public class Leave_Application extends AppCompatActivity {
             }
 
             loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData(true);
+            loginResponse = sqLite.getLoginData();
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
 

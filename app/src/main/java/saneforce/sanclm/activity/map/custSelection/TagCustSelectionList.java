@@ -222,7 +222,7 @@ public class TagCustSelectionList extends AppCompatActivity {
     private void getRequiredData() {
         try {
             SelectedTab = MapsActivity.SelectedTab;
-            loginResponse = sqLite.getLoginData(true);
+            loginResponse = sqLite.getLoginData();
             SfType = loginResponse.getSf_type();
             SfCode = loginResponse.getSF_Code();
             SfName = loginResponse.getSF_Name();
@@ -340,9 +340,9 @@ public class TagCustSelectionList extends AppCompatActivity {
 
 // Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
-                if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Doctor")) {
+                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
                     call = apiInterface.getDrMaster(jsonObject.toString());
-                } else if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Subordinate")) {
+                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
                     call = apiInterface.getSubordinateMaster(jsonObject.toString());
                 }
 

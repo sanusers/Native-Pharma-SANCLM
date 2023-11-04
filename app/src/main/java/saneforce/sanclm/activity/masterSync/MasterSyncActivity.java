@@ -129,7 +129,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (navigateFrom.equalsIgnoreCase("Login")){
             if (sfType.equalsIgnoreCase("2")){ //MGR
                 mgrInitialSync = true;
-                sync("Subordinate", "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
+                sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
             } else {
                 masterSyncAll(false);
             }
@@ -478,7 +478,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void uiInitialization() {
 
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         sfType = loginResponse.getSf_type();
         sfCode = loginResponse.getSF_Code();
@@ -583,13 +583,13 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void prepareArray(String hqCode){
         doctorModelArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel(loginResponse.getDrCap(), doctorCount, "Doctor", "getdoctors", Constants.DOCTOR + hqCode,doctorStatus, false);
-        MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY,specialityCount,"Doctor","getspeciality",Constants.SPECIALITY,specialityStatus,false);
-        MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION,qualificationCount,"Doctor","getquali",Constants.QUALIFICATION,qualificationStatus,false);
-        MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY,categoryCount,"Doctor","getcategorys",Constants.CATEGORY,categoryStatus,false);
-        MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT,departmentCount,"Doctor","getdeparts",Constants.DEPARTMENT,departmentStatus,false);
-        MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS,classCount,"Doctor","getclass",Constants.CLASS,classStatus,false);
-        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK,feedbackCount,"Doctor","getdrfeedback",Constants.FEEDBACK,feedbackStatus,false);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel(loginResponse.getDrCap(), doctorCount, Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode,doctorStatus, false);
+        MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY,specialityCount,Constants.DOCTOR,"getspeciality",Constants.SPECIALITY,specialityStatus,false);
+        MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION,qualificationCount,Constants.DOCTOR,"getquali",Constants.QUALIFICATION,qualificationStatus,false);
+        MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY,categoryCount,Constants.DOCTOR,"getcategorys",Constants.CATEGORY,categoryStatus,false);
+        MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT,departmentCount,Constants.DOCTOR,"getdeparts",Constants.DEPARTMENT,departmentStatus,false);
+        MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS,classCount,Constants.DOCTOR,"getclass",Constants.CLASS,classStatus,false);
+        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK,feedbackCount,Constants.DOCTOR,"getdrfeedback",Constants.FEEDBACK,feedbackStatus,false);
 
         doctorModelArray.add(doctorModel);
         doctorModelArray.add(spl);
@@ -601,45 +601,45 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Chemist
         chemistModelArray.clear();
-        MasterSyncItemModel cheModel = new MasterSyncItemModel(loginResponse.getChmCap(),chemistCount,"Doctor","getchemist",Constants.CHEMIST + hqCode,chemistStatus,false);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel(loginResponse.getChmCap(),chemistCount,Constants.DOCTOR,"getchemist",Constants.CHEMIST + hqCode,chemistStatus,false);
         chemistModelArray.add(cheModel);
 
         //Stockiest
         stockiestModelArray.clear();
-        MasterSyncItemModel stockModel = new MasterSyncItemModel(loginResponse.getStkCap(),stockiestCount,"Doctor","getstockist",Constants.STOCKIEST + hqCode,stockiestStatus,false);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel(loginResponse.getStkCap(),stockiestCount,Constants.DOCTOR,"getstockist",Constants.STOCKIEST + hqCode,stockiestStatus,false);
         stockiestModelArray.add(stockModel);
 
         //Unlisted Dr
         unlistedDrModelArray.clear();
-        MasterSyncItemModel unListModel = new MasterSyncItemModel(loginResponse.getNLCap(),unlistedDrCount,"Doctor","getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode,unlistedDrStatus,false);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel(loginResponse.getNLCap(),unlistedDrCount,Constants.DOCTOR,"getunlisteddr",Constants.UNLISTED_DOCTOR + hqCode,unlistedDrStatus,false);
         unlistedDrModelArray.add(unListModel);
 
         //Hospital
         hospitalModelArray.clear();
-        MasterSyncItemModel hospModel = new MasterSyncItemModel(loginResponse.getHosp_caption(),hospitalCount,"Doctor","gethospital",Constants.HOSPITAL + hqCode,hospitalStatus,false);
+        MasterSyncItemModel hospModel = new MasterSyncItemModel(loginResponse.getHosp_caption(),hospitalCount,Constants.DOCTOR,"gethospital",Constants.HOSPITAL + hqCode,hospitalStatus,false);
         hospitalModelArray.add(hospModel);
 
         //CIP
         cipModelArray.clear();
-        MasterSyncItemModel ciModel = new MasterSyncItemModel(loginResponse.getCIP_Caption(),cipCount,"Doctor","getcip",Constants.CIP + hqCode,cipStatus,false);
+        MasterSyncItemModel ciModel = new MasterSyncItemModel(loginResponse.getCIP_Caption(),cipCount,Constants.DOCTOR,"getcip",Constants.CIP + hqCode,cipStatus,false);
         cipModelArray.add(ciModel);
 
         //Cluster
         clusterModelArray.clear();
-        MasterSyncItemModel cluster = new MasterSyncItemModel(loginResponse.getCluster_cap(), clusterCount, "Doctor", "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
+        MasterSyncItemModel cluster = new MasterSyncItemModel(loginResponse.getCluster_cap(), clusterCount, Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
         clusterModelArray.add(cluster);
 
         //Input
         inputModelArray.clear();
-        MasterSyncItemModel inpModel = new MasterSyncItemModel(Constants.INPUT,inputCount,"Product","getinputs",Constants.INPUT,inputStatus,false);
+        MasterSyncItemModel inpModel = new MasterSyncItemModel(Constants.INPUT,inputCount,Constants.PRODUCT,"getinputs",Constants.INPUT,inputStatus,false);
         inputModelArray.add(inpModel);
 
         //Product
         productModelArray.clear();
-        MasterSyncItemModel proModel = new MasterSyncItemModel(Constants.PRODUCT,productCount,"Product","getproducts",Constants.PRODUCT,productStatus,false);
-        MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY,proCatCount,"Product","",Constants.PRODUCT_CATEGORY,proCatStatus,false);
-        MasterSyncItemModel brandModel = new MasterSyncItemModel(Constants.BRAND,brandCount,"Product","getbrands",Constants.BRAND,brandStatus,false);
-        MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD,compProCount,"Product","getcompdet",Constants.COMPETITOR_PROD,compProStatus,false);
+        MasterSyncItemModel proModel = new MasterSyncItemModel(Constants.PRODUCT,productCount,Constants.PRODUCT,"getproducts",Constants.PRODUCT,productStatus,false);
+        MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY,proCatCount,Constants.PRODUCT,"",Constants.PRODUCT_CATEGORY,proCatStatus,false);
+        MasterSyncItemModel brandModel = new MasterSyncItemModel(Constants.BRAND,brandCount,Constants.PRODUCT,"getbrands",Constants.BRAND,brandStatus,false);
+        MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD,compProCount,Constants.PRODUCT,"getcompdet",Constants.COMPETITOR_PROD,compProStatus,false);
         productModelArray.add(proModel);
         productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
@@ -665,16 +665,16 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Work Type
         workTypeModelArray.clear();
-        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE,workTypeCount,"Doctor","getworktype",Constants.WORK_TYPE,workTypeStatus,false);
-        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY,holidayCount,"Doctor","getholiday",Constants.HOLIDAY,holidayStatus,false);
-        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF,weeklyOfCount,"Doctor","getweeklyoff",Constants.WEEKLY_OFF,weeklyOfStatus,false);
+        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE,workTypeCount,Constants.DOCTOR,"getworktype",Constants.WORK_TYPE,workTypeStatus,false);
+        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY,holidayCount,Constants.DOCTOR,"getholiday",Constants.HOLIDAY,holidayStatus,false);
+        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF,weeklyOfCount,Constants.DOCTOR,"getweeklyoff",Constants.WEEKLY_OFF,weeklyOfStatus,false);
         workTypeModelArray.add(workType);
         workTypeModelArray.add(holiday);
         workTypeModelArray.add(weeklyOff);
 
         //Tour Plan
         tpModelArray.clear();
-        MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup",tpCount,"Setup","gettpsetup",Constants.TP_PLAN,tpStatus,false);
+        MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup",tpCount,Constants.SETUP,"gettpsetup",Constants.TP_PLAN,tpStatus,false);
         tpModelArray.add(tp);
 
         //Slide
@@ -690,17 +690,17 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Subordinate
         subordinateModelArray.clear();
-        MasterSyncItemModel subModel = new MasterSyncItemModel(Constants.SUBORDINATE,subordinateCount,"Subordinate","getsubordinate",Constants.SUBORDINATE,subordinateStatus,false);
-        MasterSyncItemModel subMgrModel = new MasterSyncItemModel(Constants.SUBORDINATE_MGR,subMgrCount,"Subordinate","getsubordinatemgr",Constants.SUBORDINATE_MGR,subMgrStatus,false);
-        MasterSyncItemModel jWorkModel = new MasterSyncItemModel(Constants.JOINT_WORK,jWorkCount,"Subordinate","getjointwork",Constants.JOINT_WORK + hqCode,jWorkStatus,false);
+        MasterSyncItemModel subModel = new MasterSyncItemModel(Constants.SUBORDINATE,subordinateCount,Constants.SUBORDINATE,"getsubordinate",Constants.SUBORDINATE,subordinateStatus,false);
+        MasterSyncItemModel subMgrModel = new MasterSyncItemModel(Constants.SUBORDINATE_MGR,subMgrCount,Constants.SUBORDINATE,"getsubordinatemgr",Constants.SUBORDINATE_MGR,subMgrStatus,false);
+        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Joint Work",jWorkCount,Constants.SUBORDINATE,"getjointwork",Constants.JOINT_WORK + hqCode,jWorkStatus,false);
         subordinateModelArray.add(subModel);
         subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
 
         //Setup
         setupModelArray.clear();
-        MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP,setupCount,"Setup","getsetups",Constants.SETUP,setupStatus,false);
-        MasterSyncItemModel customSetupModel = new MasterSyncItemModel(Constants.CUSTOM_SETUP,customSetupCount,"Setup","getcustomsetup",Constants.CUSTOM_SETUP,customSetupStatus,false);
+        MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP,setupCount,Constants.SETUP,"getsetups",Constants.SETUP,setupStatus,false);
+        MasterSyncItemModel customSetupModel = new MasterSyncItemModel(Constants.CUSTOM_SETUP,customSetupCount,Constants.SETUP,"getcustomsetup",Constants.CUSTOM_SETUP,customSetupStatus,false);
         setupModelArray.add(setupModel);
         setupModelArray.add(customSetupModel);
 
@@ -899,11 +899,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 
 //            Log.e("test","master sync obj : " + jsonObject);
                 Call<JsonElement> call = null;
-                if (masterOf.equalsIgnoreCase("Doctor")){
+                if (masterOf.equalsIgnoreCase(Constants.DOCTOR)){
                     call = apiInterface.getDrMaster(jsonObject.toString());
-                } else if (masterOf.equalsIgnoreCase("Subordinate")) {
+                } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
                     call = apiInterface.getSubordinateMaster(jsonObject.toString());
-                }else if (masterOf.equalsIgnoreCase("Product")) {
+                }else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
                     call = apiInterface.getProductMaster(jsonObject.toString());
                 }else if (masterOf.equalsIgnoreCase("Leave")) {
                     call = apiInterface.getLeaveMaster(jsonObject.toString());
@@ -915,7 +915,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     call = apiInterface.getAdditionalMaster(jsonObject.toString());
                 }else if (masterOf.equalsIgnoreCase("Slide")) {
                     call = apiInterface.getSlideMaster(jsonObject.toString());
-                }else if (masterOf.equalsIgnoreCase("Setup")) {
+                }else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
                     call = apiInterface.getSetupMaster(jsonObject.toString());
                 }
                 if (call != null){
@@ -965,11 +965,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(),0);
                                                 }
 
-                                            }else if(masterOf.equalsIgnoreCase("Subordinate") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")){
+                                            }else if(masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")){
                                                 if(mgrInitialSync)
                                                     setHq(jsonArray);
 
-                                            }else if(masterSyncItemModels.get(position).getName().equalsIgnoreCase("Setup")){
+                                            }else if(masterSyncItemModels.get(position).getName().equalsIgnoreCase(Constants.SETUP)){
                                                 if (jsonArray.length() > 0){
                                                     JSONObject jsonSetup = jsonArray.getJSONObject(0);
                                                     if (jsonSetup.has("geoTagImg"))

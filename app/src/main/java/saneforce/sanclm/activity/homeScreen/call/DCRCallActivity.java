@@ -494,7 +494,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void UpdateSampleStock() {
         try {
-            JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.SAMPLE_STOCK);
+            JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
             for (int i = 0; i < CallProductListAdapter.saveCallProductListArrayList.size(); i++) {
                 //SampleStockChange
                 for (int j = 0; j < jsonArraySamStk.length(); j++) {
@@ -507,14 +507,14 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
-            sqLite.saveMasterSyncData(Constants.SAMPLE_STOCK, jsonArraySamStk.toString(), 0);
+            sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0);
         } catch (Exception e) {
         }
     }
 
     private void UpdateInputStock() {
         try {
-            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_STOCK);
+            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
             for (int i = 0; i < CallInputListAdapter.saveCallInputListArrayList.size(); i++) {
                 //InputStockChange
                 for (int j = 0; j < jsonArrayInpStk.length(); j++) {
@@ -527,7 +527,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
-            sqLite.saveMasterSyncData(Constants.INPUT_STOCK, jsonArrayInpStk.toString(), 0);
+            sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0);
         } catch (Exception e) {
         }
     }
@@ -752,7 +752,7 @@ public class DCRCallActivity extends AppCompatActivity {
     private void getRequiredData() {
         try {
             loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData(true);
+            loginResponse = sqLite.getLoginData();
 
             SfType = loginResponse.getSf_type();
             SfCode = loginResponse.getSF_Code();
@@ -964,7 +964,7 @@ public class DCRCallActivity extends AppCompatActivity {
         CallInputListAdapter.saveCallInputListArrayList = new ArrayList<>();
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.INPUT);
-            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_STOCK);
+            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 JSONObject jsonFdate = new JSONObject(jsonObject.getString("EffF"));
@@ -1015,7 +1015,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("prdds", "prioritycode---" + CallActivityCustDetails.get(0).getPriorityPrdCode());
             int Priority_count = 1;
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
-            JSONArray jsonArrayPrdStk = sqLite.getMasterSyncDataByKey(Constants.SAMPLE_STOCK);
+            JSONArray jsonArrayPrdStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (CallActivityCustDetails.get(0).getPriorityPrdCode().contains(jsonObject.getString("Code"))) {

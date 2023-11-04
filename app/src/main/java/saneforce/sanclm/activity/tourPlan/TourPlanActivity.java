@@ -548,7 +548,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void uiInitialization(){
 
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
         sfName = loginResponse.getSF_Name();
         sfCode = loginResponse.getSF_Code();
         division_code = loginResponse.getDivision_Code();

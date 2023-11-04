@@ -337,7 +337,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         LinearLayout user_logout = popupView.findViewById(R.id.user_logout);
 
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         user_logout.setOnClickListener(v -> {
             SharedPref.saveLoginState(HomeDashBoard.this, false);
@@ -369,7 +369,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods.FullScreencall();
 
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         dialog1.setContentView(R.layout.change_password);
         Window window1 = dialog1.getWindow();

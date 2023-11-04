@@ -433,9 +433,9 @@ public class ListedDoctorFragment extends Fragment {
 
 // Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
-                if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Doctor")) {
+                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
                     call = apiInterface.getDrMaster(jsonObject.toString());
-                } else if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Subordinate")) {
+                } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
                     call = apiInterface.getSubordinateMaster(jsonObject.toString());
                 }
 

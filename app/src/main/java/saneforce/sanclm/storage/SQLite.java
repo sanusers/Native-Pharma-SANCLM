@@ -106,12 +106,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Cursor getLoginData() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + LOGIN_TABLE, null);
-    }
-
-    public LoginResponse getLoginData(boolean bool){
+    public LoginResponse getLoginData(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + LOGIN_TABLE,null);
         String data = "";

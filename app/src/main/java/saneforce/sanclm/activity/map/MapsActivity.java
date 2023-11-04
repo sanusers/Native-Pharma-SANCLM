@@ -294,7 +294,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void getRequiredData() {
 
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         SfType = loginResponse.getSf_type();
         SfCode = loginResponse.getSF_Code();

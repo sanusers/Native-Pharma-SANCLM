@@ -154,7 +154,7 @@ public class ApprovalsActivity extends AppCompatActivity {
     private void getRequiredData() {
 
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         SfType = loginResponse.getSf_type();
         SfCode = loginResponse.getSF_Code();
