@@ -60,18 +60,15 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
 
-
     <string name="str_app_configuration">App Configuration</string>
     <string name="str_web_url">Web URL</string>
     <string name="str_license_key">License Key</string>
-
 
     <string name="str_enter_url">Enter URL</string>
     <string name="str_enter_license">Enter License</string>
     <string name="str_language">Language</string>
     <string name="str_your_device_id">Your Device ID</string>
 
-    <string name="str_default_language">English</string>
     <string name="str_save_settings">Save Settings</string>
     <string name="str_powered_by">Powered by</string>
     <string name="call_selection">Call Selection</string>
@@ -106,7 +103,6 @@
     <string name="fb_selection">Feedback Selection</string>
     <string name="jw_selction">JointWork Selection</string>
     <string name="ok">Ok</string>
-
 
 
 </resources>

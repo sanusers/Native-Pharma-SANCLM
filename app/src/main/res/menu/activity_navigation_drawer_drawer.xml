@@ -80,12 +80,6 @@
             android:id="@+id/nav_forms"
             android:title="Forms" />
 
-        <item
-            android:icon="@drawable/form"
-            android:fontFamily="@font/satoshi_medium"
-            android:id="@+id/logout"
-            android:title="Logout" />
-
     </group>
 
 </menu>

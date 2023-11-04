@@ -24,19 +24,7 @@
             android:paddingBottom="@dimen/_6sdp"
             android:background="@drawable/tp_session_highlight">
 
-<!--            <androidx.core.widget.NestedScrollView-->
-<!--                android:id="@+id/rlLayout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fitsSystemWindows="true"-->
-<!--                android:fillViewport="true"-->
-<!--                android:layout_alignParentStart="true"-->
-<!--                android:layout_alignParentEnd="true"-->
-<!--                android:layout_alignParentTop="true"-->
-<!--                android:scrollbars="none"-->
-<!--                android:visibility="visible">-->
-
-                <RelativeLayout
+            <RelativeLayout
                     android:id="@+id/rlLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -361,6 +349,7 @@
                         android:layout_marginTop="@dimen/_3sdp">
 
                         <TextView
+                            android:id="@+id/listedDrCap"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"
@@ -435,6 +424,7 @@
                         android:layout_marginTop="@dimen/_6sdp">
 
                         <TextView
+                            android:id="@+id/chemistCap"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"
@@ -509,6 +499,7 @@
                         android:layout_marginTop="@dimen/_6sdp">
 
                         <TextView
+                            android:id="@+id/stockiestCap"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"
@@ -583,6 +574,7 @@
                         android:layout_marginTop="@dimen/_6sdp">
 
                         <TextView
+                            android:id="@+id/unListedDrCap"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"
@@ -657,6 +649,7 @@
                         android:layout_marginTop="@dimen/_6sdp">
 
                         <TextView
+                            android:id="@+id/cipCap"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"
@@ -731,6 +724,7 @@
                         android:layout_marginTop="@dimen/_6sdp">
 
                         <TextView
+                            android:id="@+id/hospCap"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/satoshi_medium"
@@ -839,8 +833,6 @@
                     </LinearLayout>
 
                 </RelativeLayout>
-
-<!--            </androidx.core.widget.NestedScrollView>-->
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/listCardView"

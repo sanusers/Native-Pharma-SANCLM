@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.commonClasses.Constants;
 
 public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.MyViewHolder> {
 
@@ -28,7 +29,7 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         this.context = context;
         this.masterSyncItemModels = masterSyncItemModels;
         this.masterSyncItemClick = masterSyncItemClick;
-    }
+    } 
 
     @NonNull
     @Override
@@ -45,6 +46,9 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
 
         holder.name.setText(name);
         holder.count.setText(count);
+
+        if (name.equalsIgnoreCase(Constants.STOCK_BALANCE))
+            holder.count.setText("");
 
         if (data.syncSuccess == 1){
             holder.syncErrorIcon.setVisibility(View.VISIBLE);

@@ -14,30 +14,43 @@ import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.nio.DoubleBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import saneforce.sanclm.activity.tourPlan.ModelClass;
+import saneforce.sanclm.activity.tourPlan.ObjectModelClass;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.response.LoginResponse;
 
 public class SQLite extends SQLiteOpenHelper {
 
     public static final String DATA_BASE_NAME = "san_clm.db";
+
+    //Login Table
     public static final String LOGIN_TABLE = "login_table";
     public static final String LOGIN_DATA = "login_data";
-    private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
 
-    //Master Sync
-    public static final String MASTER_SYNC_TABLE = "master_sync_data";
+    //Master Sync Table
+    public static final String MASTER_SYNC_TABLE = "master_sync_table";
     public static final String MASTER_KEY = "master_key";
     public static final String MASTER_VALUE = "master_value";
     public static final String SYNC_STATUS = "sync_status"; // 0 - success, 1 - failed
 
+    //Tour PLan Table
+    public static final String TOUR_PLAN_TABLE = "tour_plan_table";
+    public static final String TP_MONTH = "tp_month";
+    public static final String TP_DATA = "tp_data";
+
+    //Line Chat table
+    private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
     private static final String LINECHAR_CUSTCODE = "LINECHAR_CUSTCODE";
     private static final String LINECHAR_CUSTTYPE = "LINECHAR_CUSTTYPE";
     private static final String LINECHAR_DCR_DT = "LINECHAR_DCR_DT";
@@ -61,7 +74,8 @@ public class SQLite extends SQLiteOpenHelper {
     public void onCreate (SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LOGIN_TABLE + "(" + LOGIN_DATA + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text," + SYNC_STATUS + " INTEGER" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + " (" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
                 LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
                 LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
 
@@ -71,6 +85,7 @@ public class SQLite extends SQLiteOpenHelper {
     public void onUpgrade (SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TOUR_PLAN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + LINE_CHAT_DATA_TABLE);
 
         onCreate(db);
@@ -80,6 +95,7 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + LOGIN_TABLE);
         db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE);
+        db.execSQL("DELETE FROM " + TOUR_PLAN_TABLE);
         db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
 
         db.close();
@@ -154,9 +170,8 @@ public class SQLite extends SQLiteOpenHelper {
 
         JSONArray jsonArray = new JSONArray();
         try {
-            if (data != null){
+            if (data != null)
                 return jsonArray = new JSONArray(data.toString());
-            }
         }catch (Exception exception){
             exception.printStackTrace();
         }
@@ -184,6 +199,7 @@ public class SQLite extends SQLiteOpenHelper {
         if (cursor.moveToNext()){
             data = cursor.getInt(2);
         }
+        cursor.close();
         return data;
     }
 
@@ -220,6 +236,39 @@ public class SQLite extends SQLiteOpenHelper {
 //        cursor.close();
 //        return jsonArray;
 //    }
+
+    public void saveTPData(String month,String data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TP_MONTH, month);
+        contentValues.put(TP_DATA, data);
+
+        String[] args = new String[]{month};
+        int updated = db.update(TOUR_PLAN_TABLE,contentValues,TP_MONTH + "=?", args);
+        if (updated <= 0) {
+            db.insert(TOUR_PLAN_TABLE,null,contentValues);
+        }
+        db.close();
+    }
+
+    public JSONArray getTPData(String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "=" + "'" + month + "';",null);
+        String data = "";
+        if (cursor.moveToNext())
+            data = cursor.getString(1);
+
+        cursor.close();
+       JSONArray jsonArray = new JSONArray();
+
+       try {
+           if (!data.isEmpty())
+               jsonArray = new JSONArray(data);
+       } catch (JSONException e) {
+           throw new RuntimeException(e);
+       }
+        return jsonArray;
+    }
 
 
     // insertdata Linechart

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 public class ImageStorage {
+
     public static String saveImage (Bitmap bitmap,String filePath, String filename) {
 
         String stored = null;
@@ -18,7 +19,7 @@ public class ImageStorage {
 
         try {
             FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
             stored = "success";

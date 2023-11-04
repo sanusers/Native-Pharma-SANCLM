@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/_4sdp">
+            android:layout_marginTop="@dimen/_3sdp">
 
             <TextView
                 android:id="@+id/workTypeLabel"
@@ -88,305 +88,311 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/iconLayout1"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/summaryIconRecView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:layout_marginTop="@dimen/_3sdp"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/iconLayout1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_marginTop="@dimen/_5sdp">-->
 
-                <ImageView
-                    android:id="@+id/location_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_cluster_location_ic"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/clusterCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus7sdp"
-                    app:layout_constraintBottom_toTopOf="@id/location_image"
-                    app:layout_constraintStart_toEndOf="@id/location_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/location_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_cluster_location_ic"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/clusterCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus7sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/location_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/location_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ImageView
-                    android:id="@+id/jw_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_joint_work_ic"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/jwCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus7sdp"
-                    app:layout_constraintBottom_toTopOf="@id/jw_image"
-                    app:layout_constraintStart_toEndOf="@id/jw_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/jw_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_joint_work_ic"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/jwCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus7sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/jw_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/jw_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ImageView
-                    android:id="@+id/dr_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_dr_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/listedDrCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus7sdp"
-                    app:layout_constraintBottom_toTopOf="@id/dr_image"
-                    app:layout_constraintStart_toEndOf="@id/dr_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/dr_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_dr_icon"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/listedDrCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus7sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/dr_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/dr_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ImageView
-                    android:id="@+id/chemist_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_chemist_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/chemistCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus7sdp"
-                    app:layout_constraintBottom_toTopOf="@id/chemist_image"
-                    app:layout_constraintStart_toEndOf="@id/chemist_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/chemist_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_chemist_icon"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/chemistCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus7sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/chemist_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/chemist_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ImageView
-                    android:id="@+id/stockiest_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_stockiest_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/stockiestCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus6sdp"
-                    app:layout_constraintBottom_toTopOf="@id/stockiest_image"
-                    app:layout_constraintStart_toEndOf="@id/stockiest_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/stockiest_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_stockiest_icon"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/stockiestCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus6sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/stockiest_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/stockiest_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-        </LinearLayout>
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-        <LinearLayout
-            android:id="@+id/iconLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_5sdp">
+<!--        </LinearLayout>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/iconLayout2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_marginTop="@dimen/_5sdp">-->
 
-                <ImageView
-                    android:id="@+id/un_dr_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_unlist_dr_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/unListedDrCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus7sdp"
-                    app:layout_constraintBottom_toTopOf="@id/un_dr_image"
-                    app:layout_constraintStart_toEndOf="@id/un_dr_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/un_dr_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_unlist_dr_icon"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/unListedDrCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus7sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/un_dr_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/un_dr_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ImageView
-                    android:id="@+id/cip_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_cip_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/cipCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus7sdp"
-                    app:layout_constraintBottom_toTopOf="@id/cip_image"
-                    app:layout_constraintStart_toEndOf="@id/cip_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/cip_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_cip_icon"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/cipCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus7sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/cip_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/cip_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <ImageView
-                    android:id="@+id/hospital_image"
-                    android:layout_width="@dimen/_14sdp"
-                    android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_hospital_icon"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content">-->
 
-                <TextView
-                    android:id="@+id/hospCount"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:background="@drawable/tp_badge_circle"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_5sdp"
-                    android:gravity="center"
-                    android:layout_marginBottom="@dimen/_minus4sdp"
-                    android:layout_marginStart="@dimen/_minus7sdp"
-                    app:layout_constraintBottom_toTopOf="@id/hospital_image"
-                    app:layout_constraintStart_toEndOf="@id/hospital_image"
-                    tools:ignore="SpUsage"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/hospital_image"-->
+<!--                    android:layout_width="@dimen/_14sdp"-->
+<!--                    android:layout_height="@dimen/_14sdp"-->
+<!--                    android:src="@drawable/tp_hospital_icon"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/hospCount"-->
+<!--                    android:layout_width="@dimen/_10sdp"-->
+<!--                    android:layout_height="@dimen/_10sdp"-->
+<!--                    android:background="@drawable/tp_badge_circle"-->
+<!--                    android:text="0"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="@dimen/_5sdp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_marginBottom="@dimen/_minus4sdp"-->
+<!--                    android:layout_marginStart="@dimen/_minus7sdp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/hospital_image"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/hospital_image"-->
+<!--                    tools:ignore="SpUsage"/>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content" />-->
 
-        </LinearLayout>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content" />-->
+
+<!--        </LinearLayout>-->
 
     </LinearLayout>
 

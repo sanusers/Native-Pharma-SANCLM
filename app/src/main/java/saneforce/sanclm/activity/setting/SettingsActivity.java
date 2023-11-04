@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 
@@ -35,12 +34,9 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
-import saneforce.sanclm.response.LoginResponse;
-import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
 import saneforce.sanclm.R;
@@ -70,17 +66,57 @@ public class SettingsActivity extends AppCompatActivity {
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
 
-        SQLite sqLite = new SQLite(this);
-        LoginResponse loginResponse = sqLite.getLoginData(true);
-        Log.e("test","res : " + new Gson().toJson(loginResponse));
+        String[] languages = {"BURMESE","ENGLISH", "FRENCH","MANDARIN", "PORTUGUESE", "SPANISH", "VIETNAMESE" };
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drop_down_spinner_layout, languages);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerLanguage.setAdapter(adapter);
+        binding.spinnerLanguage.setSelection(1);
 
-        binding.tvLanguage.setOnClickListener(new View.OnClickListener() {
+        binding.spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick (View view) {
-                selectLanguage();
+            public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l) {
+                TextView textView = (TextView) view;
+                Log.e("test",textView.getText().toString());
+                String selectedLanguage = "";
+                switch (textView.getText().toString().toUpperCase()) {
+                    case "ENGLISH" : {
+                        selectedLanguage = "en";
+                        break;
+                    }
+                    case "BURMESE" : {
+                        selectedLanguage = "my";
+                        break;
+                    }
+                    case "FRENCH" : {
+                        selectedLanguage = "fr";
+                        break;
+                    }
+                    case "MANDARIN" : {
+                        selectedLanguage = "zh";
+                        break;
+                    }
+                    case "PORTUGUESE" : {
+                        selectedLanguage = "pt";
+                        break;
+                    }
+                    case "SPANISH" : {
+                        selectedLanguage = "es";
+                        break;
+                    }
+                    case "VIETNAMESE" : {
+                        selectedLanguage = "vi";
+                        break;
+                    }
+
+                }
+                SharedPref.saveSelectedLanguage(SettingsActivity.this,selectedLanguage);
+            }
+
+            @Override
+            public void onNothingSelected (AdapterView<?> adapterView) {
+
             }
         });
-
         binding.btnSaveSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -144,7 +180,6 @@ public class SettingsActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
         dialog.show();
 
     }
@@ -157,7 +192,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void configuration(String enteredUrl){
-        binding.pbConfigurationProgress.setVisibility(View.VISIBLE);
+        binding.configurationPB.setVisibility(View.VISIBLE);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
 
         try {
@@ -165,10 +200,9 @@ public class SettingsActivity extends AppCompatActivity {
             call.enqueue(new Callback<JsonArray>() {
                 @Override
                 public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                    binding.pbConfigurationProgress.setVisibility(View.GONE);
+                    binding.configurationPB.setVisibility(View.GONE);
                     if (response.isSuccessful()){
                         Log.e("test","success : "+ response.body().toString());
-                        SharedPref.saveBaseUrl(getApplicationContext(), "https://"+url+"/apps/");
                         JSONArray jsonArray = null;
                         try {
                             jsonArray = new JSONArray(response.body().toString());
@@ -185,6 +219,8 @@ public class SettingsActivity extends AppCompatActivity {
                                     logoUrl = config.getString("logoimg");
                                     SharedPref.setTagImageUrl(getApplicationContext(), "http://" + binding.etWebUrl.getText().toString().trim() + "/");
                                     String[] splitUrl = logoUrl.split("/");
+                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
+                                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
                                     downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length -1], enteredUrl);
                                     licenseKeyValid = true;
                                     break;
@@ -209,7 +245,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (hitCount < 2){
                         configuration("http://" + url + "/apps/");
                     }else{
-                        binding.pbConfigurationProgress.setVisibility(View.GONE);
+                        binding.configurationPB.setVisibility(View.GONE);
                         Toast.makeText(SettingsActivity.this, "Try again later", Toast.LENGTH_SHORT).show();
                         Log.e("test","hit count is : " + hitCount);
                         hitCount =0;
@@ -238,14 +274,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void taskCompleted (boolean status) {
                 downloaderClass.cancel(true);
-                SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run () {
                         Toast.makeText(getApplicationContext(), "Configured Successfully", Toast.LENGTH_SHORT).show();
                     }
                 });
-                SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
                 startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
             }
         };
@@ -255,13 +289,12 @@ public class SettingsActivity extends AppCompatActivity {
             downloaderClass = (DownloaderClass) new DownloaderClass(url, fileDirectory, imageName, asyncInterface).execute();
         }else{
             Log.e("test","image exists");
-            SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
             Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
-            SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
             startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
         }
 
 
     }
+
 
 }

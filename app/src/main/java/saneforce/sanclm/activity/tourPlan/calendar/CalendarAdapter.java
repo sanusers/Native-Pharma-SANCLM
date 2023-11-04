@@ -4,10 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -17,15 +17,15 @@ import saneforce.sanclm.activity.tourPlan.ModelClass;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
-    ArrayList<ModelClass> daysOfMonth= new ArrayList<>();
+    ArrayList<ModelClass> inputData = new ArrayList<>();
     OnDayClickInterface onDayClickInterface;
     Context context;
 
     public CalendarAdapter () {
     }
 
-    public CalendarAdapter (ArrayList<ModelClass> daysOfMonth, Context context, OnDayClickInterface onDayClickInterface) {
-        this.daysOfMonth = daysOfMonth;
+    public CalendarAdapter (ArrayList<ModelClass> inputData, Context context, OnDayClickInterface onDayClickInterface) {
+        this.inputData = inputData;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
     }
@@ -41,31 +41,35 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
 
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
-        String date = daysOfMonth.get(holder.getAdapterPosition()).getDayNo();
+        ModelClass modelClass = inputData.get(holder.getAbsoluteAdapterPosition());
+        String date = modelClass.getDayNo();
         holder.dateNo.setText(date);
+
+        if (!date.isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty())
+            holder.cornerImage.setVisibility(View.VISIBLE);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-//                holder.parentLayout.setBackgroundColor(context.getResources().getColor(R.color.green_2));
-                onDayClickInterface.onDayClicked(holder.getAdapterPosition(),date,daysOfMonth.get(holder.getAbsoluteAdapterPosition()));
+                onDayClickInterface.onDayClicked(holder.getAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition()));
             }
         });
     }
 
     @Override
     public int getItemCount () {
-        return daysOfMonth.size();
+        return inputData.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView dateNo;
-        ConstraintLayout parentLayout;
+        ImageView cornerImage;
+
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             dateNo = itemView.findViewById(R.id.dateNo);
-            parentLayout = itemView.findViewById(R.id.parentLayout);
+            cornerImage = itemView.findViewById(R.id.cornerImage);
         }
     }
 }

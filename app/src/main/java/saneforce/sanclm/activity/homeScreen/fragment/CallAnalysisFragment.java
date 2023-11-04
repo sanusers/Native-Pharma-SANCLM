@@ -157,7 +157,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int getwidhtlayout = rl_relative_layout.getMeasuredWidth();
                 int getlayoutlayout = rl_relative_layout.getMeasuredHeight();
 
-
                 int width = (getwidhtlayout / 3 - 8);
                 LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, (int) (getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp)));
                 param.setMargins(0, 5, 10, 0);

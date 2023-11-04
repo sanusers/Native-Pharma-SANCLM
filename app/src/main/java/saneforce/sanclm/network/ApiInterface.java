@@ -58,6 +58,10 @@ public interface ApiInterface {
     Call<JsonElement> getDCRMaster(@Field("data") String postObj);
 
     @FormUrlEncoded
+    @POST("?axn=get/misseddcr")
+    Call<JsonElement> getMissedDCRMaster(@Field("data") String postObj);
+
+    @FormUrlEncoded
     @POST("?axn=table/slides")
     Call<JsonElement> getSlideMaster(@Field("data") String postObj);
 
@@ -67,7 +71,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")
-    Call<JsonArray> getAdditionalMaster(@Field("data") String postObj);
+    Call<JsonElement> getAdditionalMaster(@Field("data") String postObj);
 
     @Multipart
     @POST("?axn=save/image")

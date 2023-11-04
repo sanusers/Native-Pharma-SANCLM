@@ -95,9 +95,10 @@
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_40sdp"
-                        android:src="@drawable/original"
+
                         android:layout_gravity="center"
                         android:background="@color/white" />
+<!--                    android:src="@drawable/original"-->
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -177,7 +178,7 @@
                         android:id="@+id/loginBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Login"
+                        android:text="@string/search"
                         android:textSize="@dimen/_7sdp"
                         android:textColor="@color/white"
                         android:textAllCaps="false"

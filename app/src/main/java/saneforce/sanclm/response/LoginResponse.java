@@ -181,7 +181,7 @@ public class LoginResponse implements Serializable {
 
   private String multi_cluster = "";
 
-  private String Cluster_Cap = "";
+  private String cluster_cap = "";
 
   private String Secondary_order_caption = "";
 
@@ -1229,12 +1229,12 @@ public class LoginResponse implements Serializable {
     this.multi_cluster = multi_cluster;
   }
 
-  public String getCluster_Cap() {
-    return this.Cluster_Cap;
+  public String getCluster_cap () {
+    return this.cluster_cap;
   }
 
-  public void setCluster_Cap(String Cluster_Cap) {
-    this.Cluster_Cap = Cluster_Cap;
+  public void setCluster_cap (String Cluster_Cap) {
+    this.cluster_cap = Cluster_Cap;
   }
 
   public String getSecondary_order_caption() {

@@ -18,19 +18,14 @@ public class CustomMarkerView extends MarkerView {
     private TextView Total_Call_count,Avg_calls;
     private ImageView imageView;
     private RelativeLayout layout ;
-
     SQLite sqLite;
     String cus,firstDateStr,fifteenthDateStr,enddate,firstDatepastmonth,fifteenthDatepastmonth,enddatepastmonth,firstDatecurrent,fifteenthDatecurrent,enddatecurrent,linekey;
     Context context;
 
 
-
-
     public CustomMarkerView(Context context, int layoutResource ,String custype,String firstDateStr, String fifteenthDateStr, String enddate,
                             String firstDatepastmonth, String fifteenthDatepastmonth, String enddatepastmonth,
                             String firstDatecurrent, String fifteenthDatecurrent, String enddatecurrent ,String linekey) {
-
-
 
         super(context, layoutResource);
         this.firstDateStr = firstDateStr;
@@ -80,7 +75,8 @@ public class CustomMarkerView extends MarkerView {
                 getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, enddatecurrent);
 
             }
-        } else if (linekey.equalsIgnoreCase("2")) {
+        }
+        else if (linekey.equalsIgnoreCase("2")) {
 
             if (highlight.getX() == 1.0) {
 
@@ -100,7 +96,8 @@ public class CustomMarkerView extends MarkerView {
 
             }
 
-        } else {
+        }
+        else {
 
             if (highlight.getX() == 1.0) {
                 getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, fifteenthDatecurrent);

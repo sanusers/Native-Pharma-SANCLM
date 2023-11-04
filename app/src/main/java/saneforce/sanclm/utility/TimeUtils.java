@@ -34,7 +34,7 @@ public class TimeUtils {
     public static final String FORMAT_19 = "dd MMM yyyy";
     public static final String FORMAT_20 = "E MMM dd HH:mm:ss z yyyy";
     public static final String FORMAT_21 = "yyyy-M-d";
-    public static final String FORMAT_22 = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+    public static final String FORMAT_22 = "yyyy-MM-dd HH:mm:ss.SSSS";
     public static final String FORMAT_23 = "MMMMM yyyy";
     public static final String FORMAT_24 = "yyyy-MM";
 
@@ -62,14 +62,6 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return Objects.requireNonNull(date).getTime();
-    }
-
-    public static String GetCurrentDateTime(String format) {
-        long timestampMilliseconds = System.currentTimeMillis();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
-        String Str_Date = simpleDateFormat.format(new Date(timestampMilliseconds));
-        Log.d(TAG, "GetCurrentDateTime: => " + Str_Date);
-        return Str_Date;
     }
 
     public static String GetNextDateTime() {

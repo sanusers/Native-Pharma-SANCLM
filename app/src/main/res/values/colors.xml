@@ -19,7 +19,8 @@
     <color name="background">#EEEEEE</color>
     <color name="text_dark_25">#40282A3C</color>
     <color name="text_dark_10">#12FD0B0B</color>
-
+    <color name="mildRed">#D8807D</color>
+    <color name="btn_disable_gray">#59282A3C</color>
 
 
     <color name="dark_purple">#282A3C</color>
@@ -74,6 +75,5 @@
     <color name="Trendy_Pink_45">#72526f</color>
     <color name="gray_45">#8c8c94</color>
 
-    2a293b
 
 </resources>
