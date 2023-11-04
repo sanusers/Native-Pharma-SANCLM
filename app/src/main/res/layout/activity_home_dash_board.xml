@@ -69,7 +69,6 @@
 
                 <ImageView
                     android:id="@+id/img_account"
-
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

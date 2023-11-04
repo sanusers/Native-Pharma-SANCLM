@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.homeScreen.call.fragments;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -121,7 +122,7 @@ public class JointworkSelectionSide extends Fragment {
     public void SetupAdapter() {
         JwList.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK);
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));

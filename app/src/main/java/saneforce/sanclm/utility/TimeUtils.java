@@ -64,6 +64,14 @@ public class TimeUtils {
         return Objects.requireNonNull(date).getTime();
     }
 
+    public static String GetCurrentDateTime(String format) {
+        long timestampMilliseconds = System.currentTimeMillis();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
+        String Str_Date = simpleDateFormat.format(new Date(timestampMilliseconds));
+        Log.d(TAG, "GetCurrentDateTime: => " + Str_Date);
+        return Str_Date;
+    }
+
     public static String GetNextDateTime() {
         Calendar c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_MONTH) + 1;

@@ -17,11 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
@@ -32,7 +30,6 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
     Context context;
     ArrayList<CallCommonCheckedList> checked_arrayList;
     SaveInputCallAdapter saveInputCallAdapter;
-    CommonSharedPreference mCommonSharedPreference;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
 
@@ -53,14 +50,13 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data_inp, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data, parent, false);
         return new ViewHolder(view);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        mCommonSharedPreference = new CommonSharedPreference(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(checked_arrayList.get(position).getName());
         holder.checkBox.setChecked(checked_arrayList.get(position).isCheckedItem());
@@ -91,9 +87,8 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
                         holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
                     }
                     isCheckedInp = false;
-                    // mCommonSharedPreference.setValueToPreference("checked_input", false);
                     checked_arrayList.get(position).setCheckedItem(true);
-                    saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), "", "20"));
+                    saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), "", checked_arrayList.get(position).getStock_balance(), checked_arrayList.get(position).getStock_balance()));
                     AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
                 } else {
                     holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
@@ -102,8 +97,6 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
                     }
                     isCheckedInp = true;
                     UnSelectedInpCode = checked_arrayList.get(position).getCode();
-                    // mCommonSharedPreference.setValueToPreference("checked_input", true);
-                    // mCommonSharedPreference.setValueToPreference("unselect_data_inp", checked_arrayList.get(position).getName());
                     checked_arrayList.get(position).setCheckedItem(false);
                     AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
                     saveInputCallAdapter.notifyDataSetChanged();

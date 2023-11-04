@@ -96,41 +96,27 @@ public class ProductFragment extends Fragment {
     }
 
     private void HiddenVisibleFunction() {
+        productsBinding.tagSamples.setText(DCRCallActivity.CapSamQty);
+        productsBinding.tagRxQty.setText(DCRCallActivity.CapRxqty);
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
+                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
                     productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                }
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
                     productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                }
                 break;
             case "2":
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0")) {
-                    productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                }
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
-                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                }
-                break;
             case "3":
-                productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
-                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                }
-                break;
             case "4":
-                productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
+                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+                    productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
                     productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                }
                 break;
             default:
                 productsBinding.tagSamples.setVisibility(View.GONE);
-                productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-
+                productsBinding.tagRxQty.setVisibility(View.GONE);
         }
-
     }
 
     private void AddProductList() {
@@ -151,8 +137,27 @@ public class ProductFragment extends Fragment {
 
     private void filter(String text) {
         ArrayList<CallCommonCheckedList> filterdNames = new ArrayList<>();
+
+      /*  if (text.toLowerCase().equalsIgnoreCase("SL")) {
+            if (s.getCategory().equalsIgnoreCase("Sale")) {
+                sale = s.getCategory();
+            }*/
         for (CallCommonCheckedList s : callCommonCheckedListArrayList) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
+            String Category = "";
+
+            if (s.getCategory().equalsIgnoreCase("Sale")) {
+                Category = "SL";
+            }
+
+            if (s.getCategory().equalsIgnoreCase("Sample")) {
+                Category = "SM";
+            }
+
+            if (s.getCategory().equalsIgnoreCase("Sale/Sample")) {
+                Category = "SL/SM";
+            }
+
+            if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || Category.toLowerCase().contains(text.toLowerCase())) {
                 filterdNames.add(s);
             }
         }

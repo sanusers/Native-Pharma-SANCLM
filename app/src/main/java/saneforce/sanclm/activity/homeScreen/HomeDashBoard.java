@@ -2,12 +2,16 @@ package saneforce.sanclm.activity.homeScreen;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
 import android.util.Log;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
@@ -36,9 +40,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.RelativeLayout;
 import android.view.Window;
 import android.view.WindowManager;
@@ -75,9 +85,12 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.Locale;
 
+import org.json.JSONObject;
+
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.changepassword.Change_passwordActivity;
+import saneforce.sanclm.activity.forms.Forms_activity;
 import saneforce.sanclm.activity.forms.Forms_activity;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
@@ -100,6 +113,7 @@ import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
+import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
@@ -115,6 +129,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ImageView imageView;
     private DrawerLayout drawerLayout;
     TabLayout tabLayout;
+    GPSTrack gpsTrack;
     ViewpagetAdapter viewpagetAdapter;
     NavigationView navigationView;
     LinearLayout pre_layout, slide_layout, report_layout, anlas_layout;
@@ -460,6 +475,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         int id = item.getItemId();
 
+       /* if (id == R.id.nav_refresh) {
+            double laty = gpsTrack.getLatitude();
+            double lngy = gpsTrack.getLongitude();
+            CommonUtilsMethods.gettingAddress(HomeDashBoard.this, Double.parseDouble(String.valueOf(laty)), Double.parseDouble(String.valueOf(lngy)), true);
+            return true;
+        }*/
+
         if (id == R.id.nav_leave_appln) {
             startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
             return true;
@@ -511,6 +533,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         return true;
     }
+
     private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText, boolean isTabTitleInvisible) {
         TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
         if (tab != null) {

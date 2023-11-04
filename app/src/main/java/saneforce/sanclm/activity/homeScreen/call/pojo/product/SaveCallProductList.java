@@ -2,7 +2,8 @@ package saneforce.sanclm.activity.homeScreen.call.pojo.product;
 
 public class SaveCallProductList {
     String name;
-    String stock;
+    String balance_sam_stk;
+    String sam_stk;
     String code;
     boolean isCliked;
     String category;
@@ -12,6 +13,19 @@ public class SaveCallProductList {
     String rcpa_qty;
     String promoted;
 
+    public SaveCallProductList(String name, String code, String category,String balance_sam_stk, String sam_stk, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
+        this.name = name;
+        this.code = code;
+        this.category = category;
+        this.balance_sam_stk = balance_sam_stk;
+        this.sam_stk = sam_stk;
+        this.sample_qty = sample_qty;
+        this.rx_qty = rx_qty;
+        this.rcpa_qty = rcpa_qty;
+        this.promoted = promoted;
+        this.isCliked = isCliked;
+    }
+
     public String getPromoted() {
         return promoted;
     }
@@ -20,16 +34,14 @@ public class SaveCallProductList {
         this.promoted = promoted;
     }
 
-    public SaveCallProductList(String name, String code, String stock, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
-        this.name = name;
-        this.code = code;
-        this.stock = stock;
-        this.sample_qty = sample_qty;
-        this.rx_qty = rx_qty;
-        this.rcpa_qty = rcpa_qty;
-        this.promoted = promoted;
-        this.isCliked = isCliked;
+    public String getSam_stk() {
+        return sam_stk;
     }
+
+    public void setSam_stk(String sam_stk) {
+        this.sam_stk = sam_stk;
+    }
+
 
     public String getCode() {
         return code;
@@ -47,12 +59,12 @@ public class SaveCallProductList {
         this.name = name;
     }
 
-    public String getStock() {
-        return stock;
+    public String getBalance_sam_stk() {
+        return balance_sam_stk;
     }
 
-    public void setStock(String stock) {
-        this.stock = stock;
+    public void setBalance_sam_stk(String balance_sam_stk) {
+        this.balance_sam_stk = balance_sam_stk;
     }
 
     public boolean isCliked() {

@@ -7,6 +7,16 @@ public class SaveCallInputList {
     String inp_qty;
 
     String inp_code;
+    String balance_inp_stk;
+    String inp_stk;
+
+    public SaveCallInputList(String input_name, String inp_code, String inp_qty, String balance_inp_stk, String inp_stk) {
+        this.input_name = input_name;
+        this.inp_code = inp_code;
+        this.inp_qty = inp_qty;
+        this.balance_inp_stk = balance_inp_stk;
+        this.inp_stk = inp_stk;
+    }
 
     public String getInp_code() {
         return inp_code;
@@ -32,20 +42,20 @@ public class SaveCallInputList {
         this.inp_qty = inp_qty;
     }
 
-    public String getInput_stk() {
-        return input_stk;
+    public String getBalance_inp_stk() {
+        return balance_inp_stk;
     }
 
-    public void setInput_stk(String input_stk) {
-        this.input_stk = input_stk;
+    public void setBalance_inp_stk(String balance_inp_stk) {
+        this.balance_inp_stk = balance_inp_stk;
     }
 
-    public SaveCallInputList(String input_name,String inp_code, String inp_qty, String input_stk) {
-        this.input_name = input_name;
-        this.inp_code = inp_code;
-        this.inp_qty = inp_qty;
-        this.input_stk = input_stk;
+    public String getInp_stk() {
+        return inp_stk;
     }
 
-    String input_stk;
+    public void setInp_stk(String inp_stk) {
+        this.inp_stk = inp_stk;
+    }
+
 }

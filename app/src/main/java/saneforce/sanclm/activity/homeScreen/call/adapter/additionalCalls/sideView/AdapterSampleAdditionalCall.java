@@ -17,13 +17,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSampleAdditionalCall.ViewHolder> {
     Context context;
@@ -62,8 +60,8 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         holder.spin_sample.setAdapter(dataAdapter);
 
         //  Log.v("yyy", addInputAdditionalCallArrayList.get(position).getInput_name() + "---" + addInputAdditionalCallArrayList.get(position).getStock() + "---" + addInputAdditionalCallArrayList.get(position).getInp_qty());
-      //  setSpinText(holder.spin_sample, addSampleAdditionalCallArrayList.get(position).getPrd_name());
-        commonUtilsMethods.setSpinText(holder.spin_sample,addSampleAdditionalCallArrayList.get(position).getPrd_name());
+        //  setSpinText(holder.spin_sample, addSampleAdditionalCallArrayList.get(position).getPrd_name());
+        commonUtilsMethods.setSpinText(holder.spin_sample, addSampleAdditionalCallArrayList.get(position).getPrd_name());
         holder.txt_sam_stock.setText(addSampleAdditionalCallArrayList.get(position).getPrd_stock());
         holder.edt_sam_qty.setText(addSampleAdditionalCallArrayList.get(position).getSample_qty());
 
@@ -71,7 +69,7 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
             @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                addSampleAdditionalCallArrayList.set(position, new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(position).getCust_name(),holder.spin_sample.getSelectedItem().toString(), holder.txt_sam_stock.getText().toString(), holder.edt_sam_qty.getText().toString()));
+                addSampleAdditionalCallArrayList.set(position, new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(position).getCust_name(), addSampleAdditionalCallArrayList.get(position).getCust_code(), holder.spin_sample.getSelectedItem().toString(), addSampleAdditionalCallArrayList.get(position).getPrd_stock(),addSampleAdditionalCallArrayList.get(position).getSample_qty()));
                 switch (holder.spin_sample.getSelectedItem().toString()) {
                     case "Select":
                         holder.txt_sam_stock.setText("");
@@ -112,7 +110,7 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
 
             @Override
             public void afterTextChanged(Editable editable) {
-                addSampleAdditionalCallArrayList.set(position, new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(position).getCust_name(),addSampleAdditionalCallArrayList.get(position).getPrd_name(), addSampleAdditionalCallArrayList.get(position).getSample_qty(), holder.edt_sam_qty.getText().toString()));
+                addSampleAdditionalCallArrayList.set(position, new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(position).getCust_name(), addSampleAdditionalCallArrayList.get(position).getCust_code(), addSampleAdditionalCallArrayList.get(position).getPrd_name(), addSampleAdditionalCallArrayList.get(position).getPrd_stock(), editable.toString()));
             }
         });
 
@@ -132,7 +130,6 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, addSampleAdditionalCallArrayList.size());
     }
-
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

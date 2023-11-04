@@ -5,30 +5,22 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.nio.DoubleBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
-import saneforce.sanclm.activity.tourPlan.ModelClass;
-import saneforce.sanclm.activity.tourPlan.ObjectModelClass;
-import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.response.LoginResponse;
+
 
 public class SQLite extends SQLiteOpenHelper {
 
@@ -66,12 +58,12 @@ public class SQLite extends SQLiteOpenHelper {
     private static final String LINECHAR_AMSLNO = "LINECHAR_AMSLNO";
     private static final String LINECHAR_FM_INDICATOR = "LINECHAR_FM_INDICATOR";
 
-    public SQLite (@Nullable Context context) {
+    public SQLite(@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);
     }
 
     @Override
-    public void onCreate (SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LOGIN_TABLE + "(" + LOGIN_DATA + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text," + SYNC_STATUS + " INTEGER" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text" + ")");
@@ -82,7 +74,7 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade (SQLiteDatabase db, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + TOUR_PLAN_TABLE);
@@ -103,7 +95,7 @@ public class SQLite extends SQLiteOpenHelper {
 
 
     //------------------------ Login ------------------------------------
-    public void saveLoginData(String data){
+    public void saveLoginData(String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(LOGIN_DATA,data);
@@ -114,7 +106,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Cursor getLoginData(){
+    public Cursor getLoginData() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + LOGIN_TABLE, null);
     }

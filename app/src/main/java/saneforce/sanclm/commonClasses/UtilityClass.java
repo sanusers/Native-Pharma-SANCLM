@@ -11,12 +11,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.bumptech.glide.load.engine.Resource;
-
-import java.net.InetAddress;
 import java.util.Locale;
 
 import saneforce.sanclm.storage.SharedPref;
+
 
 public class UtilityClass {
 

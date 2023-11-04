@@ -1,11 +1,13 @@
 package saneforce.sanclm.activity.profile;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -16,12 +18,14 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.UtilityClass;
 
 
 public class CustomerProfile extends AppCompatActivity {
     public static String tv_custName = "", tv_cust_area, tv_custCode = "";
     public static boolean isDetailingRequired;
     public static boolean isPreAnalysisCalled = false;
+    public static ProgressDialog progressDialog = null;
     TabLayout tabLayout;
     ViewPager viewPager;
     Button btn_skip, btn_start;
@@ -46,7 +50,9 @@ public class CustomerProfile extends AppCompatActivity {
         img_back = findViewById(R.id.iv_back);
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreencall();
+        // commonUtilsMethods.FullScreencall();
+        progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
+        //  progressDialog.dismiss();
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
         viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
@@ -60,8 +66,18 @@ public class CustomerProfile extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.v("sa", String.valueOf(tab.getPosition()));
-                if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
-                    PreCallAnalysisFragment.CallPreCallAPI();
+                if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
+                    if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
+                        if (progressDialog == null) {
+                            progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
+                            progressDialog.show();
+                        } else {
+                            progressDialog.show();
+                        }
+                        PreCallAnalysisFragment.CallPreCallAPI();
+                    }
+                } else {
+                    Toast.makeText(CustomerProfile.this, "No internet connectivity", Toast.LENGTH_SHORT).show();
                 }
             }
 

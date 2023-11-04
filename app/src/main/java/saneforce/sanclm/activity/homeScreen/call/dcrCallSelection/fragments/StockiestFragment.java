@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.GeoTagApproval;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.StokistGeoTag;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfName;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TpBasedDcr;
@@ -116,27 +117,27 @@ public class StockiestFragment extends Fragment {
         try {
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + DcrCallTabLayoutActivity.TodayPlanSfCode);
 
-            Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
-            if (jsonArray.length() == 0) {
+            Log.v("call", "-stk_full_length-" + jsonArray.length());
+           /* if (jsonArray.length() == 0) {
                 if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                     // Toast.makeText(getActivity(), "Kindly Select Again!", Toast.LENGTH_SHORT).show();
                     //  MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
                 } else {
                     Toast.makeText(getActivity(), Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                 }
-            }
+            }*/
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (StokistGeoTag.equalsIgnoreCase("1")) {
                     if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
-                        if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
+                        if (GeoTagApproval.equalsIgnoreCase("0")) {
                             Log.v("dfdfs", "--11-");
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);
                             if (distance[0] < limitKm * 1000.0) {
                                 if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
-                                    custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig")));
+                                    custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"),""));
                                 }
                             }
                         } else {
@@ -144,7 +145,7 @@ public class StockiestFragment extends Fragment {
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);
                             if (distance[0] < limitKm * 1000.0) {
-                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig")));
+                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"),""));
                             }
                         }
                     }
@@ -152,11 +153,11 @@ public class StockiestFragment extends Fragment {
                     if (TpBasedDcr.equalsIgnoreCase("0")) {
                         Log.v("dfdfs", "--33-");
                         if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
-                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig")));
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"),""));
                         }
                     } else {
                         Log.v("dfdfs", "--44-");
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig")));
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "3", "Category", "", "Specialty", jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), "", "", jsonObject.getString("Stockiest_Email"), jsonObject.getString("Stockiest_Mobile"), jsonObject.getString("Stockiest_Phone"), jsonObject.getString("Stockiest_Cont_Desig"),""));
                     }
                 }
             }
@@ -165,20 +166,20 @@ public class StockiestFragment extends Fragment {
             for (int i = 0; i < count; i++) {
                 for (int j = i + 1; j < count; j++) {
                     if (custListArrayList.get(i).getCode().equalsIgnoreCase(custListArrayList.get(j).getCode())) {
-                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification()));
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification(), custListArrayList.get(i).getPriorityPrdCode()));
                         custListArrayList.remove(j--);
                         count--;
                     } else {
-                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification()));
+                        custListArrayList.set(i, new CustList(custListArrayList.get(i).getName(), custListArrayList.get(i).getCode(), custListArrayList.get(i).getType(), custListArrayList.get(i).getCategory(), custListArrayList.get(i).getCategoryCode(), custListArrayList.get(i).getSpecialist(), custListArrayList.get(i).getTown_name(), custListArrayList.get(i).getTown_code(), custListArrayList.get(i).getTag(), custListArrayList.get(i).getMaxTag(), String.valueOf(i), custListArrayList.get(i).getLatitude(), custListArrayList.get(i).getLongitude(), custListArrayList.get(i).getAddress(), custListArrayList.get(i).getDob(), custListArrayList.get(i).getWedding_date(), custListArrayList.get(i).getEmail(), custListArrayList.get(i).getMobile(), custListArrayList.get(i).getPhone(), custListArrayList.get(i).getQualification(), custListArrayList.get(i).getPriorityPrdCode()));
                     }
                 }
             }
 
         } catch (Exception e) {
-            Log.v("dfdfs", "---" + e);
+            Log.v("call", "-stk--error--" + e);
         }
 
-        Log.v("dfdfs", "---" + custListArrayList.size());
+        Log.v("call", "-stk--size--" + custListArrayList.size());
         adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList);
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));

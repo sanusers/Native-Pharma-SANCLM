@@ -226,7 +226,7 @@ public class SetupResponse implements Serializable {
     @SerializedName("CIPPOBMd")
     private String CipPobMandatory;
     @SerializedName("TempNd")
-    private String DrRemarksNeed;
+    private String DrRemarksMan_Need;
     @SerializedName("Target_report_Nd")
     private String SalesTargetReportNeed;
     @SerializedName("vstnd")
@@ -1130,12 +1130,12 @@ public class SetupResponse implements Serializable {
         CipPobMandatory = cipPobMandatory;
     }
 
-    public String getDrRemarksNeed() {
-        return DrRemarksNeed;
+    public String getDrRemarksMan_Need() {
+        return DrRemarksMan_Need;
     }
 
-    public void setDrRemarksNeed(String drRemarksNeed) {
-        DrRemarksNeed = drRemarksNeed;
+    public void setDrRemarksMan_Need(String drRemarksMan_Need) {
+        DrRemarksMan_Need = drRemarksMan_Need;
     }
 
     public String getSalesTargetReportNeed() {

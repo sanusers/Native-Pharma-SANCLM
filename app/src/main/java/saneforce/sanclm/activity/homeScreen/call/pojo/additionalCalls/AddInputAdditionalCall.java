@@ -2,14 +2,29 @@ package saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls;
 
 public class AddInputAdditionalCall {
 
-    String cust_name;
+    String cust_name,cust_code;
     String input_name, stock, inp_qty;
 
+    public String getCust_code() {
+        return cust_code;
+    }
 
-    public AddInputAdditionalCall(String cust_name, String input_name, String stock, String input_qty) {
+    public void setCust_code(String cust_code) {
+        this.cust_code = cust_code;
+    }
+
+    public AddInputAdditionalCall(String cust_name, String cust_code, String input_name, String stock, String input_qty) {
         this.cust_name = cust_name;
+        this.cust_code = cust_code;
         this.input_name = input_name;
         this.stock = stock;
+        this.inp_qty = input_qty;
+    }
+
+    public AddInputAdditionalCall(String cust_name, String cust_code, String input_name, String input_qty) {
+        this.cust_name = cust_name;
+        this.cust_code = cust_code;
+        this.input_name = input_name;
         this.inp_qty = input_qty;
     }
 

@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import java.util.ArrayList;
-
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
@@ -28,7 +26,6 @@ import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 public class AdditionalCallFragment extends Fragment {
     public static RecyclerView rv_list_data, rv_add_call_list;
     public static ArrayList<CallCommonCheckedList> custListArrayList;
-
     CallAddCustListAdapter callAddCustListAdapter;
     EditText editTextSearch;
     SaveAdditionalCallAdapter saveAdditionalCallAdapter;

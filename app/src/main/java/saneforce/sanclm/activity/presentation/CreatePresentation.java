@@ -18,7 +18,7 @@ public class CreatePresentation extends AppCompatActivity {
         createPresentationBinding = ActivityCreatePresentationBinding.inflate(getLayoutInflater());
         setContentView(createPresentationBinding.getRoot());
         commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreencall();
+       // commonUtilsMethods.FullScreencall();
         createPresentationBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(CreatePresentation.this,Presentation.class)));
     }
 }

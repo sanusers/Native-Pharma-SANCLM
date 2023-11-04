@@ -78,7 +78,6 @@ dependencies {
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
     implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.11"
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11"
-    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11"
 
 
     //Firebase :-
@@ -117,7 +116,6 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.1'
 
     //imageview
-
     implementation 'com.squareup.picasso:picasso:2.71828'
 
 

@@ -1,9 +1,10 @@
 package saneforce.sanclm.activity.map.custSelection;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,25 +14,34 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.map.MapsActivity;
-import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
+import saneforce.sanclm.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.MapDcrSelectionBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -52,11 +62,14 @@ public class TagCustSelectionList extends AppCompatActivity {
     SQLite sqLite;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     ArrayList<CustList> custListArrayNew = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     SQLiteHandler sqLiteHandler;
     ApiInterface apiInterface;
     ArrayAdapter arrayAdapter;
     LoginResponse loginResponse;
     SetupResponse setUpResponse;
+    JSONArray jsonArray;
+    JSONObject jsonObject;
     String SelectedTab, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SelectedHqCode, SelectedHqName, DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption, TpBasedDcr;
 
 
@@ -106,12 +119,16 @@ public class TagCustSelectionList extends AppCompatActivity {
         sqLiteHandler = new SQLiteHandler(this);
         sqLiteHandler.open();
         sqLite = new SQLite(getApplicationContext());
-        commonUtilsMethods.FullScreencall();
+       // commonUtilsMethods.FullScreencall();
 
         getRequiredData();
 
+        Log.v("data", "--" + SfType + "--" + SfCode);
+
         if (SfType.equalsIgnoreCase("1")) {
             AddCustList(SfCode);
+            SelectedHqCode = SfCode;
+            SelectedHqName = SfName;
             binding.txtSelectedHq.setText(SfName);
             binding.txtSelectedHq.setEnabled(false);
         } else {
@@ -214,7 +231,6 @@ public class TagCustSelectionList extends AppCompatActivity {
             Designation = loginResponse.getDesig();
             StateCode = loginResponse.getState_Code();
 
-
             JSONArray jsonArray = new JSONArray();
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -283,17 +299,127 @@ public class TagCustSelectionList extends AppCompatActivity {
         imm.hideSoftInputFromWindow(binding.searchCust.getWindowToken(), 0);
     }
 
+    public void prepareMasterToSync(String hqCode) {
+        masterSyncArray.clear();
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
+        MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor", "gethospital", Constants.HOSPITAL + hqCode);
+        MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor", "getcip", Constants.CIP + hqCode);
+        //  MasterSyncItemModel cluster = new MasterSyncItemModel("Doctor", "getterritory", Constants.CLUSTER + hqCode);
+        //  MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Subordinate", "getjointwork", Constants.JOINT_WORK + hqCode);
+
+        masterSyncArray.add(doctorModel);
+        masterSyncArray.add(cheModel);
+        masterSyncArray.add(stockModel);
+        masterSyncArray.add(unListModel);
+        masterSyncArray.add(hospModel);
+        masterSyncArray.add(ciModel);
+        // masterSyncArray.add(cluster);
+        // masterSyncArray.add(jWorkModel);
+        for (int i = 0; i < masterSyncArray.size(); i++) {
+            sync(masterSyncArray.get(i), hqCode);
+        }
+    }
+
+    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
+
+        if (UtilityClass.isNetworkAvailable(context)) {
+            try {
+                apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
+                jsonObject.put("sfcode", SfCode);
+                jsonObject.put("division_code", DivCode);
+                jsonObject.put("Rsf", hqCode);
+                jsonObject.put("sf_type", SfType);
+                jsonObject.put("Designation", Designation);
+                jsonObject.put("state_code", StateCode);
+                jsonObject.put("subdivision_code", SubDivisionCode);
+
+// Log.e("test","master sync obj in TP : " + jsonObject);
+                Call<JsonElement> call = null;
+                if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Doctor")) {
+                    call = apiInterface.getDrMaster(jsonObject.toString());
+                } else if (masterSyncItemModel.getMasterFor().equalsIgnoreCase("Subordinate")) {
+                    call = apiInterface.getSubordinateMaster(jsonObject.toString());
+                }
+
+                if (call != null) {
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+
+                            boolean success = false;
+                            if (response.isSuccessful()) {
+// Log.e("test","response : " + masterSyncItemModel.getRemoteTableName() +" : " + response.body().toString());
+                                try {
+                                    JsonElement jsonElement = response.body();
+                                    JSONArray jsonArray = new JSONArray();
+                                    if (!jsonElement.isJsonNull()) {
+                                        if (jsonElement.isJsonArray()) {
+                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            success = true;
+                                        } else if (jsonElement.isJsonObject()) {
+                                            JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+                                            if (!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
+                                                jsonArray.put(jsonObject1);
+                                                success = true;
+                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
+                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                            }
+                                        }
+
+                                        if (success) {
+                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
+                                        }
+                                    } else {
+                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                    }
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            Log.e("test", "failed : " + t);
+                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private void AddCustList(String selectedHqCode) {
         custListArrayList.clear();
         Log.v("map_selected_tab", "---" + SelectedTab);
-        Log.v("selected_hq", "---" + SelectedHqCode);
+        Log.v("selected_hq", "---" + selectedHqCode);
 
         switch (SelectedTab) {
             case "D":
                 try {
                     binding.tagSelection.setText(DrCaption);
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR+ selectedHqCode);
+                    if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + selectedHqCode)) {
+                        prepareMasterToSync(selectedHqCode);
+                    } else {
+                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
+                    }
+                    if (jsonArray.length() == 0) {
+                        Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
+                    }
+                 /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
                     Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
@@ -302,9 +428,17 @@ public class TagCustSelectionList extends AppCompatActivity {
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }
-                    }
+                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        jsonObject = jsonArray.getJSONObject(i);
+
+                        if (jsonObject.has("cust_status")) {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        } else {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                        }
                       /*  if (jsonObject.getString("Code").equalsIgnoreCase("24482") && jsonObject.getString("uRwID").equalsIgnoreCase("2")) {
                             jsonObject.put("cust_status", "1");
                         }
@@ -324,8 +458,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         if (jsonObject.getString("Code").equalsIgnoreCase("24543")) {
                             jsonObject.put("cust_status", "1");
                         }*/
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
-                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+
                     }
                 } catch (Exception e) {
                     Log.v("dr_tag", "---error--" + e);
@@ -335,7 +468,15 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "C":
                 try {
                     binding.tagSelection.setText(ChemistCaption);
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
+                    if (!sqLite.getMasterSyncDataOfHQ(Constants.CHEMIST + selectedHqCode)) {
+                        prepareMasterToSync(selectedHqCode);
+                    } else {
+                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
+                    }
+                    if (jsonArray.length() == 0) {
+                        Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
+                    }
+                /*    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                             Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
@@ -343,11 +484,16 @@ public class TagCustSelectionList extends AppCompatActivity {
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }
-                    }
+                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
-                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        jsonObject = jsonArray.getJSONObject(i);
+                        if (jsonObject.has("cust_status")) {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        } else {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                        }
                     }
                 } catch (Exception e) {
 
@@ -356,7 +502,15 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "S":
                 try {
                     binding.tagSelection.setText(StockistCaption);
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
+                    if (!sqLite.getMasterSyncDataOfHQ(Constants.STOCKIEST + selectedHqCode)) {
+                        prepareMasterToSync(selectedHqCode);
+                    } else {
+                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
+                    }
+                    if (jsonArray.length() == 0) {
+                        Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
+                    }
+                /*    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                             Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
@@ -364,12 +518,16 @@ public class TagCustSelectionList extends AppCompatActivity {
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }
-                    }
+                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
-                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
-
+                        jsonObject = jsonArray.getJSONObject(i);
+                        if (jsonObject.has("cust_status")) {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        } else {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                        }
                     }
                 } catch (Exception e) {
 
@@ -378,7 +536,15 @@ public class TagCustSelectionList extends AppCompatActivity {
             case "U":
                 try {
                     binding.tagSelection.setText(UndrCaption);
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
+                    if (!sqLite.getMasterSyncDataOfHQ(Constants.UNLISTED_DOCTOR + selectedHqCode)) {
+                        prepareMasterToSync(selectedHqCode);
+                    } else {
+                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
+                    }
+                    if (jsonArray.length() == 0) {
+                        Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
+                    }
+                 /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
                     if (jsonArray.length() == 0) {
                         if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                             Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
@@ -386,11 +552,16 @@ public class TagCustSelectionList extends AppCompatActivity {
                         } else {
                             Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
                         }
-                    }
+                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
-                        custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        jsonObject = jsonArray.getJSONObject(i);
+                        if (jsonObject.has("cust_status")) {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        } else {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                        }
                     }
                 } catch (Exception e) {
 

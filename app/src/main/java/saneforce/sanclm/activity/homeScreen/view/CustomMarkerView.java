@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -38,14 +39,16 @@ public class CustomMarkerView extends MarkerView {
         this.fifteenthDatecurrent = fifteenthDatecurrent;
         this.enddatecurrent = enddatecurrent;
         this.linekey=linekey;
+        this.linekey = linekey;
 
-        this.context=context;
-        this.cus=custype;
-        imageView=findViewById(R.id.image_id);
+        this.context = context;
+        this.cus = custype;
+        imageView = findViewById(R.id.image_id);
         Total_Call_count = (TextView) findViewById(R.id.text_total_call_count);
         Avg_calls = (TextView) findViewById(R.id.text_call_count);
-        layout=findViewById(R.id.rl_popllayout);
-        sqLite=new SQLite(context);
+        layout = findViewById(R.id.rl_popllayout);
+        sqLite = new SQLite(context);
+
 
     }
 
@@ -53,7 +56,7 @@ public class CustomMarkerView extends MarkerView {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
 
-        int getfeildworkcount=0;
+        int getfeildworkcount = 0;
 
         if (linekey.equalsIgnoreCase("3")) {
 
@@ -96,16 +99,11 @@ public class CustomMarkerView extends MarkerView {
 
             }
 
-        }
-        else {
-
+        } else {
             if (highlight.getX() == 1.0) {
                 getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, fifteenthDatecurrent);
-
-
             } else if (highlight.getX() == 2.0) {
                 getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, enddatecurrent);
-
             }
         }
 
@@ -137,8 +135,8 @@ public class CustomMarkerView extends MarkerView {
             layout.setBackgroundResource(R.drawable.markview_backgrond_hospital);
         }
     }
-    public MPPointF getOffset() {
 
+    public MPPointF getOffset() {
         return new MPPointF(-(getWidth() / 2), -getHeight());
     }
 

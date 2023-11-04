@@ -1,7 +1,6 @@
 package saneforce.sanclm.activity.profile;
 
 import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,12 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +30,102 @@ import saneforce.sanclm.storage.SharedPref;
 
 
 public class PreCallAnalysisFragment extends Fragment {
-   @SuppressLint("StaticFieldLeak")
-   public static FragmentPrecallAnalysisBinding precallAnalysisBinding;
+    @SuppressLint("StaticFieldLeak")
+    public static FragmentPrecallAnalysisBinding precallAnalysisBinding;
     public static ApiInterface apiInterface;
+    public static String SfName, SfType, SfCode, RSFCode, DivCode, Designation, StateCode, SubDivisionCode, pdtDtls;
     LoginResponse loginResponse;
     SQLite sqLite;
-    public static String SfName, SfType, SfCode, RSFCode, DivCode, Designation, StateCode, SubDivisionCode, pdtDtls, giftDtls;
+
+    public static void CallPreCallAPI() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("tableName", "getcuslvst");
+            if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+                json.put("typ", "D");
+            } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
+                json.put("typ", "C");
+            } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+                json.put("typ", "S");
+            } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
+                json.put("typ", "U");
+            }
+            json.put("CusCode", DCRCallActivity.CallActivityCustDetails.get(0).getCode());
+            json.put("sfcode", SfCode);
+            json.put("division_code", DivCode);
+            json.put("Rsf", RSFCode);
+            json.put("sf_type", SfType);
+            json.put("Designation", Designation);
+            json.put("state_code", StateCode);
+            json.put("subdivision_code", SubDivisionCode);
+            Log.v("json_cus_l_visit", json.toString());
+        } catch (Exception e) {
+
+        }
+
+        ArrayList<String> prdNames = new ArrayList<>();
+        Call<List<DCRLastVisitDetails>> dcrlastcallDtls = apiInterface.LastVisitDetails(String.valueOf(json));
+        dcrlastcallDtls.enqueue(new Callback<List<DCRLastVisitDetails>>() {
+            @Override
+            public void onResponse(Call<List<DCRLastVisitDetails>> call, Response<List<DCRLastVisitDetails>> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        CustomerProfile.progressDialog.dismiss();
+                        CustomerProfile.isPreAnalysisCalled = true;
+                        List<DCRLastVisitDetails> dcrLastvstDtls = response.body();
+                        if (dcrLastvstDtls.get(0).getProdSamp().isEmpty()) {
+                            precallAnalysisBinding.tvPrdPromoted.setText("No Products Promoted");
+                        } else {
+                            pdtDtls = dcrLastvstDtls.get(0).getProdSamp().replace("#", " , ");
+                            pdtDtls = pdtDtls.replace("~", "-");
+                            pdtDtls = pdtDtls.replace("$", "-");
+                            pdtDtls = pdtDtls.replace("^", "-");
+                            precallAnalysisBinding.tvPrdPromoted.setText(pdtDtls);
+                         /*   pdtDtls = extractValues(dcrLastvstDtls.get(0).getProdSamp());
+                            String[] separated = pdtDtls.split(",");
+                            Collections.addAll(prdNames, separated);*/
+
+                           /* ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), R.layout.listview_items, prdNames);
+                            precallAnalysisBinding.lvTagPromotedPrd.setAdapter(adapter);*/
+                        }
+
+                        if (dcrLastvstDtls.get(0).getInputs().equalsIgnoreCase("( 0 ),")) {
+                            precallAnalysisBinding.tvInputs.setText("No Inputs");
+                        } else {
+                            precallAnalysisBinding.tvInputs.setText(dcrLastvstDtls.get(0).getInputs());
+                        }
+
+                        if (dcrLastvstDtls.get(0).getVstDate().getDate().isEmpty()) {
+                            precallAnalysisBinding.tvLastVisit.setText("No Visit Date");
+                        } else {
+                            precallAnalysisBinding.tvLastVisit.setText(dcrLastvstDtls.get(0).getVstDate().getDate());
+                        }
+
+                        if (dcrLastvstDtls.get(0).getFeedbk().isEmpty()) {
+                            precallAnalysisBinding.tvFeedback.setText("No Feedback");
+                        } else {
+                            precallAnalysisBinding.tvFeedback.setText(dcrLastvstDtls.get(0).getFeedbk());
+                        }
+
+                        if (dcrLastvstDtls.get(0).getRemks().isEmpty()) {
+                            precallAnalysisBinding.tvRemark.setText("No Remarks");
+                        } else {
+                            precallAnalysisBinding.tvRemark.setText(dcrLastvstDtls.get(0).getRemks());
+                        }
+
+
+                    } catch (Exception e) {
+                        CustomerProfile.progressDialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DCRLastVisitDetails>> call, Throwable t) {
+                CustomerProfile.progressDialog.dismiss();
+            }
+        });
+    }
 
     @Nullable
     @Override
@@ -50,7 +135,7 @@ public class PreCallAnalysisFragment extends Fragment {
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         sqLite = new SQLite(requireContext());
         getRequiredData();
-       // CallPreCallAPI();
+        // CallPreCallAPI();
         return v;
     }
 
@@ -88,104 +173,5 @@ public class PreCallAnalysisFragment extends Fragment {
         finalValue = ss1.substring(0, ss1.length() - 1);
         Log.v("DcrDetail_extract", "product_inputs_qty--333--" + finalValue);
         return finalValue;
-    }
-
-    public static void CallPreCallAPI() {
-        JSONObject json = new JSONObject();
-        try {
-            json.put("tableName", "getcuslvst");
-            if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
-                json.put("typ", "D");
-            } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
-                json.put("typ", "C");
-            } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-                json.put("typ", "S");
-            } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
-                json.put("typ", "U");
-            }
-            json.put("CusCode", DCRCallActivity.CallActivityCustDetails.get(0).getCode());
-            json.put("sfcode", SfCode);
-            json.put("division_code", DivCode);
-            json.put("Rsf", RSFCode);
-            json.put("sf_type", SfType);
-            json.put("Designation", Designation);
-            json.put("state_code", StateCode);
-            json.put("subdivision_code", SubDivisionCode);
-            Log.v("json_cus_l_visit", json.toString());
-        } catch (Exception e) {
-
-        }
-
-        ArrayList<String> prdNames = new ArrayList<>();
-        Call<List<DCRLastVisitDetails>> dcrlastcallDtls = apiInterface.LastVisitDetails(String.valueOf(json));
-        dcrlastcallDtls.enqueue(new Callback<List<DCRLastVisitDetails>>() {
-            @Override
-            public void onResponse(Call<List<DCRLastVisitDetails>> call, Response<List<DCRLastVisitDetails>> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        CustomerProfile.isPreAnalysisCalled = true;
-                        List<DCRLastVisitDetails> dcrLastvstDtls = response.body();
-                        if (dcrLastvstDtls.get(0).getProdSamp().isEmpty()) {
-                            precallAnalysisBinding.tvPrdPromoted.setText("No Products Promoted");
-                        } else {
-                         /*   pdtDtls = extractValues(dcrLastvstDtls.get(0).getProdSamp());
-                            String[] separated = pdtDtls.split(",");
-                            Collections.addAll(prdNames, separated);*/
-                            pdtDtls = dcrLastvstDtls.get(0).getProdSamp().replace("#", " , ");
-                            pdtDtls = pdtDtls.replace("~", "-");
-                            pdtDtls = pdtDtls.replace("$", "-");
-                            pdtDtls = pdtDtls.replace("^", "-");
-
-                          /*  pdtDtls = dcrLastvstDtls.get(0).getProdSamp();
-                            String[] clstarrrayqty = pdtDtls.split(",");
-                            StringBuilder ss1 = new StringBuilder();
-                            for (String value : clstarrrayqty) {
-                                ss1.append(value.substring(0, value.indexOf(".")));
-                            }
-
-                            String finalValue = "";
-                            finalValue = ss1.substring(0, ss1.length() - 1);*/
-                            precallAnalysisBinding.tvPrdPromoted.setText(pdtDtls);
-                           /* ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), R.layout.listview_items, prdNames);
-                            precallAnalysisBinding.lvTagPromotedPrd.setAdapter(adapter);*/
-                        }
-
-                        if (dcrLastvstDtls.get(0).getInputs().equalsIgnoreCase("( 0 ),")) {
-                            giftDtls = "No Inputs";
-                        } else {
-                            giftDtls = dcrLastvstDtls.get(0).getInputs();
-                        }
-                        precallAnalysisBinding.tvInputs.setText(giftDtls);
-
-                        if (dcrLastvstDtls.get(0).getVstDate().getDate().isEmpty()) {
-                            precallAnalysisBinding.tvLastVisit.setText("No Visit Date");
-                        } else {
-                            giftDtls = dcrLastvstDtls.get(0).getInputs();
-                        }
-
-                        if (dcrLastvstDtls.get(0).getFeedbk().isEmpty()) {
-                            precallAnalysisBinding.tvFeedback.setText("No Feedback");
-                        } else {
-                            precallAnalysisBinding.tvFeedback.setText(dcrLastvstDtls.get(0).getFeedbk());
-                        }
-
-                        if (dcrLastvstDtls.get(0).getRemks().isEmpty()) {
-                            precallAnalysisBinding.tvRemark.setText("No Remarks");
-                        } else {
-                            precallAnalysisBinding.tvRemark.setText(dcrLastvstDtls.get(0).getRemks());
-                        }
-
-
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<DCRLastVisitDetails>> call, Throwable t) {
-
-            }
-        });
     }
 }

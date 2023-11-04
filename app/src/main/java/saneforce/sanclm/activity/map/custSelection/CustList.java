@@ -23,6 +23,15 @@ public class CustList {
     String qualification;
     String dob;
     String phone;
+    String PriorityPrdCode;
+
+    public String getPriorityPrdCode() {
+        return PriorityPrdCode;
+    }
+
+    public void setPriorityPrdCode(String priorityPrdCode) {
+        PriorityPrdCode = priorityPrdCode;
+    }
 
     public CustList(String name, String code) {
         this.name = name;
@@ -73,6 +82,30 @@ public class CustList {
         this.mobile = mobile;
         this.phone = phone;
         this.qualification = qualification;
+    }
+
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification,String priorityPrdCode) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.categoryCode = categoryCode;
+        this.specialist = specialist;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.dob = dob;
+        this.wedding_date = wed_date;
+        this.email = email;
+        this.mobile = mobile;
+        this.phone = phone;
+        this.qualification = qualification;
+        this.PriorityPrdCode = priorityPrdCode;
     }
 
     public CustList(String name, String code, String type, String category, String specialist, String town_name, String towncode, String tag, String maxTag, String position, boolean isClusterAvailable) {

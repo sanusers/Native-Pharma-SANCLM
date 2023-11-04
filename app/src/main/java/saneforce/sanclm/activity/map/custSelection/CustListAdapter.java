@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.map.custSelection;
 
+import static saneforce.sanclm.activity.map.MapsActivity.GeoTagApprovalNeed;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -61,7 +63,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             }
         }
 
-        if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0") && custListArrayList.get(position).getGeoTagStatus().equalsIgnoreCase("1")) {
+        if (GeoTagApprovalNeed.equalsIgnoreCase("0") && custListArrayList.get(position).getGeoTagStatus().equalsIgnoreCase("1")) {
             holder.tv_verified.setVisibility(View.VISIBLE);
             holder.tv_verified.setText("Pending");
         } else {
