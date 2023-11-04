@@ -17,12 +17,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInputAdditionalCall.ViewHolder> {
     Context context;
@@ -73,7 +72,7 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
             @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                addInputAdditionalCallArrayList.set(position, new AddInputAdditionalCall(addInputAdditionalCallArrayList.get(position).getCust_name(), holder.spin_input.getSelectedItem().toString(), holder.txt_stock.getText().toString(), holder.edt_inp_qty.getText().toString()));
+                addInputAdditionalCallArrayList.set(position, new AddInputAdditionalCall(addInputAdditionalCallArrayList.get(position).getCust_name(), addInputAdditionalCallArrayList.get(position).getCust_code(), holder.spin_input.getSelectedItem().toString(), holder.txt_stock.getText().toString(), holder.edt_inp_qty.getText().toString()));
                 switch (holder.spin_input.getSelectedItem().toString()) {
                     case "Select":
                         holder.txt_stock.setText("");
@@ -114,7 +113,7 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
 
             @Override
             public void afterTextChanged(Editable editable) {
-                addInputAdditionalCallArrayList.set(position, new AddInputAdditionalCall(addInputAdditionalCallArrayList.get(position).getCust_name(), addInputAdditionalCallArrayList.get(position).getInput_name(), addInputAdditionalCallArrayList.get(position).getInp_qty(), holder.edt_inp_qty.getText().toString()));
+                addInputAdditionalCallArrayList.set(position, new AddInputAdditionalCall(addInputAdditionalCallArrayList.get(position).getCust_name(), addInputAdditionalCallArrayList.get(position).getCust_code(),addInputAdditionalCallArrayList.get(position).getInput_name(), addInputAdditionalCallArrayList.get(position).getInp_qty(), holder.edt_inp_qty.getText().toString()));
             }
         });
 

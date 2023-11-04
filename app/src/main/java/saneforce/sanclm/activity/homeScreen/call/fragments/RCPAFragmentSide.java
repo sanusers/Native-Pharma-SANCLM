@@ -39,7 +39,6 @@ import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayo
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddCompSideView;
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddedProdList;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.storage.SQLite;
 
@@ -58,7 +57,6 @@ public class RCPAFragmentSide extends Fragment {
     ConstraintLayout constraint_main;
     String PrdName = "", chem_names = "";
     RCPAChemistAdapter rcpaChemistAdapter;
-    CommonSharedPreference mCommonsharedPreference;
     ImageView img_close;
     ListView lv_chemist, lv_prd;
     TextView tv_sel_chem, tv_sel_prd;
@@ -93,7 +91,6 @@ public class RCPAFragmentSide extends Fragment {
         listProduct = v.findViewById(R.id.listCv_product);
         edSearch_product = v.findViewById(R.id.searchProduct);
         sqLite = new SQLite(getContext());
-        mCommonsharedPreference = new CommonSharedPreference(getActivity());
 
         AddListViewData();
         tv_sel_chem.setOnClickListener(view -> {

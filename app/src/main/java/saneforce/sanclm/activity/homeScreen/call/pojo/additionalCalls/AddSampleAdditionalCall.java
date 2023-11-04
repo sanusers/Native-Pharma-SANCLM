@@ -9,7 +9,20 @@ public class AddSampleAdditionalCall {
         Cust_name = cust_name;
     }
 
-    String Cust_name,prd_name,prd_stock,sample_qty,rx_qty;
+    String Cust_name;
+    String prd_name;
+    String prd_stock;
+    String sample_qty;
+
+    public String getCust_code() {
+        return Cust_code;
+    }
+
+    public void setCust_code(String cust_code) {
+        Cust_code = cust_code;
+    }
+
+    String Cust_code;
 
     public String getPrd_name() {
         return prd_name;
@@ -35,16 +48,10 @@ public class AddSampleAdditionalCall {
         this.sample_qty = sample_qty;
     }
 
-    public String getRx_qty() {
-        return rx_qty;
-    }
 
-    public void setRx_qty(String rx_qty) {
-        this.rx_qty = rx_qty;
-    }
-
-    public AddSampleAdditionalCall(String cust_name,String prd_name, String prd_stock, String sample_qty) {
+    public AddSampleAdditionalCall(String cust_name,String cust_code,String prd_name, String prd_stock, String sample_qty) {
         this.Cust_name = cust_name;
+        this.Cust_code = cust_code;
         this.prd_name = prd_name;
         this.prd_stock = prd_stock;
         this.sample_qty = sample_qty;

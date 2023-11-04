@@ -57,6 +57,11 @@ public class Constants {
     public static final String BRAND_SLIDE = "Brand_Slide";
     public static final String THERAPTIC_SLIDE = "Theraptic_Slide";
 
+    //Stock
+    public static final String STOCK = "Stock";
+    public static final String SAMPLE_STOCK = "Sample_stock";
+    public static final String INPUT_STOCK = "Input_stock";
+
     //Setup
     public static final String SETUP = "Setup";
     public static final String CUSTOM_SETUP = "Custom_setup";

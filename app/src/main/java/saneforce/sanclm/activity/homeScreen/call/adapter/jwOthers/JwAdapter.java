@@ -33,7 +33,7 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data_inp, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data, parent, false);
         return new ViewHolder(view);
     }
 

@@ -11,27 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.NestedAddInputCallDetails;
+import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
 
 public class AdapterNestedInput extends RecyclerView.Adapter<AdapterNestedInput.ViewHolder> {
+    ArrayList<AddInputAdditionalCall> nestedAddInputCallDetails;
     Context context;
-    ArrayList<NestedAddInputCallDetails> nestedAddInputCallDetails;
-    int pos;
 
-    public AdapterNestedInput(Context context, ArrayList<NestedAddInputCallDetails> nestedAddInputCallDetails) {
+    public AdapterNestedInput(Context context, ArrayList<AddInputAdditionalCall> nestedAddInputCallDetails) {
         this.context = context;
         this.nestedAddInputCallDetails = nestedAddInputCallDetails;
-    }
-
-    public AdapterNestedInput(Context context, ArrayList<NestedAddInputCallDetails> nestedAddInputCallDetails, int pos) {
-        this.context = context;
-        this.nestedAddInputCallDetails = nestedAddInputCallDetails;
-        this.pos = pos;
     }
 
     @NonNull
@@ -44,26 +35,12 @@ public class AdapterNestedInput extends RecyclerView.Adapter<AdapterNestedInput.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.v("countnested", "--inp--" + nestedAddInputCallDetails.size());
-
-        if (nestedAddInputCallDetails.get(position).getInp_name().equalsIgnoreCase("^") ||
-                nestedAddInputCallDetails.get(position).getInp_name().equalsIgnoreCase("Select") ||
-                nestedAddInputCallDetails.get(position).getInp_name().isEmpty()) {
-            holder.constraintMainInput.setVisibility(View.GONE);
-            holder.viewBottom.setVisibility(View.GONE);
+        holder.tv_inp_name.setText(nestedAddInputCallDetails.get(position).getInput_name());
+        holder.tv_inp_qty.setText(nestedAddInputCallDetails.get(position).getInp_qty());
+        if (nestedAddInputCallDetails.size() > 1) {
+            holder.viewBottom.setVisibility(View.VISIBLE);
         } else {
-            holder.constraintMainInput.setVisibility(View.VISIBLE);
-            holder.tv_inp_name.setText(nestedAddInputCallDetails.get(position).getInp_name());
-            holder.tv_inp_qty.setText(nestedAddInputCallDetails.get(position).getInp_qty());
-
-          /*  if (nestedAddInputCallDetails.get(position).getInp_name().isEmpty() || nestedAddInputCallDetails.get(position).getInp_name().equalsIgnoreCase("Select")) {
-                holder.tv_inp_name.setVisibility(View.GONE);
-            }
-            if (nestedAddInputCallDetails.get(position).getInp_qty().isEmpty()) {
-                holder.tv_inp_qty.setVisibility(View.GONE);
-            }
-            if (nestedAddInputCallDetails.get(position).getInp_qty().isEmpty() && !nestedAddInputCallDetails.get(position).getInp_name().equalsIgnoreCase("Select")) {
-                holder.tv_inp_qty.setVisibility(View.VISIBLE);
-            }*/
+            holder.viewBottom.setVisibility(View.GONE);
         }
     }
 
@@ -72,7 +49,7 @@ public class AdapterNestedInput extends RecyclerView.Adapter<AdapterNestedInput.
         return nestedAddInputCallDetails.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout constraintMainInput;
         TextView tv_inp_name, tv_inp_qty;
         View viewBottom;

@@ -10,19 +10,15 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
-import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.response.LoginResponse;
 
 public class SQLite extends SQLiteOpenHelper {
@@ -30,14 +26,12 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String DATA_BASE_NAME = "san_clm.db";
     public static final String LOGIN_TABLE = "login_table";
     public static final String LOGIN_DATA = "login_data";
-    private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
-
     //Master Sync
     public static final String MASTER_SYNC_TABLE = "master_sync_data";
     public static final String MASTER_KEY = "master_key";
     public static final String MASTER_VALUE = "master_value";
     public static final String SYNC_STATUS = "sync_status"; // 0 - success, 1 - failed
-
+    private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
     private static final String LINECHAR_CUSTCODE = "LINECHAR_CUSTCODE";
     private static final String LINECHAR_CUSTTYPE = "LINECHAR_CUSTTYPE";
     private static final String LINECHAR_DCR_DT = "LINECHAR_DCR_DT";
@@ -53,22 +47,20 @@ public class SQLite extends SQLiteOpenHelper {
     private static final String LINECHAR_AMSLNO = "LINECHAR_AMSLNO";
     private static final String LINECHAR_FM_INDICATOR = "LINECHAR_FM_INDICATOR";
 
-    public SQLite (@Nullable Context context) {
+    public SQLite(@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);
     }
 
     @Override
-    public void onCreate (SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LOGIN_TABLE + "(" + LOGIN_DATA + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text," + SYNC_STATUS + " INTEGER" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + " (" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
-                LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
-                LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + " (" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " + LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " + LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
 
     }
 
     @Override
-    public void onUpgrade (SQLiteDatabase db, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + LINE_CHAT_DATA_TABLE);
@@ -76,7 +68,12 @@ public class SQLite extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void deleteAllTable(){
+    public void deleteColumn(String ColumnName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE + " WHERE " + MASTER_KEY + " = '" + ColumnName + "' ");
+    }
+
+    public void deleteAllTable() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + LOGIN_TABLE);
         db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE);
@@ -87,57 +84,59 @@ public class SQLite extends SQLiteOpenHelper {
 
 
     //------------------------ Login ------------------------------------
-    public void saveLoginData(String data){
+    public void saveLoginData(String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(LOGIN_DATA,data);
-        int updated = db.update(LOGIN_TABLE,contentValues,null,null);
-        if (updated <= 0){
-            db.insert(LOGIN_TABLE,null,contentValues);
+        contentValues.put(LOGIN_DATA, data);
+        int updated = db.update(LOGIN_TABLE, contentValues, null, null);
+        if (updated <= 0) {
+            db.insert(LOGIN_TABLE, null, contentValues);
         }
         db.close();
     }
 
-    public Cursor getLoginData(){
+
+
+    public Cursor getLoginData() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + LOGIN_TABLE, null);
     }
 
-    public LoginResponse getLoginData(boolean bool){
+    public LoginResponse getLoginData(boolean bool) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + LOGIN_TABLE,null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + LOGIN_TABLE, null);
         String data = "";
         LoginResponse loginResponse = new LoginResponse();
-        if (cursor.moveToNext()){
+        if (cursor.moveToNext()) {
             data = cursor.getString(0);
         }
         cursor.close();
-        if (!data.equals("")){
+        if (!data.equals("")) {
             Type type = new TypeToken<LoginResponse>() {
             }.getType();
-            loginResponse = new Gson().fromJson(data,type);
+            loginResponse = new Gson().fromJson(data, type);
             return loginResponse;
         }
         return loginResponse;
     }
 
     //-------------------------- Master ----------------------------------------
-    public void saveMasterSyncData(String key, String values,int syncStatus) {
+    public void saveMasterSyncData(String key, String values, int syncStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MASTER_KEY, key);
         contentValues.put(MASTER_VALUE, values);
-        contentValues.put(SYNC_STATUS,syncStatus);
+        contentValues.put(SYNC_STATUS, syncStatus);
 
         String[] args = new String[]{key};
-        int updated = db.update(MASTER_SYNC_TABLE,contentValues,MASTER_KEY + "=?",args);
-        if (updated <= 0){
-            db.insert(MASTER_SYNC_TABLE,null,contentValues);
+        int updated = db.update(MASTER_SYNC_TABLE, contentValues, MASTER_KEY + "=?", args);
+        if (updated <= 0) {
+            db.insert(MASTER_SYNC_TABLE, null, contentValues);
         }
         db.close();
     }
 
-    public boolean getMasterSyncDataOfHQ(String key){
+    public boolean getMasterSyncDataOfHQ(String key) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
         return cursor.moveToNext();
@@ -147,32 +146,32 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
         String data = "";
-        if (cursor.moveToNext()){
+        if (cursor.moveToNext()) {
             data = cursor.getString(1);
         }
         cursor.close();
 
         JSONArray jsonArray = new JSONArray();
         try {
-            if (data != null){
-                return jsonArray = new JSONArray(data.toString());
+            if (data != null) {
+                return jsonArray = new JSONArray(data);
             }
-        }catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
         return jsonArray;
     }
 
-    public void saveMasterSyncStatus(String key,int status) {
+    public void saveMasterSyncStatus(String key, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(MASTER_KEY,key);
-        contentValues.put(SYNC_STATUS,status);
+        contentValues.put(MASTER_KEY, key);
+        contentValues.put(SYNC_STATUS, status);
 
         String[] args = new String[]{key};
-        int updated = db.update(MASTER_SYNC_TABLE,contentValues,MASTER_KEY + "=?", args);
-        if (updated <= 0){
-            db.insert(MASTER_SYNC_TABLE,null,contentValues);
+        int updated = db.update(MASTER_SYNC_TABLE, contentValues, MASTER_KEY + "=?", args);
+        if (updated <= 0) {
+            db.insert(MASTER_SYNC_TABLE, null, contentValues);
         }
         db.close();
     }
@@ -181,7 +180,7 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
         int data = 0;
-        if (cursor.moveToNext()){
+        if (cursor.moveToNext()) {
             data = cursor.getInt(2);
         }
         return data;
@@ -223,8 +222,7 @@ public class SQLite extends SQLiteOpenHelper {
 
 
     // insertdata Linechart
-    public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode,
-                                   String townName, String dcrFlag, String sfCode, String transSlNo, String amslNo,String fw_indicater) {
+    public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode, String townName, String dcrFlag, String sfCode, String transSlNo, String amslNo, String fw_indicater) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(LINECHAR_CUSTCODE, custCode);
@@ -254,7 +252,7 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
 
-    public int getcurrentmonth_calls_count(String CustType){
+    public int getcurrentmonth_calls_count(String CustType) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         String currentYearMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(new Date());
@@ -269,7 +267,7 @@ public class SQLite extends SQLiteOpenHelper {
         }
         db.close();
         return count;
-    };
+    }
 
 
     public int getcalls_count_by_range(String startDate, String endDate, String custType) {
@@ -286,22 +284,21 @@ public class SQLite extends SQLiteOpenHelper {
         }
         db.close();
         return count;
-    };
+    }
 
-//    public int getHalfMonthDataCount(String startDate, String endDate, String custType) {
+    //    public int getHalfMonthDataCount(String startDate, String endDate, String custType) {
 //        SQLiteDatabase db = this.getReadableDatabase();
 //        String query = "SELECT COUNT(*) FROM " + LINECHAT_DATA +
 //                " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " +
 //                " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " ;
 //    }
 
-    public int getfeildworkcount(String startDate, String endDate ) {
+    public int getfeildworkcount(String startDate, String endDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String custType="0";
-        String Fieldwork="F";
+        String custType = "0";
+        String Fieldwork = "F";
 
-        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " +
-                " AND " + LINECHAR_FM_INDICATOR + " = '" + Fieldwork + "' "+ " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
+        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " + " AND " + LINECHAR_FM_INDICATOR + " = '" + Fieldwork + "' " + " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
         Cursor cursor = db.rawQuery(query, null);
 
         int count = 0;
@@ -329,7 +326,4 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return count > 0;
     }
-
-
-
 }

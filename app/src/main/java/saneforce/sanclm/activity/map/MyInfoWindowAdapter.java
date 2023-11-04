@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.map;
 
+import static saneforce.sanclm.activity.map.MapsActivity.GeoTagImageNeed;
 import static saneforce.sanclm.activity.map.MapsActivity.mapsBinding;
 import static saneforce.sanclm.activity.map.MapsActivity.taggedMapListArrayList;
 import static saneforce.sanclm.activity.map.MapsActivity.taggingAdapter;
@@ -84,7 +85,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         lng = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("#") + 1);
         lng = lng.trim().substring(0, lng.lastIndexOf("^"));
 
-        if (SharedPref.getGeotagImage(context).equalsIgnoreCase("0")) {
+        if (GeoTagImageNeed.equalsIgnoreCase("0")) {
             constraint_view_img.setVisibility(View.VISIBLE);
             if (marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
                 constraint_view_img.setVisibility(View.GONE);

@@ -1,10 +1,32 @@
 package saneforce.sanclm.activity.homeScreen.call.pojo;
 
+import com.google.android.material.circularreveal.CircularRevealHelper;
+
 public class CallCommonCheckedList {
     boolean checkedItem;
     String name;
     String category;
+
+    public String getCategoryExtra() {
+        return categoryExtra;
+    }
+
+    public void setCategoryExtra(String categoryExtra) {
+        this.categoryExtra = categoryExtra;
+    }
+
+    String categoryExtra;
     String code;
+    String stock_balance;
+
+    public String getStock_balance() {
+        return stock_balance;
+    }
+
+    public void setStock_balance(String stock_balance) {
+        this.stock_balance = stock_balance;
+    }
+
     String town_code,town_name;
 
     public String getTown_code() {
@@ -27,11 +49,13 @@ public class CallCommonCheckedList {
         this.name = name;
     }
 
-    public CallCommonCheckedList(String name, String code, boolean checkedItem, String category) {
+    public CallCommonCheckedList(String name, String code, String stock_balance,boolean checkedItem, String category,String categoryExtra) {
         this.checkedItem = checkedItem;
         this.name = name;
         this.code = code;
+        this.stock_balance = stock_balance;
         this.category = category;
+        this.categoryExtra = categoryExtra;
     }
 
     public CallCommonCheckedList(String name, String code,boolean checkedItem) {
@@ -40,6 +64,13 @@ public class CallCommonCheckedList {
         this.name = name;
     }
 
+
+    public CallCommonCheckedList(String name, String code,String stock_balance,boolean checkedItem) {
+        this.checkedItem = checkedItem;
+        this.code = code;
+        this.stock_balance = stock_balance;
+        this.name = name;
+    }
     public CallCommonCheckedList(String name, String code) {
         this.name = name;
         this.code = code;

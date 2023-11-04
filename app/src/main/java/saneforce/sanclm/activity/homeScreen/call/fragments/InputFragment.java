@@ -23,7 +23,6 @@ import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.adapter.input.CallInputListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.input.SaveInputCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.databinding.FragmentInputBinding;
 
 public class InputFragment extends Fragment {
@@ -34,7 +33,6 @@ public class InputFragment extends Fragment {
     public static ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList = new ArrayList<>();
     CallInputListAdapter callInputListAdapter;
     SaveInputCallAdapter saveInputCallAdapter;
-    CommonSharedPreference mCommonSharedPreference;
 
     @Nullable
     @Override
@@ -42,14 +40,13 @@ public class InputFragment extends Fragment {
         fragmentInputBinding = FragmentInputBinding.inflate(inflater);
         View v = fragmentInputBinding.getRoot();
         Log.v("fragment", "inputs");
-        mCommonSharedPreference = new CommonSharedPreference(requireContext());
         dummyAdapter();
 
-      /*  if (DCRCallActivity.InputValidation.equalsIgnoreCase("0")) {
+        if (DCRCallActivity.InputValidation.equalsIgnoreCase("0")) {
             fragmentInputBinding.tagStock.setVisibility(View.VISIBLE);
         } else {
             fragmentInputBinding.tagStock.setVisibility(View.GONE);
-        }*/
+        }
 
         fragmentInputBinding.searchInput.addTextChangedListener(new TextWatcher() {
             @Override

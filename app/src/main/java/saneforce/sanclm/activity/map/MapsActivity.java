@@ -75,7 +75,6 @@ import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.map.custSelection.CustListAdapter;
 import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
@@ -118,7 +117,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     double laty, lngy, limitKm = 0.5;
     Dialog dialogTagCust;
     CommonUtilsMethods commonUtilsMethods;
-    CommonSharedPreference mCommonSharedPrefrence;
 
     public static double milesToMeters(double miles) {
         return miles * 1609.344;
@@ -170,7 +168,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(this);
-        mCommonSharedPrefrence = new CommonSharedPreference(this);
         progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
         sqLite = new SQLite(getApplicationContext());
 

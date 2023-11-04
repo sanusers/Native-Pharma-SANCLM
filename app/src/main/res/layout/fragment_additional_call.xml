@@ -87,7 +87,7 @@
 
                 <TextView
                     android:id="@+id/tag_cust_name"
-                    android:layout_width="@dimen/_50sdp"
+                    android:layout_width="@dimen/_62sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_4sdp"
                     android:layout_marginVertical="@dimen/_1sdp"

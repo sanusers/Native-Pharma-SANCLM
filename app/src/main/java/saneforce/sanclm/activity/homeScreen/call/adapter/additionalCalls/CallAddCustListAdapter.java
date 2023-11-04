@@ -21,7 +21,6 @@ import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSa
 import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.SaveAdditionalCall;
-import saneforce.sanclm.commonClasses.CommonSharedPreference;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class CallAddCustListAdapter extends RecyclerView.Adapter<CallAddCustListAdapter.ViewHolder> {
@@ -32,7 +31,6 @@ public class CallAddCustListAdapter extends RecyclerView.Adapter<CallAddCustList
     Activity activity;
     ArrayList<CallCommonCheckedList> checked_arrayList;
     SaveAdditionalCallAdapter AdaptersaveAdditionalCall;
-    CommonSharedPreference mCommonSharedPreference;
     CommonUtilsMethods commonUtilsMethods;
 
     public CallAddCustListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList) {
@@ -52,14 +50,13 @@ public class CallAddCustListAdapter extends RecyclerView.Adapter<CallAddCustList
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data_add_calls, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data, parent, false);
         return new ViewHolder(view);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        mCommonSharedPreference = new CommonSharedPreference(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(checked_arrayList.get(position).getName());
         holder.checkBox.setChecked(checked_arrayList.get(position).isCheckedItem());
@@ -77,7 +74,7 @@ public class CallAddCustListAdapter extends RecyclerView.Adapter<CallAddCustList
         }
 
         holder.tv_name.setOnClickListener(view -> {
-                commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName());
+            commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName());
         });
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -90,9 +87,8 @@ public class CallAddCustListAdapter extends RecyclerView.Adapter<CallAddCustList
                         holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
                     }
                     isCheckedAddCall = false;
-                    // mCommonSharedPreference.setValueToPreference("checked_add_call", false);
                     checked_arrayList.get(position).setCheckedItem(true);
-                    saveAdditionalCallArrayList.add(new SaveAdditionalCall(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(),checked_arrayList.get(position).getTown_name(),checked_arrayList.get(position).getTown_code()));
+                    saveAdditionalCallArrayList.add(new SaveAdditionalCall(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), checked_arrayList.get(position).getTown_name(), checked_arrayList.get(position).getTown_code(),false));
                     AssignRecyclerView(activity, context, saveAdditionalCallArrayList, checked_arrayList);
                 } else {
                     holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
@@ -101,8 +97,6 @@ public class CallAddCustListAdapter extends RecyclerView.Adapter<CallAddCustList
                     }
                     isCheckedAddCall = true;
                     UnSelectedDrCode = checked_arrayList.get(position).getCode();
-                    // mCommonSharedPreference.setValueToPreference("checked_add_call", true);
-                    // mCommonSharedPreference.setValueToPreference("unselect_data_add_call", checked_arrayList.get(position).getName());
                     checked_arrayList.get(position).setCheckedItem(false);
                     AssignRecyclerView(activity, context, saveAdditionalCallArrayList, checked_arrayList);
                     AdaptersaveAdditionalCall.notifyDataSetChanged();

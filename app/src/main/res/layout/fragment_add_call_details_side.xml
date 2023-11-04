@@ -51,13 +51,13 @@
             android:id="@+id/img_close"
             android:layout_width="@dimen/_10sdp"
             android:layout_height="@dimen/_10sdp"
-            android:src="@drawable/img_close"
             android:layout_marginEnd="@dimen/_6sdp"
+            android:src="@drawable/img_close"
+            app:layout_constraintBottom_toBottomOf="@id/tv_tag_header"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/tv_tag_header"
-            app:layout_constraintTop_toTopOf="@id/tv_tag_header"
-            app:layout_constraintBottom_toBottomOf="@id/tv_tag_header"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="@id/tv_tag_header">
 
         </ImageView>
 
@@ -67,9 +67,11 @@
             android:layout_height="0.5dp"
             android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/dark_purple"
+            app:layout_constraintBottom_toTopOf="@id/tab_layout"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_header"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.5" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
@@ -98,6 +100,8 @@
             android:layout_height="0.5dp"
             android:layout_marginHorizontal="@dimen/_16sdp"
             android:background="@color/bg_txt_color"
+           app:layout_constraintBottom_toTopOf="@id/constraint_main_input"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tab_layout"
             app:layout_constraintVertical_bias="0.0" />
@@ -105,12 +109,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_main_input"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_margin="@dimen/_2sdp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_save"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_dummy_2"
             app:layout_constraintVertical_bias="0.0">
@@ -119,9 +122,8 @@
                 android:id="@+id/constraint_header_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/rv_add_inputs_additional"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0">
@@ -206,9 +208,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_2sdp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/btn_save"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/constraint_header_input"
                 app:layout_constraintVertical_bias="0.0" />

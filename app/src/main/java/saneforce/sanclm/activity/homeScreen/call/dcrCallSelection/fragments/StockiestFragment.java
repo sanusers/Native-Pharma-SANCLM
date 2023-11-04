@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.GeoTagApproval;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.StokistGeoTag;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfName;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TpBasedDcr;
@@ -130,7 +131,7 @@ public class StockiestFragment extends Fragment {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (StokistGeoTag.equalsIgnoreCase("1")) {
                     if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
-                        if (SharedPref.getGeotagApprovalNeed(requireContext()).equalsIgnoreCase("0")) {
+                        if (GeoTagApproval.equalsIgnoreCase("0")) {
                             Log.v("dfdfs", "--11-");
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);

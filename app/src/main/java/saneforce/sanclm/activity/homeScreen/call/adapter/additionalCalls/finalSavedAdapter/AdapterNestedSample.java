@@ -11,28 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.NestedAddSampleCallDetails;
+import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
 
 public class AdapterNestedSample extends RecyclerView.Adapter<AdapterNestedSample.ViewHolder> {
+    ArrayList<AddSampleAdditionalCall> nestedAddSampleCallDetails;
     Context context;
-    ArrayList<NestedAddSampleCallDetails> nestedAddSampleCallDetails;
-    int pos;
 
-    public AdapterNestedSample(Context context, ArrayList<NestedAddSampleCallDetails> nestedAddSampleCallDetails) {
+    public AdapterNestedSample(Context context, ArrayList<AddSampleAdditionalCall> nestedAddSampleCallDetails) {
         this.context = context;
         this.nestedAddSampleCallDetails = nestedAddSampleCallDetails;
     }
 
-    public AdapterNestedSample(Context context, ArrayList<NestedAddSampleCallDetails> nestedAddSampleCallDetails, int pos) {
-        this.context = context;
-        this.nestedAddSampleCallDetails = nestedAddSampleCallDetails;
-        this.pos = pos;
-    }
 
     @NonNull
     @Override
@@ -44,29 +36,13 @@ public class AdapterNestedSample extends RecyclerView.Adapter<AdapterNestedSampl
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.v("countnested", "--sam-" + nestedAddSampleCallDetails.size());
-
-        if (nestedAddSampleCallDetails.get(position).getSam_name().equalsIgnoreCase("^") ||
-                nestedAddSampleCallDetails.get(position).getSam_name().equalsIgnoreCase("Select") ||
-                nestedAddSampleCallDetails.get(position).getSam_name().isEmpty()) {
-            holder.constraintMainSample.setVisibility(View.GONE);
-            holder.viewBottom.setVisibility(View.GONE);
+        holder.tv_sam_name.setText(nestedAddSampleCallDetails.get(position).getPrd_name());
+        holder.tv_sam_qty.setText(nestedAddSampleCallDetails.get(position).getSample_qty());
+        if (nestedAddSampleCallDetails.size() > 1) {
+            holder.viewBottom.setVisibility(View.VISIBLE);
         } else {
-            holder.constraintMainSample.setVisibility(View.VISIBLE);
-            holder.tv_sam_name.setText(nestedAddSampleCallDetails.get(position).getSam_name());
-            holder.tv_sam_qty.setText(nestedAddSampleCallDetails.get(position).getSam_qty());
-
-     /*       if (nestedAddSampleCallDetails.get(position).getSam_name().isEmpty() ||
-                    nestedAddSampleCallDetails.get(position).getSam_name().equalsIgnoreCase("Select")) {
-                holder.tv_sam_name.setVisibility(View.GONE);
-            }
-            if (nestedAddSampleCallDetails.get(position).getSam_qty().isEmpty()) {
-                holder.tv_sam_qty.setVisibility(View.GONE);
-            }
-            if (nestedAddSampleCallDetails.get(position).getSam_qty().isEmpty() && !nestedAddSampleCallDetails.get(position).getSam_name().equalsIgnoreCase("Select")) {
-                holder.tv_sam_qty.setVisibility(View.VISIBLE);
-            }*/
+            holder.viewBottom.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -74,7 +50,7 @@ public class AdapterNestedSample extends RecyclerView.Adapter<AdapterNestedSampl
         return nestedAddSampleCallDetails.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout constraintMainSample;
         TextView tv_sam_name, tv_sam_qty;
         View viewBottom;

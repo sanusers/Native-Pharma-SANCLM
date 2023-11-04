@@ -67,6 +67,10 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")
+    Call<JsonElement> getStockMaster(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=table/additionaldcrmasterdata")
     Call<JsonArray> getAdditionalMaster(@Field("data") String postObj);
 
     @Multipart
