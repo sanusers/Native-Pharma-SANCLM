@@ -36,7 +36,7 @@
             android:background="@drawable/custom_backround_layout"
             android:fontFamily="@font/satoshi_regular"
             android:gravity="center"
-            android:text="June"
+            android:text=""
             android:layout_marginStart="@dimen/_10sdp"
             android:id="@+id/text_past2_month"
             android:textAllCaps="false"

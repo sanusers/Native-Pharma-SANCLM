@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:id="@+id/itemClear"

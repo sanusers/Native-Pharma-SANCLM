@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.presentation.Presentation;
+import saneforce.sanclm.activity.presentation.PresentationActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.UtilityClass;
 
@@ -117,7 +117,7 @@ public class CustomerProfile extends AppCompatActivity {
         });
 
         btn_start.setOnClickListener(view -> {
-            startActivity(new Intent(CustomerProfile.this, Presentation.class));
+            startActivity(new Intent(CustomerProfile.this, PresentationActivity.class));
             isDetailingRequired = true;
         });
 

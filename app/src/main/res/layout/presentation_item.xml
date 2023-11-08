@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/_4sdp"
+    android:layout_margin="@dimen/_3sdp"
     android:background="@color/white"
     app:cardCornerRadius="@dimen/_2sdp">
 
@@ -14,75 +14,83 @@
         <ImageView
             android:id="@+id/img_view"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_72sdp"
+            android:layout_height="@dimen/_60sdp"
             android:background="@color/green_2"
-            app:layout_constraintBottom_toTopOf="@id/constraint_view_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_view_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/dark_purple"
-            android:paddingVertical="@dimen/_2sdp"
+            android:background="@color/text_dark"
+            android:paddingStart="@dimen/_6sdp"
+            android:paddingTop="@dimen/_3sdp"
+            android:paddingBottom="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_view"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toBottomOf="@id/img_view">
 
             <TextView
-                android:id="@+id/tv_prs_name"
+                android:id="@+id/presentationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_2sdp"
-                android:layout_marginVertical="@dimen/_1sdp"
-                android:paddingHorizontal="@dimen/_4sdp"
-                android:paddingVertical="@dimen/_2sdp"
                 android:text="Presentation Name"
                 android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textSize="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/tv_asserts_count"
+                app:layout_constraintBottom_toTopOf="@id/assertCount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_asserts_count"
+                android:id="@+id/assertCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_1sdp"
-                android:paddingHorizontal="@dimen/_4sdp"
                 android:text="12 Asserts"
                 android:textColor="@color/light_cement"
-                android:textSize="14sp"
+                android:textSize="@dimen/_5sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="@dimen/_2sdp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/tv_prs_name"
-                app:layout_constraintTop_toBottomOf="@id/tv_prs_name" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/presentationName" />
 
-            <ImageView
-                android:id="@+id/img_menu"
+            <LinearLayout
+                android:id="@+id/verticalDot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:paddingHorizontal="@dimen/_4sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:src="@drawable/img_menu"
-                app:layout_constraintBottom_toBottomOf="@id/tv_asserts_count"
+                android:orientation="horizontal"
+                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@id/tv_asserts_count"
-                app:layout_constraintTop_toTopOf="@id/tv_asserts_count" />
+                app:layout_constraintStart_toEndOf="@id/assertCount"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_menu"
+                    android:layout_gravity="center"
+                    android:paddingEnd="@dimen/_6sdp"
+                    android:paddingStart="@dimen/_6sdp"
+                    android:paddingTop="@dimen/_6sdp"/>
+
+            </LinearLayout>
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.cardview.widget.CardView>

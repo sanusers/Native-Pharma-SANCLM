@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_2sdp"
+    android:layout_marginBottom="@dimen/_2sdp"
+    android:layout_marginStart="@dimen/_6sdp"
+    android:layout_marginEnd="@dimen/_6sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        android:backgroundTint="#26282A3C"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_6sdp">
+
+                <ImageView
+                    android:id="@+id/dragIcon"
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:src="@drawable/dragable_dots"
+                    android:scaleType="fitXY"
+                    android:layout_gravity="center"/>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="0dp"
+                    android:layout_marginStart="@dimen/_3sdp">
+
+                    <ImageView
+                        android:id="@+id/slideImage"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/san_icon"
+                        android:scaleType="fitXY"
+                        android:layout_gravity="center" />
+
+                </androidx.cardview.widget.CardView>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="@dimen/_3sdp">
+
+                    <TextView
+                        android:id="@+id/brandName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Brand  Name"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_6sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:layout_gravity="start|center"/>
+
+                    <TextView
+                        android:id="@+id/fileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="File  Name"
+                        android:textColor="#282a3c"
+                        android:textSize="@dimen/_6sdp"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:singleLine="true"
+                        android:ellipsize="end"
+                        android:layout_gravity="start|center"
+                        android:layout_marginTop="@dimen/_2sdp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/deleteIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_6sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:src="@drawable/trash_icon"
+                    android:layout_gravity="end"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

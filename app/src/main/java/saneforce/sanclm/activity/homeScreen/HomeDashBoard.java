@@ -12,56 +12,19 @@ import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.util.Log;
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.Spinner;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,44 +40,26 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.Locale;
 
 import org.json.JSONObject;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.ApprovalsActivity;
-import saneforce.sanclm.activity.changepassword.Change_passwordActivity;
 import saneforce.sanclm.activity.forms.Forms_activity;
-import saneforce.sanclm.activity.forms.Forms_activity;
+
 import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
 import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
-import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
-import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
-import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.activity.map.MapsActivity;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
-import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
-import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.myresource.MyResource_Activity;
-import saneforce.sanclm.activity.presentation.CreatePresentation;
-import saneforce.sanclm.activity.presentation.Presentation;
+import saneforce.sanclm.activity.presentation.PresentationActivity;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
-import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.commonClasses.GPSTrack;
-import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
@@ -196,7 +141,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         Log.e("test","fcm token : " + SharedPref.getFcmToken(HomeDashBoard.this));
 
         DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
-        layoutParams.width = DeviceWith/3;// You can replace R.dimen.navigation_drawer_width with the width you want
+        layoutParams.width = DeviceWith/3;
         navigationView.setLayoutParams(layoutParams);
 
         Toolbar toolbar = findViewById(R.id.Toolbar);
@@ -310,7 +255,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        pre_layout.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
+        pre_layout.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class)));
 
         masterSync.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
 //        drawerLayout.closeDrawer(Gravity.END);
@@ -492,6 +437,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
         if (id == R.id.nav_myresource) {
+
             startActivity(new Intent(HomeDashBoard.this, MyResource_Activity.class));
             return true;
         }
@@ -506,8 +452,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
-        if (id == R.id.nav_create_presentation) {
-            startActivity(new Intent(HomeDashBoard.this, CreatePresentation.class));
+        if (id == R.id.nav_presentation) {
+            startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class));
             return true;
         }
 

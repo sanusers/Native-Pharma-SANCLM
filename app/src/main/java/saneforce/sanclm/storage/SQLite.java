@@ -157,7 +157,7 @@ public class SQLite extends SQLiteOpenHelper {
 
         JSONArray jsonArray = new JSONArray();
         try {
-            if (data != null)
+            if (data != null && !data.isEmpty())
                 return jsonArray = new JSONArray(data.toString());
         }catch (Exception exception){
             exception.printStackTrace();

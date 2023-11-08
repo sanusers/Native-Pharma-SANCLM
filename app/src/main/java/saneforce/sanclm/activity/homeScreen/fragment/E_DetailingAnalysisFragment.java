@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.homeScreen.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,7 +50,6 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
                 int getlayout  = e_detailing_layout.getMeasuredWidth();
 
-
                 int width = (int) (getlayout/ 3-8);
                 LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
                 param.setMargins(0, 5, 10, 0);
@@ -84,4 +84,6 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
         return v;
     }
+
+
 }

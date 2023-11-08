@@ -20,6 +20,7 @@ public class SharedPref {
     public static final String SLIDES_URL = "slides_url";
     public static final String LOGO_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
+    public static final String LOGI_SITE="log_site";
 
 
     //Login
@@ -30,11 +31,11 @@ public class SharedPref {
     public static final String SF_TYPE = "sf_type";
     public static final String TAG_IMAGE_URL = "tag_image_url";
 
-
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
     public static final String HQ_NAME = "hq_name";
     public static final String HQ_CODE = "hq_code";
+
 
     //Map Activity
     public static final String TAGGED_SUCCESSFULLY = "tagged_successfully";
@@ -46,11 +47,9 @@ public class SharedPref {
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
 
-
     //SetUp
     public static final String GEOTAG_IMAGE = "geo_tag_img";
     public static final String GEOTAG_APPROVAL_NEED = "geotag_approval_need";
-
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
@@ -406,6 +405,16 @@ public class SharedPref {
 
     public static String getGeotagImage(Context context) {
         return context.getSharedPreferences(GEOTAG_IMAGE, MODE_PRIVATE).getString(GEOTAG_IMAGE, "");
+    }
+
+    public static void Loginsite(Context context, String site) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGI_SITE, site).apply();
+    }
+
+    public static String getLogInsite(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LOGI_SITE, "");
     }
 
 }

@@ -16,17 +16,17 @@ import saneforce.sanclm.storage.SQLite;
 
 public class CustomMarkerView extends MarkerView {
 
-    private TextView Total_Call_count,Avg_calls;
+    private TextView Total_Call_count, Avg_calls;
     private ImageView imageView;
-    private RelativeLayout layout ;
+    private RelativeLayout layout;
+
     SQLite sqLite;
-    String cus,firstDateStr,fifteenthDateStr,enddate,firstDatepastmonth,fifteenthDatepastmonth,enddatepastmonth,firstDatecurrent,fifteenthDatecurrent,enddatecurrent,linekey;
+    String cus, firstDateStr, fifteenthDateStr, enddate, firstDatepastmonth, fifteenthDatepastmonth, enddatepastmonth, firstDatecurrent, fifteenthDatecurrent, enddatecurrent, linekey;
     Context context;
 
 
-    public CustomMarkerView(Context context, int layoutResource ,String custype,String firstDateStr, String fifteenthDateStr, String enddate,
-                            String firstDatepastmonth, String fifteenthDatepastmonth, String enddatepastmonth,
-                            String firstDatecurrent, String fifteenthDatecurrent, String enddatecurrent ,String linekey) {
+    public CustomMarkerView(Context context, int layoutResource, String custype, String firstDateStr, String fifteenthDateStr, String enddate, String firstDatepastmonth, String fifteenthDatepastmonth, String enddatepastmonth, String firstDatecurrent, String fifteenthDatecurrent, String enddatecurrent, String linekey) {
+
 
         super(context, layoutResource);
         this.firstDateStr = firstDateStr;
@@ -38,7 +38,6 @@ public class CustomMarkerView extends MarkerView {
         this.firstDatecurrent = firstDatecurrent;
         this.fifteenthDatecurrent = fifteenthDatecurrent;
         this.enddatecurrent = enddatecurrent;
-        this.linekey=linekey;
         this.linekey = linekey;
 
         this.context = context;
@@ -48,7 +47,6 @@ public class CustomMarkerView extends MarkerView {
         Avg_calls = (TextView) findViewById(R.id.text_call_count);
         layout = findViewById(R.id.rl_popllayout);
         sqLite = new SQLite(context);
-
 
     }
 
@@ -78,8 +76,7 @@ public class CustomMarkerView extends MarkerView {
                 getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, enddatecurrent);
 
             }
-        }
-        else if (linekey.equalsIgnoreCase("2")) {
+        } else if (linekey.equalsIgnoreCase("2")) {
 
             if (highlight.getX() == 1.0) {
 
@@ -100,18 +97,21 @@ public class CustomMarkerView extends MarkerView {
             }
 
         } else {
+
             if (highlight.getX() == 1.0) {
                 getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, fifteenthDatecurrent);
+
+
             } else if (highlight.getX() == 2.0) {
                 getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, enddatecurrent);
+
             }
         }
 
 
-
         int getyvakue = (int) highlight.getY();
         int avaragecalls = Math.round(getyvakue / getfeildworkcount);
-        Log.e("getcallcount",""+getfeildworkcount+ "     " +getyvakue+" "+avaragecalls);
+        Log.e("getcallcount", "" + getfeildworkcount + "     " + getyvakue + " " + avaragecalls);
         Avg_calls.setText(String.valueOf(avaragecalls));
         Total_Call_count.setText(String.valueOf(getyvakue));
 
@@ -137,9 +137,9 @@ public class CustomMarkerView extends MarkerView {
     }
 
     public MPPointF getOffset() {
+
         return new MPPointF(-(getWidth() / 2), -getHeight());
     }
-
 
 
 }

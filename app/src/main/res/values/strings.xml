@@ -69,6 +69,7 @@
     <string name="str_language">Language</string>
     <string name="str_your_device_id">Your Device ID</string>
 
+    <string name="str_default_language">English</string>
     <string name="str_save_settings">Save Settings</string>
     <string name="str_powered_by">Powered by</string>
     <string name="call_selection">Call Selection</string>

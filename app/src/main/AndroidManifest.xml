@@ -135,13 +135,13 @@
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
-            android:name=".activity.presentation.Presentation"
+            android:name=".activity.presentation.PresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
 
         <activity
-            android:name=".activity.presentation.CreatePresentation"
+            android:name=".activity.presentation.createPresentation.CreatePresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />

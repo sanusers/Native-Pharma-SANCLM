@@ -233,6 +233,7 @@ public class SettingsActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
+                        SharedPref.Loginsite(getApplicationContext(),url);
                     }else{
                         Toast.makeText(SettingsActivity.this, "Invalid web url", Toast.LENGTH_SHORT).show();
                     }

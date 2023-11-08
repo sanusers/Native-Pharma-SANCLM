@@ -39,6 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
@@ -84,7 +85,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     int apiSuccessCount = 0,itemCount = 0;
     String navigateFrom = "";
     boolean mgrInitialSync = false;
-    CommonUtilsMethods commonUtilsMethods;
 
     ArrayList<ArrayList<MasterSyncItemModel>> masterSyncAllModel = new ArrayList<>();
     ArrayList<MasterSyncItemModel> arrayForAdapter = new ArrayList<>();
@@ -460,7 +460,6 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                 for (int i=0;i<arrayList.size();i++){
                     arrayForAdapter.get(i).setPBarVisibility(true);
-                    Log.e("test","notifyDataSetChanged 1");
                     masterSyncAdapter.notifyDataSetChanged();
                     sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
                 }
@@ -900,7 +899,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             }
         }
-//        Log.e("test","count : " + itemCount);
+        Log.e("test","count : " + itemCount);
     }
 
     public void sync(String masterOf, String remoteTableName,ArrayList<MasterSyncItemModel> masterSyncItemModels,int position) {
@@ -951,7 +950,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                         @Override
                         public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                             masterSyncItemModels.get(position).setPBarVisibility(false);
-                            apiSuccessCount ++;
+                           ++apiSuccessCount;
+
                             boolean success = false;
                             JSONArray jsonArray = new JSONArray();
                             if (response.isSuccessful()) {
@@ -1009,7 +1009,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         }
 
                                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
-                                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+//                                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                                            SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this,"1");
                                         }
 
                                     } else {
@@ -1026,20 +1027,22 @@ public class MasterSyncActivity extends AppCompatActivity {
                             }
 
                             masterSyncAdapter.notifyDataSetChanged();
-                            // Log.e("test","success count : " + apiSuccessCount);
+                             Log.e("test","success count : " + apiSuccessCount);
                         }
 
                         @Override
                         public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test","failed : " + t);
-                            apiSuccessCount++;
-                            //  Log.e("test","success count at error : " + apiSuccessCount);
+                            ++apiSuccessCount;
+                              Log.e("test","success count at error : " + apiSuccessCount);
                             sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),  1);
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             masterSyncAdapter.notifyDataSetChanged();
                             if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
-                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+//                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
+                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this,"1");
+
                             }
                         }
                     });
