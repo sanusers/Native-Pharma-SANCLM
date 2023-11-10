@@ -37,6 +37,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
         val32=  TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_24, current_month);
     }
+
     @NonNull
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -65,8 +66,17 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         holder.dayOfMonth.setText(dayText);
 
 
+        if (position == 0) {
+            holder.constraintLayout.setBackgroundResource(R.drawable.calender_background_a);
+        } else if (position <= 6) {
+            holder.constraintLayout.setBackgroundResource(R.drawable.calender_background_b);
 
+        }else if(position==7 || position==14||position==21||position==28||position==35){
+            holder.constraintLayout.setBackgroundResource(R.drawable.calender_background_c);
 
+        }else {
+            holder.constraintLayout.setBackgroundResource(R.drawable.calender_background_d);
+        }
 
         if(fromdate_val.equals("") || fromdate_val.equals("null") ){
 
@@ -162,11 +172,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         ConstraintLayout day_bgd;
         private final OnItemListener onItemListener;
         String month;
+        ConstraintLayout constraintLayout;
 
         public CalendarViewHolder(@NonNull View itemView, OnItemListener onItemListener,LocalDate currentDate,String month) {
             super(itemView);
             dayOfMonth = itemView.findViewById(R.id.cellDayText);
             day_bgd = itemView.findViewById(R.id.day_bgd);
+            constraintLayout=itemView.findViewById(R.id.day_bgd123);
             this.onItemListener = onItemListener;
             itemView.setOnClickListener(this);
 

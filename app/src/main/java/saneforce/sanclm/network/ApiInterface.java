@@ -113,4 +113,9 @@ public interface ApiInterface {
     @Multipart
     @POST("?axn=save/image")
     Call<JsonObject> saveImgDcr(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
+
+
+    @FormUrlEncoded
+    @POST("?axn=save/dayplan")
+    Call<JsonObject> saveMydayPlan(@Field("data") String SaveDcr);
 }

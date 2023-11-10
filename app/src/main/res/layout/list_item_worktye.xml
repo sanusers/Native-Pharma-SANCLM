@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/tv_searchheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/satoshi_regular"
+            android:textSize="@dimen/_7sdp"
+            android:text="Select Worktype"
+            android:textColor="@color/black_45"
+            android:gravity="left"
+            android:textStyle="bold"
+            android:layout_weight="1.5"/>
+
+        <TextView
+            android:id="@+id/refree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:fontFamily="@font/satoshi_regular"
+            android:text="refresh"
+            android:paddingRight="10dp"
+            android:textColor="@color/colorPrimary"
+
+            android:textStyle="bold"
+            android:visibility="invisible"
+            android:layout_weight=".5"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorPrimary"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/serchedit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal">
+
+        <requestFocus />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_search_category_default" />
+
+        <EditText
+            android:id="@+id/et_productsearch_alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/img_sear"
+            android:layout_weight="5"
+            android:fontFamily="@font/satoshi_regular"
+            android:hint="Enter the value to search"
+            android:gravity="left"
+          />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/worktype_list"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/bg_grey"
+        android:dividerHeight="2px"
+        >
+
+    </ListView>
+</LinearLayout>

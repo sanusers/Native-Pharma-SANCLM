@@ -96,6 +96,9 @@ public class SettingsActivity extends AppCompatActivity {
                     binding.etLicenseKey.requestFocus();
                     Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
                 } else{
+
+                      SharedPref.Loginsite(getApplicationContext(),url);
+
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())){
                         if (checkURL(url)){
                             configuration("https://" + url + "/apps/");

@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.homeScreen.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class CallsFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.calls_fragment, container, false);
+        Log.e("test","calls_fragment");
+
 
         recyclerView = v.findViewById(R.id.recyelerview);
         tv_add_call = v.findViewById(R.id.tv_add_call);

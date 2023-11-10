@@ -108,10 +108,15 @@ public class CustomMarkerView extends MarkerView {
             }
         }
 
-
+        int avaragecalls;
         int getyvakue = (int) highlight.getY();
-        int avaragecalls = Math.round(getyvakue / getfeildworkcount);
-        Log.e("getcallcount", "" + getfeildworkcount + "     " + getyvakue + " " + avaragecalls);
+          if(getfeildworkcount!=0.0){
+            avaragecalls = Math.round(getyvakue / getfeildworkcount);
+          }else {
+              avaragecalls=0;
+          }
+
+
         Avg_calls.setText(String.valueOf(avaragecalls));
         Total_Call_count.setText(String.valueOf(getyvakue));
 

@@ -4,6 +4,7 @@ package saneforce.sanclm.activity.homeScreen.fragment;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,9 @@ public class SalesAnalysisFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.sales_analysis, container, false);
+
+
+        Log.e("test","sales_analysis");
 
         txt_month=v.findViewById(R.id.text_month);
         txt_yearly=v.findViewById(R.id.text_yearly);
@@ -76,6 +80,10 @@ public class SalesAnalysisFragment extends Fragment {
 
 
         return v;
+    }
+    public void onDestroyView() {
+
+        super.onDestroyView();
     }
 
 

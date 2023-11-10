@@ -217,7 +217,7 @@ public class SharedPref {
     public static final String CAPTION_CIP = "cap_cip";
     public static final String HOSPITAL_NEED = "hos_need";
 
-
+    public  static  final String LOGI_SITE="log_site";
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
@@ -228,6 +228,12 @@ public class SharedPref {
         editor.putString(BASE_URL, baseUrl).apply();
     }
 
+
+    public static void Loginsite(Context context, String site) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGI_SITE, site).apply();
+    }
     public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String SlidesUrl, String logoUrl, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -242,6 +248,10 @@ public class SharedPref {
         editor.apply();
     }
 
+
+    public static String getLogInsite(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LOGI_SITE, "");
+    }
     public static String getBaseUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(BASE_URL, "");
     }

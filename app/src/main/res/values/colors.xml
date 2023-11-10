@@ -74,6 +74,41 @@
     <color name="Trendy_Pink_45">#72526f</color>
     <color name="gray_45">#8c8c94</color>
 
-    2a293b
+<!--    EventColors-->
+
+
+    <color name="yellow_60">#fecf68</color>
+    <color name="yellow_10">#fef6df</color>
+
+    <color name="green_60">#00c98e</color>
+    <color name="green_10">#d4f8ef</color>
+
+    <color name="blue_60">#4aa5f0</color>
+    <color name="blue_10">#e1f2fd</color>
+
+    <color name="lustylavender_60">#915daf</color>
+    <color name="lustylavender_10">#eee5f2</color>
+
+    <color name="Hilo_bay_60">#768a9e</color>
+    <color name="Hilo_bay_10">#ebeef1</color>
+
+    <color name="pink_60">#d42a92</color>
+    <color name="pink_10">#fbe0ee</color>
+
+    <color name="red_60">#fd4f6e</color>
+    <color name="red_10">#ffe5e9</color>
+
+    <color name="dark_green_60">#006247</color>
+    <color name="dark_green_10">#d8e8e3</color>
+
+    <color name="Evening_Blue_60">#2a293b</color>
+    <color name="Evening_Blue_10">#dfdfe2</color>
+
+
+    <color name="GlassSea_60">#0a5875</color>
+    <color name="GlassSea_10">#dbe6eb</color>
+    <color name="cl_border_color">#e5e5e5</color>
+    <color name="cl_text_color">#74737f</color>
+
 
 </resources>

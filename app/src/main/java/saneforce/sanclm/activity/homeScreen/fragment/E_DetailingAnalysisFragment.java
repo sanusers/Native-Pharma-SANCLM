@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.homeScreen.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,8 @@ public class E_DetailingAnalysisFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.e_detailing_analysis, container, false);
+
+        Log.e("test","e_detailing_analysis");
 
         doc_layout = v.findViewById(R.id.ll_doc_child);
         che_layout = v.findViewById(R.id.ll_che_child);
@@ -84,4 +87,9 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
         return v;
     }
+    public void onDestroyView() {
+
+        super.onDestroyView();
+    }
+
 }

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
 
 public  class SlideDownloaderAlertBox {
 
@@ -52,7 +53,7 @@ public  class SlideDownloaderAlertBox {
 
         View dialogView = LayoutInflater.from(activity).inflate(R.layout.slide_downloader_alert_box, null);
 
-       RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
         txt_downloadcount = dialogView.findViewById(R.id.txt_downloadcount);
 
         txt_downloadcount.setText("0/"+Slide_list.size());
@@ -68,18 +69,18 @@ public  class SlideDownloaderAlertBox {
         dialog.show();
         dialog.setCancelable(false);
 
-        if(MoveingFlog.equalsIgnoreCase("1")) {
-
             for (SlideModelClass slide : Slide_list) {
 
                 String imageName = slide.getImagename();
                 String downloadStatus = slide.getDownloadstatus();
                 String progressValue = slide.getProgressvalue();
                 String img_size_status = slide.getDownloadsizestatus();
-                new DownloadTask(activity, "https://sanffa.info/Edetailing_files/sc/download/" + imageName, imageName, progressValue, downloadStatus, img_size_status, slide, adapter, recyclerView, dialog, MoveingFlog);
+
+                String url= "https://"+SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+imageName;
+                new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide, adapter, recyclerView, dialog, MoveingFlog);
                 adapter.notifyDataSetChanged();
             }
-        }
+
 
         cancel_img.setOnClickListener(new View.OnClickListener() {
             @Override

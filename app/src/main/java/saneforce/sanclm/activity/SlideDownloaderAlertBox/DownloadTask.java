@@ -25,7 +25,7 @@ public class DownloadTask {
     private String downloadFileName = "";
 
     Context context;
-    String progressBar_value,downloadmsg;
+    String progressBar_value, downloadmsg;
 
 
     SlideModelClass Slidevalue;
@@ -33,9 +33,9 @@ public class DownloadTask {
     Slide_adapter adapter;
     Dialog dialog;
 
-    String moveflog,downloadingstatus;
+    String moveflog, downloadingstatus;
 
-    public DownloadTask(Activity activity, String downloadUrl, String filename, String progressBar_value, String downloadingstatus, String downloadmsg, SlideModelClass slidevalue, Slide_adapter adapter, RecyclerView recyclerView, Dialog dialog, String moveflog ){
+    public DownloadTask(Activity activity, String downloadUrl, String filename, String progressBar_value, String downloadingstatus, String downloadmsg, SlideModelClass slidevalue, Slide_adapter adapter, RecyclerView recyclerView, Dialog dialog, String moveflog) {
         this.activity = activity;
         this.downloadUrl = downloadUrl;
         this.downloadFileName = filename;
@@ -47,7 +47,7 @@ public class DownloadTask {
         this.recyclerView = recyclerView;
         this.dialog = dialog;
         this.moveflog = moveflog;
-        this.context=activity.getApplicationContext();
+        this.context = activity.getApplicationContext();
         new DownloadingTask().execute();
     }
 
@@ -56,6 +56,7 @@ public class DownloadTask {
         File outputFile = null;
         int totalSize;
         int downloadedSize = 0;
+
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
@@ -70,7 +71,7 @@ public class DownloadTask {
                 }
 
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                    apkStorage = new File(activity.getExternalFilesDir(null)+ "/Slides/");
+                    apkStorage = new File(activity.getExternalFilesDir(null) + "/Slides/");
                 } else {
                     return false;
                 }
@@ -144,12 +145,12 @@ public class DownloadTask {
                 Slidevalue.setDownloadstatus("1");
                 SlideDownloaderAlertBox.downloading_count++;
                 SlideDownloaderAlertBox.dialogdismisscount++;
-                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count)+"/"+String.valueOf(adapter.getItemCount()));
+                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count) + "/" + String.valueOf(adapter.getItemCount()));
                 recyclerView.getLayoutManager().scrollToPosition(SlideDownloaderAlertBox.downloading_count);
                 adapter.notifyDataSetChanged();
-                if(SlideDownloaderAlertBox.dialogdismisscount==adapter.getItemCount()){
+                if (SlideDownloaderAlertBox.dialogdismisscount == adapter.getItemCount()) {
                     dialog.dismiss();
-                    if(moveflog.equalsIgnoreCase("1")){
+                    if (moveflog.equalsIgnoreCase("1")) {
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
@@ -160,27 +161,25 @@ public class DownloadTask {
 
             } else {
                 Slidevalue.setProgressvalue(String.valueOf(78));
-                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count)+"/"+ String.valueOf(adapter.getItemCount()));
+                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count) + "/" + String.valueOf(adapter.getItemCount()));
                 Slidevalue.setDownloadsizestatus("Download failed");
                 Slidevalue.setDownloadstatus("2");
                 SlideDownloaderAlertBox.dialogdismisscount++;
                 adapter.notifyDataSetChanged();
 
-                 if(SlideDownloaderAlertBox.dialogdismisscount==adapter.getItemCount()){
-                     dialog.dismiss();
-                     if(moveflog.equalsIgnoreCase("1")){
-                         if (moveflog.equalsIgnoreCase("1")) {
-                             Intent intent = new Intent(context, HomeDashBoard.class);
-                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                             context.startActivity(intent);
-                             activity.finish();
-                         }
-                     }
-                 }
+                if (SlideDownloaderAlertBox.dialogdismisscount == adapter.getItemCount()) {
+                    dialog.dismiss();
+                    if (moveflog.equalsIgnoreCase("1")) {
+                        if (moveflog.equalsIgnoreCase("1")) {
+                            Intent intent = new Intent(context, HomeDashBoard.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                            activity.finish();
+                        }
+                    }
+                }
 
             }
-
-
 
 
         }

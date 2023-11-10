@@ -84,6 +84,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.call_analysis_fagment, container, false);
 
+        Log.e("test","call_analysis_fagment");
+
 
         doc_layout = v.findViewById(R.id.ll_doc_child);
         che_layout = v.findViewById(R.id.ll_che_child);
@@ -767,6 +769,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         }
 
+    }
+
+
+    public void onDestroyView() {
+
+        super.onDestroyView();
     }
 
 
