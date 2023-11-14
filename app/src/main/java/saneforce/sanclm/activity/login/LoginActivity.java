@@ -56,7 +56,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        UtilityClass.setLanguage(LoginActivity.this);
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        Log.e("test","onCreate");
 
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
@@ -65,8 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
         String[] splitLogoUrl = logoUrl.split("/");
-        getImageFromLocal(splitLogoUrl[splitLogoUrl.length - 1]);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
 
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<String>() {
@@ -131,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void getImageFromLocal(String imageName){
+    public void getAndSetLogoImage (String imageName){
         packageManager = this.getPackageManager();
         String packageName = this.getPackageName();
         try {
@@ -221,9 +223,6 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
-            SharedPref.setDivisionCode(getApplicationContext(), jsonObject.getString("Division_Code").replace(",", ""));
-            SharedPref.setDesignationName(getApplicationContext(), jsonObject.getString("Desig"));
-            SharedPref.setStateCode(getApplicationContext(), jsonObject.getString("State_Code"));
 
             Intent intent = new Intent(LoginActivity.this, MasterSyncActivity.class);
             intent.putExtra("Origin", "Login");
@@ -233,5 +232,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    protected void onResume () {
+        super.onResume();
+        Log.e("test","onResume");
+    }
 }

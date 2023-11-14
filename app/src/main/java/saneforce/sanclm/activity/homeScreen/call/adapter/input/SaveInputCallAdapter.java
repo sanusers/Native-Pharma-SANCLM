@@ -61,13 +61,13 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
 
-        if (DCRCallActivity.InputValidation.equalsIgnoreCase("0")) {
+        if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             holder.tv_input_stk.setVisibility(View.VISIBLE);
             if (Integer.parseInt(saveCallInputLists.get(position).getInp_stk()) > 0) {
                 holder.ed_inpQty.setEnabled(true);
             } else {
-                holder.ed_inpQty.setEnabled(false);
                 holder.ed_inpQty.setText("0");
+                holder.ed_inpQty.setEnabled(false);
             }
             //holder.ed_inpQty.setEnabled(Integer.parseInt(saveCallInputLists.get(position).getInp_stk()) > 0);
         } else {
@@ -96,7 +96,7 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
-                    if (DCRCallActivity.InputValidation.equalsIgnoreCase("0")) {
+                    if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                         holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getInp_stk())});
                         if (!editable.toString().isEmpty()) {
                             int final_value = Integer.parseInt(saveCallInputLists.get(position).getInp_stk()) - Integer.parseInt(editable.toString());

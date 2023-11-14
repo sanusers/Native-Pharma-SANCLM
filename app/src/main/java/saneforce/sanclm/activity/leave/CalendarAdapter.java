@@ -45,8 +45,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         layoutParams.height = (int) (parent.getHeight() * 0.166666666);
 
-
-
         if(setval.equals("1")){
             return new CalendarViewHolder(view, onItemListener,currentDate,current_month);
         }else{
@@ -54,7 +52,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
                 fromdate = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, fromdate_val)));//FORMAT_23
             }
             return new CalendarViewHolder(view, onItemListener, fromdate, current_month);
-
         }
 
     }
@@ -64,34 +61,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         String dayText = daysOfMonth.get(position);
         holder.dayOfMonth.setText(dayText);
 
-
-
-
-
         if(fromdate_val.equals("") || fromdate_val.equals("null") ){
 
         }else{
             fromdate= LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4,fromdate_val )));
         }
 
-
-
-
-
-
-
-
-
-
-
-
         if (!dayText.equals("")) {
 
             if(setval.equals("1")){
-
-
-
-
 
 //                currentDate = LocalDate.now();
 //                int day = Integer.parseInt(dayText);
@@ -112,9 +90,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             }else{
                 currentDate = (fromdate);
                 int day = Integer.parseInt(dayText);
-
                 if (day < currentDate.getDayOfMonth() && selectedDate.getMonth() == currentDate.getMonth() && selectedDate.getDayOfYear() == currentDate.getDayOfYear() ) {
-
                     holder.dayOfMonth.setTextColor(Color.parseColor("#B0B0B0"));
                 } else if (day == currentDate.getDayOfMonth() && selectedDate.getMonth() == currentDate.getMonth() && selectedDate.getDayOfYear() == currentDate.getDayOfYear()) {
                     holder.dayOfMonth.setTextColor(Color.parseColor("#282A3C"));
@@ -124,17 +100,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
                         holder.dayOfMonth.setTextColor(Color.parseColor("#B0B0B0"));
                     }
                 } else {
-
                     holder.dayOfMonth.setTextColor(Color.parseColor("#282A3C"));
                 }
-
             }
         } else {
-
             holder.dayOfMonth.setTextColor(Color.parseColor("#B0B0B0"));
         }
-
-
 
 //        if(!dayText.equals("")){
 //            int day_1= Integer.parseInt((dayText));
@@ -169,11 +140,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             day_bgd = itemView.findViewById(R.id.day_bgd);
             this.onItemListener = onItemListener;
             itemView.setOnClickListener(this);
-
             this.month = month;
-
-
-
         }
 
         @Override
@@ -181,14 +148,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
             String dayText = dayOfMonth.getText().toString();
             if (!dayText.isEmpty()) {
-
                 // Notify the listener about the click event
                 onItemListener.onItemClick(getAdapterPosition(), dayText);
 
-
             }
         }
-
     }
 
 

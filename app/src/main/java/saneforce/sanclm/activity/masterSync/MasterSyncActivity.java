@@ -52,7 +52,6 @@ import saneforce.sanclm.utility.TimeUtils;
 
 
 public class MasterSyncActivity extends AppCompatActivity {
-
     ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
     MasterSyncViewModel masterSyncViewModel = new MasterSyncViewModel();
@@ -61,10 +60,10 @@ public class MasterSyncActivity extends AppCompatActivity {
     LoginResponse loginResponse;
     String sfCode = "", division_code = "", sfType = "", rsf = "", designation = "", state_code = "", subdivision_code = "";
 
-
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
-    int unlistedDrCount = 0, chemistCount = 0, stockiestCount = 0, hospitalCount = 0, cipCount = 0, inputCount = 0, leaveCount = 0, leaveStatusCount = 0, tpCount = 0, clusterCount = 0, dcrCount = 0;
-    int productCount = 0, proCatCount = 0, brandCount = 0, compProCount = 0;
+    int unlistedDrCount = 0, chemistCount = 0, stockiestCount = 0, hospitalCount = 0, cipCount = 0, inputCount = 0, leaveCount = 0, leaveStatusCount = 0, tpCount = 0, clusterCount = 0;
+    int dcrCount = 0, visitControlCount = 0, missedDateCount = 0, stockBalanceCount = 0;
+    int productCount = 0, proCatCount = 0, brandCount = 0, compProCount = 0, mapComPrdCount = 0;
     int workTypeCount = 0, holidayCount = 0, weeklyOfCount = 0;
     int proSlideCount = 0, proSpeSlideCount = 0, brandSlideCount = 0, therapticCount = 0;
     int subordinateCount = 0, subMgrCount = 0, jWorkCount = 0;
@@ -72,12 +71,12 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     // Api call status
     int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0;
-    int unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpStatus = 0, clusterStatus = 0, dcrStatus = 0;
-    int productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0;
+    int unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpStatus = 0, clusterStatus = 0;
+    int dcrStatus = 0, visitControlStatus = 0, missedDateStatus = 0, stockBalanceStatus = 0;
+    int productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0;
     int workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0;
     int proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0;
     int subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0;
-    int stockStatus = 0;
     int setupStatus = 0, customSetupStatus = 0;
 
     int apiSuccessCount = 0, itemCount = 0;
@@ -102,7 +101,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> tpModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> slideModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
-    ArrayList<MasterSyncItemModel> stockModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
 
     public static void callList(SQLite sqLite, ApiInterface apiInterface, Context context, String masterFor, String tablename, String sfCode, String DivCode, String RSF, String SfType, String Designation, String StateCode, String SubDivCode) {
@@ -189,7 +187,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (navigateFrom.equalsIgnoreCase("Login")) {
             if (sfType.equalsIgnoreCase("2")) { //MGR
                 mgrInitialSync = true;
-                sync("Subordinate", "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
+                sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
             } else {
                 masterSyncAll(false);
             }
@@ -467,18 +465,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         });
 
-        binding.stockbalance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listItemClicked(binding.stockbalanceArrow, binding.stockbalance);
-                binding.childSync.setText("Sync Stock");
-
-                arrayForAdapter.clear();
-                arrayForAdapter.addAll(stockModelArray);
-                populateAdapter(arrayForAdapter);
-            }
-        });
-
         binding.setup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -526,8 +512,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayList.addAll(slideModelArray);
                 } else if (binding.subordinate.isSelected()) {
                     arrayList.addAll(subordinateModelArray);
-                } else if (binding.stockbalance.isSelected()) {
-                    arrayList.addAll(stockModelArray);
                 } else if (binding.setup.isSelected()) {
                     arrayList.addAll(setupModelArray);
                 }
@@ -536,7 +520,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     arrayForAdapter.get(i).setPBarVisibility(true);
                     Log.e("test", "notifyDataSetChanged 1");
                     masterSyncAdapter.notifyDataSetChanged();
-                    sync(arrayList.get(i).getMasterFor(), arrayList.get(i).getRemoteTableName(), arrayList, i);
+                    sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
                 }
             }
         });
@@ -553,7 +537,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void uiInitialization() {
 
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         sfType = loginResponse.getSf_type();
         sfCode = loginResponse.getSF_Code();
@@ -571,6 +555,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.chemistTxt.setText(loginResponse.getChmCap());
         binding.stockiestTxt.setText(loginResponse.getStkCap());
         binding.unlistedDoctorTxt.setText(loginResponse.getNLCap());
+        binding.hospitalTxt.setText(loginResponse.getHosp_caption());
+        binding.cipTxt.setText(loginResponse.getCIP_Caption());
 
         doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
         specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
@@ -588,6 +574,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         leaveCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE).length();
         leaveStatusCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS).length();
         dcrCount = sqLite.getMasterSyncDataByKey(Constants.DCR).length();
+        visitControlCount = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL).length();
+        missedDateCount = sqLite.getMasterSyncDataByKey(Constants.MISSED_DATE).length();
+
         workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
         holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
         weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
@@ -596,6 +585,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         proCatCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT_CATEGORY).length();
         brandCount = sqLite.getMasterSyncDataByKey(Constants.BRAND).length();
         compProCount = sqLite.getMasterSyncDataByKey(Constants.COMPETITOR_PROD).length();
+        mapComPrdCount = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD).length();
         clusterCount = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + rsf).length();
         proSlideCount = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length();
         proSpeSlideCount = sqLite.getMasterSyncDataByKey(Constants.SPL_SLIDE).length();
@@ -623,6 +613,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         leaveStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE);
         leaveStatusStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
         dcrStatus = sqLite.getMasterSyncStatusByKey(Constants.DCR);
+        visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
+        missedDateStatus = sqLite.getMasterSyncStatusByKey(Constants.MISSED_DATE);
+        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
+
         workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
         holidayStatus = sqLite.getMasterSyncStatusByKey(Constants.HOLIDAY);
         weeklyOfStatus = sqLite.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
@@ -631,6 +625,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         proCatStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
         brandStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND);
         compProStatus = sqLite.getMasterSyncStatusByKey(Constants.COMPETITOR_PROD);
+        mapCompPrdStatus = sqLite.getMasterSyncStatusByKey(Constants.MAPPED_COMPETITOR_PROD);
         clusterStatus = sqLite.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
         proSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
         proSpeSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
@@ -649,13 +644,13 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void prepareArray(String hqCode) {
         doctorModelArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel(loginResponse.getDrCap(), doctorCount, "Doctor", "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
-        MasterSyncItemModel spl = new MasterSyncItemModel("Speciality", specialityCount, "Doctor", "getspeciality", Constants.SPECIALITY, specialityStatus, false);
-        MasterSyncItemModel ql = new MasterSyncItemModel("Qualification", qualificationCount, "Doctor", "getquali", Constants.QUALIFICATION, qualificationStatus, false);
-        MasterSyncItemModel cat = new MasterSyncItemModel("Category", categoryCount, "Doctor", "getcategorys", Constants.CATEGORY, categoryStatus, false);
-        MasterSyncItemModel dep = new MasterSyncItemModel("Department", departmentCount, "Doctor", "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
-        MasterSyncItemModel clas = new MasterSyncItemModel("Class", classCount, "Doctor", "getclass", Constants.CLASS, classStatus, false);
-        MasterSyncItemModel feedback = new MasterSyncItemModel("Feedback", feedbackCount, "Doctor", "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel(loginResponse.getDrCap(), doctorCount, Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
+        MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, specialityCount, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+        MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, qualificationCount, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
+        MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, categoryCount, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
+        MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
+        MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, classCount, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
+        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, feedbackCount, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
 
         doctorModelArray.add(doctorModel);
         doctorModelArray.add(spl);
@@ -667,82 +662,90 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Chemist
         chemistModelArray.clear();
-        MasterSyncItemModel cheModel = new MasterSyncItemModel("Chemist", chemistCount, "Doctor", "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+        MasterSyncItemModel cheModel = new MasterSyncItemModel(loginResponse.getChmCap(), chemistCount, Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
         chemistModelArray.add(cheModel);
 
         //Stockiest
         stockiestModelArray.clear();
-        MasterSyncItemModel stockModel = new MasterSyncItemModel("Stockiest", stockiestCount, "Doctor", "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
+        MasterSyncItemModel stockModel = new MasterSyncItemModel(loginResponse.getStkCap(), stockiestCount, Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
         stockiestModelArray.add(stockModel);
 
         //Unlisted Dr
         unlistedDrModelArray.clear();
-        MasterSyncItemModel unListModel = new MasterSyncItemModel("Unlisted Doctor", unlistedDrCount, "Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
+        MasterSyncItemModel unListModel = new MasterSyncItemModel(loginResponse.getNLCap(), unlistedDrCount, Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
         unlistedDrModelArray.add(unListModel);
 
         //Hospital
         hospitalModelArray.clear();
-        MasterSyncItemModel hospModel = new MasterSyncItemModel("Hospital", hospitalCount, "Doctor", "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
+        MasterSyncItemModel hospModel = new MasterSyncItemModel(loginResponse.getHosp_caption(), hospitalCount, Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
         hospitalModelArray.add(hospModel);
 
         //CIP
         cipModelArray.clear();
-        MasterSyncItemModel ciModel = new MasterSyncItemModel("CIP", cipCount, "Doctor", "getcip", Constants.CIP + hqCode, cipStatus, false);
+        MasterSyncItemModel ciModel = new MasterSyncItemModel(loginResponse.getCIP_Caption(), cipCount, Constants.DOCTOR, "getcip", Constants.CIP + hqCode, cipStatus, false);
         cipModelArray.add(ciModel);
+
+        //Cluster
+        clusterModelArray.clear();
+        MasterSyncItemModel cluster = new MasterSyncItemModel(loginResponse.getCluster_cap(), clusterCount, Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
+        clusterModelArray.add(cluster);
 
         //Input
         inputModelArray.clear();
-        MasterSyncItemModel inpModel = new MasterSyncItemModel("Input", inputCount, "Product", "getinputs", Constants.INPUT, inputStatus, false);
+        MasterSyncItemModel inpModel = new MasterSyncItemModel(Constants.INPUT, inputCount, Constants.PRODUCT, "getinputs", Constants.INPUT, inputStatus, false);
         inputModelArray.add(inpModel);
 
         //Product
         productModelArray.clear();
-        MasterSyncItemModel proModel = new MasterSyncItemModel("Product", productCount, "Product", "getproducts", Constants.PRODUCT, productStatus, false);
-        MasterSyncItemModel proCatModel = new MasterSyncItemModel("Product Category", proCatCount, "Product", "", Constants.PRODUCT_CATEGORY, proCatStatus, false);
-        MasterSyncItemModel brandModel = new MasterSyncItemModel("Brand", brandCount, "Product", "getbrands", Constants.BRAND, brandStatus, false);
-        MasterSyncItemModel compProductModel = new MasterSyncItemModel("Competitor Product", compProCount, "Product", "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
+        MasterSyncItemModel proModel = new MasterSyncItemModel(Constants.PRODUCT, productCount, Constants.PRODUCT, "getproducts", Constants.PRODUCT, productStatus, false);
+        MasterSyncItemModel proCatModel = new MasterSyncItemModel(Constants.PRODUCT_CATEGORY, proCatCount, Constants.PRODUCT, "", Constants.PRODUCT_CATEGORY, proCatStatus, false);
+        MasterSyncItemModel brandModel = new MasterSyncItemModel(Constants.BRAND, brandCount, Constants.PRODUCT, "getbrands", Constants.BRAND, brandStatus, false);
+        MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
+        MasterSyncItemModel mapCompPrdModel = new MasterSyncItemModel(Constants.MAPPED_COMPETITOR_PROD, mapComPrdCount, "AdditionalDcr", "getmapcompdet", Constants.MAPPED_COMPETITOR_PROD, mapCompPrdStatus, false);
         productModelArray.add(proModel);
         productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
         productModelArray.add(compProductModel);
-
-        //Cluster
-        clusterModelArray.clear();
-        MasterSyncItemModel cluster = new MasterSyncItemModel("Cluster", clusterCount, "Doctor", "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
-        clusterModelArray.add(cluster);
+        productModelArray.add(mapCompPrdModel);
 
         //Leave
         leaveModelArray.clear();
-        MasterSyncItemModel leaveModel = new MasterSyncItemModel("Leave Type", leaveCount, "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
-        MasterSyncItemModel leaveStatusModel = new MasterSyncItemModel("Leave Status", leaveStatusCount, "Leave", "getleavestatus", Constants.LEAVE_STATUS, leaveStatusStatus, false);
+        MasterSyncItemModel leaveModel = new MasterSyncItemModel(Constants.LEAVE, leaveCount, "Leave", "getleavetype", Constants.LEAVE, leaveStatus, false);
+        MasterSyncItemModel leaveStatusModel = new MasterSyncItemModel(Constants.LEAVE_STATUS, leaveStatusCount, "Leave", "getleavestatus", Constants.LEAVE_STATUS, leaveStatusStatus, false);
         leaveModelArray.add(leaveModel);
         leaveModelArray.add(leaveStatusModel);
 
         //DCR
         dcrModelArray.clear();
-        MasterSyncItemModel dcrModel = new MasterSyncItemModel("DCR", dcrCount, "Home", "gethome", Constants.DCR, dcrStatus, false);
+        MasterSyncItemModel dcrModel = new MasterSyncItemModel(Constants.DCR, dcrCount, "Home", "gethome", Constants.DCR, dcrStatus, false);
+        MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, visitControlCount, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
+        MasterSyncItemModel missedDateModel = new MasterSyncItemModel(Constants.MISSED_DATE, missedDateCount, "MissedDate", "getmissdates", Constants.MISSED_DATE, missedDateStatus, false);
+        MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, 0, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
         dcrModelArray.add(dcrModel);
+        dcrModelArray.add(visitControlModel);
+        dcrModelArray.add(missedDateModel);
+        dcrModelArray.add(stockBalanceModel);
 
         //Work Type
         workTypeModelArray.clear();
-        MasterSyncItemModel workType = new MasterSyncItemModel("Work Type", workTypeCount, "Doctor", "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
-        MasterSyncItemModel holiday = new MasterSyncItemModel("Holiday", holidayCount, "Doctor", "getholiday", Constants.HOLIDAY, holidayStatus, false);
-        MasterSyncItemModel weeklyOff = new MasterSyncItemModel("Weekly Off", weeklyOfCount, "Doctor", "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
+        MasterSyncItemModel workType = new MasterSyncItemModel(Constants.WORK_TYPE, workTypeCount, Constants.DOCTOR, "getworktype", Constants.WORK_TYPE, workTypeStatus, false);
+        MasterSyncItemModel holiday = new MasterSyncItemModel(Constants.HOLIDAY, holidayCount, Constants.DOCTOR, "getholiday", Constants.HOLIDAY, holidayStatus, false);
+        MasterSyncItemModel weeklyOff = new MasterSyncItemModel(Constants.WEEKLY_OFF, weeklyOfCount, Constants.DOCTOR, "getweeklyoff", Constants.WEEKLY_OFF, weeklyOfStatus, false);
         workTypeModelArray.add(workType);
         workTypeModelArray.add(holiday);
         workTypeModelArray.add(weeklyOff);
 
         //Tour Plan
         tpModelArray.clear();
-        MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup", tpCount, "Setup", "gettpsetup", Constants.TP_PLAN, tpStatus, false);
+        MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup", tpCount, Constants.SETUP, "gettpsetup", Constants.TP_PLAN, tpStatus, false);
         tpModelArray.add(tp);
 
         //Slide
         slideModelArray.clear();
-        MasterSyncItemModel proSlideModel = new MasterSyncItemModel("Product Slide", proSlideCount, "Slide", "getprodslides", Constants.PROD_SLIDE, proSlideStatus, false);
-        MasterSyncItemModel splSlideModel = new MasterSyncItemModel("Speciality Slide ", proSpeSlideCount, "Slide", "getslidespeciality", Constants.SPL_SLIDE, proSpeSlideStatus, false);
-        MasterSyncItemModel brandSlideModel = new MasterSyncItemModel("Brand Slide", brandSlideCount, "Slide", "getslidebrand", Constants.BRAND_SLIDE, brandSlideStatus, false);
-        MasterSyncItemModel therapticSlideModel = new MasterSyncItemModel("Theraptic Slide", therapticCount, "Slide", "gettheraptic", Constants.THERAPTIC_SLIDE, therapticStatus, false);
+        MasterSyncItemModel proSlideModel = new MasterSyncItemModel(Constants.PROD_SLIDE, proSlideCount, "Slide", "getprodslides", Constants.PROD_SLIDE, proSlideStatus, false);
+        MasterSyncItemModel splSlideModel = new MasterSyncItemModel(Constants.SPL_SLIDE, proSpeSlideCount, "Slide", "getslidespeciality", Constants.SPL_SLIDE, proSpeSlideStatus, false);
+        MasterSyncItemModel brandSlideModel = new MasterSyncItemModel(Constants.BRAND_SLIDE, brandSlideCount, "Slide", "getslidebrand", Constants.BRAND_SLIDE, brandSlideStatus, false);
+        MasterSyncItemModel therapticSlideModel = new MasterSyncItemModel(Constants.THERAPTIC_SLIDE, therapticCount, "Slide", "gettheraptic", Constants.THERAPTIC_SLIDE, therapticStatus, false);
         slideModelArray.add(proSlideModel);
         slideModelArray.add(splSlideModel);
         slideModelArray.add(brandSlideModel);
@@ -750,21 +753,17 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Subordinate
         subordinateModelArray.clear();
-        MasterSyncItemModel subModel = new MasterSyncItemModel("Subordinate", subordinateCount, "Subordinate", "getsubordinate", Constants.SUBORDINATE, subordinateStatus, false);
-        MasterSyncItemModel subMgrModel = new MasterSyncItemModel("Subordinate MGR", subMgrCount, "Subordinate", "getsubordinatemgr", Constants.SUBORDINATE_MGR, subMgrStatus, false);
-        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Joint Work", jWorkCount, "Subordinate", "getjointwork", Constants.JOINT_WORK + hqCode, jWorkStatus, false);
+        MasterSyncItemModel subModel = new MasterSyncItemModel(Constants.SUBORDINATE, subordinateCount, Constants.SUBORDINATE, "getsubordinate", Constants.SUBORDINATE, subordinateStatus, false);
+        MasterSyncItemModel subMgrModel = new MasterSyncItemModel(Constants.SUBORDINATE_MGR, subMgrCount, Constants.SUBORDINATE, "getsubordinatemgr", Constants.SUBORDINATE_MGR, subMgrStatus, false);
+        MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Joint Work", jWorkCount, Constants.SUBORDINATE, "getjointwork", Constants.JOINT_WORK + hqCode, jWorkStatus, false);
         subordinateModelArray.add(subModel);
         subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
 
-        //Stock
-        MasterSyncItemModel validationModel = new MasterSyncItemModel("Stock", setupCount, "Stock", "getstockbalance", Constants.STOCK, stockStatus, false);
-        stockModelArray.add(validationModel);
-
         //Setup
         setupModelArray.clear();
-        MasterSyncItemModel setupModel = new MasterSyncItemModel("Setup", setupCount, "Setup", "getsetups", Constants.SETUP, setupStatus, false);
-        MasterSyncItemModel customSetupModel = new MasterSyncItemModel("Custom Setup", customSetupCount, "Setup", "getcustomsetup", Constants.CUSTOM_SETUP, customSetupStatus, false);
+        MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP, setupCount, Constants.SETUP, "getsetups", Constants.SETUP, setupStatus, false);
+        MasterSyncItemModel customSetupModel = new MasterSyncItemModel(Constants.CUSTOM_SETUP, customSetupCount, Constants.SETUP, "getcustomsetup", Constants.CUSTOM_SETUP, customSetupStatus, false);
         setupModelArray.add(setupModel);
         setupModelArray.add(customSetupModel);
 
@@ -788,7 +787,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.tpArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.slideArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.subordinateArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.stockbalanceArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
         binding.setupArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
 
         binding.listedDoctor.setSelected(false);
@@ -806,7 +804,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.tourPlan.setSelected(false);
         binding.slide.setSelected(false);
         binding.subordinate.setSelected(false);
-        binding.stockbalance.setSelected(false);
         binding.setup.setSelected(false);
 
         imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
@@ -819,39 +816,37 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void itemClick(MasterSyncItemModel masterSyncItemModel1, int position) {
                 if (binding.listedDoctor.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), doctorModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), doctorModelArray, position);
                 } else if (binding.chemist.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), chemistModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), chemistModelArray, position);
                 } else if (binding.stockiest.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), stockiestModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), stockiestModelArray, position);
                 } else if (binding.unlistedDoctor.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), unlistedDrModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), unlistedDrModelArray, position);
                 } else if (binding.hospital.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), hospitalModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), hospitalModelArray, position);
                 } else if (binding.cip.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), cipModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), cipModelArray, position);
                 } else if (binding.input.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), inputModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), inputModelArray, position);
                 } else if (binding.product.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), productModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), productModelArray, position);
                 } else if (binding.cluster.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), clusterModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), clusterModelArray, position);
                 } else if (binding.leave.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), leaveModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), leaveModelArray, position);
                 } else if (binding.dcr.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), dcrModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), dcrModelArray, position);
                 } else if (binding.workType.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), workTypeModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), workTypeModelArray, position);
                 } else if (binding.tourPlan.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), tpModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), tpModelArray, position);
                 } else if (binding.slide.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), slideModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), slideModelArray, position);
                 } else if (binding.subordinate.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
-                } else if (binding.stockbalance.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), stockModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
                 } else if (binding.setup.isSelected()) {
-                    sync(masterSyncItemModel1.getMasterFor(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
+                    sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                 }
             }
         });
@@ -892,8 +887,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(slideModelArray);
         } else if (binding.subordinate.isSelected()) {
             populateAdapter(subordinateModelArray);
-        } else if (binding.stockbalance.isSelected()) {
-            populateAdapter(stockModelArray);
         } else if (binding.setup.isSelected()) {
             populateAdapter(setupModelArray);
         }
@@ -923,7 +916,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             masterSyncAllModel.add(tpModelArray);
             masterSyncAllModel.add(slideModelArray);
             masterSyncAllModel.add(setupModelArray);
-            masterSyncAllModel.add(stockModelArray);
         }
 
         for (int i = 0; i < masterSyncAllModel.size(); i++) {
@@ -934,19 +926,19 @@ public class MasterSyncActivity extends AppCompatActivity {
                     if (childArray.get(j).getLocalTableKeyName().contains(rsf)) {
                         childArray.get(j).setPBarVisibility(true);
                         masterSyncAdapter.notifyDataSetChanged();
-                        sync(childArray.get(j).getMasterFor(), childArray.get(j).getRemoteTableName(), childArray, j);
+                        sync(childArray.get(j).getMasterOf(), childArray.get(j).getRemoteTableName(), childArray, j);
                     }
                 } else {
                     childArray.get(j).setPBarVisibility(true);
                     masterSyncAdapter.notifyDataSetChanged();
-                    sync(childArray.get(j).getMasterFor(), childArray.get(j).getRemoteTableName(), childArray, j);
+                    sync(childArray.get(j).getMasterOf(), childArray.get(j).getRemoteTableName(), childArray, j);
                 }
             }
         }
 //        Log.e("test","count : " + itemCount);
     }
 
-    public void sync(String masterFor, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
+    public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
 
         if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
             try {
@@ -968,23 +960,25 @@ public class MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("year", Year.now().getValue());
                 }
 
-                Log.e("test", "master sync obj : " + jsonObject);
+//            Log.e("test","master sync obj : " + jsonObject);
                 Call<JsonElement> call = null;
-                if (masterFor.equalsIgnoreCase("Doctor")) {
+                if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
                     call = apiInterface.getDrMaster(jsonObject.toString());
-                } else if (masterFor.equalsIgnoreCase("Subordinate")) {
+                } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
                     call = apiInterface.getSubordinateMaster(jsonObject.toString());
-                } else if (masterFor.equalsIgnoreCase("Product")) {
+                } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
                     call = apiInterface.getProductMaster(jsonObject.toString());
-                } else if (masterFor.equalsIgnoreCase("Leave")) {
+                } else if (masterOf.equalsIgnoreCase("Leave")) {
                     call = apiInterface.getLeaveMaster(jsonObject.toString());
-                } else if (masterFor.equalsIgnoreCase("Home")) {
+                } else if (masterOf.equalsIgnoreCase("Home")) {
                     call = apiInterface.getDCRMaster(jsonObject.toString());
-                } else if (masterFor.equalsIgnoreCase("Slide")) {
+                } else if (masterOf.equalsIgnoreCase("MissedDate")) {
+                    call = apiInterface.getMissedDCRMaster(jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
+                    call = apiInterface.getAdditionalMaster(jsonObject.toString());
+                } else if (masterOf.equalsIgnoreCase("Slide")) {
                     call = apiInterface.getSlideMaster(jsonObject.toString());
-                } else if (masterFor.equalsIgnoreCase("Stock")) {
-                    call = apiInterface.getStockMaster(jsonObject.toString());
-                } else if (masterFor.equalsIgnoreCase("Setup")) {
+                } else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
                     call = apiInterface.getSetupMaster(jsonObject.toString());
                 }
                 if (call != null) {
@@ -994,12 +988,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                             apiSuccessCount++;
                             boolean success = false;
-                            JsonElement jsonElement;
                             JSONArray jsonArray = new JSONArray();
                             if (response.isSuccessful()) {
-                                Log.e("test", "response : " + masterFor + " -- " + remoteTableName + " : " + response.body().toString());
+                                Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
                                 try {
-                                    jsonElement = response.body();
+                                    JsonElement jsonElement = response.body();
                                     if (!jsonElement.isJsonNull()) {
                                         if (jsonElement.isJsonArray()) {
                                             JsonArray jsonArray1 = jsonElement.getAsJsonArray();
@@ -1008,7 +1001,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         } else if (jsonElement.isJsonObject()) {
                                             JsonObject jsonObject1 = jsonElement.getAsJsonObject();
                                             JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
-                                            if (!jsonObject2.has("success")) { // json object with "success" : "fail" will be received only when api call is failed for any reasons,"success" will not be received when api call is success
+                                            if (!jsonObject2.has("success")) { // "success" will not be received when api call is success,response as jsonObject with {"success" : "fail" } will be received only when api call is failed for any reasons
                                                 jsonArray.put(jsonObject2);
                                                 success = true;
                                             } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
@@ -1024,20 +1017,27 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                             binding.lastSyncTime.setText(dateAndTime);
                                             SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
-                                            if (masterFor.equalsIgnoreCase("Stock")) {
-                                                JSONObject object = new JSONObject(response.body().toString());
-                                                JSONArray JarraySample = object.getJSONArray("Sample_Stock");
-                                                JSONArray JarrayInput = object.getJSONArray("Input_Stock");
-                                                sqLite.saveMasterSyncData(Constants.SAMPLE_STOCK, JarraySample.toString(), 0);
-                                                sqLite.saveMasterSyncData(Constants.INPUT_STOCK, JarrayInput.toString(), 0);
-                                            } else {
-                                                sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0);
-                                            }
-                                            if (masterFor.equalsIgnoreCase("Subordinate") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")) {
-                                                if (mgrInitialSync) {
-                                                    setHq(jsonArray);
+                                            sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0);
+
+                                            if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
+                                                JSONArray stockBalanceArray = null;
+                                                JSONArray inputBalanceArray = null;
+                                                if (jsonArray.length() > 0) {
+                                                    JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                                                    if (!jsonObject1.getJSONArray("Sample_Stock").isNull(0) && !jsonObject1.getJSONArray("Sample_Stock").toString().isEmpty()) {
+                                                        stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
+                                                    }
+                                                    if (!jsonObject1.getJSONArray("Input_Stock").isNull(0) && !jsonObject1.getJSONArray("Input_Stock").toString().isEmpty()) {
+                                                        inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
+                                                    }
+                                                    sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
+                                                    sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
                                                 }
-                                            } else if (masterSyncItemModels.get(position).getName().equalsIgnoreCase("Setup")) {
+
+                                            } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")) {
+                                                if (mgrInitialSync) setHq(jsonArray);
+
+                                            } else if (masterSyncItemModels.get(position).getName().equalsIgnoreCase(Constants.SETUP)) {
                                                 if (jsonArray.length() > 0) {
                                                     JSONObject jsonSetup = jsonArray.getJSONObject(0);
                                                     if (jsonSetup.has("geoTagImg"))
@@ -1064,6 +1064,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 masterSyncItemModels.get(position).setSyncSuccess(1);
                                 sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                             }
+
                             masterSyncAdapter.notifyDataSetChanged();
                             // Log.e("test","success count : " + apiSuccessCount);
                         }

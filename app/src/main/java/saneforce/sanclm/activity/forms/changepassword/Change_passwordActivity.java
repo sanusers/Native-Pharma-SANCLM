@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.changepassword;
+package saneforce.sanclm.activity.forms.changepassword;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;

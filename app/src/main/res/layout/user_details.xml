@@ -4,15 +4,15 @@
     android:id="@+id/user_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/_10sdp"
+    android:layout_marginEnd="@dimen/_10sdp"
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="@dimen/_8sdp"
         android:layout_height="@dimen/_8sdp"
-        android:layout_gravity="right"
-        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:orientation="vertical">
 
         <ImageView
@@ -26,9 +26,8 @@
     <LinearLayout
         android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_125sdp"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:layout_marginTop="-6dp"
-
         android:background="@drawable/border_white"
         android:orientation="vertical">
 

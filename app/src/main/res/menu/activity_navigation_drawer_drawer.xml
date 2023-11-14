@@ -85,7 +85,6 @@
             android:fontFamily="@font/satoshi_medium"
             android:id="@+id/logout"
             android:title="Logout" />
-
     </group>
 
 </menu>

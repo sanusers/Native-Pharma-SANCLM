@@ -19,7 +19,8 @@
     <color name="background">#EEEEEE</color>
     <color name="text_dark_25">#40282A3C</color>
     <color name="text_dark_10">#12FD0B0B</color>
-
+    <color name="mildRed">#D8807D</color>
+    <color name="btn_disable_gray">#59282A3C</color>
 
 
     <color name="dark_purple">#282A3C</color>
@@ -35,6 +36,7 @@
     <color name="ash_pecalltext">#b8b8b8</color>
     <color name="gold_yellow">#FFD700</color>
     <color name="bg_grey_2">#C9CACE</color>
+    <color name="bg_grey_dark">#6C6C6C</color>
     <color name="bg_light_cement">#E9EAEB</color>
     <color name="text_qty_prd">#60626F</color>
     <color name="text_grey">#6C6D79</color>
@@ -47,9 +49,11 @@
     <color name="txt_sample">#F1536E</color>
     <color name="bg_sample">#FDE5E9</color>
     <color name="bg_priority">#D9F6ED</color>
+    <color name="bg_hospital">#E9E5EA</color>
     <color name="txt_priority">#00C689</color>
     <color name="bg_lit_cement">#F4F4F5</color>
     <color name="dark_pink">#F1536E</color>
+    <color name="maroon">#6D5471</color>
     <color name="pink_15">#26F1536E</color>
     <color name="backround_graey">#EEEEEE</color>
     <color name="txt_lite_black">#5b5a67</color>

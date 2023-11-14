@@ -60,18 +60,15 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
 
-
     <string name="str_app_configuration">App Configuration</string>
     <string name="str_web_url">Web URL</string>
     <string name="str_license_key">License Key</string>
-
 
     <string name="str_enter_url">Enter URL</string>
     <string name="str_enter_license">Enter License</string>
     <string name="str_language">Language</string>
     <string name="str_your_device_id">Your Device ID</string>
 
-    <string name="str_default_language">English</string>
     <string name="str_save_settings">Save Settings</string>
     <string name="str_powered_by">Powered by</string>
     <string name="call_selection">Call Selection</string>
@@ -107,6 +104,53 @@
     <string name="jw_selction">JointWork Selection</string>
     <string name="ok">Ok</string>
     <string name="toast_do_master_sync">Kindly do Master Sync</string>
+
+    <string name="leave_approvals">Leave Approvals</string>
+    <string name="tp_approvals">Tour Plan Approvals</string>
+    <string name="emp_code">Emp Code</string>
+    <string name="designation">Designation</string>
+    <string name="leave_type">Leave Type</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="no_of_days">No of days</string>
+    <string name="add_on_leave">Address on Leave</string>
+    <string name="reason">Reason</string>
+    <string name="approve">Approve</string>
+    <string name="reject_reason">Reject Reason</string>
+    <string name="tp_deviation">Tp Deviation</string>
+    <string name="session_1">Session 1</string>
+    <string name="cluster">Cluster</string>
+    <string name="hq">HQ</string>
+    <string name="deviation_remarks">Deviation Remarks</string>
+    <string name="dcr_approvals">DCR Approvals</string>
+    <string name="activity_date">Activity date</string>
+    <string name="submitted_date">Submitted date</string>
+    <string name="all">All</string>
+    <string name="txt_hospital">Hospital</string>
+    <string name="visit_time">Visit Time</string>
+    <string name="modified_time">Modified Time</string>
+    <string name="detailed_prd">Detailed Product</string>
+    <string name="sample_prds">Sample Products</string>
+    <string name="additional_call">Additional Calls</string>
+    <string name="no_remarks">No Remarks</string>
+    <string name="no_feedback">No Feedback</string>
+    <string name="no_cluster">No Cluster</string>
+    <string name="toast_response_failed">Response Failed! Please Try Again</string>
+    <string name="no_jw">No JointWork</string>
+    <string name="back">Back</string>
+    <string name="geo_tagging">Geo Tagging</string>
+    <string name="address">Address</string>
+    <string name="yet_to_add_rcpa">Yet to add RCPA</string>
+    <string name="competitor_product">Competitor Product</string>
+    <string name="clear">Clear</string>
+    <string name="comp_prd">Competitor Product</string>
+    <string name="enter_name">Enter name</string>
+    <string name="ent_brand_name">Enter Brand Name</string>
+    <string name="tour_plan_approvals">Tour Plan Approvals</string>
+    <string name="tp_planed_for">Tour Planned for</string>
+    <string name="total_planed_days">Total Planned days</string>
+    <string name="week_off_days">Week Off days</string>
+    <string name="total">Total</string>
 
 
 </resources>

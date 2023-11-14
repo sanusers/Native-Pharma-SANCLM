@@ -5,25 +5,25 @@ import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallB
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,11 +35,11 @@ import java.util.ArrayList;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.rcpa.RCPAAddCompAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.rcpa.RCPAChemistAdapter;
-import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddCompSideView;
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddedProdList;
-import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.databinding.FragmentAddRcpaSideBinding;
 import saneforce.sanclm.storage.SQLite;
 
 public class RCPAFragmentSide extends Fragment {
@@ -47,7 +47,11 @@ public class RCPAFragmentSide extends Fragment {
     public static ArrayList<RCPAAddedProdList> rcpaAddedProdListArrayList;
     public static ArrayList<RCPAAddedCompList> rcpa_Added_list;
     public static ArrayList<String> chemistNames;
-    public static RecyclerView rv_comp_list;
+    @SuppressLint("StaticFieldLeak")
+    public static FragmentAddRcpaSideBinding rcpaSideBinding;
+    public static ArrayList<CallCommonCheckedList> addCompList = new ArrayList<>();
+    @SuppressLint("StaticFieldLeak")
+    public static AdapterCompetitorPrd adapterCompetitorPrd;
     Button btn_save_rcpa;
     TextView tv_dummy, btn_add_competitor, tv_rate, tv_value;
     RCPAAddCompAdapter rcpaAddCompAdapter;
@@ -72,8 +76,35 @@ public class RCPAFragmentSide extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_rcpa_side, container, false);
-        btn_save_rcpa = v.findViewById(R.id.btn_save_rcpa);
+        rcpaSideBinding = FragmentAddRcpaSideBinding.inflate(getLayoutInflater());
+        View v = rcpaSideBinding.getRoot();
+        sqLite = new SQLite(requireContext());
+
+        SetupAdapter();
+
+        rcpaSideBinding.tvDummy.setOnClickListener(view -> {
+        });
+
+        rcpaSideBinding.imgClose.setOnClickListener(view -> dcrcallBinding.fragmentAddRcpaSide.setVisibility(View.GONE));
+
+        rcpaSideBinding.imgAddComp.setOnClickListener(view -> {
+            rcpaSideBinding.constraintPreviewCompList.setVisibility(View.GONE);
+            rcpaSideBinding.constraintAddCompList.setVisibility(View.VISIBLE);
+            rcpaSideBinding.btnClear.setText(requireContext().getResources().getString(R.string.back));
+            rcpaSideBinding.btnSave.setText(requireContext().getResources().getString(R.string.add));
+        });
+
+        rcpaSideBinding.btnClear.setOnClickListener(view -> {
+            if (rcpaSideBinding.btnClear.getText().toString().equalsIgnoreCase(requireContext().getResources().getString(R.string.back))) {
+                rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
+                rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
+                rcpaSideBinding.btnClear.setText(requireContext().getResources().getString(R.string.clear));
+                rcpaSideBinding.btnSave.setText(requireContext().getResources().getString(R.string.save));
+            }
+        });
+
+
+      /*  btn_save_rcpa = v.findViewById(R.id.btn_save_rcpa);
         tv_dummy = v.findViewById(R.id.tv_dummy);
         btn_add_competitor = v.findViewById(R.id.btn_add_conmpetitor);
         rv_comp_list = v.findViewById(R.id.rv_add_rcpa);
@@ -163,9 +194,9 @@ public class RCPAFragmentSide extends Fragment {
 
         tv_dummy.setOnClickListener(view -> {
             HideKeyboard();
-         /*   if (mCommonsharedPreference.getValueFromPreference("tab_pos_dcr").equalsIgnoreCase("3") || mCommonsharedPreference.getValueFromPreference("tab_pos_dcr").equalsIgnoreCase("4")) {
+         *//*   if (mCommonsharedPreference.getValueFromPreference("tab_pos_dcr").equalsIgnoreCase("3") || mCommonsharedPreference.getValueFromPreference("tab_pos_dcr").equalsIgnoreCase("4")) {
                 HideKeyboard();
-            }*/
+            }*//*
         });
 
 
@@ -204,99 +235,148 @@ public class RCPAFragmentSide extends Fragment {
                 DummyAdapter();
                 HideKeyboard();
             }
-        });
+        });*/
         return v;
     }
 
-    private void AddListViewData() {
-        try {
-            ChemSpinnerList.clear();
-            PrdSpinnerList.clear();
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                ChemSpinnerList.add(jsonObject.getString("Name"));
-            }
+    private void SetupAdapter() {
+        Log.v("comp_prd","final_size---" + addCompList);
+        adapterCompetitorPrd = new AdapterCompetitorPrd(requireContext(), addCompList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        rcpaSideBinding.rvCompPrdList.setLayoutManager(mLayoutManager);
+        rcpaSideBinding.rvCompPrdList.setItemAnimator(new DefaultItemAnimator());
+        rcpaSideBinding.rvCompPrdList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        rcpaSideBinding.rvCompPrdList.setAdapter(adapterCompetitorPrd);
+    }
 
-            dataAdapterChem = new ArrayAdapter<>(getActivity(), R.layout.listview_items, ChemSpinnerList);
-            lv_chemist.setAdapter(dataAdapterChem);
+    public static class AdapterCompetitorPrd extends RecyclerView.Adapter<AdapterCompetitorPrd.ViewHolder> {
+        Context context;
+        ArrayList<CallCommonCheckedList> CompetitorList;
 
-       /* spin_chemist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!chem_names.isEmpty()) {
-                    if (!chem_names.equalsIgnoreCase(spin_chemist.getSelectedItem().toString())) {
-                        RCPAAddCompSideViewArrayList.clear();
-                        edt_qty.setText("");
-                        tv_value.setText("");
-                        tv_rate.setText("");
-                    }
-                }
-                chem_names = spin_chemist.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                PrdSpinnerList.add(jsonObject.getString("Name"));
-            }
-
-/*
-        spin_prd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!PrdName.isEmpty()) {
-                    if (!PrdName.equalsIgnoreCase(spin_prd.getSelectedItem().toString())) {
-                        edt_qty.setText("");
-                        tv_value.setText("");
-                        tv_rate.setText("");
-                    }
-                }
-                PrdName = spin_prd.getSelectedItem().toString();
-                switch (spin_prd.getSelectedItem().toString()) {
-                    case "Select":
-                        tv_rate.setText("");
-                        tv_value.setText("");
-                        break;
-                    case "Paracemetol":
-                        tv_rate.setText("30");
-                        tv_value.setText("95.7");
-                        break;
-                    case "Terracite":
-                        tv_rate.setText("93");
-                        tv_value.setText("8.7");
-                        break;
-                    case "Calch 500":
-                        tv_rate.setText("87");
-                        tv_value.setText("5.4");
-                        break;
-                    case "Stanvit":
-                        tv_rate.setText("56");
-                        tv_value.setText("8.9");
-                        break;
-                    default:
-                        tv_rate.setText("0");
-                        tv_value.setText("0");
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
-
-            dataAdapterPrd = new ArrayAdapter<>(getActivity(), R.layout.listview_items, PrdSpinnerList);
-            lv_prd.setAdapter(dataAdapterPrd);
-        } catch (Exception e) {
-
+        public AdapterCompetitorPrd(Context context, ArrayList<CallCommonCheckedList> competitorList) {
+            this.context = context;
+            CompetitorList = competitorList;
         }
+
+        @NonNull
+        @Override
+        public AdapterCompetitorPrd.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data, parent, false);
+            return new AdapterCompetitorPrd.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AdapterCompetitorPrd.ViewHolder holder, int position) {
+            holder.tv_name.setText(CompetitorList.get(position).getName());
+            holder.checkBox.setChecked(CompetitorList.get(position).isCheckedItem());
+        }
+
+        @Override
+        public int getItemCount() {
+            return CompetitorList.size();
+        }
+
+        public static class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tv_name;
+            CheckBox checkBox;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tv_name = itemView.findViewById(R.id.tv_data_name);
+                checkBox = itemView.findViewById(R.id.chk_box);
+            }
+        }
+    }
+
+   /* private void AddListViewData() {
+            try {
+                ChemSpinnerList.clear();
+                PrdSpinnerList.clear();
+                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    jsonObject = jsonArray.getJSONObject(i);
+                    ChemSpinnerList.add(jsonObject.getString("Name"));
+                }
+
+                dataAdapterChem = new ArrayAdapter<>(getActivity(), R.layout.listview_items, ChemSpinnerList);
+                lv_chemist.setAdapter(dataAdapterChem);
+
+           *//* spin_chemist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (!chem_names.isEmpty()) {
+                        if (!chem_names.equalsIgnoreCase(spin_chemist.getSelectedItem().toString())) {
+                            RCPAAddCompSideViewArrayList.clear();
+                            edt_qty.setText("");
+                            tv_value.setText("");
+                            tv_rate.setText("");
+                        }
+                    }
+                    chem_names = spin_chemist.getSelectedItem().toString();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });*//*
+                jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    jsonObject = jsonArray.getJSONObject(i);
+                    PrdSpinnerList.add(jsonObject.getString("Name"));
+                }
+
+    *//*
+            spin_prd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (!PrdName.isEmpty()) {
+                        if (!PrdName.equalsIgnoreCase(spin_prd.getSelectedItem().toString())) {
+                            edt_qty.setText("");
+                            tv_value.setText("");
+                            tv_rate.setText("");
+                        }
+                    }
+                    PrdName = spin_prd.getSelectedItem().toString();
+                    switch (spin_prd.getSelectedItem().toString()) {
+                        case "Select":
+                            tv_rate.setText("");
+                            tv_value.setText("");
+                            break;
+                        case "Paracemetol":
+                            tv_rate.setText("30");
+                            tv_value.setText("95.7");
+                            break;
+                        case "Terracite":
+                            tv_rate.setText("93");
+                            tv_value.setText("8.7");
+                            break;
+                        case "Calch 500":
+                            tv_rate.setText("87");
+                            tv_value.setText("5.4");
+                            break;
+                        case "Stanvit":
+                            tv_rate.setText("56");
+                            tv_value.setText("8.9");
+                            break;
+                        default:
+                            tv_rate.setText("0");
+                            tv_value.setText("0");
+                            break;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });*//*
+
+                dataAdapterPrd = new ArrayAdapter<>(getActivity(), R.layout.listview_items, PrdSpinnerList);
+                lv_prd.setAdapter(dataAdapterPrd);
+            } catch (Exception e) {
+
+            }
     }
 
     private void HideKeyboard() {
@@ -308,7 +388,7 @@ public class RCPAFragmentSide extends Fragment {
         boolean check_prd_name = false;
         RCPAAddCompSideViewArrayList.add(0, new RCPAAddCompSideView(PrdName, edt_qty.getText().toString(), tv_rate.getText().toString(), tv_value.getText().toString()));
 
-      /*  for (int i = 0; i < rcpaAddedProdListArrayList.size(); i++) {
+      *//*  for (int i = 0; i < rcpaAddedProdListArrayList.size(); i++) {
             if (rcpaAddedProdListArrayList.get(i).getPrd_name().equalsIgnoreCase(PrdName)) {
                 check_prd_name = true;
                 break;
@@ -318,7 +398,7 @@ public class RCPAFragmentSide extends Fragment {
         if (!check_prd_name) {
             rcpaAddedProdListArrayList.add(0, new RCPAAddedProdList(PrdName, edt_qty.getText().toString(), tv_rate.getText().toString(), tv_value.getText().toString(), chem_names));
             rcpa_Added_list.add(0, new RCPAAddedCompList(chem_names, PrdName, "", "", "", "", "", ""));
-        }*/
+        }*//*
 
         rcpaAddedProdListArrayList.add(new RCPAAddedProdList(PrdName, edt_qty.getText().toString(), tv_rate.getText().toString(), tv_value.getText().toString(), chem_names));
         rcpa_Added_list.add(new RCPAAddedCompList(chem_names, PrdName, "", "", "", "", "", ""));
@@ -327,5 +407,5 @@ public class RCPAFragmentSide extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         rv_comp_list.setLayoutManager(linearLayoutManager);
         rv_comp_list.setAdapter(rcpaAddCompAdapter);
-    }
+    }*/
 }

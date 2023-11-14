@@ -2,6 +2,16 @@ package saneforce.sanclm.activity.approvals.leave;
 
 public class LeaveModelList {
     String leave_id;
+    String sf_code;
+
+    public String getSf_code() {
+        return sf_code;
+    }
+
+    public void setSf_code(String sf_code) {
+        this.sf_code = sf_code;
+    }
+
     String name;
     String from_date;
     String to_date;
@@ -11,8 +21,9 @@ public class LeaveModelList {
     String available_leave;
     String no_of_days;
 
-    public LeaveModelList(String leave_id, String name, String from_date, String to_date, String reason, String addr, String leave_type, String available_leave, String no_of_days) {
+    public LeaveModelList(String leave_id,String sf_code,String name, String from_date, String to_date, String reason, String addr, String leave_type, String available_leave, String no_of_days) {
         this.leave_id = leave_id;
+        this.sf_code = sf_code;
         this.name = name;
         this.from_date = from_date;
         this.to_date = to_date;

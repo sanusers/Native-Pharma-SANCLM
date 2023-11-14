@@ -11,6 +11,7 @@ public class ModelClass implements Serializable {
   private String date = "";
   private String day = "";
   private Boolean onEdit = false;
+  private String submittedTime = "";
   private ArrayList<ModelClass.SessionList> sessionList;
 
   public ModelClass () {
@@ -68,6 +69,14 @@ public class ModelClass implements Serializable {
 
   public void setOnEdit(Boolean onEdit) {
     this.onEdit = onEdit;
+  }
+
+  public String getSubmittedTime () {
+    return submittedTime;
+  }
+
+  public void setSubmittedTime (String submittedTime) {
+    this.submittedTime = submittedTime;
   }
 
   public ArrayList<ModelClass.SessionList> getSessionList() {
@@ -288,7 +297,6 @@ public class ModelClass implements Serializable {
     }
 
 
-
     public static class SubClass implements Serializable {
       private String name = "";
 
@@ -384,6 +392,36 @@ public class ModelClass implements Serializable {
 
     }
 
+  }
+
+  public static class CountModel implements Serializable {
+
+    String name = "";
+    int count = 0;
+
+    public CountModel () {
+    }
+
+    public CountModel (String name, int count) {
+      this.name = name;
+      this.count = count;
+    }
+
+    public String getName () {
+      return name;
+    }
+
+    public void setName (String name) {
+      this.name = name;
+    }
+
+    public int getCount () {
+      return count;
+    }
+
+    public void setCount (int count) {
+      this.count = count;
+    }
   }
 
 }

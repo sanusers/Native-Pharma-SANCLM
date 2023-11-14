@@ -48,14 +48,15 @@ import saneforce.sanclm.storage.SQLite;
 
 public class JWOthersFragment extends Fragment {
     public static ArrayList<CallCaptureImageList> callCaptureImageLists;
-    public static ArrayList<CallCommonCheckedList> callAddedJointList;
     @SuppressLint("StaticFieldLeak")
     public static FragmentJwothersBinding jwothersBinding;
     public static String filePath = "", imageName = "";
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallCaptureImage adapterCallCaptureImage;
     public static Uri outputFileUri;
-    AdapterCallJointWorkList adapterCallJointWorkList;
+    @SuppressLint("StaticFieldLeak")
+    public static AdapterCallJointWorkList adapterCallJointWorkList;
+    public static ArrayList<CallCommonCheckedList> callAddedJointList;
     SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -119,6 +120,12 @@ public class JWOthersFragment extends Fragment {
             jwothersBinding.constraintFeedback.setVisibility(View.VISIBLE);
         } else {
             jwothersBinding.constraintFeedback.setVisibility(View.GONE);
+        }
+
+        if (!DCRCallActivity.PobNeed.equalsIgnoreCase("0") && !DCRCallActivity.OverallFeedbackNeed.equalsIgnoreCase("0")) {
+            jwothersBinding.constraintTopFirst.setVisibility(View.GONE);
+        } else {
+            jwothersBinding.constraintTopFirst.setVisibility(View.VISIBLE);
         }
 
         if (DCRCallActivity.EventCaptureNeed.equalsIgnoreCase("0")) {

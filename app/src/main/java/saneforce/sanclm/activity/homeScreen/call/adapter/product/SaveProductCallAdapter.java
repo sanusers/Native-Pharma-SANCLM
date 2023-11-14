@@ -101,7 +101,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
             holder.ed_rxQty.setText("0");
         }
 
-        if (SampleValidation.equalsIgnoreCase("0")) {
+        if (SampleValidation.equalsIgnoreCase("1")) {
             holder.tv_stocks.setVisibility(View.VISIBLE);
             holder.tv_stocks.setText(productListArrayList.get(position).getBalance_sam_stk());
             if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
@@ -139,6 +139,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
             commonUtilsMethods.displayPopupWindow(activity, context, view, productListArrayList.get(position).getName());
         });
 
+
         holder.ed_samplesQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -153,7 +154,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
-                    if (SampleValidation.equalsIgnoreCase("0")) {
+                    if (SampleValidation.equalsIgnoreCase("1")) {
                         if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
                             productListArrayList.set(holder.getAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getAdapterPosition()).getName(), productListArrayList.get(holder.getAdapterPosition()).getCode(), productListArrayList.get(holder.getAdapterPosition()).getCategory(), productListArrayList.get(holder.getAdapterPosition()).getSam_stk(), productListArrayList.get(holder.getAdapterPosition()).getSam_stk(), editable.toString(), productListArrayList.get(holder.getAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getAdapterPosition()).getPromoted(), productListArrayList.get(holder.getAdapterPosition()).isCliked()));
                         } else if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
@@ -296,7 +297,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
             tv_stocks = itemView.findViewById(R.id.tv_stock);
             ed_samplesQty = itemView.findViewById(R.id.ed_samples);
             ed_rxQty = itemView.findViewById(R.id.ed_rx_qty);
-            ed_rcpaQty = itemView.findViewById(R.id.ed_rcpa);
+            ed_rcpaQty = itemView.findViewById(R.id.tv_rcpa);
             img_del_prd = itemView.findViewById(R.id.img_del_prd);
             switch_prompt = itemView.findViewById(R.id.switch_promoted);
         }

@@ -37,9 +37,6 @@
         <item name="colorControlActivated">@color/green_2</item>
         <item name="colorOnBackground">@color/pink</item>
 
-        <!-- You can also set colorControlNormal, colorControlActivated
-             colorControlHighlight, and colorSwitchThumbNormal. -->
-
     </style>
 
     <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">

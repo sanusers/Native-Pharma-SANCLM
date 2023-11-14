@@ -168,21 +168,12 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/_4sdp">
 
-                                <TextView
-                                    android:id="@+id/tv_language"
+                                <Spinner
+                                    android:id="@+id/spinnerLanguage"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/edittext_stroke"
-                                    android:fontFamily="@font/satoshi_medium"
-                                    android:gravity="center|start"
-                                    android:hint="@string/str_default_language"
-                                    android:maxLines="1"
-                                    android:padding="@dimen/_7sdp"
-                                    android:singleLine="true"
-                                    android:textColor="@color/text_dark"
-                                    android:textColorHint="@color/text_dark_65"
-                                    android:textSize="@dimen/_6sdp"
-                                    tools:ignore="SpUsage,TextFields" />
+                                    android:gravity="center|start" />
 
                                 <ImageView
                                     android:layout_width="@dimen/_9sdp"
@@ -191,7 +182,9 @@
                                     android:layout_centerInParent="true"
                                     android:layout_marginEnd="@dimen/_6sdp"
                                     android:background="@drawable/arrow_down" />
+
                             </RelativeLayout>
+
                         </LinearLayout>
 
                         <LinearLayout
@@ -246,6 +239,7 @@
                         android:paddingEnd="@dimen/_15sdp"
                         tools:ignore="SpUsage" />
 
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -298,7 +292,7 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/pb_configuration_progress"
+        android:id="@+id/configurationPB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

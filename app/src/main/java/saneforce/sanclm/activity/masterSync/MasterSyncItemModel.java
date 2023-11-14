@@ -3,7 +3,7 @@ package saneforce.sanclm.activity.masterSync;
 public class MasterSyncItemModel {
     String name = "";
     int count = 0;
-    String masterFor = "";
+    String masterOf = "";
     String remoteTableName = "";
     String localTableKeyName ="";
     boolean PBarVisibility = false;
@@ -13,27 +13,27 @@ public class MasterSyncItemModel {
 
     }
 
-    public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, boolean PBarVisibility) {
+    public MasterSyncItemModel (String name, int count, String masterOf, String remoteTableName, String localTableKeyName, boolean PBarVisibility) {
         this.name = name;
         this.count = count;
-        this.masterFor = masterFor;
+        this.masterOf = masterOf;
         this.remoteTableName = remoteTableName;
         this.localTableKeyName = localTableKeyName;
         this.PBarVisibility = PBarVisibility;
     }
 
-    public MasterSyncItemModel (String name, int count, String masterFor, String remoteTableName, String localTableKeyName, int syncSuccess, boolean PBarVisibility) {
+    public MasterSyncItemModel (String name, int count, String masterOf, String remoteTableName, String localTableKeyName, int syncSuccess, boolean PBarVisibility) {
         this.name = name;
         this.count = count;
-        this.masterFor = masterFor;
+        this.masterOf = masterOf;
         this.remoteTableName = remoteTableName;
         this.localTableKeyName = localTableKeyName;
         this.syncSuccess = syncSuccess;
         this.PBarVisibility = PBarVisibility;
     }
 
-    public MasterSyncItemModel (String masterFor, String remoteTableName, String localTableKeyName) {
-        this.masterFor = masterFor;
+    public MasterSyncItemModel (String masterOf, String remoteTableName, String localTableKeyName) {
+        this.masterOf = masterOf;
         this.remoteTableName = remoteTableName;
         this.localTableKeyName = localTableKeyName;
     }
@@ -54,12 +54,12 @@ public class MasterSyncItemModel {
         this.count = count;
     }
 
-    public String getMasterFor () {
-        return masterFor;
+    public String getMasterOf () {
+        return masterOf;
     }
 
-    public void setMasterFor (String masterFor) {
-        this.masterFor = masterFor;
+    public void setMasterOf (String masterOf) {
+        this.masterOf = masterOf;
     }
 
     public String getRemoteTableName () {

@@ -41,11 +41,11 @@ public class ProductFragment extends Fragment {
         View v = productsBinding.getRoot();
         sqLite = new SQLite(getContext());
 
-      /*  if (DCRCallActivity.SampleValidation.equalsIgnoreCase("0")) {
+        if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
             productsBinding.tagStock.setVisibility(View.VISIBLE);
         } else {
             productsBinding.tagStock.setVisibility(View.GONE);
-        }*/
+        }
 
         HiddenVisibleFunction();
 

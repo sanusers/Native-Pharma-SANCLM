@@ -89,7 +89,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             laty = gpsTrack.getLatitude();
             lngy = gpsTrack.getLongitude();
             loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData(true);
+            loginResponse = sqLite.getLoginData();
 
             SfType = loginResponse.getSf_type();
             SfCode = loginResponse.getSF_Code();

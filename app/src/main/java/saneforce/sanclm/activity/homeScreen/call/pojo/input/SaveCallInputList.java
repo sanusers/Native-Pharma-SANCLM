@@ -10,6 +10,13 @@ public class SaveCallInputList {
     String balance_inp_stk;
     String inp_stk;
 
+    public SaveCallInputList( String inp_code, String input_name,String inp_qty) {
+        this.input_name = input_name;
+        this.inp_code = inp_code;
+        this.inp_qty = inp_qty;
+    }
+
+
     public SaveCallInputList(String input_name, String inp_code, String inp_qty, String balance_inp_stk, String inp_stk) {
         this.input_name = input_name;
         this.inp_code = inp_code;
