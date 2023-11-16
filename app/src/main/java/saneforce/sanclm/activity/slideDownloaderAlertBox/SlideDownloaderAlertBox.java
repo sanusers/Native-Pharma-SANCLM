@@ -23,12 +23,9 @@ import saneforce.sanclm.storage.SharedPref;
 
 public  class SlideDownloaderAlertBox {
 
-
-
     public  static  int downloading_count ;
     public  static TextView txt_downloadcount;
     public  static  int dialogdismisscount;
-
 
     public static void openCustomDialog(Activity activity,String MoveingFlog ) {
 
@@ -42,7 +39,6 @@ public  class SlideDownloaderAlertBox {
                     JSONObject jsonObject = slidedata.getJSONObject(i);
                     String FilePath = jsonObject.optString("FilePath");
                     Slide_list.add(new SlideModelClass(FilePath,"0","0","0"));
-
                 }
             }
         } catch (Exception a) {
