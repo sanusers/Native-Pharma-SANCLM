@@ -27,7 +27,7 @@ public class DownloadTask {
     Context context;
     String progressBar_value, downloadmsg;
 
-
+   int processvalue;
     SlideModelClass Slidevalue;
     RecyclerView recyclerView;
     Slide_adapter adapter;
@@ -48,6 +48,7 @@ public class DownloadTask {
         this.dialog = dialog;
         this.moveflog = moveflog;
         this.context = activity.getApplicationContext();
+        processvalue=0;
         new DownloadingTask().execute();
     }
 
@@ -131,6 +132,7 @@ public class DownloadTask {
             Slidevalue.setDownloadsizestatus(progressText);
             Slidevalue.setProgressvalue(String.valueOf(progress));
             Slidevalue.setDownloadstatus("1");
+            processvalue=progress;
             adapter.notifyDataSetChanged();
 
         }
@@ -160,7 +162,7 @@ public class DownloadTask {
                 }
 
             } else {
-                Slidevalue.setProgressvalue(String.valueOf(78));
+                Slidevalue.setProgressvalue(String.valueOf(processvalue));
                 SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count) + "/" + String.valueOf(adapter.getItemCount()));
                 Slidevalue.setDownloadsizestatus("Download failed");
                 Slidevalue.setDownloadstatus("2");

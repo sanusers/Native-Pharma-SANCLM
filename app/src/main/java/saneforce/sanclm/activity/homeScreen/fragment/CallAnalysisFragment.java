@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -56,6 +57,7 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.view.CustomMarkerView;
 import saneforce.sanclm.activity.homeScreen.view.ImageLineChartRenderer;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
@@ -67,6 +69,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     ApiInterface apiInterface;
     LineChart lineChart;
     SQLite sqLite;
+
     TextView doc_call_count, che_call_count, stockiest_call_count, unlisted_call_count, cip_call_count, hospital_call_count, txt_month_one, txt_month_two, txt_month_three, txt_doc_progress_value, txt_che_progress_value, txt_stockiest_progress_value, txt_Unlistered_progress_value, txt_cip_progress_value, txt_hos_progress_value;
 
     ProgressBar doc_progress_bar, che_progress_bar, stock_progress_bar, unlist_progress_bar, cip_progress_bar, hos_progress_bar;
@@ -123,6 +126,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         txt_Unlistered_progress_value = v.findViewById(R.id.txt_unlisted_value);
         txt_cip_progress_value = v.findViewById(R.id.txt_cip__value);
         txt_hos_progress_value = v.findViewById(R.id.txt_hos_value);
+
+
+
 
         doc_progress_bar = v.findViewById(R.id.doc_progress_bar);
         che_progress_bar = v.findViewById(R.id.che_progress_bar);
@@ -215,8 +221,15 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     private void callDetails() {
         sqLite.clearLinecharTable();
         try {
-                dcrdatas  = sqLite.getMasterSyncDataByKey("DCR");
 
+            JSONArray Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(requireContext()));
+            JSONArray Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST  + SharedPref.getHqCode(requireContext()));
+            JSONArray Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST  + SharedPref.getHqCode(requireContext()));
+            JSONArray unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR  + SharedPref.getHqCode(requireContext()));
+            JSONArray cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP  + SharedPref.getHqCode(requireContext()));
+            JSONArray hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(requireContext()));
+
+            dcrdatas  = sqLite.getMasterSyncDataByKey(Constants.DCR);
             if (dcrdatas.length() > 0) {
                 for (int i = 0; i < dcrdatas.length(); i++) {
 
@@ -239,12 +252,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 }
 
-                JSONArray Doctor_list = sqLite.getMasterSyncDataByKey("Doctor_" + SharedPref.getSfCode(requireContext()));
-                JSONArray Chemist_list = sqLite.getMasterSyncDataByKey("Chemist_" + SharedPref.getSfCode(requireContext()));
-                JSONArray Stockiest_list = sqLite.getMasterSyncDataByKey("Stockiest_" + SharedPref.getSfCode(requireContext()));
-                JSONArray unlistered_list = sqLite.getMasterSyncDataByKey("Unlisted_Doctor_" + SharedPref.getSfCode(requireContext()));
-                JSONArray cip_list = sqLite.getMasterSyncDataByKey("Cip_" + SharedPref.getSfCode(requireContext()));
-                JSONArray hos_list = sqLite.getMasterSyncDataByKey("Hospital_" + SharedPref.getSfCode(requireContext()));
+
                 int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
                 int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
                 int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
@@ -291,13 +299,28 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
             }else {
                 ll_monthlayout.setVisibility(View.GONE);
-
                 doc_layout.setOnClickListener(null);
                 che_layout.setOnClickListener(null);
                 stokiest_layout.setOnClickListener(null);
                 unlistered_layout.setOnClickListener(null);
                 cip_layout.setOnClickListener(null);
                 hos_layout.setOnClickListener(null);
+
+
+                txt_doc_progress_value.setText("0%");
+                txt_che_progress_value.setText("0%");
+                txt_stockiest_progress_value.setText("0%");
+                txt_Unlistered_progress_value.setText("0%");
+                txt_cip_progress_value.setText("0%");
+                txt_hos_progress_value.setText("0%");
+
+                doc_call_count.setText(  "0 / " + Doctor_list.length());
+                che_call_count.setText("0 / " + Chemist_list.length());
+                stockiest_call_count.setText( " 0/ " + Stockiest_list.length());
+                unlisted_call_count.setText( " 0/ " + unlistered_list.length());
+                cip_call_count.setText("0 / " + cip_list.length());
+                hospital_call_count.setText("0 / " + hos_list.length());
+
             }
 
 

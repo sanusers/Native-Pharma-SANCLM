@@ -73,7 +73,7 @@ import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
 import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
 
-import saneforce.sanclm.activity.homeScreen.fragment.worktype.WorktypeAdapter;
+
 import saneforce.sanclm.activity.homeScreen.modelClass.CallStatusModelClass;
 import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
@@ -122,9 +122,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     String valid_no = "";
     LinearLayout user_view;
     TextView monthYearText;
-    public static TextView text_date;
+    public static TextView text_date,txt_wt_plan;
     private LocalDate selectedDate;
 
+    public static EditText et_search;
     Callstatusadapter callstatusadapter;
 
     ArrayList<String> calendarDays = new ArrayList<>();
@@ -698,7 +699,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         ll_bfr_month = findViewById(R.id.ll_bfr_month);
         text_date = findViewById(R.id.text_date);
 
-
+        et_search=findViewById(R.id.et_search);
+        txt_wt_plan = findViewById(R.id.tv_searchheader);
         wk_listview = findViewById(R.id.wk_list_view);
         cl_listview = findViewById(R.id.cl_list_view);
         hq_listview = findViewById(R.id.hqlist_view);

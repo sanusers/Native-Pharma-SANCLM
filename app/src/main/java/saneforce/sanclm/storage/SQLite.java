@@ -331,5 +331,17 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
 
+    public boolean isMasterKeyExists( String masterKey) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + MASTER_SYNC_TABLE + " WHERE " + MASTER_KEY + " = ?";
+        String[] selectionArgs = {masterKey};
 
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+
+        boolean exists = cursor.moveToFirst();
+
+        cursor.close();
+
+        return exists;
+    }
 }

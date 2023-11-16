@@ -441,36 +441,16 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="right"
-            android:background="@drawable/background_navicationview"
-            android:foregroundGravity="center"
-            android:paddingStart="@dimen/_8sdp"
-            android:paddingEnd="@dimen/_8sdp"
-            app:itemBackground="@drawable/drawer_item_bg"
-            app:itemIconSize="@dimen/_10sdp"
-            app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
-            app:itemTextColor="@color/black_45">
+            android:background="@drawable/bg_white"
+            android:foregroundGravity="center">
 
-            <ListView
-                android:id="@+id/wk_list_view"
-                android:padding="@dimen/_5sdp"
+            <include
+                android:layout_margin="@dimen/_2sdp"
+                layout="@layout/list_item_worktye"
                 android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 />
-            <ListView
-                android:id="@+id/cl_list_view"
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                android:padding="@dimen/_5sdp"
-                android:layout_height="wrap_content"
-                />
-            <ListView
-                android:id="@+id/hqlist_view"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:padding="@dimen/_5sdp"
-                android:layout_height="wrap_content"
-                />
+
         </com.google.android.material.navigation.NavigationView>
 
     </androidx.drawerlayout.widget.DrawerLayout>
