@@ -164,7 +164,6 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 hq_view.setVisibility(View.VISIBLE);
                 hq_head.setText(SharedPref.getHqName(MyResource_Activity.this));
             }
-
         }
 
         Resource_list();
@@ -305,18 +304,9 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 }else{
                     Hosp_count="0";
                 }
-
             }
 
             Docvisit();
-
-
-//             binding.listedDrTxt.setText(loginResponse.getDrCap());
-//        binding.chemistTxt.setText(loginResponse.getChmCap());
-//        binding.stockiestTxt.setText(loginResponse.getStkCap());
-//        binding.unlistedDoctorTxt.setText(loginResponse.getNLCap());
-
-
 
             listed_data.clear();
             listed_data.add(new Resourcemodel_class(loginResponse.getDrCap(),Doc_count ,"1"));

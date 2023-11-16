@@ -873,7 +873,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void sync(String masterOf, String remoteTableName,ArrayList<MasterSyncItemModel> masterSyncItemModels,int position) {
-
         if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)){
             try {
                 String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());

@@ -313,29 +313,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         pre_layout.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
 
         masterSync.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
-//        drawerLayout.closeDrawer(Gravity.END);
 
         img_account.setOnClickListener(v -> {
             showPopup(img_account);
         });
-
-
-/*
-        img_account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(HomeDashBoard.this, v);
-                popup.setOnMenuItemClickListener((PopupMenu.OnMenuItemClickListener) HomeDashBoard.this);
-                popup.inflate(R.menu.user_details);
-                popup.show();
-            }
-        });
-*/
-
-
-
-
-
     }
 
 
@@ -398,13 +379,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             WindowManager.LayoutParams layoutParams = window1.getAttributes();
             window1.setGravity(Gravity.CENTER);
             window1.setLayout(getResources().getDimensionPixelSize(R.dimen._210sdp), getResources().getDimensionPixelSize(R.dimen._220sdp));
-//            window1.setLayout(500, 580);
             window1.setAttributes(layoutParams);
         }
 
-//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        dialog.setCancelable(false);
-//        dialog.getWindow().getAttributes().windowAnimations = R.style.popupMenuStyle;
 
         EditText old_password = dialog1.findViewById(R.id.old_pass);
         ImageView old_view = dialog1.findViewById(R.id.oldpas_icon);
@@ -492,16 +469,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         int id = item.getItemId();
-
-       /* if (id == R.id.nav_refresh) {
-            double laty = gpsTrack.getLatitude();
-            double lngy = gpsTrack.getLongitude();
-            CommonUtilsMethods.gettingAddress(HomeDashBoard.this, Double.parseDouble(String.valueOf(laty)), Double.parseDouble(String.valueOf(lngy)), true);
-            return true;
-        }*/
-
         if (id == R.id.nav_leave_appln) {
             startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
             return true;
