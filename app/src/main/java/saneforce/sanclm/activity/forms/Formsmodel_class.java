@@ -1,15 +1,13 @@
 package saneforce.sanclm.activity.forms;
 
-import android.widget.ImageView;
-
 public class Formsmodel_class {
 
     String forms_name;
-    ImageView viewlist;
+    int viewlist;
 
 
 
-    public Formsmodel_class(String forms_name, ImageView viewlist) {
+    public Formsmodel_class(String forms_name, int viewlist) {
         this.forms_name = forms_name;
         this.viewlist = viewlist;
     }
@@ -23,11 +21,11 @@ public class Formsmodel_class {
         this.forms_name = forms_name;
     }
 
-    public ImageView getViewlist() {
+    public int getViewlist() {
         return viewlist;
     }
 
-    public void setViewlist(ImageView viewlist) {
+    public void setViewlist(int viewlist) {
         this.viewlist = viewlist;
     }
 

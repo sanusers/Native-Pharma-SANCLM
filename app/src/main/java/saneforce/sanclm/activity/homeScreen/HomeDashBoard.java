@@ -7,8 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -26,6 +31,7 @@ import android.util.Log;
 import android.view.Gravity;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +43,27 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.view.Window;
 
+import android.view.Window;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +81,44 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.Locale;
+
+import org.json.JSONObject;
+
+import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
+import saneforce.sanclm.activity.changepassword.Change_passwordActivity;
+import saneforce.sanclm.activity.forms.Forms_activity;
+import saneforce.sanclm.activity.forms.Forms_activity;
+import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
+import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
+import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.leave.Leave_Application;
+import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
+import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
+import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
+import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.map.MapsActivity;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
+import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.leave.Leave_Application;
+import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
+import saneforce.sanclm.activity.myresource.MyResource_Activity;
+import saneforce.sanclm.activity.presentation.CreatePresentation;
+import saneforce.sanclm.activity.presentation.Presentation;
+import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.commonClasses.UtilityClass;
+import saneforce.sanclm.commonClasses.GPSTrack;
+import saneforce.sanclm.commonClasses.UtilityClass;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -180,6 +240,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         tabLayout = findViewById(R.id.tablelayout);
         navigationView = findViewById(R.id.nav_view);
         masterSync = findViewById(R.id.img_sync);
+
+        img_account = findViewById(R.id.img_account);
+        img_notofication = findViewById(R.id.img_notofication);
+        user_view = findViewById(R.id.user_view);
+        rl_quick_link = findViewById(R.id.rl_quick_link);
+
         dialog1 = new Dialog(this);
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 //        commonUtilsMethods = new CommonUtilsMethods(this);
@@ -388,7 +454,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.user_details, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.showAtLocation(viewed_img, Gravity.END, 85, -148);
+//        popupWindow.showAtLocation(viewed_img, Gravity.END, 68, -148);
+        int y=-(getResources().getDimensionPixelSize(R.dimen._64sdp));
+        int x=(getResources().getDimensionPixelSize(R.dimen._20sdp));
+        popupWindow.showAtLocation(viewed_img, Gravity.END,x,y);
 
         TextView user_name = popupView.findViewById(R.id.user_name);
         TextView sf_name = popupView.findViewById(R.id.sf_name);
@@ -438,13 +507,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             WindowManager.LayoutParams layoutParams = window1.getAttributes();
             window1.setGravity(Gravity.CENTER);
             window1.setLayout(getResources().getDimensionPixelSize(R.dimen._210sdp), getResources().getDimensionPixelSize(R.dimen._220sdp));
-//            window1.setLayout(500, 580);
             window1.setAttributes(layoutParams);
         }
 
-//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        dialog.setCancelable(false);
-//        dialog.getWindow().getAttributes().windowAnimations = R.style.popupMenuStyle;
 
         EditText old_password = dialog1.findViewById(R.id.old_pass);
         ImageView old_view = dialog1.findViewById(R.id.oldpas_icon);
@@ -561,7 +626,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
         if (id == R.id.nav_myresource) {
-
             startActivity(new Intent(HomeDashBoard.this, MyResource_Activity.class));
             return true;
         }

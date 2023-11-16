@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import saneforce.sanclm.R;
 import saneforce.sanclm.utility.TimeUtils;
 
-public class
-CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
+public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
     private  TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate, dateval, date1val, Afterdate, date;
@@ -121,19 +120,10 @@ CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemList
         for (int i = 1; i <= daysInMonth; i++) {
             daysInMonthArray.add(String.valueOf(i));
         }
-
+        // Add empty cells after the end of the month
         int totalCells = 6 * 7; // 6 rows x 7 columns
         while (daysInMonthArray.size() < totalCells) {
             daysInMonthArray.add("");
-        }
-        if(daysInMonthArray.get(6).equalsIgnoreCase("")){
-            for (int i = 6; i >= 0; i--) {
-                daysInMonthArray.remove(i);
-            }
-        }else if(daysInMonthArray.get(35).equalsIgnoreCase("")){
-            for (int i = 41; i >= 35; i--) {
-                daysInMonthArray.remove(i);
-            }
         }
 
 
