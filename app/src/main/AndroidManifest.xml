@@ -160,7 +160,8 @@
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape" >
+        </activity>
 
         <service
             android:name=".services.FirebaseService"

@@ -10,7 +10,7 @@ import saneforce.sanclm.activity.homeScreen.fragment.CallsFragment;
 import saneforce.sanclm.activity.homeScreen.fragment.E_DetailingAnalysisFragment;
 import saneforce.sanclm.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.sanclm.activity.homeScreen.fragment.SalesAnalysisFragment;
-import saneforce.sanclm.activity.homeScreen.fragment.WorkPlanFragment;
+import saneforce.sanclm.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 
 
 public class ViewpagetAdapter extends FragmentStateAdapter {

@@ -112,6 +112,7 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
+                    android:id="@+id/rl_date_layoout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -132,13 +133,14 @@
                         android:src="@drawable/calendar_img" />
 
                     <TextView
+                        android:id="@+id/text_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="center"
                         android:padding="@dimen/_5sdp"
-                        android:text="September 29, 2023"
+                        android:text="Select Date"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
                         android:textStyle="bold" />
@@ -149,11 +151,11 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerInParent="true"
                         android:layout_marginRight="@dimen/_5sdp"
-
                         android:src="@drawable/arrow_bot_top_img" />
                 </RelativeLayout>
 
                 <include
+                    android:id="@+id/tab_layout"
                     layout="@layout/customize_tablayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -171,6 +173,19 @@
                     android:layout_weight="1"
                     android:background="@drawable/backround_text"
                     android:backgroundTint="@color/white" />
+
+
+                    <include
+                        android:id="@+id/view_calerder_layout"
+                        layout="@layout/call_status_calender_layout"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginRight="@dimen/_4sdp"
+                        android:visibility="gone"
+                        android:layout_height="match_parent"
+                      />
+
             </LinearLayout>
 
             <LinearLayout
@@ -420,6 +435,22 @@
             app:itemTextColor="@color/black_45"
             app:menu="@menu/activity_navigation_drawer_drawer" />
 
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@drawable/bg_white"
+            android:foregroundGravity="center">
+
+            <include
+                android:layout_margin="@dimen/_2sdp"
+                layout="@layout/list_item_worktye"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        </com.google.android.material.navigation.NavigationView>
 
 
 

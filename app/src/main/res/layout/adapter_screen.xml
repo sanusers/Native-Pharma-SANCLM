@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/day_bgd"
+    android:id="@+id/day_bgd123"
     android:background="@drawable/calender_square"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 

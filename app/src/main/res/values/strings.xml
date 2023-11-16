@@ -106,5 +106,7 @@
     <string name="ok">Ok</string>
     <string name="toast_do_master_sync">Kindly do Master Sync</string>
 
+    <string name="app_version" translatable="false">1.0.0</string>
+
 
 </resources>

@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.slideDownloaderAlertBox;
+package saneforce.sanclm.activity.SlideDownloaderAlertBox;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -25,37 +25,39 @@ public class DownloadTask {
     private String downloadFileName = "";
 
     Context context;
-    String progressBar_value, downloadMsg;
+    String progressBar_value, downloadmsg;
 
-
-    SlideModelClass SlideValue;
+   int processvalue;
+    SlideModelClass Slidevalue;
     RecyclerView recyclerView;
     Slide_adapter adapter;
     Dialog dialog;
 
-    String moveFlag, downloadingStatus;
+    String moveflog, downloadingstatus;
 
-    public DownloadTask(Activity activity, String downloadUrl, String filename, String progressBar_value, String downloadingStatus, String downloadMsg, SlideModelClass slideValue, Slide_adapter adapter, RecyclerView recyclerView, Dialog dialog, String moveFlag){
+    public DownloadTask(Activity activity, String downloadUrl, String filename, String progressBar_value, String downloadingstatus, String downloadmsg, SlideModelClass slidevalue, Slide_adapter adapter, RecyclerView recyclerView, Dialog dialog, String moveflog) {
         this.activity = activity;
         this.downloadUrl = downloadUrl;
         this.downloadFileName = filename;
         this.progressBar_value = progressBar_value;
-        this.downloadingStatus = downloadingStatus;
-        this.downloadMsg = downloadMsg;
-        this.SlideValue = slideValue;
+        this.downloadingstatus = downloadingstatus;
+        this.downloadmsg = downloadmsg;
+        this.Slidevalue = slidevalue;
         this.adapter = adapter;
         this.recyclerView = recyclerView;
         this.dialog = dialog;
-        this.moveFlag = moveFlag;
-        this.context=activity.getApplicationContext();
+        this.moveflog = moveflog;
+        this.context = activity.getApplicationContext();
+        processvalue=0;
         new DownloadingTask().execute();
     }
 
     private class DownloadingTask extends AsyncTask<Void, Integer, Boolean> {
-        File file = null;
+        File apkStorage = null;
         File outputFile = null;
         int totalSize;
         int downloadedSize = 0;
+
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
@@ -70,19 +72,19 @@ public class DownloadTask {
                 }
 
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                    file = new File(activity.getExternalFilesDir(null)+ "/Slides/");
+                    apkStorage = new File(activity.getExternalFilesDir(null) + "/Slides/");
                 } else {
                     return false;
                 }
 
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
+                if (!apkStorage.exists()) {
+                    if (!apkStorage.mkdirs()) {
                         Log.e(TAG, "Directory Creation Failed.");
                         return false;
                     }
                 }
 
-                outputFile = new File(file, downloadFileName);
+                outputFile = new File(apkStorage, downloadFileName);
 
                 if (outputFile.exists()) {
                     if (outputFile.delete()) {
@@ -127,9 +129,10 @@ public class DownloadTask {
             super.onProgressUpdate(values);
             int progress = values[0];
             String progressText = String.format("%.1f MB of %.1f MB", downloadedSize / (1024.0 * 1024), totalSize / (1024.0 * 1024));
-            SlideValue.setDownloadSizeStatus(progressText);
-            SlideValue.setProgressValue(String.valueOf(progress));
-            SlideValue.setDownloadStatus("1");
+            Slidevalue.setDownloadsizestatus(progressText);
+            Slidevalue.setProgressvalue(String.valueOf(progress));
+            Slidevalue.setDownloadstatus("1");
+            processvalue=progress;
             adapter.notifyDataSetChanged();
 
         }
@@ -139,44 +142,47 @@ public class DownloadTask {
             super.onPostExecute(isDownloadSuccessful);
 
             if (isDownloadSuccessful) {
-                SlideValue.setDownloadSizeStatus("Download completed");
-                SlideValue.setProgressValue(String.valueOf(100));
-                SlideValue.setDownloadStatus("1");
+                Slidevalue.setDownloadsizestatus("Download completed");
+                Slidevalue.setProgressvalue(String.valueOf(100));
+                Slidevalue.setDownloadstatus("1");
                 SlideDownloaderAlertBox.downloading_count++;
-                SlideDownloaderAlertBox.dialogDismissCount++;
-                SlideDownloaderAlertBox.txt_downloadCount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count)+"/"+String.valueOf(adapter.getItemCount()));
+                SlideDownloaderAlertBox.dialogdismisscount++;
+                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count) + "/" + String.valueOf(adapter.getItemCount()));
                 recyclerView.getLayoutManager().scrollToPosition(SlideDownloaderAlertBox.downloading_count);
                 adapter.notifyDataSetChanged();
-                if(SlideDownloaderAlertBox.dialogDismissCount ==adapter.getItemCount()){
+                if (SlideDownloaderAlertBox.dialogdismisscount == adapter.getItemCount()) {
                     dialog.dismiss();
-                    if(moveFlag.equalsIgnoreCase("1")){
+                    if (moveflog.equalsIgnoreCase("1")) {
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                         activity.finish();
+
                     }
                 }
 
             } else {
-                SlideValue.setProgressValue(String.valueOf(78));
-                SlideDownloaderAlertBox.txt_downloadCount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count)+"/"+ String.valueOf(adapter.getItemCount()));
-                SlideValue.setDownloadSizeStatus("Download failed");
-                SlideValue.setDownloadStatus("2");
-                SlideDownloaderAlertBox.dialogDismissCount++;
+                Slidevalue.setProgressvalue(String.valueOf(processvalue));
+                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count) + "/" + String.valueOf(adapter.getItemCount()));
+                Slidevalue.setDownloadsizestatus("Download failed");
+                Slidevalue.setDownloadstatus("2");
+                SlideDownloaderAlertBox.dialogdismisscount++;
                 adapter.notifyDataSetChanged();
 
-                 if(SlideDownloaderAlertBox.dialogDismissCount ==adapter.getItemCount()){
-                     dialog.dismiss();
-                     if(moveFlag.equalsIgnoreCase("1")){
-                         if (moveFlag.equalsIgnoreCase("1")) {
-                             Intent intent = new Intent(context, HomeDashBoard.class);
-                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                             context.startActivity(intent);
-                             activity.finish();
-                         }
-                     }
-                 }
+                if (SlideDownloaderAlertBox.dialogdismisscount == adapter.getItemCount()) {
+                    dialog.dismiss();
+                    if (moveflog.equalsIgnoreCase("1")) {
+                        if (moveflog.equalsIgnoreCase("1")) {
+                            Intent intent = new Intent(context, HomeDashBoard.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                            activity.finish();
+                        }
+                    }
+                }
+
             }
+
 
         }
     }
