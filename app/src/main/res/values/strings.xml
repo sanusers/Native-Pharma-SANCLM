@@ -1,0 +1,109 @@
+<resources>
+    <string name="str_app_name">SAN CLM</string>
+    <string name="preference_name">saneforce.sanclm.preferencefile</string>
+    <string name="txt_tagging">Tagging</string>
+    <string name="txt_doctor">Doctor</string>
+    <string name="txt_chemist">Chemist</string>
+    <string name="txt_stockist">Stockiest</string>
+    <string name="txt_undr">Unlisted Doctor</string>
+    <string name="txt_add_tag">Add Tag</string>
+    <string name="txt_visit">Visit</string>
+    <string name="view">View</string>
+    <string name="search">Search</string>
+    <string name="brand_name">Brand Name</string>
+    <string name="rating">Rating</string>
+    <string name="feedback">Feedback</string>
+    <string name="timeline">Timeline</string>
+    <string name="product_name">Product Name</string>
+    <string name="stock">Stock</string>
+    <string name="samples">Samples</string>
+    <string name="rx">RX</string>
+    <string name="rcpa">RCPA</string>
+    <string name="cancel">Cancel</string>
+    <string name="final_submit">Final Submit</string>
+    <string name="input_name">Input Name</string>
+    <string name="qty">Qty</string>
+    <string name="name">Name</string>
+    <string name="input">Input</string>
+    <string name="add_rcpa">Add RCPA</string>
+    <string name="pob_value">POB Value</string>
+    <string name="enter_value">Enter Value</string>
+    <string name="overall_feedback">Overall Feedback</string>
+    <string name="overall_remarks">Overall Remarks</string>
+    <string name="capture_event">Capture Event</string>
+    <string name="add">Add</string>
+    <string name="capture">Capture</string>
+    <string name="joint_work">Joint Work</string>
+    <string name="select">Select</string>
+    <string name="rx_qty">RX Qty</string>
+    <string name="add_sample_input">Add Sample/Input</string>
+    <string name="add_input_amp_sample"><![CDATA[Add Input & Sample]]></string>
+    <string name="add_input">Add Input</string>
+    <string name="save">Save</string>
+    <string name="add_sample">Add Sample</string>
+    <string name="sample">Sample</string>
+    <string name="edit">Edit</string>
+    <string name="chemist_name">Chemist Name</string>
+    <string name="our_prd_name">Our Product Name</string>
+    <string name="rate">Rate</string>
+    <string name="enter_qty">Enter Qty</string>
+    <string name="value">Value</string>
+    <string name="add_competitor">Add Competitor</string>
+    <string name="competitor_company">Competitor Company</string>
+    <string name="comp_brand">Competitor Brand</string>
+    <string name="remarks">Remarks</string>
+    <string name="delete">Delete</string>
+    <string name="confirm">Confirm</string>
+    <string name="category">Category</string>
+    <string name="skip">Skip</string>
+    <string name="start">Start</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+
+    <string name="str_app_configuration">App Configuration</string>
+    <string name="str_web_url">Web URL</string>
+    <string name="str_license_key">License Key</string>
+
+    <string name="str_enter_url">Enter URL</string>
+    <string name="str_enter_license">Enter License</string>
+    <string name="str_language">Language</string>
+    <string name="str_your_device_id">Your Device ID</string>
+
+    <string name="str_save_settings">Save Settings</string>
+    <string name="str_powered_by">Powered by</string>
+    <string name="call_selection">Call Selection</string>
+    <string name="highlights_selected_hq">Highlights selected HQ</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="skip_submit"><![CDATA[Skip & Submit]]></string>
+    <string name="start_detaling">Start Detailing</string>
+    <string name="filter_by">Filter by</string>
+    <string name="loc_not_detect"> Location cannot detected </string>
+    <string name="toast_no_img_found">No Image Found</string>
+    <string name="hq_sel">HeadQuater Selection</string>
+    <string name="presentation">Presentation</string>
+    <string name="create_presentation">Create Presentation</string>
+    <string name="title_activity_create_presentation">CreatePresentation</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="tag">Tag</string>
+    <string name="approvals">Approvals</string>
+    <string name="reject">Reject</string>
+    <string name="accept">Accept</string>
+    <string name="speciality">Speciality</string>
+    <string name="territory">Territory</string>
+    <string name="class_filter">Class</string>
+    <string name="promoted">Promoted</string>
+    <string name="fb_selection">Feedback Selection</string>
+    <string name="jw_selction">JointWork Selection</string>
+    <string name="ok">Ok</string>
+    <string name="toast_do_master_sync">Kindly do Master Sync</string>
+
+
+</resources>

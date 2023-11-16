@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/e_detailing_layout"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+
+        <TextView
+            android:id="@+id/text_label_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:textStyle="bold"
+            android:text="E- Details Analysis"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/_8sdp"></TextView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_alignParentTop="true"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:src="@drawable/tab_litte_line"
+                android:layout_margin="@dimen/_1sdp"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_margin="@dimen/_1sdp"
+                android:src="@drawable/tab_dark_line"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_margin="@dimen/_1sdp"
+                android:src="@drawable/tab_litte_line"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/text_label_name"
+            android:layout_height="match_parent"
+            >
+            <LinearLayout
+                android:id="@+id/ll_analyis_layout"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:id="@+id/ll_doc_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:background="@drawable/custom_background_green"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_doc_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:textStyle="bold"
+                        android:text="Slide Analysis"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_8sdp" />
+
+
+
+                    <TextView
+                        android:id="@+id/txt_doc_count"
+                        android:layout_width="match_parent"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txt_name"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Slide Detailed to doctor and Chemist with Duration"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_6sdp"
+                        android:visibility="visible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:id="@+id/ll_che_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:background="@drawable/custom_background_blue"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_che_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:textStyle="bold"
+                        android:text="Brand Analysis"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_8sdp" />
+
+
+
+                    <TextView
+                        android:id="@+id/txt_che_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txt_name"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_regular"
+                        android:text="Slide Detailed to doctor Chemist with Duration"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_6sdp"
+                        android:visibility="visible" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_stock_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:background="@drawable/custom_background_pink"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_stock_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:textStyle="bold"
+                        android:text="Specialty Analysis"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_8sdp" />
+
+
+
+
+                    <TextView
+                        android:id="@+id/txt_stock_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txt_name"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Slide Detailed to doctor Chemist with Duration"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_6sdp"
+                        android:visibility="visible" />
+
+
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_unli_child"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginRight="@dimen/_2sdp"
+                    android:background="@drawable/custom_background_yellow"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_unli_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:textStyle="bold"
+                        android:text="Slide"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_8sdp" />
+
+
+
+                    <TextView
+                        android:id="@+id/txt_unlist_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txt_name"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Slide Detailed to doctor and Chemist with Duration"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_6sdp"
+                        android:visibility="visible" />
+
+
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/_2sdp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/text_average_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:fontFamily="@font/satoshi_medium"
+            android:textStyle="bold"
+            android:text="Specialty"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/_8sdp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ll_grap_layout"
+            android:orientation="vertical"
+            android:layout_below="@+id/text_average_"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:background="@drawable/custom_backround_layout"
+            android:backgroundTint="@color/white">
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

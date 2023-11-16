@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_resource"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_white"
+    android:layout_marginLeft="@dimen/_3sdp"
+    android:layout_marginTop="@dimen/_3sdp"
+    android:layout_marginRight="@dimen/_3sdp"
+    android:layout_marginBottom="@dimen/_3sdp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Listed Dr"
+            android:gravity="left"
+            android:textSize="@dimen/_7sdp"
+
+            android:fontFamily="@font/satoshi_medium"
+            android:textStyle="bold"
+            android:textColor="#282A3C"
+            />
+        <TextView
+            android:id="@+id/usercount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:gravity="left"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:textStyle="bold"
+            android:textColor="#282A3C"
+
+            />
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>
