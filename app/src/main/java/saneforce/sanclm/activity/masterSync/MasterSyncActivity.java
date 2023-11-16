@@ -75,7 +75,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     // Api call status
     int doctorStatus = 0,specialityStatus = 0,qualificationStatus = 0,categoryStatus = 0,departmentStatus = 0,classStatus = 0,feedbackStatus = 0;
     int unlistedDrStatus = 0,chemistStatus = 0,stockiestStatus = 0,hospitalStatus = 0,cipStatus = 0, inputStatus = 0, leaveStatus = 0,leaveStatusStatus = 0,tpStatus =0,clusterStatus = 0;
-    int dcrStatus = 0,visitControlStatus= 0,missedDateStatus = 0,stockBalanceStatus = 0;
+    int dcrStatus = 0,myDayPlanStatus = 0,visitControlStatus= 0,missedDateStatus = 0,stockBalanceStatus = 0;
     int productStatus = 0, proCatStatus = 0,brandStatus = 0, compProStatus = 0;
     int workTypeStatus = 0,holidayStatus = 0,weeklyOfStatus = 0;
     int proSlideStatus = 0,proSpeSlideStatus = 0,brandSlideStatus = 0, therapticStatus = 0;
@@ -560,6 +560,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         leaveStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE);
         leaveStatusStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
         dcrStatus = sqLite.getMasterSyncStatusByKey(Constants.DCR);
+        myDayPlanStatus = sqLite.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
         visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
         missedDateStatus = sqLite.getMasterSyncStatusByKey(Constants.MISSED_DATE);
         stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
@@ -679,10 +680,12 @@ public class MasterSyncActivity extends AppCompatActivity {
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel dcrModel = new MasterSyncItemModel(Constants.DCR,dcrCount,"Home","gethome",Constants.DCR,dcrStatus,false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,dcrCount,Constants.DOCTOR,"gettodaytpnew",Constants.MY_DAY_PLAN,myDayPlanStatus,false);
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL,visitControlCount,"AdditionalDcr","getvisit_contro",Constants.VISIT_CONTROL,visitControlStatus,false);
         MasterSyncItemModel missedDateModel = new MasterSyncItemModel(Constants.MISSED_DATE,missedDateCount,"MissedDate","getmissdates",Constants.MISSED_DATE,missedDateStatus,false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,0,"AdditionalDcr","getstockbalance",Constants.STOCK_BALANCE_MASTER,stockBalanceStatus,false);
         dcrModelArray.add(dcrModel);
+        dcrModelArray.add(myDayPlanModel);
         dcrModelArray.add(visitControlModel);
         dcrModelArray.add(missedDateModel);
         dcrModelArray.add(stockBalanceModel);
@@ -922,6 +925,17 @@ public class MasterSyncActivity extends AppCompatActivity {
                 jsonObject.put("subdivision_code", subdivision_code);
                 if (remoteTableName.equalsIgnoreCase("getholiday") || remoteTableName.equalsIgnoreCase("getweeklyoff")){
                     jsonObject.put("year",Year.now().getValue());
+                }
+                switch (remoteTableName){
+                    case "getholiday":
+                    case "getweeklyoff" :{
+                        jsonObject.put("year",Year.now().getValue());
+                        break;
+                    }
+                    case "gettodaytpnew" :{
+                        jsonObject.put("ReqDt",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                        break;
+                    }
                 }
 
 //            Log.e("test","master sync obj : " + jsonObject);

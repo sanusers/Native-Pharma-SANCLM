@@ -27,6 +27,8 @@ public class Constants {
 
     //DCR
     public static final String DCR = "DCR";
+    public static final String MY_DAY_PLAN = "MyDay Plan";
+
     public static final String VISIT_CONTROL = "Visit Control";
     public static final String MISSED_DATE = "Missed Date";
     public static final String STOCK_BALANCE_MASTER = "Stock_Balance_Master";
