@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.map;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -49,6 +51,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -74,10 +78,11 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.map.custSelection.CustListAdapter;
 import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
-import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
+import saneforce.sanclm.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
+import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMapsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -110,6 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     LocationManager locationManager;
     GPSTrack gpsTrack;
     SQLiteHandler sqLiteHandler;
+    ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     LoginResponse loginResponse;
     SetupResponse setUpResponse;
     CustomSetupResponse customSetupResponse;
@@ -585,7 +591,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onPause() {
-       // commonUtilsMethods.FullScreencall();
+        // commonUtilsMethods.FullScreencall();
         super.onPause();
     }
 
@@ -668,6 +674,107 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public void prepareMasterToSync(String hqCode, String Cust_Selected) {
+        masterSyncArray.clear();
+        MasterSyncItemModel ModelList = new MasterSyncItemModel();
+        switch (Cust_Selected) {
+            case "D":
+                ModelList = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
+                break;
+            case "C":
+                ModelList = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
+                break;
+            case "S":
+                ModelList = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
+                break;
+            case "U":
+                ModelList = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
+                break;
+        }
+
+        masterSyncArray.add(ModelList);
+        for (int i = 0; i < masterSyncArray.size(); i++) {
+            sync(masterSyncArray.get(i), hqCode);
+        }
+    }
+
+    public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
+
+        if (UtilityClass.isNetworkAvailable(context)) {
+            try {
+                api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
+                jsonObject.put("sfcode", SfCode);
+                jsonObject.put("division_code", DivCode);
+                jsonObject.put("Rsf", hqCode);
+                jsonObject.put("sf_type", SfType);
+                jsonObject.put("Designation", Designation);
+                jsonObject.put("state_code", StateCode);
+                jsonObject.put("subdivision_code", SubDivisionCode);
+
+// Log.e("test","master sync obj in TP : " + jsonObject);
+                Call<JsonElement> call = null;
+                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
+                    call = api_interface.getDrMaster(jsonObject.toString());
+                }
+
+                if (call != null) {
+                    call.enqueue(new Callback<JsonElement>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+
+                            boolean success = false;
+                            if (response.isSuccessful()) {
+// Log.e("test","response : " + masterSyncItemModel.getRemoteTableName() +" : " + response.body().toString());
+                                try {
+                                    JsonElement jsonElement = response.body();
+                                    JSONArray jsonArray = new JSONArray();
+                                    if (!jsonElement.isJsonNull()) {
+                                        if (jsonElement.isJsonArray()) {
+                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
+                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            success = true;
+                                        } else if (jsonElement.isJsonObject()) {
+                                            JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
+                                            if (!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
+                                                jsonArray.put(jsonObject1);
+                                                success = true;
+                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
+                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                            }
+                                        }
+
+                                        if (success) {
+                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
+                                        }
+                                    } else {
+                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                    }
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            Log.e("test", "failed : " + t);
+                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     private void CallAPIList(String CustSelected) {
         String sfCode;
         if (SfType.equalsIgnoreCase("1")) {
@@ -676,13 +783,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             sfCode = SelectedHqCode;
         }
         if (CustSelected.equalsIgnoreCase("D")) {
-            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Doctor", "getdoctors", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+            prepareMasterToSync(sfCode, "D");
+            //    MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Doctor", "getdoctors", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         } else if (CustSelected.equalsIgnoreCase("C")) {
-            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Chemist", "getchemist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+            prepareMasterToSync(sfCode, "C");
+            //   MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Chemist", "getchemist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         } else if (CustSelected.equalsIgnoreCase("S")) {
-            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Stockiest", "getstockist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+            prepareMasterToSync(sfCode, "S");
+            //   MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Stockiest", "getstockist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         } else if (CustSelected.equalsIgnoreCase("U")) {
-            MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Unlisted_Doctor", "getunlisteddr", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
+            prepareMasterToSync(sfCode, "U");
+            // MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Unlisted_Doctor", "getunlisteddr", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         }
     }
 
@@ -744,7 +855,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
         }
-       // commonUtilsMethods.FullScreencall();
+        // commonUtilsMethods.FullScreencall();
         super.onResume();
     }
 

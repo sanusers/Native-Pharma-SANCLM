@@ -378,7 +378,6 @@ public class Leave_Application extends AppCompatActivity {
                                     String Leavename = (jsonObject.getString("Flg"));//Leave_Name
                                     String msg = (jsonObject.getString("Msg"));
                                     if ((jsonObject.getString("Msg").equals(""))) {
-
                                         Leavedetails();
                                     } else {
                                         List_LeaveDates.clear();

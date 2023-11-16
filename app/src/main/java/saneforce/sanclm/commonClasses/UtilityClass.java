@@ -17,8 +17,6 @@ import saneforce.sanclm.storage.SharedPref;
 
 
 public class UtilityClass {
-
-
     public static boolean isNetworkAvailable(final Context context) {
 
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

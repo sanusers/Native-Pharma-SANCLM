@@ -79,6 +79,7 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
                     for (int j = 0; j < JWOthersFragment.callAddedJointList.size(); j++) {
                         if (JWOthersFragment.callAddedJointList.get(j).getCode().equalsIgnoreCase(jwLists.get(position).getCode())) {
                             JWOthersFragment.callAddedJointList.remove(j);
+                            j--;
                         }
                     }
                 }

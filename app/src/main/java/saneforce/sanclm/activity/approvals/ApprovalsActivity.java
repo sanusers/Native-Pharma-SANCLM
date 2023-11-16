@@ -1,37 +1,25 @@
 package saneforce.sanclm.activity.approvals;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.approvals.leave.LeaveApprovalAdapter;
-import saneforce.sanclm.activity.approvals.leave.LeaveModelList;
-import saneforce.sanclm.activity.approvals.tp.TpApprovalAdapter;
-import saneforce.sanclm.activity.approvals.tp.TpModelList;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.ActivityApprovalsBinding;
@@ -42,23 +30,20 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
+    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0;
     ActivityApprovalsBinding approvalsBinding;
-    CommonUtilsMethods commonUtilsMethods;
-    ArrayList<TpModelList> tpModelLists = new ArrayList<>();
-    ArrayList<LeaveModelList> leaveModelLists = new ArrayList<>();
-    TpApprovalAdapter tpApprovalAdapter;
-    LeaveApprovalAdapter leaveApprovalAdapter;
-    JSONObject jsonTp = new JSONObject();
-    JSONObject jsonLeave = new JSONObject();
+    JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
     LoginResponse loginResponse;
     SQLite sqLite;
-    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode;
+    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode;
+    ArrayList<AdapterModel> list_approvals = new ArrayList<>();
+    AdapterApprovals adapterApprovals;
+    ProgressDialog progressDialog = null;
 
     @Override
     protected void onResume() {
         super.onResume();
-       // commonUtilsMethods.FullScreencall();
     }
 
     @Override
@@ -72,83 +57,89 @@ public class ApprovalsActivity extends AppCompatActivity {
         approvalsBinding = ActivityApprovalsBinding.inflate(getLayoutInflater());
         setContentView(approvalsBinding.getRoot());
 
-       // commonUtilsMethods = new CommonUtilsMethods(this);
-       // commonUtilsMethods.FullScreencall();
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-
+        progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
         getRequiredData();
+        if (SharedPref.getApprovalsCounts(ApprovalsActivity.this).equalsIgnoreCase("false")) {
+            CallListCountAPI();
+        } else {
+            AssignCountValues();
+        }
 
         approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
+    }
 
-        approvalsBinding.llTpApprovals.setOnClickListener(view -> {
-            approvalsBinding.tpArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.greater_than_black));
-            approvalsBinding.leaveArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.dcrArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.deviateArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.geoTagArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
+    private void CallListCountAPI() {
+        if (progressDialog == null) {
+            progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
+            progressDialog.show();
+        } else {
+            progressDialog.show();
+        }
+        try {
+            jsonGetCount.put("tableName", "getapprovalcheck");
+            jsonGetCount.put("sfcode", SfCode);
+            jsonGetCount.put("division_code", DivCode);
+            jsonGetCount.put("Rsf", TodayplanSfCode);
+            jsonGetCount.put("sf_type", SfType);
+            jsonGetCount.put("Designation", Designation);
+            jsonGetCount.put("state_code", StateCode);
+            jsonGetCount.put("subdivision_code", SubDivisionCode);
+            Log.v("json_get_full_dcr_list", jsonGetCount.toString());
 
-            approvalsBinding.constraintTpList.setVisibility(View.VISIBLE);
-            approvalsBinding.rvLeaveList.setVisibility(View.GONE);
-            approvalsBinding.constraintDcrList.setVisibility(View.GONE);
-            approvalsBinding.rvTagList.setVisibility(View.GONE);
+        } catch (Exception e) {
 
-            CallApiTp();
+        }
+
+        Call<JsonObject> callGetCountApprovals = null;
+        callGetCountApprovals = api_interface.getListCountApprovals(jsonGetCount.toString());
+
+        callGetCountApprovals.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.v("counts", "-0-" + response.body().toString());
+                if (response.isSuccessful()) {
+                    progressDialog.dismiss();
+                    try {
+                        SharedPref.setApprovalsCounts(ApprovalsActivity.this, "true");
+                        JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                        JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
+
+                        JSONObject jsonDcr = jsonArray.getJSONObject(0);
+                        DcrCount = jsonDcr.getInt("dcrappr_count");
+                        JSONObject jsonTp = jsonArray.getJSONObject(1);
+                        TpCount = jsonTp.getInt("tpappr_count");
+                        JSONObject jsonLeave = jsonArray.getJSONObject(2);
+                        LeaveCount = jsonLeave.getInt("leaveappr_count");
+                        JSONObject jsonDeviation = jsonArray.getJSONObject(3);
+                        DeviationCount = jsonDeviation.getInt("devappr_count");
+                        AssignCountValues();
+                    } catch (Exception e) {
+                        Log.v("counts", "-error-" + e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                progressDialog.dismiss();
+            }
         });
+    }
 
-        approvalsBinding.llLeaveApproval.setOnClickListener(view -> {
-            approvalsBinding.tpArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.leaveArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.greater_than_black));
-            approvalsBinding.dcrArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.deviateArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.geoTagArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
+    private void AssignCountValues() {
+        Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount);
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.leave_approvals), String.valueOf(LeaveCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), "0"));
 
-            approvalsBinding.constraintTpList.setVisibility(View.GONE);
-            approvalsBinding.rvLeaveList.setVisibility(View.VISIBLE);
-            approvalsBinding.constraintDcrList.setVisibility(View.GONE);
-            approvalsBinding.rvTagList.setVisibility(View.GONE);
-
-            CallApiLeave();
-        });
-
-        approvalsBinding.llDcrApproval.setOnClickListener(view -> {
-            approvalsBinding.tpArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.leaveArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.dcrArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.greater_than_black));
-            approvalsBinding.deviateArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.geoTagArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-
-            approvalsBinding.constraintTpList.setVisibility(View.GONE);
-            approvalsBinding.rvLeaveList.setVisibility(View.GONE);
-            approvalsBinding.constraintDcrList.setVisibility(View.VISIBLE);
-            approvalsBinding.rvTagList.setVisibility(View.GONE);
-        });
-
-        approvalsBinding.llDeviateApproval.setOnClickListener(view -> {
-            approvalsBinding.tpArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.leaveArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.dcrArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.deviateArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.greater_than_black));
-            approvalsBinding.geoTagArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-
-            approvalsBinding.constraintTpList.setVisibility(View.GONE);
-            approvalsBinding.rvLeaveList.setVisibility(View.GONE);
-            approvalsBinding.constraintDcrList.setVisibility(View.GONE);
-            approvalsBinding.rvTagList.setVisibility(View.VISIBLE);
-        });
-
-        approvalsBinding.llGeoTagApproval.setOnClickListener(view -> {
-            approvalsBinding.tpArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.leaveArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.dcrArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.deviateArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.arrow_down));
-            approvalsBinding.geoTagArrow.setImageDrawable(ContextCompat.getDrawable(ApprovalsActivity.this, R.drawable.greater_than_black));
-
-            approvalsBinding.constraintTpList.setVisibility(View.GONE);
-            approvalsBinding.rvLeaveList.setVisibility(View.GONE);
-            approvalsBinding.constraintDcrList.setVisibility(View.GONE);
-            approvalsBinding.rvTagList.setVisibility(View.VISIBLE);
-        });
+        adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);
+        approvalsBinding.rvApprovalList.setItemAnimator(new DefaultItemAnimator());
+        approvalsBinding.rvApprovalList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4, GridLayoutManager.VERTICAL, false));
+        approvalsBinding.rvApprovalList.setAdapter(adapterApprovals);
     }
 
     private void getRequiredData() {
@@ -163,102 +154,6 @@ public class ApprovalsActivity extends AppCompatActivity {
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
-    }
-
-    private void CallApiLeave() {
-        try {
-            jsonLeave.put("tableName", "getlvlapproval");
-            jsonLeave.put("sfcode", SfCode);
-            jsonLeave.put("division_code", DivCode);
-            jsonLeave.put("Rsf", SfCode);
-            jsonLeave.put("sf_type", SfType);
-            jsonLeave.put("Designation", Designation);
-            jsonLeave.put("state_code", SubDivisionCode);
-            Log.v("json_get_lvl_list", jsonLeave.toString());
-        } catch (Exception e) {
-
-        }
-
-        Call<JsonArray> callGetLeaveApproval = null;
-        callGetLeaveApproval = api_interface.getLeaveApprovalList(jsonLeave.toString());
-        callGetLeaveApproval.enqueue(new Callback<JsonArray>() {
-            @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                Log.v("jjj", response.body().toString() + "--" + response.isSuccessful());
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body().toString());
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject json = jsonArray.getJSONObject(i);
-                            leaveModelLists.add(new LeaveModelList(json.getString("LvID"), json.getString("SFName"), json.getString("FDate"), json.getString("TDate"), json.getString("Reason"), json.getString("Address"), json.getString("LType"), json.getString("LAvail"), json.getString("No_of_Days")));
-                        }
-                        leaveApprovalAdapter = new LeaveApprovalAdapter(ApprovalsActivity.this, leaveModelLists);
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                        approvalsBinding.rvLeaveList.setLayoutManager(mLayoutManager);
-                        approvalsBinding.rvLeaveList.setAdapter(leaveApprovalAdapter);
-                    } catch (Exception e) {
-
-                    }
-                } else {
-                    Toast.makeText(ApprovalsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
-                Toast.makeText(ApprovalsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void CallApiTp() {
-        try {
-            jsonTp.put("tableName", "gettpapproval");
-            jsonTp.put("sfcode", SfCode);
-            jsonTp.put("division_code", DivCode);
-            jsonTp.put("Rsf", SfCode);
-            jsonTp.put("sf_type", SfType);
-            jsonTp.put("Designation", Designation);
-            jsonTp.put("state_code", SubDivisionCode);
-            Log.v("json_getTpList", jsonTp.toString());
-        } catch (Exception e) {
-
-        }
-        Call<JsonArray> callGetTPApproval = null;
-        callGetTPApproval = api_interface.getTpApprovalList(jsonTp.toString());
-        callGetTPApproval.enqueue(new Callback<JsonArray>() {
-            @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                Log.v("jjj", response.body().toString() + "--" + response.isSuccessful());
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response.body().toString());
-                        if (jsonArray.length() > 0) {
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject json = jsonArray.getJSONObject(i);
-                                tpModelLists.add(new TpModelList(json.getString("Sf_Code"), json.getString("SFName"), json.getString("Mnth"), json.getString("Yr"), json.getString("Mn")));
-                            }
-                            tpApprovalAdapter = new TpApprovalAdapter(ApprovalsActivity.this, tpModelLists);
-                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                            approvalsBinding.rvTourPlanList.setLayoutManager(mLayoutManager);
-                            approvalsBinding.rvTourPlanList.setItemAnimator(new DefaultItemAnimator());
-                            approvalsBinding.rvTourPlanList.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
-                            approvalsBinding.rvTourPlanList.setAdapter(tpApprovalAdapter);
-                        } else {
-                            Toast.makeText(ApprovalsActivity.this, "No Data Available", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (Exception e) {
-
-                    }
-                } else {
-                    Toast.makeText(ApprovalsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
-                Toast.makeText(ApprovalsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
-            }
-        });
+        TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
     }
 }

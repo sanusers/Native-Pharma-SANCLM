@@ -27,7 +27,7 @@ public class DownloadTask {
     Context context;
     String progressBar_value, downloadmsg;
 
-   int processvalue;
+    int processvalue;
     SlideModelClass Slidevalue;
     RecyclerView recyclerView;
     Slide_adapter adapter;

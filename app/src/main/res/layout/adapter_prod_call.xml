@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:windowSoftInputMode="adjustPan"
     android:layout_marginVertical="@dimen/_1sdp">
 
     <TextView
@@ -97,14 +98,14 @@
         android:textColor="@color/text_qty_prd"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ed_rcpa"
+        app:layout_constraintEnd_toStartOf="@+id/tv_rcpa"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/ed_samples"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteY="2dp" />
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/ed_rcpa"
+        android:id="@+id/tv_rcpa"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/_2sdp"

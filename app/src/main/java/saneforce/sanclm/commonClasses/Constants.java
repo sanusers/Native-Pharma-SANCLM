@@ -28,12 +28,12 @@ public class Constants {
     //DCR
     public static final String DCR = "DCR";
     public static final String MY_DAY_PLAN = "MyDay Plan";
-
     public static final String VISIT_CONTROL = "Visit Control";
     public static final String MISSED_DATE = "Missed Date";
     public static final String STOCK_BALANCE_MASTER = "Stock_Balance_Master";
     public static final String STOCK_BALANCE = "Stock Balance";
     public static final String INPUT_BALANCE = "Input Balance";
+
 
 
     //WorkType
@@ -55,6 +55,7 @@ public class Constants {
     public static final String BRAND = "Brand";
     public static final String COMPETITOR_PROD = "Competitor Product";
     public static final String INPUT = "Input";
+    public static final String MAPPED_COMPETITOR_PROD = "Mapped Competitor Product";
 
     //Cluster
     public static final String CLUSTER = "Cluster_";

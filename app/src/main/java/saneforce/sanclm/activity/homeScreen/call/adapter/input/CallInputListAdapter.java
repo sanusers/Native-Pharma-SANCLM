@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
@@ -81,28 +83,42 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
-                if (holder.checkBox.isChecked()) {
-                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+                if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
+                    if (Integer.parseInt(checked_arrayList.get(position).getStock_balance()) > 0) {
+                        CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
+                    } else {
+                        holder.checkBox.setChecked(false);
+                        Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
                     }
-                    isCheckedInp = false;
-                    checked_arrayList.get(position).setCheckedItem(true);
-                    saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), "", checked_arrayList.get(position).getStock_balance(), checked_arrayList.get(position).getStock_balance()));
-                    AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
-                } else {
-                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                    }
-                    isCheckedInp = true;
-                    UnSelectedInpCode = checked_arrayList.get(position).getCode();
-                    checked_arrayList.get(position).setCheckedItem(false);
-                    AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
-                    saveInputCallAdapter.notifyDataSetChanged();
                 }
+            } else {
+                CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
             }
         });
+    }
+
+
+    private void CheckBoxContents(CheckBox checkBox, TextView tv_name, int adapterPosition) {
+        if (checkBox.isChecked()) {
+            tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
+            }
+            isCheckedInp = false;
+            checked_arrayList.get(adapterPosition).setCheckedItem(true);
+            saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
+            AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
+        } else {
+            tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
+            }
+            isCheckedInp = true;
+            UnSelectedInpCode = checked_arrayList.get(adapterPosition).getCode();
+            checked_arrayList.get(adapterPosition).setCheckedItem(false);
+            AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
+            saveInputCallAdapter.notifyDataSetChanged();
+        }
     }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {

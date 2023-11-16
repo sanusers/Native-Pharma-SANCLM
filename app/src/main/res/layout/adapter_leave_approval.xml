@@ -3,196 +3,289 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_3sdp">
+    android:layout_marginVertical="@dimen/_2sdp"
+    android:background="@drawable/selector_box">
 
-    <LinearLayout
-        android:id="@+id/ll_top"
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:padding="@dimen/_3sdp"
+        android:text="Name"
+        android:textColor="@color/pink"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/view_dummy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_dummy"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/background"
+        app:layout_constraintBottom_toTopOf="@id/constraint_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:padding="@dimen/_3sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/view_dummy">
 
         <TextView
-            android:id="@+id/txt_name"
+            android:id="@+id/tag_emp_code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_purple_with_border"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="center"
-            android:padding="@dimen/_4sdp"
-            android:singleLine="true"
-            android:text="Name"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/emp_code"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_emp_code"
+            app:layout_constraintEnd_toStartOf="@id/tag_leave_type"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txt_date"
+            android:id="@+id/tv_emp_code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_purple_with_border"
             android:fontFamily="@font/satoshi_bold"
-            android:gravity="center"
-            android:padding="@dimen/_4sdp"
-            android:singleLine="true"
-            android:text="FromToDate"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/emp_code"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tag_address"
+            app:layout_constraintEnd_toEndOf="@id/tag_emp_code"
+            app:layout_constraintStart_toStartOf="@id/tag_emp_code"
+            app:layout_constraintTop_toBottomOf="@id/tag_emp_code" />
+
 
         <TextView
-            android:id="@+id/txt_no_of_days"
+            android:id="@+id/tag_leave_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_purple_with_border"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/leave_type"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_leave_type"
+            app:layout_constraintEnd_toStartOf="@id/tag_leave_from"
+            app:layout_constraintStart_toEndOf="@id/tag_emp_code"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_leave_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_bold"
-            android:gravity="center"
-            android:padding="@dimen/_4sdp"
-            android:singleLine="true"
-            android:text="No Of Days"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/leave_type"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_emp_code"
+            app:layout_constraintEnd_toEndOf="@id/tag_leave_type"
+            app:layout_constraintStart_toStartOf="@id/tag_leave_type"
+            app:layout_constraintTop_toBottomOf="@id/tag_leave_type" />
+
+        <TextView
+            android:id="@+id/tag_leave_from"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/from"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_leave_from"
+            app:layout_constraintEnd_toStartOf="@id/tag_leave_to"
+            app:layout_constraintStart_toEndOf="@id/tag_leave_type"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_leave_from"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/from"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_leave_type"
+            app:layout_constraintEnd_toEndOf="@id/tag_leave_from"
+            app:layout_constraintStart_toStartOf="@id/tag_leave_from"
+            app:layout_constraintTop_toBottomOf="@id/tag_leave_from" />
+
+        <TextView
+            android:id="@+id/tag_leave_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/to"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_leave_to"
+            app:layout_constraintEnd_toStartOf="@id/tag_no_of_days"
+            app:layout_constraintStart_toEndOf="@id/tag_leave_from"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_leave_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/to"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_leave_from"
+            app:layout_constraintEnd_toEndOf="@id/tag_leave_to"
+            app:layout_constraintStart_toStartOf="@id/tag_leave_to"
+            app:layout_constraintTop_toBottomOf="@id/tag_leave_to" />
+
+        <TextView
+            android:id="@+id/tag_no_of_days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_90sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/no_of_days"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_leave_to"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tag_leave_to"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_no_of_days"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="2"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_leave_to"
+            app:layout_constraintEnd_toEndOf="@id/tag_no_of_days"
+            app:layout_constraintStart_toStartOf="@id/tag_no_of_days"
+            app:layout_constraintTop_toBottomOf="@id/tag_no_of_days" />
+
+
+        <TextView
+            android:id="@+id/tag_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/add_on_leave"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_address"
+            app:layout_constraintEnd_toEndOf="@id/tag_leave_type"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/tag_emp_code"
+            app:layout_constraintTop_toBottomOf="@id/tv_emp_code" />
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/add_on_leave"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tag_address"
+            app:layout_constraintStart_toStartOf="@id/tag_address"
+            app:layout_constraintTop_toBottomOf="@id/tag_address" />
+
+
+        <TextView
+            android:id="@+id/tag_reason"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/reason"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_reason"
+            app:layout_constraintEnd_toStartOf="@id/btn_reject"
+            app:layout_constraintStart_toEndOf="@id/tag_address"
+            app:layout_constraintStart_toStartOf="@id/tv_leave_from"
+            app:layout_constraintTop_toBottomOf="@id/tv_leave_type" />
+
+        <TextView
+            android:id="@+id/tv_reason"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/reason"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_reject"
+            app:layout_constraintStart_toEndOf="@id/tv_address"
+            app:layout_constraintStart_toStartOf="@id/tag_reason"
+            app:layout_constraintTop_toBottomOf="@id/tag_reason" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_reject"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_3sdp"
+            android:background="@drawable/bg_pink"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="@string/reject"
+            android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_approved"
+            app:layout_constraintStart_toEndOf="@id/tv_no_of_days"
+            app:layout_constraintTop_toBottomOf="@id/tv_no_of_days" />
 
-    <TextView
-        android:id="@+id/tag_reason_for_leave"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:fontFamily="@font/satoshi_bold"
-        android:padding="@dimen/_4sdp"
-        android:text="Reason For Leave"
-        android:layout_marginHorizontal="@dimen/_2sdp"
-        android:textColor="@color/dark_purple"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/tv_reason_for_leave"
-        app:layout_constraintEnd_toStartOf="@id/tag_address"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_top" />
-
-    <TextView
-        android:id="@+id/tag_address"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:fontFamily="@font/satoshi_bold"
-        android:padding="@dimen/_4sdp"
-        android:layout_marginHorizontal="@dimen/_2sdp"
-        android:text="Address"
-        android:textColor="@color/dark_purple"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/tv_address"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tag_reason_for_leave"
-        app:layout_constraintTop_toBottomOf="@id/ll_top" />
-
-    <TextView
-        android:id="@+id/tv_reason_for_leave"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_25sdp"
-        android:fontFamily="@font/satoshi_bold"
-        android:padding="@dimen/_4sdp"
-        android:text="Reason For Leave"
-        android:textColor="@color/dark_purple"
-        android:textSize="16sp"
-        android:layout_marginHorizontal="@dimen/_2sdp"
-        android:background="@drawable/bg_light_grey_2"
-        app:layout_constraintEnd_toStartOf="@id/tv_address"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tag_reason_for_leave" />
-
-    <TextView
-        android:id="@+id/tv_address"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_25sdp"
-        android:fontFamily="@font/satoshi_bold"
-        android:padding="@dimen/_4sdp"
-        android:text="Address on leave"
-        android:layout_marginHorizontal="@dimen/_2sdp"
-        android:background="@drawable/bg_light_grey_2"
-        android:textColor="@color/dark_purple"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tag_reason_for_leave"
-        app:layout_constraintTop_toBottomOf="@id/tag_address" />
-
-    <TextView
-        android:id="@+id/tv_leave_type"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:fontFamily="@font/satoshi_bold"
-        android:padding="@dimen/_4sdp"
-        android:text="Leave Type"
-        android:layout_marginVertical="@dimen/_3sdp"
-        android:layout_marginHorizontal="@dimen/_2sdp"
-        android:textColor="@color/pink"
-        android:textSize="16sp"
-        android:background="@drawable/backround_lite_grey_border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_reason_for_leave" />
-
-
-    <TextView
-        android:id="@+id/tv_available_days"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:fontFamily="@font/satoshi_bold"
-        android:padding="@dimen/_4sdp"
-        android:background="@drawable/backround_lite_grey_border"
-        android:text="Leave Availability"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginVertical="@dimen/_3sdp"
-        android:layout_marginHorizontal="@dimen/_2sdp"
-        android:textColor="@color/pink"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-       app:layout_constraintStart_toEndOf="@id/tv_leave_type"
-        app:layout_constraintTop_toBottomOf="@id/tv_reason_for_leave" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_reject"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_18sdp"
-        android:layout_marginVertical="@dimen/_3sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:background="@drawable/bg_border_with_pink"
-        android:fontFamily="@font/satoshi_bold"
-        android:text="@string/reject"
-        android:textAllCaps="false"
-        android:textColor="@color/dark_purple"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/btn_accept"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintTop_toBottomOf="@id/tv_address"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_accept"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_18sdp"
-        android:layout_marginStart="@dimen/_2sdp"
-        android:layout_marginEnd="@dimen/_6sdp"
-        android:layout_marginVertical="@dimen/_3sdp"
-        android:layout_toEndOf="@id/btn_accept"
-        android:background="@drawable/bg_purple"
-        android:fontFamily="@font/satoshi_bold"
-        android:singleLine="true"
-        android:text="@string/accept"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_address" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_approved"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:background="@drawable/bg_green"
+            android:fontFamily="@font/satoshi_bold"
+            android:singleLine="true"
+            android:text="@string/approve"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/btn_reject"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_reject"
+            app:layout_constraintTop_toTopOf="@id/btn_reject" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

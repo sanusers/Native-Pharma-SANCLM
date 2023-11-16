@@ -14,7 +14,6 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,7 +50,6 @@ public class CommonUtilsMethods {
     public CommonUtilsMethods(Context context) {
         this.context = context;
     }
-
 
     public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
         Geocoder geocoder;
@@ -119,20 +117,19 @@ public class CommonUtilsMethods {
                 .check();
     }
 
-
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
-
-        if (rv_test.getItemDecorationCount() > 0) {
-            for (int i = 0; i < rv_test.getItemDecorationCount(); i++) {
-                rv_test.removeItemDecorationAt(i);
+        try {
+            if (rv_test.getItemDecorationCount() > 0) {
+                for (int i = 0; i < rv_test.getItemDecorationCount(); i++) {
+                    rv_test.removeItemDecorationAt(i);
+                }
             }
+            rv_test.setItemAnimator(new DefaultItemAnimator());
+            Parcelable recyclerViewState;
+            recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
+            rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        } catch (Exception e) {
         }
-        rv_test.setItemAnimator(new DefaultItemAnimator());
-        //   rv_test.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-        Parcelable recyclerViewState;
-        recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
-        rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-
     }
 
     public void displayPopupWindow(Activity activity, Context context, View view, String name) {

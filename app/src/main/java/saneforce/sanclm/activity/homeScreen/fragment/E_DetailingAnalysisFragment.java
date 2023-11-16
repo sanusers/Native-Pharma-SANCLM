@@ -33,8 +33,6 @@ public class E_DetailingAnalysisFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.e_detailing_analysis, container, false);
 
-        Log.e("test","e_detailing_analysis");
-
         doc_layout = v.findViewById(R.id.ll_doc_child);
         che_layout = v.findViewById(R.id.ll_che_child);
         stokiest_layout = v.findViewById(R.id.ll_stock_child);

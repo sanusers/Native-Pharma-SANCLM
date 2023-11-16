@@ -123,7 +123,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
-                if (DCRCallActivity.SampleValidation.equalsIgnoreCase("0")) {
+                if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
                     if (callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sale") || callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
                     } else if (callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sample")) {

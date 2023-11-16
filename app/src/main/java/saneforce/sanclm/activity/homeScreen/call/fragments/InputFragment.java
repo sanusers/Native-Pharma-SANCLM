@@ -39,10 +39,9 @@ public class InputFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragmentInputBinding = FragmentInputBinding.inflate(inflater);
         View v = fragmentInputBinding.getRoot();
-        Log.v("fragment", "inputs");
         dummyAdapter();
 
-        if (DCRCallActivity.InputValidation.equalsIgnoreCase("0")) {
+        if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             fragmentInputBinding.tagStock.setVisibility(View.VISIBLE);
         } else {
             fragmentInputBinding.tagStock.setVisibility(View.GONE);

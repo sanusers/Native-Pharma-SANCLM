@@ -12,8 +12,32 @@ public class SaveCallProductList {
     String rx_qty;
     String rcpa_qty;
     String promoted;
+    String rate;
 
-    public SaveCallProductList(String name, String code, String category,String balance_sam_stk, String sam_stk, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
+    public SaveCallProductList(String name, String code, String rate) {
+        this.name = name;
+        this.code = code;
+        this.rate = rate;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public SaveCallProductList(String code, String name, String sample_qty, String rx_qty, String rcpa_qty, String promoted) {
+        this.name = name;
+        this.code = code;
+        this.sample_qty = sample_qty;
+        this.rx_qty = rx_qty;
+        this.rcpa_qty = rcpa_qty;
+        this.promoted = promoted;
+    }
+
+    public SaveCallProductList(String name, String code, String category, String balance_sam_stk, String sam_stk, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
         this.name = name;
         this.code = code;
         this.category = category;

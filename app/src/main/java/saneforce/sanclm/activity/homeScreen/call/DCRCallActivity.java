@@ -962,6 +962,8 @@ public class DCRCallActivity extends AppCompatActivity {
     private void AddInputData() {
         InputFragment.callCommonCheckedListArrayList = new ArrayList<>();
         CallInputListAdapter.saveCallInputListArrayList = new ArrayList<>();
+        AdditionalCallDetailedSide.callInputList = new ArrayList<>();
+
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.INPUT);
             JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
@@ -983,12 +985,13 @@ public class DCRCallActivity extends AppCompatActivity {
                     if (d2.compareTo(d1) >= 0) {
                         if (d2.compareTo(d3) <= 0) {
                             InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false));
+                            AdditionalCallDetailedSide.callInputList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false));
                         }
                     }
                 }
             }
 
-            if (InputValidation.equalsIgnoreCase("0")) {
+            if (InputValidation.equalsIgnoreCase("1")) {
                 for (int i = 0; i < InputFragment.callCommonCheckedListArrayList.size(); i++) {
                     for (int j = 0; j < jsonArrayInpStk.length(); j++) {
                         JSONObject jsonObjectInput = jsonArrayInpStk.getJSONObject(j);
@@ -1011,6 +1014,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
         ProductFragment.callCommonCheckedListArrayList = new ArrayList<>();
         CallProductListAdapter.saveCallProductListArrayList = new ArrayList<>();
+        AdditionalCallDetailedSide.callSampleList = new ArrayList<>();
         try {
             Log.v("prdds", "prioritycode---" + CallActivityCustDetails.get(0).getPriorityPrdCode());
             int Priority_count = 1;
@@ -1023,9 +1027,10 @@ public class DCRCallActivity extends AppCompatActivity {
                 } else {
                     ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
                 }
+                AdditionalCallDetailedSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
             }
 
-            if (SampleValidation.equalsIgnoreCase("0")) {
+            if (SampleValidation.equalsIgnoreCase("1")) {
                 for (int i = 0; i < ProductFragment.callCommonCheckedListArrayList.size(); i++) {
                     for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
                         JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);

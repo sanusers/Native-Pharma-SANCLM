@@ -42,7 +42,8 @@ public class JointworkSelectionSide extends Fragment {
     SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
-    JwAdapter jwAdapter;
+    @SuppressLint("StaticFieldLeak")
+    public static JwAdapter jwAdapter;
     AdapterCallJointWorkList adapterCallJointWorkList;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -65,6 +66,7 @@ public class JointworkSelectionSide extends Fragment {
                     JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(JwList.get(j).getName(), JwList.get(j).getCode()));
                 }
             }
+
             int count = JWOthersFragment.callAddedJointList.size();
             for (int i = 0; i < count; i++) {
                 for (int j = i + 1; j < count; j++) {

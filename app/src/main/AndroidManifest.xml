@@ -53,6 +53,21 @@
             android:name=".activity.presentation.preview.PresentationPreviewActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.approvals.tp.TpApprovalActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+        <activity
+            android:name=".activity.approvals.geotagging.GeoTaggingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+        <activity
+            android:name=".activity.approvals.dcr.dcrdetaillist.DcrDetailViewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+        <activity
             android:name=".activity.forms.Forms_activity"
             android:exported="true"
             android:screenOrientation="landscape" />
@@ -65,14 +80,19 @@
             android:exported="true"
             android:screenOrientation="landscape"
             android:theme="@style/NoBackgroundNoTitleDialogTheme" />
-
+        <activity
+            android:name=".activity.approvals.leave.LeaveApprovalActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
             android:exported="true"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
             <intent-filter>
-                <action android:name="saneforce.sanclm.activity.tourPlan.TourPlanActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="saneforce.sanclm.activity.tourPlan.TourPlanActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -93,6 +113,16 @@
             android:name=".activity.MainActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.approvals.tpdeviation.TpDeviationApprovalActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+        <activity
+            android:name=".activity.approvals.dcr.DcrApprovalActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
             android:name=".activity.map.custSelection.TagCustSelectionList"
             android:exported="false"

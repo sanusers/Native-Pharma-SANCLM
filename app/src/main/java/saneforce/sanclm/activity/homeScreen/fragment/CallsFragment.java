@@ -30,8 +30,6 @@ public class CallsFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.calls_fragment, container, false);
-        Log.e("test","calls_fragment");
-
 
         recyclerView = v.findViewById(R.id.recyelerview);
         tv_add_call = v.findViewById(R.id.tv_add_call);

@@ -2,21 +2,14 @@ package saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls;
 
 public class AddInputAdditionalCall {
 
-    String cust_name,cust_code;
-    String input_name, stock, inp_qty;
+    String cust_name, cust_code;
+    String input_name, input_code, stock, inp_qty;
 
-    public String getCust_code() {
-        return cust_code;
-    }
-
-    public void setCust_code(String cust_code) {
-        this.cust_code = cust_code;
-    }
-
-    public AddInputAdditionalCall(String cust_name, String cust_code, String input_name, String stock, String input_qty) {
+    public AddInputAdditionalCall(String cust_name, String cust_code, String input_name, String input_code, String stock, String input_qty) {
         this.cust_name = cust_name;
         this.cust_code = cust_code;
         this.input_name = input_name;
+        this.input_code = input_code;
         this.stock = stock;
         this.inp_qty = input_qty;
     }
@@ -28,12 +21,28 @@ public class AddInputAdditionalCall {
         this.inp_qty = input_qty;
     }
 
+    public String getCust_code() {
+        return cust_code;
+    }
+
+    public void setCust_code(String cust_code) {
+        this.cust_code = cust_code;
+    }
+
     public String getCust_name() {
         return cust_name;
     }
 
     public void setCust_name(String cust_name) {
         this.cust_name = cust_name;
+    }
+
+    public String getInput_code() {
+        return input_code;
+    }
+
+    public void setInput_code(String input_code) {
+        this.input_code = input_code;
     }
 
     public String getInput_name() {

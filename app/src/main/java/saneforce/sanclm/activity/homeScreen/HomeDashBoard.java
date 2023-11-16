@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -574,6 +575,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (id == R.id.nav_approvals) {
+            SharedPref.setApprovalsCounts(HomeDashBoard.this,"false");
             startActivity(new Intent(HomeDashBoard.this, ApprovalsActivity.class));
             return true;
         }
