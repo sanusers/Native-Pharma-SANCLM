@@ -39,8 +39,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
-import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
@@ -1024,7 +1022,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
                                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
 //                                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                            SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this,"1");
+                                            saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
                                         }
 
                                     } else {
@@ -1055,7 +1053,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             masterSyncAdapter.notifyDataSetChanged();
                             if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
 //                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this,"1");
+                                saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
 
                             }
                         }

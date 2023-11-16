@@ -9,7 +9,6 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,7 +23,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -54,11 +52,13 @@
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".activity.presentation.PresentationPreviewActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.forms.Forms_activity"
             android:exported="true"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.myresource.MyResource_Activity"
             android:exported="true"
@@ -68,17 +68,16 @@
             android:exported="true"
             android:screenOrientation="landscape"
             android:theme="@style/NoBackgroundNoTitleDialogTheme" />
-
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
             android:exported="true"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
             <intent-filter>
-                <action android:name="saneforce.sanclm.activity.tourPlan.TourPlanActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="saneforce.sanclm.activity.tourPlan.TourPlanActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.masterSync.MasterSyncActivity"
             android:exported="false"
@@ -87,7 +86,7 @@
             android:name=".activity.login.LoginActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.setting.SettingsActivity"
             android:exported="false"
@@ -121,31 +120,26 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.leave.Leave_Application"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.approvals.ApprovalsActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.presentation.PresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.presentation.createPresentation.CreatePresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.SplashScreen"
             android:exported="true"
@@ -156,12 +150,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
-            android:screenOrientation="landscape" >
-        </activity>
+            android:screenOrientation="landscape"></activity>
 
         <service
             android:name=".services.FirebaseService"
@@ -172,14 +164,13 @@
         </service>
 
         <activity
-            android:name="saneforce.sanclm.activity.myresource.MyResource_mapview"
+            android:name=".activity.myresource.MyResource_mapview"
             android:exported="false"
             android:screenOrientation="landscape" />
-
         <activity
-            android:name="saneforce.sanclm.activity.changepassword.Change_passwordActivity"
+            android:name=".activity.changepassword.Change_passwordActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -195,6 +186,5 @@
                 android:resource="@xml/filepaths" />
         </provider>
     </application>
-
 
 </manifest>

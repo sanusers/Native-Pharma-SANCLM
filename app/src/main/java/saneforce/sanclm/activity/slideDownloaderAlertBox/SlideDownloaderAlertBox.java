@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.SlideDownloaderAlertBox;
+package saneforce.sanclm.activity.slideDownloaderAlertBox;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -58,7 +58,7 @@ public  class SlideDownloaderAlertBox {
 
         txt_downloadcount.setText("0/"+Slide_list.size());
         ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
-        Slide_adapter  adapter = new Slide_adapter(activity, Slide_list);
+        Slide_adapter adapter = new Slide_adapter(activity, Slide_list);
         LinearLayoutManager  manager = new LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
@@ -71,13 +71,13 @@ public  class SlideDownloaderAlertBox {
 
             for (SlideModelClass slide : Slide_list) {
 
-                String imageName = slide.getImagename();
-                String downloadStatus = slide.getDownloadstatus();
-                String progressValue = slide.getProgressvalue();
-                String img_size_status = slide.getDownloadsizestatus();
+                String imageName = slide.getImageName();
+                String downloadStatus = slide.getDownloadStatus();
+                String progressValue = slide.getProgressValue();
+                String img_size_status = slide.getDownloadSizeStatus();
 
                 String url= "https://"+SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+imageName;
-                new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide, adapter, recyclerView, dialog, MoveingFlog);
+                new saneforce.sanclm.activity.slideDownloaderAlertBox.DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide, adapter, recyclerView, dialog, MoveingFlog);
                 adapter.notifyDataSetChanged();
             }
 

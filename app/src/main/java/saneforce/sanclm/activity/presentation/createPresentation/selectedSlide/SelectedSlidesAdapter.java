@@ -93,8 +93,6 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
         }
     }
 
-
-
     public void getFromFilePath(String fileName, MyViewHolder holder){
         File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
         if (file.exists()){

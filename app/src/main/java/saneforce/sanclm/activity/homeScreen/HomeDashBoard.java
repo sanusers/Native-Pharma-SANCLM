@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.homeScreen;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Presentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -90,7 +91,6 @@ import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.myresource.MyResource_Activity;
 import saneforce.sanclm.activity.presentation.PresentationActivity;
 
-import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 

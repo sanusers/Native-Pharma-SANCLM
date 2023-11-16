@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.SlideDownloaderAlertBox;
+package saneforce.sanclm.activity.slideDownloaderAlertBox;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -129,9 +129,9 @@ public class DownloadTask {
             super.onProgressUpdate(values);
             int progress = values[0];
             String progressText = String.format("%.1f MB of %.1f MB", downloadedSize / (1024.0 * 1024), totalSize / (1024.0 * 1024));
-            Slidevalue.setDownloadsizestatus(progressText);
-            Slidevalue.setProgressvalue(String.valueOf(progress));
-            Slidevalue.setDownloadstatus("1");
+            Slidevalue.setDownloadSizeStatus(progressText);
+            Slidevalue.setProgressValue(String.valueOf(progress));
+            Slidevalue.setDownloadStatus("1");
             processvalue=progress;
             adapter.notifyDataSetChanged();
 
@@ -142,9 +142,9 @@ public class DownloadTask {
             super.onPostExecute(isDownloadSuccessful);
 
             if (isDownloadSuccessful) {
-                Slidevalue.setDownloadsizestatus("Download completed");
-                Slidevalue.setProgressvalue(String.valueOf(100));
-                Slidevalue.setDownloadstatus("1");
+                Slidevalue.setDownloadSizeStatus("Download completed");
+                Slidevalue.setProgressValue(String.valueOf(100));
+                Slidevalue.setDownloadStatus("1");
                 SlideDownloaderAlertBox.downloading_count++;
                 SlideDownloaderAlertBox.dialogdismisscount++;
                 SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count) + "/" + String.valueOf(adapter.getItemCount()));
@@ -162,10 +162,10 @@ public class DownloadTask {
                 }
 
             } else {
-                Slidevalue.setProgressvalue(String.valueOf(processvalue));
+                Slidevalue.setProgressValue(String.valueOf(processvalue));
                 SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(SlideDownloaderAlertBox.downloading_count) + "/" + String.valueOf(adapter.getItemCount()));
-                Slidevalue.setDownloadsizestatus("Download failed");
-                Slidevalue.setDownloadstatus("2");
+                Slidevalue.setDownloadSizeStatus("Download failed");
+                Slidevalue.setDownloadStatus("2");
                 SlideDownloaderAlertBox.dialogdismisscount++;
                 adapter.notifyDataSetChanged();
 

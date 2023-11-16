@@ -43,6 +43,7 @@ import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.WorkplanFragmentBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
+import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
@@ -61,13 +62,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     ApiInterface api_interface;
     String hdcode = "";
 
+    LoginResponse loginResponse;
 
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
 
+        sqLite = new SQLite(getActivity());
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
             binding.progressHq.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
         }
         api_interface = RetrofitClient.getRetrofit(getContext(), SharedPref.getCallApiUrl(getContext()));
@@ -77,7 +82,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlcluster.setOnClickListener(this);
         binding.rlheadquates.setOnClickListener(this);
 
-        if (SharedPref.getDesignationName(getContext()).equalsIgnoreCase("MGR")) {
+        if (loginResponse.getDesig().equalsIgnoreCase("MGR")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
         } else {
             binding.rlheadquates.setVisibility(View.GONE);
@@ -88,7 +93,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void ShowWorkTypeAlert() {
+    public void ShowWorkTypeAlert () {
         HomeDashBoard.et_search.setText("");
         HomeDashBoard.txt_wt_plan.setText("Select WorkType");
         HomeDashBoard.cl_listview.setVisibility(View.GONE);
@@ -107,7 +112,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtWorktype.setText(SelectedWorktype.getString("Name"));
                 if (SelectedWorktype.getString("FWFlg").equalsIgnoreCase("F")) {
                     binding.rlcluster.setVisibility(View.VISIBLE);
-                    if (SharedPref.getDesignationName(getContext()).equalsIgnoreCase("MGR")) {
+                    if (loginResponse.getDesig().equalsIgnoreCase("MGR")) {
                         binding.rlheadquates.setVisibility(View.VISIBLE);
                     }
 
@@ -128,19 +133,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         HomeDashBoard.et_search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged (CharSequence s, int start, int count, int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged (CharSequence s, int start, int before, int count) {
 
                 String searchString = s.toString();
                 WT_ListAdapter.getFilter().filter(searchString);
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged (Editable s) {
 
             }
         });
@@ -149,7 +154,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void showclusteralter() {
+    public void showclusteralter () {
 
         HomeDashBoard.et_search.setText("");
 
@@ -164,7 +169,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.txt_wt_plan.setText("Select Cluster");
         HomeDashBoard.cl_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
                 HomeDashBoard.drawerLayout.closeDrawer(GravityCompat.END);
                 SelectedCluster = CL_ListAdapter.getlisted().get(position);
                 try {
@@ -176,12 +181,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         });
         HomeDashBoard.et_search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged (CharSequence s, int start, int count, int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged (CharSequence s, int start, int before, int count) {
 
 
                 String searchString = s.toString();
@@ -191,7 +196,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged (Editable s) {
 
             }
         });
@@ -199,7 +204,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void showheadquates() {
+    public void showheadquates () {
         HomeDashBoard.et_search.setText("");
         HomeDashBoard.txt_wt_plan.setText("Select Headquates");
         HomeDashBoard.cl_listview.setVisibility(View.GONE);
@@ -211,7 +216,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         HomeDashBoard.hq_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick (AdapterView<?> parent, View view, int position, long id) {
                 SelectedHeadQuates = HQ_ListAdapter.getlisted().get(position);
                 HomeDashBoard.drawerLayout.closeDrawer(GravityCompat.END);
                 try {
@@ -220,7 +225,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     hdcode = SelectedHeadQuates.getString("id");
 
                     getdata(SelectedHeadQuates.getString("id"));
-
 
 
                 } catch (JSONException e) {
@@ -232,12 +236,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         HomeDashBoard.et_search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged (CharSequence s, int start, int count, int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged (CharSequence s, int start, int before, int count) {
 
                 String searchString = s.toString();
                 HQ_ListAdapter.getFilter().filter(searchString);
@@ -245,20 +249,20 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged (Editable s) {
 
             }
         });
     }
 
 
-    void getLocaldata() {
+    void getLocaldata () {
         worktype_list1.clear();
         cluster.clear();
-        sqLite = new SQLite(getActivity());
+
         try {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
-            for (int i = 0; i < workTypeArray.length(); i++) {
+            for (int i = 0; i<workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 worktype_list1.add(jsonObject);
             }
@@ -267,7 +271,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         try {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(requireContext()));
-            for (int i = 0; i < workTypeArray.length(); i++) {
+            for (int i = 0; i<workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 cluster.add(jsonObject);
             }
@@ -276,7 +280,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
         try {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
-            for (int i = 0; i < workTypeArray.length(); i++) {
+            for (int i = 0; i<workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 Headquteslist.add(jsonObject);
             }
@@ -286,9 +290,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick (View v) {
 
-        switch (v.getId()) {
+        switch (v.getId()){
 
             case R.id.rlworktype:
                 ShowWorkTypeAlert();
@@ -296,10 +300,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             case R.id.rlcluster:
 
-                if (binding.txtheadquaters.getText().toString().equalsIgnoreCase("") && SharedPref.getDesignationName(getActivity()).equalsIgnoreCase("MGR")) {
+                if (binding.txtheadquaters.getText().toString().equalsIgnoreCase("") && loginResponse.getDesig().equalsIgnoreCase("MGR")) {
                     Toast.makeText(getActivity(), "Select Headquates", Toast.LENGTH_SHORT).show();
 
-                } else if (!SharedPref.getDesignationName(getActivity()).equalsIgnoreCase("MGR")) {
+                } else if (!loginResponse.getDesig().equalsIgnoreCase("MGR")) {
                     if (binding.txtWorktype.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getActivity(), "Select Worktype", Toast.LENGTH_SHORT).show();
                     } else {
@@ -315,7 +319,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 if (binding.txtWorktype.getText().toString().startsWith("Field")) {
 
-                    if (binding.txtheadquaters.getText().toString().equalsIgnoreCase("") && SharedPref.getDesignationName(getActivity()).equalsIgnoreCase("MGR")) {
+                    if (binding.txtheadquaters.getText().toString().equalsIgnoreCase("") && loginResponse.getDesig().equalsIgnoreCase("MGR")) {
                         Toast.makeText(getActivity(), "Select Headquates", Toast.LENGTH_SHORT).show();
 
                     } else if (binding.txtCluster.getText().toString().equalsIgnoreCase("")) {
@@ -342,16 +346,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void MydayplanSumit() {
+    public void MydayplanSumit () {
         try {
             String towncode = "", townname = "", WT_code = "", WTName = "", FwFlg = "";
 
-            if (SelectedCluster.length() > 0) {
+            if (SelectedCluster.length()>0) {
                 towncode = SelectedCluster.getString("Code");
                 townname = SelectedCluster.getString("Name");
             }
 
-            if (SelectedWorktype.length() > 0) {
+            if (SelectedWorktype.length()>0) {
                 WT_code = SelectedWorktype.getString("Code");
                 WTName = SelectedWorktype.getString("Name");
                 FwFlg = SelectedWorktype.getString("FWFlg");
@@ -361,18 +365,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             Date currentDate = new Date();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", "dayplan");
-            jsonObject.put("sfcode", SharedPref.getSfCode(getActivity()));
-            jsonObject.put("division_code", SharedPref.getDivisionCode(getActivity()));
-            if (SharedPref.getDesignationName(getActivity()).equalsIgnoreCase("MGR")) {
+            jsonObject.put("sfcode", loginResponse.getSF_Code());
+            jsonObject.put("division_code", loginResponse.getDivision_Code());
+            if (loginResponse.getDesig().equalsIgnoreCase("MGR")) {
                 jsonObject.put("Rsf", hdcode);
             } else {
-                jsonObject.put("Rsf", SharedPref.getSfCode(getActivity()));
+                jsonObject.put("Rsf", loginResponse.getSF_Code());
             }
-            jsonObject.put("Rsf", SharedPref.getHqCode(getActivity()));
-            jsonObject.put("sf_type", SharedPref.getSfType(getActivity()));
-            jsonObject.put("Designation", SharedPref.getDesignationName(getActivity()));
-            jsonObject.put("state_code", SharedPref.getStateCode(getActivity()));
-            jsonObject.put("subdivision_code", SharedPref.getSubdivCode(getActivity()));
+            jsonObject.put("sf_type", loginResponse.getSf_type());
+            jsonObject.put("Designation", loginResponse.getDesig());
+            jsonObject.put("state_code", loginResponse.getState_Code());
+            jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
             jsonObject.put("town_code", towncode);
             jsonObject.put("Town_name", townname);
             jsonObject.put("WT_code", WT_code);
@@ -393,7 +396,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             Call<JsonObject> saveMydayPlan = api_interface.saveMydayPlan(jsonObject.toString());
             saveMydayPlan.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                public void onResponse (Call<JsonObject> call, Response<JsonObject> response) {
                     Log.d("todaycallList:Code", response.code() + " - " + response);
                     if (response.isSuccessful()) {
 
@@ -407,8 +410,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 }
+
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
+                public void onFailure (Call<JsonObject> call, Throwable t) {
                     Toast.makeText(getActivity(), "Mydayplan  failure", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -421,7 +425,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void getdata(String hdcode) {
+    public void getdata (String hdcode) {
         binding.progressHq.setVisibility(View.VISIBLE);
         List<MasterSyncItemModel> list = new ArrayList<>();
         list.clear();
@@ -434,13 +438,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         list.add(new MasterSyncItemModel("Cluster", 0, "Doctor", "getterritory", Constants.CLUSTER + hdcode, 0, false));
         //   list.add(new MasterSyncItemModel("Subordinate", 0, "Subordinate", "getsubordinate", Constants.SUBORDINATE, 0, false));
 
-
-        for (int i = 0; i < list.size(); i++) {
-            syncmaster(list.get(i).getMasterFor(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hdcode);
+        for (int i = 0; i<list.size(); i++) {
+            syncmaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hdcode);
         }
     }
 
-    public void syncmaster(String masterFor, String remoteTableName, String LocalTableKeyName, String hdcode) {
+    public void syncmaster (String masterFor, String remoteTableName, String LocalTableKeyName, String hdcode) {
         if (UtilityClass.isNetworkAvailable(getActivity())) {
             try {
                 String baseUrl = SharedPref.getBaseWebUrl(getActivity());
@@ -450,13 +453,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tableName", remoteTableName);
-                jsonObject.put("sfcode", SharedPref.getSfCode(getActivity()));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(getActivity()));
+                jsonObject.put("sfcode", loginResponse.getSF_Code());
+                jsonObject.put("division_code", loginResponse.getDivision_Code());
                 jsonObject.put("Rsf", hdcode);
-                jsonObject.put("sf_type", SharedPref.getSfType(getActivity()));
-                jsonObject.put("Designation", SharedPref.getDesignationName(getActivity()));
-                jsonObject.put("state_code", SharedPref.getStateCode(getActivity()));
-                jsonObject.put("subdivision_code", SharedPref.getSubdivCode(getActivity()));
+                jsonObject.put("sf_type", loginResponse.getSf_type());
+                jsonObject.put("Designation", loginResponse.getDesig());
+                jsonObject.put("state_code", loginResponse.getState_Code());
+                jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
 
 
                 Call<JsonElement> call = api_interface.getDrMaster(jsonObject.toString());
@@ -464,7 +467,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
-                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                        public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                             boolean success = false;
                             JSONArray jsonArray = new JSONArray();
 
@@ -505,7 +508,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
 
                         }
@@ -520,12 +523,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private void getdatabasedHeadQuates(String hdcode) {
+    private void getdatabasedHeadQuates (String hdcode) {
 
         cluster.clear();
         try {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hdcode);
-            for (int i = 0; i < workTypeArray.length(); i++) {
+            for (int i = 0; i<workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 cluster.add(jsonObject);
             }
