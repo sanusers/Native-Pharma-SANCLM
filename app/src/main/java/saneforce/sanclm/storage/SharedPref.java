@@ -51,6 +51,8 @@ public class SharedPref {
     public static final String GEOTAG_IMAGE = "geo_tag_img";
     public static final String GEOTAG_APPROVAL_NEED = "geotag_approval_need";
 
+    //Approval
+    public static final String APPROVAL_COUNT = "approval_count";
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
@@ -197,6 +199,16 @@ public class SharedPref {
 
     public static String getTagImageUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAG_IMAGE_URL, "");
+    }
+
+    public static void setApprovalsCounts(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(APPROVAL_COUNT, token).apply();
+    }
+
+    public static String getApprovalsCounts(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APPROVAL_COUNT, "");
     }
 
     public static void saveHq (Context context, String name, String code){

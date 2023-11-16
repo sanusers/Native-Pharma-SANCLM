@@ -14,6 +14,33 @@ public class DCRApprovalList {
     String remarks;
     String position;
     boolean isSelected;
+    String activity_date_sub;
+    String submission_date_sub;
+    String other_wt;
+
+    public String getActivity_date_sub() {
+        return activity_date_sub;
+    }
+
+    public void setActivity_date_sub(String activity_date_sub) {
+        this.activity_date_sub = activity_date_sub;
+    }
+
+    public String getSubmission_date_sub() {
+        return submission_date_sub;
+    }
+
+    public void setSubmission_date_sub(String submission_date_sub) {
+        this.submission_date_sub = submission_date_sub;
+    }
+
+    public String getOther_wt() {
+        return other_wt;
+    }
+
+    public void setOther_wt(String other_wt) {
+        this.other_wt = other_wt;
+    }
 
     public DCRApprovalList(String sf_name) {
         this.sf_name = sf_name;
@@ -33,7 +60,7 @@ public class DCRApprovalList {
         this.remarks = remarks;
     }
 
-    public DCRApprovalList(String trans_slNo, String sf_name, String activity_date, String plan_name, String workType_name, String SfCode, String fieldWork_indicator) {
+    public DCRApprovalList(String trans_slNo, String sf_name, String activity_date, String plan_name, String workType_name, String SfCode, String fieldWork_indicator,String submission_date_sub,String other_wt) {
         this.trans_slNo = trans_slNo;
         this.sf_name = sf_name;
         this.activity_date = activity_date;
@@ -41,6 +68,8 @@ public class DCRApprovalList {
         this.workType_name = workType_name;
         this.SfCode = SfCode;
         this.fieldWork_indicator = fieldWork_indicator;
+        this.submission_date_sub = submission_date_sub;
+        this.other_wt = other_wt;
     }
 
     public String getPosition() {

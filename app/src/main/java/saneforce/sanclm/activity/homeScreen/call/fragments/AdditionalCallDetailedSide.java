@@ -10,13 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,69 +22,60 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall;
+import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.databinding.FragmentAddCallDetailsSideBinding;
+import saneforce.sanclm.storage.SQLite;
 
 public class AdditionalCallDetailedSide extends Fragment {
-    public static RecyclerView rv_add_input_list, rv_add_sample_list;
+    @SuppressLint("StaticFieldLeak")
+    public static FragmentAddCallDetailsSideBinding callDetailsSideBinding;
     public static ArrayList<AddInputAdditionalCall> addInputAdditionalCallArrayList;
+    public static ArrayList<CallCommonCheckedList> callInputList;
     public static ArrayList<AddSampleAdditionalCall> addSampleAdditionalCallArrayList;
+    public static ArrayList<CallCommonCheckedList> callSampleList;
     @SuppressLint("StaticFieldLeak")
     public static AdapterInputAdditionalCall adapterInputAdditionalCall;
     @SuppressLint("StaticFieldLeak")
     public static AdapterSampleAdditionalCall adapterSampleAdditionalCall;
-    TabLayout tabLayout;
-    ConstraintLayout constraint_input, constraint_sample;
-    TextView btn_add_input, btn_add_sample;
-    Button btn_save_data;
     CommonUtilsMethods commonUtilsMethods;
     SaveAdditionalCallAdapter saveAdditionalCallAdapter;
-    TextView tv_dummy;
-    ImageView img_close;
+    SQLite sqLite;
+    int lastPos;
 
     @SuppressLint("NotifyDataSetChanged")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_call_details_side, container, false);
-        tabLayout = v.findViewById(R.id.tab_layout);
-        btn_add_input = v.findViewById(R.id.btn_add_input);
-        btn_add_sample = v.findViewById(R.id.btn_add_sample);
-        constraint_input = v.findViewById(R.id.constraint_main_input);
-        constraint_sample = v.findViewById(R.id.constraint_main_sample);
-        rv_add_input_list = v.findViewById(R.id.rv_add_inputs_additional);
-        rv_add_sample_list = v.findViewById(R.id.rv_add_sample_additional);
-        img_close = v.findViewById(R.id.img_close);
-        btn_save_data = v.findViewById(R.id.btn_save);
-        tv_dummy = v.findViewById(R.id.tv_dummy);
+        callDetailsSideBinding = FragmentAddCallDetailsSideBinding.inflate(getLayoutInflater());
+        View v = callDetailsSideBinding.getRoot();
+
+        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(getActivity());
-        // commonUtilsMethods.FullScreencall();
-        tabLayout.addTab(tabLayout.newTab().setText("Input"));
-        tabLayout.addTab(tabLayout.newTab().setText("Sample"));
 
-        DummyAdapter();
+        callDetailsSideBinding.tabLayout.addTab(callDetailsSideBinding.tabLayout.newTab().setText("Input"));
+        callDetailsSideBinding.tabLayout.addTab(callDetailsSideBinding.tabLayout.newTab().setText("Sample"));
 
-        tv_dummy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
+        setUpData();
+
+        callDetailsSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        callDetailsSideBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 HideKeyboard();
                 if (tab.getPosition() == 0) {
-                    constraint_input.setVisibility(View.VISIBLE);
-                    constraint_sample.setVisibility(View.INVISIBLE);
+                    callDetailsSideBinding.constraintMainInput.setVisibility(View.VISIBLE);
+                    callDetailsSideBinding.constraintMainSample.setVisibility(View.INVISIBLE);
                 } else if (tab.getPosition() == 1) {
-                    constraint_input.setVisibility(View.INVISIBLE);
-                    constraint_sample.setVisibility(View.VISIBLE);
+                    callDetailsSideBinding.constraintMainInput.setVisibility(View.INVISIBLE);
+                    callDetailsSideBinding.constraintMainSample.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -101,25 +89,45 @@ public class AdditionalCallDetailedSide extends Fragment {
             }
         });
 
-        img_close.setOnClickListener(view -> dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE));
+        callDetailsSideBinding.imgClose.setOnClickListener(view -> dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE));
 
-        btn_add_input.setOnClickListener(view -> {
+        callDetailsSideBinding.btnAddInput.setOnClickListener(view -> {
             HideKeyboard();
-            AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "0", ""));
-            commonUtilsMethods.recycleTestWithDivider(rv_add_input_list);
-            rv_add_input_list.setAdapter(adapterInputAdditionalCall);
-            adapterInputAdditionalCall.notifyDataSetChanged();
+            if (addInputAdditionalCallArrayList.size() > 1) {
+                lastPos = addInputAdditionalCallArrayList.size() - 1;
+                if (callInputList.size() > addInputAdditionalCallArrayList.size()) {
+                    if (!addInputAdditionalCallArrayList.get(lastPos).getInput_name().equalsIgnoreCase("Select") && !addInputAdditionalCallArrayList.get(lastPos).getInput_name().isEmpty()) {
+                        AddNewInputData();
+                    } else {
+                        Toast.makeText(requireContext(), "Select the Input before add new Input", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "There is no Extra Input Available to add", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                AddNewInputData();
+            }
         });
 
-        btn_add_sample.setOnClickListener(view -> {
+        callDetailsSideBinding.btnAddSample.setOnClickListener(view -> {
             HideKeyboard();
-            AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "0", ""));
-            commonUtilsMethods.recycleTestWithDivider(rv_add_sample_list);
-            rv_add_sample_list.setAdapter(adapterSampleAdditionalCall);
-            adapterSampleAdditionalCall.notifyDataSetChanged();
+            if (addSampleAdditionalCallArrayList.size() > 1) {
+                lastPos = addSampleAdditionalCallArrayList.size() - 1;
+                if (callSampleList.size() > addSampleAdditionalCallArrayList.size()) {
+                    if (!addSampleAdditionalCallArrayList.get(lastPos).getPrd_name().equalsIgnoreCase("Select") && !addSampleAdditionalCallArrayList.get(lastPos).getPrd_name().isEmpty()) {
+                        AddNewSampleData();
+                    } else {
+                        Toast.makeText(requireContext(), "Select the Product before add new Product", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "There is no Extra Product Available to add", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                AddNewSampleData();
+            }
         });
 
-        btn_save_data.setOnClickListener(view -> {
+        callDetailsSideBinding.btnSave.setOnClickListener(view -> {
             HideKeyboard();
             if (SaveAdditionalCallAdapter.New_Edit.equalsIgnoreCase("New")) {
                 AddSampleInputDatas();
@@ -152,6 +160,22 @@ public class AdditionalCallDetailedSide extends Fragment {
         return v;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private void AddNewInputData() {
+        addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
+        commonUtilsMethods.recycleTestWithDivider(callDetailsSideBinding.rvAddInputsAdditional);
+        callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
+        adapterInputAdditionalCall.notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void AddNewSampleData() {
+        addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
+        commonUtilsMethods.recycleTestWithDivider(callDetailsSideBinding.rvAddSampleAdditional);
+        callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);
+        adapterSampleAdditionalCall.notifyDataSetChanged();
+    }
+
     private void AddSampleInputDatas() {
         if (addInputAdditionalCallArrayList.size() > 0) {
             for (int i = 0; i < addInputAdditionalCallArrayList.size(); i++) {
@@ -160,26 +184,26 @@ public class AdditionalCallDetailedSide extends Fragment {
         }
 
         if (addSampleAdditionalCallArrayList.size() > 0) {
-            for (int i = 0; i < AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.size(); i++) {
-                SaveAdditionalCallAdapter.nestedAddSampleCallDetails.add(new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(i).getCust_name(), addSampleAdditionalCallArrayList.get(i).getCust_code(), addSampleAdditionalCallArrayList.get(i).getPrd_name(), addSampleAdditionalCallArrayList.get(i).getPrd_stock(), addSampleAdditionalCallArrayList.get(i).getSample_qty()));
+            for (int i = 0; i < addSampleAdditionalCallArrayList.size(); i++) {
+                SaveAdditionalCallAdapter.nestedAddSampleCallDetails.add(new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(i).getCust_name(), addSampleAdditionalCallArrayList.get(i).getCust_code(), addSampleAdditionalCallArrayList.get(i).getPrd_name(), addSampleAdditionalCallArrayList.get(i).getSample_qty()));
             }
         }
     }
 
     private void HideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(tabLayout.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(callDetailsSideBinding.tabLayout.getWindowToken(), 0);
     }
 
-    private void DummyAdapter() {
-        adapterInputAdditionalCall = new AdapterInputAdditionalCall(getActivity(), addInputAdditionalCallArrayList);
+    private void setUpData() {
+        adapterInputAdditionalCall = new AdapterInputAdditionalCall(getActivity(), addInputAdditionalCallArrayList, callInputList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        rv_add_input_list.setLayoutManager(mLayoutManager);
-        rv_add_input_list.setAdapter(adapterInputAdditionalCall);
+        callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
+        callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
 
-        adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(getActivity(), addSampleAdditionalCallArrayList);
+        adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(getActivity(), addSampleAdditionalCallArrayList, callSampleList);
         RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(getActivity());
-        rv_add_sample_list.setLayoutManager(mLayoutManagerprd);
-        rv_add_sample_list.setAdapter(adapterSampleAdditionalCall);
+        callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerprd);
+        callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);
     }
 }

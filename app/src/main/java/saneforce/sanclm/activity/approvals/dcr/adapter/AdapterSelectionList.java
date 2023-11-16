@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.approvals.dcr.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +24,24 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
     int lastSelectedPosition = -1;
     AdapterCustMainList adapterCustMainList;
     ArrayList<DcrDetailModelList> dcrApprovalLists;
+    String DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption;
 
     public AdapterSelectionList(Context context, ArrayList<AdapterModel> adapterModels, ArrayList<DcrDetailModelList> dcrApprovalLists, AdapterCustMainList adapterCustMainList) {
         this.context = context;
         this.adapterModels = adapterModels;
         this.dcrApprovalLists = dcrApprovalLists;
         this.adapterCustMainList = adapterCustMainList;
+    }
+
+    public AdapterSelectionList(Context context, ArrayList<AdapterModel> adapterModels, ArrayList<DcrDetailModelList> dcrDetailedList, AdapterCustMainList adapterCustMainList, String drCaption, String chemistCaption, String stockistCaption, String undrCaption) {
+        this.context = context;
+        this.adapterModels = adapterModels;
+        this.dcrApprovalLists = dcrDetailedList;
+        this.adapterCustMainList = adapterCustMainList;
+        this.DrCaption = drCaption;
+        this.ChemistCaption = chemistCaption;
+        this.StockistCaption = stockistCaption;
+        this.UndrCaption = undrCaption;
     }
 
     @NonNull
@@ -41,68 +54,55 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull AdapterSelectionList.ViewHolder holder, int position) {
+        Log.v("tytyty", adapterModels.get(position).getName());
         holder.tv_name.setText(adapterModels.get(position).getName());
         holder.tv_count.setText(adapterModels.get(position).getCount());
 
         if (selectedPosition == holder.getBindingAdapterPosition()) {
-            switch (adapterModels.get(position).getName()) {
-                case "All":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1_border));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_purple_round));
-                    filter("");
-                    break;
-                case "Doctor":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_priority_border));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_green_round));
-                    filter("1");
-                    break;
-                case "Chemist":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_border));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_lite_blue_round));
-                    filter("2");
-                    break;
-                case "Stockiest":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample_border));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
-                    filter("3");
-                    break;
-                case "Unlisted Dr":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample_border));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
-                    filter("4");
-                    break;
-                case "Hospital":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_hospital_border));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
-                    filter("7");
-                    break;
+            if (adapterModels.get(position).getName().equalsIgnoreCase("ALL")) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1_border));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_purple_round));
+                filter("");
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(DrCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_priority_border));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_green_round));
+                filter("1");
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(ChemistCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_border));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_lite_blue_round));
+                filter("2");
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(StockistCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample_border));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
+                filter("3");
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(UndrCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample_border));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
+                filter("4");
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase("Hospital")) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_hospital_border));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
+                filter("7");
             }
         } else {
-            switch (adapterModels.get(position).getName()) {
-                case "All":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_purple_round));
-                    break;
-                case "Doctor":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_priority));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_green_round));
-                    break;
-                case "Chemist":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_lite_blue_round));
-                    break;
-                case "Stockiest":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
-                    break;
-                case "Unlisted Dr":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
-                    break;
-                case "Hospital":
-                    holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_hospital));
-                    holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
-                    break;
+            if (adapterModels.get(position).getName().equalsIgnoreCase("ALL")) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_purple_round));
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(DrCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_priority));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_green_round));
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(ChemistCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_lite_blue_round));
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(StockistCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(UndrCaption)) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase("Hospital")) {
+                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_hospital));
+                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
             }
         }
 

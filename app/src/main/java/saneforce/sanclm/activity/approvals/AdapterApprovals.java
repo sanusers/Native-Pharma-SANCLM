@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.approvals.dcr.DcrCallApprovalActivity;
+import saneforce.sanclm.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanclm.activity.approvals.geotagging.GeoTaggingActivity;
 import saneforce.sanclm.activity.approvals.leave.LeaveApprovalActivity;
 import saneforce.sanclm.activity.approvals.tp.TpApprovalActivity;
@@ -48,7 +48,7 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
             } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.tp_deviation))) {
                 context.startActivity(new Intent(context, TpDeviationApprovalActivity.class));
             } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.dcr_approvals))) {
-                context.startActivity(new Intent(context, DcrCallApprovalActivity.class));
+                context.startActivity(new Intent(context, DcrApprovalActivity.class));
             } else if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.geo_tagging))) {
                 context.startActivity(new Intent(context, GeoTaggingActivity.class));
             }

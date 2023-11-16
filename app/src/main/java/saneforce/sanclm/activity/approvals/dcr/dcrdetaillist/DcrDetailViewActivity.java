@@ -13,17 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.dcrdetaillist.adapter.AdapterCustSingleList;
+import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
+import saneforce.sanclm.activity.approvals.tp.TpModelList;
 import saneforce.sanclm.databinding.ActivityDcrDetailViewBinding;
 
-public class DcrDetailViewActivity extends AppCompatActivity {
+public class DcrDetailViewActivity extends AppCompatActivity implements OnItemClickListenerApproval {
     public static ArrayList<DcrDetailModelList> dcrDetailModelLists;
-    public static String SelectedName;
+    public static String SelectedCode;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrDetailViewBinding dcrDetailViewBinding;
     AdapterCustSingleList adapterCustSingleList;
-    String hq_name, cust_pob, cust_jw, cust_type, cust_cluster, cust_remark, cust_feedback;
+    String hq_name, cust_pob, cust_jw, cust_type, cust_cluster, cust_remark, cust_feedback, cust_modTime, cust_visitTime;
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -41,6 +44,8 @@ public class DcrDetailViewActivity extends AppCompatActivity {
             cust_type = extra.getString("cust_type");
             cust_remark = extra.getString("cust_fb");
             cust_feedback = extra.getString("cust_remark");
+            cust_modTime = extra.getString("cust_mod_time");
+            cust_visitTime = extra.getString("cust_visit_time");
         }
 
         dcrDetailViewBinding.tagHeader.setText(hq_name);
@@ -49,6 +54,8 @@ public class DcrDetailViewActivity extends AppCompatActivity {
         if (!cust_jw.isEmpty()) dcrDetailViewBinding.tvJw.setText(cust_jw);
         if (!cust_remark.isEmpty()) dcrDetailViewBinding.tvOverallRemarks.setText(cust_remark);
         if (!cust_feedback.isEmpty()) dcrDetailViewBinding.tvOverallFeedback.setText(cust_feedback);
+        if (!cust_visitTime.isEmpty()) dcrDetailViewBinding.tvVisitTime.setText(cust_visitTime);
+        if (!cust_modTime.isEmpty()) dcrDetailViewBinding.tvModifiedTime.setText(cust_modTime);
 
         switch (cust_type) {
             case "1":
@@ -100,7 +107,7 @@ public class DcrDetailViewActivity extends AppCompatActivity {
     }
 
     private void SetupCustListAdapter() {
-        adapterCustSingleList = new AdapterCustSingleList(DcrDetailViewActivity.this, dcrDetailModelLists);
+        adapterCustSingleList = new AdapterCustSingleList(DcrDetailViewActivity.this, dcrDetailModelLists, DcrDetailViewActivity.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         dcrDetailViewBinding.rvDcrListNames.setLayoutManager(mLayoutManager);
         dcrDetailViewBinding.rvDcrListNames.setAdapter(adapterCustSingleList);
@@ -116,4 +123,63 @@ public class DcrDetailViewActivity extends AppCompatActivity {
         adapterCustSingleList.filterList(filterdNames);
     }
 
+    @Override
+    public void onClick(DCRApprovalList dcrApprovalList, int pos) {
+
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    @Override
+    public void onClickDcrDetail(DcrDetailModelList dcrDetailModelList) {
+        dcrDetailViewBinding.tvName.setText(dcrDetailModelList.getName());
+        SelectedCode = dcrDetailModelList.getCode();
+
+        switch (dcrDetailModelList.getType()) {
+            case "1":
+                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_dr_img));
+                break;
+            case "2":
+                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_chemist_img));
+                break;
+            case "3":
+                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_stockist_img));
+                break;
+            case "4":
+                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_unlistdr_img));
+                break;
+        }
+
+        if (!dcrDetailModelList.getSdp_name().isEmpty()) {
+            dcrDetailViewBinding.tvClusterTop.setText(dcrDetailModelList.getSdp_name());
+        } else {
+            dcrDetailViewBinding.tvClusterTop.setText(getResources().getText(R.string.no_cluster));
+        }
+        if (!dcrDetailModelList.getPob().isEmpty()) {
+            dcrDetailViewBinding.tvPob.setText(dcrDetailModelList.getPob());
+        } else {
+            dcrDetailViewBinding.tvPob.setText("0");
+        }
+        if (!dcrDetailModelList.getJointWork().isEmpty()) {
+            dcrDetailViewBinding.tvJw.setText(dcrDetailModelList.getJointWork());
+        } else {
+            dcrDetailViewBinding.tvJw.setText(getResources().getText(R.string.no_jw));
+        }
+        if (!dcrDetailModelList.getRemark().isEmpty()) {
+            dcrDetailViewBinding.tvOverallRemarks.setText(dcrDetailModelList.getRemark());
+        } else {
+            dcrDetailViewBinding.tvOverallRemarks.setText(getResources().getText(R.string.no_remarks));
+        }
+        if (!dcrDetailModelList.getCall_feedback().isEmpty()) {
+            dcrDetailViewBinding.tvOverallFeedback.setText(dcrDetailModelList.getCall_feedback());
+        } else {
+            dcrDetailViewBinding.tvOverallFeedback.setText(getResources().getText(R.string.no_feedback));
+        }
+        dcrDetailViewBinding.tvModifiedTime.setText(dcrDetailModelList.getModTime());
+        dcrDetailViewBinding.tvVisitTime.setText(dcrDetailModelList.getVisitTime());
+    }
+
+    @Override
+    public void onItemClick(TpModelList tpModelLists) {
+
+    }
 }

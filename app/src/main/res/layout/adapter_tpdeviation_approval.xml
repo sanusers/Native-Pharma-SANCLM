@@ -6,52 +6,95 @@
     android:layout_marginVertical="@dimen/_2sdp"
     android:background="@drawable/selector_box">
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_2sdp"
-        android:fontFamily="@font/satoshi_bold"
-        android:paddingVertical="@dimen/_3sdp"
-        android:text="Name"
-        android:textColor="@color/pink"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/tag_actual_plan"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingVertical="@dimen/_2sdp"
+        app:layout_constraintBottom_toTopOf="@id/view_dummy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/tag_actual_plan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginBottom="@dimen/_2sdp"
-        android:fontFamily="@font/satoshi_bold"
-        android:paddingVertical="@dimen/_3sdp"
-        android:text="Actual Planned"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/constraint_session"
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="Name"
+            android:textColor="@color/pink"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_date"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_light_grey"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="10 Oct 2023"
+            android:textColor="@color/pink"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_view_plan"
+            app:layout_constraintStart_toEndOf="@id/tv_name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_view_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:background="@drawable/bg_purple"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/view_actual_plan"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_date"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view_dummy"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:background="@color/background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        app:layout_constraintTop_toBottomOf="@id/constraint_top"
         app:layout_constraintVertical_bias="0.0" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_session"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_4sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/tag_deviation_remarks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tag_actual_plan">
+        app:layout_constraintTop_toBottomOf="@id/view_dummy">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_session_1"
@@ -186,7 +229,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_7sdp"
-        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:fontFamily="@font/satoshi_medium"
         android:paddingVertical="@dimen/_2sdp"
         android:text="@string/deviation_remarks"
@@ -202,7 +245,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_4sdp"
-        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
         android:fontFamily="@font/satoshi_bold"
         android:paddingVertical="@dimen/_2sdp"
         android:text="Due to Rain"

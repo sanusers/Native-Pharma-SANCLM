@@ -182,7 +182,7 @@
             <ScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -584,14 +584,14 @@
                                 android:textColor="@color/dark_purple"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/tag_rcpa"
+                                app:layout_constraintEnd_toStartOf="@+id/tag_rcpa_prd"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@+id/tag_samples"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:layout_editor_absoluteY="2dp" />
 
                             <TextView
-                                android:id="@+id/tag_rcpa"
+                                android:id="@+id/tag_rcpa_prd"
                                 android:layout_width="@dimen/_40sdp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="@dimen/_1sdp"
@@ -720,13 +720,12 @@
                             app:layout_constraintTop_toBottomOf="@id/constraint_tag_input" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraint_main_addcall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
-                        app:layout_constraintBottom_toTopOf="@id/tag_overall_remarks"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_main_rcpa"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/tv_visit_time"
                         app:layout_constraintTop_toBottomOf="@id/constraint_main_input">
@@ -883,13 +882,173 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_main_rcpa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@id/view_dummy_rcpa"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_visit_time"
+                        app:layout_constraintTop_toBottomOf="@id/constraint_main_input">
+
+                        <TextView
+                            android:id="@+id/tag_rcpa"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_5sdp"
+                            android:text="@string/rcpa"
+                            android:textColor="@color/light_grey_2"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toTopOf="@id/constraint_tag_rcpa"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tag_view_rcpa"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginEnd="@dimen/_8sdp"
+                            android:background="@drawable/bg_border_with_pink"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:paddingHorizontal="@dimen/_6sdp"
+                            android:paddingVertical="@dimen/_4sdp"
+                            android:text="@string/view"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toTopOf="@id/constraint_tag_rcpa"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_tag_rcpa"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:background="@drawable/bg_light_grey_1"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/rv_rcpa"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tag_rcpa"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_rcpa"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_rcpa" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/view_dummy_rcpa"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/_2sdp"
+                        android:background="@color/background"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_main_capImg"
+                        app:layout_constraintTop_toBottomOf="@id/constraint_main_rcpa" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_main_capImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@id/view_dummy_ic"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_visit_time"
+                        app:layout_constraintTop_toBottomOf="@id/view_dummy_rcpa">
+
+                        <TextView
+                            android:id="@+id/tag_ic"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_5sdp"
+                            android:text="@string/capture_event"
+                            android:textColor="@color/light_grey_2"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toTopOf="@id/constraint_tag_ic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tag_view_ic"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginEnd="@dimen/_8sdp"
+                            android:background="@drawable/bg_border_with_pink"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:paddingHorizontal="@dimen/_6sdp"
+                            android:paddingVertical="@dimen/_4sdp"
+                            android:text="@string/view"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toTopOf="@id/constraint_tag_ic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraint_tag_ic"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:background="@drawable/bg_light_grey_1"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/rv_ic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tag_ic" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_ic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_6sdp"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_ic" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/view_dummy_ic"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/_2sdp"
+                        android:background="@color/background"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_extra"
+                        app:layout_constraintTop_toBottomOf="@id/constraint_main_capImg" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraint_extra"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
                         app:layout_constraintBottom_toTopOf="@id/view_dummy_2"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/constraint_main_addcall">
+                        app:layout_constraintTop_toBottomOf="@id/view_dummy_ic">
 
                         <TextView
                             android:id="@+id/tag_overall_remarks"
@@ -967,21 +1126,21 @@
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_4sdp"
                 android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_marginVertical="@dimen/_5sdp"
                 android:background="@drawable/bg_border_with_pink"
                 android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_4sdp"
                 android:text="@string/back"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintVertical_bias="1.0"
                 app:layout_constraintTop_toBottomOf="@id/scroll_view"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintVertical_bias="1.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

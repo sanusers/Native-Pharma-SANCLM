@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.dcrdetaillist.DcrDetailViewActivity;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
@@ -26,7 +27,6 @@ import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductLis
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingleList.ViewHolder> {
-    public static int selectedPosition = -1;
     public static ArrayList<SaveCallProductList> ProductList;
     public static ArrayList<SaveCallInputList> InputList;
     Context context;
@@ -35,12 +35,13 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
     ArrayList<SaveCallInputList> InputListNew;
     ProductAdapter productAdapter;
     InputAdapter inputAdapter;
-    int lastSelectedPosition = -1;
     CommonUtilsMethods commonUtilsMethods;
+    OnItemClickListenerApproval listenerApproval;
 
-    public AdapterCustSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames) {
+    public AdapterCustSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames,OnItemClickListenerApproval listenerApproval) {
         this.context = context;
         this.dcrApprovalNames = dcrApprovalNames;
+        this.listenerApproval = listenerApproval;
     }
 
     @NonNull
@@ -55,7 +56,7 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
     public void onBindViewHolder(@NonNull AdapterCustSingleList.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
 
-        if (DcrDetailViewActivity.SelectedName.equalsIgnoreCase(dcrApprovalNames.get(position).getName())) {
+        if (DcrDetailViewActivity.SelectedCode.equalsIgnoreCase(dcrApprovalNames.get(position).getCode())) {
             ProductListNew = new ArrayList<>();
             InputListNew = new ArrayList<>();
             holder.constraint_main.setBackground(context.getResources().getDrawable(R.drawable.bg_purple));
@@ -109,71 +110,14 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
             holder.list_arrow.setImageDrawable(context.getResources().getDrawable(R.drawable.greater_than_purple));
         }
 
-      /*  if (selectedPosition == holder.getBindingAdapterPosition()) {
-            ProductListNew = new ArrayList<>();
-            InputListNew = new ArrayList<>();
-            holder.constraint_main.setBackground(context.getResources().getDrawable(R.drawable.bg_purple));
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.white));
-            holder.tv_date.setBackground(context.getResources().getDrawable(R.drawable.selector_box));
-            holder.list_arrow.setImageDrawable(context.getResources().getDrawable(R.drawable.greater_than_white));
-
-            //ProductAdapter
-            for (int i = 0; i < ProductList.size(); i++) {
-                if (ProductList.get(i).getCode().equalsIgnoreCase(dcrApprovalNames.get(position).getName())) {
-                    ProductListNew.add(new SaveCallProductList(ProductList.get(i).getCode(), ProductList.get(i).getName(), ProductList.get(i).getSample_qty(), ProductList.get(i).getRx_qty(), ProductList.get(i).getRcpa_qty(), ProductList.get(i).getPromoted()));
-                }
-            }
-
-            Log.v("size", "--prd--" + ProductListNew.size());
-            if (ProductListNew.size() > 0) {
-                dcrDetailViewBinding.constraintMainSample.setVisibility(View.VISIBLE);
-                productAdapter = new ProductAdapter(context, ProductListNew);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-                dcrDetailViewBinding.rvSamplePrd.setLayoutManager(mLayoutManager);
-                commonUtilsMethods.recycleTestWithDivider(dcrDetailViewBinding.rvSamplePrd);
-                dcrDetailViewBinding.rvSamplePrd.setNestedScrollingEnabled(false);
-                dcrDetailViewBinding.rvSamplePrd.setAdapter(productAdapter);
-            } else {
-                dcrDetailViewBinding.constraintMainSample.setVisibility(View.GONE);
-            }
-
-            //InputAdapter
-            for (int j = 0; j < InputList.size(); j++) {
-                if (InputList.get(j).getInp_code().equalsIgnoreCase(dcrApprovalNames.get(position).getName())) {
-                    InputListNew.add(new SaveCallInputList(InputList.get(j).getInp_code(), InputList.get(j).getInput_name(), InputList.get(j).getInp_qty()));
-                }
-            }
-
-            Log.v("size", "--inp--" + InputListNew.size());
-            if (InputListNew.size() > 0) {
-                dcrDetailViewBinding.constraintMainInput.setVisibility(View.VISIBLE);
-                inputAdapter = new InputAdapter(context, InputListNew);
-                RecyclerView.LayoutManager mLayoutManager1 = new LinearLayoutManager(context);
-                dcrDetailViewBinding.rvInput.setLayoutManager(mLayoutManager1);
-                commonUtilsMethods.recycleTestWithDivider(dcrDetailViewBinding.rvInput);
-                dcrDetailViewBinding.rvInput.setNestedScrollingEnabled(false);
-                dcrDetailViewBinding.rvInput.setAdapter(inputAdapter);
-            } else {
-                dcrDetailViewBinding.constraintMainInput.setVisibility(View.GONE);
-            }
-        } else {
-            holder.constraint_main.setBackground(context.getResources().getDrawable(R.drawable.selector_box));
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.dark_purple));
-            holder.tv_date.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1));
-            holder.list_arrow.setImageDrawable(context.getResources().getDrawable(R.drawable.greater_than_purple));
-        }
-*/
         holder.tv_date.setVisibility(View.INVISIBLE);
         holder.tv_name.setText(dcrApprovalNames.get(position).getName());
 
         holder.constraint_main.setOnClickListener(view -> {
-        /*    lastSelectedPosition = selectedPosition;
-            selectedPosition = holder.getBindingAdapterPosition();
-            notifyItemChanged(lastSelectedPosition);
-            notifyItemChanged(selectedPosition);*/
+            listenerApproval.onClickDcrDetail(new DcrDetailModelList(dcrApprovalNames.get(position).getHq_name(), dcrApprovalNames.get(position).getName(), dcrApprovalNames.get(position).getCode(), dcrApprovalNames.get(position).getTypeCust(), dcrApprovalNames.get(position).getType(), dcrApprovalNames.get(position).getSdp_name(), dcrApprovalNames.get(position).getPob(), dcrApprovalNames.get(position).getRemark(), dcrApprovalNames.get(position).getJointWork(), dcrApprovalNames.get(position).getCall_feedback(), dcrApprovalNames.get(position).getModTime(), dcrApprovalNames.get(position).getVisitTime()));
 
-            dcrDetailViewBinding.tvName.setText(dcrApprovalNames.get(position).getName());
-            DcrDetailViewActivity.SelectedName = dcrApprovalNames.get(position).getName();
+         /*   dcrDetailViewBinding.tvName.setText(dcrApprovalNames.get(position).getName());
+            DcrDetailViewActivity.SelectedCode = dcrApprovalNames.get(position).getCode();
 
             switch (dcrApprovalNames.get(position).getType()) {
                 case "1":
@@ -215,6 +159,8 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
             } else {
                 dcrDetailViewBinding.tvOverallFeedback.setText(context.getResources().getText(R.string.no_feedback));
             }
+            dcrDetailViewBinding.tvModifiedTime.setText(dcrApprovalNames.get(position).getModTime());
+            dcrDetailViewBinding.tvVisitTime.setText(dcrApprovalNames.get(position).getVisitTime());*/
             notifyDataSetChanged();
         });
     }

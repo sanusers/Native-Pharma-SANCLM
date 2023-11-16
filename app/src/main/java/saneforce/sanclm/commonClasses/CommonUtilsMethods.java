@@ -14,7 +14,6 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,7 +50,6 @@ public class CommonUtilsMethods {
     public CommonUtilsMethods(Context context) {
         this.context = context;
     }
-
 
     public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
         Geocoder geocoder;
@@ -119,6 +117,43 @@ public class CommonUtilsMethods {
                 .check();
     }
 
+    public static String getCurrentTime() {
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String val = sdf.format(currentTime);
+        return val;
+    }
+
+    public static String getCurrentInstance() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(c.getTimeInMillis());
+    }
+
+    public static String getCurrentDateDMY() {
+        Date currentTime = Calendar.getInstance().getTime();
+        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
+        Log.v("Printing_current_time", String.valueOf(currentTime));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String val = sdf.format(currentTime);
+        Log.v("Printing_current_date", val);
+        return val;
+    }
+
+    public static ProgressDialog createProgressDialog(Context context) {
+        ProgressDialog dialog = new ProgressDialog(context);
+      /*  try {
+            dialog.show();
+        } catch (WindowManager.BadTokenException e) {
+
+        }*/
+        dialog.setCancelable(false);
+        dialog.setIndeterminate(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.loading_progress);
+        // dialog.setMessage(Message);
+        return dialog;
+    }
 
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
         try {
@@ -128,7 +163,6 @@ public class CommonUtilsMethods {
                 }
             }
             rv_test.setItemAnimator(new DefaultItemAnimator());
-            //   rv_test.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
             Parcelable recyclerViewState;
             recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
             rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
@@ -164,27 +198,6 @@ public class CommonUtilsMethods {
         }
     }
 
-    public static String getCurrentTime() {
-        Date currentTime = Calendar.getInstance().getTime();;
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        String val = sdf.format(currentTime);
-        return val;
-    }
-    public static String getCurrentInstance() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(c.getTimeInMillis());
-    }
-
-    public static String getCurrentDateDMY() {
-        Date currentTime = Calendar.getInstance().getTime();
-        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
-        Log.v("Printing_current_time", String.valueOf(currentTime));
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        String val = sdf.format(currentTime);
-        Log.v("Printing_current_date", String.valueOf(val));
-        return val;
-    }
     public void setSpinText(Spinner spin, String text) {
         for (int i = 0; i < spin.getAdapter().getCount(); i++) {
             if (spin.getAdapter().getItem(i).toString().contains(text)) {
@@ -193,20 +206,6 @@ public class CommonUtilsMethods {
         }
     }
 
-    public static ProgressDialog createProgressDialog(Context context) {
-        ProgressDialog dialog = new ProgressDialog(context);
-      /*  try {
-            dialog.show();
-        } catch (WindowManager.BadTokenException e) {
-
-        }*/
-        dialog.setCancelable(false);
-        dialog.setIndeterminate(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setContentView(R.layout.loading_progress);
-        // dialog.setMessage(Message);
-        return dialog;
-    }
     public void FullScreencall() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) {

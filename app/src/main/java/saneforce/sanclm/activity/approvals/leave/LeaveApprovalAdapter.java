@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -89,7 +91,13 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 dialogReject.dismiss();
             });
 
-            btn_reject.setOnClickListener(view13 -> RejectedLeave(leaveModelLists.get(holder.getAdapterPosition()).getLeave_id(), holder.getAdapterPosition(), ed_reason.getText().toString()));
+            btn_reject.setOnClickListener(view13 -> {
+                if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
+                    RejectedLeave(leaveModelLists.get(holder.getAdapterPosition()).getLeave_id(), holder.getAdapterPosition(), ed_reason.getText().toString());
+                } else {
+                    Toast.makeText(context, context.getResources().getText(R.string.toast_enter_reason_for_reject), Toast.LENGTH_SHORT).show();
+                }
+            });
             dialogReject.show();
         });
 
@@ -132,6 +140,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                             Toast.makeText(context, "Rejected Successfully", Toast.LENGTH_SHORT).show();
                             dialogReject.dismiss();
                             removeAt(Position);
+                            ApprovalsActivity.LeaveCount--;
                         }
                     } catch (Exception e) {
                         dialogReject.dismiss();
@@ -189,6 +198,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             Toast.makeText(context, "Approved Successfully", Toast.LENGTH_SHORT).show();
                             removeAt(Position);
+                            ApprovalsActivity.LeaveCount--;
                         }
                     } catch (Exception e) {
                     }

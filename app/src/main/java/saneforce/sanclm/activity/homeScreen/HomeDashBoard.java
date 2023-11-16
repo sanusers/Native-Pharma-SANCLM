@@ -440,6 +440,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (id == R.id.nav_approvals) {
+            SharedPref.setApprovalsCounts(HomeDashBoard.this,"false");
             startActivity(new Intent(HomeDashBoard.this, ApprovalsActivity.class));
             return true;
         }

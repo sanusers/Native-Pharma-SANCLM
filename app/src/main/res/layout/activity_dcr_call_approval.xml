@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".activity.approvals.dcr.DcrCallApprovalActivity">
+    tools:context=".activity.approvals.dcr.DcrApprovalActivity">
 
     <View
         android:id="@+id/view_top"
@@ -150,9 +150,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_selected_details"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@id/tv_activity_date"
+                app:layout_constraintBottom_toTopOf="@id/constraint_buttons"
                 app:layout_constraintEnd_toStartOf="@id/tag_submitted_date"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -218,14 +218,72 @@
                     app:layout_constraintStart_toStartOf="@id/tag_submitted_date"
                     app:layout_constraintTop_toBottomOf="@id/tag_submitted_date" />
 
+                <TextView
+                    android:id="@+id/tag_wt"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/worktype"
+                    android:textColor="@color/light_grey_2"
+                    app:layout_constraintBottom_toTopOf="@id/tv_wt"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tag_submitted_date"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_wt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="Field Work"
+                    android:textColor="@color/cheked_txt_color"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="@id/tag_wt"
+                    app:layout_constraintStart_toStartOf="@id/tag_wt"
+                    app:layout_constraintTop_toBottomOf="@id/tag_wt" />
+
+                <TextView
+                    android:id="@+id/tag_other_wt"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="@string/other_wt"
+                    android:textColor="@color/light_grey_2"
+                    app:layout_constraintBottom_toTopOf="@id/tv_wt"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tag_wt"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_other_wt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text=""
+                    android:textColor="@color/cheked_txt_color"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="@id/tag_other_wt"
+                    app:layout_constraintStart_toStartOf="@id/tag_other_wt"
+                    app:layout_constraintTop_toBottomOf="@id/tag_other_wt" />
+
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraint_session_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_7sdp"
+                    android:layout_marginTop="@dimen/_1sdp"
                     android:background="@drawable/backround_lite_grey_border"
                     android:padding="@dimen/_3sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/rv_selection_list"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_submitted_date"
@@ -240,6 +298,7 @@
                         android:text="@string/session_1"
                         android:textColor="@color/light_grey_2"
                         android:textSize="14sp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toTopOf="@id/tv_worktype_1"
                         app:layout_constraintEnd_toStartOf="@id/tag_cluster_1"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -255,6 +314,7 @@
                         android:text="Field Work"
                         android:textColor="@color/cheked_txt_color"
                         android:textSize="14sp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/tag_session_1"
                         app:layout_constraintStart_toStartOf="@id/tag_session_1"
@@ -268,6 +328,7 @@
                         android:fontFamily="@font/satoshi_medium"
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/cluster"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
                         android:textColor="@color/light_grey_2"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@id/tv_cluster_1"
@@ -281,7 +342,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:paddingVertical="@dimen/_2sdp"
-                        android:text="@string/cluster"
+                        android:text="@string/no_cluster"
                         android:textColor="@color/cheked_txt_color"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -298,6 +359,7 @@
                         android:text="@string/hq"
                         android:textColor="@color/light_grey_2"
                         android:textSize="14sp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toTopOf="@id/tv_hq_1"
                         app:layout_constraintEnd_toStartOf="@id/tag_remark_1"
                         app:layout_constraintStart_toEndOf="@id/tag_cluster_1"
@@ -312,6 +374,7 @@
                         android:text="@string/hq"
                         android:textColor="@color/cheked_txt_color"
                         android:textSize="14sp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@id/tv_cluster_1"
                         app:layout_constraintEnd_toEndOf="@id/tag_hq_1"
                         app:layout_constraintStart_toStartOf="@id/tag_hq_1"
@@ -319,11 +382,12 @@
 
                     <TextView
                         android:id="@+id/tag_remark_1"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/_90sdp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_medium"
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/remarks"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
                         android:textColor="@color/light_grey_2"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@id/tv_remark_1"
@@ -333,11 +397,11 @@
 
                     <TextView
                         android:id="@+id/tv_remark_1"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/_90sdp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/satoshi_bold"
                         android:paddingVertical="@dimen/_2sdp"
-                        android:text="@string/remarks"
+                        android:text="@string/no_remarks"
                         android:textColor="@color/cheked_txt_color"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hq_1"
@@ -348,45 +412,50 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_selection_list"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_7sdp"
-                    android:paddingHorizontal="@dimen/_8sdp"
-                    android:paddingVertical="@dimen/_3sdp"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_22sdp"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
                     app:layout_constraintBottom_toTopOf="@id/rv_dcr_content_list"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/constraint_session_1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_dcr_content_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:layout_marginBottom="@dimen/_6sdp"
+                    android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_selection_list" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_dcr_content_list"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/_3sdp"
-                android:background="@color/white"
-                app:layout_constraintBottom_toTopOf="@id/constraint_buttons"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/constraint_selected_details" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_buttons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_4sdp"
+                android:layout_marginHorizontal="@dimen/_3sdp"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:paddingVertical="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_dcr_content_list">
+                app:layout_constraintTop_toBottomOf="@id/constraint_selected_details"
+                app:layout_constraintVertical_bias="1.0">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_reject"
                     android:layout_width="@dimen/_35sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_marginHorizontal="@dimen/_4sdp"
-                    android:layout_marginVertical="@dimen/_3sdp"
                     android:background="@drawable/bg_pink"
                     android:fontFamily="@font/satoshi_bold"
                     android:text="@string/reject"
@@ -404,7 +473,6 @@
                     android:layout_width="@dimen/_35sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_marginHorizontal="@dimen/_4sdp"
-                    android:layout_marginVertical="@dimen/_3sdp"
                     android:background="@drawable/bg_green"
                     android:fontFamily="@font/satoshi_bold"
                     android:singleLine="true"

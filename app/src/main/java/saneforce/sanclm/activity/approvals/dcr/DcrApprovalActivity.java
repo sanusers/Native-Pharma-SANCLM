@@ -1,5 +1,8 @@
 package saneforce.sanclm.activity.approvals.dcr;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.DcrCount;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -18,16 +21,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -36,37 +43,46 @@ import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.AdapterModel;
 import saneforce.sanclm.activity.approvals.ApprovalsActivity;
+import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterCustMainList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterDcrApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterSelectionList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
+import saneforce.sanclm.activity.approvals.tp.TpModelList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityDcrCallApprovalBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
+import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
-public class DcrCallApprovalActivity extends AppCompatActivity {
+public class DcrApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
     public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode, SelectedTransCode, SelectedSfCode, SelectedActivityDate;
     public static int SelectedPosition;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrCallApprovalBinding dcrCallApprovalBinding;
-    public static JSONObject jsonDcrContentList = new JSONObject();
-    public static ProgressDialog progressDialog = null;
-    public static ApiInterface api_interface;
     public static ArrayList<DcrDetailModelList> dcrDetailedList = new ArrayList<>();
     public static ArrayList<SaveCallProductList> SaveProductList = new ArrayList<>();
     public static ArrayList<SaveCallInputList> saveInputList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static AdapterCustMainList adapterCustMainList;
     public static ArrayList<AdapterModel> adapterModels = new ArrayList<>();
+    @SuppressLint("StaticFieldLeak")
     public static AdapterSelectionList adapterSelectionList;
+    public static String DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption;
+    static int countAll = 0, countDr = 0, countChem = 0, countStk = 0, countUndr = 0;
+    static StringBuilder ClusterNames = new StringBuilder();
+    public JSONObject jsonDcrContentList = new JSONObject();
+    public ProgressDialog progressDialog = null;
+    public ApiInterface api_interface;
     LoginResponse loginResponse;
+    SetupResponse setUpResponse;
     SQLite sqLite;
     JSONObject jsonDcrList = new JSONObject();
     JSONObject jsonAccept = new JSONObject();
@@ -76,11 +92,48 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
     AdapterDcrApprovalList adapterDcrApprovalList;
     Dialog dialogReject;
 
-    public static void getDcrContentList(Context context) {
+    private static void SetupAdapter(Context context) {
+        adapterModels.add(new AdapterModel("All", String.valueOf(countAll)));
+        adapterModels.add(new AdapterModel(DrCaption, String.valueOf(countDr)));
+        adapterModels.add(new AdapterModel(ChemistCaption, String.valueOf(countChem)));
+        adapterModels.add(new AdapterModel(StockistCaption, String.valueOf(countStk)));
+        adapterModels.add(new AdapterModel(UndrCaption, String.valueOf(countUndr)));
+        //  adapterModels.add(new AdapterModel("CIP", "0"));
+        adapterModels.add(new AdapterModel("Hospital", "0"));
+
+        adapterCustMainList = new AdapterCustMainList(context, dcrDetailedList, SaveProductList, saveInputList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+        dcrCallApprovalBinding.rvDcrContentList.setLayoutManager(mLayoutManager);
+        dcrCallApprovalBinding.rvDcrContentList.setAdapter(adapterCustMainList);
+
+        adapterSelectionList = new AdapterSelectionList(context, adapterModels, dcrDetailedList, adapterCustMainList, DrCaption, ChemistCaption, StockistCaption, UndrCaption);
+        dcrCallApprovalBinding.rvSelectionList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        dcrCallApprovalBinding.rvSelectionList.setAdapter(adapterSelectionList);
+
+        if (!ClusterNames.toString().isEmpty()) {
+            dcrCallApprovalBinding.tvCluster1.setText(removeLastChar(ClusterNames.toString()));
+        } else {
+            dcrCallApprovalBinding.tvCluster1.setText(context.getResources().getString(R.string.no_cluster));
+        }
+    }
+
+    public static String removeLastChar(String s) {
+        return s.substring(0, s.length() - 1);
+    }
+
+    public void getDcrContentList() {
         dcrDetailedList.clear();
         SaveProductList.clear();
         saveInputList.clear();
         adapterModels.clear();
+        ClusterNames = new StringBuilder();
+        if (progressDialog == null) {
+            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
+            progressDialog.show();
+        } else {
+            progressDialog.show();
+        }
+
         try {
             jsonDcrContentList.put("tableName", "getvwdcrone");
             jsonDcrContentList.put("Trans_SlNo", SelectedTransCode);
@@ -104,9 +157,14 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                 if (response.isSuccessful()) {
+
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
-                        int countAll = 0, countDr = 0, countChem = 0, countStk = 0, countUndr = 0;
+                        countAll = 0;
+                        countDr = 0;
+                        countChem = 0;
+                        countStk = 0;
+                        countUndr = 0;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
                             countAll++;
@@ -123,48 +181,53 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
                                 countUndr++;
                             }
 
-                            dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback")));
+                            if (!ClusterNames.toString().contains(json.getString("SDP_Name") + ",")) {
+                                ClusterNames.append(json.getString("SDP_Name")).append(",");
+                            }
+
+                            dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Trans_Detail_Info_Code"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback"), json.getString("visitTime"), json.getString("ModTime")));
 
                             //Extract Product Values
                             String PrdName = "", PrdSamQty = "0", PrdRxQty = "0";
                             if (!json.getString("products").isEmpty()) {
                                 String[] clstarrrayqty = json.getString("products").split(",");
-                               // Log.v("extract", "--0--" + clstarrrayqty[0]);
                                 for (String value : clstarrrayqty) {
-                                    PrdName = value.substring(0, value.indexOf('(')).trim();
-                                    Log.v("extract", "--1--" + PrdName);
+                                    if (!value.equalsIgnoreCase("  )")) {
+                                        PrdName = value.substring(0, value.indexOf('(')).trim();
+                                        Log.v("extract", "--1--" + PrdName);
 
-                                    PrdSamQty = value.substring(value.indexOf("(") + 1);
-                                    PrdSamQty = PrdSamQty.substring(0, PrdSamQty.indexOf(")"));
+                                        PrdSamQty = value.substring(value.indexOf("(") + 1);
+                                        PrdSamQty = PrdSamQty.substring(0, PrdSamQty.indexOf(")"));
 
-                                    Log.v("extract", "--2--" + PrdSamQty);
+                                        Log.v("extract", "--2--" + PrdSamQty);
 
-                                    PrdRxQty = value.substring(value.indexOf(")") + 1).trim();
-                                    if (PrdRxQty.contains("(")) {
-                                        PrdRxQty = PrdRxQty.substring(PrdRxQty.indexOf("(") + 1);
-                                        PrdRxQty = PrdRxQty.substring(0, PrdRxQty.indexOf(")"));
-                                    } else {
-                                        PrdRxQty = "0";
+                                        PrdRxQty = value.substring(value.indexOf(")") + 1).trim();
+                                        if (PrdRxQty.contains("(")) {
+                                            PrdRxQty = PrdRxQty.substring(PrdRxQty.indexOf("(") + 1);
+                                            PrdRxQty = PrdRxQty.substring(0, PrdRxQty.indexOf(")"));
+                                        } else {
+                                            PrdRxQty = "0";
+                                        }
+                                        Log.v("extract", "--3--" + PrdRxQty);
+                                        SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
                                     }
-                                    Log.v("extract", "--3--" + PrdRxQty);
                                 }
-
-                                SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
                             }
 
                             //Extract Input Values
                             String InpName = "", InpQty = "0";
                             if (!json.getString("gifts").isEmpty()) {
                                 String[] clstarrrayInp = json.getString("gifts").split(",");
-                              //  Log.v("extract", "-inp--0--" + clstarrrayInp[0]);
                                 for (String value : clstarrrayInp) {
-                                    InpName = value.substring(0, value.indexOf('(')).trim();
-                                    Log.v("extract", "-inp--1--" + InpName);
-                                    InpQty = value.substring(value.indexOf("(") + 1);
-                                    InpQty = InpQty.substring(0, InpQty.indexOf(")"));
-                                    Log.v("extract", "-inp--2--" + InpQty);
+                                    if (!value.equalsIgnoreCase("  )")) {
+                                        InpName = value.substring(0, value.indexOf('(')).trim();
+                                        Log.v("extract", "-inp--1--" + InpName);
+                                        InpQty = value.substring(value.indexOf("(") + 1);
+                                        InpQty = InpQty.substring(0, InpQty.indexOf(")"));
+                                        Log.v("extract", "-inp--2--" + InpQty);
+                                        saveInputList.add(new SaveCallInputList(json.getString("Trans_Detail_Name"), InpName, InpQty));
+                                    }
                                 }
-                                saveInputList.add(new SaveCallInputList(json.getString("Trans_Detail_Name"), InpName, InpQty));
                             }
                               /*  Products = json.getString("products");
                                 Log.v("products", "--0--" + Products);
@@ -187,33 +250,25 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
                                 Log.v("products", "--3--" + PrdRxQty);*/
 
                         }
-                        adapterModels.add(new AdapterModel("All", String.valueOf(countAll)));
-                        adapterModels.add(new AdapterModel("Doctor", String.valueOf(countDr)));
-                        adapterModels.add(new AdapterModel("Chemist", String.valueOf(countChem)));
-                        adapterModels.add(new AdapterModel("Stockiest", String.valueOf(countStk)));
-                        adapterModels.add(new AdapterModel("Unlisted Dr", String.valueOf(countUndr)));
-                        //  adapterModels.add(new AdapterModel("CIP", "0"));
-                        adapterModels.add(new AdapterModel("Hospital", "0"));
-
-                        adapterCustMainList = new AdapterCustMainList(context, dcrDetailedList, SaveProductList, saveInputList);
-                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-                        dcrCallApprovalBinding.rvDcrContentList.setLayoutManager(mLayoutManager);
-                        dcrCallApprovalBinding.rvDcrContentList.setAdapter(adapterCustMainList);
-
-                        adapterSelectionList = new AdapterSelectionList(context, adapterModels, dcrDetailedList, adapterCustMainList);
-                        dcrCallApprovalBinding.rvSelectionList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-                        dcrCallApprovalBinding.rvSelectionList.setAdapter(adapterSelectionList);
+                        progressDialog.dismiss();
+                        SetupAdapter(context);
                     } catch (Exception e) {
+                        progressDialog.dismiss();
+                        SetupAdapter(context);
                         Log.v("extract", "--eror--" + e);
                     }
                 } else {
-
+                    progressDialog.dismiss();
+                    Toast.makeText(context, context.getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
+                    SetupAdapter(context);
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
-
+            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(context, context.getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
+                SetupAdapter(context);
             }
         });
     }
@@ -225,7 +280,7 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
         setContentView(dcrCallApprovalBinding.getRoot());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-        progressDialog = CommonUtilsMethods.createProgressDialog(DcrCallApprovalActivity.this);
+        progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         getRequiredData();
         CallDcrListApi();
 
@@ -249,13 +304,13 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
         dcrCallApprovalBinding.ivBack.setOnClickListener(view -> {
             SelectedSfCode = "";
             SelectedActivityDate = "";
-            startActivity(new Intent(DcrCallApprovalActivity.this, ApprovalsActivity.class));
+            startActivity(new Intent(DcrApprovalActivity.this, ApprovalsActivity.class));
         });
 
         dcrCallApprovalBinding.btnApproved.setOnClickListener(view -> CallApprovalApi());
 
         dcrCallApprovalBinding.btnReject.setOnClickListener(view -> {
-            dialogReject = new Dialog(DcrCallApprovalActivity.this);
+            dialogReject = new Dialog(DcrApprovalActivity.this);
             dialogReject.setContentView(R.layout.popup_leave_reject);
             dialogReject.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogReject.setCancelable(false);
@@ -279,7 +334,7 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     rejectApproval(ed_reason.getText().toString());
                 } else {
-                    Toast.makeText(DcrCallApprovalActivity.this, "Enter reason for reject", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DcrApprovalActivity.this, context.getResources().getText(R.string.toast_enter_reason_for_reject), Toast.LENGTH_SHORT).show();
                 }
             });
             dialogReject.show();
@@ -289,7 +344,7 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
 
     private void rejectApproval(String toString) {
         if (progressDialog == null) {
-            progressDialog = CommonUtilsMethods.createProgressDialog(DcrCallApprovalActivity.this);
+            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
             progressDialog.show();
         } else {
             progressDialog.show();
@@ -317,27 +372,29 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
+
                     progressDialog.dismiss();
                     try {
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            Toast.makeText(DcrCallApprovalActivity.this, "Rejected Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DcrApprovalActivity.this, "Rejected Successfully", Toast.LENGTH_SHORT).show();
                             dialogReject.dismiss();
                             removeSelectedData();
+                            DcrCount--;
                         }
                     } catch (Exception e) {
                         dialogReject.dismiss();
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(DcrCallApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(DcrCallApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DcrApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -360,7 +417,7 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
     private void CallApprovalApi() {
         Log.v("pos", "---" + SelectedPosition);
         if (progressDialog == null) {
-            progressDialog = CommonUtilsMethods.createProgressDialog(DcrCallApprovalActivity.this);
+            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
             progressDialog.show();
         } else {
             progressDialog.show();
@@ -382,7 +439,6 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
 
         Call<JsonObject> callDcrApproval = null;
         callDcrApproval = api_interface.sendDCRApproval(jsonAccept.toString());
-
         callDcrApproval.enqueue(new Callback<JsonObject>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -392,22 +448,23 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
                     try {
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            Toast.makeText(DcrCallApprovalActivity.this, "Approved Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DcrApprovalActivity.this, "Approved Successfully", Toast.LENGTH_SHORT).show();
                             removeSelectedData();
+                            DcrCount--;
                         }
                     } catch (Exception e) {
 
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(DcrCallApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(DcrCallApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DcrApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -430,7 +487,7 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
 
     private void CallDcrListApi() {
         if (progressDialog == null) {
-            progressDialog = CommonUtilsMethods.createProgressDialog(DcrCallApprovalActivity.this);
+            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
             progressDialog.show();
         } else {
             progressDialog.show();
@@ -461,9 +518,9 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator")));
+                            dcrApprovalLists.add(new DCRApprovalList(json.getString("Trans_SlNo"), json.getString("Sf_Name"), json.getString("Activity_Date"), json.getString("Plan_Name"), json.getString("WorkType_Name"), json.getString("Sf_Code"), json.getString("FieldWork_Indicator"), json.getString("Submission_Date"), json.getString("Hlfday")));
                         }
-                        adapterDcrApprovalList = new AdapterDcrApprovalList(DcrCallApprovalActivity.this, DcrCallApprovalActivity.this, dcrApprovalLists, dcrApprovalListsdummy);
+                        adapterDcrApprovalList = new AdapterDcrApprovalList(DcrApprovalActivity.this, DcrApprovalActivity.this, dcrApprovalLists, DcrApprovalActivity.this);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         dcrCallApprovalBinding.rvDcrList.setLayoutManager(mLayoutManager);
                         dcrCallApprovalBinding.rvDcrList.setAdapter(adapterDcrApprovalList);
@@ -472,29 +529,77 @@ public class DcrCallApprovalActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(DcrCallApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(DcrCallApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        try {
 
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(DcrCallApprovalActivity.this);
+            loginResponse = new LoginResponse();
+            loginResponse = sqLite.getLoginData(true);
+
+            SfType = loginResponse.getSf_type();
+            SfCode = loginResponse.getSF_Code();
+            SfName = loginResponse.getSF_Name();
+            DivCode = loginResponse.getDivision_Code();
+            SubDivisionCode = loginResponse.getSubdivision_code();
+            Designation = loginResponse.getDesig();
+            StateCode = loginResponse.getState_Code();
+            TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(DcrApprovalActivity.this);
+            JSONArray jsonArray = new JSONArray();
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject setupData = jsonArray.getJSONObject(0);
+
+                setUpResponse = new SetupResponse();
+                Type typeSetup = new TypeToken<SetupResponse>() {
+                }.getType();
+                setUpResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+                DrCaption = setUpResponse.getCaptionDr();
+                ChemistCaption = setUpResponse.getCaptionChemist();
+                StockistCaption = setUpResponse.getCaptionStockist();
+                UndrCaption = setUpResponse.getCaptionUndr();
+                if (setupData.has("cip_need")) {
+                    CipCaption = setUpResponse.getCaptionCip();
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+
+    @Override
+    public void onClick(DCRApprovalList dcrApprovalList, int pos) {
+        dcrCallApprovalBinding.tvName.setText(dcrApprovalList.getSf_name());
+        dcrCallApprovalBinding.tvWt.setText(dcrApprovalList.getWorkType_name());
+        dcrCallApprovalBinding.tvRemark1.setText(dcrApprovalList.getRemarks());
+        dcrCallApprovalBinding.tvActivityDate.setText(dcrApprovalList.getActivity_date());
+        dcrCallApprovalBinding.tvSubmittedDate.setText(dcrApprovalList.getSubmission_date_sub());
+        SelectedTransCode = dcrApprovalList.getTrans_slNo();
+        SelectedSfCode = dcrApprovalList.getSfCode();
+        SelectedActivityDate = dcrApprovalList.getActivity_date();
+        SelectedPosition = pos;
+        getDcrContentList();
+        dcrCallApprovalBinding.constraintDcrListContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClickDcrDetail(DcrDetailModelList dcrDetailModelList) {
+
+    }
+
+    @Override
+    public void onItemClick(TpModelList tpModelLists) {
+
     }
 }

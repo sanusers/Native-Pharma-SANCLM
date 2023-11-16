@@ -144,10 +144,9 @@ public class AdapterCustMainList extends RecyclerView.Adapter<AdapterCustMainLis
         holder.card_view.setOnClickListener(view -> {
             DcrDetailViewActivity.dcrDetailModelLists = new ArrayList<>();
             for (int i = 0; i < dcrApprovalLists.size(); i++) {
-                DcrDetailViewActivity.dcrDetailModelLists.add(new DcrDetailModelList(dcrApprovalLists.get(i).getHq_name(), dcrApprovalLists.get(i).getName(), dcrApprovalLists.get(i).getTypeCust(), dcrApprovalLists.get(i).getType(), dcrApprovalLists.get(i).getSdp_name(), dcrApprovalLists.get(i).getPob(), dcrApprovalLists.get(i).getRemark(), dcrApprovalLists.get(i).getJointWork(), dcrApprovalLists.get(i).getCall_feedback()));
+                DcrDetailViewActivity.dcrDetailModelLists.add(new DcrDetailModelList(dcrApprovalLists.get(i).getHq_name(), dcrApprovalLists.get(i).getName(), dcrApprovalLists.get(i).getCode(), dcrApprovalLists.get(i).getTypeCust(), dcrApprovalLists.get(i).getType(), dcrApprovalLists.get(i).getSdp_name(), dcrApprovalLists.get(i).getPob(), dcrApprovalLists.get(i).getRemark(), dcrApprovalLists.get(i).getJointWork(), dcrApprovalLists.get(i).getCall_feedback(), dcrApprovalLists.get(i).getModTime(), dcrApprovalLists.get(i).getVisitTime()));
             }
-            DcrDetailViewActivity.SelectedName = dcrApprovalLists.get(position).getName();
-            AdapterCustSingleList.selectedPosition = holder.getAdapterPosition();
+            DcrDetailViewActivity.SelectedCode = dcrApprovalLists.get(position).getCode();
             Intent intent = new Intent(context, DcrDetailViewActivity.class);
             intent.putExtra("hq_name", dcrApprovalLists.get(position).getHq_name());
             intent.putExtra("cust_cluster", dcrApprovalLists.get(position).getSdp_name());
@@ -156,6 +155,9 @@ public class AdapterCustMainList extends RecyclerView.Adapter<AdapterCustMainLis
             intent.putExtra("cust_type", dcrApprovalLists.get(position).getType());
             intent.putExtra("cust_fb", dcrApprovalLists.get(position).getCall_feedback());
             intent.putExtra("cust_remark", dcrApprovalLists.get(position).getRemark());
+            intent.putExtra("cust_mod_time", dcrApprovalLists.get(position).getModTime());
+            intent.putExtra("cust_visit_time", dcrApprovalLists.get(position).getVisitTime());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             AdapterCustSingleList.ProductList = new ArrayList<>();
             for (int i = 0; i < ProductList.size(); i++) {

@@ -238,8 +238,8 @@ public class RCPAFragment extends Fragment {
         @NonNull
         @Override
         public ChemistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.single_item, parent, false);
-            return new ChemistAdapter.ViewHolder(view);
+                View view = LayoutInflater.from(context).inflate(R.layout.single_item, parent, false);
+                return new ChemistAdapter.ViewHolder(view);
         }
 
         @Override

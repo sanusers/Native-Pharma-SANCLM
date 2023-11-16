@@ -1,6 +1,9 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter;
 
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.adapterInputAdditionalCall;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.adapterSampleAdditionalCall;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.callDetailsSideBinding;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -77,7 +80,7 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
         return new ViewHolder(view);
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint({"UseCompatLoadingForDrawables", "NotifyDataSetChanged"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -155,6 +158,19 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
                         }
 
                         public void onFinish() {
+                            for (int i = 0; i < nestedAddInputCallDetails.size(); i++) {
+                                if (nestedAddInputCallDetails.get(i).getCust_code().equalsIgnoreCase(CallAddCustListAdapter.UnSelectedDrCode)) {
+                                    nestedAddInputCallDetails.remove(i);
+                                    i--;
+                                }
+                            }
+
+                            for (int i = 0; i < nestedAddSampleCallDetails.size(); i++) {
+                                if (nestedAddSampleCallDetails.get(i).getCust_code().equalsIgnoreCase(CallAddCustListAdapter.UnSelectedDrCode)) {
+                                    nestedAddSampleCallDetails.remove(i);
+                                    i--;
+                                }
+                            }
                             removeAt(position);
                             CallAddCustListAdapter.isCheckedAddCall = false;
                         }
@@ -177,6 +193,20 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
                 }
             }
 
+            for (int i = 0; i < nestedAddInputCallDetails.size(); i++) {
+                if (nestedAddInputCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(holder.getAdapterPosition()).getCode())) {
+                    nestedAddInputCallDetails.remove(i);
+                    i--;
+                }
+            }
+
+            for (int i = 0; i < nestedAddSampleCallDetails.size(); i++) {
+                if (nestedAddSampleCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(holder.getAdapterPosition()).getCode())) {
+                    nestedAddSampleCallDetails.remove(i);
+                    i--;
+                }
+            }
+
             callAddCustListAdapter = new CallAddCustListAdapter(activity, context, checked_arrayList, saveAdditionalCalls);
             commonUtilsMethods.recycleTestWithDivider(AdditionalCallFragment.rv_list_data);
             AdditionalCallFragment.rv_list_data.setAdapter(callAddCustListAdapter);
@@ -190,17 +220,20 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
             Selected_name = saveAdditionalCalls.get(position).getName();
             Selected_code = saveAdditionalCalls.get(position).getCode();
 
-            AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(saveAdditionalCalls.get(position).getName(), saveAdditionalCalls.get(position).getCode(), "Select", "", ""));
-            AdditionalCallDetailedSide.adapterInputAdditionalCall = new AdapterInputAdditionalCall(context, AdditionalCallDetailedSide.addInputAdditionalCallArrayList);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(activity);
-            AdditionalCallDetailedSide.rv_add_input_list.setLayoutManager(mLayoutManager);
-            AdditionalCallDetailedSide.rv_add_input_list.setAdapter(AdditionalCallDetailedSide.adapterInputAdditionalCall);
 
-            AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(saveAdditionalCalls.get(position).getName(), saveAdditionalCalls.get(position).getCode(), "Select", "", ""));
-            AdditionalCallDetailedSide.adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(context, AdditionalCallDetailedSide.addSampleAdditionalCallArrayList);
-            RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(activity);
-            AdditionalCallDetailedSide.rv_add_sample_list.setLayoutManager(mLayoutManagerprd);
-            AdditionalCallDetailedSide.rv_add_sample_list.setAdapter(AdditionalCallDetailedSide.adapterSampleAdditionalCall);
+            AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+            callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
+            commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
+            callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
+            adapterInputAdditionalCall.notifyDataSetChanged();
+
+            AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
+            RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(context);
+            callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerprd);
+            commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddSampleAdditional);
+            callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);
+            adapterSampleAdditionalCall.notifyDataSetChanged();
 
             dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.VISIBLE);
         });
@@ -213,25 +246,27 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
             Selected_code = saveAdditionalCalls.get(position).getCode();
             for (int i = 0; i < nestedAddInputCallDetails.size(); i++) {
                 if (nestedAddInputCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(position).getCode())) {
-                    AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(nestedAddInputCallDetails.get(i).getCust_name(), nestedAddInputCallDetails.get(i).getCust_code(), nestedAddInputCallDetails.get(i).getInput_name(), "", nestedAddInputCallDetails.get(i).getInp_qty()));
+                    AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(nestedAddInputCallDetails.get(i).getCust_name(), nestedAddInputCallDetails.get(i).getCust_code(), nestedAddInputCallDetails.get(i).getInput_name(), nestedAddInputCallDetails.get(i).getInput_code(), "", nestedAddInputCallDetails.get(i).getInp_qty()));
                 }
             }
 
-            AdditionalCallDetailedSide.adapterInputAdditionalCall = new AdapterInputAdditionalCall(context, AdditionalCallDetailedSide.addInputAdditionalCallArrayList);
+            adapterInputAdditionalCall = new AdapterInputAdditionalCall(context, AdditionalCallDetailedSide.addInputAdditionalCallArrayList, AdditionalCallDetailedSide.callInputList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(activity);
-            AdditionalCallDetailedSide.rv_add_input_list.setLayoutManager(mLayoutManager);
-            AdditionalCallDetailedSide.rv_add_input_list.setAdapter(AdditionalCallDetailedSide.adapterInputAdditionalCall);
+            callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
+            callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
+            adapterInputAdditionalCall.notifyDataSetChanged();
 
             for (int i = 0; i < nestedAddSampleCallDetails.size(); i++) {
                 if (nestedAddSampleCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(position).getCode())) {
-                    AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), "", nestedAddSampleCallDetails.get(i).getSample_qty()));
+                    AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), nestedAddSampleCallDetails.get(i).getPrd_code(), "", nestedAddSampleCallDetails.get(i).getSample_qty()));
                 }
             }
 
-            AdditionalCallDetailedSide.adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(context, AdditionalCallDetailedSide.addSampleAdditionalCallArrayList);
+            adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(context, AdditionalCallDetailedSide.addSampleAdditionalCallArrayList, AdditionalCallDetailedSide.callSampleList);
             RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(activity);
-            AdditionalCallDetailedSide.rv_add_sample_list.setLayoutManager(mLayoutManagerprd);
-            AdditionalCallDetailedSide.rv_add_sample_list.setAdapter(AdditionalCallDetailedSide.adapterSampleAdditionalCall);
+            callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerprd);
+            callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);
+            adapterSampleAdditionalCall.notifyDataSetChanged();
 
             dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.VISIBLE);
         });
@@ -257,7 +292,7 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
         for (int i = 0; i < nestedAddSampleCallDetails.size(); i++) {
             if (nestedAddSampleCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(adapterPosition).getCode())) {
                 if (!nestedAddSampleCallDetails.get(i).getPrd_name().equalsIgnoreCase("Select") && !nestedAddSampleCallDetails.get(i).getPrd_name().isEmpty()) {
-                    dummyNestedSample.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), nestedAddSampleCallDetails.get(i).getPrd_stock(), nestedAddSampleCallDetails.get(i).getSample_qty()));
+                    dummyNestedSample.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), nestedAddSampleCallDetails.get(i).getSample_qty()));
                 }
             }
         }
@@ -292,7 +327,7 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
         for (int i = 0; i < nestedAddSampleCallDetails.size(); i++) {
             if (nestedAddSampleCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(adapterPosition).getCode())) {
                 if (!nestedAddSampleCallDetails.get(i).getPrd_name().equalsIgnoreCase("Select") && !nestedAddSampleCallDetails.get(i).getPrd_name().isEmpty()) {
-                    dummyNestedSample.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), nestedAddSampleCallDetails.get(i).getPrd_stock(), nestedAddSampleCallDetails.get(i).getSample_qty()));
+                    dummyNestedSample.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), nestedAddSampleCallDetails.get(i).getSample_qty()));
                     break;
                 }
             }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.activity.approvals.ApprovalsActivity;
+import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
+import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
+import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.sanclm.databinding.ActivityTpApprovalBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -30,7 +34,7 @@ import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
-public class TpApprovalActivity extends AppCompatActivity {
+public class TpApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
     public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode, SelectedSfCode, SelectedMonthYear;
     @SuppressLint("StaticFieldLeak")
     public static ActivityTpApprovalBinding tpApprovalBinding;
@@ -100,7 +104,7 @@ public class TpApprovalActivity extends AppCompatActivity {
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 tpModelLists.add(new TpModelList(json.getString("Sf_Code"), json.getString("SFName"), json.getString("Mnth"), json.getString("Yr"), json.getString("Mn")));
                             }
-                            tpApprovalAdapter = new TpApprovalAdapter(TpApprovalActivity.this, tpModelLists);
+                            tpApprovalAdapter = new TpApprovalAdapter(TpApprovalActivity.this, tpModelLists, TpApprovalActivity.this);
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                             tpApprovalBinding.rvTpList.setLayoutManager(mLayoutManager);
                             tpApprovalBinding.rvTpList.setAdapter(tpApprovalAdapter);
@@ -144,5 +148,23 @@ public class TpApprovalActivity extends AppCompatActivity {
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
         TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(TpApprovalActivity.this);
+    }
+
+    @Override
+    public void onClick(DCRApprovalList dcrApprovalList, int pos) {
+    }
+
+    @Override
+    public void onClickDcrDetail(DcrDetailModelList dcrDetailModelList) {
+
+    }
+
+    @Override
+    public void onItemClick(TpModelList tpModelLists) {
+        tpApprovalBinding.tvName.setText(tpModelLists.getName());
+        tpApprovalBinding.tvTpPlannedFor.setText(String.format("%s %s", tpModelLists.getMonth(), tpModelLists.getYear()));
+        tpApprovalBinding.constraintTpListContent.setVisibility(View.VISIBLE);
+        SelectedSfCode = tpModelLists.getCode();
+        SelectedMonthYear = String.format("%s %s", tpModelLists.getMonth(), tpModelLists.getYear());
     }
 }

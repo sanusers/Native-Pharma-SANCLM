@@ -15,14 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 
 public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.ViewHolder> {
     Context context;
     ArrayList<TpModelList> tpModelLists;
+    OnItemClickListenerApproval mListener;
 
-    public TpApprovalAdapter(Context context, ArrayList<TpModelList> tpModelLists) {
+    public TpApprovalAdapter(Context context, ArrayList<TpModelList> tpModelLists, OnItemClickListenerApproval mListener) {
         this.context = context;
         this.tpModelLists = tpModelLists;
+        this.mListener = mListener;
     }
 
     @NonNull
@@ -51,11 +54,7 @@ public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.Vi
         }
 
         holder.constraint_main.setOnClickListener(view -> {
-            TpApprovalActivity.SelectedSfCode = tpModelLists.get(position).getCode();
-            TpApprovalActivity.SelectedMonthYear = String.format("%s %s", tpModelLists.get(position).getMonth(), tpModelLists.get(position).getYear());
-            TpApprovalActivity.tpApprovalBinding.tvTpPlannedFor.setText(String.format("%s %s", tpModelLists.get(position).getMonth(), tpModelLists.get(position).getYear()));
-            TpApprovalActivity.tpApprovalBinding.tvName.setText(tpModelLists.get(position).getName());
-            TpApprovalActivity.tpApprovalBinding.constraintTpListContent.setVisibility(View.VISIBLE);
+            mListener.onItemClick(new TpModelList(tpModelLists.get(position).getCode(),tpModelLists.get(position).getName(),tpModelLists.get(position).getMonth(),tpModelLists.get(position).getYear(),tpModelLists.get(position).getMn()));
             notifyDataSetChanged();
         });
     }

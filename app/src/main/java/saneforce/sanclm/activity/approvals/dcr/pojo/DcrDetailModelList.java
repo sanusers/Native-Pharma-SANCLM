@@ -5,12 +5,39 @@ import java.util.ArrayList;
 
 public class DcrDetailModelList {
     String name;
+    String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     String typeCust;
     String type;
     String pob;
     String sdp_name;
     String remark,call_feedback;
     String hq_name;
+    String modTime,visitTime;
+
+    public String getModTime() {
+        return modTime;
+    }
+
+    public void setModTime(String modTime) {
+        this.modTime = modTime;
+    }
+
+    public String getVisitTime() {
+        return visitTime;
+    }
+
+    public void setVisitTime(String visitTime) {
+        this.visitTime = visitTime;
+    }
 
     public String getHq_name() {
         return hq_name;
@@ -100,9 +127,10 @@ public class DcrDetailModelList {
         this.name = name;
     }
 
-    public DcrDetailModelList(String hqName,String name, String typeCust, String type, String sdp_name, String pob, String remark, String jointwork, String call_feedback) {
+    public DcrDetailModelList(String hqName,String name, String code,String typeCust, String type, String sdp_name, String pob, String remark, String jointwork, String call_feedback,String visitTime,String modTime) {
         this.hq_name = hqName;
         this.name = name;
+        this.code = code;
         this.typeCust = typeCust;
         this.type = type;
         this.sdp_name = sdp_name;
@@ -110,6 +138,8 @@ public class DcrDetailModelList {
         this.remark = remark;
         this.jointWork = jointwork;
         this.call_feedback = call_feedback;
+        this.visitTime = visitTime;
+        this.modTime = modTime;
     }
 
     public DcrDetailModelList(String name, String typeCust, String type, String sdp_name, String pob, String remark, String jointwork, String call_feedback,int selected_pos) {

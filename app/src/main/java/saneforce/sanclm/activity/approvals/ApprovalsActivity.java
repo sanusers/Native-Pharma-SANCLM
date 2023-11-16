@@ -30,11 +30,11 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
+    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
     LoginResponse loginResponse;
-    int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0;
     SQLite sqLite;
     String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode;
     ArrayList<AdapterModel> list_approvals = new ArrayList<>();
@@ -58,11 +58,14 @@ public class ApprovalsActivity extends AppCompatActivity {
         setContentView(approvalsBinding.getRoot());
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-        // api_interface = RetrofitClient.getRetrofit(getApplicationContext(), "http://sanffa.info/iOSServer/db_api.php/");
         sqLite = new SQLite(getApplicationContext());
         progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
         getRequiredData();
-        CallListCountAPI();
+        if (SharedPref.getApprovalsCounts(ApprovalsActivity.this).equalsIgnoreCase("false")) {
+            CallListCountAPI();
+        } else {
+            AssignCountValues();
+        }
 
         approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
     }
@@ -99,6 +102,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
+                        SharedPref.setApprovalsCounts(ApprovalsActivity.this, "true");
                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
                         JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
 
@@ -110,19 +114,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         LeaveCount = jsonLeave.getInt("leaveappr_count");
                         JSONObject jsonDeviation = jsonArray.getJSONObject(3);
                         DeviationCount = jsonDeviation.getInt("devappr_count");
-
-                        Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount);
-
-                        list_approvals.add(new AdapterModel(getResources().getString(R.string.leave_approvals), String.valueOf(LeaveCount)));
-                        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
-                        list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
-                        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
-                        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), "0"));
-
-                        adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);
-                        approvalsBinding.rvApprovalList.setItemAnimator(new DefaultItemAnimator());
-                        approvalsBinding.rvApprovalList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4, GridLayoutManager.VERTICAL, false));
-                        approvalsBinding.rvApprovalList.setAdapter(adapterApprovals);
+                        AssignCountValues();
                     } catch (Exception e) {
                         Log.v("counts", "-error-" + e);
                     }
@@ -134,6 +126,20 @@ public class ApprovalsActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         });
+    }
+
+    private void AssignCountValues() {
+        Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount);
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.leave_approvals), String.valueOf(LeaveCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), "0"));
+
+        adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);
+        approvalsBinding.rvApprovalList.setItemAnimator(new DefaultItemAnimator());
+        approvalsBinding.rvApprovalList.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4, GridLayoutManager.VERTICAL, false));
+        approvalsBinding.rvApprovalList.setAdapter(adapterApprovals);
     }
 
     private void getRequiredData() {
