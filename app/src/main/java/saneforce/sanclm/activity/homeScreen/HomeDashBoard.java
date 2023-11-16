@@ -43,27 +43,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.view.Window;
 
-import android.view.Window;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,20 +63,13 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.Locale;
-
-import org.json.JSONObject;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.ApprovalsActivity;
-import saneforce.sanclm.activity.changepassword.Change_passwordActivity;
-import saneforce.sanclm.activity.forms.Forms_activity;
 import saneforce.sanclm.activity.forms.Forms_activity;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
@@ -102,27 +77,16 @@ import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
 import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
-import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
-import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
-import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.activity.map.MapsActivity;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
-import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
-import saneforce.sanclm.activity.leave.Leave_Application;
+
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.myresource.MyResource_Activity;
-import saneforce.sanclm.activity.presentation.CreatePresentation;
-import saneforce.sanclm.activity.presentation.Presentation;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
-import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.commonClasses.GPSTrack;
-import saneforce.sanclm.commonClasses.UtilityClass;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 
 import java.time.LocalDate;
@@ -130,32 +94,11 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-
-import saneforce.sanclm.R;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
-
-import saneforce.sanclm.activity.forms.Forms_activity;
-
 import saneforce.sanclm.activity.homeScreen.adapters.Callstatusadapter;
-import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
-import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
-import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
-
 
 import saneforce.sanclm.activity.homeScreen.modelClass.CallStatusModelClass;
-import saneforce.sanclm.activity.leave.Leave_Application;
-import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.activity.map.MapsActivity;
-
-import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
-import saneforce.sanclm.activity.myresource.MyResource_Activity;
 import saneforce.sanclm.activity.presentation.PresentationActivity;
 
-import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
-
-import saneforce.sanclm.commonClasses.UtilityClass;
-import saneforce.sanclm.commonClasses.GPSTrack;
 
 import saneforce.sanclm.databinding.ActivityHomeDashBoardBinding;
 import saneforce.sanclm.response.LoginResponse;

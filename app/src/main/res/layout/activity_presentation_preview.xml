@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ececec"
-    tools:context=".activity.presentation.PresentationPreviewActivity">
+    tools:context=".activity.presentation.preview.PresentationPreviewActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"

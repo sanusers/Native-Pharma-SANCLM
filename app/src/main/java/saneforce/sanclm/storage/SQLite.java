@@ -224,6 +224,8 @@ public class SQLite extends SQLiteOpenHelper {
 //        return jsonArray;
 //    }
 
+    //----------------------------Tour Plan----------------------
+
     public void saveTPData(String month,String data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -256,6 +258,8 @@ public class SQLite extends SQLiteOpenHelper {
        }
         return jsonArray;
     }
+
+
 
 
     // insertdata Linechart
@@ -367,17 +371,4 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
 
-    public boolean isMasterKeyExists( String masterKey) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + MASTER_SYNC_TABLE + " WHERE " + MASTER_KEY + " = ?";
-        String[] selectionArgs = {masterKey};
-
-        Cursor cursor = db.rawQuery(query, selectionArgs);
-
-        boolean exists = cursor.moveToFirst();
-
-        cursor.close();
-
-        return exists;
-    }
 }

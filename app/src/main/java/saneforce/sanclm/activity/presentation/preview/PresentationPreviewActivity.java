@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.presentation;
+package saneforce.sanclm.activity.presentation.preview;
 
 import androidx.appcompat.app.AppCompatActivity;
 
