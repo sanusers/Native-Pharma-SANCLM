@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/_2sdp"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="0.0px"
+    card_view:cardBackgroundColor="@android:color/white"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardElevation="50dp"
+    card_view:cardMaxElevation="50dp"
+    card_view:cardPreventCornerOverlap="false"
+    app:cardCornerRadius="@dimen/_2sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:text="Play"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:gravity="start"
+            android:textColor="@color/dark_purple"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/view_one"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view_one"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:background="@color/bg_grey_2"
+            app:layout_constraintBottom_toTopOf="@id/tv_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_play" />
+
+        <TextView
+            android:id="@+id/tv_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:text="Edit"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:textColor="@color/dark_purple"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/view_two"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_one" />
+
+        <View
+            android:id="@+id/view_two"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_1sdp"
+            android:background="@color/bg_grey_2"
+            app:layout_constraintBottom_toTopOf="@id/tv_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_edit" />
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:text="Delete"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:textColor="@color/dark_purple"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_two"
+            app:layout_constraintVertical_bias="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

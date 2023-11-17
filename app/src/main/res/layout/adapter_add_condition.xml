@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/constraint"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/txt_condition_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@drawable/border_shape_spinner"
+        android:enabled="true"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="left|center"
+        android:hint="@string/category"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
+        app:drawableTint="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/rv_filter_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText,RtlHardcoded" />
+
+    <ListView
+        android:id="@+id/rv_filter_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        android:background="#ffffff"
+        android:divider="#e4e2e2"
+        android:dividerHeight="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/txt_condition_name"
+        app:layout_constraintStart_toStartOf="@id/txt_condition_name"
+        app:layout_constraintTop_toBottomOf="@id/txt_condition_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

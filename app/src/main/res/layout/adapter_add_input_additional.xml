@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:paddingVertical="@dimen/_2sdp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_select_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:background="@drawable/border_shape_spinner"
+        android:drawablePadding="@dimen/_4sdp"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="start|center"
+        android:hint="@string/select"
+        android:paddingVertical="@dimen/_5sdp"
+        android:paddingHorizontal="@dimen/_3sdp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
+      app:layout_constraintBottom_toTopOf="@id/listCv_Input"
+        app:layout_constraintEnd_toStartOf="@+id/tv_stock"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <!-- <androidx.constraintlayout.widget.ConstraintLayout
+         android:id="@+id/constraint_spin_input"
+         android:layout_width="@dimen/_60sdp"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="@dimen/_4sdp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toStartOf="@+id/tv_stock"
+         app:layout_constraintHorizontal_bias="0.5"
+         app:layout_constraintHorizontal_chainStyle="spread_inside"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent">
+
+
+         <Spinner
+             android:id="@+id/spin_input_name"
+             android:layout_width="match_parent"
+             android:layout_height="@dimen/_20sdp"
+             android:layout_marginVertical="@dimen/_2sdp"
+             android:paddingHorizontal="@dimen/_2sdp"
+             android:paddingVertical="@dimen/_2sdp"
+             android:background="@drawable/border_shape_spinner"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintHorizontal_bias="0.0"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />
+
+         <ImageView
+             android:layout_width="@dimen/_10sdp"
+             android:layout_height="@dimen/_15sdp"
+             android:layout_marginEnd="@dimen/_4sdp"
+             android:padding="@dimen/_2sdp"
+             android:src="@drawable/spin_down_arrow"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintHorizontal_bias="1.0"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />
+
+     </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <TextView
+        android:id="@+id/tv_stock"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_2sdp"
+        android:background="@drawable/bg_light_grey_2"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingVertical="@dimen/_5sdp"
+        android:paddingHorizontal="@dimen/_3sdp"
+        android:textColor="@color/text_qty_prd"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_select_input"
+        app:layout_constraintEnd_toStartOf="@+id/ed_input_qty"
+        app:layout_constraintStart_toEndOf="@+id/tv_select_input"
+        app:layout_constraintTop_toTopOf="@id/tv_select_input" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/ed_input_qty"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_2sdp"
+        android:background="@drawable/bg_light_grey_border"
+        android:fontFamily="@font/satoshi_bold"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:paddingVertical="@dimen/_5sdp"
+        android:paddingHorizontal="@dimen/_3sdp"
+        android:textColor="@color/bg_txt_color"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_select_input"
+        app:layout_constraintEnd_toStartOf="@+id/img_del_input"
+        app:layout_constraintStart_toEndOf="@+id/tv_stock"
+        app:layout_constraintTop_toTopOf="@id/tv_select_input" />
+
+    <ImageView
+        android:id="@+id/img_del_input"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/iv_del"
+        app:layout_constraintBottom_toBottomOf="@id/tv_select_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ed_input_qty"
+        app:layout_constraintTop_toTopOf="@id/tv_select_input"
+        tools:layout_editor_absoluteY="2dp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/listCv_Input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:cardCornerRadius="@dimen/_2sdp"
+        app:contentPadding="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tv_select_input"
+        app:layout_constraintStart_toStartOf="@id/tv_select_input"
+        app:layout_constraintTop_toBottomOf="@id/tv_select_input"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_stroke"
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/search_icon_gray" />
+
+                <EditText
+                    android:id="@+id/searchInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="start|center"
+                    android:hint="Search"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/text_dark_65"
+                    android:textColorHint="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
+
+                <ImageView
+                    android:id="@+id/searchClearIconInp"
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/img_close"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lv_Input"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:background="@color/white"
+                android:divider="@color/light_grey"
+                android:dividerHeight="1dp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
