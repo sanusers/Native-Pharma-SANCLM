@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
@@ -142,13 +141,38 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
             commonUtilsMethods.displayPopupWindow(activity, context, view, productListArrayList.get(position).getName());
         });
 
+      /*  holder.ed_samplesQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) productsBinding.rvListPrd.getLayoutManager();
+                // you may want to play with the offset parameter
+                layoutManager.scrollToPositionWithOffset(position, 0);
+                holder.ed_samplesQty.setFocusableInTouchMode(true);
+                holder.ed_samplesQty.post(() -> {
+                    holder.ed_samplesQty.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                });
+            }
+        });
 
+        holder.ed_samplesQty.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    holder.ed_samplesQty.setFocusableInTouchMode(false);
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(holder.ed_samplesQty.getWindowToken(), 0);
+                }
+            }
+        });*/
 
 
         holder.ed_samplesQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-              //  productsBinding.rvListPrd.smoothScrollToPosition(ProductFragment.saveProductCallAdapter.getItemCount() - 1);
+                //  productsBinding.rvListPrd.smoothScrollToPosition(ProductFragment.saveProductCallAdapter.getItemCount() - 1);
 
                /* productsBinding.rvListPrd.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                     @Override
