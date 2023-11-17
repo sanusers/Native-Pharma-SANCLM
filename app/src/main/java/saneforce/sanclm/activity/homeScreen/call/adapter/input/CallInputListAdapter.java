@@ -84,15 +84,15 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
                 if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
-                    if (Integer.parseInt(checked_arrayList.get(position).getStock_balance()) > 0) {
+                    if (Integer.parseInt(checked_arrayList.get(position).getStock_balance())>0) {
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
                     } else {
                         holder.checkBox.setChecked(false);
                         Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
                 }
-            } else {
-                CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
             }
         });
     }

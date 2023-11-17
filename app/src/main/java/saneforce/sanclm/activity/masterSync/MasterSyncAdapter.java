@@ -47,12 +47,11 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
         holder.name.setText(name);
         holder.count.setText(count);
 
-        if (name.equalsIgnoreCase(Constants.STOCK_BALANCE))
+        if (name.equalsIgnoreCase(Constants.STOCK_BALANCE) || name.equalsIgnoreCase(Constants.MY_DAY_PLAN))
             holder.count.setText("");
 
-        if (data.syncSuccess == 1){
+        if (data.syncSuccess == 1)
             holder.syncErrorIcon.setVisibility(View.VISIBLE);
-        }
 
         if (data.isPBarVisibility()){
             holder.progressBar.setVisibility(View.VISIBLE);

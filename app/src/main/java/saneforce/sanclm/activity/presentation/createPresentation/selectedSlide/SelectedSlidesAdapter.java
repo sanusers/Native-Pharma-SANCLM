@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,23 +27,25 @@ import java.util.Collections;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.ImageSelectionInterface;
-import saneforce.sanclm.activity.presentation.createPresentation.slide.SlideImageAdapter;
 
-public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAdapter.MyViewHolder> {
+public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAdapter.MyViewHolder> implements ItemTouchHelperCallBack.ItemTouchHelperContract {
 
     Context context;
     ArrayList<BrandModelClass.Product> arrayList;
     ImageSelectionInterface imageSelectionInterface;
+    ItemDragListener itemDragListener;
 
     public SelectedSlidesAdapter () {
     }
 
-    public SelectedSlidesAdapter (Context context, ArrayList<BrandModelClass.Product> arrayList,ImageSelectionInterface imageSelectionInterface) {
+    public SelectedSlidesAdapter (Context context, ArrayList<BrandModelClass.Product> arrayList, ImageSelectionInterface imageSelectionInterface, ItemDragListener itemDragListener) {
         this.context = context;
         this.arrayList = arrayList;
         this.imageSelectionInterface = imageSelectionInterface;
-        Log.e("test","arrayList size : " + arrayList.size());
+        this.itemDragListener = itemDragListener;
+//        Log.e("test","arrayList size : " + arrayList.size());
     }
+
 
     @NonNull
     @Override
@@ -54,6 +57,7 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
         BrandModelClass.Product product = arrayList.get(holder.getAbsoluteAdapterPosition());
+        holder.setIsRecyclable(false);
 
         holder.brandName.setText(product.getBrandName());
         holder.fileName.setText(product.getFileName());
@@ -67,6 +71,16 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
             }
         });
 
+        holder.dragIcon.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch (View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    itemDragListener.requestDrag(holder);
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -74,7 +88,7 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
         return arrayList.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView brandName,fileName;
         ImageView slideImage,dragIcon;
@@ -91,6 +105,7 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
             rowView = itemView;
 
         }
+
     }
 
     public void getFromFilePath(String fileName, MyViewHolder holder){
@@ -131,7 +146,6 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
         return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
     }
 
-
     private Bitmap pdfToBitmap(File pdfFile) {
         Bitmap bitmap = null;
         try {
@@ -157,10 +171,32 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
         return bitmap;
     }
 
-    public void onItemMove(int sourcePosition, int targetPosition){
-        Log.e("test","size in onItemMove : " + arrayList.size());
-//        Collections.swap(arrayList,sourcePosition,targetPosition);
-//        notifyItemMoved(sourcePosition,targetPosition);
+    @Override
+    public void onRowMoved(int fromPosition, int toPosition) {
+        Log.e("test","size in onItemMove : " + arrayList.size() + " source Pos : " + fromPosition + " target Pos : " + toPosition);
+
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(arrayList, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(arrayList, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onRowSelected(MyViewHolder myViewHolder) {
+        myViewHolder.rowView.setBackgroundColor(Color.GRAY);
+
+    }
+
+    @Override
+    public void onRowClear(MyViewHolder myViewHolder) {
+        myViewHolder.rowView.setBackgroundColor(Color.WHITE);
+
     }
 
 

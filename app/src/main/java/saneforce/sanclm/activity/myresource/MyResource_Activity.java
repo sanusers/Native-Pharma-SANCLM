@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 
@@ -170,7 +171,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
 
         close_sideview.setOnClickListener(v -> {
-            drawerLayout.closeDrawer(Gravity.END);
+            drawerLayout.closeDrawer(GravityCompat.END);
             et_Custsearch.getText().clear();
             hideKeyboard(MyResource_Activity.this);
         });
@@ -373,14 +374,11 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                     values1= String.valueOf(count_list.size());
                     System.out.println("Tlvst: " + count_list + ", Count: " + visitcount_list);
                 }
-
-            }else{
-                values1="0";
             }
 
-
-
-
+            if(idCounts.isEmpty()){
+                values1="0";
+            }
 
         }catch (Exception a){
             a.printStackTrace();

@@ -326,9 +326,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         pre_layout.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class)));
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-
-        pre_layout.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, Presentation.class)));
-
         masterSync.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
 //        drawerLayout.closeDrawer(Gravity.END);
 

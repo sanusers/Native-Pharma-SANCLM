@@ -63,7 +63,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     int doctorCount = 0,specialityCount = 0,qualificationCount = 0,categoryCount = 0,departmentCount = 0,classCount = 0,feedbackCount = 0;
     int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpCount =0,clusterCount = 0;
-    int dcrCount = 0,visitControlCount= 0,missedDateCount = 0,stockBalanceCount = 0;
+    int dcrCount = 0,visitControlCount= 0,missedDateCount = 0;
     int productCount = 0, proCatCount = 0,brandCount = 0, compProCount = 0, mapComPrdCount = 0;
     int workTypeCount = 0,holidayCount = 0,weeklyOfCount = 0;
     int proSlideCount = 0,proSpeSlideCount = 0,brandSlideCount = 0, therapticCount = 0;
@@ -685,7 +685,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel dcrModel = new MasterSyncItemModel(Constants.DCR,dcrCount,"Home","gethome",Constants.DCR,dcrStatus,false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,dcrCount,Constants.DOCTOR,"gettodaytpnew",Constants.MY_DAY_PLAN,myDayPlanStatus,false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,0,Constants.DOCTOR,"gettodaytpnew",Constants.MY_DAY_PLAN,myDayPlanStatus,false);
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL,visitControlCount,"AdditionalDcr","getvisit_contro",Constants.VISIT_CONTROL,visitControlStatus,false);
         MasterSyncItemModel missedDateModel = new MasterSyncItemModel(Constants.MISSED_DATE,missedDateCount,"MissedDate","getmissdates",Constants.MISSED_DATE,missedDateStatus,false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,0,"AdditionalDcr","getstockbalance",Constants.STOCK_BALANCE_MASTER,stockBalanceStatus,false);
@@ -1087,64 +1087,4 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         }
     }
-
-    public static void callList(SQLite sqLite, ApiInterface apiInterface, Context context, String masterFor, String tablename, String sfCode, String DivCode, String RSF, String SfType, String Designation, String StateCode, String SubDivCode) {
-        try {
-            sqLite = new SQLite(context);
-            sqLite.getWritableDatabase();
-            String baseUrl = SharedPref.getBaseWebUrl(context);
-            String pathUrl = SharedPref.getPhpPathUrl(context);
-            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-            apiInterface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("tableName", tablename);
-            jsonObject.put("sfcode", sfCode);
-            jsonObject.put("division_code", DivCode);
-            jsonObject.put("Rsf", RSF);
-            jsonObject.put("sf_type", SfType);
-            jsonObject.put("Designation", Designation);
-            jsonObject.put("state_code", StateCode);
-            jsonObject.put("subdivision_code", SubDivCode);
-            Log.v("table_json", jsonObject.toString());
-
-            Call<JsonElement> call = null;
-            call = apiInterface.getDrMaster(jsonObject.toString());
-
-            SQLite finalSqLite = sqLite;
-            call.enqueue(new Callback<JsonElement>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                    Log.v("table_json", response.body().toString());
-                    if (response.isSuccessful()) {
-                        try {
-                            JsonElement jsonElement = response.body();
-                            JSONArray jsonArray = new JSONArray();
-                            if (jsonElement.isJsonArray()) {
-                                JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                jsonArray = new JSONArray(jsonArray1.toString());
-                            } else if (jsonElement.isJsonObject()) {
-                                JsonObject jsonObject1 = jsonElement.getAsJsonObject();
-                                JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
-                                jsonArray.put(jsonObject2);
-                            }
-
-                            finalSqLite.saveMasterSyncData(masterFor + "_" + sfCode, jsonArray.toString(),0);
-
-                        } catch (Exception e) {
-                            Log.v("table_json", "error---" + e);
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-                }
-            });
-
-        } catch (Exception e) {
-
-        }
-    }
-
 }

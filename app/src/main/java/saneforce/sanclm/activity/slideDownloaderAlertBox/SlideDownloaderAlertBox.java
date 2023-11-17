@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.slideDownloaderAlertBox;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -74,6 +75,7 @@ public  class SlideDownloaderAlertBox {
             String img_size_status = slide.getDownloadSizeStatus();
 
             String url= "https://"+SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+imageName;
+            Log.e("test", "Slide Url : " + url);
             new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide, adapter, recyclerView, dialog, MoveingFlog);
             adapter.notifyDataSetChanged();
         }

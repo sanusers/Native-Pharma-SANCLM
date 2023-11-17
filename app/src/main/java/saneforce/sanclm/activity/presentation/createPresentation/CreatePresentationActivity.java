@@ -18,12 +18,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-import io.reactivex.annotations.NonNull;
 import saneforce.sanclm.activity.presentation.PresentationActivity;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameInterFace;
 import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemTouchHelperCallBack;
 import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.SelectedSlidesAdapter;
+import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemDragListener;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.ImageSelectionInterface;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.SlideImageAdapter;
 import saneforce.sanclm.commonClasses.Constants;
@@ -40,7 +40,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
     ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
     ImageSelectionInterface imageSelectionInterface;
 
-    ItemTouchHelper.SimpleCallback simpleCallback;
+    ItemTouchHelper itemTouchHelper;
+
 
 
     @Override
@@ -50,25 +51,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         sqLite = new SQLite(CreatePresentationActivity.this);
         uiInitialisation();
-        simpleCallback = new ItemTouchHelper.SimpleCallback(
-
-                ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
-
-            @Override
-
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-
-                return false;
-
-            }
-
-            @Override
-
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-            }
-
-        } ;
 
         binding.backArrow.setOnClickListener(view -> startActivity(new Intent(CreatePresentationActivity.this, PresentationActivity.class)));
     }
@@ -165,12 +147,17 @@ public class CreatePresentationActivity extends AppCompatActivity {
     }
 
     public void populateSlideAdapter(ArrayList<BrandModelClass.Product> arrayList){
-        selectedSlidesAdapter = new SelectedSlidesAdapter(CreatePresentationActivity.this, arrayList, imageSelectionInterface);
+        selectedSlidesAdapter = new SelectedSlidesAdapter(CreatePresentationActivity.this, arrayList, imageSelectionInterface, new ItemDragListener() {
+            @Override
+            public void requestDrag (RecyclerView.ViewHolder viewHolder) {
+                itemTouchHelper.startDrag(viewHolder);
+            }
+        });
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CreatePresentationActivity.this);
         binding.slidesRecView.setLayoutManager(layoutManager);
 
         ItemTouchHelperCallBack itemTouchHelperCallBack = new ItemTouchHelperCallBack(selectedSlidesAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallBack);
+        itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallBack);
         itemTouchHelper.attachToRecyclerView(binding.slidesRecView);
         binding.slideImageRecView.setHasFixedSize(false);
         binding.slidesRecView.setAdapter(selectedSlidesAdapter);
@@ -178,4 +165,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
         binding.selectedSlideCount.setText(String.valueOf(arrayList.size()));
     }
+
+
 }

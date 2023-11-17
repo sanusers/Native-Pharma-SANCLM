@@ -65,7 +65,6 @@ public class BrandNameAdapter extends RecyclerView.Adapter<BrandNameAdapter.MyVi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                Log.e("test","clicked");
                 brandNameInterFace.onBrandClick(arrayList,holder.getAbsoluteAdapterPosition());
             }
         });
@@ -79,7 +78,6 @@ public class BrandNameAdapter extends RecyclerView.Adapter<BrandNameAdapter.MyVi
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView brandName,count;
-
         ImageView arrow;
 
         public MyViewHolder (@NonNull View itemView) {
