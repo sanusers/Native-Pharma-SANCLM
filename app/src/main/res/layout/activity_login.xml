@@ -58,12 +58,12 @@
         app:layout_constraintTop_toBottomOf="parent">
 
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_weight="0.9"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -286,7 +286,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_weight="0.9"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 

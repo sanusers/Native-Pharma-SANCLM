@@ -5,6 +5,13 @@
 
     <group android:checkableBehavior="single">
 
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/activity"
+            android:textSize="@dimen/_7sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:title="Home" />
         <item
             android:id="@+id/nav_refresh"
             android:icon="@drawable/refresh"
@@ -13,11 +20,11 @@
             android:title="Refresh" />
 
         <item
-            android:id="@+id/nav_create_presentation"
+            android:id="@+id/nav_presentation"
             android:fontFamily="@font/satoshi_medium"
             android:textSize="@dimen/_7sdp"
             android:icon="@drawable/presentation"
-            android:title="Create Presentation" />
+            android:title="Presentation" />
         <item
             android:id="@+id/nav_tour_plan"
             android:textSize="@dimen/_1sdp"
@@ -80,11 +87,6 @@
             android:id="@+id/nav_forms"
             android:title="Forms" />
 
-        <item
-            android:icon="@drawable/form"
-            android:fontFamily="@font/satoshi_medium"
-            android:id="@+id/logout"
-            android:title="Logout" />
     </group>
 
 </menu>

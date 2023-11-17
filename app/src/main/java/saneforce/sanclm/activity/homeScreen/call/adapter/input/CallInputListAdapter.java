@@ -90,9 +90,9 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
                         holder.checkBox.setChecked(false);
                         Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
                 }
-            } else {
-                CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
             }
         });
     }

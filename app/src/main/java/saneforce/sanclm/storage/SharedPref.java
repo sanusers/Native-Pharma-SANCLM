@@ -20,6 +20,7 @@ public class SharedPref {
     public static final String SLIDES_URL = "slides_url";
     public static final String LOGO_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
+    public static final String LOGI_SITE="log_site";
 
 
     //Login
@@ -30,11 +31,11 @@ public class SharedPref {
     public static final String SF_TYPE = "sf_type";
     public static final String TAG_IMAGE_URL = "tag_image_url";
 
-
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
     public static final String HQ_NAME = "hq_name";
     public static final String HQ_CODE = "hq_code";
+
 
     //Map Activity
     public static final String TAGGED_SUCCESSFULLY = "tagged_successfully";
@@ -45,7 +46,6 @@ public class SharedPref {
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
-
 
     //SetUp
     public static final String GEOTAG_IMAGE = "geo_tag_img";
@@ -74,6 +74,12 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SELECTED_LANGUAGE,"");
     }
 
+
+    public static void Loginsite(Context context, String site) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGI_SITE, site).apply();
+    }
     public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String SlidesUrl, String logoUrl, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -88,6 +94,10 @@ public class SharedPref {
         editor.apply();
     }
 
+
+    public static String getLogInsite(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LOGI_SITE, "");
+    }
     public static String getBaseUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(BASE_URL, "");
     }
@@ -201,16 +211,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAG_IMAGE_URL, "");
     }
 
-    public static void setApprovalsCounts(Context context, String token) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(APPROVAL_COUNT, token).apply();
-    }
-
-    public static String getApprovalsCounts(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APPROVAL_COUNT, "");
-    }
-
     public static void saveHq (Context context, String name, String code){
         sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -223,6 +223,16 @@ public class SharedPref {
 
     public static String getHqCode (Context context){
         return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(HQ_CODE, "");
+    }
+
+    public static void setApprovalsCounts(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(APPROVAL_COUNT, token).apply();
+    }
+
+    public static String getApprovalsCounts(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APPROVAL_COUNT, "");
     }
 
 
@@ -419,5 +429,7 @@ public class SharedPref {
     public static String getGeotagImage(Context context) {
         return context.getSharedPreferences(GEOTAG_IMAGE, MODE_PRIVATE).getString(GEOTAG_IMAGE, "");
     }
+
+
 
 }

@@ -280,7 +280,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         setContentView(dcrCallApprovalBinding.getRoot());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-        progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
+       // progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         getRequiredData();
         CallDcrListApi();
 
@@ -345,7 +345,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     private void rejectApproval(String toString) {
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }
@@ -418,7 +417,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         Log.v("pos", "---" + SelectedPosition);
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }
@@ -488,7 +486,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     private void CallDcrListApi() {
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }
@@ -545,7 +542,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         try {
 
             loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData(true);
+            loginResponse = sqLite.getLoginData();
 
             SfType = loginResponse.getSf_type();
             SfCode = loginResponse.getSF_Code();

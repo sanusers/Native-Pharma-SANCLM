@@ -10,6 +10,7 @@ import saneforce.sanclm.activity.homeScreen.fragment.SalesAnalysisFragment;
 
 public class CustomPagerAdapter extends FragmentPagerAdapter {
     private final int NUM_PAGES = 3;
+
     public CustomPagerAdapter(FragmentManager fm) {
         super(fm);
     }

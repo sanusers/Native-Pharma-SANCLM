@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="@dimen/_2sdp">
+    android:paddingBottom="@dimen/_2sdp">
 
     <TextView
         android:id="@+id/tv_select_sample"
@@ -83,7 +83,6 @@
         android:fontFamily="@font/satoshi_bold"
         android:paddingHorizontal="@dimen/_4sdp"
         android:src="@drawable/iv_del"
-        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintBottom_toBottomOf="@id/tv_select_sample"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

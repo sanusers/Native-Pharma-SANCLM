@@ -106,7 +106,7 @@ public class DCRCallActivity extends AppCompatActivity {
         setContentView(dcrcallBinding.getRoot());
 
         commonUtilsMethods = new CommonUtilsMethods(this);
-        progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+      //  progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
         sqLite = new SQLite(this);
         //  commonUtilsMethods.FullScreencall();
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
@@ -399,7 +399,6 @@ public class DCRCallActivity extends AppCompatActivity {
     private void CallSaveDcrAPI(String jsonSaveDcr) {
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }
@@ -927,7 +926,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Code"), jsonObject.getString("Town_Name"), false));
+                AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), false));
             }
 
             int count = AdditionalCallFragment.custListArrayList.size();

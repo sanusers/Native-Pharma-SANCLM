@@ -97,6 +97,7 @@
     <string name="reject">Reject</string>
     <string name="accept">Accept</string>
     <string name="speciality">Speciality</string>
+    <string name="pending">Pending</string>
     <string name="territory">Territory</string>
     <string name="class_filter">Class</string>
     <string name="promoted">Promoted</string>
@@ -155,6 +156,8 @@
     <string name="worktype">WorkType</string>
     <string name="other_wt">Other WorkType</string>
     <string name="toast_enter_reason_for_reject">Enter reason for Reject</string>
+
+    <string name="app_version" translatable="false">1.0.0</string>
 
 
 </resources>

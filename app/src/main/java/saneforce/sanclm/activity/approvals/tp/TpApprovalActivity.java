@@ -138,7 +138,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
     private void getRequiredData() {
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         SfType = loginResponse.getSf_type();
         SfCode = loginResponse.getSF_Code();

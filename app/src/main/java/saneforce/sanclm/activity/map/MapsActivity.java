@@ -174,7 +174,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(this);
-        progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
+       // progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
         sqLite = new SQLite(getApplicationContext());
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -559,7 +559,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 if (progressDialog == null) {
                     progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
-                    progressDialog.show();
                 } else {
                     progressDialog.show();
                 }
@@ -815,7 +814,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             if (jsonImgRes.getString("success").equalsIgnoreCase("true") && jsonImgRes.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
                                 if (progressDialog == null) {
                                     progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
-                                    progressDialog.show();
                                 } else {
                                     progressDialog.show();
                                 }

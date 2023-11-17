@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.presentation.Presentation;
+import saneforce.sanclm.activity.presentation.PresentationActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.UtilityClass;
 
@@ -51,7 +51,7 @@ public class CustomerProfile extends AppCompatActivity {
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(this);
         // commonUtilsMethods.FullScreencall();
-        progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
+        // progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
         //  progressDialog.dismiss();
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
@@ -65,12 +65,10 @@ public class CustomerProfile extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.v("sa", String.valueOf(tab.getPosition()));
                 if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                     if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
                         if (progressDialog == null) {
                             progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                            progressDialog.show();
                         } else {
                             progressDialog.show();
                         }
@@ -117,7 +115,7 @@ public class CustomerProfile extends AppCompatActivity {
         });
 
         btn_start.setOnClickListener(view -> {
-            startActivity(new Intent(CustomerProfile.this, Presentation.class));
+            startActivity(new Intent(CustomerProfile.this, PresentationActivity.class));
             isDetailingRequired = true;
         });
 

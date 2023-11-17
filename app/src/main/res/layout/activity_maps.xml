@@ -16,7 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        tools:context=".activity.map.MapsActivity" />
+        tools:context=".activity.map.MapsActivity"
+        tools:layout="@layout/activity_maps" />
     <View
         android:id="@+id/view_top"
         android:layout_width="match_parent"
@@ -258,7 +259,7 @@
     <TextView
         android:id="@+id/tv_hq_name"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/_15sdp"
         android:layout_margin="@dimen/_4sdp"
         android:background="@drawable/bg_purple"
         android:fontFamily="@font/satoshi_bold"
@@ -352,8 +353,8 @@
 
     <ImageView
         android:id="@+id/img_refresh_map"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
         android:layout_margin="@dimen/_4sdp"
         android:background="@drawable/bg_purple"
         android:cropToPadding="true"
@@ -367,8 +368,8 @@
 
     <ImageView
         android:id="@+id/img_cur_loc"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
         android:layout_margin="@dimen/_4sdp"
         android:background="@drawable/bg_purple"
         android:cropToPadding="true"
@@ -381,7 +382,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
-        android:layout_width="340dp"
+        android:layout_width="@dimen/_130sdp"
         android:layout_height="0dp"
         android:background="@color/white"
         android:visibility="visible"
@@ -394,8 +395,8 @@
 
     <ImageView
         android:id="@+id/img_rv_right"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_1sdp"
         android:layout_marginBottom="@dimen/_6sdp"
@@ -411,8 +412,8 @@
 
     <ImageView
         android:id="@+id/img_rv_left"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
         android:layout_marginEnd="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_6sdp"
         android:background="@drawable/bg_white"

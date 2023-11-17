@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanclm.activity.setting.SettingsActivity;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.storage.SQLite;
@@ -45,7 +46,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
                     finish();
                 }
-//               startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
+//               startActivity(new Intent(SplashScreen.this, CreatePresentationActivity.class));
 //               finish();
 
             }

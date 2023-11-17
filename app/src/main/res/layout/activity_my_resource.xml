@@ -54,6 +54,30 @@
                     android:textSize="@dimen/_8sdp"
                     tools:ignore="SpUsage" />
 
+                <LinearLayout
+                    android:id="@+id/hq_view"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:background="@drawable/border_white"
+                    android:layout_gravity="right">
+
+                    <TextView
+                        android:id="@+id/hq_head"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:text="Headquart"
+                        android:textSize="@dimen/_7sdp"
+
+                        />
+
+                </LinearLayout>
+
+
+
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>

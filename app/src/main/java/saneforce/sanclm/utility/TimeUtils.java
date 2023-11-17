@@ -38,6 +38,8 @@ public class TimeUtils {
     public static final String FORMAT_23 = "MMMMM yyyy";
     public static final String FORMAT_24 = "yyyy-MM";
 
+    public static final String FORMAT_25 = "MMMM";
+    public static final String FORMAT_26 = "yyyy";
 
     public static String getCurrentDateTime(String format) {
         long timestampMilliseconds = System.currentTimeMillis();

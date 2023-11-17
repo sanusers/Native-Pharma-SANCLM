@@ -142,7 +142,7 @@ public class JointworkSelectionSide extends Fragment {
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<CallCommonCheckedList> selectedJwList, ArrayList<CallCommonCheckedList> Jwlist) {
         adapterCallJointWorkList = new AdapterCallJointWorkList(context, activity, selectedJwList, Jwlist);
-        commonUtilsMethods.recycleTestWithDivider(JWOthersFragment.jwothersBinding.rvJointwork);
+      //  commonUtilsMethods.recycleTestWithDivider(JWOthersFragment.jwothersBinding.rvJointwork);
         JWOthersFragment.jwothersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
     }
 

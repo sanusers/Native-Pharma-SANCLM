@@ -106,24 +106,6 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public LoginResponse getLoginData(boolean bool) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + LOGIN_TABLE, null);
-        String data = "";
-        LoginResponse loginResponse = new LoginResponse();
-        if (cursor.moveToNext()) {
-            data = cursor.getString(0);
-        }
-        cursor.close();
-        if (!data.equals("")) {
-            Type type = new TypeToken<LoginResponse>() {
-            }.getType();
-            loginResponse = new Gson().fromJson(data, type);
-            return loginResponse;
-        }
-        return loginResponse;
-    }
-
     public LoginResponse getLoginData(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + LOGIN_TABLE,null);
@@ -175,7 +157,7 @@ public class SQLite extends SQLiteOpenHelper {
 
         JSONArray jsonArray = new JSONArray();
         try {
-            if (data != null)
+            if (data != null && !data.isEmpty())
                 return jsonArray = new JSONArray(data.toString());
         }catch (Exception exception){
             exception.printStackTrace();
@@ -242,6 +224,8 @@ public class SQLite extends SQLiteOpenHelper {
 //        return jsonArray;
 //    }
 
+    //----------------------------Tour Plan----------------------
+
     public void saveTPData(String month,String data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -274,6 +258,8 @@ public class SQLite extends SQLiteOpenHelper {
        }
         return jsonArray;
     }
+
+
 
 
     // insertdata Linechart
@@ -383,6 +369,8 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return count > 0;
     }
+
+
 
 
 

@@ -4,6 +4,7 @@ package saneforce.sanclm.activity.homeScreen.fragment;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ public class SalesAnalysisFragment extends Fragment {
         txt_month=v.findViewById(R.id.text_month);
         txt_yearly=v.findViewById(R.id.text_yearly);
         txt_quaterly=v.findViewById(R.id.text_Quaterly);
-
 
         txt_yearly.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
@@ -76,6 +76,10 @@ public class SalesAnalysisFragment extends Fragment {
 
 
         return v;
+    }
+    public void onDestroyView() {
+
+        super.onDestroyView();
     }
 
 

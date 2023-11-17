@@ -76,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l) {
                 TextView textView = (TextView) view;
-//                Log.e("test",textView.getText().toString());
+                Log.e("test",textView.getText().toString());
                 String selectedLanguage = "";
                 switch (textView.getText().toString().toUpperCase()) {
                     case "ENGLISH" : {
@@ -132,6 +132,9 @@ public class SettingsActivity extends AppCompatActivity {
                     binding.etLicenseKey.requestFocus();
                     Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
                 } else{
+
+                      SharedPref.Loginsite(getApplicationContext(),url);
+
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())){
                         if (checkURL(url)){
                             configuration("https://" + url + "/apps/");
@@ -233,6 +236,7 @@ public class SettingsActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
+                        SharedPref.Loginsite(getApplicationContext(),url);
                     }else{
                         Toast.makeText(SettingsActivity.this, "Invalid web url", Toast.LENGTH_SHORT).show();
                     }

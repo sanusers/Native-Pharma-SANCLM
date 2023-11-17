@@ -50,7 +50,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-        progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
+       // progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
         getRequiredData();
         CallApiLeave();
 
@@ -77,7 +77,6 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     private void CallApiLeave() {
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }
@@ -114,7 +113,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                         leaveBinding.rvLeaveList.setLayoutManager(mLayoutManager);
                         leaveBinding.rvLeaveList.setAdapter(leaveApprovalAdapter);
                     } catch (Exception e) {
-
+                        progressDialog.dismiss();
                     }
                 } else {
                     progressDialog.dismiss();
@@ -132,7 +131,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
     private void getRequiredData() {
         loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData(true);
+        loginResponse = sqLite.getLoginData();
 
         SfType = loginResponse.getSf_type();
         SfCode = loginResponse.getSF_Code();

@@ -1,144 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-<LinearLayout
-    android:layout_margin="@dimen/_3sdp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/_2sdp"
-        android:background="@drawable/backround_text"
-        >
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/txt_worktype"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:layout_marginBottom="@dimen/_2sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:padding="@dimen/_4sdp"
-            android:text="Select Work Type"
-            android:textColor="@color/text_dark"
-            android:textSize="@dimen/_7sdp" />
+            android:layout_margin="@dimen/_3sdp"
+            android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="@dimen/_6sdp"
-            android:layout_height="@dimen/_10sdp"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:src="@drawable/vector" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rlworktype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_2sdp"
+                android:background="@drawable/backround_text"
+                android:orientation="horizontal">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/_2sdp"
-        android:backgroundTint="#26282A3C"
-        android:background="@drawable/backround_text"
-        >
+                <TextView
+                    android:id="@+id/txtWorktype"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:hint="Select Work Type"
+                    android:padding="@dimen/_4sdp"
+                    android:textColor="@color/text_dark"
+                    android:textColorHint="@color/text_dark"
+                    android:textSize="@dimen/_7sdp" />
 
-        <TextView
-            android:id="@+id/txt_headquaters"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:layout_marginBottom="@dimen/_2sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:padding="@dimen/_4sdp"
-            android:text="Select Head Quarters"
-            android:textColor="@color/text_dark"
-            android:textSize="@dimen/_7sdp" />
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:src="@drawable/vector" />
+            </RelativeLayout>
 
-        <ImageView
-            android:layout_width="@dimen/_6sdp"
-            android:layout_height="@dimen/_10sdp"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:src="@drawable/vector" />
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/_2sdp"
-        android:background="@drawable/backround_text"
-        >
+            <RelativeLayout
+                android:id="@+id/rlheadquates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_2sdp"
+                android:background="@drawable/backround_text"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
+                <ProgressBar
+                    android:id="@+id/progress_hq"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:background="#26282A3C"
+                    android:backgroundTint="#26282A3C"
+                    android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/txt_cluster"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:layout_marginBottom="@dimen/_2sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:padding="@dimen/_4sdp"
-            android:text="Select Cluster"
-            android:textColor="@color/text_dark"
-            android:textSize="@dimen/_7sdp" />
+                <TextView
+                    android:id="@+id/txtheadquaters"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:hint="Select Head Quarters"
+                    android:padding="@dimen/_4sdp"
+                    android:textColor="@color/text_dark"
+                    android:textColorHint="@color/text_dark"
+                    android:textSize="@dimen/_7sdp" />
 
-        <ImageView
-            android:layout_width="@dimen/_6sdp"
-            android:layout_height="@dimen/_10sdp"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:src="@drawable/vector" />
-    </RelativeLayout>
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:src="@drawable/vector" />
+            </RelativeLayout>
 
-
-
-    <EditText
-        android:id="@+id/dayremark"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_50sdp"
-        android:hint="Enter Remark"
-        android:padding="@dimen/_4sdp"
-        android:layout_margin="@dimen/_2sdp"
-        android:background="@drawable/backround_text"
-        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
-        android:gravity="top|left"
-        android:inputType="text"
-        android:textSize="@dimen/_7sdp"
-        android:fontFamily="@font/satoshi_medium"
-        android:lines="8"
-        android:maxLines="10"
-        android:minLines="6"
-        android:scrollbars="vertical" />
+            <RelativeLayout
+                android:id="@+id/rlcluster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_2sdp"
+                android:background="@drawable/backround_text"
+                android:orientation="horizontal">
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_23sdp"
-        android:text="Submit"
-        android:gravity="center"
-        android:textAllCaps="false"
-        android:textSize="@dimen/_8sdp"
-        android:fontFamily="@font/satoshi_medium"
-        android:layout_margin="@dimen/_2sdp"
-        android:textStyle="bold"
-        android:padding="@dimen/_4sdp"
-        android:textColor="@color/white"
-        android:background="@drawable/edittext_stroke"
-        app:backgroundTint="@color/black_45" />
+                <TextView
+                    android:id="@+id/txtCluster"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:hint="Select Cluster"
+                    android:padding="@dimen/_4sdp"
+                    android:text=""
+                    android:textColor="@color/text_dark"
 
-</LinearLayout>
-</ScrollView>
+                    android:textColorHint="@color/text_dark"
+                    android:textSize="@dimen/_7sdp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:src="@drawable/vector" />
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/txtdayremark"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_margin="@dimen/_2sdp"
+                android:background="@drawable/backround_text"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="top|left"
+                android:hint="Enter Remark"
+                android:inputType="text"
+                android:lines="8"
+                android:maxLines="10"
+                android:minLines="6"
+                android:padding="@dimen/_4sdp"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/_7sdp" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnsumit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_23sdp"
+                android:layout_margin="@dimen/_2sdp"
+                android:background="@drawable/edittext_stroke"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="center"
+                android:padding="@dimen/_4sdp"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/black_45" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

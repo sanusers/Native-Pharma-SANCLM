@@ -445,11 +445,11 @@
                             android:fontFamily="@font/satoshi_medium"
                             tools:ignore="SpUsage"/>
 
-                            <ImageView
-                                android:id="@+id/productArrow"
-                                android:layout_width="@dimen/_6sdp"
-                                android:layout_height="@dimen/_6sdp"
-                                android:src="@drawable/arrow_down"/>
+                        <ImageView
+                            android:id="@+id/productArrow"
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/arrow_down"/>
 
                     </LinearLayout>
 

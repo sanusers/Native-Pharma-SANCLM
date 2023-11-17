@@ -24,11 +24,11 @@ import saneforce.sanclm.activity.profile.DCRLastVisitDetails;
 public interface ApiInterface {
 
     @GET
-    Call<JsonArray> configuration(@Url String url);
+    Call<JsonArray> configuration (@Url String url);
 
     @FormUrlEncoded
     @POST("?axn=action/login")
-    Call<JsonObject> login(@Field("data") String userData);
+    Call<JsonObject> login (@Field("data") String userData);
 
     @FormUrlEncoded
     @POST("?axn=table/dcrmasterdata")
@@ -127,6 +127,7 @@ public interface ApiInterface {
     @POST("?axn=get/tp")
     Call<JsonElement> getTP(@Field("data") String postObj);
 
+
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")
         // Get DCR LastVisit Details
@@ -141,6 +142,11 @@ public interface ApiInterface {
     @POST("?axn=save/image")
         // Save Dcr EventCapture
     Call<JsonObject> saveImgDcr(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
+
+
+    @FormUrlEncoded
+    @POST("?axn=save/dayplan")
+    Call<JsonObject> saveMydayPlan(@Field("data") String SaveDcr);
 
     @FormUrlEncoded
     @POST("?axn=save/approvals")

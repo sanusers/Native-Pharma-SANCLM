@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -117,44 +118,6 @@ public class CommonUtilsMethods {
                 .check();
     }
 
-    public static String getCurrentTime() {
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        String val = sdf.format(currentTime);
-        return val;
-    }
-
-    public static String getCurrentInstance() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(c.getTimeInMillis());
-    }
-
-    public static String getCurrentDateDMY() {
-        Date currentTime = Calendar.getInstance().getTime();
-        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
-        Log.v("Printing_current_time", String.valueOf(currentTime));
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        String val = sdf.format(currentTime);
-        Log.v("Printing_current_date", val);
-        return val;
-    }
-
-    public static ProgressDialog createProgressDialog(Context context) {
-        ProgressDialog dialog = new ProgressDialog(context);
-      /*  try {
-            dialog.show();
-        } catch (WindowManager.BadTokenException e) {
-
-        }*/
-        dialog.setCancelable(false);
-        dialog.setIndeterminate(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setContentView(R.layout.loading_progress);
-        // dialog.setMessage(Message);
-        return dialog;
-    }
-
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
         try {
             if (rv_test.getItemDecorationCount() > 0) {
@@ -183,19 +146,40 @@ public class CommonUtilsMethods {
     }
 
     public void recycleTestWithDivider(RecyclerView rv_test) {
-        try {
-            if (rv_test.getItemDecorationCount() > 0) {
-                for (int i = 0; i < rv_test.getItemDecorationCount(); i++) {
-                    rv_test.removeItemDecorationAt(i);
-                }
+
+        if (rv_test.getItemDecorationCount() > 0) {
+            for (int i = 0; i < rv_test.getItemDecorationCount(); i++) {
+                rv_test.removeItemDecorationAt(i);
             }
-            rv_test.setItemAnimator(new DefaultItemAnimator());
-            rv_test.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-            Parcelable recyclerViewState;
-            recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
-            rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-        } catch (Exception e) {
         }
+        rv_test.setItemAnimator(new DefaultItemAnimator());
+        rv_test.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+        Parcelable recyclerViewState;
+        recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
+        rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+
+    }
+
+    public static String getCurrentTime() {
+        Date currentTime = Calendar.getInstance().getTime();;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        return sdf.format(currentTime);
+    }
+
+    public static String getCurrentInstance() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(c.getTimeInMillis());
+    }
+
+    public static String getCurrentDateDMY() {
+        Date currentTime = Calendar.getInstance().getTime();
+        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
+        Log.v("Printing_current_time", String.valueOf(currentTime));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String val = sdf.format(currentTime);
+        Log.v("Printing_current_date", String.valueOf(val));
+        return val;
     }
 
     public void setSpinText(Spinner spin, String text) {
@@ -204,6 +188,22 @@ public class CommonUtilsMethods {
                 spin.setSelection(i);
             }
         }
+    }
+
+    public static ProgressDialog createProgressDialog(Context context) {
+        ProgressDialog dialog = new ProgressDialog(context);
+        try {
+            dialog.show();
+        } catch (WindowManager.BadTokenException e) {
+
+        }
+
+        dialog.setCancelable(false);
+        dialog.setIndeterminate(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.loading_progress);
+        // dialog.setMessage(Message);
+        return dialog;
     }
 
     public void FullScreencall() {

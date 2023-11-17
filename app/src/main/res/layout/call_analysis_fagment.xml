@@ -63,23 +63,22 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:layout_marginEnd="@dimen/_2sdp"
-                android:clickable="true"
                 android:orientation="horizontal">
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:id="@+id/ll_doc_child"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_weight="1"
                         android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_weight="1"
                         android:background="@drawable/custom_background_green"
                         android:orientation="vertical">
 
@@ -122,7 +121,7 @@
                                 android:layout_gravity="right"
                                 android:layout_marginLeft="@dimen/_4sdp"
                                 android:layout_marginRight="@dimen/_4sdp"
-                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
                                 <ProgressBar
@@ -149,33 +148,34 @@
                         </LinearLayout>
 
 
-
                     </LinearLayout>
 
                     <ImageView
                         android:id="@+id/img_down_triangle_doc"
                         android:layout_width="@dimen/_10sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
                         android:layout_height="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
                         android:src="@drawable/down_triangle_green" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:id="@+id/ll_che_child"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_weight="1"
                         android:background="@drawable/custom_background_blue"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/txt_che_name"
                             android:layout_width="match_parent"
@@ -199,8 +199,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/txt_name"
-                                android:layout_weight="1"
                                 android:layout_marginTop="@dimen/_10sdp"
+                                android:layout_weight="1"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_9sdp"
@@ -211,9 +211,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginBottom="@dimen/_10sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
                                 android:layout_marginLeft="@dimen/_4sdp"
+                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
                                 <ProgressBar
@@ -243,25 +243,27 @@
                     <ImageView
                         android:id="@+id/img_down_triangle_che"
                         android:layout_width="@dimen/_10sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
                         android:layout_height="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
                         android:src="@drawable/down_triangle_blue" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:id="@+id/ll_stock_child"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:layout_marginLeft="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:layout_marginRight="@dimen/_2sdp"
-                        android:background="@drawable/custom_background_yellow"
+                        android:layout_weight="1"
+                        android:background="@drawable/custom_background_pink"
                         android:orientation="vertical">
 
                         <TextView
@@ -300,9 +302,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginBottom="@dimen/_10sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
                                 android:layout_marginLeft="@dimen/_4sdp"
+                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
                                 <ProgressBar
@@ -333,18 +335,18 @@
                     <ImageView
                         android:id="@+id/img_down_triangle_stockiest"
                         android:layout_width="@dimen/_10sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
                         android:layout_height="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_yellow" />
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:src="@drawable/down_triangle_red" />
 
                 </LinearLayout>
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
 
 
                     <LinearLayout
@@ -352,9 +354,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_2sdp"
-                        android:layout_weight="1"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_weight="1"
                         android:background="@drawable/custom_background_gray"
                         android:orientation="vertical">
 
@@ -392,10 +394,10 @@
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/_10sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
-                                android:layout_marginLeft="@dimen/_4sdp"
                                 android:layout_gravity="right"
+                                android:layout_marginLeft="@dimen/_4sdp"
+                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
                                 <ProgressBar
@@ -425,8 +427,8 @@
                     <ImageView
                         android:id="@+id/img_down_triangle_unlistered"
                         android:layout_width="@dimen/_10sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
                         android:layout_height="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
                         android:src="@drawable/down_triangle_gray" />
 
                 </LinearLayout>
@@ -434,18 +436,18 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:id="@+id/ll_cip_child"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_weight="1"
                         android:layout_marginRight="@dimen/_2sdp"
-                        android:background="@drawable/custom_background_pink"
+                        android:layout_weight="1"
+                        android:background="@drawable/custom_background_yellow"
                         android:orientation="vertical">
 
                         <TextView
@@ -487,7 +489,7 @@
                                 android:layout_gravity="right"
                                 android:layout_marginLeft="@dimen/_4sdp"
                                 android:layout_marginRight="@dimen/_4sdp"
-                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
                                 <ProgressBar
@@ -514,30 +516,30 @@
                         </LinearLayout>
 
 
-
                     </LinearLayout>
 
                     <ImageView
                         android:id="@+id/img_down_triangle_cip_"
                         android:layout_width="@dimen/_10sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
                         android:layout_height="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_red" />
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:src="@drawable/down_triangle_yellow" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:id="@+id/ll_hos_child"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_weight="1"
                         android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_weight="1"
                         android:background="@drawable/custom_background_trendy_pink"
                         android:orientation="vertical">
 
@@ -580,7 +582,7 @@
                                 android:layout_gravity="right"
                                 android:layout_marginLeft="@dimen/_4sdp"
                                 android:layout_marginRight="@dimen/_4sdp"
-                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
                                 <ProgressBar
@@ -607,14 +609,13 @@
                         </LinearLayout>
 
 
-
                     </LinearLayout>
 
                     <ImageView
                         android:id="@+id/img_down_triangle_hos"
                         android:layout_width="@dimen/_10sdp"
-                        android:layout_marginStart="@dimen/_5sdp"
                         android:layout_height="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_5sdp"
                         android:src="@drawable/down_triangle_trendy_pink" />
 
                 </LinearLayout>
