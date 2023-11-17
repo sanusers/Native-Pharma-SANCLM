@@ -97,6 +97,7 @@
     <string name="reject">Reject</string>
     <string name="accept">Accept</string>
     <string name="speciality">Speciality</string>
+    <string name="pending">Pending</string>
     <string name="territory">Territory</string>
     <string name="class_filter">Class</string>
     <string name="promoted">Promoted</string>

@@ -59,7 +59,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-        progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
+       // progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
         getRequiredData();
         if (SharedPref.getApprovalsCounts(ApprovalsActivity.this).equalsIgnoreCase("false")) {
             CallListCountAPI();
@@ -73,7 +73,6 @@ public class ApprovalsActivity extends AppCompatActivity {
     private void CallListCountAPI() {
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }

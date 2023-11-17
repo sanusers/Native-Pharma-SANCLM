@@ -24,14 +24,12 @@ public class ItemTouchHelperCallBack extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove (@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-        Log.e("test","onMove");
         selectedSlidesAdapter.onRowMoved(viewHolder.getAbsoluteAdapterPosition(), target.getAbsoluteAdapterPosition());
         return true;
     }
 
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-        Log.e("test","onSelectedChanged");
 
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
             if (viewHolder instanceof SelectedSlidesAdapter.MyViewHolder) {
@@ -45,7 +43,6 @@ public class ItemTouchHelperCallBack extends ItemTouchHelper.Callback {
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
-        Log.e("test","clearView");
 
         if (viewHolder instanceof SelectedSlidesAdapter.MyViewHolder) {
             SelectedSlidesAdapter.MyViewHolder myViewHolder= (SelectedSlidesAdapter.MyViewHolder) viewHolder;

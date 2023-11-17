@@ -129,20 +129,11 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
             holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_right_rv));
         }
 
-        /*if (holder.img_view_rv.getDrawable().getConstantState().equals(context.getResources().getDrawable(R.drawable.arrow_right_rv).getConstantState())) {
-            AssignRVInputSampleSingle(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getAdapterPosition());
-        } else {
-            AssignRVInputSampleFull(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getAdapterPosition());
-        }*/
-
         holder.img_view_rv.setOnClickListener(view -> {
             if (holder.img_view_rv.getDrawable().getConstantState().equals(context.getResources().getDrawable(R.drawable.arrow_right_rv).getConstantState())) {
                 holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_rv_down));
                 AssignRVInputSampleFull(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getAdapterPosition());
                 saveAdditionalCalls.set(position, new SaveAdditionalCall(saveAdditionalCalls.get(position).getName(), saveAdditionalCalls.get(position).getCode(), saveAdditionalCalls.get(position).getTown_name(), saveAdditionalCalls.get(position).getTown_code(), true));
-               /* if (dummyNestedInput.size() > 1 || dummyNestedSample.size() > 1) {
-                    holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_rv_down));
-                }*/
             } else {
                 holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_right_rv));
                 AssignRVInputSampleSingle(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getAdapterPosition());

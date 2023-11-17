@@ -507,25 +507,8 @@ public class ListedDoctorFragment extends Fragment {
                 Toast.makeText(getContext(), Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
             }
 
-          /*  boolean isDataAvailable = false;
-            isDataAvailable = sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
-
-            if (isDataAvailable) {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
-            } else {
-                MasterSyncActivity masterSyncActivity = new MasterSyncActivity();
-                masterSyncActivity.masterSyncAll(true);
-            }*/
 
             Log.v("call", "-dr_full_length-" + jsonArray.length());
-         /*   if (jsonArray.length() == 0) {
-                if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
-                    // Toast.makeText(getActivity(), "No Data Available!", Toast.LENGTH_SHORT).show();
-                    // MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
-                } else {
-                    Toast.makeText(getActivity(), Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
-                }
-            }*/
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);

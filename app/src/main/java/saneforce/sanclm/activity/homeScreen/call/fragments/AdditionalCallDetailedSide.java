@@ -93,6 +93,7 @@ public class AdditionalCallDetailedSide extends Fragment {
 
         callDetailsSideBinding.btnAddInput.setOnClickListener(view -> {
             HideKeyboard();
+            Log.v("sdsd","----" + addInputAdditionalCallArrayList.size());
             if (addInputAdditionalCallArrayList.size() > 1) {
                 lastPos = addInputAdditionalCallArrayList.size() - 1;
                 if (callInputList.size() > addInputAdditionalCallArrayList.size()) {
@@ -151,7 +152,6 @@ public class AdditionalCallDetailedSide extends Fragment {
                 AddSampleInputDatas();
             }
             saveAdditionalCallAdapter = new SaveAdditionalCallAdapter(getActivity(), getContext(), SaveAdditionalCallAdapter.checked_arrayList, SaveAdditionalCallAdapter.saveAdditionalCalls, SaveAdditionalCallAdapter.nestedAddInputCallDetails, SaveAdditionalCallAdapter.nestedAddSampleCallDetails, SaveAdditionalCallAdapter.dummyNestedInput, SaveAdditionalCallAdapter.dummyNestedSample);
-            commonUtilsMethods.recycleTestWithDivider(AdditionalCallFragment.rv_add_call_list);
             commonUtilsMethods.recycleTestWithoutDivider(SaveAdditionalCallAdapter.rv_nested_calls_input_data);
             commonUtilsMethods.recycleTestWithoutDivider(SaveAdditionalCallAdapter.rv_nested_calls_sample_data);
             AdditionalCallFragment.rv_add_call_list.setAdapter(saveAdditionalCallAdapter);
@@ -163,7 +163,6 @@ public class AdditionalCallDetailedSide extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     private void AddNewInputData() {
         addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
-        commonUtilsMethods.recycleTestWithDivider(callDetailsSideBinding.rvAddInputsAdditional);
         callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
         adapterInputAdditionalCall.notifyDataSetChanged();
     }
@@ -171,7 +170,6 @@ public class AdditionalCallDetailedSide extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     private void AddNewSampleData() {
         addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
-        commonUtilsMethods.recycleTestWithDivider(callDetailsSideBinding.rvAddSampleAdditional);
         callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);
         adapterSampleAdditionalCall.notifyDataSetChanged();
     }

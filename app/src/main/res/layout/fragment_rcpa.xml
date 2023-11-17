@@ -20,6 +20,7 @@
             android:layout_marginStart="@dimen/_2sdp"
             android:background="@color/white"
             android:paddingVertical="@dimen/_2sdp"
+            app:layout_constraintVertical_bias="0.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/constraint_right_rcpa"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,8 +29,9 @@
             <saneforce.sanclm.commonClasses.VerticalScrollview
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_height="0dp"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_rcpa"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -37,6 +39,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constraintVertical_bias="0.0"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -224,31 +227,11 @@
                         android:padding="@dimen/_6sdp"
                         android:textColor="@color/dark_purple"
                         android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@id/btn_add_rcpa"
+                       app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tag_value"
-                        app:layout_constraintVertical_bias="0.0" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_add_rcpa"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/_4sdp"
-                        android:layout_marginVertical="@dimen/_5sdp"
-                        android:background="@drawable/bg_purple"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:paddingHorizontal="@dimen/_12sdp"
-                        android:paddingVertical="@dimen/_2sdp"
-                        android:text="@string/add_rcpa"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_value"
                         app:layout_constraintVertical_bias="0.0" />
 
                     <androidx.cardview.widget.CardView
@@ -396,6 +379,26 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </saneforce.sanclm.commonClasses.VerticalScrollview>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_add_rcpa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_4sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:background="@drawable/bg_purple"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/add_rcpa"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scroll_view"
+                app:layout_constraintVertical_bias="0.0" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

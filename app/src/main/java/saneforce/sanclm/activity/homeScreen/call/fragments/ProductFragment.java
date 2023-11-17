@@ -26,12 +26,11 @@ import saneforce.sanclm.databinding.FragmentProductsBinding;
 import saneforce.sanclm.storage.SQLite;
 
 public class ProductFragment extends Fragment {
-
     @SuppressLint("StaticFieldLeak")
     public static FragmentProductsBinding productsBinding;
     public static ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList;
     CallProductListAdapter callProductListAdapter;
-    SaveProductCallAdapter saveProductCallAdapter;
+  SaveProductCallAdapter saveProductCallAdapter;
     SQLite sqLite;
 
     @Nullable

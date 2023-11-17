@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:paddingVertical="@dimen/_2sdp"
+    android:paddingBottom="@dimen/_2sdp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -30,49 +30,6 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-
-    <!-- <androidx.constraintlayout.widget.ConstraintLayout
-         android:id="@+id/constraint_spin_input"
-         android:layout_width="@dimen/_60sdp"
-         android:layout_height="wrap_content"
-         android:layout_marginStart="@dimen/_4sdp"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintEnd_toStartOf="@+id/tv_stock"
-         app:layout_constraintHorizontal_bias="0.5"
-         app:layout_constraintHorizontal_chainStyle="spread_inside"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toTopOf="parent">
-
-
-         <Spinner
-             android:id="@+id/spin_input_name"
-             android:layout_width="match_parent"
-             android:layout_height="@dimen/_20sdp"
-             android:layout_marginVertical="@dimen/_2sdp"
-             android:paddingHorizontal="@dimen/_2sdp"
-             android:paddingVertical="@dimen/_2sdp"
-             android:background="@drawable/border_shape_spinner"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintHorizontal_bias="0.0"
-             app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintTop_toTopOf="parent" />
-
-         <ImageView
-             android:layout_width="@dimen/_10sdp"
-             android:layout_height="@dimen/_15sdp"
-             android:layout_marginEnd="@dimen/_4sdp"
-             android:padding="@dimen/_2sdp"
-             android:src="@drawable/spin_down_arrow"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintHorizontal_bias="1.0"
-             app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintTop_toTopOf="parent" />
-
-     </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <TextView
         android:id="@+id/tv_stock"

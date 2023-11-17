@@ -96,13 +96,10 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 public void onClick(View v) {
                     if(!day.equalsIgnoreCase("")) {
 
-
                         HomeDashBoard.text_date.setText(fullMonthName + " " + day + ", " + year);
                         HomeDashBoard.view_calerder_layout.setVisibility(View.GONE);
                         HomeDashBoard.ll_tab_layout.setVisibility(View.VISIBLE);
                         HomeDashBoard.viewPager.setVisibility(View.VISIBLE);
-
-
 
                     }
                 }

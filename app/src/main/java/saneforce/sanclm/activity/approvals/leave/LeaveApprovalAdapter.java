@@ -60,7 +60,6 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     @Override
     public void onBindViewHolder(@NonNull LeaveApprovalAdapter.ViewHolder holder, int position) {
         api_interface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-        progressDialog = CommonUtilsMethods.createProgressDialog(context);
         holder.tv_name.setText(leaveModelLists.get(position).getName());
         holder.tv_reason.setText(leaveModelLists.get(position).getReason());
         holder.tv_emp_code.setText(leaveModelLists.get(position).getSf_code());
@@ -107,7 +106,6 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     private void RejectedLeave(String leave_id, int Position, String reason) {
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(context);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }
@@ -165,7 +163,6 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     private void ApprovedLeave(String leave_id, int Position) {
         if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(context);
-            progressDialog.show();
         } else {
             progressDialog.show();
         }

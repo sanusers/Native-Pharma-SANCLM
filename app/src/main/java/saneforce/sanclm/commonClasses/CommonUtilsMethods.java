@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -204,6 +205,8 @@ public class CommonUtilsMethods {
         // dialog.setMessage(Message);
         return dialog;
     }
+
+
 
     public void FullScreencall() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);

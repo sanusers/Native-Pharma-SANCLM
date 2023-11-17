@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
-import saneforce.sanclm.storage.SharedPref;
 
 public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHolder> {
     public static ArrayList<CustList> getCustListNew = new ArrayList<>();
@@ -54,52 +53,43 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         holder.tv_area.setText(custListArrayList.get(position).getTown_name());
         holder.tv_count.setText(String.format("%s/%s", custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag()));
 
+        if (GeoTagApprovalNeed.equalsIgnoreCase("0")) {
+            for (int m = 0; m < custListArrayListNew.size(); m++) {
+                if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
+                    if (custListArrayListNew.get(m).getGeoTagStatus().equalsIgnoreCase("1")) {
+                        custListArrayList.set(position, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getPosition(), "1"));
+                        break;
+                    }
+                }
+            }
+
+            if (custListArrayList.get(position).getGeoTagStatus().equalsIgnoreCase("1")) {
+                holder.tv_verified.setVisibility(View.VISIBLE);
+                holder.tv_verified.setText(context.getResources().getText(R.string.pending));
+            } else {
+                holder.tv_verified.setVisibility(View.GONE);
+            }
+        } else {
+            holder.tv_verified.setVisibility(View.GONE);
+        }
+
+     /*   if (GeoTagApprovalNeed.equalsIgnoreCase("0") && custListArrayList.get(position).getGeoTagStatus().equalsIgnoreCase("1")) {
+            holder.tv_verified.setVisibility(View.VISIBLE);
+            holder.tv_verified.setText(context.getResources().getText(R.string.pending));
+        } else {
+            holder.tv_verified.setVisibility(View.GONE);
+        }
+
         for (int m = 0; m < custListArrayListNew.size(); m++) {
             if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
                 if (custListArrayListNew.get(m).getGeoTagStatus().equalsIgnoreCase("1")) {
                     custListArrayList.set(position, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getPosition(), "1"));
+                    holder.tv_verified.setText(context.getResources().getText(R.string.pending));
                     break;
                 }
             }
         }
-
-        if (GeoTagApprovalNeed.equalsIgnoreCase("0") && custListArrayList.get(position).getGeoTagStatus().equalsIgnoreCase("1")) {
-            holder.tv_verified.setVisibility(View.VISIBLE);
-            holder.tv_verified.setText("Pending");
-        } else {
-            holder.tv_verified.setVisibility(View.GONE);
-        }
-
-
-   /*     if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
-            for (int m = 0; m < custListArrayListNew.size(); m++) {
-                if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
-                    if (custListArrayListNew.get(m).getGeoTagStatus().equalsIgnoreCase("1")) {
-                        holder.tv_verified.setVisibility(View.VISIBLE);
-                        custListArrayList.set(position, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getPosition(), "1"));
-                        holder.tv_verified.setText("Pending");
-                        break;
-                    } else {
-                        holder.tv_verified.setVisibility(View.GONE);
-                    }
-                }
-            }
-        } else {
-            holder.tv_verified.setVisibility(View.GONE);
-        }*/
-
-
-        for (int m = 0; m < custListArrayListNew.size(); m++) {
-            if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
-                if (custListArrayListNew.get(m).getGeoTagStatus().equalsIgnoreCase("1")) {
-                    holder.tv_verified.setText("Pending");
-                    break;
-                } else if (custListArrayListNew.get(m).getGeoTagStatus().equalsIgnoreCase("0")) {
-                    holder.tv_verified.setText("Approved");
-                }
-            }
-        }
-
+*/
         if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
             holder.tv_view.setVisibility(View.GONE);
         } else {

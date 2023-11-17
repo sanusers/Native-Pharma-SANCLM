@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
+import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
@@ -59,6 +60,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
         return new ViewHolder(view);
     }
 
+
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
@@ -68,6 +70,7 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
         holder.ed_rxQty.setText(productListArrayList.get(position).getRx_qty());
         holder.ed_rcpaQty.setText(productListArrayList.get(position).getRcpa_qty());
         holder.switch_prompt.setChecked(productListArrayList.get(position).getPromoted().equalsIgnoreCase("0"));
+
 
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
@@ -140,10 +143,21 @@ public class SaveProductCallAdapter extends RecyclerView.Adapter<SaveProductCall
         });
 
 
+
+
         holder.ed_samplesQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+              //  productsBinding.rvListPrd.smoothScrollToPosition(ProductFragment.saveProductCallAdapter.getItemCount() - 1);
 
+               /* productsBinding.rvListPrd.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+
+                    public void onLayoutChange(View v, int left, int top, int right,int bottom, int oldLeft, int oldTop,int oldRight, int oldBottom)
+                    {
+                        productsBinding.rvListPrd.scrollToPosition(productListArrayList.size()-1);
+                    }
+                });*/
             }
 
             @Override

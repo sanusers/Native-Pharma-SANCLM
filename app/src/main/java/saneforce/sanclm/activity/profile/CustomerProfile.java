@@ -51,7 +51,7 @@ public class CustomerProfile extends AppCompatActivity {
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(this);
         // commonUtilsMethods.FullScreencall();
-        progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
+        // progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
         //  progressDialog.dismiss();
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
@@ -65,12 +65,10 @@ public class CustomerProfile extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.v("sa", String.valueOf(tab.getPosition()));
                 if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                     if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
                         if (progressDialog == null) {
                             progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                            progressDialog.show();
                         } else {
                             progressDialog.show();
                         }
