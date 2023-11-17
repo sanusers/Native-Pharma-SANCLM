@@ -927,7 +927,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Code"), jsonObject.getString("Town_Name"), false));
+                AdditionalCallFragment.custListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), false));
             }
 
             int count = AdditionalCallFragment.custListArrayList.size();
