@@ -3,6 +3,7 @@ package saneforce.sanclm.activity.masterSync;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,14 +24,17 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.time.Year;
 import java.util.ArrayList;
 
@@ -39,6 +43,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideModelClass;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
@@ -103,6 +109,11 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
 
+     public static   ArrayList<SlideModelClass> Slide_list=new ArrayList<>();
+     public static    ArrayList<String> slideid=new  ArrayList<>();
+
+
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -113,7 +124,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
-
+        sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             navigateFrom = getIntent().getExtras().getString("Origin");
@@ -941,7 +952,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                 }
 
-//            Log.e("test","master sync obj : " + jsonObject);
+            Log.e("test","master sync obj : " + jsonObject);
                 Call<JsonElement> call = null;
                 if (masterOf.equalsIgnoreCase(Constants.DOCTOR)){
                     call = apiInterface.getDrMaster(jsonObject.toString());
@@ -1026,8 +1037,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         }
 
                                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
-//                                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                            saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
+                                            saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1",slideListPrepared("0"));
                                         }
 
                                     } else {
@@ -1041,6 +1051,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                             } else {
                                 masterSyncItemModels.get(position).setSyncSuccess(1);
                                 sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),1);
+                            }
+
+                            if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)){
+
+                                if (!navigateFrom.equalsIgnoreCase("Login"))
+                             SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "0",slideListPrepared("1"));
+
                             }
 
                             masterSyncAdapter.notifyDataSetChanged();
@@ -1058,7 +1075,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             masterSyncAdapter.notifyDataSetChanged();
                             if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
 //                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
+                                saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1",slideListPrepared("0"));
 
                             }
                         }
@@ -1145,6 +1162,61 @@ public class MasterSyncActivity extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+    }
+
+
+
+   ArrayList<SlideModelClass> slideListPrepared(String nfolg){
+
+         retrieveLists();
+
+        if(nfolg.equalsIgnoreCase("0")){
+            Slide_list.clear();
+            slideid.clear();
+        }
+        SQLite sqLite =new SQLite(MasterSyncActivity.this);
+       JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+       try {
+           if (slidedata.length() > 0) {
+               for (int i = 0; i < slidedata.length(); i++) {
+                   JSONObject jsonObject = slidedata.getJSONObject(i);
+                   String FilePath = jsonObject.optString("FilePath");
+                   String id = jsonObject.optString("SlideId");
+                   if(!slideid.contains(id)){
+                       slideid.add(id);
+                       Slide_list.add(new SlideModelClass(FilePath,false,"0","0"));
+                   }
+
+
+               }
+           }
+       } catch (Exception a) {
+           a.printStackTrace();
+       }
+       saveData_sharedPreferences_Sync_list();
+      Slide_list.add(new SlideModelClass("CC_VA_2021_.jpg",false,"0","0"));
+    return Slide_list;
+
+   }
+
+    private void saveData_sharedPreferences_Sync_list() {
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("SLIDEID", new Gson().toJson(slideid));
+        editor.apply();
+    }
+
+    private void retrieveLists() {
+
+        String slideID = sharedpreferences.getString("SLIDEID", "[]");
+        String slideLIST = sharedpreferences.getString("SLIDELIST", "[]");
+        String conut = sharedpreferences.getString("SLIDEDONWLOADCOUNT", "0");
+        Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+        Type listType1 = new TypeToken<ArrayList<SlideModelClass>>() {}.getType();
+        slideid = new Gson().fromJson(slideID, listType);
+        Slide_list= new Gson().fromJson(slideLIST, listType1);
+        SlideDownloaderAlertBox.downloading_count=Integer.valueOf(conut);
+
     }
 
 }

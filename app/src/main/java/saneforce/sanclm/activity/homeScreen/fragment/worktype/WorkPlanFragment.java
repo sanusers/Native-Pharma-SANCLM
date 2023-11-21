@@ -43,6 +43,7 @@ import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
@@ -93,19 +94,23 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             binding.progressSumit.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
         }
         api_interface = RetrofitClient.getRetrofit(getContext(), SharedPref.getCallApiUrl(getContext()));
-        setmydaypalndata();
-        getLocaldata();
-
-        binding.btnsumit.setOnClickListener(this);
-        binding.rlworktype.setOnClickListener(this);
-        binding.rlcluster.setOnClickListener(this);
-        binding.rlheadquates.setOnClickListener(this);
 
         if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
         } else {
             binding.rlheadquates.setVisibility(View.GONE);
         }
+
+
+
+        binding.btnsumit.setOnClickListener(this);
+        binding.rlworktype.setOnClickListener(this);
+        binding.rlcluster.setOnClickListener(this);
+        binding.rlheadquates.setOnClickListener(this);
+
+        setmydaypalndata();
+        getLocaldata();
+
 
 
         return view;
@@ -138,6 +143,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
 
                 } else {
+                    mTowncode="";mTownname="";mHQcode = "";mHQname = "";
+                    chk_cluster="";
                     binding.rlcluster.setVisibility(View.GONE);
                     binding.rlheadquates.setVisibility(View.GONE);
 
@@ -283,7 +290,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 HomeDashBoard.drawerLayout.closeDrawer(GravityCompat.END);
 
-
                 if (listSelectedclust.size() > 0) {
                     String selectedUsers = "", selctectedId = "";
                     strClustName = "";
@@ -298,7 +304,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
 
                     }
-
                     mTowncode=strClustID;
                     mTownname=strClustName;
 
@@ -328,9 +333,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtheadquaters.setText(SelectedHeadQuates.getString("name"));
                     mHQcode = SelectedHeadQuates.getString("id");
                     mHQname = SelectedHeadQuates.getString("name");
-
-                    getdata(SelectedHeadQuates.getString("id"));
-
+                        getdata(SelectedHeadQuates.getString("id"));
 
 
                 } catch (JSONException e) {
@@ -513,6 +516,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                if (!loginResponse.getDesig().equalsIgnoreCase("MR"))
                                 SharedPref.saveHq(getContext(),mHQname,mHQcode);
                                 syncmydayplan();
+                            }else {
+                                Toast.makeText(getActivity(), json.getString("Msg"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
 
@@ -679,10 +684,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mHQname = jsonObject.getString("HQNm");
                     mremarks = jsonObject.getString("Rem");
                     chk_cluster= jsonObject.getString("Pl");
-                    binding.txtWorktype.setText(mWTname);
-                    binding.txtCluster.setText(mTownname);
-                    binding.txtheadquaters.setText(mHQname);
-                    binding.txtdayremark.setText(mremarks);
+
+                    if(!mFwFlg.equalsIgnoreCase("F")){
+                        binding.rlheadquates.setVisibility(View.GONE);
+                        binding.rlcluster.setVisibility(View.GONE);
+                        binding.txtWorktype.setText(mWTname);
+                        binding.txtCluster.setText("");
+
+                        binding.txtheadquaters.setText("");
+                        binding.txtdayremark.setText(mremarks);
+
+                    }else {
+
+                        if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
+                            binding.rlheadquates.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.rlheadquates.setVisibility(View.GONE);
+                        }
+
+                        binding.rlcluster.setVisibility(View.VISIBLE);
+
+
+                        binding.txtWorktype.setText(mWTname);
+                        binding.txtCluster.setText(mTownname);
+                        binding.txtheadquaters.setText(mHQname);
+                        binding.txtdayremark.setText(mremarks);
+
+                    }
+
+
 
                     String dateOnlyString = sdf.format(date1);
                     String selecteddate=TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_27,dateOnlyString);
