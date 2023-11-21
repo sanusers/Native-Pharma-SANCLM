@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.presentation.adapter.PresentationAdapter;
 import saneforce.sanclm.activity.presentation.createPresentation.CreatePresentationActivity;
+import saneforce.sanclm.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.sanclm.activity.presentation.preview.PresentationPreviewActivity;
 import saneforce.sanclm.databinding.ActivityPresentationBinding;
 
 
@@ -27,9 +29,20 @@ public class PresentationActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        binding.backArrow.setOnClickListener(view -> startActivity(new Intent(PresentationActivity.this, HomeDashBoard.class)));
+        binding.backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startActivity(new Intent(PresentationActivity.this, HomeDashBoard.class));
+            }
+        });
 
-        binding.tvCreatePresentation.setOnClickListener(view -> startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class)));
+        binding.createPresentationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class));
+            }
+        });
+
 
         presentationStoredModels.add(new PresentationStoredModel("Presentation_1", "12 Asserts"));
         presentationStoredModels.add(new PresentationStoredModel("Presentation_2", "9 Asserts"));
@@ -38,8 +51,8 @@ public class PresentationActivity extends AppCompatActivity {
         presentationStoredModels.add(new PresentationStoredModel("Presentation_5", "3 Asserts"));
 
         presentationAdapter = new PresentationAdapter(this, presentationStoredModels);
-        binding.rvPresentationList.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
-        binding.rvPresentationList.setAdapter(presentationAdapter);
+        binding.presentationRecView.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
+        binding.presentationRecView.setAdapter(presentationAdapter);
 
     }
 

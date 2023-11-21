@@ -1,7 +1,9 @@
 package saneforce.sanclm.activity.presentation.createPresentation.selectedSlide;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
@@ -19,12 +21,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.presentation.SupportClass;
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.ImageSelectionInterface;
 
@@ -35,15 +44,11 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
     ImageSelectionInterface imageSelectionInterface;
     ItemDragListener itemDragListener;
 
-    public SelectedSlidesAdapter () {
-    }
-
     public SelectedSlidesAdapter (Context context, ArrayList<BrandModelClass.Product> arrayList, ImageSelectionInterface imageSelectionInterface, ItemDragListener itemDragListener) {
         this.context = context;
         this.arrayList = arrayList;
         this.imageSelectionInterface = imageSelectionInterface;
         this.itemDragListener = itemDragListener;
-//        Log.e("test","arrayList size : " + arrayList.size());
     }
 
 
@@ -54,6 +59,7 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
         BrandModelClass.Product product = arrayList.get(holder.getAbsoluteAdapterPosition());
@@ -62,6 +68,8 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
         holder.brandName.setText(product.getBrandName());
         holder.fileName.setText(product.getFileName());
         getFromFilePath(product.getFileName(),holder);
+
+        arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(holder.getAbsoluteAdapterPosition() + 1);
 
         holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +89,14 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
             }
         });
 
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick (View view) {
+//                Log.e("test","arrayList : " + new Gson().toJson(arrayList));
+//            }
+//        });
+
+
     }
 
     @Override
@@ -91,8 +107,8 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView brandName,fileName;
-        ImageView slideImage,dragIcon;
-        LinearLayout deleteIcon;
+        ImageView slideImage;
+        LinearLayout deleteIcon,dragIcon;
         View rowView;
 
         public MyViewHolder (@NonNull View itemView) {
@@ -111,69 +127,41 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
     public void getFromFilePath(String fileName, MyViewHolder holder){
         File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
         if (file.exists()){
-            String fileFormat = getFileExtension(fileName);
-//            Log.e("test","file format is :" + fileFormat);
+            String fileFormat = SupportClass.getFileExtension(fileName);
             Bitmap bitmap = null;
             switch (fileFormat){
                 case "jpg" :
                 case "png" :
                 case "jpeg" :
                 case "mp4" :{
-//                    bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                     Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(holder.slideImage);
                     return;
                 }
                 case "pdf" :{
-                    bitmap = pdfToBitmap(file.getAbsoluteFile());
+                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
                     Glide.with(context).asBitmap().load(bitmap).into(holder.slideImage);
                     return;
                 }
                 case "zip" :{
-//                    unpackZip(file.getAbsolutePath());
-                    break;
+                    bitmap = SupportClass.getFileFromZip(file.getAbsolutePath());
+                    if (bitmap != null)
+                        Glide.with(context).asBitmap().load(bitmap).into(holder.slideImage);
+                    return;
                 }
                 case "gif" :{
                     Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.slideImage);
                     return;
                 }
-
             }
-
         }
     }
 
-    public static String getFileExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-    }
-
-    private Bitmap pdfToBitmap(File pdfFile) {
-        Bitmap bitmap = null;
-        try {
-            PdfRenderer renderer = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                renderer = new PdfRenderer(ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY));
-                final int pageCount = renderer.getPageCount();
-                if(pageCount > 0){
-                    PdfRenderer.Page page = renderer.openPage(0);
-                    int width = (int) (page.getWidth());
-                    int height = (int) (page.getHeight());
-                    bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-                    page.close();
-                    renderer.close();
-                }
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return bitmap;
-    }
 
     @Override
     public void onRowMoved(int fromPosition, int toPosition) {
-        Log.e("test","size in onItemMove : " + arrayList.size() + " source Pos : " + fromPosition + " target Pos : " + toPosition);
+//        Log.e("test",arrayList.get(fromPosition).getBrandName() + "-" + fromPosition + "  " + arrayList.get(toPosition).getBrandName() + "-" + toPosition);
+        arrayList.get(fromPosition).setDraggedPosition(toPosition);
+        arrayList.get(toPosition).setDraggedPosition(fromPosition);
 
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
@@ -185,18 +173,17 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
             }
         }
         notifyItemMoved(fromPosition, toPosition);
+
     }
 
     @Override
     public void onRowSelected(MyViewHolder myViewHolder) {
-        myViewHolder.rowView.setBackgroundColor(Color.GRAY);
-
+        myViewHolder.rowView.setBackgroundColor(context.getResources().getColor(R.color.green_2));
     }
 
     @Override
     public void onRowClear(MyViewHolder myViewHolder) {
         myViewHolder.rowView.setBackgroundColor(Color.WHITE);
-
     }
 
 

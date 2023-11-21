@@ -6,6 +6,10 @@ public class Constants {
     public static final String APP_VERSION = "V2.0.8";
     public static final String APP_MODE = "Android-Edet";
 
+    //Intent Key
+    public static final String NAVIGATE_FROM = "NavigateFrom";
+
+
     //----------------------------------------------------
     //Master sync table key names
     public static final String DOCTOR = "Doctor_";

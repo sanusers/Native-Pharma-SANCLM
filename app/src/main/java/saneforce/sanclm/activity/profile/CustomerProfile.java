@@ -67,10 +67,10 @@ public class CustomerProfile extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                     if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
-                        if (progressDialog == null) {
+                        try {
                             progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                        } else {
-                            progressDialog.show();
+                        } catch (Exception e) {
+
                         }
                         PreCallAnalysisFragment.CallPreCallAPI();
                     }

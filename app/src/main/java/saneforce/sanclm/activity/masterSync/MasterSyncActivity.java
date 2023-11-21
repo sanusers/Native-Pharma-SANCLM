@@ -116,7 +116,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
-            navigateFrom = getIntent().getExtras().getString("Origin");
+            navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
 
         //Initializing all the data array

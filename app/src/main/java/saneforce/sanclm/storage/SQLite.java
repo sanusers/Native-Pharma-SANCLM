@@ -58,6 +58,11 @@ public class SQLite extends SQLiteOpenHelper {
     private static final String LINECHAR_AMSLNO = "LINECHAR_AMSLNO";
     private static final String LINECHAR_FM_INDICATOR = "LINECHAR_FM_INDICATOR";
 
+    //Presentation Table
+    public static final String PRESENTATION_TABLE = "presentation_table";
+    public static final String PRESENTATION_NAME = "presentation_name";
+    public static final String PRESENTATION_DATA = "presentation_data";
+
     public SQLite(@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);
     }
@@ -70,6 +75,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
                 LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
                 LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + PRESENTATION_TABLE + "(" + PRESENTATION_NAME + " TEXT PRIMARY KEY, " + PRESENTATION_DATA + " TEXT)");
 
     }
 
@@ -79,6 +85,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + TOUR_PLAN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + LINE_CHAT_DATA_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + PRESENTATION_TABLE);
 
         onCreate(db);
     }
@@ -89,6 +96,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE);
         db.execSQL("DELETE FROM " + TOUR_PLAN_TABLE);
         db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
+        db.execSQL("DELETE FROM " + PRESENTATION_TABLE);
 
         db.close();
     }
@@ -190,42 +198,7 @@ public class SQLite extends SQLiteOpenHelper {
         return data;
     }
 
-//    public void saveDrMaster(String hqCode,String drList){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(HQ_CODE, hqCode);
-//        contentValues.put(DOCTOR_DATA,drList);
-//
-//        String[] args = new String[]{hqCode};
-//        int updated = db.update(DOCTOR_MASTER_TABLE, contentValues, HQ_CODE + "=?", args);
-//        if (updated <= 0){
-//            db.insert(DOCTOR_MASTER_TABLE,null,contentValues);
-//        }
-//        db.close();
-//    }
-
-//    public JSONArray getDrMaster(String hqCode){
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + DOCTOR_MASTER_TABLE + "WHERE " + HQ_CODE + "=" + "'" + hqCode + "';", null);
-//        String data = "";
-//        if (cursor.moveToNext()){
-//            data = cursor.getString(1);
-//        }
-//
-//        JSONArray jsonArray = new JSONArray();
-//        try {
-//            if (!data.equals("")){
-//                jsonArray = new JSONArray(data.toString());
-//            }
-//        }catch (Exception exception){
-//            exception.printStackTrace();
-//        }
-//        cursor.close();
-//        return jsonArray;
-//    }
-
     //----------------------------Tour Plan----------------------
-
     public void saveTPData(String month,String data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -260,7 +233,27 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
 
+    //--------------Presentation Table-------------------
 
+    public void savePresentation(String name, String data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PRESENTATION_NAME,name);
+        contentValues.put(PRESENTATION_DATA,data);
+
+        db.insert(PRESENTATION_TABLE,null,contentValues);
+        db.close();
+    }
+
+    public String getPresentationData(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor =  db.rawQuery("select * from " + PRESENTATION_TABLE ,null);
+        String data = "";
+        if (cursor.moveToNext()){
+            data = cursor.getString(1);
+        }
+        return data;
+    }
 
     // insertdata Linechart
     public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode,

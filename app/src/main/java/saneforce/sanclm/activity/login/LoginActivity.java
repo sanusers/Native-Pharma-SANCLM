@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.io.File;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.AsyncInterface;
 import saneforce.sanclm.activity.setting.SettingsActivity;
@@ -49,6 +50,8 @@ public class LoginActivity extends AppCompatActivity {
     PackageInfo packageInfo;
     String fcmToken = "";
     SQLite sqLite;
+    String navigateFrom = "";
+    String userId = "";
     LoginViewModel loginViewModel = new LoginViewModel();
     private int passwordNotVisible = 1;
 
@@ -59,16 +62,13 @@ public class LoginActivity extends AppCompatActivity {
         UtilityClass.setLanguage(LoginActivity.this);
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        Log.e("test","onCreate");
 
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
-        String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
-        String[] splitLogoUrl = logoUrl.split("/");
-        getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+        uiInitialisation();
 
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<String>() {
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick (View view) {
                 UtilityClass.hideKeyboard(LoginActivity.this);
-                String userId = binding.userId.getText().toString().trim().replaceAll("\\s","");
+                userId = binding.userId.getText().toString().trim().replaceAll("\\s","");
                 String password = binding.password.getText().toString().trim().replaceAll("\\s","");
 
                 if (userId.isEmpty()){
@@ -130,6 +130,26 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
             }
         });
+
+    }
+
+    public void uiInitialisation(){
+
+        String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
+        String[] splitLogoUrl = logoUrl.split("/");
+        getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
+        }
+
+        if (navigateFrom.equalsIgnoreCase("Setting")){
+            binding.userId.setEnabled(true);
+        }else{
+            binding.userId.setText(SharedPref.getLoginId(LoginActivity.this));
+            binding.userId.setEnabled(false);
+        }
 
     }
 
@@ -190,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("AppDeviceRegId", fcmToken);
             jsonObject.put("location", "0.0 : 0.0");
 
-            Log.e("test","master obj : " + jsonObject);
+            Log.e("test","login master obj : " + jsonObject);
             loginViewModel.loginProcess(getApplicationContext(),baseUrl+replacedUrl,jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonObject>() {
                 @Override
                 public void onChanged (JsonObject jsonObject) {
@@ -220,12 +240,13 @@ public class LoginActivity extends AppCompatActivity {
         try {
             sqLite.saveLoginData(jsonObject.toString());
             openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
+            SharedPref.saveLoginId(LoginActivity.this,userId);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
 
             Intent intent = new Intent(LoginActivity.this, MasterSyncActivity.class);
-            intent.putExtra("Origin", "Login");
+            intent.putExtra(Constants.NAVIGATE_FROM, "Login");
             startActivity(intent);
         }catch (Exception exception){
             exception.printStackTrace();

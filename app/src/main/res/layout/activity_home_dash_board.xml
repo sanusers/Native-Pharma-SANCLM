@@ -140,7 +140,9 @@
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="center"
                         android:padding="@dimen/_5sdp"
-                        android:text="Select Date"
+                        android:text=""
+                        android:hint="Select Date"
+                        android:textColorHint="@color/text_dark"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
                         android:textStyle="bold" />

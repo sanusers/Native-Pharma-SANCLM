@@ -71,12 +71,13 @@ public class BrandModelClass {
         this.productArrayList = productArrayList;
     }
 
-    public static class Product{
+    public static class Product implements Comparable<Product>{
         String brandCode = "";
         String brandName = "";
         String slideId = "";
         String fileName = "";
         boolean imageSelected = false;
+        int draggedPosition = -1;
 
         public Product () {
         }
@@ -127,6 +128,19 @@ public class BrandModelClass {
 
         public void setImageSelected (boolean imageSelected) {
             this.imageSelected = imageSelected;
+        }
+
+        public int getDraggedPosition () {
+            return draggedPosition;
+        }
+
+        public void setDraggedPosition (int draggedPosition) {
+            this.draggedPosition = draggedPosition;
+        }
+
+        @Override
+        public int compareTo (Product product) {
+            return Integer.compare(this.draggedPosition,product.getDraggedPosition());
         }
     }
 }

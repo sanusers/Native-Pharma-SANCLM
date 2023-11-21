@@ -146,6 +146,7 @@
                         android:layout_height="0dp" />
                     
                     <Button
+                        android:id="@+id/playBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Play"
@@ -160,6 +161,7 @@
                         android:layout_gravity="bottom"
                         android:layout_margin="@dimen/_3sdp"
                         android:padding="@dimen/_5sdp"
+                        android:background="@drawable/tp_btn_select_state"
                         tools:ignore="SpUsage"/>
 
                 </LinearLayout>
@@ -223,6 +225,7 @@
                 android:background="@drawable/clear_btn_stroke">
 
                 <TextView
+                    android:id="@+id/clear"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Clear"
@@ -244,6 +247,7 @@
                 android:layout_gravity="center">
 
                 <TextView
+                    android:id="@+id/save"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Save"

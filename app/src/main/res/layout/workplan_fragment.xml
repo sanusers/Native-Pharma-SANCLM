@@ -126,25 +126,42 @@
             </RelativeLayout>
 
 
-            <EditText
-                android:id="@+id/txtdayremark"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
-                android:layout_margin="@dimen/_2sdp"
-                android:background="@drawable/backround_text"
-                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
-                android:fontFamily="@font/satoshi_medium"
-                android:gravity="top|left"
-                android:hint="Enter Remark"
-                android:inputType="text"
-                android:lines="8"
-                android:maxLines="10"
-                android:minLines="6"
-                android:padding="@dimen/_4sdp"
-                android:scrollbars="vertical"
-                android:textSize="@dimen/_7sdp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <EditText
+                    android:id="@+id/txtdayremark"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:background="@drawable/backround_text"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.- "
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="top|left"
+                    android:hint="Enter Remark"
+                    android:inputType="text"
+                    android:lines="8"
+                    android:maxLines="10"
+                    android:minLines="6"
+                    android:padding="@dimen/_4sdp"
+                    android:scrollbars="vertical"
+                    android:textSize="@dimen/_7sdp" />
 
 
+                <ProgressBar
+
+                    android:id="@+id/progress_sumit"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:background="#26282A3C"
+                    android:backgroundTint="#26282A3C"
+                    android:visibility="gone" />
+            </RelativeLayout>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnsumit"
                 android:layout_width="match_parent"

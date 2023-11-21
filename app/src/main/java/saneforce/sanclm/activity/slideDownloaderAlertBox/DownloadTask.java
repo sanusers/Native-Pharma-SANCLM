@@ -10,11 +10,16 @@ import android.util.Log;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 
@@ -112,7 +117,12 @@ public class DownloadTask {
                     downloadedSize += len1;
                     publishProgress((int) (downloadedSize * 100 / totalSize));
                 }
+                if(downloadFileName.contains("zip")){
 
+                    String filePath = outputFile.getAbsolutePath();
+                    File unzipDir = new File(activity.getExternalFilesDir(null), "/Slides/");
+                    unzip(filePath, unzipDir);
+                }
                 fos.close();
                 is.close();
 
@@ -180,10 +190,41 @@ public class DownloadTask {
                         }
                     }
                 }
-
             }
+        }
 
 
+    }
+
+    public static void unzip (String filepath, File targetDirectory) throws IOException {
+
+        File zipFile = new File(filepath);
+        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
+        try {
+
+            ZipEntry ze;
+            int count;
+            byte [] buffer = new byte [8192];
+            while ( (ze = zis.getNextEntry ()) != null) {
+
+                String name = ze.getName ();
+                File file = new File (targetDirectory, name);
+
+                if (ze.isDirectory ()) {
+                    file.mkdirs ();
+                } else {
+                    FileOutputStream fout = new FileOutputStream (file);
+                    try {
+                        while ( (count = zis.read (buffer)) != -1) {
+                            fout.write (buffer, 0, count);
+                        }
+                    } finally {
+                        fout.close ();
+                    }
+                }
+            }
+        } finally {
+            zis.close ();
         }
     }
 }

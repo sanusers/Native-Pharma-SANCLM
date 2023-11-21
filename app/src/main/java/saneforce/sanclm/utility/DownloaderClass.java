@@ -34,8 +34,8 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
             URLConnection conn = url.openConnection();
             bitmap = BitmapFactory.decodeStream(conn.getInputStream());
         } catch (Exception ex) {
-            asyncInterface.taskCompleted(false);
             ex.printStackTrace();
+            asyncInterface.taskCompleted(false);
         }
         return null;
     }
@@ -47,6 +47,8 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
             if (status != null && status.equalsIgnoreCase("success")){
                 asyncInterface.taskCompleted(true);
                 Log.e("test","logo image downloaded");
+            }else{
+                asyncInterface.taskCompleted(false);
             }
         }
     }

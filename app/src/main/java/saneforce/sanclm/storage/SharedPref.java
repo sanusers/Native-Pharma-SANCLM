@@ -24,6 +24,7 @@ public class SharedPref {
 
 
     //Login
+    public static final String LOGIN_USER_ID = "login_userId";
     public static final String LOGIN_STATE = "login_state";
     public static final String DEVICE_ID = "device_id";
     public static final String FCM_TOKEN = "fcm_token";
@@ -134,6 +135,16 @@ public class SharedPref {
 
     public static boolean getSettingState(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETTING_STATE, false);
+    }
+
+    public static void saveLoginId(Context context, String id) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGIN_USER_ID, id).apply();
+    }
+
+    public static String getLoginId(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_USER_ID, "");
     }
 
     public static void saveLoginState(Context context, boolean state) {

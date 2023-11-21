@@ -9,7 +9,6 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,7 +19,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -49,7 +49,9 @@
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".activity.presentation.playPreview.PlaySlidePreviewActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.presentation.preview.PresentationPreviewActivity"
             android:exported="false" />
@@ -96,7 +98,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.masterSync.MasterSyncActivity"
             android:exported="false"
@@ -105,7 +106,7 @@
             android:name=".activity.login.LoginActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.setting.SettingsActivity"
             android:exported="false"
@@ -149,13 +150,11 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.leave.Leave_Application"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
-
         <activity
             android:name=".activity.approvals.ApprovalsActivity"
             android:exported="false"
@@ -181,7 +180,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
@@ -196,18 +194,17 @@
         </service>
 
         <activity
-            android:name="saneforce.sanclm.activity.myresource.MyResource_mapview"
+            android:name=".activity.myresource.MyResource_mapview"
             android:exported="false"
             android:screenOrientation="landscape" />
-
         <activity
-            android:name="saneforce.sanclm.activity.changepassword.Change_passwordActivity"
+            android:name=".activity.changepassword.Change_passwordActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
-
-        <activity android:name="saneforce.sanclm.activity.forms.weekoff.weekoff_viewscreen"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.forms.weekoff.weekoff_viewscreen"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -223,6 +220,5 @@
                 android:resource="@xml/filepaths" />
         </provider>
     </application>
-
 
 </manifest>

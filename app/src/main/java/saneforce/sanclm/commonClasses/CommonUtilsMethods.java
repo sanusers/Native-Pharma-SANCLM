@@ -192,11 +192,11 @@ public class CommonUtilsMethods {
 
     public static ProgressDialog createProgressDialog(Context context) {
         ProgressDialog dialog = new ProgressDialog(context);
-      /*  try {
+        try {
             dialog.show();
         } catch (WindowManager.BadTokenException e) {
 
-        }*/
+        }
 
         dialog.setCancelable(false);
         dialog.setIndeterminate(false);

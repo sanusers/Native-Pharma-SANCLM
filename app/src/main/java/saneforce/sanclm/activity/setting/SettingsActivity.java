@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Patterns;
@@ -34,6 +35,7 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -134,7 +136,6 @@ public class SettingsActivity extends AppCompatActivity {
                 } else{
 
                       SharedPref.Loginsite(getApplicationContext(),url);
-
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())){
                         if (checkURL(url)){
                             configuration("https://" + url + "/apps/");
@@ -278,13 +279,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void taskCompleted (boolean status) {
                 downloaderClass.cancel(true);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run () {
-                        Toast.makeText(getApplicationContext(), "Configured Successfully", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+                navigate();
             }
         };
 
@@ -293,11 +288,21 @@ public class SettingsActivity extends AppCompatActivity {
             downloaderClass = (DownloaderClass) new DownloaderClass(url, fileDirectory, imageName, asyncInterface).execute();
         }else{
             Log.e("test","image exists");
-            Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+            navigate();
         }
 
+    }
 
+    public void navigate(){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+        intent.putExtra(Constants.NAVIGATE_FROM, "Setting");
+        startActivity(intent);
+        finish();
     }
 
 
