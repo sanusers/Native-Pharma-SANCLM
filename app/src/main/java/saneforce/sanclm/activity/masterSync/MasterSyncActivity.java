@@ -1194,7 +1194,6 @@ public class MasterSyncActivity extends AppCompatActivity {
            a.printStackTrace();
        }
        saveData_sharedPreferences_Sync_list();
-      Slide_list.add(new SlideModelClass("CC_VA_2021_.jpg",false,"0","0"));
     return Slide_list;
 
    }
