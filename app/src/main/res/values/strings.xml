@@ -158,6 +158,7 @@
     <string name="toast_enter_reason_for_reject">Enter reason for Reject</string>
 
     <string name="app_version" translatable="false">1.0.0</string>
+    <string name="apply">Apply</string>
 
 
 </resources>

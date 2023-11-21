@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -50,9 +49,6 @@ public class CustomerProfile extends AppCompatActivity {
         img_back = findViewById(R.id.iv_back);
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(this);
-        // commonUtilsMethods.FullScreencall();
-        // progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-        //  progressDialog.dismiss();
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
         viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
@@ -67,15 +63,11 @@ public class CustomerProfile extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                     if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
-                        try {
-                            progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                        } catch (Exception e) {
-
-                        }
+                        progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
                         PreCallAnalysisFragment.CallPreCallAPI();
                     }
                 } else {
-                    Toast.makeText(CustomerProfile.this, "No internet connectivity", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CustomerProfile.this, "No Internet Connectivity", Toast.LENGTH_SHORT).show();
                 }
             }
 
