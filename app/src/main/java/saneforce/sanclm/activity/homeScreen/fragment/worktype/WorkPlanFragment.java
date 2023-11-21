@@ -43,6 +43,7 @@ import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncItemModel;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
@@ -99,14 +100,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             binding.rlheadquates.setVisibility(View.GONE);
         }
-        setmydaypalndata();
-        getLocaldata();
+
+
 
         binding.btnsumit.setOnClickListener(this);
         binding.rlworktype.setOnClickListener(this);
         binding.rlcluster.setOnClickListener(this);
         binding.rlheadquates.setOnClickListener(this);
 
+        setmydaypalndata();
+        getLocaldata();
 
 
 
@@ -140,6 +143,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
 
                 } else {
+                    mTowncode="";mTownname="";mHQcode = "";mHQname = "";
+                    chk_cluster="";
                     binding.rlcluster.setVisibility(View.GONE);
                     binding.rlheadquates.setVisibility(View.GONE);
 
@@ -297,11 +302,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             strClustName = selectedUsers;
                             binding.txtCluster.setText(strClustName);
                         }
-                    }
 
+                    }
                     mTowncode=strClustID;
                     mTownname=strClustName;
+
                 }
+
+
             }
         });
     }
@@ -320,17 +328,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SelectedHeadQuates = HQ_ListAdapter.getlisted().get(position);
                 HomeDashBoard.drawerLayout.closeDrawer(GravityCompat.END);
-
                 try {
                     binding.txtCluster.setText("");
                     binding.txtheadquaters.setText(SelectedHeadQuates.getString("name"));
                     mHQcode = SelectedHeadQuates.getString("id");
                     mHQname = SelectedHeadQuates.getString("name");
-                    if(UtilityClass.isNetworkAvailable(getContext())){
                         getdata(SelectedHeadQuates.getString("id"));
-                    }else{
-                        Toast.makeText(getActivity(), "No internet connectivity", Toast.LENGTH_SHORT).show();
-                    }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -509,10 +513,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             JSONObject json = new JSONObject(response.body().toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
                                 Toast.makeText(getActivity(), json.getString("Msg"), Toast.LENGTH_SHORT).show();
-                                if (!loginResponse.getDesig().equalsIgnoreCase("MR"))
-                                    SharedPref.saveHq(getContext(),mHQname,mHQcode);
+                               if (!loginResponse.getDesig().equalsIgnoreCase("MR"))
+                                SharedPref.saveHq(getContext(),mHQname,mHQcode);
                                 syncmydayplan();
-                            }else{
+                            }else {
                                 Toast.makeText(getActivity(), json.getString("Msg"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
@@ -556,8 +560,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     public void syncmaster(String masterFor, String remoteTableName, String LocalTableKeyName, String hdcode) {
-
-        try {
+        if (UtilityClass.isNetworkAvailable(getActivity())) {
+            try {
                 String baseUrl = SharedPref.getBaseWebUrl(getActivity());
                 String pathUrl = SharedPref.getPhpPathUrl(getActivity());
                 String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
@@ -626,9 +630,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     });
                 }
             } catch (Exception e) {
-            e.printStackTrace();
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getActivity(), "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
-
     }
 
 
@@ -658,16 +664,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             if(workTypeArray.length()>0){
 
-                JSONObject jsonObject = workTypeArray.getJSONObject(0);
+                    JSONObject jsonObject = workTypeArray.getJSONObject(0);
 
-                String TPDt = jsonObject.getString("TPDt");
-                JSONObject jsonObject1 = new JSONObject(TPDt);
-                String daypaln_Date = jsonObject1.getString("date");
-                String currnetdate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_15);
+                     String TPDt = jsonObject.getString("TPDt");
+                     JSONObject jsonObject1 = new JSONObject(TPDt);
+                      String daypaln_Date = jsonObject1.getString("date");
+                      String currnetdate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_15);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                Date date1 = sdf.parse(daypaln_Date);
-                Date date2 = sdf.parse(currnetdate);
+                      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                       Date date1 = sdf.parse(daypaln_Date);
+                       Date date2 = sdf.parse(currnetdate);
                 if (date1.equals(date2)) {
                     mTowncode = jsonObject.getString("Pl");
                     mTownname = jsonObject.getString("PlNm");
@@ -678,26 +684,35 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mHQname = jsonObject.getString("HQNm");
                     mremarks = jsonObject.getString("Rem");
                     chk_cluster= jsonObject.getString("Pl");
+
                     if(!mFwFlg.equalsIgnoreCase("F")){
                         binding.rlheadquates.setVisibility(View.GONE);
                         binding.rlcluster.setVisibility(View.GONE);
                         binding.txtWorktype.setText(mWTname);
                         binding.txtCluster.setText("");
+
                         binding.txtheadquaters.setText("");
                         binding.txtdayremark.setText(mremarks);
+
                     }else {
+
                         if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
                             binding.rlheadquates.setVisibility(View.VISIBLE);
                         } else {
                             binding.rlheadquates.setVisibility(View.GONE);
                         }
+
                         binding.rlcluster.setVisibility(View.VISIBLE);
+
+
                         binding.txtWorktype.setText(mWTname);
                         binding.txtCluster.setText(mTownname);
                         binding.txtheadquaters.setText(mHQname);
                         binding.txtdayremark.setText(mremarks);
 
                     }
+
+
 
                     String dateOnlyString = sdf.format(date1);
                     String selecteddate=TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_27,dateOnlyString);
@@ -793,5 +808,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }catch (JSONException a){
             a.printStackTrace();
         }
+        }
     }
-}
+

@@ -1,8 +1,8 @@
 package saneforce.sanclm.activity.masterSync;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,14 +23,17 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.time.Year;
 import java.util.ArrayList;
 
@@ -39,6 +42,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideModelClass;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
@@ -103,6 +108,9 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
 
+    public static   ArrayList<SlideModelClass> Slide_list=new ArrayList<>();
+    public static    ArrayList<String> slideId =new  ArrayList<>();
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -113,7 +121,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
-
+        sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
@@ -1009,11 +1017,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
                                                     sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
                                                 }
-
                                             }else if(masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")){
                                                 if(mgrInitialSync)
                                                     setHq(jsonArray);
-
                                             }else if(masterSyncItemModels.get(position).getName().equalsIgnoreCase(Constants.SETUP)){
                                                 if (jsonArray.length() > 0){
                                                     JSONObject jsonSetup = jsonArray.getJSONObject(0);
@@ -1022,12 +1028,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     if (jsonSetup.has("GeoTagApprovalNeed"))
                                                         SharedPref.setGeotagApprovalNeed(getApplicationContext(), jsonSetup.getString("GeoTagApprovalNeed"));
                                                 }
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
+                                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "0",slideListPrepared("1"));
                                             }
-                                        }
-
-                                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
-//                                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                            saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
                                         }
 
                                     } else {
@@ -1043,6 +1046,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),1);
                             }
 
+                            // when all the master synced and intent from Login Activity
+                            if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
+                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1",slideListPrepared("0"));
+                            }
+
                             masterSyncAdapter.notifyDataSetChanged();
                              Log.e("test","success count : " + apiSuccessCount);
                         }
@@ -1051,15 +1059,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                         public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test","failed : " + t);
                             ++apiSuccessCount;
-                              Log.e("test","success count at error : " + apiSuccessCount);
+                            Log.e("test","success count at error : " + apiSuccessCount);
                             sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),  1);
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             masterSyncAdapter.notifyDataSetChanged();
                             if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
-//                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
-
+                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1",slideListPrepared("0"));
                             }
                         }
                     });
@@ -1087,4 +1093,49 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         }
     }
+
+   ArrayList<SlideModelClass> slideListPrepared(String nfolg){
+
+        retrieveLists();
+        if(nfolg.equalsIgnoreCase("0")){
+            Slide_list.clear();
+            slideId.clear();
+        }
+        SQLite sqLite =new SQLite(MasterSyncActivity.this);
+       JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+       try {
+           if (slidedata.length() > 0) {
+               for (int i = 0; i < slidedata.length(); i++) {
+                   JSONObject jsonObject = slidedata.getJSONObject(i);
+                   String FilePath = jsonObject.optString("FilePath");
+                   String id = jsonObject.optString("SlideId");
+                   if(!slideId.contains(id)){
+                       slideId.add(id);
+                       Slide_list.add(new SlideModelClass(FilePath,false,"0","0"));
+                   }
+               }
+           }
+       } catch (Exception a) {
+           a.printStackTrace();
+       }
+       SharedPreferences.Editor editor = sharedpreferences.edit();
+       editor.putString("SLIDEID", new Gson().toJson(slideId));
+       editor.apply();
+    return Slide_list;
+
+   }
+
+    private void retrieveLists() {
+
+        String slideID = sharedpreferences.getString("SLIDEID", "[]");
+        String slideLIST = sharedpreferences.getString("SLIDELIST", "[]");
+        String conut = sharedpreferences.getString("SLIDEDONWLOADCOUNT", "0");
+        Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+        Type listType1 = new TypeToken<ArrayList<SlideModelClass>>() {}.getType();
+        slideId = new Gson().fromJson(slideID, listType);
+        Slide_list= new Gson().fromJson(slideLIST, listType1);
+        SlideDownloaderAlertBox.downloading_count=Integer.valueOf(conut);
+
+    }
+
 }
