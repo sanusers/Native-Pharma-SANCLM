@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/_2sdp"
+    android:background="@drawable/selector_box">
+
+    <ImageView
+        android:id="@+id/img_cust"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
+        android:layout_margin="@dimen/_4sdp"
+        android:src="@drawable/map_dr_img"
+        app:layout_constraintBottom_toTopOf="@id/view_dummy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_name"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:padding="@dimen/_3sdp"
+        android:text="Name"
+        android:textColor="@color/pink"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/img_cust"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img_cust"
+        app:layout_constraintTop_toTopOf="@id/img_cust" />
+
+    <View
+        android:id="@+id/view_dummy"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/background"
+        app:layout_constraintBottom_toTopOf="@id/constraint_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_cust"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_1sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/constraint_btns"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_dummy">
+
+        <TextView
+            android:id="@+id/tag_hq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/hq"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_hq"
+            app:layout_constraintEnd_toStartOf="@id/tag_cluster_geo"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_hq"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="Guna Sekar"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tag_hq"
+            app:layout_constraintStart_toStartOf="@id/tag_hq"
+            app:layout_constraintTop_toBottomOf="@id/tag_hq"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+        <TextView
+            android:id="@+id/tag_cluster_geo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/cluster"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_cluster_geo"
+            app:layout_constraintEnd_toStartOf="@id/ll_tag_address"
+            app:layout_constraintStart_toEndOf="@id/tag_hq"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_cluster_geo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/cluster"
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tag_cluster_geo"
+            app:layout_constraintStart_toStartOf="@id/tag_cluster_geo"
+            app:layout_constraintTop_toBottomOf="@id/tag_cluster_geo" />
+
+        <LinearLayout
+            android:id="@+id/ll_tag_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            app:layout_constraintBottom_toTopOf="@id/tv_address_geo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tag_cluster_geo"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tag_address_geo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/satoshi_medium"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/address"
+                android:textColor="@color/light_grey_2"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tag_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/marker_geo_approval"
+                android:drawablePadding="@dimen/_3sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="start|center"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/view"
+                android:textColor="@color/light_grey_2"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+        <!--   <TextView
+               android:id="@+id/tag_address_geo"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:fontFamily="@font/satoshi_medium"
+               android:paddingVertical="@dimen/_2sdp"
+               android:text="@string/address"
+               android:textColor="@color/light_grey_2"
+               android:textSize="14sp"
+               app:layout_constraintBottom_toTopOf="@id/tv_address_geo"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toEndOf="@id/tag_cluster_geo"
+               app:layout_constraintTop_toTopOf="parent" />-->
+
+        <TextView
+            android:id="@+id/tv_address_geo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="false"
+            android:text=""
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_cluster_geo"
+            app:layout_constraintEnd_toEndOf="@id/ll_tag_address"
+            app:layout_constraintStart_toStartOf="@id/ll_tag_address"
+            app:layout_constraintTop_toBottomOf="@id/ll_tag_address" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_btns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="@id/constraint_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/constraint_detail"
+        app:layout_constraintTop_toTopOf="@id/constraint_detail">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_reject"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_3sdp"
+            android:background="@drawable/bg_pink"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:text="@string/reject"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_approved"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraint_detail" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_approved"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_toEndOf="@id/btn_approved"
+            android:background="@drawable/bg_green"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/approve"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/btn_reject"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_reject"
+            app:layout_constraintTop_toTopOf="@id/btn_reject" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

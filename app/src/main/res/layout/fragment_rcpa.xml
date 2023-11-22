@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginVertical="@dimen/_4sdp"
+    android:background="@color/background">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_left_rcpa"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:background="@color/white"
+            android:paddingVertical="@dimen/_2sdp"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/constraint_right_rcpa"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <saneforce.sanclm.commonClasses.VerticalScrollview
+                android:id="@+id/scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_rcpa"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tag_chemist_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:paddingHorizontal="@dimen/_3sdp"
+                        android:paddingVertical="@dimen/_2sdp"
+                        android:text="@string/chemist_name"
+                        android:textColor="@color/bg_txt_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/tv_select_chemist"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/tv_select_chemist"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:background="@drawable/border_shape_spinner"
+                        android:drawablePadding="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="left|center"
+                        android:hint="@string/select"
+                        android:padding="@dimen/_6sdp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        app:drawableEndCompat="@drawable/spin_down_arrow"
+                        app:layout_constraintBottom_toTopOf="@id/tag_comp_brnd"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tag_chemist_name" />
+
+                    <TextView
+                        android:id="@+id/tag_comp_brnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:paddingHorizontal="@dimen/_2sdp"
+                        android:paddingVertical="@dimen/_2sdp"
+                        android:text="@string/our_prd_name"
+                        android:textColor="@color/bg_txt_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/tv_select_product"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_select_chemist" />
+
+                    <TextView
+                        android:id="@+id/tv_select_product"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:background="@drawable/border_shape_spinner"
+                        android:drawablePadding="@dimen/_4sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="start|center"
+                        android:hint="@string/select"
+                        android:padding="@dimen/_6sdp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        app:drawableEndCompat="@drawable/spin_down_arrow"
+                        app:layout_constraintBottom_toTopOf="@id/tag_qty"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tag_comp_brnd" />
+
+                    <TextView
+                        android:id="@+id/tag_qty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:paddingHorizontal="@dimen/_2sdp"
+                        android:paddingVertical="@dimen/_2sdp"
+                        android:text="@string/qty"
+                        android:textColor="@color/bg_txt_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/ed_qty"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_select_product" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/ed_qty"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:background="@drawable/bg_light_grey_border"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="center|start"
+                        android:hint="@string/enter_qty"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:padding="@dimen/_6sdp"
+                        android:textColor="@color/dark_purple"
+                        android:textColorHint="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/tag_rate"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tag_qty" />
+
+                    <TextView
+                        android:id="@+id/tag_rate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:paddingHorizontal="@dimen/_2sdp"
+                        android:paddingVertical="@dimen/_2sdp"
+                        android:text="@string/rate"
+                        android:textColor="@color/bg_txt_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/tv_rate"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ed_qty" />
+
+                    <TextView
+                        android:id="@+id/tv_rate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:background="@drawable/bg_light_grey_2"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_6sdp"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/tag_value"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tag_rate" />
+
+                    <TextView
+                        android:id="@+id/tag_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:paddingHorizontal="@dimen/_2sdp"
+                        android:paddingVertical="@dimen/_2sdp"
+                        android:text="@string/value"
+                        android:textColor="@color/bg_txt_color"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@id/tv_value"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_rate" />
+
+                    <TextView
+                        android:id="@+id/tv_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:background="@drawable/bg_light_grey_2"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_6sdp"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="14sp"
+                       app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tag_value"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/listCv_chemist"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_2sdp"
+                        app:contentPadding="@dimen/_6sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@id/tv_select_chemist"
+                        app:layout_constraintStart_toStartOf="@id/tv_select_chemist"
+                        app:layout_constraintTop_toBottomOf="@id/tv_select_chemist"
+                        app:layout_constraintVertical_bias="0.0">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/edittext_stroke"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/_5sdp">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_6sdp"
+                                    android:layout_height="@dimen/_6sdp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/search_icon_gray" />
+
+                                <EditText
+                                    android:id="@+id/searchChemist"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:layout_weight="1"
+                                    android:background="@null"
+                                    android:gravity="start|center"
+                                    android:hint="Search"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:textColor="@color/text_dark_65"
+                                    android:textColorHint="@color/text_dark_65"
+                                    android:textSize="@dimen/_6sdp"
+                                    tools:ignore="SpUsage" />
+
+                                <ImageView
+                                    android:id="@+id/searchClearIconChe"
+                                    android:layout_width="@dimen/_8sdp"
+                                    android:layout_height="@dimen/_8sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/img_close"
+                                    android:visibility="gone" />
+
+                            </LinearLayout>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/lv_chemist"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_100sdp"
+                                android:background="@color/white"
+                                android:divider="@color/light_grey"
+                                android:dividerHeight="1dp"
+                                android:visibility="visible" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/listCv_product"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/_2sdp"
+                        app:contentPadding="@dimen/_6sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@id/tv_select_product"
+                        app:layout_constraintStart_toStartOf="@id/tv_select_product"
+                        app:layout_constraintTop_toBottomOf="@id/tv_select_product"
+                        app:layout_constraintVertical_bias="0.0">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/edittext_stroke"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/_5sdp">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_6sdp"
+                                    android:layout_height="@dimen/_6sdp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/search_icon_gray" />
+
+                                <EditText
+                                    android:id="@+id/searchProduct"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:layout_weight="1"
+                                    android:background="@null"
+                                    android:gravity="start|center"
+                                    android:hint="Search"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="text"
+                                    android:singleLine="true"
+                                    android:textColor="@color/text_dark_65"
+                                    android:textColorHint="@color/text_dark_65"
+                                    android:textSize="@dimen/_6sdp"
+                                    tools:ignore="SpUsage" />
+
+                                <ImageView
+                                    android:id="@+id/searchClearIconPrd"
+                                    android:layout_width="@dimen/_8sdp"
+                                    android:layout_height="@dimen/_8sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/img_close"
+                                    android:visibility="gone" />
+
+                            </LinearLayout>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/lv_product"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_100sdp"
+                                android:background="@color/white"
+                                android:divider="@color/light_grey"
+                                android:visibility="visible" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </saneforce.sanclm.commonClasses.VerticalScrollview>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_add_rcpa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_4sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:background="@drawable/bg_purple"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:text="@string/add_rcpa"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scroll_view"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_right_rcpa"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/constraint_left_rcpa"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_rcpa_chemist_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/_2sdp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_no_rcpa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_120sdp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/img_rcpa" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="center"
+                    android:text="@string/yet_to_add_rcpa"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:visibility="gone">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tag_rcpa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_8sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:padding="@dimen/_2sdp"
+            android:text="@string/rcpa"
+            android:textColor="@color/dark_purple"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/rv_add_rcpa_call_list"
+            app:layout_constraintEnd_toStartOf="@id/btn_add_rcpa_1"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_add_rcpa_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_4sdp"
+            android:background="@drawable/bg_purple"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_12sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/add_rcpa"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/rv_add_rcpa_call_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_add_rcpa_call_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/_2sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_add_rcpa"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

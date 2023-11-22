@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/_2sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txt_feild_work"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_toRightOf="@id/txt_week_off"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/green_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Field work"
+                    android:textColor="@color/green_60"
+                    android:textSize="@dimen/_5sdp" />
+
+
+                <TextView
+                    android:id="@+id/txt_non_feild_work"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_toRightOf="@id/txt_feild_work"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/blue_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Non-Field work"
+                    android:textColor="@color/blue_60"
+                    android:textSize="@dimen/_5sdp" />
+
+
+                <TextView
+                    android:id="@+id/txt_leave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_holiday"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/red_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Leave"
+                    android:textColor="@color/red_60"
+                    android:textSize="@dimen/_5sdp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txt_miss_rele"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_feild_work"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_toRightOf="@id/txt_holiday"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/Hilo_bay_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Missed Released"
+                    android:textColor="@color/Hilo_bay_60"
+                    android:textSize="@dimen/_5sdp" />
+
+                <TextView
+                    android:id="@+id/txt_re_entry"
+                    android:layout_width="wrap_content"
+                    android:layout_toRightOf="@id/txt_miss_rele"
+                    android:layout_below="@id/txt_feild_work"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_2sdp"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/pink_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:textSize="@dimen/_5sdp"
+                    android:text="Re Entry"
+                    android:textColor="@color/pink_60" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:id="@+id/txt_holiday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_week_off"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/lustylavender_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Holiday"
+                    android:textColor="@color/lustylavender_60"
+                    android:textSize="@dimen/_5sdp" />
+                <TextView
+                    android:id="@+id/txt_week_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/yellow_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="Weekly off"
+                    android:textColor="@color/yellow_60"
+                    android:textSize="@dimen/_5sdp" />
+
+
+            </LinearLayout>
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txt_tp_deviation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_leave"
+
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/Evening_Blue_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="TP Deviation"
+                    android:textColor="@color/Evening_Blue_60"
+                    android:textSize="@dimen/_5sdp" />
+
+                <TextView
+                    android:id="@+id/txt_tp_deviation_rele"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txt_holiday"
+                    android:layout_marginStart="@dimen/_2sdp"
+
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_toRightOf="@id/txt_leave"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/dark_green_10"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_3sdp"
+                    android:text="TP Deviation Released"
+                    android:textColor="@color/dark_green_60"
+                    android:textSize="@dimen/_5sdp" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/txt_leave_pending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_leave"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:visibility="gone"
+                android:layout_toRightOf="@id/txt_tp_deviation"
+                android:background="@drawable/custom_backround_layout"
+                android:backgroundTint="@color/GlassSea_10"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_3sdp"
+                android:text="Leave Approval Pending"
+                android:textColor="@color/GlassSea_60"
+                android:textSize="@dimen/_5sdp" />
+
+        </LinearLayout>
+
+
+    </ScrollView>
