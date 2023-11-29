@@ -557,11 +557,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                 CallImageAPI(jsonImage.toString(), jsonObject.toString());
             } else {
-                if (progressDialog == null) {
                     progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
-                } else {
-                    progressDialog.show();
-                }
                 CallAPIGeo(jsonObject.toString());
             }
         });
@@ -812,11 +808,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             JSONObject jsonImgRes = new JSONObject(response.body().toString());
                             Log.v("img_tag", jsonImgRes.getString("success"));
                             if (jsonImgRes.getString("success").equalsIgnoreCase("true") && jsonImgRes.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-                                if (progressDialog == null) {
                                     progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
-                                } else {
-                                    progressDialog.show();
-                                }
                                 CallAPIGeo(jsonTag);
                             } else {
                                 dialogTagCust.dismiss();

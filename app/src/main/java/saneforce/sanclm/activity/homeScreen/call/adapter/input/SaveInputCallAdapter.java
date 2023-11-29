@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.input;
 
+import static saneforce.sanclm.activity.homeScreen.call.fragments.AddCallSelectInpSide.callInputList;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -29,11 +31,9 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
 public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdapter.ViewHolder> {
-    public static int pos;
     Context context;
     Activity activity;
-
-    ArrayList<CallCommonCheckedList> checked_arraylist;
+    public static ArrayList<CallCommonCheckedList> checked_arraylist;
     ArrayList<SaveCallInputList> saveCallInputLists;
     CallInputListAdapter callInputListAdapter;
     CommonUtilsMethods commonUtilsMethods;
@@ -43,11 +43,7 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
         this.activity = activity;
         this.context = context;
         this.saveCallInputLists = saveCallInputLists;
-        this.checked_arraylist = callCommonCheckedLists;
-    }
-
-    public static int getPosition() {
-        return pos;
+        checked_arraylist = callCommonCheckedLists;
     }
 
     @NonNull
@@ -63,7 +59,7 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
 
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             holder.tv_input_stk.setVisibility(View.VISIBLE);
-            if (Integer.parseInt(saveCallInputLists.get(position).getInp_stk()) > 0) {
+            if (Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) > 0) {
                 holder.ed_inpQty.setEnabled(true);
             } else {
                 holder.ed_inpQty.setText("0");
@@ -97,18 +93,31 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
             public void afterTextChanged(Editable editable) {
                 try {
                     if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
-                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getInp_stk())});
+                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
                         if (!editable.toString().isEmpty()) {
-                            int final_value = Integer.parseInt(saveCallInputLists.get(position).getInp_stk()) - Integer.parseInt(editable.toString());
+                            int final_value = Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) - Integer.parseInt(editable.toString());
                             holder.tv_input_stk.setText(String.valueOf(final_value));
-                            saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), editable.toString(), String.valueOf(final_value), saveCallInputLists.get(holder.getAdapterPosition()).getInp_stk()));
+                            saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), editable.toString(), String.valueOf(final_value), saveCallInputLists.get(holder.getAdapterPosition()).getLast_inp_stk()));
+
+                            for (int i = 0; i < callInputList.size(); i++) {
+                                if (saveCallInputLists.get(position).getInp_code().equalsIgnoreCase(callInputList.get(i).getCode())) {
+                                    callInputList.set(i, new CallCommonCheckedList(callInputList.get(i).getName(), callInputList.get(i).getCode(), String.valueOf(final_value), callInputList.get(i).isCheckedItem()));
+                                }
+                            }
+
                         } else {
-                            holder.tv_input_stk.setText(saveCallInputLists.get(position).getInp_stk());
-                            saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_stk()));
+                            holder.tv_input_stk.setText(saveCallInputLists.get(position).getLast_inp_stk());
+                            saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), saveCallInputLists.get(holder.getAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getLast_inp_stk()));
+                            for (int i = 0; i < callInputList.size(); i++) {
+                                if (saveCallInputLists.get(position).getInp_code().equalsIgnoreCase(callInputList.get(i).getCode())) {
+                                    callInputList.set(i, new CallCommonCheckedList(callInputList.get(i).getName(), callInputList.get(i).getCode(), saveCallInputLists.get(position).getLast_inp_stk(), callInputList.get(i).isCheckedItem()));
+                                }
+                            }
                         }
                     } else {
-                        saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_stk()));
+                        saveCallInputLists.set(holder.getAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getAdapterPosition()).getInp_code(), saveCallInputLists.get(holder.getAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getAdapterPosition()).getLast_inp_stk()));
                     }
+
                 } catch (Exception e) {
 
                 }
@@ -123,7 +132,6 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
                         }
 
                         public void onFinish() {
-                            pos = position;
                             removeAt(position);
                             CallInputListAdapter.isCheckedInp = false;
                         }
@@ -134,9 +142,29 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
         }
 
         holder.img_del_inp.setOnClickListener(view -> {
-            for (int j = 0; j < checked_arraylist.size(); j++) {
+         /*   for (int j = 0; j < checked_arraylist.size(); j++) {
                 if (checked_arraylist.get(j).getName().equalsIgnoreCase(saveCallInputLists.get(position).getInput_name())) {
                     checked_arraylist.set(j, new CallCommonCheckedList(checked_arraylist.get(j).getName(), checked_arraylist.get(j).getCode(), checked_arraylist.get(j).getStock_balance(), false));
+                }
+            }*/
+
+
+            int finalCount = 0;
+            if (!saveCallInputLists.get(position).getInp_qty().isEmpty()) {
+                finalCount = Integer.parseInt(saveCallInputLists.get(position).getInp_qty()) + Integer.parseInt(saveCallInputLists.get(position).getBalance_inp_stk());
+            } else {
+                finalCount = Integer.parseInt(saveCallInputLists.get(position).getBalance_inp_stk());
+            }
+
+            for (int j = 0; j < checked_arraylist.size(); j++) {
+                if (checked_arraylist.get(j).getName().equalsIgnoreCase(saveCallInputLists.get(position).getInput_name())) {
+                    checked_arraylist.set(j, new CallCommonCheckedList(checked_arraylist.get(j).getName(), checked_arraylist.get(j).getCode(), String.valueOf(finalCount), false));
+                }
+            }
+
+            for (int i = 0; i < callInputList.size(); i++) {
+                if (saveCallInputLists.get(position).getInp_code().equalsIgnoreCase(callInputList.get(i).getCode())) {
+                    callInputList.set(i, new CallCommonCheckedList(callInputList.get(i).getName(), callInputList.get(i).getCode(), String.valueOf(finalCount), callInputList.get(i).isCheckedItem()));
                 }
             }
 
@@ -158,7 +186,7 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
         notifyItemRangeChanged(position, saveCallInputLists.size());
     }
 
-    public class InputFilterMinMax implements InputFilter {
+    public static class InputFilterMinMax implements InputFilter {
 
         private final int min;
         private final int max;
@@ -188,7 +216,7 @@ public class SaveInputCallAdapter extends RecyclerView.Adapter<SaveInputCallAdap
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_inp_name, tv_input_stk;
         ImageView img_del_inp;
         EditText ed_inpQty;

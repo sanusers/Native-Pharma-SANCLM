@@ -71,11 +71,8 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void CallListCountAPI() {
-        if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
-        } else {
-            progressDialog.show();
-        }
+
         try {
             jsonGetCount.put("tableName", "getapprovalcheck");
             jsonGetCount.put("sfcode", SfCode);

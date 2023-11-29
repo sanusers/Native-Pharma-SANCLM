@@ -6,6 +6,40 @@ public class CallCommonCheckedList {
     boolean checkedItem;
     String name;
     String category;
+    String ActualStock;
+    String CurrentStock;
+
+    public String getActualStock() {
+        return ActualStock;
+    }
+
+    public void setActualStock(String actualStock) {
+        ActualStock = actualStock;
+    }
+
+    public String getCurrentStock() {
+        return CurrentStock;
+    }
+
+    public void setCurrentStock(String currentStock) {
+        CurrentStock = currentStock;
+    }
+
+    public String getStockCode() {
+        return StockCode;
+    }
+
+    public void setStockCode(String stockCode) {
+        StockCode = stockCode;
+    }
+
+    String StockCode;
+
+    public CallCommonCheckedList(String stockCode,String actualStock, String currentStock) {
+        ActualStock = actualStock;
+        CurrentStock = currentStock;
+        StockCode = stockCode;
+    }
 
     public String getCategoryExtra() {
         return categoryExtra;
@@ -49,7 +83,13 @@ public class CallCommonCheckedList {
         this.name = name;
     }
 
-    public CallCommonCheckedList(String name, String code, String stock_balance,boolean checkedItem, String category,String categoryExtra) {
+    public CallCommonCheckedList(boolean checkedItem, String name, String category) {
+        this.checkedItem = checkedItem;
+        this.name = name;
+        this.category = category;
+    }
+
+    public CallCommonCheckedList(String name, String code, String stock_balance, boolean checkedItem, String category, String categoryExtra) {
         this.checkedItem = checkedItem;
         this.name = name;
         this.code = code;

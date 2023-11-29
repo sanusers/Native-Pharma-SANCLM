@@ -75,11 +75,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     }
 
     private void CallApiLeave() {
-        if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
-        } else {
-            progressDialog.show();
-        }
         try {
             jsonLeave.put("tableName", "getlvlapproval");
             jsonLeave.put("sfcode", SfCode);

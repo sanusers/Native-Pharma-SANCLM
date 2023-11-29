@@ -1,8 +1,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/_2sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,12 +34,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
+
+
+        <TextView
+            android:id="@+id/tv_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_5sdp"
+            android:text="@string/total"
+            android:textColor="@color/pink"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_del_chem"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/tv_chemist_name"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+
         <ImageView
             android:id="@+id/img_del_chem"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_15sdp"
-            android:paddingVertical="@dimen/_4sdp"
             android:layout_marginHorizontal="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_4sdp"
             android:src="@drawable/iv_del"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,6 +71,7 @@
             tools:layout_editor_absoluteY="2dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_prd_names"
         android:layout_width="match_parent"

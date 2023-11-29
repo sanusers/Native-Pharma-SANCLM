@@ -20,30 +20,30 @@
             android:layout_marginStart="@dimen/_2sdp"
             android:background="@color/white"
             android:paddingVertical="@dimen/_2sdp"
-            app:layout_constraintVertical_bias="0.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/constraint_right_rcpa"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
-            <saneforce.sanclm.commonClasses.VerticalScrollview
+            <ScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintVertical_bias="0.0"
                 app:layout_constraintBottom_toTopOf="@id/btn_add_rcpa"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintVertical_bias="0.0"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0">
 
                     <TextView
                         android:id="@+id/tag_chemist_name"
@@ -81,7 +81,6 @@
                         android:textColorHint="@color/black"
                         android:textSize="14sp"
                         android:textStyle="normal"
-                        app:drawableEndCompat="@drawable/spin_down_arrow"
                         app:layout_constraintBottom_toTopOf="@id/tag_comp_brnd"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -121,7 +120,7 @@
                         android:textColorHint="@color/black"
                         android:textSize="14sp"
                         android:textStyle="normal"
-                        app:drawableEndCompat="@drawable/spin_down_arrow"
+                        app:drawableEndCompat="@drawable/greater_than_purple"
                         app:layout_constraintBottom_toTopOf="@id/tag_qty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -153,10 +152,10 @@
                         android:background="@drawable/bg_light_grey_border"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="center|start"
-                        android:hint="@string/enter_qty"
                         android:imeOptions="actionDone"
                         android:inputType="number"
                         android:padding="@dimen/_6sdp"
+                        android:text="0"
                         android:textColor="@color/dark_purple"
                         android:textColorHint="@color/black"
                         android:textSize="14sp"
@@ -222,12 +221,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/_4sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
                         android:background="@drawable/bg_light_grey_2"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_6sdp"
                         android:textColor="@color/dark_purple"
                         android:textSize="14sp"
-                       app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -378,7 +378,8 @@
                     </androidx.cardview.widget.CardView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </saneforce.sanclm.commonClasses.VerticalScrollview>
+            </ScrollView>
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_add_rcpa"
                 android:layout_width="0dp"

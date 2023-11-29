@@ -127,12 +127,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         saveInputList.clear();
         adapterModels.clear();
         ClusterNames = new StringBuilder();
-        if (progressDialog == null) {
-            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
-            progressDialog.show();
-        } else {
-            progressDialog.show();
-        }
+        progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
 
         try {
             jsonDcrContentList.put("tableName", "getvwdcrone");
@@ -280,7 +275,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         setContentView(dcrCallApprovalBinding.getRoot());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-       // progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         getRequiredData();
         CallDcrListApi();
 
@@ -343,11 +337,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
     private void rejectApproval(String toString) {
-        if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
-        } else {
-            progressDialog.show();
-        }
         try {
             jsonReject.put("tableName", "dcrreject");
             jsonReject.put("date", SelectedActivityDate);
@@ -415,11 +405,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     private void CallApprovalApi() {
         Log.v("pos", "---" + SelectedPosition);
-        if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
-        } else {
-            progressDialog.show();
-        }
         try {
             jsonAccept.put("tableName", "dcrapproval");
             jsonAccept.put("date", SelectedActivityDate);
@@ -484,11 +470,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
     private void CallDcrListApi() {
-        if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
-        } else {
-            progressDialog.show();
-        }
         try {
             jsonDcrList.put("tableName", "getvwdcr");
             jsonDcrList.put("sfcode", SfCode);

@@ -26,8 +26,6 @@ import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.databinding.FragmentInputBinding;
 
 public class InputFragment extends Fragment {
-
-
     @SuppressLint("StaticFieldLeak")
     public static FragmentInputBinding fragmentInputBinding;
     public static ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList = new ArrayList<>();
@@ -67,21 +65,6 @@ public class InputFragment extends Fragment {
     }
 
     private void dummyAdapter() {
-       /* callInputListArrayList.clear();
-        callInputListArrayList.add(new CallInputList("Pen", false));
-        callInputListArrayList.add(new CallInputList("Marker", false));
-        callInputListArrayList.add(new CallInputList("Key Chain", false));
-        callInputListArrayList.add(new CallInputList("Keyboard", false));
-        callInputListArrayList.add(new CallInputList("Watch", false));
-        callInputListArrayList.add(new CallInputList("Horlicks", false));
-        callInputListArrayList.add(new CallInputList("Umberlla", false));
-        callInputListArrayList.add(new CallInputList("Lunch Box", false));
-        callInputListArrayList.add(new CallInputList("Ball", false));
-        callInputListArrayList.add(new CallInputList("Jacket", false));
-        callInputListArrayList.add(new CallInputList("Bat", false));
-        callInputListArrayList.add(new CallInputList("Toys", false));
-        callInputListArrayList.add(new CallInputList("Plastic Bar", false));*/
-
         callInputListAdapter = new CallInputListAdapter(getActivity(), getContext(), callCommonCheckedListArrayList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         fragmentInputBinding.rvCheckDataList.setLayoutManager(mLayoutManager);

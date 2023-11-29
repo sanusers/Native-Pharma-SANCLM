@@ -3,7 +3,7 @@ package saneforce.sanclm.activity.homeScreen.call.pojo.product;
 public class SaveCallProductList {
     String name;
     String balance_sam_stk;
-    String sam_stk;
+    String last_stock;
     String code;
     boolean isCliked;
     String category;
@@ -37,12 +37,12 @@ public class SaveCallProductList {
         this.promoted = promoted;
     }
 
-    public SaveCallProductList(String name, String code, String category, String balance_sam_stk, String sam_stk, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
+    public SaveCallProductList(String name, String code, String category, String balance_sam_stk, String last_stock, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
         this.name = name;
         this.code = code;
         this.category = category;
         this.balance_sam_stk = balance_sam_stk;
-        this.sam_stk = sam_stk;
+        this.last_stock = last_stock;
         this.sample_qty = sample_qty;
         this.rx_qty = rx_qty;
         this.rcpa_qty = rcpa_qty;
@@ -58,12 +58,12 @@ public class SaveCallProductList {
         this.promoted = promoted;
     }
 
-    public String getSam_stk() {
-        return sam_stk;
+    public String getLast_stock() {
+        return last_stock;
     }
 
-    public void setSam_stk(String sam_stk) {
-        this.sam_stk = sam_stk;
+    public void setLast_stock(String last_stock) {
+        this.last_stock = last_stock;
     }
 
 

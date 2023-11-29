@@ -191,9 +191,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         rl_quick_link = findViewById(R.id.rl_quick_link);
 
         dialog1 = new Dialog(this);
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        commonUtilsMethods = new CommonUtilsMethods(this);
-//        commonUtilsMethods.FullScreencall();
 
         initWidgets();
         getCallsDataToCalender();

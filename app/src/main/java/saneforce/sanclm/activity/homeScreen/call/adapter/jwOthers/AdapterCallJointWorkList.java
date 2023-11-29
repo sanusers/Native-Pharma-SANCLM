@@ -50,12 +50,6 @@ public class AdapterCallJointWorkList extends RecyclerView.Adapter<AdapterCallJo
         holder.tv_jw_name.setText(jointworkAddedList.get(position).getName());
 
         holder.img_del.setOnClickListener(view -> {
-          /*  for (int j = 0; j < JwAdapter.jwLists.size(); j++) {
-                if (JwAdapter.jwLists.get(j).getCode().equalsIgnoreCase(jointworkAddedList.get(position).getCode())) {
-                    JwAdapter.jwLists.set(j, new CallCommonCheckedList(JwAdapter.jwLists.get(j).getName(), JwAdapter.jwLists.get(j).getCode(), false));
-                }
-            }*/
-
             try {
                 for (int j = 0; j < JointworkSelectionSide.JwList.size(); j++) {
                     if (JointworkSelectionSide.JwList.get(j).getCode().equalsIgnoreCase(jointworkAddedList.get(position).getCode())) {

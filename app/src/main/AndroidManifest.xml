@@ -20,7 +20,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -105,7 +106,7 @@
             android:name=".activity.login.LoginActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.setting.SettingsActivity"
             android:exported="false"
@@ -118,17 +119,17 @@
             android:name=".activity.approvals.tpdeviation.TpDeviationApprovalActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.approvals.dcr.DcrApprovalActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.map.custSelection.TagCustSelectionList"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.profile.CustomerProfile"
             android:exported="false"
@@ -138,23 +139,23 @@
             android:name=".activity.homeScreen.call.DCRCallActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.map.MapsActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".activity.leave.Leave_Application"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".activity.approvals.ApprovalsActivity"
@@ -165,12 +166,12 @@
             android:name=".activity.presentation.PresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.presentation.createPresentation.CreatePresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activity.SplashScreen"
             android:exported="true"
@@ -189,7 +190,8 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="true">
+            android:exported="false"
+            android:permission="TODO">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -203,11 +205,12 @@
         <activity
             android:name="saneforce.sanclm.activity.forms.changepassword.Change_passwordActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
-        <activity android:name="saneforce.sanclm.activity.forms.weekoff.weekoff_viewscreen"
+        <activity
+            android:name="saneforce.sanclm.activity.forms.weekoff.weekoff_viewscreen"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_8sdp"
                     android:fontFamily="@font/satoshi_variable"
-                    android:text="My Resource"
+                    android:text="@string/my_resource"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp"
                     tools:ignore="SpUsage" />
@@ -69,7 +69,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:gravity="center"
-                        android:text="Headquart"
+                        android:text="@string/headquarter"
                         android:textSize="@dimen/_7sdp"
 
                         />

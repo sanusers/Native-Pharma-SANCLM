@@ -152,7 +152,6 @@ public class ListedDoctorFragment extends Fragment {
         lv_cate = dialogFilter.findViewById(R.id.lv_category);
         lv_terr = dialogFilter.findViewById(R.id.lv_territory);
 
-
         tvSpec.setOnClickListener(view -> SetupListviewAdapter(lv_spec, "Speciality"));
 
         lv_spec.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -180,28 +179,9 @@ public class ListedDoctorFragment extends Fragment {
             tv_add_condition.setVisibility(View.VISIBLE);
         });
 
-      /*  ArrayFilteredList.clear();
-        ArrayFilteredList.add(new FilterDataList("Speciality", 0));
-        adapterFilterSelection = new AdapterFilterSelection(getContext(), ArrayFilteredList, custListArrayList);*/
-        //rv_filter.setLayoutManager(new CustomGridLayoutManager(getContext()));
-      /*  LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        linearLayoutManager = new LinearLayoutManager(getContext()) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
-        rv_filter.setLayoutManager(linearLayoutManager);*/
-
-     /*   LinearLayoutPagerManager linearLayoutPagerManager = new LinearLayoutPagerManager(getContext(), RecyclerView.VERTICAL, false, 2);
-        rv_filter.setLayoutManager(linearLayoutPagerManager);*/
-
-        // rv_filter.setLayoutManager(new LinearLayoutPagerManager(getContext(), LinearLayoutManager.VERTICAL, false, 2));
-        /*rv_filter.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
-        rv_filter.setAdapter(adapterFilterSelection);*/
-
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
+      //  imm.hideSoftInputFromInputMethod(ed_search.getWindowToken(), 0);
 
         iv_filter.setOnClickListener(view -> {
             tvSpec.setText(specialityTxt);

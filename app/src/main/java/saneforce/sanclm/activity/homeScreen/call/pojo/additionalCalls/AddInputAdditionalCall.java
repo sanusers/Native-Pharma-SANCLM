@@ -3,15 +3,29 @@ package saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls;
 public class AddInputAdditionalCall {
 
     String cust_name, cust_code;
-    String input_name, input_code, stock, inp_qty;
+    String input_name;
+    String input_code;
+    String balance_stock;
+    String inp_qty;
 
-    public AddInputAdditionalCall(String cust_name, String cust_code, String input_name, String input_code, String stock, String input_qty) {
+    public String getLast_stock() {
+        return last_stock;
+    }
+
+    public void setLast_stock(String last_stock) {
+        this.last_stock = last_stock;
+    }
+
+    String last_stock;
+
+    public AddInputAdditionalCall(String cust_name, String cust_code, String input_name, String input_code, String balance_stock, String last_stock, String input_qty) {
         this.cust_name = cust_name;
         this.cust_code = cust_code;
         this.input_name = input_name;
         this.input_code = input_code;
-        this.stock = stock;
+        this.balance_stock = balance_stock;
         this.inp_qty = input_qty;
+        this.last_stock = last_stock;
     }
 
     public AddInputAdditionalCall(String cust_name, String cust_code, String input_name, String input_qty) {
@@ -61,11 +75,11 @@ public class AddInputAdditionalCall {
         this.inp_qty = inp_qty;
     }
 
-    public String getStock() {
-        return stock;
+    public String getBalance_stock() {
+        return balance_stock;
     }
 
-    public void setStock(String stock) {
-        this.stock = stock;
+    public void setBalance_stock(String balance_stock) {
+        this.balance_stock = balance_stock;
     }
 }

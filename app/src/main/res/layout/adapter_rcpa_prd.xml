@@ -13,8 +13,8 @@
         android:fontFamily="@font/satoshi_bold"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_5sdp"
-        android:text="Prd Name"
         android:singleLine="true"
+        android:text=""
         android:textColor="@color/pink"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@id/constraint_list_prod"
@@ -46,9 +46,9 @@
             android:text="@string/qty"
             android:textColor="@color/light_grey_2"
             android:textSize="14sp"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_qty"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -62,7 +62,6 @@
             android:fontFamily="@font/satoshi_medium"
             android:paddingHorizontal="@dimen/_2sdp"
             android:paddingVertical="@dimen/_4sdp"
-            android:text="@string/qty"
             android:textColor="@color/dark_purple"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -173,6 +172,7 @@
             android:layout_height="@dimen/_15sdp"
             android:paddingVertical="@dimen/_4sdp"
             android:src="@drawable/iv_del"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -187,7 +187,6 @@
         android:id="@+id/card_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_2sdp"
         android:elevation="@dimen/_2sdp"
         android:visibility="visible"
@@ -206,13 +205,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_prd_name"
             app:layout_constraintTop_toBottomOf="@id/img_view">
-
-
+            
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_list_comp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/rv_comp_added_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -286,13 +284,13 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tag_value_comp"
+                    app:layout_constraintEnd_toStartOf="@id/tv_value_comp"
                     app:layout_constraintStart_toEndOf="@id/tag_qty_comp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
-                    android:id="@+id/tag_value_comp"
+                    android:id="@+id/tv_value_comp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_2sdp"
@@ -311,7 +309,7 @@
 
                 <TextView
                     android:id="@+id/tag_remarks"
-                    android:layout_width="@dimen/_22sdp"
+                    android:layout_width="@dimen/_24sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_2sdp"
                     android:layout_marginVertical="@dimen/_1sdp"
@@ -323,7 +321,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/img_del_dummy"
-                    app:layout_constraintStart_toEndOf="@id/tag_value_comp"
+                    app:layout_constraintStart_toEndOf="@id/tv_value_comp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 

@@ -31,7 +31,8 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
     public static String UnSelectedInpCode = "";
     Context context;
     ArrayList<CallCommonCheckedList> checked_arrayList;
-    SaveInputCallAdapter saveInputCallAdapter;
+    @SuppressLint("StaticFieldLeak")
+     SaveInputCallAdapter saveInputCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
 
@@ -98,6 +99,7 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private void CheckBoxContents(CheckBox checkBox, TextView tv_name, int adapterPosition) {
         if (checkBox.isChecked()) {
             tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));

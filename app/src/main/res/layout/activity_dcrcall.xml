@@ -5,8 +5,8 @@
     android:id="@+id/constraint_dcr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:windowSoftInputMode="adjustResize|adjustPan"
-    android:background="@color/bg_grey">
+    android:background="@color/bg_grey"
+    android:windowSoftInputMode="adjustResize|adjustPan">
 
     <View
         android:id="@+id/view_top"
@@ -213,7 +213,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_add_rcpa_side"
-        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragmentSide"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectCompSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -253,4 +253,59 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_select_jw_side" />
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_select_chemist_side"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectChemSide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout="@layout/fragment_select_chemist_side"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_select_chemist_side" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_select_product_side"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectPrdSide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout="@layout/fragment_select_product_side"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_select_product_side" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_ac_select_product_side"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.AddCallSelectPrdSide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout="@layout/fragment_ac_select_product_side"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_ac_select_product_side" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_ac_select_input_side"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.AddCallSelectInpSide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout="@layout/fragment_ac_select_input_side"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_ac_select_input_side" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,7 +61,7 @@
         android:textColorHint="@color/black"
         android:textSize="14sp"
         android:textStyle="normal"
-        app:layout_constraintBottom_toTopOf="@id/tag_comp_brand"
+        app:layout_constraintBottom_toTopOf="@id/tv_comp_brand"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tag_comp_cmpy"
@@ -184,7 +184,7 @@
      </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <TextView
-        android:id="@+id/tag_comp_brand"
+        android:id="@+id/tv_comp_brand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_4sdp"
@@ -210,7 +210,7 @@
         app:layout_constraintBottom_toTopOf="@id/constraint_mid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tag_comp_brand">
+        app:layout_constraintTop_toBottomOf="@id/tv_comp_brand">
 
         <Spinner
             android:id="@+id/spin_comp_brand"

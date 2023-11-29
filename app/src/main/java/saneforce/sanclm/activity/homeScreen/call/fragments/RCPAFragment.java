@@ -1,38 +1,33 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectChemSide.selectChemistSideBinding;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectPrdSide.selectProductSideBinding;
+
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.adapter.rcpa.RCPAChemistAdapter;
-import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.sanclm.activity.map.custSelection.CustList;
-import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.FragmentRcpaBinding;
 import saneforce.sanclm.storage.SQLite;
 
@@ -41,17 +36,12 @@ public class RCPAFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentRcpaBinding rcpaBinding;
     public static String PrdName, PrdCode, cheName, CheCode;
-    ArrayList<SaveCallProductList> PrdFullList = new ArrayList<>();
-    ArrayList<CustList> ChemFullList = new ArrayList<>();
-    ArrayList<CustList> ChemistSelectedList = new ArrayList<>();
-    ArrayList<RCPAAddedProdList> ProductSelectedList = new ArrayList<>();
+    public static ArrayList<CustList> ChemistSelectedList = new ArrayList<>();
+    public static ArrayList<RCPAAddedProdList> ProductSelectedList = new ArrayList<>();
     SQLite sqLite;
-    JSONArray jsonArray;
-    JSONObject jsonObject;
     double getQty;
-    ProductAdapter PrdAdapter;
-    ChemistAdapter CheAdapter;
     RCPAChemistAdapter rcpaChemistAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
@@ -60,8 +50,17 @@ public class RCPAFragment extends Fragment {
         rcpaBinding = FragmentRcpaBinding.inflate(getLayoutInflater());
         View v = rcpaBinding.getRoot();
         sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
 
-        AddListViewData();
+        if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+            rcpaBinding.tvSelectChemist.setEnabled(true);
+            rcpaBinding.tvSelectChemist.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.greater_than_purple, 0);
+        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
+            rcpaBinding.tvSelectChemist.setEnabled(false);
+            rcpaBinding.tvSelectChemist.setText(DCRCallActivity.CallActivityCustDetails.get(0).getName());
+            cheName = DCRCallActivity.CallActivityCustDetails.get(0).getName();
+            CheCode = DCRCallActivity.CallActivityCustDetails.get(0).getCode();
+        }
 
         rcpaBinding.btnAddRcpa.setOnClickListener(view -> {
             if (rcpaBinding.tvSelectChemist.getText().toString().isEmpty() || rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select")) {
@@ -74,12 +73,66 @@ public class RCPAFragment extends Fragment {
                 rcpaBinding.llNoRcpa.setVisibility(View.GONE);
                 rcpaBinding.rvRcpaChemistList.setVisibility(View.VISIBLE);
 
-                ChemistSelectedList.add(new CustList(cheName, CheCode));
-                ProductSelectedList.add(new RCPAAddedProdList(cheName, CheCode, PrdName, PrdCode, rcpaBinding.edQty.getText().toString(), rcpaBinding.tvRate.getText().toString(), rcpaBinding.tvValue.getText().toString()));
+                ProductSelectedList.add(new RCPAAddedProdList(cheName, CheCode, PrdName, PrdCode, rcpaBinding.edQty.getText().toString(), rcpaBinding.tvRate.getText().toString(), rcpaBinding.tvValue.getText().toString(), rcpaBinding.tvValue.getText().toString()));
 
-                rcpaChemistAdapter = new RCPAChemistAdapter(requireContext(), ChemistSelectedList, ProductSelectedList);
+                double getTotalValue = 0.0;
+                ArrayList<Double> double_data = new ArrayList<>();
+                if (ProductSelectedList.size() > 0) {
+                    for (int i = 0; i < ProductSelectedList.size(); i++) {
+                        if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(CheCode)) {
+                            double_data.add(Double.parseDouble(ProductSelectedList.get(i).getTotalPrdValue()));
+                        }
+                    }
+                } else {
+                    ChemistSelectedList.add(new CustList(cheName, CheCode, rcpaBinding.tvValue.getText().toString(), ""));
+                }
+
+
+                if (double_data.size() > 0) {
+                    for (int i = 0; i < double_data.size(); i++) {
+                        getTotalValue = getTotalValue + double_data.get(i);
+                    }
+                }
+
+                double valueRounded = Math.round(getTotalValue * 100D) / 100D;
+
+                ChemistSelectedList.add(new CustList(cheName, CheCode, String.valueOf(valueRounded), ""));
+
+                int count = ChemistSelectedList.size();
+                for (int i = 0; i < count; i++) {
+                    for (int j = i + 1; j < count; j++) {
+                        if (ChemistSelectedList.get(i).getCode().equalsIgnoreCase(ChemistSelectedList.get(j).getCode())) {
+                            String value = ChemistSelectedList.get(j).getTotalrcpa();
+                            ChemistSelectedList.remove(j--);
+                            ChemistSelectedList.set(i, new CustList(cheName, CheCode, value, ""));
+                            count--;
+                        }
+                    }
+                }
+
+              /*  int countPrd = ProductSelectedList.size();
+                for (int i = 0; i < countPrd; i++) {
+                    for (int j = i + 1; j < count; j++) {
+                        if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(ProductSelectedList.get(j).getChe_codes()) && ProductSelectedList.get(i).getPrd_code().equalsIgnoreCase(ProductSelectedList.get(j).getPrd_code())) {
+                            ProductSelectedList.remove(j--);
+                            countPrd--;
+                        }
+                    }
+                }*/
+
+                if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+                    rcpaBinding.tvSelectChemist.setText(getResources().getString(R.string.select));
+                }
+
+                rcpaBinding.tvSelectProduct.setText(getResources().getString(R.string.select));
+                rcpaBinding.edQty.setText("0");
+                rcpaBinding.tvRate.setText("");
+                rcpaBinding.tvValue.setText("");
+
+                rcpaChemistAdapter = new RCPAChemistAdapter(requireContext(), ChemistSelectedList, ProductSelectedList, RCPASelectCompSide.rcpa_comp_list);
                 RecyclerView.LayoutManager mLayoutManagerChe = new LinearLayoutManager(getActivity());
                 rcpaBinding.rvRcpaChemistList.setLayoutManager(mLayoutManagerChe);
+                commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
                 rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
             }
         });
@@ -110,223 +163,29 @@ public class RCPAFragment extends Fragment {
         });
 
         rcpaBinding.tvSelectChemist.setOnClickListener(view -> {
-            if (rcpaBinding.listCvChemist.getVisibility() == View.VISIBLE) {
-                rcpaBinding.listCvChemist.setVisibility(View.GONE);
-                rcpaBinding.tvSelectChemist.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spin_down_arrow, 0);
-            } else {
-                rcpaBinding.tvSelectChemist.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
-                rcpaBinding.listCvChemist.setVisibility(View.VISIBLE);
+            dcrcallBinding.fragmentSelectChemistSide.setVisibility(View.VISIBLE);
+            try {
+                selectChemistSideBinding.searchList.setText("");
+            } catch (Exception e) {
+
             }
         });
 
-        rcpaBinding.searchChemist.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                filterChe(editable.toString());
-            }
-        });
 
         rcpaBinding.tvSelectProduct.setOnClickListener(view -> {
             if (!rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select") && !rcpaBinding.tvSelectChemist.getText().toString().isEmpty()) {
-                if (rcpaBinding.listCvProduct.getVisibility() == View.VISIBLE) {
-                    rcpaBinding.tvSelectProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spin_down_arrow, 0);
-                    rcpaBinding.listCvProduct.setVisibility(View.GONE);
-                } else {
-                    rcpaBinding.tvSelectProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0);
-                    rcpaBinding.listCvProduct.setVisibility(View.VISIBLE);
+                dcrcallBinding.fragmentSelectProductSide.setVisibility(View.VISIBLE);
+                try {
+                    selectProductSideBinding.searchList.setText("");
+                } catch (Exception e) {
+
                 }
+
             } else {
                 Toast.makeText(requireContext(), "Select Chemist", Toast.LENGTH_SHORT).show();
             }
 
         });
-
-        rcpaBinding.searchProduct.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                filterPrd(editable.toString());
-            }
-        });
-
         return v;
-    }
-
-    private void AddListViewData() {
-        try {
-            ChemFullList.clear();
-            PrdFullList.clear();
-
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));
-            }
-            CheAdapter = new ChemistAdapter(requireContext(), ChemFullList);
-            RecyclerView.LayoutManager mLayoutManagerChe = new LinearLayoutManager(getActivity());
-            rcpaBinding.lvChemist.setLayoutManager(mLayoutManagerChe);
-            rcpaBinding.lvChemist.setItemAnimator(new DefaultItemAnimator());
-            rcpaBinding.lvChemist.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-            rcpaBinding.lvChemist.setAdapter(CheAdapter);
-
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
-            }
-
-            PrdAdapter = new ProductAdapter(requireContext(), PrdFullList);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-            rcpaBinding.lvProduct.setLayoutManager(mLayoutManager);
-            rcpaBinding.lvProduct.setItemAnimator(new DefaultItemAnimator());
-            rcpaBinding.lvProduct.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-            rcpaBinding.lvProduct.setAdapter(PrdAdapter);
-
-        } catch (Exception e) {
-            Log.v("error", "--" + e);
-        }
-    }
-
-    private void filterChe(String text) {
-        ArrayList<CustList> filterdNames = new ArrayList<>();
-        for (CustList s : ChemFullList) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
-            }
-        }
-        CheAdapter.filterList(filterdNames);
-    }
-
-    private void filterPrd(String text) {
-        ArrayList<SaveCallProductList> filterdNames = new ArrayList<>();
-        for (SaveCallProductList s : PrdFullList) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
-            }
-        }
-        PrdAdapter.filterList(filterdNames);
-    }
-
-    public static class ChemistAdapter extends RecyclerView.Adapter<ChemistAdapter.ViewHolder> {
-        Context context;
-        ArrayList<CustList> ChemList;
-
-        public ChemistAdapter(Context context, ArrayList<CustList> chemList) {
-            this.context = context;
-            this.ChemList = chemList;
-        }
-
-        @NonNull
-        @Override
-        public ChemistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(context).inflate(R.layout.single_item, parent, false);
-                return new ChemistAdapter.ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ChemistAdapter.ViewHolder holder, int position) {
-            Log.v("fsdfdf", "---" + ChemList.size());
-            holder.tv_name.setText(ChemList.get(position).getName());
-
-            holder.tv_name.setOnClickListener(view -> {
-                RCPAFragment.cheName = ChemList.get(holder.getAdapterPosition()).getName();
-                RCPAFragment.CheCode = ChemList.get(holder.getAdapterPosition()).getCode();
-                rcpaBinding.tvSelectChemist.setText(ChemList.get(holder.getAdapterPosition()).getName());
-                rcpaBinding.listCvChemist.setVisibility(View.GONE);
-                rcpaBinding.tvSelectChemist.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spin_down_arrow, 0);
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return ChemList.size();
-        }
-
-        @SuppressLint("NotifyDataSetChanged")
-        public void filterList(ArrayList<CustList> filterdNames) {
-            this.ChemList = filterdNames;
-            notifyDataSetChanged();
-        }
-
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tv_name;
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                tv_name = itemView.findViewById(R.id.tv_name);
-            }
-        }
-    }
-
-    public static class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
-        Context context;
-        ArrayList<SaveCallProductList> prdList;
-
-        public ProductAdapter(Context context, ArrayList<SaveCallProductList> prdList) {
-            this.context = context;
-            this.prdList = prdList;
-        }
-
-        @NonNull
-        @Override
-        public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.single_item, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
-            holder.tv_name.setText(prdList.get(position).getName());
-            holder.tv_name.setOnClickListener(view -> {
-                RCPAFragment.PrdName = prdList.get(holder.getAdapterPosition()).getName();
-                RCPAFragment.PrdCode = prdList.get(holder.getAdapterPosition()).getCode();
-                rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getAdapterPosition()).getName());
-                rcpaBinding.listCvProduct.setVisibility(View.GONE);
-                rcpaBinding.tvSelectProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.spin_down_arrow, 0);
-                rcpaBinding.tvRate.setText(prdList.get(holder.getAdapterPosition()).getRate());
-                rcpaBinding.edQty.setText("1");
-                rcpaBinding.tvValue.setText(prdList.get(holder.getAdapterPosition()).getRate());
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return prdList.size();
-        }
-
-        @SuppressLint("NotifyDataSetChanged")
-        public void filterList(ArrayList<SaveCallProductList> filterdNames) {
-            this.prdList = filterdNames;
-            notifyDataSetChanged();
-        }
-
-
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tv_name;
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                tv_name = itemView.findViewById(R.id.tv_name);
-            }
-        }
     }
 }

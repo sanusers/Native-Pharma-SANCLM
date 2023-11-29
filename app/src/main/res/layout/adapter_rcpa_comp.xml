@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_2sdp">
+
+    <CheckBox
+        android:id="@+id/chk_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/bg_txt_color"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_data_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnusedAttribute" />
+
+    <TextView
+        android:id="@+id/tv_data_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:fontFamily="@font/satoshi_bold"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:singleLine="true"
+        android:textColor="@color/bg_txt_color"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/tv_brand_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/chk_box"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_brand_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_medium"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:text="@string/submitted_date"
+        android:textColor="@color/text_grey"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tv_data_name"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/tv_data_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_data_name" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -141,6 +141,7 @@ public class CallProductListAdapter extends RecyclerView.Adapter<CallProductList
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void CheckBoxContents(CheckBox checkBox, TextView tv_name, int adapterPosition) {
         if (checkBox.isChecked()) {
             tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));

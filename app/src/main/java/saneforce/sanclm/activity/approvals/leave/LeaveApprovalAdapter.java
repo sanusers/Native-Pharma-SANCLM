@@ -104,11 +104,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     }
 
     private void RejectedLeave(String leave_id, int Position, String reason) {
-        if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(context);
-        } else {
-            progressDialog.show();
-        }
         try {
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);
@@ -161,11 +157,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
 
     private void ApprovedLeave(String leave_id, int Position) {
-        if (progressDialog == null) {
             progressDialog = CommonUtilsMethods.createProgressDialog(context);
-        } else {
-            progressDialog.show();
-        }
         try {
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);

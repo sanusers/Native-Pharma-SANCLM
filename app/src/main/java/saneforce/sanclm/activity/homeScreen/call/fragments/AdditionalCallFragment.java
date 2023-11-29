@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import java.util.ArrayList;
+
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
@@ -60,14 +60,14 @@ public class AdditionalCallFragment extends Fragment {
 
     private void dummyAdapter() {
 
-        callAddCustListAdapter = new CallAddCustListAdapter(getActivity(),getContext(), custListArrayList);
+        callAddCustListAdapter = new CallAddCustListAdapter(getActivity(), getContext(), custListArrayList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         rv_list_data.setLayoutManager(mLayoutManager);
         rv_list_data.setItemAnimator(new DefaultItemAnimator());
         rv_list_data.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         rv_list_data.setAdapter(callAddCustListAdapter);
 
-        saveAdditionalCallAdapter = new SaveAdditionalCallAdapter(getActivity(),getContext(), CallAddCustListAdapter.saveAdditionalCallArrayList, custListArrayList);
+        saveAdditionalCallAdapter = new SaveAdditionalCallAdapter(getActivity(), getContext(), CallAddCustListAdapter.saveAdditionalCallArrayList, custListArrayList);
         RecyclerView.LayoutManager mLayoutManagerinp = new LinearLayoutManager(getActivity());
         rv_add_call_list.setLayoutManager(mLayoutManagerinp);
         rv_add_call_list.setItemAnimator(new DefaultItemAnimator());

@@ -1,9 +1,13 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter;
 
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.adapter.input.CallInputListAdapter.saveCallInputListArrayList;
+import static saneforce.sanclm.activity.homeScreen.call.adapter.input.SaveInputCallAdapter.checked_arraylist;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.AddCallSelectInpSide.callInputList;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.adapterInputAdditionalCall;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.adapterSampleAdditionalCall;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.callDetailsSideBinding;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment.callCommonCheckedListArrayList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -26,8 +30,10 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall;
+import saneforce.sanclm.activity.homeScreen.call.adapter.input.SaveInputCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallFragment;
+import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
@@ -53,6 +59,7 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
     CallAddCustListAdapter callAddCustListAdapter;
     CommonUtilsMethods commonUtilsMethods;
     ArrayList<String> dummyNames = new ArrayList<>();
+    SaveInputCallAdapter saveInputCallAdapter;
 
 
     public SaveAdditionalCallAdapter(Activity activity, Context context, ArrayList<SaveAdditionalCall> saveAdditionalCalls, ArrayList<CallCommonCheckedList> CheckedcustListArrayList) {
@@ -89,7 +96,6 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
         rv_nested_calls_sample_data = holder.rv_nested_calls_sample_data;
         rv_nested_calls_input_data = holder.rv_nested_calls_input_data;
 
-        Log.v("countnested", "-input--" + nestedAddInputCallDetails.size() + "---sam---" + nestedAddSampleCallDetails.size());
         dummyNames.clear();
         if (nestedAddInputCallDetails.size() > 0 || nestedAddSampleCallDetails.size() > 0) {
             for (int i = 0; i < nestedAddInputCallDetails.size(); i++) {
@@ -186,10 +192,41 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
 
             for (int i = 0; i < nestedAddInputCallDetails.size(); i++) {
                 if (nestedAddInputCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(holder.getAdapterPosition()).getCode())) {
+                    int finalCount = 0;
+                    for (int j = 0; j < callInputList.size(); j++) {
+                        if (nestedAddInputCallDetails.get(i).getInput_code().equalsIgnoreCase(callInputList.get(j).getCode())) {
+
+                            if (!nestedAddInputCallDetails.get(i).getInp_qty().isEmpty()) {
+                                finalCount = Integer.parseInt(nestedAddInputCallDetails.get(i).getInp_qty()) + Integer.parseInt(nestedAddInputCallDetails.get(i).getBalance_stock());
+                            } else {
+                                finalCount = Integer.parseInt(nestedAddInputCallDetails.get(i).getBalance_stock());
+                            }
+                            callInputList.set(j, new CallCommonCheckedList(callInputList.get(j).getName(), callInputList.get(j).getCode(), String.valueOf(finalCount), callInputList.get(j).isCheckedItem()));
+                        }
+                    }
+
                     nestedAddInputCallDetails.remove(i);
                     i--;
                 }
             }
+
+
+        /*    for (int i = 0; i < nestedAddInputCallDetails.size(); i++) {
+                if (nestedAddInputCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(holder.getAdapterPosition()).getCode())) {
+                    int finalCount = Integer.parseInt(nestedAddInputCallDetails.get(i).getInp_qty()) + Integer.parseInt(nestedAddInputCallDetails.get(i).getBalance_stock());
+                    for (int j = 0; j < saveCallInputListArrayList.size(); j++) {
+                        if (nestedAddInputCallDetails.get(i).getInput_code().equalsIgnoreCase(saveCallInputListArrayList.get(j).getInp_code())) {
+                            saveCallInputListArrayList.set(j, new SaveCallInputList(saveCallInputListArrayList.get(j).getInput_name(), saveCallInputListArrayList.get(j).getInp_code(), saveCallInputListArrayList.get(j).getInp_qty(), String.valueOf(finalCount), String.valueOf(finalCount)));
+                        }
+                    }
+                    nestedAddInputCallDetails.remove(i);
+                    i--;
+                }
+            }*/
+
+            saveInputCallAdapter = new SaveInputCallAdapter(activity, context, saveCallInputListArrayList, callCommonCheckedListArrayList);
+            InputFragment.fragmentInputBinding.rvListInput.setAdapter(saveInputCallAdapter);
+            saveInputCallAdapter.notifyDataSetChanged();
 
             for (int i = 0; i < nestedAddSampleCallDetails.size(); i++) {
                 if (nestedAddSampleCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(holder.getAdapterPosition()).getCode())) {
@@ -212,14 +249,14 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
             Selected_code = saveAdditionalCalls.get(position).getCode();
 
 
-            AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
+            AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", ""));
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
             commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
             callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
             adapterInputAdditionalCall.notifyDataSetChanged();
 
-            AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", ""));
+            AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", "", ""));
             RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(context);
             callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerprd);
             commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddSampleAdditional);
@@ -235,13 +272,24 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
             AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.clear();
             Selected_name = saveAdditionalCalls.get(position).getName();
             Selected_code = saveAdditionalCalls.get(position).getCode();
+
             for (int i = 0; i < nestedAddInputCallDetails.size(); i++) {
-                if (nestedAddInputCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(position).getCode())) {
-                    AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(nestedAddInputCallDetails.get(i).getCust_name(), nestedAddInputCallDetails.get(i).getCust_code(), nestedAddInputCallDetails.get(i).getInput_name(), nestedAddInputCallDetails.get(i).getInput_code(), "", nestedAddInputCallDetails.get(i).getInp_qty()));
+                if (nestedAddInputCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(holder.getAdapterPosition()).getCode())) {
+                    int finalCount = 0;
+                    for (int j = 0; j < callInputList.size(); j++) {
+                        if (nestedAddInputCallDetails.get(i).getInput_code().equalsIgnoreCase(callInputList.get(j).getCode())) {
+                            if (!nestedAddInputCallDetails.get(i).getInp_qty().isEmpty()) {
+                                finalCount = Integer.parseInt(nestedAddInputCallDetails.get(i).getLast_stock()) - Integer.parseInt(nestedAddInputCallDetails.get(i).getInp_qty());
+                            } else {
+                                finalCount = Integer.parseInt(nestedAddInputCallDetails.get(i).getLast_stock());
+                            }
+                            AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(nestedAddInputCallDetails.get(i).getCust_name(), nestedAddInputCallDetails.get(i).getCust_code(), nestedAddInputCallDetails.get(i).getInput_name(), nestedAddInputCallDetails.get(i).getInput_code(), String.valueOf(finalCount), String.valueOf(finalCount), nestedAddInputCallDetails.get(i).getInp_qty()));
+                        }
+                    }
                 }
             }
 
-            adapterInputAdditionalCall = new AdapterInputAdditionalCall(context, AdditionalCallDetailedSide.addInputAdditionalCallArrayList, AdditionalCallDetailedSide.callInputList);
+            adapterInputAdditionalCall = new AdapterInputAdditionalCall(context, AdditionalCallDetailedSide.addInputAdditionalCallArrayList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(activity);
             callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
             callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
@@ -249,11 +297,11 @@ public class SaveAdditionalCallAdapter extends RecyclerView.Adapter<SaveAddition
 
             for (int i = 0; i < nestedAddSampleCallDetails.size(); i++) {
                 if (nestedAddSampleCallDetails.get(i).getCust_code().equalsIgnoreCase(saveAdditionalCalls.get(position).getCode())) {
-                    AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), nestedAddSampleCallDetails.get(i).getPrd_code(), "", nestedAddSampleCallDetails.get(i).getSample_qty()));
+                    AdditionalCallDetailedSide.addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(nestedAddSampleCallDetails.get(i).getCust_name(), nestedAddSampleCallDetails.get(i).getCust_code(), nestedAddSampleCallDetails.get(i).getPrd_name(), nestedAddSampleCallDetails.get(i).getPrd_code(), nestedAddSampleCallDetails.get(i).getBalance_stock(), nestedAddSampleCallDetails.get(i).getLast_stock(), nestedAddSampleCallDetails.get(i).getSample_qty(), nestedAddSampleCallDetails.get(i).getCategory()));
                 }
             }
 
-            adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(context, AdditionalCallDetailedSide.addSampleAdditionalCallArrayList, AdditionalCallDetailedSide.callSampleList);
+            adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(context, AdditionalCallDetailedSide.addSampleAdditionalCallArrayList);
             RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(activity);
             callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerprd);
             callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);

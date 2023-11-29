@@ -156,9 +156,20 @@
     <string name="worktype">WorkType</string>
     <string name="other_wt">Other WorkType</string>
     <string name="toast_enter_reason_for_reject">Enter reason for Reject</string>
+    <string name="toast_enter_remarks">Enter Remarks</string>
 
     <string name="app_version" translatable="false">1.0.0</string>
     <string name="apply">Apply</string>
+    <string name="headquarter">Headquarter</string>
+    <string name="my_resource">My Resource</string>
+    <string name="description">Description</string>
+    <string name="chemist_selection">Chemist Selection</string>
+    <string name="product_selection">Product Selection</string>
+    <string name="ent_company_name">Enter Company Name</string>
+    <string name="comp_company">Competitor Company</string>
+    <string name="input_selection">Input Selection</string>
+    <string name="add_prd_inp"><![CDATA[Add Product & Input]]></string>
+    <string name="product">Product</string>
 
 
 </resources>
