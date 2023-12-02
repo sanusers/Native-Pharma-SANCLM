@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.tourPlan.session;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,30 +11,26 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.tourPlan.model.EditModelClass;
 
 public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.MyViewHolder> implements Filterable {
 
-    private JSONArray jsonArray = new JSONArray();
-    private JSONArray forFilter ;
-    private JSONArray supportArray = new JSONArray();
-    JSONObject jsonObject = null;
+    ArrayList<EditModelClass> arrayList = new ArrayList<>();
+    ArrayList<EditModelClass> arrayForFilter = new ArrayList<>();
+    ArrayList<EditModelClass> supportModelArray = new ArrayList<>();
     private boolean checkBoxVisibility = false;
-
     private ValueFilter valueFilter;
     SessionItemInterface sessionItemInterface;
-
     public SessionItemAdapter (){
 
     }
 
-    public SessionItemAdapter (JSONArray arrayList, boolean checkBoxVisibility, SessionItemInterface sessionItemInterface) {
-        this.jsonArray = arrayList;
-        this.forFilter = arrayList;
+    public SessionItemAdapter(ArrayList<EditModelClass> arrayList, boolean checkBoxVisibility, SessionItemInterface sessionItemInterface) {
+        this.arrayList = arrayList;
+        this.arrayForFilter = arrayList;
         this.checkBoxVisibility = checkBoxVisibility;
         this.sessionItemInterface = sessionItemInterface;
     }
@@ -49,35 +44,26 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
 
     @Override
     public void onBindViewHolder (@NonNull SessionItemAdapter.MyViewHolder holder, int position) {
-        String text = "";
-        try {
-            jsonObject = jsonArray.getJSONObject(holder.getAbsoluteAdapterPosition());
-            text = jsonObject.getString("Name");
-            holder.checkBox.setChecked(jsonObject.getBoolean("isChecked"));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        EditModelClass editModelClass = arrayList.get(holder.getAbsoluteAdapterPosition());
 
         if (!checkBoxVisibility){
             holder.checkBox.setVisibility(View.GONE);
         }
-        holder.textView.setText(text);
+        holder.textView.setText(editModelClass.getName());
+        holder.checkBox.setChecked(editModelClass.isChecked());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                try{
-                    if (!holder.checkBox.isChecked()){
-                        holder.checkBox.setChecked(true);
-                        jsonArray.getJSONObject(holder.getAbsoluteAdapterPosition()).put("isChecked",true);
-                    }else{
-                        holder.checkBox.setChecked(false);
-                        jsonArray.getJSONObject(holder.getAbsoluteAdapterPosition()).put("isChecked",false);
-                    }
-                    sessionItemInterface.itemClicked(jsonArray, jsonArray.getJSONObject(holder.getAbsoluteAdapterPosition()));
-                }catch (JSONException e) {
-                    throw new RuntimeException(e);
+
+                if (!holder.checkBox.isChecked()){
+                    holder.checkBox.setChecked(true);
+                    arrayList.get(holder.getAbsoluteAdapterPosition()).setChecked(true);
+                }else{
+                    holder.checkBox.setChecked(false);
+                    arrayList.get(holder.getAbsoluteAdapterPosition()).setChecked(false);
                 }
+                sessionItemInterface.itemClicked(arrayList, arrayList.get(holder.getAbsoluteAdapterPosition()));
             }
         });
 
@@ -85,7 +71,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
 
     @Override
     public int getItemCount () {
-        return jsonArray.length();
+        return arrayList.size();
     }
 
     @Override
@@ -113,33 +99,30 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results=new FilterResults();
-            try {
-                JSONArray filteredArray=new JSONArray();
-                if(charSequence!=null && charSequence.length() > 0){
-                    supportArray = new JSONArray();
-                    for(int i = 0; i< jsonArray.length(); i++){
-                        if((jsonArray.getJSONObject(i).getString("Name").toUpperCase()).contains(charSequence.toString().toUpperCase())) {
-                            filteredArray.put(jsonArray.getJSONObject(i));
-                            supportArray.put(jsonArray.getJSONObject(i));
-                        }
+
+            ArrayList<EditModelClass> filteredModelArray = new ArrayList<>();
+            if(charSequence!=null && charSequence.length() > 0){
+                supportModelArray = new ArrayList<>();
+                for(int i = 0; i< arrayList.size(); i++){
+                    if((arrayList.get(i).getName().toUpperCase()).contains(charSequence.toString().toUpperCase())) {
+                        filteredModelArray.add(arrayList.get(i));
+                        supportModelArray.add(arrayList.get(i));
                     }
-                    results.count=filteredArray.length();
-                    results.values=filteredArray;
-                }else{
-                    for (int i=0;i<supportArray.length();i++){
-                        if (supportArray.getJSONObject(i).getBoolean("isChecked")){
-                            for (int j=0;j<forFilter.length();j++){
-                                if (forFilter.getJSONObject(j).getString("Code").equalsIgnoreCase(supportArray.getJSONObject(i).getString("Code"))){
-                                    forFilter.getJSONObject(j).put("isChecked",supportArray.getJSONObject(i).getBoolean("isChecked"));
-                                }
+                }
+                results.count=filteredModelArray.size();
+                results.values=filteredModelArray;
+            }else{
+                for (int i=0;i<supportModelArray.size();i++){
+                    if (supportModelArray.get(i).isChecked()){
+                        for (int j=0;j<arrayForFilter.size();j++){
+                            if (arrayForFilter.get(j).getCode().equalsIgnoreCase(supportModelArray.get(i).getCode())){
+                                arrayForFilter.get(j).setChecked(supportModelArray.get(i).isChecked());
                             }
                         }
                     }
-                    results.count=forFilter.length();
-                    results.values=forFilter;
                 }
-            } catch (JSONException e){
-                throw new RuntimeException(e);
+                results.count=arrayForFilter.size();
+                results.values=arrayForFilter;
             }
 
             return results;
@@ -149,10 +132,11 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            jsonArray = (JSONArray) results.values;
+            arrayList = (ArrayList<EditModelClass>) results.values;
             notifyDataSetChanged();
         }
     }
+
 
 
 }

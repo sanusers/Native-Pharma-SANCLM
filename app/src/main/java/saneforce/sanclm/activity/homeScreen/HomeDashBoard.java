@@ -60,7 +60,8 @@ import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.myresource.MyResource_Activity;
-import saneforce.sanclm.activity.presentation.PresentationActivity;
+import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
+import saneforce.sanclm.activity.reports.ReportsActivity;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.GPSTrack;
@@ -84,7 +85,6 @@ import saneforce.sanclm.storage.SharedPref;
 
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-
 
    public static  ActivityHomeDashBoardBinding homeDashBoardBinding;
     public static ViewPager2 viewPager;
@@ -278,6 +278,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         });
 
         pre_layout.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class)));
+        report_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class));
+            }
+        });
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         masterSync.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));

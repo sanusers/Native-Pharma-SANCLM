@@ -205,7 +205,7 @@
                                             android:layout_alignParentRight="true"
                                             android:layout_centerInParent="true"
                                             android:layout_marginRight="@dimen/_6sdp"
-                                            android:src="@drawable/calendar1" />
+                                            android:src="@drawable/calendar_img" />
 
                                     </RelativeLayout>
 
@@ -243,7 +243,7 @@
                                             android:layout_alignParentEnd="true"
                                             android:layout_centerInParent="true"
                                             android:layout_marginRight="13dp"
-                                            android:src="@drawable/calendar1" />
+                                            android:src="@drawable/calendar_img" />
                                     </RelativeLayout>
                                 </LinearLayout>
                             </LinearLayout>

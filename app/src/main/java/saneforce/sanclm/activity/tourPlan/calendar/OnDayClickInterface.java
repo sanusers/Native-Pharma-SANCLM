@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.tourPlan.calendar;
 
-import saneforce.sanclm.activity.tourPlan.ModelClass;
+import saneforce.sanclm.activity.tourPlan.model.ModelClass;
 
 public interface OnDayClickInterface {
 

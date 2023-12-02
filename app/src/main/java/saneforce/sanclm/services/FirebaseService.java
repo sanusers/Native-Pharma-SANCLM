@@ -56,13 +56,6 @@ public class FirebaseService extends FirebaseMessagingService {
         notificationId = random.nextInt(1000);
 
         createNotification();
-
-    }
-
-    public boolean isAppInForeground () {
-        ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(appProcessInfo);
-        return (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND || appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE);
     }
 
     public void createNotification(){

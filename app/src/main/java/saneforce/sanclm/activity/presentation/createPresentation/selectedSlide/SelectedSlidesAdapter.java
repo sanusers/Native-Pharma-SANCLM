@@ -89,12 +89,14 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
             }
         });
 
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick (View view) {
-//                Log.e("test","arrayList : " + new Gson().toJson(arrayList));
-//            }
-//        });
+        holder.dragIcon.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick (View view) {
+                itemDragListener.requestDrag(holder);
+                return false;
+            }
+        });
+
 
 
     }
@@ -119,7 +121,6 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
             deleteIcon = itemView.findViewById(R.id.deleteIcon);
             dragIcon = itemView.findViewById(R.id.dragIcon);
             rowView = itemView;
-
         }
 
     }
@@ -143,7 +144,7 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
                     return;
                 }
                 case "zip" :{
-                    bitmap = SupportClass.getFileFromZip(file.getAbsolutePath());
+                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(),"image"));
                     if (bitmap != null)
                         Glide.with(context).asBitmap().load(bitmap).into(holder.slideImage);
                     return;
@@ -159,7 +160,6 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
 
     @Override
     public void onRowMoved(int fromPosition, int toPosition) {
-//        Log.e("test",arrayList.get(fromPosition).getBrandName() + "-" + fromPosition + "  " + arrayList.get(toPosition).getBrandName() + "-" + toPosition);
         arrayList.get(fromPosition).setDraggedPosition(toPosition);
         arrayList.get(toPosition).setDraggedPosition(fromPosition);
 

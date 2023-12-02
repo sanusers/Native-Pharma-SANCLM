@@ -190,6 +190,7 @@
             android:layout_marginEnd="@dimen/_3sdp"/>
 
         <EditText
+            android:id="@+id/presentation_name_et"
             android:layout_weight="1.4"
             android:layout_width="@dimen/_10sdp"
             android:layout_height="match_parent"
@@ -254,12 +255,14 @@
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/white"
                     android:fontFamily="@font/satoshi_variable"
-                    android:background="@drawable/edittext_stroke"
                     app:backgroundTint="@color/text_dark"
                     android:padding="@dimen/_5sdp"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    android:background="@drawable/tp_btn_select_state"
                     tools:ignore="SpUsage"/>
+<!--                android:background="@drawable/edittext_stroke"-->
+
 
             </LinearLayout>
 

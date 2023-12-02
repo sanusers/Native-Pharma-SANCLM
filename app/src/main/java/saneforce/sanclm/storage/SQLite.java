@@ -16,9 +16,11 @@ import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanclm.response.LoginResponse;
 
 
@@ -234,28 +236,55 @@ public class SQLite extends SQLiteOpenHelper {
 
 
     //--------------Presentation Table-------------------
-
-    public void savePresentation(String name, String data){
+    public void savePresentation(String oldName,String newName, String data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(PRESENTATION_NAME,name);
+        contentValues.put(PRESENTATION_NAME,newName);
         contentValues.put(PRESENTATION_DATA,data);
 
-        db.insert(PRESENTATION_TABLE,null,contentValues);
+        if (!oldName.isEmpty()){
+            String[] args = new String[]{oldName};
+            int updated = db.update(PRESENTATION_TABLE,contentValues,PRESENTATION_NAME + "=?",args);
+            if (updated <= 0){
+                db.insert(PRESENTATION_TABLE,null,contentValues);
+            }
+        }else{
+            db.insert(PRESENTATION_TABLE,null,contentValues);
+        }
+
         db.close();
     }
 
-    public String getPresentationData(){
+    public ArrayList<BrandModelClass.Presentation> getPresentationData(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor =  db.rawQuery("select * from " + PRESENTATION_TABLE ,null);
         String data = "";
-        if (cursor.moveToNext()){
+        ArrayList<BrandModelClass.Presentation> arrayList = new ArrayList<>();
+        while(cursor.moveToNext()){
             data = cursor.getString(1);
+            if (data != null){
+                Type type = new TypeToken<BrandModelClass.Presentation>(){}.getType();
+                BrandModelClass.Presentation presentations = new Gson().fromJson(data,type);
+                arrayList.add(presentations);
+            }
         }
-        return data;
+        return arrayList;
     }
 
-    // insertdata Linechart
+    public boolean presentationExists(String presentationName){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + PRESENTATION_TABLE + " where " + PRESENTATION_NAME + "='"  + presentationName + "';",null);
+        return cursor.moveToNext();
+    }
+
+    public boolean presentationDelete(String presentationName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete( PRESENTATION_TABLE ,PRESENTATION_NAME + "='" + presentationName +"'",null) > 0;
+    }
+
+    //---------------------------------------------
+
+    // insertdata Li nechart
     public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode,
                                    String townName, String dcrFlag, String sfCode, String transSlNo, String amslNo,String fw_indicater) {
         SQLiteDatabase db = this.getWritableDatabase();

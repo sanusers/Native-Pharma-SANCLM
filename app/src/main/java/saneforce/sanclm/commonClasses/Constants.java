@@ -46,7 +46,9 @@ public class Constants {
     public static final String WEEKLY_OFF = "Weekly Off";
 
     //TP
-    public static final String TP_PLAN = "Tour Plan";
+    public static final String TOUR_PLAN = "Tour Plan";
+    public static final String TP_SETUP = "Tour Plan Setup";
+
 
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";

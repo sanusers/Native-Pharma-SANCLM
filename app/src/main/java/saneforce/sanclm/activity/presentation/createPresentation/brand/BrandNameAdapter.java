@@ -65,6 +65,10 @@ public class BrandNameAdapter extends RecyclerView.Adapter<BrandNameAdapter.MyVi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                for (int i=0;i<arrayList.size();i++){
+                    arrayList.get(i).setBrandSelected(false);
+                }
+                arrayList.get(holder.getAbsoluteAdapterPosition()).setBrandSelected(true);
                 brandNameInterFace.onBrandClick(arrayList,holder.getAbsoluteAdapterPosition());
             }
         });

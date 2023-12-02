@@ -56,4 +56,26 @@ public class SupportClass {
 
         return bitmap;
     }
+
+    public static String getFileFromZip(String filePath,String fileType){
+
+        String path = filePath.replaceAll(".zip","");
+        File file = new File(path);
+        File[] files=file.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                if (fileType.equalsIgnoreCase("image")){
+                    return filename.contains(".png")||filename.contains(".jpg");
+                }else if (fileType.equalsIgnoreCase("html")) {
+                    return filename.contains(".html");
+                }
+                return false;
+            }
+        });
+
+        if (files != null && files.length > 0)
+            return files[0].getAbsolutePath();
+
+        return "";
+    }
 }

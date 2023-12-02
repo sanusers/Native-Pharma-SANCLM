@@ -1,21 +1,24 @@
 package saneforce.sanclm.activity.tourPlan.summary;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.tourPlan.ModelClass;
+import saneforce.sanclm.activity.tourPlan.model.ModelClass;
 
 public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHolder> {
 
@@ -41,6 +44,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder (@NonNull SummaryAdapter.MyViewHolder holder, int position) {
         ModelClass modelClasses = arrayList.get(holder.getAbsoluteAdapterPosition());
@@ -51,6 +55,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
             for (int i=0;i<modelClasses.getSessionList().size();i++){
                 modelClass = modelClasses.getSessionList().get(i);
                 holder.workTypeModelArray.add(modelClass.getWorkType());
+                holder.hqModelArray.add(modelClass.getHQ());
                 holder.clusterCount += modelClass.getCluster().size();
                 holder.jwCount += modelClass.getJC().size();
                 holder.drCount += modelClass.getListedDr().size();
@@ -67,15 +72,35 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                     holder.workTypeNames.add(workType.getName());
             }
 
-            if (holder.workTypeNames.size() == 0){
-                holder.itemView.setVisibility(View.GONE);
-                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-            }else {
-                holder.itemView.setVisibility(View.VISIBLE);
-                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//            if (holder.workTypeNames.size() == 0){ // if it has no workType means No tour plan has added yet for this date,So hide the item from recycler view list
+//                holder.itemView.setVisibility(View.GONE);
+//                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+//            }else {
+//                holder.itemView.setVisibility(View.VISIBLE);
+//                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                if (holder.workTypeModelArray.size() == 1){
+                    holder.workType.setText(holder.workTypeModelArray.get(0).getName());
+                    holder.hqName.setText(holder.hqModelArray.get(0).getName());
+                    holder.workTypeLayout2.setVisibility(View.GONE);
+                    holder.workTypeLayout3.setVisibility(View.GONE);
+                }else if (holder.workTypeModelArray.size() == 2){
+                    holder.workTypeLayout3.setVisibility(View.GONE);
+                    holder.workType.setText(holder.workTypeModelArray.get(0).getName());
+                    holder.hqName.setText(holder.hqModelArray.get(0).getName());
+                    holder.workType2.setText(holder.workTypeModelArray.get(1).getName());
+                    holder.hqName2.setText(holder.hqModelArray.get(1).getName());
+                }else if (holder.workTypeModelArray.size() == 3){
+                    holder.workType.setText(holder.workTypeModelArray.get(0).getName());
+                    holder.hqName.setText(holder.hqModelArray.get(0).getName());
+                    holder.workType2.setText(holder.workTypeModelArray.get(1).getName());
+                    holder.hqName2.setText(holder.hqModelArray.get(1).getName());
+                    holder.workType3.setText(holder.workTypeModelArray.get(2).getName());
+                    holder.hqName3.setText(holder.hqModelArray.get(2).getName());
+                }
 
                 boolean onlyHoliday = false;
-                for (String workType : holder.workTypeNames){
+                for (String workType : holder.workTypeNames){ // to find the work types among sessions are only holiday/weeklyOff are combinations of any other work types
                     if (workType.equalsIgnoreCase("Holiday") || workType.equalsIgnoreCase("Weekly Off")){
                         onlyHoliday = true;
                     } else {
@@ -84,30 +109,8 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                     }
                 }
 
-                StringBuilder workTypeNameBuilder = new StringBuilder();
-                for (String workType : holder.workTypeNames){
-                    if (workTypeNameBuilder.length() == 0){
-                        workTypeNameBuilder = new StringBuilder(workType);
-                    }else {
-                        workTypeNameBuilder.append(" ,    ").append(workType);
-                    }
-                }
-
-                holder.workType.setText(workTypeNameBuilder);
-//                if (onlyHoliday){
-//                    holder.iconLayout1.setVisibility(View.GONE);
-//                    holder.iconLayout2.setVisibility(View.GONE);
-//                } else {
-//                    holder.cluster.setText(String.valueOf(holder.clusterCount));
-//                    holder.jointWork.setText(String.valueOf(holder.jwCount));
-//                    holder.listedDr.setText(String.valueOf(holder.drCount));
-//                    holder.chemist.setText(String.valueOf(holder.chemistCount));
-//                    holder.stockiest.setText(String.valueOf(holder.stockiestCount));
-//                    holder.unListedDr.setText(String.valueOf(holder.unListedDrCount));
-//                    holder.cip.setText(String.valueOf(holder.cipCount));
-//                    holder.hospital.setText(String.valueOf(holder.hospitalCount));
-//                }
-
+                //If work type is holiday/weeklyOff then no need to show any master icons and counts(some times there may be multiple sessions includes holiday/weeklyOff)
+                //else show the icon with number of quantity
                 if (!onlyHoliday) {
                     ArrayList<ModelClass.CountModel> countModel = new ArrayList<>();
 
@@ -155,10 +158,8 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
                     RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context,5);
                     holder.recyclerView.setLayoutManager(layoutManager);
                     holder.recyclerView.setAdapter(summaryIconAdapter);
-                    summaryIconAdapter.notifyDataSetChanged();
-
                 }
-            }
+//            }
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -166,6 +167,16 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
             public void onClick (View view) {
                 ModelClass modelClass = new ModelClass(arrayList.get(holder.getAbsoluteAdapterPosition()));
                 summaryInterface.onClick(modelClass,holder.getAbsoluteAdapterPosition());
+            }
+        });
+
+        holder.recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                    return view.performClick();
+                else
+                    return false;
             }
         });
 
@@ -186,29 +197,28 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView date,workType,cluster,jointWork,listedDr,chemist,stockiest,unListedDr,cip,hospital;
+        TextView date,workType,workType2,workType3,hqName,hqName2,hqName3;
         int clusterCount = 0,jwCount = 0,drCount = 0, chemistCount = 0,stockiestCount = 0,unListedDrCount = 0,cipCount = 0,hospitalCount = 0;
-        LinearLayout iconLayout1,iconLayout2;
+        LinearLayout workTypeLayout2,workTypeLayout3;
         RecyclerView recyclerView;
         ArrayList<ModelClass.SessionList.WorkType> workTypeModelArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> hqModelArray = new ArrayList<>();
+
         ArrayList<String> workTypeNames = new ArrayList<>();
 
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             date = itemView.findViewById(R.id.date);
             workType = itemView.findViewById(R.id.workTypeLabel);
+            workType2 = itemView.findViewById(R.id.workTypeLabel2);
+            workType3 = itemView.findViewById(R.id.workTypeLabel3);
+            hqName = itemView.findViewById(R.id.hqName);
+            hqName2 = itemView.findViewById(R.id.hqName2);
+            hqName3 = itemView.findViewById(R.id.hqName3);
+
             recyclerView = itemView.findViewById(R.id.summaryIconRecView);
-//            cluster = itemView.findViewById(R.id.clusterCount);
-//            jointWork = itemView.findViewById(R.id.jwCount);
-//            listedDr = itemView.findViewById(R.id.listedDrCount);
-//            chemist = itemView.findViewById(R.id.chemistCount);
-//            stockiest = itemView.findViewById(R.id.stockiestCount);
-//            unListedDr = itemView.findViewById(R.id.unListedDrCount);
-//            cip = itemView.findViewById(R.id.cipCount);
-//            hospital = itemView.findViewById(R.id.hospCount);
-//
-//            iconLayout1 = itemView.findViewById(R.id.iconLayout1);
-//            iconLayout2 = itemView.findViewById(R.id.iconLayout2);
+            workTypeLayout2 = itemView.findViewById(R.id.workType2);
+            workTypeLayout3 = itemView.findViewById(R.id.workType3);
 
         }
     }

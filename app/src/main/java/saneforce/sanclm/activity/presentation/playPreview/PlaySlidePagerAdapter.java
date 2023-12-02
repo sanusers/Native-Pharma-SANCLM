@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -39,14 +41,13 @@ public class PlaySlidePagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
 
         ImageView imageView = sliderLayout.findViewById(R.id.imageView);
         getFromFilePath(productArrayList.get(position).getFileName(),imageView);
-
         container.addView(sliderLayout);
+
         return sliderLayout;
     }
 
@@ -61,11 +62,12 @@ public class PlaySlidePagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
-        return view == o;
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+        return view == object;
     }
 
     public void getFromFilePath(String fileName, ImageView imageView){
+
         File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
         if (file.exists()){
             String fileFormat = SupportClass.getFileExtension(fileName);
@@ -84,7 +86,7 @@ public class PlaySlidePagerAdapter extends PagerAdapter {
                     return;
                 }
                 case "zip" :{
-                    bitmap = SupportClass.getFileFromZip(file.getAbsolutePath());
+                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(),"image"));
                     if (bitmap != null)
                         Glide.with(context).asBitmap().load(bitmap).into(imageView);
                     return;

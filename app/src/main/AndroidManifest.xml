@@ -9,6 +9,9 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -19,9 +22,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -50,11 +50,18 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.presentation.playPreview.PlaySlidePreviewActivity"
-            android:exported="false" />
+            android:name=".activity.reports.ReportFragContainerActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".activity.presentation.preview.PresentationPreviewActivity"
-            android:exported="false" />
+            android:name=".activity.reports.ReportsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.presentation.playPreview.PlaySlidePreviewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.approvals.tp.TpApprovalActivity"
             android:exported="false"
@@ -90,14 +97,9 @@
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
-            android:exported="true"
-            android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="saneforce.sanclm.activity.tourPlan.TourPlanActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.masterSync.MasterSyncActivity"
             android:exported="false"
@@ -161,7 +163,7 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
-            android:name=".activity.presentation.PresentationActivity"
+            android:name=".activity.presentation.presentation.PresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
@@ -169,9 +171,9 @@
             android:name=".activity.presentation.createPresentation.CreatePresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".activity.SplashScreen"
+            android:name=".activity.splash.SplashScreen"
             android:exported="true"
             android:screenOrientation="landscape">
             <intent-filter>
@@ -195,10 +197,6 @@
 
         <activity
             android:name=".activity.myresource.MyResource_mapview"
-            android:exported="false"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".activity.changepassword.Change_passwordActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity

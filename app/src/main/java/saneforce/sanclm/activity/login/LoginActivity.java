@@ -125,6 +125,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick (View view) {
                 sqLite.deleteAllTable();
+                File apkStorage = new File(LoginActivity.this.getExternalFilesDir(null) + "/Slides/");
+                if (apkStorage.exists() && apkStorage.isDirectory()) {
+                    File[] files = apkStorage.listFiles();
+                    if (files != null) {
+                        for (File file : files) {
+                            file.delete();
+                        }
+                    }
+                }
+
                 SharedPref.saveLoginState(getApplicationContext(), false);
                 SharedPref.saveSettingState(getApplicationContext(), false);
                 startActivity(new Intent(LoginActivity.this, SettingsActivity.class));

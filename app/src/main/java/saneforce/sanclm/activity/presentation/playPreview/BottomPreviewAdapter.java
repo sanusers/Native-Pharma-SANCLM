@@ -11,12 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -30,10 +33,12 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
 
     Context context;
     ArrayList<BrandModelClass.Product> arrayList = new ArrayList<>();
+    ViewPager viewPager;
 
-    public BottomPreviewAdapter (Context context, ArrayList<BrandModelClass.Product> arrayList) {
+    public BottomPreviewAdapter (Context context, ArrayList<BrandModelClass.Product> arrayList, ViewPager viewPager) {
         this.context = context;
         this.arrayList = arrayList;
+        this.viewPager = viewPager;
     }
 
     @NonNull
@@ -46,7 +51,18 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
     @Override
     public void onBindViewHolder (@NonNull BottomPreviewAdapter.MyViewHolder holder, int position) {
         getFromFilePath(arrayList.get(holder.getAbsoluteAdapterPosition()).getFileName(),holder.imageView);
-        Log.e("test","BottomPreviewAdapter onBindViewHolder");
+
+        holder.itemView.setSelected(viewPager.getCurrentItem() == holder.getAbsoluteAdapterPosition());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                viewPager.setCurrentItem(holder.getAbsoluteAdapterPosition());
+                PlaySlidePreviewActivity activity = (PlaySlidePreviewActivity) context;
+                activity.startTimer();
+            }
+        });
+
+
     }
 
     @Override
@@ -56,6 +72,7 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
+
         public MyViewHolder (@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
@@ -66,7 +83,6 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
         File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
         if (file.exists()){
             String fileFormat = SupportClass.getFileExtension(fileName);
-//            Log.e("test","file format is :" + fileFormat);
             Bitmap bitmap = null;
             switch (fileFormat){
                 case "jpg" :
@@ -82,7 +98,7 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
                     return;
                 }
                 case "zip" :{
-                    bitmap = SupportClass.getFileFromZip(file.getAbsolutePath());
+                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(),"image"));
                     if (bitmap != null)
                         Glide.with(context).asBitmap().load(bitmap).into(imageView);
                     return;
@@ -94,6 +110,7 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
             }
         }
     }
+
 
 
 }

@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.tourPlan.session;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.tourPlan.ModelClass;
+import saneforce.sanclm.activity.tourPlan.model.ModelClass;
 
 public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.MyViewHolder> {
 

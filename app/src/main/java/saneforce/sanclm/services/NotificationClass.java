@@ -99,31 +99,8 @@ public class NotificationClass extends ContextWrapper {
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             getImageFromUrl(imageUrl);
-//            Bitmap bitmap = getBitmapFromURL(imageUrl);
-//            NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
-//            bigPictureStyle.setBigContentTitle(title);
-//            bigPictureStyle.setSummaryText(Html.fromHtml(body).toString());
-//
-//            bigPictureStyle.bigPicture(bitmap);
-//            notificationBuilder.setStyle(bigPictureStyle);
-//            notificationManager.notify(notificationId, notificationBuilder.build());
         } else {
             notificationManager.notify(notificationId, notificationBuilder.build());
-        }
-
-    }
-
-    private Bitmap getBitmapFromURL (String strURL) {
-        try {
-            URL url = new URL(strURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -134,10 +111,7 @@ public class NotificationClass extends ContextWrapper {
             @Override
             public void onResourceReady (@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 bitmap[0] = resource;
-
                 NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
-//                bigPictureStyle.setBigContentTitle(title);
-//                bigPictureStyle.setSummaryText(Html.fromHtml(body).toString());
                 bigPictureStyle.bigPicture(bitmap[0]);
                 notificationBuilder.setStyle(bigPictureStyle);
                 notificationManager.notify(notificationId, notificationBuilder.build());

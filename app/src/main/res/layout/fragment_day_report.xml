@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/_6sdp"
+    android:background="@color/background"
+    tools:context=".activity.reports.dayReport.DayReportFragment">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/calender"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/black_stroke">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="01 Dec 2023"
+                android:textSize="@dimen/_6sdp"
+                android:textColor="@color/text_dark"
+                android:fontFamily="@font/satoshi_medium"
+                android:layout_gravity="center"
+                android:padding="@dimen/_5sdp"
+                tools:ignore="SpUsage"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_stroke"
+                android:backgroundTint="@color/text_dark"
+                android:layout_margin="1dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/calendar_img"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    app:tint="@color/white"
+                    android:background="@color/text_dark" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/_5sdp">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_stroke"
+                android:backgroundTint="@color/white">
+
+                <ImageView
+                    android:layout_width="@dimen/_6sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:src="@drawable/search_icon_gray"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:layout_marginStart="@dimen/_5sdp"/>
+
+                <EditText
+                    android:layout_weight="1"
+                    android:id="@+id/searchET"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Search"
+                    android:textColorHint="@color/text_dark_65"
+                    android:textSize="@dimen/_6sdp"
+                    android:textColor="@color/text_dark_65"
+                    android:singleLine="true"
+                    android:background="@null"
+                    android:gravity="start|center"
+                    android:padding="@dimen/_5sdp"
+                    tools:ignore="SpUsage"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:background="@drawable/black_stroke"
+                android:backgroundTint="@color/text_dark"
+                android:padding="@dimen/_5sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/report_sort_icon"
+                    app:tint="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dayReportRecView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/linearLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/_2sdp"/>
+
+</RelativeLayout>

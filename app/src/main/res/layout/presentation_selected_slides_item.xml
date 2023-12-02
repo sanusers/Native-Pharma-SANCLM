@@ -57,7 +57,7 @@
                         android:id="@+id/slideImage"
                         android:layout_width="@dimen/_25sdp"
                         android:layout_height="@dimen/_20sdp"
-                        android:src="@drawable/san_icon"
+                        android:src="@drawable/no_image"
                         android:scaleType="fitXY"
                         android:layout_gravity="center" />
 

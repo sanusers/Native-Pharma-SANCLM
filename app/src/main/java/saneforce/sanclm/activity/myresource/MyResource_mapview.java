@@ -17,20 +17,16 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,7 +58,6 @@ import java.util.List;
 import java.util.Locale;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.storage.SQLite;
@@ -282,7 +277,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
                             DCr_icons.setImageDrawable(drawable);
                         } else if (val.equals("3")) {
                             DCr_icons = findViewById(R.id.DCr_icons);
-                            Drawable drawable = getResources().getDrawable(R.drawable.tp_stockiest_icon);
+                            Drawable drawable = getResources().getDrawable(R.drawable.tp_cip_icon);
                             DCr_icons.setImageDrawable(drawable);
                         } else if (val.equals("4")) {
                             DCr_icons = findViewById(R.id.DCr_icons);
@@ -436,7 +431,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
 
         } else if (Dcr_val.equals("3")) {
             DCr_icons = findViewById(R.id.DCr_icons);
-            Drawable drawable = getResources().getDrawable(R.drawable.tp_stockiest_icon);
+            Drawable drawable = getResources().getDrawable(R.drawable.tp_cip_icon);
             DCr_icons.setImageDrawable(drawable);
 
         } else if (Dcr_val.equals("4")) {

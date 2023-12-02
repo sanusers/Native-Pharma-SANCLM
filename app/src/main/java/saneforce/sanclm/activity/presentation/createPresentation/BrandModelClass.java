@@ -1,5 +1,7 @@
 package saneforce.sanclm.activity.presentation.createPresentation;
 
+import android.widget.ArrayAdapter;
+
 import java.util.ArrayList;
 
 public class BrandModelClass {
@@ -71,22 +73,53 @@ public class BrandModelClass {
         this.productArrayList = productArrayList;
     }
 
+    public static class Presentation {
+        String presentationName = "";
+        ArrayList<Product> products = new ArrayList<>();
+
+        public Presentation () {
+        }
+
+        public Presentation (String presentationName, ArrayList<Product> products) {
+            this.presentationName = presentationName;
+            this.products = products;
+        }
+
+        public String getPresentationName () {
+            return presentationName;
+        }
+
+        public void setPresentationName (String presentationName) {
+            this.presentationName = presentationName;
+        }
+
+        public ArrayList<Product> getProducts () {
+            return products;
+        }
+
+        public void setProducts (ArrayList<Product> products) {
+            this.products = products;
+        }
+    }
+
     public static class Product implements Comparable<Product>{
         String brandCode = "";
         String brandName = "";
         String slideId = "";
         String fileName = "";
+        String priority = "";
         boolean imageSelected = false;
         int draggedPosition = -1;
 
         public Product () {
         }
 
-        public Product (String brandCode, String brandName, String slideId, String fileName, boolean imageSelected) {
+        public Product(String brandCode, String brandName, String slideId, String fileName, String priority, boolean imageSelected) {
             this.brandCode = brandCode;
             this.brandName = brandName;
             this.slideId = slideId;
             this.fileName = fileName;
+            this.priority = priority;
             this.imageSelected = imageSelected;
         }
 
@@ -120,6 +153,14 @@ public class BrandModelClass {
 
         public void setFileName (String fileName) {
             this.fileName = fileName;
+        }
+
+        public String getPriority() {
+            return priority;
+        }
+
+        public void setPriority(String priority) {
+            this.priority = priority;
         }
 
         public boolean isImageSelected () {

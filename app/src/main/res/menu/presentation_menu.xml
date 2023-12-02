@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
         <item
-            android:id="@+id/nav_play"
+            android:id="@+id/menuPlay"
             android:title="Play" />
 
 
         <item
-            android:id="@+id/nav_edit"
+            android:id="@+id/menuEdit"
             android:title="Edit" />
 
     <item
-        android:id="@+id/nav_delete"
+        android:id="@+id/menuDelete"
         android:title="Delete" />
 
 </menu>

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -125,7 +126,7 @@ public class SlideImageAdapter extends RecyclerView.Adapter<SlideImageAdapter.My
                     return;
                 }
                 case "zip" :{
-                    bitmap = SupportClass.getFileFromZip(file.getAbsolutePath());
+                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(),"image"));
                     if (bitmap != null)
                         Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
                     return;

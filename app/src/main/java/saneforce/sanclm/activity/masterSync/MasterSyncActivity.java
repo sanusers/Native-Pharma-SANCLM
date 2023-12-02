@@ -67,7 +67,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String cheNeed = "",stockiestNeed = "",unListedDrNeed = "",hospNeed = "",cipNeed = "",rcpaNeed = "",tpNeed = "";
 
     int doctorCount = 0,specialityCount = 0,qualificationCount = 0,categoryCount = 0,departmentCount = 0,classCount = 0,feedbackCount = 0;
-    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpCount =0,clusterCount = 0;
+    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0, tpSetupCount =0,clusterCount = 0;
     int dcrCount = 0,visitControlCount= 0,missedDateCount = 0;
     int productCount = 0, proCatCount = 0,brandCount = 0, compProCount = 0, mapComPrdCount = 0;
     int workTypeCount = 0,holidayCount = 0,weeklyOfCount = 0;
@@ -77,7 +77,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     // Api call status
     int doctorStatus = 0,specialityStatus = 0,qualificationStatus = 0,categoryStatus = 0,departmentStatus = 0,classStatus = 0,feedbackStatus = 0;
-    int unlistedDrStatus = 0,chemistStatus = 0,stockiestStatus = 0,hospitalStatus = 0,cipStatus = 0, inputStatus = 0, leaveStatus = 0,leaveStatusStatus = 0,tpStatus =0,clusterStatus = 0;
+    int unlistedDrStatus = 0,chemistStatus = 0,stockiestStatus = 0,hospitalStatus = 0,cipStatus = 0, inputStatus = 0, leaveStatus = 0,leaveStatusStatus = 0, tpSetupStatus =0 , tourPLanStatus = 0,clusterStatus = 0;
     int dcrStatus = 0,myDayPlanStatus = 0,visitControlStatus= 0,missedDateStatus = 0,stockBalanceStatus = 0;
     int productStatus = 0, proCatStatus = 0,brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0;
     int workTypeStatus = 0,holidayStatus = 0,weeklyOfStatus = 0;
@@ -537,7 +537,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
         holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
         weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
-        tpCount = sqLite.getMasterSyncDataByKey(Constants.TP_PLAN).length();
+        tpSetupCount = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP).length();
         productCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length();
         proCatCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT_CATEGORY).length();
         brandCount = sqLite.getMasterSyncDataByKey(Constants.BRAND).length();
@@ -578,7 +578,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
         holidayStatus = sqLite.getMasterSyncStatusByKey(Constants.HOLIDAY);
         weeklyOfStatus = sqLite.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
-        tpStatus = sqLite.getMasterSyncStatusByKey(Constants.TP_PLAN);
+        tpSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.TP_SETUP);
+        tourPLanStatus = sqLite.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
         productStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT);
         proCatStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
         brandStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND);
@@ -693,10 +694,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel dcrModel = new MasterSyncItemModel(Constants.DCR,dcrCount,"Home","gethome",Constants.DCR,dcrStatus,false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,0,Constants.DOCTOR,"gettodaytpnew",Constants.MY_DAY_PLAN,myDayPlanStatus,false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,-1,Constants.DOCTOR,"gettodaytpnew",Constants.MY_DAY_PLAN,myDayPlanStatus,false);
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL,visitControlCount,"AdditionalDcr","getvisit_contro",Constants.VISIT_CONTROL,visitControlStatus,false);
         MasterSyncItemModel missedDateModel = new MasterSyncItemModel(Constants.MISSED_DATE,missedDateCount,"MissedDate","getmissdates",Constants.MISSED_DATE,missedDateStatus,false);
-        MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,0,"AdditionalDcr","getstockbalance",Constants.STOCK_BALANCE_MASTER,stockBalanceStatus,false);
+        MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,-1,"AdditionalDcr","getstockbalance",Constants.STOCK_BALANCE_MASTER,stockBalanceStatus,false);
         dcrModelArray.add(dcrModel);
         dcrModelArray.add(myDayPlanModel);
         dcrModelArray.add(visitControlModel);
@@ -715,8 +716,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Tour Plan
         tpModelArray.clear();
         if (tpNeed.equalsIgnoreCase("0")){
-            MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup",tpCount,Constants.SETUP,"gettpsetup",Constants.TP_PLAN,tpStatus,false);
-            tpModelArray.add(tp);
+            MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, tpSetupCount, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
+            MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, -1, Constants.TOUR_PLAN, "gettpdetail", Constants.TOUR_PLAN, tourPLanStatus, false);
+            tpModelArray.add(tpSetup);
+            tpModelArray.add(tPlan);
         }else
             binding.tourPlan.setVisibility(View.GONE);
 
@@ -947,6 +950,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                         jsonObject.put("ReqDt",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                         break;
                     }
+                    case "gettpdetail" :{
+                        jsonObject.put("Month",TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5,TimeUtils.FORMAT_8,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                        jsonObject.put("Year",TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5,TimeUtils.FORMAT_10,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                        break;
+                    }
                 }
 
 //            Log.e("test","master sync obj : " + jsonObject);
@@ -969,7 +977,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     call = apiInterface.getSlideMaster(jsonObject.toString());
                 }else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
                     call = apiInterface.getSetupMaster(jsonObject.toString());
+                }else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
+                    call = apiInterface.getTP(jsonObject.toString());
                 }
+
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
@@ -985,12 +996,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                                     JsonElement jsonElement = response.body();
                                     if (!jsonElement.isJsonNull()){
                                         if (jsonElement.isJsonArray()){
-                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                             success = true;
                                         } else if (jsonElement.isJsonObject()) {
-                                            JsonObject jsonObject1 = jsonElement.getAsJsonObject();
-                                            JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                            JSONObject jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
                                             if (!jsonObject2.has("success")){ // "success" will not be received when api call is success,response as jsonObject with {"success" : "fail" } will be received only when api call is failed for any reasons
                                                 jsonArray.put(jsonObject2);
                                                 success = true;
@@ -1073,7 +1082,9 @@ public class MasterSyncActivity extends AppCompatActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-        }else{
+        }
+        else{
+            ++apiSuccessCount;
             Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
     }

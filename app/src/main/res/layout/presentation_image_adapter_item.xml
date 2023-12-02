@@ -24,7 +24,7 @@
                 android:id="@+id/slideImage"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_50sdp"
-                android:src="@drawable/san_icon"
+                android:src="@drawable/no_image"
                 android:scaleType="fitXY" />
 
         </androidx.cardview.widget.CardView>

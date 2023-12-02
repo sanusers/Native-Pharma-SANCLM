@@ -44,7 +44,6 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_8sdp" />
 
-
                 <ImageView
                     android:id="@+id/img_notofication"
                     android:layout_width="@dimen/_20sdp"
@@ -54,7 +53,6 @@
                     android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_toLeftOf="@id/img_sync"
                     android:src="@drawable/notification"/>
-
 
                 <ImageView
                     android:id="@+id/img_sync"

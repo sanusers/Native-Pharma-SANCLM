@@ -29,14 +29,14 @@ import saneforce.sanclm.storage.SharedPref;
 
 public  class SlideDownloaderAlertBox {
 
-    public  static  int downloading_count ;
-    public  static TextView txt_downloadcount;
-    public  static  int dialogdismisscount;
+    public static  int downloading_count ;
+    public static TextView txt_downloadcount;
+    public static int dialogdismisscount;
 
     static int totalcount=0;
-    public  static   Slide_adapter  adapter ;
-    public  static   RecyclerView recyclerView ;
-    public  static   Dialog dialog ;
+    public static Slide_adapter adapter ;
+    public static RecyclerView recyclerView ;
+    public static Dialog dialog ;
     static SharedPreferences sharedpreferences;
 
     public static void openCustomDialog(Activity activity,String MoveingFlog ,ArrayList<SlideModelClass> Slide_list) {
@@ -48,7 +48,6 @@ public  class SlideDownloaderAlertBox {
         if(Slide_list.size()>0){
             totalcount=Slide_list.size();
         }
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         View dialogView = LayoutInflater.from(activity).inflate(R.layout.slide_downloader_alert_box, null);
@@ -75,18 +74,14 @@ public  class SlideDownloaderAlertBox {
             String progressValue = slide.getProgressValue();
             String img_size_status = slide.getDownloadSizeStatus();
 
-
             if(!downloadStatus){
 
             String url= "https://"+SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+imageName;
             new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide,MoveingFlog);
-
             }
         }
 
         adapter.notifyDataSetChanged();
-
-
 
         cancel_img.setOnClickListener(new View.OnClickListener() {
             @Override

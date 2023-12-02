@@ -68,16 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         deviceId = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
-        File apkStorage = new File(SettingsActivity.this.getExternalFilesDir(null) + "/Slides/");
 
-        if (apkStorage.exists() && apkStorage.isDirectory()) {
-            File[] files = apkStorage.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    file.delete();
-                }
-            }
-        }
         String[] languages = {"BURMESE","ENGLISH", "FRENCH","MANDARIN", "PORTUGUESE", "SPANISH", "VIETNAMESE" };
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drop_down_spinner_layout, languages);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

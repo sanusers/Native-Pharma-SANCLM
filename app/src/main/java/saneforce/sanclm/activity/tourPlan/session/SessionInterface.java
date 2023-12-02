@@ -1,8 +1,6 @@
 package saneforce.sanclm.activity.tourPlan.session;
 
-import java.util.ArrayList;
-
-import saneforce.sanclm.activity.tourPlan.ModelClass;
+import saneforce.sanclm.activity.tourPlan.model.ModelClass;
 
 public interface SessionInterface {
 

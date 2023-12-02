@@ -5,18 +5,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/_10sdp"
     android:layout_marginBottom="@dimen/_10sdp"
-    android:layout_marginStart="@dimen/_2sdp"
-    android:layout_marginEnd="@dimen/_2sdp"
+    android:layout_marginEnd="@dimen/_1sdp"
     android:layout_gravity="center">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_27sdp"
-        android:scaleType="fitXY"
-        android:src="@drawable/san_icon"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/slide_preview_selector"
+        android:padding="@dimen/_2sdp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_27sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/no_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
