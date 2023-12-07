@@ -46,7 +46,7 @@ public class DetailedFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         rv_detailing_list.setLayoutManager(mLayoutManager);
         rv_detailing_list.setItemAnimator(new DefaultItemAnimator());
-        rv_detailing_list.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        rv_detailing_list.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         rv_detailing_list.setAdapter(detailedCallAdapter);
     }
 }

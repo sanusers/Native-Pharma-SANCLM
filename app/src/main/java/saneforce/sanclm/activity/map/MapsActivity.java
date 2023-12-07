@@ -1,9 +1,12 @@
 package saneforce.sanclm.activity.map;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static java.lang.Double.parseDouble;
+import static java.lang.Double.valueOf;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,7 +20,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -29,6 +31,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -67,6 +73,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Objects;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
@@ -105,7 +112,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static Marker marker;
     public static GoogleMap mMap;
     public static String SelectedTab, SelectedHqCode, SelectedHqName;
-    public static String from_tagging = "", GeoTagImageNeed = "", GeoTagApprovalNeed = "", TaggedLaty, TaggedLngy, TaggedAddr;
+    public static String from_tagging = "", GeoTagImageNeed = "", GeoTagApprovalNeed = "", TaggedLat, TaggedLng, TaggedAdd;
     public static boolean isTagged = false;
     public static ProgressDialog progressDialog = null;
     Uri outputFileUri;
@@ -120,9 +127,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     SetupResponse setUpResponse;
     CustomSetupResponse customSetupResponse;
     String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
-    double laty, lngy, limitKm = 0.5;
+    double lat, lng, limitKm = 0.5;
     Dialog dialogTagCust;
-    CommonUtilsMethods commonUtilsMethods;
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @SuppressLint("SuspiciousIndentation")
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            try {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    String finalPath = "/storage/emulated/0";
+                    // try {
+                    filePath = outputFileUri.getPath();
+                    filePath = filePath.substring(1);
+                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+                    //     String result = String.valueOf(resultCode);
+                    //  if (result.equalsIgnoreCase("-1")) {
+                    DisplayDialog();
+                    //  }
+                }
+            } catch (Exception ignored) {
+
+            }
+        }
+    });
 
     public static double milesToMeters(double miles) {
         return miles * 1609.344;
@@ -141,12 +168,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
-
-    @Override
+ /*   @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String finalPath = "/storage/emulated/0";
@@ -156,12 +178,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         filePath = finalPath + filePath.substring(filePath.indexOf("/"));
         String result = String.valueOf(resultCode);
         if (result.equalsIgnoreCase("-1")) {
-            Log.v("sdssds", "0000");
+
             DisplayDialog();
         }
-       /* } catch (Exception e) {
-            Log.v("sdssds","-error--" +e.toString());
-        }*/
+       *//* } catch (Exception e) {
+
+        }*//*
+    }*/
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -170,11 +197,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
-        commonUtilsMethods = new CommonUtilsMethods(this);
-       // progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
+
         sqLite = new SQLite(getApplicationContext());
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -184,11 +211,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             from_tagging = extra.getString("from");
-            cust_name = extra.getString("cust_name");
-            cust_code = extra.getString("cust_code");
+            cust_name = extra.getString("cus_name");
+            cust_code = extra.getString("cus_code");
             town_code = extra.getString("town_code");
             town_name = extra.getString("town_name");
-            cust_address = extra.getString("cust_addr");
+            cust_address = extra.getString("cus_add");
         }
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
@@ -202,17 +229,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding.ivBack.setOnClickListener(view -> {
             if (from_tagging.equalsIgnoreCase("not_tagging")) {
                 isTagged = false;
-                //SharedPref.setTaggedSuccessfully(MapsActivity.this, "");
                 TagCustSelectionList.SelectedCustPos = "";
-                // SharedPref.setCustomerPosition(MapsActivity.this, "");
                 SelectedHqCode = "";
                 SelectedHqName = "";
-                // SharedPref.setSelectedHqCode(MapsActivity.this, "");
-                //SharedPref.setSelectedHqName(MapsActivity.this, "");
                 startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
             } else {
                 TagCustSelectionList.SelectedCustPos = "";
-                //SharedPref.setCustomerPosition(MapsActivity.this, "");
                 finish();
             }
         });
@@ -220,16 +242,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding.btnTag.setOnClickListener(view -> {
             if (from_tagging.equalsIgnoreCase("tagging")) {
                 mapsBinding.imgRefreshMap.setVisibility(View.GONE);
-                if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, 5);
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty()) {
+                    if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+                        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, 5);
+                        } else {
+                            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             captureFile();
-                        } else captureFileLower();
+                            //  } else captureFileLower();
+                        }
+                    } else {
+                        DisplayDialog();
                     }
                 } else {
-                    DisplayDialog();
+                    Toast.makeText(getApplicationContext(), "Not able to find Address! Kindly Try Again", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
@@ -281,14 +307,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mapsBinding.imgRefreshMap.setOnClickListener(view -> {
             if (CurrentLoc()) {
-                laty = gpsTrack.getLatitude();
-                lngy = gpsTrack.getLongitude();
-                CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(String.valueOf(laty)), Double.parseDouble(String.valueOf(lngy)), true);
-                LatLng latLng = new LatLng(laty, lngy);
+                lat = gpsTrack.getLatitude();
+                lng = gpsTrack.getLongitude();
+                CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(String.valueOf(lat)), parseDouble(String.valueOf(lng)), true);
+                LatLng latLng = new LatLng(lat, lng);
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
                 if (from_tagging.equalsIgnoreCase("tagging")) {
                     mapsBinding.tvCustName.setText(cust_name);
-                    mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, laty, lngy, false));
+                    mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
                     marker = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
                 }
             }
@@ -310,10 +336,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
 
-        //    Selected = SharedPref.getMapSelectedTab(MapsActivity.this);
         img_url = SharedPref.getTagImageUrl(MapsActivity.this);
-        // SelectedHqCode = SharedPref.getSelectedHqCode(MapsActivity.this);
-        //   SelectedHqName = SharedPref.getSelectedHqName(MapsActivity.this);
 
         if (SelectedHqCode.isEmpty()) {
             try {
@@ -323,13 +346,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     SelectedHqCode = jsonHQList.getString("id");
                     SelectedHqName = jsonHQList.getString("name");
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
         }
 
         try {
-            JSONArray jsonArray = new JSONArray();
+            JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
@@ -368,17 +391,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     GeoTagApprovalNeed = "0";
                 }
-                limitKm = Double.parseDouble(setUpResponse.getMapGeoFenceCircleRad());
+                limitKm = parseDouble(setUpResponse.getMapGeoFenceCircleRad());
             }
 
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject CustsetupData = jsonArray.getJSONObject(0);
+                JSONObject CusSetupData = jsonArray.getJSONObject(0);
 
                 customSetupResponse = new CustomSetupResponse();
                 Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
                 }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(CustsetupData), typeCustomSetup);
+                customSetupResponse = new Gson().fromJson(String.valueOf(CusSetupData), typeCustomSetup);
 
                 if (customSetupResponse.getHospNeed().equalsIgnoreCase("0")) {
                     mapsBinding.tagTvHospital.setVisibility(View.VISIBLE);
@@ -404,11 +427,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         taggedTime = CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime();
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(intent, 15);
+        someActivityResultLauncher.launch(intent);
+        //  startActivityForResult(intent, 15);
     }
 
     private void TabSelected(String CustSelected, String sfCode) {
-        ///  SharedPref.setMapSelectedTab(MapsActivity.this, CustSelected);
         SelectedTab = CustSelected;
         AddTaggedDetails(CustSelected, sfCode);
         if (CustSelected.equalsIgnoreCase("D")) {
@@ -457,9 +480,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void addCircle(GoogleMap mMap) {
-        laty = gpsTrack.getLatitude();
-        lngy = gpsTrack.getLongitude();
-        LatLng latLng = new LatLng(laty, lngy);
+        lat = gpsTrack.getLatitude();
+        lng = gpsTrack.getLongitude();
+        LatLng latLng = new LatLng(lat, lng);
         int transparent = 0x12FD0B0B;
         CircleOptions circle = new CircleOptions().center(latLng).radius(limitKm * 1000.0).strokeWidth(4).strokeColor(Color.RED).fillColor(transparent).clickable(true);
         mMap.addCircle(circle);
@@ -472,7 +495,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 new android.app.AlertDialog.Builder(MapsActivity.this).setTitle("Alert") // GPS not found
-                        .setCancelable(false).setMessage("Activate the Gps to proceed futher") // Want to enable?
+                        .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
                         .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();
             } else {
                 val = true;
@@ -481,7 +504,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast toast = Toast.makeText(MapsActivity.this, getResources().getString(R.string.loc_not_detect), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-            val = false;
         }
         return val;
     }
@@ -501,8 +523,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView tv_address = dialogTagCust.findViewById(R.id.txt_address);
 
         tv_cust_name.setText(cust_name);
-        tv_lat.setText(String.format("Latitude : %s", laty));
-        tv_lng.setText(String.format("Longitude : %s", lngy));
+        tv_lat.setText(String.format("Latitude : %s", lat));
+        tv_lng.setText(String.format("Longitude : %s", lng));
         tv_address.setText(mapsBinding.tvTaggedAddress.getText().toString());
 
         JSONObject jsonImage = new JSONObject();
@@ -519,14 +541,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonImage.put("Designation", Designation);
             jsonImage.put("state_code", StateCode);
             jsonImage.put("subdivision_code", SubDivisionCode);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("tableName", "save_geo");
-            jsonObject.put("lat", String.valueOf(laty));
-            jsonObject.put("long", String.valueOf(lngy));
+            jsonObject.put("lat", String.valueOf(lat));
+            jsonObject.put("long", String.valueOf(lng));
             jsonObject.put("cuscode", cust_code);
             jsonObject.put("divcode", DivCode.replace(",", "").trim());
             jsonObject.put("cust", SelectedTab);
@@ -550,14 +572,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 jsonObject.put("status", "0");
             }
-        } catch (JSONException e) {
+        } catch (JSONException ignored) {
         }
 
         btn_confirm.setOnClickListener(view -> {
             if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                 CallImageAPI(jsonImage.toString(), jsonObject.toString());
             } else {
-                    progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
+                progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
                 CallAPIGeo(jsonObject.toString());
             }
         });
@@ -581,12 +603,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private RequestBody createFromString(String txt) {
-        return RequestBody.create(MultipartBody.FORM, txt);
+        return RequestBody.create(txt, MultipartBody.FORM);
+        // return RequestBody.create(MultipartBody.FORM, txt);
     }
 
     @Override
     protected void onPause() {
-        // commonUtilsMethods.FullScreencall();
         super.onPause();
     }
 
@@ -600,45 +622,44 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onLowMemory();
     }
 
-    public MultipartBody.Part convertimg(String tag, String path) {
-        Log.d("pathaa1", tag + "-" + path);
+    public MultipartBody.Part convertImg(String tag, String path) {
+        Log.d("path", tag + "-" + path);
         MultipartBody.Part yy = null;
         try {
             File file;
             if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
                 file = new Compressor(getApplicationContext()).compressToFile(new File(path));
-                Log.d("pathaa2", tag + "-" + path);
+                Log.d("path", tag + "-" + path);
             } else {
                 file = new File(path);
             }
-            RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
+            RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
             yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
-
-            Log.d("pathaa3", String.valueOf(yy));
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return yy;
     }
 
     private void CallAPIGeo(String jsonTag) {
         Log.v("test", jsonTag);
-        Call<JsonObject> callSaveGeo = null;
+        Call<JsonObject> callSaveGeo;
         callSaveGeo = api_interface.saveMapGeoTag(jsonTag);
         callSaveGeo.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     try {
                         progressDialog.dismiss();
+                        assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
                             Toast.makeText(MapsActivity.this, "Tagged Successfully", Toast.LENGTH_SHORT).show();
                             dialogTagCust.dismiss();
                             CallAPIList(SelectedTab);
                             isTagged = true;
-                            TaggedLaty = String.valueOf(laty);
-                            TaggedLngy = String.valueOf(lngy);
-                            TaggedAddr = mapsBinding.tvTaggedAddress.getText().toString();
+                            TaggedLat = String.valueOf(lat);
+                            TaggedLng = String.valueOf(lng);
+                            TaggedAdd = mapsBinding.tvTaggedAddress.getText().toString();
                             //SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
                             finish();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("Msg").equalsIgnoreCase("You have reached the maximum tags...")) {
@@ -660,7 +681,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(MapsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
                 dialogTagCust.dismiss();
@@ -725,6 +746,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 try {
                                     JsonElement jsonElement = response.body();
                                     JSONArray jsonArray = new JSONArray();
+                                    assert jsonElement != null;
                                     if (!jsonElement.isJsonNull()) {
                                         if (jsonElement.isJsonArray()) {
                                             JsonArray jsonArray1 = jsonElement.getAsJsonArray();
@@ -794,21 +816,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void CallImageAPI(String jsonImage, String jsonTag) {
         try {
-            Call<JsonObject> callImage = null;
+            Call<JsonObject> callImage;
             HashMap<String, RequestBody> values = field(jsonImage);
-            MultipartBody.Part imgg = convertimg("UploadImg", filePath);
-            callImage = api_interface.imgUploadMap(values, imgg);
+            MultipartBody.Part img = convertImg("UploadImg", filePath);
+            callImage = api_interface.imgUploadMap(values, img);
 
             callImage.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    Log.v("img_tag", response + "---" + response.body().toString() + "---" + response.message() + "---" + call);
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    assert response.body() != null;
+                    Log.v("img_tag", response + "---" + response.body() + "---" + response.message() + "---" + call);
                     if (response.isSuccessful()) {
                         try {
-                            JSONObject jsonImgRes = new JSONObject(response.body().toString());
+                            JSONObject jsonImgRes;
+                            jsonImgRes = new JSONObject(response.body().toString());
                             Log.v("img_tag", jsonImgRes.getString("success"));
                             if (jsonImgRes.getString("success").equalsIgnoreCase("true") && jsonImgRes.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-                                    progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
+                                progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
                                 CallAPIGeo(jsonTag);
                             } else {
                                 dialogTagCust.dismiss();
@@ -825,7 +849,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                     Toast.makeText(MapsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
                     dialogTagCust.dismiss();
                 }
@@ -845,7 +869,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             CommonUtilsMethods.RequestGPSPermission(MapsActivity.this);
         }
-        // commonUtilsMethods.FullScreencall();
         super.onResume();
     }
 
@@ -855,8 +878,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v("hhh", "---");
         mMap = googleMap;
         gpsTrack = new GPSTrack(this);
-        laty = gpsTrack.getLatitude();
-        lngy = gpsTrack.getLongitude();
+        lat = gpsTrack.getLatitude();
+        lng = gpsTrack.getLongitude();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -871,9 +894,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapsBinding.rvList.setVisibility(View.GONE);
 
             mapsBinding.tvCustName.setText(cust_name);
-            mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, laty, lngy, false));
+            mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
 
-            LatLng latLng = new LatLng(laty, lngy);
+            LatLng latLng = new LatLng(lat, lng);
             marker = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
             mMap.setMyLocationEnabled(false);
             mMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -884,9 +907,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.getUiSettings().setRotateGesturesEnabled(false);
 
             mMap.setOnCameraMoveListener(() -> {
-                laty = mMap.getCameraPosition().target.latitude;
-                lngy = mMap.getCameraPosition().target.longitude;
-                mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, laty, lngy, false));
+                lat = mMap.getCameraPosition().target.latitude;
+                lng = mMap.getCameraPosition().target.longitude;
+                mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
             });
 
         } else if (from_tagging.equalsIgnoreCase("view_tagged")) {
@@ -902,21 +925,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             int getCount = 0;
             if (CustListAdapter.getCustListNew.size() > 0) {
                 for (int i = 0; i < CustListAdapter.getCustListNew.size(); i++) {
-                    Log.v("latttlng", CustListAdapter.getCustListNew.get(i).getLatitude() + "---" + CustListAdapter.getCustListNew.get(i).getLongitude());
+                    Log.v("lat_lng", CustListAdapter.getCustListNew.get(i).getLatitude() + "---" + CustListAdapter.getCustListNew.get(i).getLongitude());
                     if (!CustListAdapter.getCustListNew.get(i).getLatitude().isEmpty() && !CustListAdapter.getCustListNew.get(i).getLongitude().isEmpty()) {
-                        LatLng latLng = new LatLng(Double.parseDouble(CustListAdapter.getCustListNew.get(i).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(i).getLongitude()));
+                        LatLng latLng = new LatLng(parseDouble(CustListAdapter.getCustListNew.get(i).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(i).getLongitude()));
                         mMap.addMarker(new MarkerOptions().position(latLng).snippet(CustListAdapter.getCustListNew.get(i).getAddress()).title(cust_name).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
                         getCount = i;
                     }
                 }
 
                 mapsBinding.tvTaggedAddress.setText(CustListAdapter.getCustListNew.get(0).getAddress());
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 10.0f));
-                double getDistance = getDistanceMeteres(laty, lngy, Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), Double.parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude()));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 10.0f));
+                double getDistance = getDistanceMeters(lat, lng, parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude()));
                 if (getDistance > 1000) {
                     getDistance = getDistance / 1000;
-                    DecimalFormat decfor = new DecimalFormat("0.00");
-                    getDistance = Double.valueOf(decfor.format(getDistance));
+                    DecimalFormat decFor = new DecimalFormat("0.00");
+                    getDistance = parseDouble(decFor.format(getDistance));
                     mapsBinding.tvMeters.setText(String.format("%s \n Kms", getDistance));
                 } else {
                     mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));
@@ -958,8 +981,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         list.clear();
         gpsTrack = new GPSTrack(this);
-        laty = gpsTrack.getLatitude();
-        lngy = gpsTrack.getLongitude();
+        lat = gpsTrack.getLatitude();
+        lng = gpsTrack.getLongitude();
         sqLiteHandler.open();
         Log.v("final_assigned", "-111--" + selected + "--" + SfType + "---" + SfCode + "---" + SelectedHqCode);
         switch (selected) {
@@ -978,7 +1001,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 if (jsonObject.getString("Lat").equalsIgnoreCase("0.0") || jsonObject.getString("Long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
-                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), false);
+                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("Lat")), parseDouble(jsonObject.getString("Long")), false);
                                     list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
@@ -1001,13 +1024,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
-                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), false);
+                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
                                     list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
                 break;
@@ -1024,13 +1047,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
-                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), false);
+                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
                                     list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "3", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
                 break;
@@ -1047,7 +1070,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 if (jsonObject.getString("lat").equalsIgnoreCase("0.0") || jsonObject.getString("long").equalsIgnoreCase("0.0")) {
                                     cust_address = "No Address Found";
                                 } else {
-                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), false);
+                                    cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
                                     list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
@@ -1063,12 +1086,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             for (int i = 0; i < list.size(); i++) {
                 mm = list.get(i);
-                LatLng latLng = new LatLng(Double.parseDouble(mm.getLat()), Double.parseDouble(mm.getLng()));
+                LatLng latLng = new LatLng(parseDouble(mm.getLat()), parseDouble(mm.getLng()));
                 float[] distance = new float[2];
-                Location.distanceBetween(Double.parseDouble(mm.getLat()), Double.parseDouble(mm.getLng()), laty, lngy, distance);
+                Location.distanceBetween(parseDouble(mm.getLat()), parseDouble(mm.getLng()), lat, lng, distance);
 
                 if (distance[0] < limitKm * 1000.0) {
-                    taggedMapListArrayList.add(new TaggedMapList(mm.getName(), mm.getType(), mm.getAddress(), mm.getCode(), false, mm.getLat(), mm.getLng(), mm.getImageName(), getDistanceMeteres(laty, lngy, Double.parseDouble(mm.getLat()), Double.parseDouble(mm.getLng()))));
+                    taggedMapListArrayList.add(new TaggedMapList(mm.getName(), mm.getType(), mm.getAddress(), mm.getCode(), false, mm.getLat(), mm.getLng(), mm.getImageName(), getDistanceMeters(lat, lng, parseDouble(mm.getLat()), parseDouble(mm.getLng()))));
                 }
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
@@ -1085,7 +1108,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ImageView imageView = dialog.findViewById(R.id.img_dr_content);
                     Log.v("getCode", "---" + marker.getPosition().latitude + "----" + marker.getPosition().longitude);
 
-                    if (marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
+                    if (Objects.requireNonNull(marker.getSnippet()).substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
                         Toast.makeText(MapsActivity.this, getResources().getString(R.string.toast_no_img_found), Toast.LENGTH_SHORT).show();
                     } else {
                         if (img_url.equalsIgnoreCase("null") || img_url.isEmpty()) {
@@ -1113,7 +1136,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             Collections.sort(taggedMapListArrayList, Comparator.comparingDouble(TaggedMapList::getMeters));
 
-            Log.v("dfdfs", "--map-" + taggedMapListArrayList.size());
             if (taggedMapListArrayList.size() > 0) {
                 mapsBinding.rvList.setVisibility(View.VISIBLE);
                 mapsBinding.imgRvRight.setVisibility(View.VISIBLE);
@@ -1130,13 +1152,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private double getDistanceMeteres(double Curlaty, double Curlngy, double Custlaty, double CustLngt) {
-        //distanceTag = SphericalUtil.computeDistanceBetween(latlngCur, latLng);
-        distanceTag = distance(Curlaty, Curlngy, Custlaty, CustLngt);
+    private double getDistanceMeters(double CurLat, double CurLng, double CustLat, double CustLng) {
+        distanceTag = distance(CurLat, CurLng, CustLat, CustLng);
         distanceTag = milesToMeters(distanceTag);
-        DecimalFormat decfor = new DecimalFormat("0.00");
-        distanceTag = Double.valueOf(decfor.format(distanceTag));
-        Log.v("distance", "--meters--" + decfor.format(distanceTag));
+        DecimalFormat decFor = new DecimalFormat("0.00");
+        distanceTag = valueOf(decFor.format(distanceTag));
         return distanceTag;
     }
 
@@ -1160,14 +1180,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
         if (from_tagging.equalsIgnoreCase("view_tagged")) {
-            Log.v("dfddf", String.valueOf(marker.getPosition()));
-            double getDistance = getDistanceMeteres(laty, lngy, marker.getPosition().latitude, marker.getPosition().longitude);
+            Log.v("position", String.valueOf(marker.getPosition()));
+            double getDistance = getDistanceMeters(lat, lng, marker.getPosition().latitude, marker.getPosition().longitude);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), 18.0f));
             mapsBinding.tvTaggedAddress.setText(marker.getSnippet());
             if (getDistance > 1000) {
                 getDistance = getDistance / 1000;
-                DecimalFormat decfor = new DecimalFormat("0.00");
-                getDistance = Double.valueOf(decfor.format(getDistance));
+                DecimalFormat decFor = new DecimalFormat("0.00");
+                getDistance = parseDouble(decFor.format(getDistance));
                 mapsBinding.tvMeters.setText(String.format("%s \n Kms", getDistance));
             } else {
                 mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));

@@ -38,7 +38,7 @@
                     android:background="@drawable/bg_white_without_border"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/constraint_feedback"
+                    app:layout_constraintEnd_toStartOf="@id/view_in_pob_fb"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0">
@@ -79,29 +79,39 @@
                         android:layout_marginHorizontal="@dimen/_8sdp"
                         android:layout_marginVertical="@dimen/_5sdp"
                         android:background="@drawable/bg_white"
-                        android:hint="@string/enter_value"
+                        android:hint="@string/enter_pob_value"
                         android:imeOptions="actionDone"
                         android:inputType="number"
                         android:maxLines="1"
+                        android:textSize="14sp"
                         android:paddingHorizontal="@dimen/_6sdp"
                         android:paddingVertical="@dimen/_2sdp"
                         android:textColorHint="@color/bg_txt_color"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/view_dummy_pob" />
+                        app:layout_constraintTop_toBottomOf="@id/view_dummy_pob"
+                        tools:ignore="HardcodedText" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/view_in_pob_fb"
+                    android:layout_width="@dimen/_3sdp"
+                    android:layout_height="10dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/constraint_pob"
+                    app:layout_constraintEnd_toStartOf="@id/constraint_feedback"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraint_feedback"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_3sdp"
                     android:background="@drawable/bg_white_without_border"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/constraint_pob"
+                    app:layout_constraintStart_toEndOf="@id/view_in_pob_fb"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0">
 
@@ -141,11 +151,10 @@
                         android:layout_marginHorizontal="@dimen/_8sdp"
                         android:layout_marginVertical="@dimen/_5sdp"
                         android:background="@drawable/border_shape_spinner"
-                        android:drawableEnd="@drawable/spin_down_arrow"
                         android:drawablePadding="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
-                        android:gravity="left|center"
-                        android:hint="@string/select"
+                        android:gravity="start|center"
+                        android:hint="@string/select_overall_feedback"
                         android:padding="@dimen/_6sdp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
@@ -154,7 +163,8 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/view_dummy_feedback" />
+                        app:layout_constraintTop_toBottomOf="@id/view_dummy_feedback"
+                        app:drawableEndCompat="@drawable/down_arrow" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -208,7 +218,9 @@
                     android:background="@drawable/bg_white"
                     android:imeOptions="actionDone"
                     android:inputType="text"
+                    android:hint="@string/enter_overall_remark"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:paddingHorizontal="@dimen/_6sdp"
                     android:paddingVertical="@dimen/_2sdp"
                     app:layout_constraintBottom_toBottomOf="parent"

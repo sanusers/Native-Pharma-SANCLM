@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
+import saneforce.sanclm.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
@@ -62,21 +62,8 @@ public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrAppro
         }
 
 
-        //  holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, dcrApprovalLists.get(position).getSf_name()));
-
         holder.constraint_main.setOnClickListener(view -> {
-            onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(),dcrApprovalLists.get(position).getSf_name(),dcrApprovalLists.get(position).getActivity_date(),dcrApprovalLists.get(position).getPlan_name(),dcrApprovalLists.get(position).getWorkType_name(),dcrApprovalLists.get(position).getSfCode(),dcrApprovalLists.get(position).getFieldWork_indicator(),dcrApprovalLists.get(position).getSubmission_date_sub(),dcrApprovalLists.get(position).getOther_wt()),holder.getAdapterPosition());
-      /*      DcrCallApprovalActivity.dcrCallApprovalBinding.tvName.setText(dcrApprovalLists.get(position).getSf_name());
-            DcrCallApprovalActivity.dcrCallApprovalBinding.tvWt.setText(dcrApprovalLists.get(position).getWorkType_name());
-            DcrCallApprovalActivity.dcrCallApprovalBinding.tvRemark1.setText(dcrApprovalLists.get(position).getRemarks());
-            DcrCallApprovalActivity.dcrCallApprovalBinding.tvActivityDate.setText(dcrApprovalLists.get(position).getActivity_date());
-            DcrCallApprovalActivity.dcrCallApprovalBinding.tvSubmittedDate.setText(dcrApprovalLists.get(position).getSubmission_date_sub());
-            DcrCallApprovalActivity.SelectedTransCode = dcrApprovalLists.get(position).getTrans_slNo();
-            DcrCallApprovalActivity.SelectedSfCode = dcrApprovalLists.get(position).getSfCode();
-            DcrCallApprovalActivity.SelectedActivityDate = dcrApprovalLists.get(position).getActivity_date();
-            DcrCallApprovalActivity.SelectedPosition = holder.getAdapterPosition();
-            DcrCallApprovalActivity.getDcrContentList(context);
-            DcrCallApprovalActivity.dcrCallApprovalBinding.constraintDcrListContent.setVisibility(View.VISIBLE);*/
+            onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(),dcrApprovalLists.get(position).getSf_name(),dcrApprovalLists.get(position).getActivity_date(),dcrApprovalLists.get(position).getPlan_name(),dcrApprovalLists.get(position).getWorkType_name(),dcrApprovalLists.get(position).getSfCode(),dcrApprovalLists.get(position).getFieldWork_indicator(),dcrApprovalLists.get(position).getSubmission_date_sub(),dcrApprovalLists.get(position).getOther_wt()),holder.getBindingAdapterPosition());
             notifyDataSetChanged();
         });
     }
@@ -93,8 +80,8 @@ public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrAppro
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<DCRApprovalList> filterdNames) {
-        this.dcrApprovalLists = filterdNames;
+    public void filterList(ArrayList<DCRApprovalList> filteredNames) {
+        this.dcrApprovalLists = filteredNames;
         notifyDataSetChanged();
     }
 

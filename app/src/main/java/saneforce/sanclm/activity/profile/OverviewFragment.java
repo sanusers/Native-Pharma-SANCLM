@@ -47,22 +47,8 @@ public class OverviewFragment extends Fragment {
                 overviewBinding.tvTerritory.setText(DCRCallActivity.CallActivityCustDetails.get(0).getTown_name());
             if (!DCRCallActivity.CallActivityCustDetails.get(0).getAddress().isEmpty())
                 overviewBinding.tvAddress.setText(DCRCallActivity.CallActivityCustDetails.get(0).getAddress());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-
-
-
-       /* try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                if (CustomerProfile.tv_custCode.equalsIgnoreCase(jsonObject.getString("Code"))) {
-                    overviewBinding.tvMob.setText(jsonObject.getString("Code"));
-                }
-            }
-        } catch (Exception e) {
-
-        }*/
     }
 }

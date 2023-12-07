@@ -1,11 +1,9 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,7 +22,6 @@ import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.Chem
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.StockiestFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.databinding.CallDcrSelectionBinding;
@@ -67,7 +64,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         if (ChemistNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new ChemistFragment(), CapChemist);
         }
-
         if (CipNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new ChemistFragment(), CapCip);
         }
@@ -80,7 +76,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
         dcrSelectionBinding.tabLayoutCall.setupWithViewPager(dcrSelectionBinding.viewPagerCallSelection);
-        dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(0);
         dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
     }
 

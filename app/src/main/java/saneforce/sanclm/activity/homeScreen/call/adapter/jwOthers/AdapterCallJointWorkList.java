@@ -24,16 +24,16 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 public class AdapterCallJointWorkList extends RecyclerView.Adapter<AdapterCallJointWorkList.ViewHolder> {
     Context context;
     Activity activity;
-    ArrayList<CallCommonCheckedList> jointworkAddedList;
-    ArrayList<CallCommonCheckedList> jointworkSelectionList;
+    ArrayList<CallCommonCheckedList> jwAddedList;
+    ArrayList<CallCommonCheckedList> jwSelectionList;
     CommonUtilsMethods commonUtilsMethods;
 
 
-    public AdapterCallJointWorkList(Context context, Activity activity, ArrayList<CallCommonCheckedList> jointworkAddedList, ArrayList<CallCommonCheckedList> jointworkSelectionList) {
+    public AdapterCallJointWorkList(Context context, Activity activity, ArrayList<CallCommonCheckedList> jwAddedList, ArrayList<CallCommonCheckedList> jwSelectionList) {
         this.context = context;
         this.activity = activity;
-        this.jointworkAddedList = jointworkAddedList;
-        this.jointworkSelectionList = jointworkSelectionList;
+        this.jwAddedList = jwAddedList;
+        this.jwSelectionList = jwSelectionList;
     }
 
     @NonNull
@@ -47,36 +47,35 @@ public class AdapterCallJointWorkList extends RecyclerView.Adapter<AdapterCallJo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
-        holder.tv_jw_name.setText(jointworkAddedList.get(position).getName());
+        holder.tv_jw_name.setText(jwAddedList.get(position).getName());
 
         holder.img_del.setOnClickListener(view -> {
             try {
                 for (int j = 0; j < JointworkSelectionSide.JwList.size(); j++) {
-                    if (JointworkSelectionSide.JwList.get(j).getCode().equalsIgnoreCase(jointworkAddedList.get(position).getCode())) {
+                    if (JointworkSelectionSide.JwList.get(j).getCode().equalsIgnoreCase(jwAddedList.get(position).getCode())) {
                         JointworkSelectionSide.JwList.set(j, new CallCommonCheckedList(JointworkSelectionSide.JwList.get(j).getName(), JointworkSelectionSide.JwList.get(j).getCode(), false));
                     }
                 }
-            } catch (Exception e) {
-
+            } catch (Exception ignored) {
             }
 
             jwAdapter = new JwAdapter(activity, JointworkSelectionSide.JwList);
             commonUtilsMethods.recycleTestWithDivider(JointworkSelectionSide.selectJwSideBinding.rvJwList);
             JointworkSelectionSide.selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
             jwAdapter.notifyDataSetChanged();
-            removeAt(holder.getAdapterPosition());
+            removeAt(holder.getBindingAdapterPosition());
         });
     }
 
     @Override
     public int getItemCount() {
-        return jointworkAddedList.size();
+        return jwAddedList.size();
     }
 
     public void removeAt(int position) {
-        jointworkAddedList.remove(position);
+        jwAddedList.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, jointworkAddedList.size());
+        notifyItemRangeChanged(position, jwAddedList.size());
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

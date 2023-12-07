@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DCRCallTabLayoutAdapter extends FragmentPagerAdapter {
+public class DCRCallTabLayoutAdapter extends FragmentPagerAdapter{
     private final List<Fragment> fragments = new ArrayList<>();
     private final List<String> fragmentTitle = new ArrayList<>();
 

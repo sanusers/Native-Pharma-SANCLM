@@ -1,7 +1,6 @@
 package saneforce.sanclm.activity.approvals.dcr.pojo;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+
 
 public class DcrDetailModelList {
     String name;

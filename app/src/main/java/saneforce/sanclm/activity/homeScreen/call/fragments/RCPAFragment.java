@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectChemSide.selectChemistSideBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectPrdSide.selectProductSideBinding;
 
@@ -87,7 +87,6 @@ public class RCPAFragment extends Fragment {
                     ChemistSelectedList.add(new CustList(cheName, CheCode, rcpaBinding.tvValue.getText().toString(), ""));
                 }
 
-
                 if (double_data.size() > 0) {
                     for (int i = 0; i < double_data.size(); i++) {
                         getTotalValue = getTotalValue + double_data.get(i);
@@ -109,16 +108,6 @@ public class RCPAFragment extends Fragment {
                         }
                     }
                 }
-
-              /*  int countPrd = ProductSelectedList.size();
-                for (int i = 0; i < countPrd; i++) {
-                    for (int j = i + 1; j < count; j++) {
-                        if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(ProductSelectedList.get(j).getChe_codes()) && ProductSelectedList.get(i).getPrd_code().equalsIgnoreCase(ProductSelectedList.get(j).getPrd_code())) {
-                            ProductSelectedList.remove(j--);
-                            countPrd--;
-                        }
-                    }
-                }*/
 
                 if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
                     rcpaBinding.tvSelectChemist.setText(getResources().getString(R.string.select));
@@ -163,21 +152,22 @@ public class RCPAFragment extends Fragment {
         });
 
         rcpaBinding.tvSelectChemist.setOnClickListener(view -> {
-            dcrcallBinding.fragmentSelectChemistSide.setVisibility(View.VISIBLE);
+            dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.VISIBLE);
             try {
                 selectChemistSideBinding.searchList.setText("");
-            } catch (Exception e) {
-
+                selectChemistSideBinding.selectListView.scrollToPosition(0);
+            } catch (Exception ignored) {
             }
         });
 
 
         rcpaBinding.tvSelectProduct.setOnClickListener(view -> {
             if (!rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select") && !rcpaBinding.tvSelectChemist.getText().toString().isEmpty()) {
-                dcrcallBinding.fragmentSelectProductSide.setVisibility(View.VISIBLE);
+                dcrCallBinding.fragmentSelectProductSide.setVisibility(View.VISIBLE);
                 try {
                     selectProductSideBinding.searchList.setText("");
-                } catch (Exception e) {
+                    selectProductSideBinding.selectListView.scrollToPosition(0);
+                } catch (Exception ignored) {
 
                 }
 

@@ -44,7 +44,7 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.AdapterModel;
 import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
-import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterCustMainList;
+import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterCusMainList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterDcrApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterSelectionList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
@@ -63,7 +63,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class DcrApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode, SelectedTransCode, SelectedSfCode, SelectedActivityDate;
+    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SelectedTransCode, SelectedSfCode, SelectedActivityDate;
     public static int SelectedPosition;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrCallApprovalBinding dcrCallApprovalBinding;
@@ -71,12 +71,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     public static ArrayList<SaveCallProductList> SaveProductList = new ArrayList<>();
     public static ArrayList<SaveCallInputList> saveInputList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
-    public static AdapterCustMainList adapterCustMainList;
+    public static AdapterCusMainList adapterCusMainList;
     public static ArrayList<AdapterModel> adapterModels = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static AdapterSelectionList adapterSelectionList;
-    public static String DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption;
-    static int countAll = 0, countDr = 0, countChem = 0, countStk = 0, countUndr = 0;
+    public static String DrCaption, ChemistCaption, CipCaption, StockistCaption, UnDrCaption;
+    static int countAll = 0, countDr = 0, countChem = 0, countStk = 0, countUnDr = 0;
     static StringBuilder ClusterNames = new StringBuilder();
     public JSONObject jsonDcrContentList = new JSONObject();
     public ProgressDialog progressDialog = null;
@@ -88,7 +88,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     JSONObject jsonAccept = new JSONObject();
     JSONObject jsonReject = new JSONObject();
     ArrayList<DCRApprovalList> dcrApprovalLists = new ArrayList<>();
-    ArrayList<DCRApprovalList> dcrApprovalListsdummy = new ArrayList<>();
     AdapterDcrApprovalList adapterDcrApprovalList;
     Dialog dialogReject;
 
@@ -97,16 +96,16 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         adapterModels.add(new AdapterModel(DrCaption, String.valueOf(countDr)));
         adapterModels.add(new AdapterModel(ChemistCaption, String.valueOf(countChem)));
         adapterModels.add(new AdapterModel(StockistCaption, String.valueOf(countStk)));
-        adapterModels.add(new AdapterModel(UndrCaption, String.valueOf(countUndr)));
+        adapterModels.add(new AdapterModel(UnDrCaption, String.valueOf(countUnDr)));
         //  adapterModels.add(new AdapterModel("CIP", "0"));
         adapterModels.add(new AdapterModel("Hospital", "0"));
 
-        adapterCustMainList = new AdapterCustMainList(context, dcrDetailedList, SaveProductList, saveInputList);
+        adapterCusMainList = new AdapterCusMainList(context, dcrDetailedList, SaveProductList, saveInputList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         dcrCallApprovalBinding.rvDcrContentList.setLayoutManager(mLayoutManager);
-        dcrCallApprovalBinding.rvDcrContentList.setAdapter(adapterCustMainList);
+        dcrCallApprovalBinding.rvDcrContentList.setAdapter(adapterCusMainList);
 
-        adapterSelectionList = new AdapterSelectionList(context, adapterModels, dcrDetailedList, adapterCustMainList, DrCaption, ChemistCaption, StockistCaption, UndrCaption);
+        adapterSelectionList = new AdapterSelectionList(context, adapterModels, dcrDetailedList, adapterCusMainList, DrCaption, ChemistCaption, StockistCaption, UnDrCaption);
         dcrCallApprovalBinding.rvSelectionList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         dcrCallApprovalBinding.rvSelectionList.setAdapter(adapterSelectionList);
 
@@ -134,32 +133,33 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrContentList.put("Trans_SlNo", SelectedTransCode);
             jsonDcrContentList.put("sfcode", SelectedSfCode);
             jsonDcrContentList.put("division_code", DivCode);
-            jsonDcrContentList.put("Rsf", TodayplanSfCode);
+            jsonDcrContentList.put("Rsf", TodayPlanSfCode);
             jsonDcrContentList.put("sf_type", SfType);
             jsonDcrContentList.put("Designation", Designation);
             jsonDcrContentList.put("state_code", StateCode);
             jsonDcrContentList.put("subdivision_code", SubDivisionCode);
             Log.v("json_get_full_dcr_list", jsonDcrContentList.toString());
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Call<JsonArray> callGetDetailedList = null;
+        Call<JsonArray> callGetDetailedList;
         callGetDetailedList = api_interface.getDcrDetailedList(jsonDcrContentList.toString());
 
         callGetDetailedList.enqueue(new Callback<JsonArray>() {
             @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                 if (response.isSuccessful()) {
-
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     try {
+                        assert response.body() != null;
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         countAll = 0;
                         countDr = 0;
                         countChem = 0;
                         countStk = 0;
-                        countUndr = 0;
+                        countUnDr = 0;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
                             countAll++;
@@ -173,7 +173,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                 countStk++;
                             }
                             if (json.getString("Type").equalsIgnoreCase("ULDOCTOR")) {
-                                countUndr++;
+                                countUnDr++;
                             }
 
                             if (!ClusterNames.toString().contains(json.getString("SDP_Name") + ",")) {
@@ -183,10 +183,10 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                             dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Trans_Detail_Info_Code"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback"), json.getString("visitTime"), json.getString("ModTime")));
 
                             //Extract Product Values
-                            String PrdName = "", PrdSamQty = "0", PrdRxQty = "0";
+                            String PrdName, PrdSamQty, PrdRxQty;
                             if (!json.getString("products").isEmpty()) {
-                                String[] clstarrrayqty = json.getString("products").split(",");
-                                for (String value : clstarrrayqty) {
+                                String[] StrArray = json.getString("products").split(",");
+                                for (String value : StrArray) {
                                     if (!value.equalsIgnoreCase("  )")) {
                                         PrdName = value.substring(0, value.indexOf('(')).trim();
                                         Log.v("extract", "--1--" + PrdName);
@@ -210,10 +210,10 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                             }
 
                             //Extract Input Values
-                            String InpName = "", InpQty = "0";
+                            String InpName, InpQty;
                             if (!json.getString("gifts").isEmpty()) {
-                                String[] clstarrrayInp = json.getString("gifts").split(",");
-                                for (String value : clstarrrayInp) {
+                                String[] StrArray = json.getString("gifts").split(",");
+                                for (String value : StrArray) {
                                     if (!value.equalsIgnoreCase("  )")) {
                                         InpName = value.substring(0, value.indexOf('(')).trim();
                                         Log.v("extract", "-inp--1--" + InpName);
@@ -224,33 +224,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                     }
                                 }
                             }
-                              /*  Products = json.getString("products");
-                                Log.v("products", "--0--" + Products);
-
-                                PrdName = Products.substring(0, Products.indexOf('(')).trim();
-                                Log.v("products", "--1--" + PrdName);
-
-                                PrdSamQty = Products.substring(Products.indexOf("(") + 1);
-                                PrdSamQty = PrdSamQty.substring(0, PrdSamQty.indexOf(")"));
-
-                                Log.v("products", "--2--" + PrdSamQty);
-
-                                PrdRxQty = Products.substring(Products.indexOf(")") + 1).trim();
-                                if (PrdRxQty.contains("(")) {
-                                    PrdRxQty = PrdRxQty.substring(PrdRxQty.indexOf("(") + 1);
-                                    PrdRxQty = PrdRxQty.substring(0, PrdRxQty.indexOf(")"));
-                                } else {
-                                    PrdRxQty = "0";
-                                }
-                                Log.v("products", "--3--" + PrdRxQty);*/
-
                         }
                         progressDialog.dismiss();
                         SetupAdapter(context);
                     } catch (Exception e) {
                         progressDialog.dismiss();
                         SetupAdapter(context);
-                        Log.v("extract", "--eror--" + e);
+                        Log.v("extract", "--error--" + e);
                     }
                 } else {
                     progressDialog.dismiss();
@@ -262,6 +242,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             @Override
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                 Toast.makeText(context, context.getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
                 SetupAdapter(context);
             }
@@ -275,6 +256,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         setContentView(dcrCallApprovalBinding.getRoot());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         getRequiredData();
         CallDcrListApi();
 
@@ -344,26 +327,27 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonReject.put("reason", toString);
             jsonReject.put("sfcode", SelectedSfCode);
             jsonReject.put("division_code", DivCode);
-            jsonReject.put("Rsf", TodayplanSfCode);
+            jsonReject.put("Rsf", TodayPlanSfCode);
             jsonReject.put("sf_type", SfType);
             jsonReject.put("Designation", Designation);
             jsonReject.put("state_code", StateCode);
             jsonReject.put("subdivision_code", SubDivisionCode);
             Log.v("json_send_approval", jsonReject.toString());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Call<JsonObject> callDcrReject = null;
+        Call<JsonObject> callDcrReject;
         callDcrReject = api_interface.sendDCRReject(jsonReject.toString());
 
         callDcrReject.enqueue(new Callback<JsonObject>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
 
                     progressDialog.dismiss();
                     try {
+                        assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             Toast.makeText(DcrApprovalActivity.this, "Rejected Successfully", Toast.LENGTH_SHORT).show();
@@ -381,7 +365,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(DcrApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
             }
@@ -411,32 +395,33 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonAccept.put("date", SelectedActivityDate);
             jsonAccept.put("sfcode", SelectedSfCode);
             jsonAccept.put("division_code", DivCode);
-            jsonAccept.put("Rsf", TodayplanSfCode);
+            jsonAccept.put("Rsf", TodayPlanSfCode);
             jsonAccept.put("sf_type", SfType);
             jsonAccept.put("Designation", Designation);
             jsonAccept.put("state_code", StateCode);
             jsonAccept.put("subdivision_code", SubDivisionCode);
             Log.v("json_send_approval", jsonAccept.toString());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Call<JsonObject> callDcrApproval = null;
+        Call<JsonObject> callDcrApproval;
         callDcrApproval = api_interface.sendDCRApproval(jsonAccept.toString());
         callDcrApproval.enqueue(new Callback<JsonObject>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
+                        assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             Toast.makeText(DcrApprovalActivity.this, "Approved Successfully", Toast.LENGTH_SHORT).show();
                             removeSelectedData();
                             DcrCount--;
                         }
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
 
                     }
                 } else {
@@ -446,7 +431,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(DcrApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
 
@@ -455,13 +440,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
     private void filter(String text) {
-        ArrayList<DCRApprovalList> filterdNames = new ArrayList<>();
+        ArrayList<DCRApprovalList> filteredNames = new ArrayList<>();
         for (DCRApprovalList s : dcrApprovalLists) {
             if (s.getSf_name().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        adapterDcrApprovalList.filterList(filterdNames);
+        adapterDcrApprovalList.filterList(filteredNames);
     }
 
     @Override
@@ -475,25 +460,26 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrList.put("tableName", "getvwdcr");
             jsonDcrList.put("sfcode", SfCode);
             jsonDcrList.put("division_code", DivCode);
-            jsonDcrList.put("Rsf", TodayplanSfCode);
+            jsonDcrList.put("Rsf", TodayPlanSfCode);
             jsonDcrList.put("sf_type", SfType);
             jsonDcrList.put("Designation", Designation);
             jsonDcrList.put("state_code", StateCode);
             jsonDcrList.put("subdivision_code", SubDivisionCode);
-            Log.v("json_getdcr_list", jsonDcrList.toString());
-        } catch (Exception e) {
+            Log.v("json_getDcr_list", jsonDcrList.toString());
+        } catch (Exception ignored) {
 
         }
 
-        Call<JsonArray> callGetDcrList = null;
+        Call<JsonArray> callGetDcrList;
         callGetDcrList = api_interface.getDcrApprovalList(jsonDcrList.toString());
 
         callGetDcrList.enqueue(new Callback<JsonArray>() {
             @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
+                        assert response.body() != null;
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
@@ -503,7 +489,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         dcrCallApprovalBinding.rvDcrList.setLayoutManager(mLayoutManager);
                         dcrCallApprovalBinding.rvDcrList.setAdapter(adapterDcrApprovalList);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
 
                     }
                 } else {
@@ -513,7 +499,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
 
             @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
             }
@@ -533,8 +519,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             SubDivisionCode = loginResponse.getSubdivision_code();
             Designation = loginResponse.getDesig();
             StateCode = loginResponse.getState_Code();
-            TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(DcrApprovalActivity.this);
-            JSONArray jsonArray = new JSONArray();
+            TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(DcrApprovalActivity.this);
+            JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
@@ -546,12 +532,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 DrCaption = setUpResponse.getCaptionDr();
                 ChemistCaption = setUpResponse.getCaptionChemist();
                 StockistCaption = setUpResponse.getCaptionStockist();
-                UndrCaption = setUpResponse.getCaptionUndr();
+                UnDrCaption = setUpResponse.getCaptionUndr();
                 if (setupData.has("cip_need")) {
                     CipCaption = setUpResponse.getCaptionCip();
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }

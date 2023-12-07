@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="str_app_name">SAN CLM</string>
-    <string name="search">Chineese</string>
+    <string name="preference_name">saneforce.sanclm.preferencefile</string>
+    <string name="txt_tagging">标记</string>
+    <string name="txt_doctor">医生</string>
+    <string name="txt_chemist">化学家</string>
+    <string name="txt_stockist">最库存</string>
+    <string name="txt_undr">未列名医生</string>
+    <string name="txt_add_tag">添加标签</string>
+    <string name="search">Chinese</string>
 
 </resources>

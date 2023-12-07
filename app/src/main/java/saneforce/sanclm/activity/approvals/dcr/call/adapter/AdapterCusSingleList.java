@@ -1,6 +1,6 @@
-package saneforce.sanclm.activity.approvals.dcr.dcrdetaillist.adapter;
+package saneforce.sanclm.activity.approvals.dcr.call.adapter;
 
-import static saneforce.sanclm.activity.approvals.dcr.dcrdetaillist.DcrDetailViewActivity.dcrDetailViewBinding;
+import static saneforce.sanclm.activity.approvals.dcr.call.DcrDetailViewActivity.dcrDetailViewBinding;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,13 +20,13 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
-import saneforce.sanclm.activity.approvals.dcr.dcrdetaillist.DcrDetailViewActivity;
+import saneforce.sanclm.activity.approvals.dcr.call.DcrDetailViewActivity;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
-public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingleList.ViewHolder> {
+public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleList.ViewHolder> {
     public static ArrayList<SaveCallProductList> ProductList;
     public static ArrayList<SaveCallInputList> InputList;
     Context context;
@@ -38,7 +38,7 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
     CommonUtilsMethods commonUtilsMethods;
     OnItemClickListenerApproval listenerApproval;
 
-    public AdapterCustSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames,OnItemClickListenerApproval listenerApproval) {
+    public AdapterCusSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames, OnItemClickListenerApproval listenerApproval) {
         this.context = context;
         this.dcrApprovalNames = dcrApprovalNames;
         this.listenerApproval = listenerApproval;
@@ -46,14 +46,14 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
 
     @NonNull
     @Override
-    public AdapterCustSingleList.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdapterCusSingleList.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.adapter_dcr_appr_list, parent, false);
-        return new AdapterCustSingleList.ViewHolder(view);
+        return new AdapterCusSingleList.ViewHolder(view);
     }
 
     @SuppressLint({"UseCompatLoadingForDrawables", "NotifyDataSetChanged"})
     @Override
-    public void onBindViewHolder(@NonNull AdapterCustSingleList.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdapterCusSingleList.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
 
         if (DcrDetailViewActivity.SelectedCode.equalsIgnoreCase(dcrApprovalNames.get(position).getCode())) {
@@ -115,52 +115,6 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
 
         holder.constraint_main.setOnClickListener(view -> {
             listenerApproval.onClickDcrDetail(new DcrDetailModelList(dcrApprovalNames.get(position).getHq_name(), dcrApprovalNames.get(position).getName(), dcrApprovalNames.get(position).getCode(), dcrApprovalNames.get(position).getTypeCust(), dcrApprovalNames.get(position).getType(), dcrApprovalNames.get(position).getSdp_name(), dcrApprovalNames.get(position).getPob(), dcrApprovalNames.get(position).getRemark(), dcrApprovalNames.get(position).getJointWork(), dcrApprovalNames.get(position).getCall_feedback(), dcrApprovalNames.get(position).getModTime(), dcrApprovalNames.get(position).getVisitTime()));
-
-         /*   dcrDetailViewBinding.tvName.setText(dcrApprovalNames.get(position).getName());
-            DcrDetailViewActivity.SelectedCode = dcrApprovalNames.get(position).getCode();
-
-            switch (dcrApprovalNames.get(position).getType()) {
-                case "1":
-                    dcrDetailViewBinding.imgCust.setImageDrawable(context.getResources().getDrawable(R.drawable.map_dr_img));
-                    break;
-                case "2":
-                    dcrDetailViewBinding.imgCust.setImageDrawable(context.getResources().getDrawable(R.drawable.map_chemist_img));
-                    break;
-                case "3":
-                    dcrDetailViewBinding.imgCust.setImageDrawable(context.getResources().getDrawable(R.drawable.map_stockist_img));
-                    break;
-                case "4":
-                    dcrDetailViewBinding.imgCust.setImageDrawable(context.getResources().getDrawable(R.drawable.map_unlistdr_img));
-                    break;
-            }
-
-            if (!dcrApprovalNames.get(position).getSdp_name().isEmpty()) {
-                dcrDetailViewBinding.tvClusterTop.setText(dcrApprovalNames.get(position).getSdp_name());
-            } else {
-                dcrDetailViewBinding.tvClusterTop.setText(context.getResources().getText(R.string.no_cluster));
-            }
-            if (!dcrApprovalNames.get(position).getPob().isEmpty()) {
-                dcrDetailViewBinding.tvPob.setText(dcrApprovalNames.get(position).getPob());
-            } else {
-                dcrDetailViewBinding.tvPob.setText("0");
-            }
-            if (!dcrApprovalNames.get(position).getJointWork().isEmpty()) {
-                dcrDetailViewBinding.tvJw.setText(dcrApprovalNames.get(position).getJointWork());
-            } else {
-                dcrDetailViewBinding.tvJw.setText(context.getResources().getText(R.string.no_jw));
-            }
-            if (!dcrApprovalNames.get(position).getRemark().isEmpty()) {
-                dcrDetailViewBinding.tvOverallRemarks.setText(dcrApprovalNames.get(position).getRemark());
-            } else {
-                dcrDetailViewBinding.tvOverallRemarks.setText(context.getResources().getText(R.string.no_remarks));
-            }
-            if (!dcrApprovalNames.get(position).getCall_feedback().isEmpty()) {
-                dcrDetailViewBinding.tvOverallFeedback.setText(dcrApprovalNames.get(position).getCall_feedback());
-            } else {
-                dcrDetailViewBinding.tvOverallFeedback.setText(context.getResources().getText(R.string.no_feedback));
-            }
-            dcrDetailViewBinding.tvModifiedTime.setText(dcrApprovalNames.get(position).getModTime());
-            dcrDetailViewBinding.tvVisitTime.setText(dcrApprovalNames.get(position).getVisitTime());*/
             notifyDataSetChanged();
         });
     }
@@ -171,8 +125,8 @@ public class AdapterCustSingleList extends RecyclerView.Adapter<AdapterCustSingl
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<DcrDetailModelList> filterdNames) {
-        this.dcrApprovalNames = filterdNames;
+    public void filterList(ArrayList<DcrDetailModelList> filteredNames) {
+        this.dcrApprovalNames = filteredNames;
         notifyDataSetChanged();
     }
 

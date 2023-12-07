@@ -12,44 +12,31 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.storage.SQLiteHandler;
-import saneforce.sanclm.storage.SharedPref;
 
 public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     Context context;
     ViewTagModel viewTagModels;
-    ArrayList<CustList> custListArrayList;
     SQLiteHandler db;
-    TextView txtview;
-    TextView txtadd, txtImage;
+    TextView txtView;
+    TextView txtAdd, txtImage;
     ImageView img_tag;
     ConstraintLayout constraint_view_img;
     CommonUtilsMethods commonUtilsMethods;
-    String Drcode, Lat, Lng, lat, lng, code;
+    String DrCode, Lat, Lng, lat, lng, code;
     private View customView = null;
 
-
-    public MyInfoWindowAdapter(ArrayList<CustList> custListArrayList, Context context) {
-        try {
-            customView = View.inflate(context, R.layout.map_info_window, null);
-            this.custListArrayList = custListArrayList;
-            this.context = context;
-            commonUtilsMethods = new CommonUtilsMethods(context);
-        } catch (Exception e) {
-
-        }
-    }
 
     public MyInfoWindowAdapter(ViewTagModel mm, Context context) {
         try {
@@ -57,7 +44,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             this.viewTagModels = mm;
             this.context = context;
             commonUtilsMethods = new CommonUtilsMethods(context);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -67,14 +54,14 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     public View getInfoContents(final Marker marker) {
         db = new SQLiteHandler(context);
         img_tag = customView.findViewById(R.id.img_tag);
-        txtview = customView.findViewById(R.id.txt_drName);
-        txtadd = customView.findViewById(R.id.txt_address);
+        txtView = customView.findViewById(R.id.txt_drName);
+        txtAdd = customView.findViewById(R.id.txt_address);
         txtImage = customView.findViewById(R.id.btn_view_image);
         constraint_view_img = customView.findViewById(R.id.constraint_view_img);
 
-        txtview.setText(marker.getSnippet().substring(0, marker.getSnippet().indexOf("&")));
+        txtView.setText(Objects.requireNonNull(marker.getSnippet()).substring(0, marker.getSnippet().indexOf("&")));
         String add = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("&") + 1);
-        txtadd.setText(add.trim().substring(0, add.lastIndexOf("$")));
+        txtAdd.setText(add.trim().substring(0, add.lastIndexOf("$")));
 
         code = marker.getSnippet().substring(marker.getSnippet().lastIndexOf("$") + 1);
         code = code.trim().substring(0, code.lastIndexOf("%"));
@@ -100,7 +87,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             if (MapsActivity.taggedMapListArrayList.get(i).getCode().equalsIgnoreCase(code) && MapsActivity.taggedMapListArrayList.get(i).getLat().equalsIgnoreCase(lat) && MapsActivity.taggedMapListArrayList.get(i).getLng().equalsIgnoreCase(lng)) {
                 Log.v("getCode", "true---" + MapsActivity.taggedMapListArrayList.get(i).getCode() + "---" + taggedMapListArrayList.get(i).getLat() + "----" + taggedMapListArrayList.get(i).getLng());
                 MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getType(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), true, MapsActivity.taggedMapListArrayList.get(i).getLat(), MapsActivity.taggedMapListArrayList.get(i).getLng(), MapsActivity.taggedMapListArrayList.get(i).getImageName(), MapsActivity.taggedMapListArrayList.get(i).getMeters()));
-                Drcode = code;
+                DrCode = code;
                 Lat = MapsActivity.taggedMapListArrayList.get(i).getLat();
                 Lng = MapsActivity.taggedMapListArrayList.get(i).getLng();
                 if (taggedMapListArrayList.get(i).getType().equalsIgnoreCase("1")) {
@@ -120,7 +107,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         taggingAdapter = new TaggingAdapter(context.getApplicationContext(), MapsActivity.taggedMapListArrayList);
         commonUtilsMethods.recycleTestWithDivider(mapsBinding.rvList);
         mapsBinding.rvList.setAdapter(taggingAdapter);
-        int position = taggingAdapter.getItemPosition(Drcode, Lat, Lng);
+        int position = taggingAdapter.getItemPosition(DrCode, Lat, Lng);
         if (position >= 0) {
             mapsBinding.rvList.scrollToPosition(position);
         }
@@ -128,7 +115,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     }
 
     @Override
-    public View getInfoWindow(Marker marker) {
+    public View getInfoWindow(@NonNull Marker marker) {
         return null;
     }
 

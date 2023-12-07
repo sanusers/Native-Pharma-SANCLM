@@ -80,6 +80,7 @@
             android:drawableStart="@drawable/grey_search"
             android:drawablePadding="@dimen/_5sdp"
             android:hint="@string/search"
+            android:singleLine="true"
             android:imeOptions="actionDone"
             android:paddingHorizontal="20dp"
             android:textColor="@color/black"

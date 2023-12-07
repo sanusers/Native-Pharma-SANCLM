@@ -5,7 +5,7 @@ public class SaveCallProductList {
     String balance_sam_stk;
     String last_stock;
     String code;
-    boolean isCliked;
+    boolean isClicked;
     String category;
     String from_call;
     String sample_qty;
@@ -37,7 +37,7 @@ public class SaveCallProductList {
         this.promoted = promoted;
     }
 
-    public SaveCallProductList(String name, String code, String category, String balance_sam_stk, String last_stock, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isCliked) {
+    public SaveCallProductList(String name, String code, String category, String balance_sam_stk, String last_stock, String sample_qty, String rx_qty, String rcpa_qty, String promoted, boolean isClicked) {
         this.name = name;
         this.code = code;
         this.category = category;
@@ -47,7 +47,7 @@ public class SaveCallProductList {
         this.rx_qty = rx_qty;
         this.rcpa_qty = rcpa_qty;
         this.promoted = promoted;
-        this.isCliked = isCliked;
+        this.isClicked = isClicked;
     }
 
     public String getPromoted() {
@@ -91,12 +91,12 @@ public class SaveCallProductList {
         this.balance_sam_stk = balance_sam_stk;
     }
 
-    public boolean isCliked() {
-        return isCliked;
+    public boolean isClicked() {
+        return isClicked;
     }
 
-    public void setCliked(boolean cliked) {
-        isCliked = cliked;
+    public void setClicked(boolean clicked) {
+        isClicked = clicked;
     }
 
     public String getCategory() {

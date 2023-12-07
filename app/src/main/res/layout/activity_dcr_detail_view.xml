@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".activity.approvals.dcr.dcrdetaillist.DcrDetailViewActivity">
+    tools:context=".activity.approvals.dcr.call.DcrDetailViewActivity">
 
     <View
         android:id="@+id/view_top"
@@ -94,7 +94,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="TextContrastCheck" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_dcr_list_names"
@@ -134,7 +135,8 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/tv_name"
@@ -301,7 +303,8 @@
                         app:layout_constraintBottom_toTopOf="@id/tv_pob"
                         app:layout_constraintEnd_toStartOf="@id/tag_jw"
                         app:layout_constraintStart_toEndOf="@id/tag_cluster"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextSizeCheck" />
 
                     <TextView
                         android:id="@+id/tv_pob"

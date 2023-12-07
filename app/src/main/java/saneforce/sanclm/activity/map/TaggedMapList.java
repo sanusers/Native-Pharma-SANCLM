@@ -10,14 +10,6 @@ public class TaggedMapList {
     double meters;
     String imageName;
 
-    public TaggedMapList(String name, String type, String addr, String code, boolean clicked, double meters) {
-        this.name = name;
-        this.type = type;
-        this.addr = addr;
-        this.code = code;
-        this.clicked = clicked;
-        this.meters = meters;
-    }
 
     public TaggedMapList(String name, String type, String addr, String code, boolean clicked, String lat, String lng, String imageName, double meters) {
         this.name = name;

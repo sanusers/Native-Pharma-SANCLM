@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.ChemistSelectedList;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.PrdCode;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.PrdName;
@@ -88,7 +88,7 @@ public class RCPASelectCompSide extends Fragment {
 
         rcpaSideBinding.imgClose.setOnClickListener(view -> {
             if (rcpaSideBinding.constraintPreviewCompList.getVisibility() == View.VISIBLE) {
-                dcrcallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
+                dcrCallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
             } else {
                 rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                 rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
@@ -175,7 +175,7 @@ public class RCPASelectCompSide extends Fragment {
             rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
             rcpaChemistAdapter.notifyDataSetChanged();
 
-            dcrcallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
+            dcrCallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
         });
 
         rcpaSideBinding.imgAddComp.setOnClickListener(view -> {
@@ -282,13 +282,13 @@ public class RCPASelectCompSide extends Fragment {
 
 
     private void filter(String text) {
-        ArrayList<RCPAAddedCompList> filterdNames = new ArrayList<>();
+        ArrayList<RCPAAddedCompList> filteredNames = new ArrayList<>();
         for (RCPAAddedCompList s : addCompList) {
             if (s.getComp_product().toLowerCase().contains(text.toLowerCase()) || s.getComp_company_name().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        adapterCompetitorPrd.filterList(filterdNames);
+        adapterCompetitorPrd.filterList(filteredNames);
     }
 
     public String extractValues(String s, String data) {
@@ -310,7 +310,7 @@ public class RCPASelectCompSide extends Fragment {
                 ss1.append(value.substring(value.indexOf("$") + 1)).append(",");
             }
         }
-        String finalValue = "";
+        String finalValue;
         finalValue = ss1.substring(0, ss1.length() - 1);
         return finalValue;
     }
@@ -399,8 +399,8 @@ public class RCPASelectCompSide extends Fragment {
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        public void filterList(ArrayList<RCPAAddedCompList> filterdNames) {
-            CompetitorList = filterdNames;
+        public void filterList(ArrayList<RCPAAddedCompList> filteredNames) {
+            CompetitorList = filteredNames;
             notifyDataSetChanged();
         }
 

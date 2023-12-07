@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.rcpaBinding;
 
 import android.annotation.SuppressLint;
@@ -55,12 +55,7 @@ public class RCPASelectPrdSide extends Fragment {
         selectProductSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
-        selectProductSideBinding.imgClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dcrcallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
-            }
-        });
+        selectProductSideBinding.imgClose.setOnClickListener(view -> dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE));
 
         selectProductSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,18 +92,18 @@ public class RCPASelectPrdSide extends Fragment {
             selectProductSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
             selectProductSideBinding.selectListView.setAdapter(PrdAdapter);
         } catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
     }
 
     private void filterPrd(String text) {
-        ArrayList<SaveCallProductList> filterdNames = new ArrayList<>();
+        ArrayList<SaveCallProductList> filteredNames = new ArrayList<>();
         for (SaveCallProductList s : PrdFullList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        PrdAdapter.filterList(filterdNames);
+        PrdAdapter.filterList(filteredNames);
     }
 
     public static class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
@@ -117,7 +112,7 @@ public class RCPASelectPrdSide extends Fragment {
         JSONArray jsonArray;
         SQLite sqLite;
         JSONObject jsonObject;
-        boolean isAvailableCompetitor, isPrdAvailable;
+        boolean isAvailableCompetitor;
 
         public ProductAdapter(Context context, ArrayList<SaveCallProductList> prdList) {
             this.context = context;
@@ -142,31 +137,31 @@ public class RCPASelectPrdSide extends Fragment {
                     try {
                         if (RCPAFragment.ProductSelectedList.size() > 0) {
                             for (int j = 0; j < RCPAFragment.ProductSelectedList.size(); j++) {
-                                if (RCPAFragment.ProductSelectedList.get(j).getChe_codes().equalsIgnoreCase(RCPAFragment.CheCode) && RCPAFragment.ProductSelectedList.get(j).getPrd_code().equalsIgnoreCase(prdList.get(holder.getAdapterPosition()).getCode())) {
+                                if (RCPAFragment.ProductSelectedList.get(j).getChe_codes().equalsIgnoreCase(RCPAFragment.CheCode) && RCPAFragment.ProductSelectedList.get(j).getPrd_code().equalsIgnoreCase(prdList.get(holder.getBindingAdapterPosition()).getCode())) {
                                     dummyChck.add(RCPAFragment.CheCode);
                                 }
                             }
                         }
 
                         if (dummyChck.size() == 0) {
-                            RCPAFragment.PrdName = prdList.get(holder.getAdapterPosition()).getName();
-                            RCPAFragment.PrdCode = prdList.get(holder.getAdapterPosition()).getCode();
-                            rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getAdapterPosition()).getName());
-                            rcpaBinding.tvRate.setText(prdList.get(holder.getAdapterPosition()).getRate());
+                            RCPAFragment.PrdName = prdList.get(holder.getBindingAdapterPosition()).getName();
+                            RCPAFragment.PrdCode = prdList.get(holder.getBindingAdapterPosition()).getCode();
+                            rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getBindingAdapterPosition()).getName());
+                            rcpaBinding.tvRate.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             rcpaBinding.edQty.setText("1");
-                            rcpaBinding.tvValue.setText(prdList.get(holder.getAdapterPosition()).getRate());
-                            dcrcallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
+                            rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
+                            dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
                             Toast.makeText(context, "Already this Product Selected!", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
-
+                        throw new RuntimeException(e);
                     }
                 } else try {
                     jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
-                        if (prdList.get(holder.getAdapterPosition()).getCode().equalsIgnoreCase(jsonObject.getString("Our_prd_code"))) {
+                        if (prdList.get(holder.getBindingAdapterPosition()).getCode().equalsIgnoreCase(jsonObject.getString("Our_prd_code"))) {
                             isAvailableCompetitor = true;
                             break;
                         } else {
@@ -177,7 +172,7 @@ public class RCPASelectPrdSide extends Fragment {
                     if (isAvailableCompetitor) {
                         if (RCPAFragment.ProductSelectedList.size() > 0) {
                             for (int j = 0; j < RCPAFragment.ProductSelectedList.size(); j++) {
-                                if (RCPAFragment.ProductSelectedList.get(j).getChe_codes().equalsIgnoreCase(RCPAFragment.CheCode) && RCPAFragment.ProductSelectedList.get(j).getPrd_code().equalsIgnoreCase(prdList.get(holder.getAdapterPosition()).getCode())) {
+                                if (RCPAFragment.ProductSelectedList.get(j).getChe_codes().equalsIgnoreCase(RCPAFragment.CheCode) && RCPAFragment.ProductSelectedList.get(j).getPrd_code().equalsIgnoreCase(prdList.get(holder.getBindingAdapterPosition()).getCode())) {
                                     dummyChck.add(RCPAFragment.CheCode);
                                 }
                             }
@@ -186,13 +181,13 @@ public class RCPASelectPrdSide extends Fragment {
 
                     if (isAvailableCompetitor) {
                         if (dummyChck.size() == 0) {
-                            RCPAFragment.PrdName = prdList.get(holder.getAdapterPosition()).getName();
-                            RCPAFragment.PrdCode = prdList.get(holder.getAdapterPosition()).getCode();
-                            rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getAdapterPosition()).getName());
-                            rcpaBinding.tvRate.setText(prdList.get(holder.getAdapterPosition()).getRate());
+                            RCPAFragment.PrdName = prdList.get(holder.getBindingAdapterPosition()).getName();
+                            RCPAFragment.PrdCode = prdList.get(holder.getBindingAdapterPosition()).getCode();
+                            rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getBindingAdapterPosition()).getName());
+                            rcpaBinding.tvRate.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             rcpaBinding.edQty.setText("1");
-                            rcpaBinding.tvValue.setText(prdList.get(holder.getAdapterPosition()).getRate());
-                            dcrcallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
+                            rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
+                            dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
                             Toast.makeText(context, "Already this Product Selected!", Toast.LENGTH_SHORT).show();
                         }
@@ -212,8 +207,8 @@ public class RCPASelectPrdSide extends Fragment {
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        public void filterList(ArrayList<SaveCallProductList> filterdNames) {
-            this.prdList = filterdNames;
+        public void filterList(ArrayList<SaveCallProductList> filteredNames) {
+            this.prdList = filteredNames;
             notifyDataSetChanged();
         }
 

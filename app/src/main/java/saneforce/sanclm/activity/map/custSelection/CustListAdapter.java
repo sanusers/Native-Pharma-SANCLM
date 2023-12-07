@@ -104,8 +104,8 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
                 Intent intent = new Intent(context, MapsActivity.class);
                 intent.putExtra("from", "tagging");
-                intent.putExtra("cust_name", custListArrayList.get(position).getName());
-                intent.putExtra("cust_code", custListArrayList.get(position).getCode());
+                intent.putExtra("cus_name", custListArrayList.get(position).getName());
+                intent.putExtra("cus_code", custListArrayList.get(position).getCode());
                 intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
                 intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
                 TagCustSelectionList.SelectedCustPos = custListArrayList.get(position).getPosition();
@@ -132,8 +132,8 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                     }
                 }
                 intent.putExtra("from", "view_tagged");
-                intent.putExtra("cust_name", custListArrayList.get(position).getName());
-                intent.putExtra("cust_addr", custListArrayList.get(position).getAddress());
+                intent.putExtra("cus_name", custListArrayList.get(position).getName());
+                intent.putExtra("cus_add", custListArrayList.get(position).getAddress());
                 context.startActivity(intent);
             }
         });
@@ -145,8 +145,8 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<CustList> filterdNames) {
-        this.custListArrayList = filterdNames;
+    public void filterList(ArrayList<CustList> filteredNames) {
+        this.custListArrayList = filteredNames;
         notifyDataSetChanged();
     }
 

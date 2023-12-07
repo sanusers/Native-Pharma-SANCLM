@@ -74,8 +74,8 @@
                         android:background="@drawable/border_shape_spinner"
                         android:drawablePadding="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
-                        android:gravity="left|center"
-                        android:hint="@string/select"
+                        android:gravity="start|center"
+                        android:hint="@string/select_chemist_name"
                         android:padding="@dimen/_6sdp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
@@ -114,7 +114,7 @@
                         android:drawablePadding="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="start|center"
-                        android:hint="@string/select"
+                        android:hint="@string/select_prd_name"
                         android:padding="@dimen/_6sdp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
@@ -155,14 +155,15 @@
                         android:imeOptions="actionDone"
                         android:inputType="number"
                         android:padding="@dimen/_6sdp"
-                        android:text="0"
+                        android:hint="Enter Qty"
                         android:textColor="@color/dark_purple"
                         android:textColorHint="@color/black"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@id/tag_rate"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tag_qty" />
+                        app:layout_constraintTop_toBottomOf="@id/tag_qty"
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:id="@+id/tag_rate"

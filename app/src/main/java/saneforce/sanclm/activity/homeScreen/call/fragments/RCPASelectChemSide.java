@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.rcpaBinding;
 
 import android.annotation.SuppressLint;
@@ -53,7 +53,7 @@ public class RCPASelectChemSide extends Fragment {
         selectChemistSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
-        selectChemistSideBinding.imgClose.setOnClickListener(view -> dcrcallBinding.fragmentSelectChemistSide.setVisibility(View.GONE));
+        selectChemistSideBinding.imgClose.setOnClickListener(view -> dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.GONE));
 
         selectChemistSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,18 +101,18 @@ public class RCPASelectChemSide extends Fragment {
             selectChemistSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
             selectChemistSideBinding.selectListView.setAdapter(CheAdapter);
         } catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
     }
 
     private void filterChe(String text) {
-        ArrayList<CustList> filterdNames = new ArrayList<>();
+        ArrayList<CustList> filteredNames = new ArrayList<>();
         for (CustList s : ChemFullList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        CheAdapter.filterList(filterdNames);
+        CheAdapter.filterList(filteredNames);
     }
 
     public static class ChemistAdapter extends RecyclerView.Adapter<ChemistAdapter.ViewHolder> {
@@ -136,14 +136,14 @@ public class RCPASelectChemSide extends Fragment {
             holder.tv_name.setText(ChemList.get(position).getName());
 
             holder.tv_name.setOnClickListener(view -> {
-                RCPAFragment.cheName = ChemList.get(holder.getAdapterPosition()).getName();
-                RCPAFragment.CheCode = ChemList.get(holder.getAdapterPosition()).getCode();
-                rcpaBinding.tvSelectChemist.setText(ChemList.get(holder.getAdapterPosition()).getName());
+                RCPAFragment.cheName = ChemList.get(holder.getBindingAdapterPosition()).getName();
+                RCPAFragment.CheCode = ChemList.get(holder.getBindingAdapterPosition()).getCode();
+                rcpaBinding.tvSelectChemist.setText(ChemList.get(holder.getBindingAdapterPosition()).getName());
                 rcpaBinding.tvSelectProduct.setText(context.getResources().getString(R.string.select));
                 rcpaBinding.edQty.setText("0");
                 rcpaBinding.tvRate.setText("");
                 rcpaBinding.tvValue.setText("");
-                dcrcallBinding.fragmentSelectChemistSide.setVisibility(View.GONE);
+                dcrCallBinding.fragmentSelectChemistSide.setVisibility(View.GONE);
             });
         }
 
@@ -153,8 +153,8 @@ public class RCPASelectChemSide extends Fragment {
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        public void filterList(ArrayList<CustList> filterdNames) {
-            this.ChemList = filterdNames;
+        public void filterList(ArrayList<CustList> filteredNames) {
+            this.ChemList = filteredNames;
             notifyDataSetChanged();
         }
 

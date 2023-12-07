@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_main_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/tv_input"
@@ -24,12 +24,13 @@
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_3sdp"
+            android:singleLine="true"
             android:textColor="@color/bg_txt_color"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_input_qty"
             app:layout_constraintStart_toEndOf="@+id/tv_input_qty"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteY="2dp" />
 
@@ -38,10 +39,10 @@
             android:layout_width="@dimen/_25sdp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/_1sdp"
+            android:background="@drawable/bg_light_grey_2"
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_3sdp"
-            android:background="@drawable/bg_light_grey_2"
             android:textColor="@color/text_qty_prd"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,13 +51,14 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteY="2dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <View
         android:id="@+id/view_bottom"
         android:layout_width="wrap_content"
         android:layout_height="0.5dp"
-        android:background="@color/bg_grey"
-        app:layout_constraintTop_toBottomOf="@id/constraint_main_input"
         android:layout_marginTop="@dimen/_1sdp"
+        android:background="@color/bg_grey"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/constraint_main_input" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,7 +34,6 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
     ArrayList<RCPAAddedProdList> FilterPrdList = new ArrayList<>();
     ArrayList<RCPAAddedCompList> rcpaCompList;
     String ChemCode;
-    double getTotalValue = 0, valueRounded;
     ArrayList<Double> PrdQty = new ArrayList<>();
 
     public RCPAChemistAdapter(Context context, ArrayList<CustList> chemistNames, ArrayList<RCPAAddedProdList> rcpaProdArrayList, ArrayList<RCPAAddedCompList> rcpaCompList) {
@@ -55,19 +54,13 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.chemist_name.setText(chemistNames.get(position).getName());
          holder.tv_total.setText(String.format("%s  %s", context.getResources().getString(R.string.total), chemistNames.get(position).getTotalrcpa()));
-        rv_prd_list = holder.rv_prdlist;
-/*
-
-        if (!chemistNames.get(position).getTotalrcpa().isEmpty()) {
-            getTotalValue = Double.parseDouble(chemistNames.get(position).getTotalrcpa());
-        }
-*/
+        rv_prd_list = holder.rv_prdList;
 
         FilterPrdList = new ArrayList<>();
         PrdQty = new ArrayList<>();
         for (int i = 0; i < rcpaProdList.size(); i++) {
             if (rcpaProdList.get(i).getChe_codes().equalsIgnoreCase(chemistNames.get(position).getCode())) {
-                Log.v("ssds", rcpaProdList.get(i).getPrd_name() + "---" + rcpaProdList.get(i).getTotalPrdValue());
+                Log.v("chemist", rcpaProdList.get(i).getPrd_name() + "---" + rcpaProdList.get(i).getTotalPrdValue());
                 FilterPrdList.add(new RCPAAddedProdList(rcpaProdList.get(i).getChem_names(), rcpaProdList.get(i).getChe_codes(), rcpaProdList.get(i).getPrd_name(), rcpaProdList.get(i).getPrd_code(), rcpaProdList.get(i).getQty(), rcpaProdList.get(i).getRate(), rcpaProdList.get(i).getValue(), rcpaProdList.get(i).getTotalPrdValue()));
                 rcpaProductsAdapter = new RCPAProductsAdapter(context, FilterPrdList, rcpaCompList);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
@@ -77,29 +70,6 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
             }
         }
 
-      /*  Log.v("ssds", "size---" + FilterPrdList.size());
-        if (FilterPrdList.size() == 1) {
-            ChemistSelectedList.set(position, new CustList(ChemistSelectedList.get(position).getName(), ChemistSelectedList.get(position).getCode(), FilterPrdList.get(0).getTotalPrdValue(), ""));
-        } else {
-            for (int i = 0; i < FilterPrdList.size(); i++) {
-                if (FilterPrdList.get(i).getChe_codes().equalsIgnoreCase(chemistNames.get(position).getCode())) {
-                    ChemistSelectedList.set(position, new CustList(ChemistSelectedList.get(position).getName(), ChemistSelectedList.get(position).getCode(), FilterPrdList.get(i).getTotalPrdValue(), ""));
-                } else {
-                    ChemistSelectedList.set(position, new CustList(ChemistSelectedList.get(position).getName(), ChemistSelectedList.get(position).getCode(), ChemistSelectedList.get(position).getTotalrcpa(), ""));
-                }
-            }
-        }
-
-        holder.tv_total.setText(String.format("%s  %s", context.getResources().getString(R.string.total), chemistNames.get(position).getTotalrcpa()));
-*/
-      /*  if (PrdQty.size() > 0) {
-            for (int i = 0; i < PrdQty.size(); i++) {
-                getTotalValue = getTotalValue + PrdQty.get(i);
-            }
-
-            valueRounded = Math.round(getTotalValue * 100D) / 100D;
-            holder.tv_total.setText(String.valueOf(valueRounded));
-        }*/
 
         holder.img_del.setOnClickListener(view -> {
             ChemCode = chemistNames.get(position).getCode();
@@ -140,13 +110,13 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView chemist_name, tv_total;
-        RecyclerView rv_prdlist;
+        RecyclerView rv_prdList;
         ImageView img_del;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             chemist_name = itemView.findViewById(R.id.tv_chemist_name);
-            rv_prdlist = itemView.findViewById(R.id.rv_prd_names);
+            rv_prdList = itemView.findViewById(R.id.rv_prd_names);
             img_del = itemView.findViewById(R.id.img_del_chem);
             tv_total = itemView.findViewById(R.id.tv_total);
         }

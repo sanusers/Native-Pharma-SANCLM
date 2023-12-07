@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
@@ -48,10 +49,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.call.adapter.DCRCallTabLayoutAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.input.CallInputListAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.product.CallProductListAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.AdditionalCusListAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.input.CheckInputListAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.product.CheckProductListAdapter;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AddCallSelectInpSide;
 import saneforce.sanclm.activity.homeScreen.call.fragments.AddCallSelectPrdSide;
@@ -83,8 +84,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
     public static ArrayList<CustList> CallActivityCustDetails;
     @SuppressLint("StaticFieldLeak")
-    public static ActivityDcrcallBinding dcrcallBinding;
-    public static String PobNeed, OverallFeedbackNeed, EventCaptureNeed, JwNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxqty, RcpaCompetitorAdd;
+    public static ActivityDcrcallBinding dcrCallBinding;
+    public static String PobNeed, OverallFeedbackNeed, EventCaptureNeed, JwNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
     public static String isClickedInput;
@@ -109,13 +110,11 @@ public class DCRCallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dcrcallBinding = ActivityDcrcallBinding.inflate(getLayoutInflater());
-        setContentView(dcrcallBinding.getRoot());
+        dcrCallBinding = ActivityDcrcallBinding.inflate(getLayoutInflater());
+        setContentView(dcrCallBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
-        //  progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
         sqLite = new SQLite(this);
-        //  commonUtilsMethods.FullScreencall();
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
         getRequiredData();
@@ -129,9 +128,9 @@ public class DCRCallActivity extends AppCompatActivity {
         if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
             viewPagerAdapter.add(new ProductFragment(), capPrd);
             viewPagerAdapter.add(new InputFragment(), capInp);
-          /*  if (RCPANeed.equalsIgnoreCase("1")) {
+            if (RCPANeed.equalsIgnoreCase("1")) {
                 viewPagerAdapter.add(new RCPAFragment(), "RCPA");
-            }*/
+            }
             viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
@@ -155,20 +154,20 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
         }
 
-        dcrcallBinding.viewPager.setAdapter(viewPagerAdapter);
-        dcrcallBinding.tabLayout.setupWithViewPager(dcrcallBinding.viewPager);
-        dcrcallBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);
+        dcrCallBinding.tabLayout.setupWithViewPager(dcrCallBinding.viewPager);
+        dcrCallBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
-        dcrcallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                    if (tab.getText().toString().equalsIgnoreCase(capInp)) {
-                        isClickedInput = "Input";
-                    } else if (tab.getText().toString().equalsIgnoreCase("Additional Calls")) {
-                        isClickedInput = "Additional Call";
-                    }
+                if (Objects.requireNonNull(tab.getText()).toString().equalsIgnoreCase(capInp)) {
+                    isClickedInput = "Input";
+                } else if (tab.getText().toString().equalsIgnoreCase("Additional Calls")) {
+                    isClickedInput = "Additional Call";
+                }
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(dcrcallBinding.tabLayout.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(dcrCallBinding.tabLayout.getWindowToken(), 0);
             }
 
             @Override
@@ -188,22 +187,25 @@ public class DCRCallActivity extends AppCompatActivity {
         AddRCPAData();
         AddJWData();
 
-        dcrcallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
+        dcrCallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
 
-        dcrcallBinding.ivBack.setOnClickListener(view -> {
+        dcrCallBinding.ivBack.setOnClickListener(view -> {
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
             startActivity(intent);
         });
 
-        dcrcallBinding.btnCancel.setOnClickListener(view -> {
+        dcrCallBinding.btnCancel.setOnClickListener(view -> {
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
             startActivity(intent);
         });
 
-        dcrcallBinding.btnFinalSubmit.setOnClickListener(view -> {
+        dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
+            progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
             if (CheckRequiredFunctions() && CheckCurrentLoc()) {
                 CreateJsonFileCall();
                 CallSaveDcrAPI(jsonSaveDcr.toString());
+            } else {
+                progressDialog.dismiss();
             }
         });
     }
@@ -213,19 +215,19 @@ public class DCRCallActivity extends AppCompatActivity {
             case "1":
                 if (SfType.equalsIgnoreCase("1")) {
                     if (PrdMandatory.equalsIgnoreCase("1")) {
-                        if (CallProductListAdapter.saveCallProductListArrayList.size() == 0) {
+                        if (CheckProductListAdapter.saveCallProductListArrayList.size() == 0) {
                             Toast.makeText(getApplicationContext(), "Enter the " + capPrd, Toast.LENGTH_LONG).show();
                             return false;
                         }
                     }
 
                     if (PrdSamNeed.equalsIgnoreCase("1") && SamQtyMandatory.equalsIgnoreCase("1")) {
-                        if (CallProductListAdapter.saveCallProductListArrayList.size() == 0) {
+                        if (CheckProductListAdapter.saveCallProductListArrayList.size() == 0) {
                             Toast.makeText(getApplicationContext(), "Enter the " + capPrd, Toast.LENGTH_LONG).show();
                             return false;
                         } else {
-                            for (int i = 0; i < CallProductListAdapter.saveCallProductListArrayList.size(); i++) {
-                                if (CallProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty() || CallProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().equalsIgnoreCase("0")) {
+                            for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
+                                if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty() || CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().equalsIgnoreCase("0")) {
                                     Toast.makeText(getApplicationContext(), "Enter the " + CapSamQty + " Values", Toast.LENGTH_LONG).show();
                                     return false;
                                 }
@@ -234,13 +236,13 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
 
                     if (PrdRxNeed.equalsIgnoreCase("1") && RxQtyMandatory.equalsIgnoreCase("1")) {
-                        if (CallProductListAdapter.saveCallProductListArrayList.size() == 0) {
+                        if (CheckProductListAdapter.saveCallProductListArrayList.size() == 0) {
                             Toast.makeText(getApplicationContext(), "Enter the " + capPrd, Toast.LENGTH_LONG).show();
                             return false;
                         } else {
-                            for (int i = 0; i < CallProductListAdapter.saveCallProductListArrayList.size(); i++) {
-                                if (CallProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty() || CallProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().equalsIgnoreCase("0")) {
-                                    Toast.makeText(getApplicationContext(), "Enter the " + CapRxqty + " Values", Toast.LENGTH_LONG).show();
+                            for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
+                                if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty() || CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().equalsIgnoreCase("0")) {
+                                    Toast.makeText(getApplicationContext(), "Enter the " + CapRxQty + " Values", Toast.LENGTH_LONG).show();
                                     return false;
                                 }
                             }
@@ -248,7 +250,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
 
                     if (InpMandatory.equalsIgnoreCase("1")) {
-                        if (CallInputListAdapter.saveCallInputListArrayList.size() == 0) {
+                        if (CheckInputListAdapter.saveCallInputListArrayList.size() == 0) {
                             Toast.makeText(getApplicationContext(), "Select the " + capInp, Toast.LENGTH_LONG).show();
                             return false;
                         }
@@ -278,7 +280,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
-                    if (jwothersBinding.edPob.getText().toString().isEmpty() || jwothersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
+                    if (Objects.requireNonNull(jwothersBinding.edPob.getText()).toString().isEmpty() || jwothersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getApplicationContext(), "Add Pob values", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -292,7 +294,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (RemarkMandatory.equalsIgnoreCase("0")) {
-                    if (jwothersBinding.edRemarks.getText().toString().isEmpty() || jwothersBinding.edRemarks.getText().toString().equalsIgnoreCase("")) {
+                    if (Objects.requireNonNull(jwothersBinding.edRemarks.getText()).toString().isEmpty() || jwothersBinding.edRemarks.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getApplicationContext(), "Add Remarks", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -353,7 +355,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
-                    if (jwothersBinding.edPob.getText().toString().isEmpty() || jwothersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
+                    if (Objects.requireNonNull(jwothersBinding.edPob.getText()).toString().isEmpty() || jwothersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getApplicationContext(), "Add Pob Values", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -389,19 +391,6 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 break;
             case "3":
-                if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
-                    if (callCaptureImageLists.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "Event Capture Needed", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }
-                if (JwMandatory.equalsIgnoreCase("0")) {
-                    if (callAddedJointList.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "JointWork Needed", Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                }
-                break;
             case "4":
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.size() == 0) {
@@ -436,13 +425,12 @@ public class DCRCallActivity extends AppCompatActivity {
                 LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
                 if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     new android.app.AlertDialog.Builder(DCRCallActivity.this).setTitle("Alert") // GPS not found
-                            .setCancelable(false).setMessage("Activate the Gps to proceed futher") // Want to enable?
+                            .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
                             .setPositiveButton("Yes", (dialogInterface, i) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))).show();
                 } else {
                     val = true;
                 }
-            } catch (Exception e) {
-                val = false;
+            } catch (Exception ignored) {
             }
         } else {
             val = true;
@@ -451,8 +439,8 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void CallSaveDcrAPI(String jsonSaveDcr) {
-        progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
-        Log.v("callsave", "---" + jsonSaveDcr);
+        // progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+        Log.v("callSave", "---" + jsonSaveDcr);
         JSONObject jsonImage = new JSONObject();
         try {
             jsonImage.put("tableName", "uploadphoto");
@@ -463,48 +451,47 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonImage.put("Designation", Designation);
             jsonImage.put("state_code", StateCode);
             jsonImage.put("subdivision_code", SubDivisionCode);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         if (callCaptureImageLists.size() > 0) {
             for (int i = 0; i < callCaptureImageLists.size(); i++) {
                 Log.v("ImgUpload", callCaptureImageLists.get(i).getFilePath());
-                MultipartBody.Part imgg = convertimg("EventImg", callCaptureImageLists.get(i).getFilePath());
+                MultipartBody.Part img = convertImg("EventImg", callCaptureImageLists.get(i).getFilePath());
                 HashMap<String, RequestBody> values = field(jsonImage.toString());
-                Call<JsonObject> saveImgDcr = api_interface.saveImgDcr(values, imgg);
+                Call<JsonObject> saveImgDcr = api_interface.saveImgDcr(values, img);
                 saveImgDcr.enqueue(new Callback<JsonObject>() {
                     @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                         if (response.isSuccessful()) {
                             try {
+                                assert response.body() != null;
                                 JSONObject json = new JSONObject(response.body().toString());
                                 Log.v("ImgUpload", json.toString());
-                                if (json.getString("success").equalsIgnoreCase("true")) {
-                                    // Toast.makeText(DCRCallActivity.this, "Picture Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (Exception e) {
+                                json.getString("success");// Toast.makeText(DCRCallActivity.this, "Picture Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                            } catch (Exception ignored) {
 
                             }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 
                     }
                 });
             }
         }
 
-        Call<JsonObject> callSaveDcr = null;
+        Call<JsonObject> callSaveDcr;
         callSaveDcr = api_interface.saveDcr(jsonSaveDcr);
         callSaveDcr.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     try {
                         JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
-                        Log.v("callsave", "---" + jsonSaveRes);
+                        Log.v("callSave", "---" + jsonSaveRes);
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
                             Toast.makeText(DCRCallActivity.this, "Call Successfully Saved", Toast.LENGTH_SHORT).show();
                             UpdateInputStock();
@@ -523,14 +510,14 @@ public class DCRCallActivity extends AppCompatActivity {
                         Toast.makeText(DCRCallActivity.this, "Call Saved! Something Wrong", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);
-                        Log.v("callsave", "---" + e);
+                        Log.v("callSave", "---" + e);
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.v("callsave", "---" + t);
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                Log.v("callSave", "---" + t);
                 progressDialog.dismiss();
                 Toast.makeText(DCRCallActivity.this, "Call Failed! Try again", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
@@ -544,69 +531,74 @@ public class DCRCallActivity extends AppCompatActivity {
     private void UpdateSampleStock() {
         try {
             JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
-            for (int i = 0; i < CallProductListAdapter.saveCallProductListArrayList.size(); i++) {
+            for (int i = 0; i < StockSample.size(); i++) {
                 //SampleStockChange
                 for (int j = 0; j < jsonArraySamStk.length(); j++) {
                     JSONObject jsonObject = jsonArraySamStk.getJSONObject(j);
-                    Log.v("chkSamStk", CallProductListAdapter.saveCallProductListArrayList.get(i).getCode() + "-----" + jsonObject.getString("Code") + "----" + CallProductListAdapter.saveCallProductListArrayList.get(i).getCode().equalsIgnoreCase(jsonObject.getString("Code")));
-                    if (CallProductListAdapter.saveCallProductListArrayList.get(i).getCode().equalsIgnoreCase(jsonObject.getString("Code"))) {
-                        jsonObject.remove("Balance_Stock");
-                        jsonObject.put("Balance_Stock", Integer.parseInt(CallProductListAdapter.saveCallProductListArrayList.get(i).getBalance_sam_stk()));
-                        break;
+                    Log.v("chkSamStk", StockSample.get(i).getCode() + "-----" + jsonObject.getString("Code") + "----" + StockSample.get(i).getCode().equalsIgnoreCase(jsonObject.getString("Code")));
+                    if (StockSample.get(i).getCode().equalsIgnoreCase(jsonObject.getString("Code"))) {
+                        if (!StockSample.get(i).getCurrentStock().equalsIgnoreCase(jsonObject.getString("Balance_Stock"))) {
+                            jsonObject.remove("Balance_Stock");
+                            jsonObject.put("Balance_Stock", Integer.parseInt(StockSample.get(i).getCurrentStock()));
+                            break;
+                        }
                     }
                 }
             }
             sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
     private void UpdateInputStock() {
         try {
             JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
-            for (int i = 0; i < CallInputListAdapter.saveCallInputListArrayList.size(); i++) {
+            for (int i = 0; i < StockInput.size(); i++) {
                 //InputStockChange
                 for (int j = 0; j < jsonArrayInpStk.length(); j++) {
                     JSONObject jsonObject = jsonArrayInpStk.getJSONObject(j);
-                    Log.v("chkInpStk", CallInputListAdapter.saveCallInputListArrayList.get(i).getInp_code() + "-----" + jsonObject.getString("Code") + "----" + CallInputListAdapter.saveCallInputListArrayList.get(i).getInp_code().equalsIgnoreCase(jsonObject.getString("Code")));
-                    if (CallInputListAdapter.saveCallInputListArrayList.get(i).getInp_code().equalsIgnoreCase(jsonObject.getString("Code"))) {
-                        jsonObject.remove("Balance_Stock");
-                        jsonObject.put("Balance_Stock", Integer.parseInt(CallInputListAdapter.saveCallInputListArrayList.get(i).getBalance_inp_stk()));
-                        break;
+                    Log.v("chkInpStk", StockInput.get(i).getStockCode() + "-----" + jsonObject.getString("Code") + "----" + StockInput.get(i).getStockCode().equalsIgnoreCase(jsonObject.getString("Code")));
+                    if (StockInput.get(i).getStockCode().equalsIgnoreCase(jsonObject.getString("Code"))) {
+                        if (!StockInput.get(i).getCurrentStock().equalsIgnoreCase(jsonObject.getString("Balance_Stock"))) {
+                            jsonObject.remove("Balance_Stock");
+                            jsonObject.put("Balance_Stock", Integer.parseInt(StockInput.get(i).getCurrentStock()));
+                            break;
+                        }
                     }
                 }
             }
             sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0);
         } catch (Exception e) {
+            Log.v("chkInpStk", "error---" + e);
         }
     }
 
     public HashMap<String, RequestBody> field(String val) {
-        HashMap<String, RequestBody> xx = new HashMap<String, RequestBody>();
+        HashMap<String, RequestBody> xx = new HashMap<>();
         xx.put("data", createFromString(val));
         return xx;
     }
 
     private RequestBody createFromString(String txt) {
-        return RequestBody.create(MultipartBody.FORM, txt);
+        return RequestBody.create(txt, MultipartBody.FORM);
     }
 
-    public MultipartBody.Part convertimg(String tag, String path) {
-        Log.d("pathaa1", tag + "-" + path);
+    public MultipartBody.Part convertImg(String tag, String path) {
+        Log.d("path", tag + "-" + path);
         MultipartBody.Part yy = null;
         try {
             File file;
             if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
                 file = new Compressor(getApplicationContext()).compressToFile(new File(path));
-                Log.d("pathaa2", tag + "-" + path);
+                Log.d("path", tag + "-" + path);
             } else {
                 file = new File(path);
             }
-            RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
+            RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
             yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
 
-            Log.d("pathaa3", String.valueOf(yy));
-        } catch (Exception e) {
+            Log.d("path", String.valueOf(yy));
+        } catch (Exception ignored) {
         }
         return yy;
     }
@@ -634,21 +626,21 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Input
             jsonArray = new JSONArray();
-            for (int i = 0; i < CallInputListAdapter.saveCallInputListArrayList.size(); i++) {
+            for (int i = 0; i < CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
                 JSONObject json_joint = new JSONObject();
-                json_joint.put("Code", CallInputListAdapter.saveCallInputListArrayList.get(i).getInp_code());
-                json_joint.put("Name", CallInputListAdapter.saveCallInputListArrayList.get(i).getInput_name());
-                json_joint.put("IQty", CallInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty());
+                json_joint.put("Code", CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_code());
+                json_joint.put("Name", CheckInputListAdapter.saveCallInputListArrayList.get(i).getInput_name());
+                json_joint.put("IQty", CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty());
                 jsonArray.put(json_joint);
             }
             jsonSaveDcr.put("Inputs", jsonArray);
 
             //Products
             jsonArray = new JSONArray();
-            for (int i = 0; i < CallProductListAdapter.saveCallProductListArrayList.size(); i++) {
+            for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                 JSONObject json_product = new JSONObject();
-                json_product.put("Code", CallProductListAdapter.saveCallProductListArrayList.get(i).getCode());
-                json_product.put("Name", CallProductListAdapter.saveCallProductListArrayList.get(i).getName());
+                json_product.put("Code", CheckProductListAdapter.saveCallProductListArrayList.get(i).getCode());
+                json_product.put("Name", CheckProductListAdapter.saveCallProductListArrayList.get(i).getName());
                 json_product.put("Group", "0");
                 json_product.put("ProdFeedbk", "");
                 json_product.put("Rating", "");
@@ -658,8 +650,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 json_product.put("Timesline", json_date);
                 json_product.put("Appver", Constants.APP_VERSION);
                 json_product.put("Mod", Constants.APP_MODE);
-                json_product.put("SmpQty", CallProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty());
-                json_product.put("RxQty", CallProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty());
+                json_product.put("SmpQty", CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty());
+                json_product.put("RxQty", CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty());
                 json_product.put("Type", CallActivityCustDetails.get(0).getType());
                 json_product.put("StockistName", "");
                 json_product.put("StockistCode", "");
@@ -683,43 +675,43 @@ public class DCRCallActivity extends AppCompatActivity {
 
             //Additional Call
             jsonArray = new JSONArray();
-            for (int i = 0; i < CallAddCustListAdapter.saveAdditionalCallArrayList.size(); i++) {
+            for (int i = 0; i < AdditionalCusListAdapter.saveAdditionalCallArrayList.size(); i++) {
                 JSONArray jsonArraySample = new JSONArray();
                 JSONArray jsonArrayInput = new JSONArray();
 
                 JSONObject json_AdditionalCall = new JSONObject();
-                json_AdditionalCall.put("Code", CallAddCustListAdapter.saveAdditionalCallArrayList.get(i).getCode());
-                json_AdditionalCall.put("Name", CallAddCustListAdapter.saveAdditionalCallArrayList.get(i).getName());
-                json_AdditionalCall.put("town_code", CallAddCustListAdapter.saveAdditionalCallArrayList.get(i).getTown_code());
-                json_AdditionalCall.put("town_name", CallAddCustListAdapter.saveAdditionalCallArrayList.get(i).getTown_name());
+                json_AdditionalCall.put("Code", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getCode());
+                json_AdditionalCall.put("Name", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getName());
+                json_AdditionalCall.put("town_code", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getTown_code());
+                json_AdditionalCall.put("town_name", AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getTown_name());
 
                 //Additional Call Samples
-                for (int j = 0; j < SaveAdditionalCallAdapter.nestedAddSampleCallDetails.size(); j++) {
+                for (int j = 0; j < FinalAdditionalCallAdapter.nestedProduct.size(); j++) {
                     JSONObject json_AdditionalInput = new JSONObject();
-                    if (SaveAdditionalCallAdapter.nestedAddSampleCallDetails.get(j).getCust_code().equalsIgnoreCase(CallAddCustListAdapter.saveAdditionalCallArrayList.get(i).getCode())) {
-                        if (!SaveAdditionalCallAdapter.nestedAddSampleCallDetails.get(j).getPrd_name().equalsIgnoreCase("Select") && !SaveAdditionalCallAdapter.nestedAddSampleCallDetails.get(j).getPrd_name().isEmpty()) {
-                            json_AdditionalInput.put("Code", SaveAdditionalCallAdapter.nestedAddSampleCallDetails.get(j).getPrd_code());
-                            json_AdditionalInput.put("Name", SaveAdditionalCallAdapter.nestedAddSampleCallDetails.get(j).getPrd_name());
-                            json_AdditionalInput.put("IQty", SaveAdditionalCallAdapter.nestedAddSampleCallDetails.get(j).getSample_qty());
+                    if (FinalAdditionalCallAdapter.nestedProduct.get(j).getCust_code().equalsIgnoreCase(AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getCode())) {
+                        if (!FinalAdditionalCallAdapter.nestedProduct.get(j).getPrd_name().equalsIgnoreCase("Select") && !FinalAdditionalCallAdapter.nestedProduct.get(j).getPrd_name().isEmpty()) {
+                            json_AdditionalInput.put("Code", FinalAdditionalCallAdapter.nestedProduct.get(j).getPrd_code());
+                            json_AdditionalInput.put("Name", FinalAdditionalCallAdapter.nestedProduct.get(j).getPrd_name());
+                            json_AdditionalInput.put("SamQty", FinalAdditionalCallAdapter.nestedProduct.get(j).getSample_qty());
                             jsonArraySample.put(json_AdditionalInput);
                         }
                     }
                 }
 
                 //Additional Call Inputs
-                for (int j = 0; j < SaveAdditionalCallAdapter.nestedAddInputCallDetails.size(); j++) {
+                for (int j = 0; j < FinalAdditionalCallAdapter.nestedInput.size(); j++) {
                     JSONObject json_AdditionalSample = new JSONObject();
-                    if (SaveAdditionalCallAdapter.nestedAddInputCallDetails.get(j).getCust_code().equalsIgnoreCase(CallAddCustListAdapter.saveAdditionalCallArrayList.get(i).getCode())) {
-                        if (!SaveAdditionalCallAdapter.nestedAddInputCallDetails.get(j).getInput_name().equalsIgnoreCase("Select") && !SaveAdditionalCallAdapter.nestedAddInputCallDetails.get(j).getInput_name().isEmpty()) {
-                            json_AdditionalSample.put("Code", SaveAdditionalCallAdapter.nestedAddInputCallDetails.get(j).getInput_code());
-                            json_AdditionalSample.put("Name", SaveAdditionalCallAdapter.nestedAddInputCallDetails.get(j).getInput_name());
-                            json_AdditionalSample.put("SmpQty", SaveAdditionalCallAdapter.nestedAddInputCallDetails.get(j).getInp_qty());
+                    if (FinalAdditionalCallAdapter.nestedInput.get(j).getCust_code().equalsIgnoreCase(AdditionalCusListAdapter.saveAdditionalCallArrayList.get(i).getCode())) {
+                        if (!FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name().equalsIgnoreCase("Select") && !FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name().isEmpty()) {
+                            json_AdditionalSample.put("Code", FinalAdditionalCallAdapter.nestedInput.get(j).getInput_code());
+                            json_AdditionalSample.put("Name", FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name());
+                            json_AdditionalSample.put("SmpQty", FinalAdditionalCallAdapter.nestedInput.get(j).getInp_qty());
                             jsonArrayInput.put(json_AdditionalSample);
                         }
                     }
                 }
 
-                json_AdditionalCall.put("Sample", jsonArraySample);
+                json_AdditionalCall.put("Products", jsonArraySample);
                 json_AdditionalCall.put("Inputs", jsonArrayInput);
                 jsonArray.put(json_AdditionalCall);
             }
@@ -831,8 +823,9 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //POB
-            if (PobNeed.equalsIgnoreCase("0") && !Objects.requireNonNull(jwothersBinding.edPob.getText()).toString().isEmpty()) {
-                jsonSaveDcr.put("DCSUPOB", jwothersBinding.edPob.getText().toString());
+            String pobValue = Objects.requireNonNull(jwothersBinding.edPob.getText()).toString();
+            if (PobNeed.equalsIgnoreCase("0") && !pobValue.isEmpty()) {
+                jsonSaveDcr.put("DCSUPOB", pobValue);
             } else {
                 jsonSaveDcr.put("DCSUPOB", "");
             }
@@ -868,7 +861,8 @@ public class DCRCallActivity extends AppCompatActivity {
             EventCapMandatory = loginResponse.getCipEvent_Md();
 
 
-            JSONArray jsonArray = new JSONArray();
+            new JSONArray();
+            JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
@@ -882,7 +876,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     capPrd = setUpResponse.getCaptionDrPrd();
                     capInp = setUpResponse.getCaptionDrInp();
                     CapSamQty = setUpResponse.getCaptionDrSamQty();
-                    CapRxqty = setUpResponse.getCaptionDrRxQty();
+                    CapRxQty = setUpResponse.getCaptionDrRxQty();
 
                     //Need
                     RCPANeed = setUpResponse.getDrRcpaNeed();
@@ -911,7 +905,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     capPrd = setUpResponse.getCaptionChemistPrd();
                     capInp = setUpResponse.getCaptionChemistInp();
                     CapSamQty = setUpResponse.getCaptionChemistSamQty();
-                    CapRxqty = setUpResponse.getCaptionChemistRxQty();
+                    CapRxQty = setUpResponse.getCaptionChemistRxQty();
 
                     //Need
                     RCPANeed = setUpResponse.getChemistRcpaNeed();
@@ -934,7 +928,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     capPrd = setUpResponse.getCaptionStokistPrd();
                     capInp = setUpResponse.getCaptionStokistInp();
                     CapSamQty = "Samples";
-                    CapRxqty = setUpResponse.getCaptionStkRxQty();
+                    CapRxQty = setUpResponse.getCaptionStkRxQty();
 
                     //Need
                     OverallFeedbackNeed = setUpResponse.getStockistFeedbackNeed();
@@ -951,7 +945,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     capPrd = setUpResponse.getCaptionUndrPrd();
                     capInp = setUpResponse.getCaptionUndrInp();
                     CapSamQty = setUpResponse.getCaptionUndrSamQty();
-                    CapRxqty = setUpResponse.getCaptionUndrRxQty();
+                    CapRxQty = setUpResponse.getCaptionUndrRxQty();
 
                     //Need
                     OverallFeedbackNeed = setUpResponse.getUndrFeedbackNeed();
@@ -984,11 +978,11 @@ public class DCRCallActivity extends AppCompatActivity {
 
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject CustsetupData = jsonArray.getJSONObject(0);
+                JSONObject CusSetupData = jsonArray.getJSONObject(0);
                 customSetupResponse = new CustomSetupResponse();
                 Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
                 }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(CustsetupData), typeCustomSetup);
+                customSetupResponse = new Gson().fromJson(String.valueOf(CusSetupData), typeCustomSetup);
                 HosNeed = customSetupResponse.getHospNeed();
                 if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
 
@@ -1001,7 +995,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -1021,10 +1015,12 @@ public class DCRCallActivity extends AppCompatActivity {
     private void AddAdditionalCallData() {
         AdditionalCallFragment.custListArrayList = new ArrayList<>();
         AdditionalCallDetailedSide.addInputAdditionalCallArrayList = new ArrayList<>();
-        AdditionalCallDetailedSide.addSampleAdditionalCallArrayList = new ArrayList<>();
-        CallAddCustListAdapter.saveAdditionalCallArrayList = new ArrayList<>();
-        SaveAdditionalCallAdapter.nestedAddSampleCallDetails = new ArrayList<>();
-        SaveAdditionalCallAdapter.nestedAddInputCallDetails = new ArrayList<>();
+        AdditionalCallDetailedSide.editedInpList = new ArrayList<>();
+        AdditionalCallDetailedSide.addProductAdditionalCallArrayList = new ArrayList<>();
+        AdditionalCallDetailedSide.editedPrdList = new ArrayList<>();
+        AdditionalCusListAdapter.saveAdditionalCallArrayList = new ArrayList<>();
+        FinalAdditionalCallAdapter.nestedProduct = new ArrayList<>();
+        FinalAdditionalCallAdapter.nestedInput = new ArrayList<>();
 
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
@@ -1047,38 +1043,38 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
 
     private void AddInputData() {
-        InputFragment.callCommonCheckedListArrayList = new ArrayList<>();
-        CallInputListAdapter.saveCallInputListArrayList = new ArrayList<>();
-        //AdditionalCallDetailedSide.callInputList = new ArrayList<>();
+        InputFragment.checkedInputList = new ArrayList<>();
+        CheckInputListAdapter.saveCallInputListArrayList = new ArrayList<>();
         AddCallSelectInpSide.callInputList = new ArrayList<>();
+        StockInput.clear();
 
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.INPUT);
             JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                JSONObject jsonFdate = new JSONObject(jsonObject.getString("EffF"));
-                JSONObject jsonTdate = new JSONObject(jsonObject.getString("EffT"));
-                Log.v("JsonInput", jsonFdate.getString("date").substring(0, 10) + "---" + jsonTdate.getString("date").substring(0, 10));
+                JSONObject jsonFDate = new JSONObject(jsonObject.getString("EffF"));
+                JSONObject jsonTDate = new JSONObject(jsonObject.getString("EffT"));
+                Log.v("JsonInput", jsonFDate.getString("date").substring(0, 10) + "---" + jsonTDate.getString("date").substring(0, 10));
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 sdf.setLenient(false);
                 String todayData = CommonUtilsMethods.getCurrentInstance();
 
-                Date d1 = sdf.parse(jsonFdate.getString("date").substring(0, 10));
+                Date d1 = sdf.parse(jsonFDate.getString("date").substring(0, 10));
                 Date d2 = sdf.parse(todayData);
-                Date d3 = sdf.parse(jsonTdate.getString("date").substring(0, 10));
+                Date d3 = sdf.parse(jsonTDate.getString("date").substring(0, 10));
 
                 if (d2 != null) {
                     if (d2.compareTo(d1) >= 0) {
                         if (d2.compareTo(d3) <= 0) {
-                            InputFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false));
+                            InputFragment.checkedInputList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false));
                             AddCallSelectInpSide.callInputList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false));
                             StockInput.add(new CallCommonCheckedList(jsonObject.getString("Code"), "0", "0"));
                         }
@@ -1087,19 +1083,19 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             if (InputValidation.equalsIgnoreCase("1")) {
-                for (int i = 0; i < InputFragment.callCommonCheckedListArrayList.size(); i++) {
+                for (int i = 0; i < InputFragment.checkedInputList.size(); i++) {
                     for (int j = 0; j < jsonArrayInpStk.length(); j++) {
                         JSONObject jsonObjectInput = jsonArrayInpStk.getJSONObject(j);
-                        Log.v("chkinput", InputFragment.callCommonCheckedListArrayList.get(i).getCode() + "---" + jsonObjectInput.getString("Code") + "--chkk-----" + jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.callCommonCheckedListArrayList.get(i).getCode()));
-                        if (jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.callCommonCheckedListArrayList.get(i).getCode())) {
-                            InputFragment.callCommonCheckedListArrayList.set(i, new CallCommonCheckedList(InputFragment.callCommonCheckedListArrayList.get(i).getName(), InputFragment.callCommonCheckedListArrayList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.callCommonCheckedListArrayList.get(i).isCheckedItem()));
-                            AddCallSelectInpSide.callInputList.set(i, new CallCommonCheckedList(InputFragment.callCommonCheckedListArrayList.get(i).getName(), InputFragment.callCommonCheckedListArrayList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.callCommonCheckedListArrayList.get(i).isCheckedItem()));
-                            StockInput.set(i, new CallCommonCheckedList(InputFragment.callCommonCheckedListArrayList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), jsonObjectInput.getString("Balance_Stock")));
+                        Log.v("chkInput", InputFragment.checkedInputList.get(i).getCode() + "---" + jsonObjectInput.getString("Code") + "--chk-----" + jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.checkedInputList.get(i).getCode()));
+                        if (jsonObjectInput.getString("Code").equalsIgnoreCase(InputFragment.checkedInputList.get(i).getCode())) {
+                            InputFragment.checkedInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            AddCallSelectInpSide.callInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            StockInput.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), jsonObjectInput.getString("Balance_Stock"), jsonObjectInput.getString("Balance_Stock")));
                             break;
                         } else {
-                            InputFragment.callCommonCheckedListArrayList.set(i, new CallCommonCheckedList(InputFragment.callCommonCheckedListArrayList.get(i).getName(), InputFragment.callCommonCheckedListArrayList.get(i).getCode(), InputFragment.callCommonCheckedListArrayList.get(i).getStock_balance(), InputFragment.callCommonCheckedListArrayList.get(i).isCheckedItem()));
-                            AddCallSelectInpSide.callInputList.set(i, new CallCommonCheckedList(InputFragment.callCommonCheckedListArrayList.get(i).getName(), InputFragment.callCommonCheckedListArrayList.get(i).getCode(), InputFragment.callCommonCheckedListArrayList.get(i).getStock_balance(), InputFragment.callCommonCheckedListArrayList.get(i).isCheckedItem()));
-                            StockInput.set(i, new CallCommonCheckedList(InputFragment.callCommonCheckedListArrayList.get(i).getCode(), InputFragment.callCommonCheckedListArrayList.get(i).getStock_balance(), InputFragment.callCommonCheckedListArrayList.get(i).getStock_balance()));
+                            InputFragment.checkedInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            AddCallSelectInpSide.callInputList.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getName(), InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).isCheckedItem()));
+                            StockInput.set(i, new CallCommonCheckedList(InputFragment.checkedInputList.get(i).getCode(), InputFragment.checkedInputList.get(i).getStock_balance(), InputFragment.checkedInputList.get(i).getStock_balance()));
                         }
                     }
                 }
@@ -1110,10 +1106,10 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void AddProductsData() {
-        ProductFragment.callCommonCheckedListArrayList = new ArrayList<>();
-        CallProductListAdapter.saveCallProductListArrayList = new ArrayList<>();
-        // AdditionalCallDetailedSide.callSampleList = new ArrayList<>();
+        ProductFragment.checkedPrdList = new ArrayList<>();
+        CheckProductListAdapter.saveCallProductListArrayList = new ArrayList<>();
         AddCallSelectPrdSide.callSampleList = new ArrayList<>();
+        StockSample.clear();
         try {
             int Priority_count = 1;
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
@@ -1121,36 +1117,57 @@ public class DCRCallActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (CallActivityCustDetails.get(0).getPriorityPrdCode().contains(jsonObject.getString("Code"))) {
-                    ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode")));
-                    AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode")));
+                    ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode")));
+                    StockSample.add(new CallCommonCheckedList(jsonObject.getString("Code"), "0", "0"));
+                    if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sale")) {
+                        AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode")));
+                    }
                 } else {
-                    ProductFragment.callCommonCheckedListArrayList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
-                    AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
-                }
-            }
-
-            if (SampleValidation.equalsIgnoreCase("1")) {
-                for (int i = 0; i < ProductFragment.callCommonCheckedListArrayList.size(); i++) {
-                    for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
-                        JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
-                        Log.v("chksample", ProductFragment.callCommonCheckedListArrayList.get(i).getCode() + "---" + jsonObjectSample.getString("Code") + "--chkk-----" + jsonObjectSample.getString("Code").equalsIgnoreCase(ProductFragment.callCommonCheckedListArrayList.get(i).getCode()));
-                        if (jsonObjectSample.getString("Code").equalsIgnoreCase(ProductFragment.callCommonCheckedListArrayList.get(i).getCode())) {
-                            ProductFragment.callCommonCheckedListArrayList.set(i, new CallCommonCheckedList(ProductFragment.callCommonCheckedListArrayList.get(i).getName(), ProductFragment.callCommonCheckedListArrayList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.callCommonCheckedListArrayList.get(i).isCheckedItem(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategory(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategoryExtra()));
-                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(ProductFragment.callCommonCheckedListArrayList.get(i).getName(), ProductFragment.callCommonCheckedListArrayList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.callCommonCheckedListArrayList.get(i).isCheckedItem(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategory(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategoryExtra()));
-                            break;
-                        } else {
-                            ProductFragment.callCommonCheckedListArrayList.set(i, new CallCommonCheckedList(ProductFragment.callCommonCheckedListArrayList.get(i).getName(), ProductFragment.callCommonCheckedListArrayList.get(i).getCode(), ProductFragment.callCommonCheckedListArrayList.get(i).getStock_balance(), ProductFragment.callCommonCheckedListArrayList.get(i).isCheckedItem(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategory(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategoryExtra()));
-                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(ProductFragment.callCommonCheckedListArrayList.get(i).getName(), ProductFragment.callCommonCheckedListArrayList.get(i).getCode(), ProductFragment.callCommonCheckedListArrayList.get(i).getStock_balance(), ProductFragment.callCommonCheckedListArrayList.get(i).isCheckedItem(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategory(), ProductFragment.callCommonCheckedListArrayList.get(i).getCategoryExtra()));
-                        }
+                    ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
+                    StockSample.add(new CallCommonCheckedList(jsonObject.getString("Code"), "0", "0"));
+                    if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sale")) {
+                        AddCallSelectPrdSide.callSampleList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, jsonObject.getString("Product_Mode"), jsonObject.getString("Product_Mode")));
                     }
                 }
             }
 
-            Collections.sort(ProductFragment.callCommonCheckedListArrayList, Comparator.comparing(CallCommonCheckedList::getCategory));
+            if (SampleValidation.equalsIgnoreCase("1")) {
+                for (int i = 0; i < ProductFragment.checkedPrdList.size(); i++) {
 
-            Log.v("prdds", "final_size---" + ProductFragment.callCommonCheckedListArrayList.size());
+                    for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
+                        JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
+                        if (!ProductFragment.checkedPrdList.get(i).getCategory().equalsIgnoreCase("Sale") && jsonObjectSample.getString("Code").equalsIgnoreCase(ProductFragment.checkedPrdList.get(i).getCode())) {
+                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+                            // AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+                            StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), jsonObjectSample.getString("Balance_Stock")));
+                            break;
+                        } else {
+                            ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+                            //  AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
+                            StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).getStock_balance()));
+                        }
+                    }
+                }
+
+                for (int i = 0; i < AddCallSelectPrdSide.callSampleList.size(); i++) {
+                    for (int j = 0; j < jsonArrayPrdStk.length(); j++) {
+                        JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
+                        if (jsonObjectSample.getString("Code").equalsIgnoreCase(AddCallSelectPrdSide.callSampleList.get(i).getCode())) {
+                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(AddCallSelectPrdSide.callSampleList.get(i).getName(), AddCallSelectPrdSide.callSampleList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(), AddCallSelectPrdSide.callSampleList.get(i).getCategory(), AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+                            break;
+                        } else {
+                            AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(AddCallSelectPrdSide.callSampleList.get(i).getName(), AddCallSelectPrdSide.callSampleList.get(i).getCode(), AddCallSelectPrdSide.callSampleList.get(i).getStock_balance(), AddCallSelectPrdSide.callSampleList.get(i).isCheckedItem(), AddCallSelectPrdSide.callSampleList.get(i).getCategory(), AddCallSelectPrdSide.callSampleList.get(i).getCategoryExtra()));
+                        }
+                    }
+                }
+
+            }
+
+            Collections.sort(ProductFragment.checkedPrdList, Comparator.comparing(CallCommonCheckedList::getCategory));
+            Collections.sort(AddCallSelectPrdSide.callSampleList, Comparator.comparing(CallCommonCheckedList::getCategory));
+
         } catch (Exception e) {
-            Log.v("chksample", "---errorr---" + e);
+            Log.v("chkSample", "---error---" + e);
         }
     }
 }
@@ -1158,7 +1175,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
    /* Backend Pending:
         1) Add CustStatus for Setup; --> GeoTagApprovalNeed
-        2) Add Cust_status for all Doctor,Chemist,Cip,Stockist,Undr --> cust_status
+        2) Add Cust_status for all Doctor,Chemist,Cip,Stockist,UnDr --> cust_status
         3) Add Cust_status for json_object to send the mapped tagged Customer
         4) Add Promoted Products for json_object to send the dcr call Customer
         5) Add Sample and Input Data for Additional_Call_Screen*/

@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.approvals.dcr.dcrdetaillist.adapter;
+package saneforce.sanclm.activity.approvals.dcr.call.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

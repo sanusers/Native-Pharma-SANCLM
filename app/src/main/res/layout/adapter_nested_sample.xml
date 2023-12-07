@@ -26,6 +26,7 @@
             android:paddingVertical="@dimen/_3sdp"
             android:textColor="@color/bg_txt_color"
             android:textSize="16sp"
+            android:singleLine="true"
             app:layout_constraintEnd_toStartOf="@id/tv_sam_qty"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread"

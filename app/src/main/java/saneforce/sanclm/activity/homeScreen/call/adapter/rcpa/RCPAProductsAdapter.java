@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.rcpa;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.ChemistSelectedList;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.ProductSelectedList;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.rcpaBinding;
@@ -111,47 +111,18 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
             try {
                 addCompList = new ArrayList<>();
                 if (DCRCallActivity.RcpaCompetitorAdd.equalsIgnoreCase("0")) {
-                    AddCompetitorValues(holder.getAdapterPosition(), Constants.MAPPED_COMPETITOR_PROD);
-                    AddCompetitorValues(holder.getAdapterPosition(), Constants.LOCAL_MAPPED_COMPETITOR_PROD);
+                    AddCompetitorValues(holder.getBindingAdapterPosition(), Constants.MAPPED_COMPETITOR_PROD);
+                    AddCompetitorValues(holder.getBindingAdapterPosition(), Constants.LOCAL_MAPPED_COMPETITOR_PROD);
                     addCompListDummy.clear();
-                    addCompListDummy.add(new RCPAAddedCompList(ProductList.get(holder.getAdapterPosition()).getPrd_name(), ProductList.get(holder.getAdapterPosition()).getPrd_code(), ProductList.get(holder.getAdapterPosition()).getChem_names(), ProductList.get(holder.getAdapterPosition()).getChe_codes(), ProductList.get(holder.getAdapterPosition()).getRate(), String.valueOf(valueRounded)));
+                    addCompListDummy.add(new RCPAAddedCompList(ProductList.get(holder.getBindingAdapterPosition()).getPrd_name(), ProductList.get(holder.getBindingAdapterPosition()).getPrd_code(), ProductList.get(holder.getBindingAdapterPosition()).getChem_names(), ProductList.get(holder.getBindingAdapterPosition()).getChe_codes(), ProductList.get(holder.getBindingAdapterPosition()).getRate(), String.valueOf(valueRounded)));
                 } else {
-                    AddCompetitorValues(holder.getAdapterPosition(), Constants.MAPPED_COMPETITOR_PROD);
+                    AddCompetitorValues(holder.getBindingAdapterPosition(), Constants.MAPPED_COMPETITOR_PROD);
                 }
-              /*  jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    jsonObject = jsonArray.getJSONObject(i);
-                    ArrayList<String> CompCompanyNameList = new ArrayList<>();
-                    ArrayList<String> CompCompanyCodeList = new ArrayList<>();
-                    ArrayList<String> CompPrdNameList = new ArrayList<>();
-                    ArrayList<String> CompPrdCodeList = new ArrayList<>();
-
-                    if (ProductList.get(holder.getAdapterPosition()).getPrd_code().equalsIgnoreCase(jsonObject.getString("Our_prd_code"))) {
-                        String CompCompanyName = extractValues(jsonObject.getString("Competitor_Prd_bulk"), "CompCompanyName");
-                        String CompCompanyCode = extractValues(jsonObject.getString("Competitor_Prd_bulk"), "CompCompanyCode");
-                        String CompPrdName = extractValues(jsonObject.getString("Competitor_Prd_bulk"), "CompPrdName");
-                        String CompPrdCode = extractValues(jsonObject.getString("Competitor_Prd_bulk"), "CompPrdCode");
-                        Log.v("comp_prd", CompCompanyName + "---" + CompCompanyCode + "---" + CompPrdName + "---" + CompPrdCode);
-
-                        getValues(CompCompanyName, CompCompanyNameList);
-                        getValues(CompCompanyCode, CompCompanyCodeList);
-                        getValues(CompPrdName, CompPrdNameList);
-                        getValues(CompPrdCode, CompPrdCodeList);
-                    }
-                    Log.v("comp_prd", CompCompanyNameList.size() + "---" + CompCompanyCodeList.size() + "---" + CompPrdNameList.size() + "---" + CompPrdCodeList.size());
-
-                    for (int j = 0; j < CompCompanyNameList.size(); j++) {
-                        addCompList.add(new RCPAAddedCompList(ProductList.get(holder.getAdapterPosition()).getPrd_name(), ProductList.get(holder.getAdapterPosition()).getPrd_code(), ProductList.get(holder.getAdapterPosition()).getChem_names(), ProductList.get(holder.getAdapterPosition()).getChe_codes(), CompCompanyNameList.get(j), CompCompanyCodeList.get(j), CompPrdNameList.get(j), CompPrdCodeList.get(j), ProductList.get(holder.getAdapterPosition()).getRate(), false, String.valueOf(valueRounded)));
-                    }
-                }*/
 
                 if (addCompList.size() == 0) {
                     rcpaSideBinding.constraintPreviewCompList.setVisibility(View.GONE);
                     rcpaSideBinding.constraintAddCompList.setVisibility(View.VISIBLE);
-                    rcpaSideBinding.imgClose.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_right_));
                 } else {
-                    rcpaSideBinding.imgClose.setImageDrawable(context.getResources().getDrawable(R.drawable.img_close));
                     rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                     rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
                 }
@@ -162,14 +133,14 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
                 adapterCompetitorPrd.notifyDataSetChanged();
 
             } catch (Exception e) {
-                Log.v("comp_prd", "--error--" + e);
+                Log.v("comp_prd", "--error--2--" + e);
             }
-            dcrcallBinding.fragmentAddRcpaSide.setVisibility(View.VISIBLE);
+            dcrCallBinding.fragmentAddRcpaSide.setVisibility(View.VISIBLE);
         });
 
         holder.img_delete.setOnClickListener(view -> {
-            ChemCode = ProductList.get(holder.getAdapterPosition()).getChe_codes();
-            PrdCode = ProductList.get(holder.getAdapterPosition()).getPrd_code();
+            ChemCode = ProductList.get(holder.getBindingAdapterPosition()).getChe_codes();
+            PrdCode = ProductList.get(holder.getBindingAdapterPosition()).getPrd_code();
             ProductList.remove(position);
 
             for (int i = 0; i < rcpa_comp_list.size(); i++) {
@@ -244,7 +215,7 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
                 }
             }
         } catch (Exception e) {
-
+            Log.v("comp_prd", "--error--" + e);
         }
     }
 
@@ -256,9 +227,9 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
 
     public String extractValues(String s, String data) {
         if (TextUtils.isEmpty(s)) return "";
-        String[] clstarrrayqty = s.split("/");
+        String[] StrArray = s.split("/");
         StringBuilder ss1 = new StringBuilder();
-        for (String value : clstarrrayqty) {
+        for (String value : StrArray) {
             if (data.equalsIgnoreCase("CompPrdCode")) {
                 ss1.append(value.substring(0, value.indexOf("#"))).append(",");
             } else if (data.equalsIgnoreCase("CompPrdName")) {
@@ -273,14 +244,14 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
                 ss1.append(value.substring(value.indexOf("$") + 1)).append(",");
             }
         }
-        String finalValue = "";
+        String finalValue;
         finalValue = ss1.substring(0, ss1.length() - 1);
         return finalValue;
     }
 
-    private void getValues(String names, ArrayList<String> addDatas) {
+    private void getValues(String names, ArrayList<String> addData) {
         String[] separated = names.split(",");
-        addDatas.addAll(Arrays.asList(separated));
+        addData.addAll(Arrays.asList(separated));
     }
 
     @Override

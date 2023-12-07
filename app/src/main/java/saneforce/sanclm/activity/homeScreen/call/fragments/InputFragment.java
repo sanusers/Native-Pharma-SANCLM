@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +19,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.homeScreen.call.adapter.input.CallInputListAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.input.SaveInputCallAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.input.CheckInputListAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.input.FinalInputCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.sanclm.databinding.FragmentInputBinding;
 
 public class InputFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentInputBinding fragmentInputBinding;
-    public static ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList = new ArrayList<>();
-    CallInputListAdapter callInputListAdapter;
-    SaveInputCallAdapter saveInputCallAdapter;
+    public static ArrayList<CallCommonCheckedList> checkedInputList = new ArrayList<>();
+    CheckInputListAdapter checkInputListAdapter;
+    FinalInputCallAdapter finalInputCallAdapter;
 
     @Nullable
     @Override
@@ -65,28 +65,29 @@ public class InputFragment extends Fragment {
     }
 
     private void dummyAdapter() {
-        callInputListAdapter = new CallInputListAdapter(getActivity(), getContext(), callCommonCheckedListArrayList);
+        checkInputListAdapter = new CheckInputListAdapter(getActivity(), getContext(), checkedInputList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         fragmentInputBinding.rvCheckDataList.setLayoutManager(mLayoutManager);
         fragmentInputBinding.rvCheckDataList.setItemAnimator(new DefaultItemAnimator());
-        fragmentInputBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        fragmentInputBinding.rvCheckDataList.setAdapter(callInputListAdapter);
+        fragmentInputBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        fragmentInputBinding.rvCheckDataList.setAdapter(checkInputListAdapter);
 
-        saveInputCallAdapter = new SaveInputCallAdapter(getActivity(), getContext(), CallInputListAdapter.saveCallInputListArrayList, callCommonCheckedListArrayList);
-        RecyclerView.LayoutManager mLayoutManagerinp = new LinearLayoutManager(getActivity());
-        fragmentInputBinding.rvListInput.setLayoutManager(mLayoutManagerinp);
+        finalInputCallAdapter = new FinalInputCallAdapter(getActivity(), getContext(), CheckInputListAdapter.saveCallInputListArrayList, checkedInputList);
+       // RecyclerView.LayoutManager mLayoutManagerInp = new LinearLayoutManager(getActivity());
+      //  fragmentInputBinding.rvListInput.setLayoutManager(mLayoutManagerInp);
+        fragmentInputBinding.rvListInput.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         fragmentInputBinding.rvListInput.setItemAnimator(new DefaultItemAnimator());
-        fragmentInputBinding.rvListInput.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        fragmentInputBinding.rvListInput.setAdapter(saveInputCallAdapter);
+        fragmentInputBinding.rvListInput.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        fragmentInputBinding.rvListInput.setAdapter(finalInputCallAdapter);
     }
 
     private void filter(String text) {
-        ArrayList<CallCommonCheckedList> filterdNames = new ArrayList<>();
-        for (CallCommonCheckedList s : callCommonCheckedListArrayList) {
+        ArrayList<CallCommonCheckedList> filteredNames = new ArrayList<>();
+        for (CallCommonCheckedList s : checkedInputList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        callInputListAdapter.filterList(filterdNames);
+        checkInputListAdapter.filterList(filteredNames);
     }
 }

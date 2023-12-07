@@ -1,10 +1,14 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.input;
 
+
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.StockInput;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,24 +29,24 @@ import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 
-public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdapter.ViewHolder> {
+public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAdapter.ViewHolder> {
     public static ArrayList<SaveCallInputList> saveCallInputListArrayList;
     public static boolean isCheckedInp;
     public static String UnSelectedInpCode = "";
     Context context;
     ArrayList<CallCommonCheckedList> checked_arrayList;
     @SuppressLint("StaticFieldLeak")
-     SaveInputCallAdapter saveInputCallAdapter;
+    FinalInputCallAdapter finalInputCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
 
-    public CallInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList) {
+    public CheckInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList) {
         this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
     }
 
-    public CallInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveCallInputList> saveCallInputLists) {
+    public CheckInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveCallInputList> saveCallInputLists) {
         this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
@@ -64,35 +68,39 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
         holder.tv_name.setText(checked_arrayList.get(position).getName());
         holder.checkBox.setChecked(checked_arrayList.get(position).isCheckedItem());
 
-
-        if (holder.checkBox.isChecked()) {
+        if (checked_arrayList.get(position).isCheckedItem()) {
+            holder.checkBox.setChecked(true);
             holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
             }
         } else {
+            holder.checkBox.setChecked(false);
             holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
             }
         }
 
-        holder.tv_name.setOnClickListener(view -> {
-            commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName());
-        });
+        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName()));
 
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
                 if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
+                    for (int i = 0; i < StockInput.size(); i++) {
+                        if (StockInput.get(i).getStockCode().equalsIgnoreCase(checked_arrayList.get(position).getCode())) {
+                            checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
+                        }
+                    }
                     if (Integer.parseInt(checked_arrayList.get(position).getStock_balance()) > 0) {
-                        CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
+                        CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     } else {
                         holder.checkBox.setChecked(false);
                         Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getAdapterPosition());
+                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                 }
             }
         });
@@ -106,11 +114,21 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
             }
+
             isCheckedInp = false;
             checked_arrayList.get(adapterPosition).setCheckedItem(true);
             saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
             AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
         } else {
+            new CountDownTimer(80, 80) {
+                public void onTick(long millisUntilFinished) {
+                    checkBox.setEnabled(false);
+                }
+
+                public void onFinish() {
+                    checkBox.setEnabled(true);
+                }
+            }.start();
             tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
@@ -119,27 +137,29 @@ public class CallInputListAdapter extends RecyclerView.Adapter<CallInputListAdap
             UnSelectedInpCode = checked_arrayList.get(adapterPosition).getCode();
             checked_arrayList.get(adapterPosition).setCheckedItem(false);
             AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
-            saveInputCallAdapter.notifyDataSetChanged();
+            finalInputCallAdapter.notifyDataSetChanged();
         }
     }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
-        saveInputCallAdapter = new SaveInputCallAdapter(activity, context, saveCallInputListArrayList, callCommonCheckedListArrayList);
+        finalInputCallAdapter = new FinalInputCallAdapter(activity, context, saveCallInputListArrayList, callCommonCheckedListArrayList);
         commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvListInput);
-        InputFragment.fragmentInputBinding.rvListInput.setAdapter(saveInputCallAdapter);
+        InputFragment.fragmentInputBinding.rvListInput.setAdapter(finalInputCallAdapter);
     }
+
 
     @Override
     public int getItemCount() {
         return checked_arrayList.size();
     }
 
-    public void filterList(ArrayList<CallCommonCheckedList> filterdNames) {
-        this.checked_arrayList = filterdNames;
+    @SuppressLint("NotifyDataSetChanged")
+    public void filterList(ArrayList<CallCommonCheckedList> filteredNames) {
+        this.checked_arrayList = filteredNames;
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name;
         CheckBox checkBox;
 

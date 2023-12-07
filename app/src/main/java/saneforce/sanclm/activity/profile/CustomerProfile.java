@@ -22,7 +22,6 @@ import saneforce.sanclm.commonClasses.UtilityClass;
 
 
 public class CustomerProfile extends AppCompatActivity {
-    public static String tv_custName = "", tv_cust_area, tv_custCode = "";
     public static boolean isDetailingRequired;
     public static boolean isPreAnalysisCalled = false;
     public static ProgressDialog progressDialog = null;
@@ -36,6 +35,11 @@ public class CustomerProfile extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -61,16 +65,16 @@ public class CustomerProfile extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
-                    if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
+                if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
+                    if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                         progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                        PreCallAnalysisFragment.CallPreCallAPI();
+                        PreCallAnalysisFragment.CallPreCallAPI(CustomerProfile.this);
+                    } else {
+                        Toast.makeText(CustomerProfile.this, "No Internet Connectivity", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(CustomerProfile.this, "No Internet Connectivity", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -85,27 +89,11 @@ public class CustomerProfile extends AppCompatActivity {
             }
         });
 
-      /*  Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            tv_custCode = extra.getString("cust_code");
-            tv_custName = extra.getString("cust_name");
-            tv_cust_area = extra.getString("cust_addr");
-        }*/
-
-
-        //Disable Touch Event in Tab
-       /* LinearLayout tabStrip = ((LinearLayout) tabLayout.getChildAt(0));
-        for (int i = 0; i < tabStrip.getChildCount(); i++) {
-            tabStrip.getChildAt(i).setOnTouchListener((v, event) -> true);
-        }
-        */
 
         btn_skip.setOnClickListener(view -> {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
+            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             isDetailingRequired = false;
-         /*   intent1.putExtra("cust_name", tv_custName);
-            intent1.putExtra("cust_addr", tv_cust_area);
-            intent1.putExtra("sf_code", TodayPlanSfCode);*/
             startActivity(intent1);
         });
 

@@ -18,8 +18,8 @@ import saneforce.sanclm.utility.TimeUtils;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder> {
     private final ArrayList<String> daysOfMonth;
-    private LocalDate selectedDate;
-    LocalDate fromdate,currentDate,lap_dats,mountyearval;
+    private final LocalDate selectedDate;
+    LocalDate fromdate,currentDate;
     String current_month,fromdate_val;
     ArrayList<String>ldates=new ArrayList<>();
     private final OnItemListener onItemListener;
@@ -149,7 +149,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             String dayText = dayOfMonth.getText().toString();
             if (!dayText.isEmpty()) {
                 // Notify the listener about the click event
-                onItemListener.onItemClick(getAdapterPosition(), dayText);
+                onItemListener.onItemClick(getBindingAdapterPosition(), dayText);
 
             }
         }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +36,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class TpApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode, SelectedSfCode, SelectedMonthYear;
+    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SelectedSfCode, SelectedMonthYear;
     @SuppressLint("StaticFieldLeak")
     public static ActivityTpApprovalBinding tpApprovalBinding;
     LoginResponse loginResponse;
@@ -52,6 +53,8 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         setContentView(tpApprovalBinding.getRoot());
         sqLite = new SQLite(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         getRequiredData();
         CallTpListApi();
         tpApprovalBinding.ivBack.setOnClickListener(view -> {
@@ -87,15 +90,16 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             jsonTp.put("Designation", Designation);
             jsonTp.put("state_code", SubDivisionCode);
             Log.v("json_getTpList", jsonTp.toString());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Call<JsonArray> callGetTPApproval = null;
+        Call<JsonArray> callGetTPApproval;
         callGetTPApproval = api_interface.getTpApprovalList(jsonTp.toString());
         callGetTPApproval.enqueue(new Callback<JsonArray>() {
             @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                Log.v("jjj", response.body().toString() + "--" + response.isSuccessful());
+            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                assert response.body() != null;
+                Log.v("jjj", response.body() + "--" + response.isSuccessful());
                 if (response.isSuccessful()) {
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
@@ -111,7 +115,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         } else {
                             Toast.makeText(TpApprovalActivity.this, "No Data Available", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
 
                     }
                 } else {
@@ -120,20 +124,20 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             }
 
             @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 Toast.makeText(TpApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void filter(String text) {
-        ArrayList<TpModelList> filterdNames = new ArrayList<>();
+        ArrayList<TpModelList> filteredNames = new ArrayList<>();
         for (TpModelList s : tpModelLists) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        tpApprovalAdapter.filterList(filterdNames);
+        tpApprovalAdapter.filterList(filteredNames);
     }
 
     private void getRequiredData() {
@@ -147,7 +151,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
-        TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(TpApprovalActivity.this);
+        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(TpApprovalActivity.this);
     }
 
     @Override

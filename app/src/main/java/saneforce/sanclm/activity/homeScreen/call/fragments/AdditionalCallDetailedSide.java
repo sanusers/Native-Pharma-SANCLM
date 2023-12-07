@@ -2,14 +2,17 @@ package saneforce.sanclm.activity.homeScreen.call.fragments;
 
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.InputValidation;
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.SampleValidation;
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
-import static saneforce.sanclm.activity.homeScreen.call.adapter.input.CallInputListAdapter.saveCallInputListArrayList;
-import static saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment.callCommonCheckedListArrayList;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.StockInput;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.StockSample;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.adapter.input.CheckInputListAdapter.saveCallInputListArrayList;
+import static saneforce.sanclm.activity.homeScreen.call.adapter.product.CheckProductListAdapter.saveCallProductListArrayList;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment.checkedInputList;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment.checkedPrdList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +29,16 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall;
-import saneforce.sanclm.activity.homeScreen.call.adapter.input.SaveInputCallAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.input.FinalInputCallAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.product.FinalProductCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
+import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.FragmentAddCallDetailsSideBinding;
 import saneforce.sanclm.storage.SQLite;
@@ -42,16 +47,17 @@ public class AdditionalCallDetailedSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentAddCallDetailsSideBinding callDetailsSideBinding;
     public static ArrayList<AddInputAdditionalCall> addInputAdditionalCallArrayList;
-    //public static ArrayList<CallCommonCheckedList> callInputList;
-    public static ArrayList<AddSampleAdditionalCall> addSampleAdditionalCallArrayList;
-    // public static ArrayList<CallCommonCheckedList> callSampleList;
+    public static ArrayList<AddInputAdditionalCall> editedInpList;
+    public static ArrayList<AddSampleAdditionalCall> addProductAdditionalCallArrayList;
+    public static ArrayList<AddSampleAdditionalCall> editedPrdList;
     @SuppressLint("StaticFieldLeak")
     public static AdapterInputAdditionalCall adapterInputAdditionalCall;
     @SuppressLint("StaticFieldLeak")
     public static AdapterSampleAdditionalCall adapterSampleAdditionalCall;
     CommonUtilsMethods commonUtilsMethods;
-    SaveAdditionalCallAdapter saveAdditionalCallAdapter;
-    SaveInputCallAdapter saveInputCallAdapter;
+    FinalAdditionalCallAdapter finalAdditionalCallAdapter;
+    FinalInputCallAdapter finalInputCallAdapter;
+    FinalProductCallAdapter finalProductCallAdapter;
     SQLite sqLite;
     int lastPos;
 
@@ -105,11 +111,15 @@ public class AdditionalCallDetailedSide extends Fragment {
             }
         });
 
-        callDetailsSideBinding.imgClose.setOnClickListener(view -> dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE));
+        callDetailsSideBinding.imgClose.setOnClickListener(view -> {
+            dcrCallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE);
+            TabLayout.Tab tab = callDetailsSideBinding.tabLayout.getTabAt(0);
+            assert tab != null;
+            tab.select();
+        });
 
         callDetailsSideBinding.btnAddInput.setOnClickListener(view -> {
             HideKeyboard();
-            Log.v("sdsd", "----" + addInputAdditionalCallArrayList.size());
             if (addInputAdditionalCallArrayList.size() > 1) {
                 lastPos = addInputAdditionalCallArrayList.size() - 1;
                 if (AddCallSelectInpSide.callInputList.size() > addInputAdditionalCallArrayList.size()) {
@@ -128,10 +138,10 @@ public class AdditionalCallDetailedSide extends Fragment {
 
         callDetailsSideBinding.btnAddSample.setOnClickListener(view -> {
             HideKeyboard();
-            if (addSampleAdditionalCallArrayList.size() > 1) {
-                lastPos = addSampleAdditionalCallArrayList.size() - 1;
-                if (AddCallSelectPrdSide.callSampleList.size() > addSampleAdditionalCallArrayList.size()) {
-                    if (!addSampleAdditionalCallArrayList.get(lastPos).getPrd_name().equalsIgnoreCase("Select") && !addSampleAdditionalCallArrayList.get(lastPos).getPrd_name().isEmpty()) {
+            if (addProductAdditionalCallArrayList.size() > 1) {
+                lastPos = addProductAdditionalCallArrayList.size() - 1;
+                if (AddCallSelectPrdSide.callSampleList.size() > addProductAdditionalCallArrayList.size()) {
+                    if (!addProductAdditionalCallArrayList.get(lastPos).getPrd_name().equalsIgnoreCase("Select") && !addProductAdditionalCallArrayList.get(lastPos).getPrd_name().isEmpty()) {
                         AddNewSampleData();
                     } else {
                         Toast.makeText(requireContext(), "Select the Product before add new Product", Toast.LENGTH_SHORT).show();
@@ -146,108 +156,145 @@ public class AdditionalCallDetailedSide extends Fragment {
 
         callDetailsSideBinding.btnSave.setOnClickListener(view -> {
             HideKeyboard();
-            if (SaveAdditionalCallAdapter.New_Edit.equalsIgnoreCase("New")) {
-                AddSampleInputDatas();
+            TabLayout.Tab tab = callDetailsSideBinding.tabLayout.getTabAt(0);
+            assert tab != null;
+            tab.select();
+            if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("New")) {
+                AddSampleInputData();
 
-            } else if (SaveAdditionalCallAdapter.New_Edit.equalsIgnoreCase("Edit")) {
-                for (int j = 0; j < SaveAdditionalCallAdapter.nestedAddInputCallDetails.size(); j++) {
-                    if (SaveAdditionalCallAdapter.nestedAddInputCallDetails.get(j).getCust_code().equalsIgnoreCase(SaveAdditionalCallAdapter.Selected_code)) {
-                        SaveAdditionalCallAdapter.nestedAddInputCallDetails.remove(j);
+            } else if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("Edit")) {
+                for (int j = 0; j < FinalAdditionalCallAdapter.nestedInput.size(); j++) {
+                    if (FinalAdditionalCallAdapter.nestedInput.get(j).getCust_code().equalsIgnoreCase(FinalAdditionalCallAdapter.Selected_code)) {
+                        FinalAdditionalCallAdapter.nestedInput.remove(j);
                         j--;
                     }
                 }
 
-                for (int j = 0; j < SaveAdditionalCallAdapter.nestedAddSampleCallDetails.size(); j++) {
-                    if (SaveAdditionalCallAdapter.nestedAddSampleCallDetails.get(j).getCust_code().equalsIgnoreCase(SaveAdditionalCallAdapter.Selected_code)) {
-                        SaveAdditionalCallAdapter.nestedAddSampleCallDetails.remove(j);
+                for (int j = 0; j < FinalAdditionalCallAdapter.nestedProduct.size(); j++) {
+                    if (FinalAdditionalCallAdapter.nestedProduct.get(j).getCust_code().equalsIgnoreCase(FinalAdditionalCallAdapter.Selected_code)) {
+                        FinalAdditionalCallAdapter.nestedProduct.remove(j);
                         j--;
                     }
                 }
 
-                AddSampleInputDatas();
+                AddSampleInputData();
             }
-            saveAdditionalCallAdapter = new SaveAdditionalCallAdapter(getActivity(), getContext(), SaveAdditionalCallAdapter.checked_arrayList, SaveAdditionalCallAdapter.saveAdditionalCalls, SaveAdditionalCallAdapter.nestedAddInputCallDetails, SaveAdditionalCallAdapter.nestedAddSampleCallDetails, SaveAdditionalCallAdapter.dummyNestedInput, SaveAdditionalCallAdapter.dummyNestedSample);
-            commonUtilsMethods.recycleTestWithoutDivider(SaveAdditionalCallAdapter.rv_nested_calls_input_data);
-            commonUtilsMethods.recycleTestWithoutDivider(SaveAdditionalCallAdapter.rv_nested_calls_sample_data);
-            AdditionalCallFragment.rv_add_call_list.setAdapter(saveAdditionalCallAdapter);
-            dcrcallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE);
+            finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), FinalAdditionalCallAdapter.checked_arrayList, FinalAdditionalCallAdapter.saveAdditionalCalls, FinalAdditionalCallAdapter.nestedInput, FinalAdditionalCallAdapter.nestedProduct, FinalAdditionalCallAdapter.dummyNestedInput, FinalAdditionalCallAdapter.dummyNestedSample);
+            commonUtilsMethods.recycleTestWithoutDivider(FinalAdditionalCallAdapter.rv_nested_calls_input_data);
+            commonUtilsMethods.recycleTestWithoutDivider(FinalAdditionalCallAdapter.rv_nested_calls_sample_data);
+            AdditionalCallFragment.rv_add_call_list.setAdapter(finalAdditionalCallAdapter);
+            dcrCallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE);
         });
         return v;
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void AddNewInputData() {
-        addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", ""));
+        addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(FinalAdditionalCallAdapter.Selected_name, FinalAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", ""));
         callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
         adapterInputAdditionalCall.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void AddNewSampleData() {
-        addSampleAdditionalCallArrayList.add(new AddSampleAdditionalCall(SaveAdditionalCallAdapter.Selected_name, SaveAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", "0", ""));
+        addProductAdditionalCallArrayList.add(new AddSampleAdditionalCall(FinalAdditionalCallAdapter.Selected_name, FinalAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", "0", ""));
         callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);
         adapterSampleAdditionalCall.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void AddSampleInputDatas() {
+    private void AddSampleInputData() {
         if (addInputAdditionalCallArrayList.size() > 0) {
             for (int i = 0; i < addInputAdditionalCallArrayList.size(); i++) {
-                SaveAdditionalCallAdapter.nestedAddInputCallDetails.add(new AddInputAdditionalCall(addInputAdditionalCallArrayList.get(i).getCust_name(), addInputAdditionalCallArrayList.get(i).getCust_code(), addInputAdditionalCallArrayList.get(i).getInput_name(), addInputAdditionalCallArrayList.get(i).getInput_code(), addInputAdditionalCallArrayList.get(i).getBalance_stock(), addInputAdditionalCallArrayList.get(i).getLast_stock(), addInputAdditionalCallArrayList.get(i).getInp_qty()));
+                FinalAdditionalCallAdapter.nestedInput.add(new AddInputAdditionalCall(addInputAdditionalCallArrayList.get(i).getCust_name(), addInputAdditionalCallArrayList.get(i).getCust_code(), addInputAdditionalCallArrayList.get(i).getInput_name(), addInputAdditionalCallArrayList.get(i).getInput_code(), addInputAdditionalCallArrayList.get(i).getBalance_stock(), addInputAdditionalCallArrayList.get(i).getLast_stock(), addInputAdditionalCallArrayList.get(i).getInp_qty()));
 
-                for (int j = 0; j < callCommonCheckedListArrayList.size(); j++) {
-                    if (addInputAdditionalCallArrayList.get(i).getInput_code().equalsIgnoreCase(callCommonCheckedListArrayList.get(j).getCode())) {
-                        callCommonCheckedListArrayList.set(j, new CallCommonCheckedList(callCommonCheckedListArrayList.get(j).getName(), callCommonCheckedListArrayList.get(j).getCode(), addInputAdditionalCallArrayList.get(i).getBalance_stock(), false));
+                if (InputValidation.equalsIgnoreCase("1")) {
+                    for (int j = 0; j < StockInput.size(); j++) {
+                        if (StockInput.get(j).getStockCode().equalsIgnoreCase(addInputAdditionalCallArrayList.get(i).getInput_code())) {
+                            StockInput.set(j, new CallCommonCheckedList(StockInput.get(j).getStockCode(), StockInput.get(j).getActualStock(), addInputAdditionalCallArrayList.get(i).getBalance_stock()));
+                        }
+                    }
+
+                    for (int j = 0; j < checkedInputList.size(); j++) {
+                        if (addInputAdditionalCallArrayList.get(i).getInput_code().equalsIgnoreCase(checkedInputList.get(j).getCode())) {
+                            checkedInputList.set(j, new CallCommonCheckedList(checkedInputList.get(j).getName(), checkedInputList.get(j).getCode(), addInputAdditionalCallArrayList.get(i).getBalance_stock(), false));
+                        }
+                    }
+
+                    if (saveCallInputListArrayList.size() > 0) {
+                        for (int j = 0; j < saveCallInputListArrayList.size(); j++) {
+                            int final_value;
+                            for (int k = 0; k < StockInput.size(); k++) {
+                                if (StockInput.get(k).getStockCode().equalsIgnoreCase(saveCallInputListArrayList.get(j).getInp_code())) {
+                                    if (saveCallInputListArrayList.get(j).getInp_qty().equalsIgnoreCase("0") || saveCallInputListArrayList.get(j).getInp_qty().isEmpty()) {
+                                        final_value = Integer.parseInt(StockInput.get(k).getCurrentStock());
+                                    } else {
+                                        final_value = Integer.parseInt(StockInput.get(k).getCurrentStock()) + Integer.parseInt(saveCallInputListArrayList.get(j).getInp_qty());
+                                    }
+                                    saveCallInputListArrayList.set(j, new SaveCallInputList(saveCallInputListArrayList.get(j).getInput_name(), saveCallInputListArrayList.get(j).getInp_code(), saveCallInputListArrayList.get(j).getInp_qty(), StockInput.get(k).getCurrentStock(), String.valueOf(final_value)));
+                                }
+                            }
+                        }
+                        finalInputCallAdapter = new FinalInputCallAdapter(requireActivity(), requireContext(), saveCallInputListArrayList, checkedInputList);
+                        InputFragment.fragmentInputBinding.rvListInput.setAdapter(finalInputCallAdapter);
+                        finalInputCallAdapter.notifyDataSetChanged();
                     }
                 }
+            }
+        }
 
-                for (int j = 0; j < saveCallInputListArrayList.size(); j++) {
-                    if (addInputAdditionalCallArrayList.get(i).getInput_code().equalsIgnoreCase(saveCallInputListArrayList.get(j).getInp_code())) {
-                        saveCallInputListArrayList.set(j, new SaveCallInputList(saveCallInputListArrayList.get(j).getInput_name(), saveCallInputListArrayList.get(j).getInp_code(), saveCallInputListArrayList.get(j).getInp_qty(), addInputAdditionalCallArrayList.get(i).getBalance_stock(), saveCallInputListArrayList.get(j).getBalance_inp_stk()));
+        if (addProductAdditionalCallArrayList.size() > 0) {
+            for (int i = 0; i < addProductAdditionalCallArrayList.size(); i++) {
+                FinalAdditionalCallAdapter.nestedProduct.add(new AddSampleAdditionalCall(addProductAdditionalCallArrayList.get(i).getCust_name(), addProductAdditionalCallArrayList.get(i).getCust_code(), addProductAdditionalCallArrayList.get(i).getPrd_name(), addProductAdditionalCallArrayList.get(i).getPrd_code(), addProductAdditionalCallArrayList.get(i).getBalance_stock(), addProductAdditionalCallArrayList.get(i).getLast_stock(), addProductAdditionalCallArrayList.get(i).getSample_qty(), addProductAdditionalCallArrayList.get(i).getCategory()));
+
+                if (SampleValidation.equalsIgnoreCase("1")) {
+                    for (int j = 0; j < StockSample.size(); j++) {
+                        if (StockSample.get(j).getStockCode().equalsIgnoreCase(addProductAdditionalCallArrayList.get(i).getPrd_code())) {
+                            StockSample.set(j, new CallCommonCheckedList(StockSample.get(j).getStockCode(), StockSample.get(j).getActualStock(), addProductAdditionalCallArrayList.get(i).getBalance_stock()));
+                        }
+                    }
+
+                    for (int j = 0; j < checkedPrdList.size(); j++) {
+                        if (addProductAdditionalCallArrayList.get(i).getPrd_code().equalsIgnoreCase(checkedPrdList.get(j).getCode())) {
+                            checkedPrdList.set(j, new CallCommonCheckedList(checkedPrdList.get(j).getName(), checkedPrdList.get(j).getCode(), addProductAdditionalCallArrayList.get(i).getBalance_stock(), false, checkedPrdList.get(j).getCategory(), checkedPrdList.get(j).getCategoryExtra()));
+                        }
+                    }
+
+                    if (saveCallProductListArrayList.size() > 0) {
+                        for (int j = 0; j < saveCallProductListArrayList.size(); j++) {
+                            int final_value;
+                            for (int k = 0; k < StockSample.size(); k++) {
+                                if (StockSample.get(k).getStockCode().equalsIgnoreCase(saveCallProductListArrayList.get(j).getCode())) {
+                                    if (saveCallProductListArrayList.get(j).getSample_qty().equalsIgnoreCase("0") || saveCallProductListArrayList.get(j).getSample_qty().isEmpty()) {
+                                        final_value = Integer.parseInt(StockSample.get(k).getCurrentStock());
+                                    } else {
+                                        final_value = Integer.parseInt(StockSample.get(k).getCurrentStock()) + Integer.parseInt(saveCallProductListArrayList.get(j).getSample_qty());
+                                    }
+                                    saveCallProductListArrayList.set(j, new SaveCallProductList(saveCallProductListArrayList.get(j).getName(), saveCallProductListArrayList.get(j).getCode(), saveCallProductListArrayList.get(j).getCategory(), StockSample.get(k).getCurrentStock(), String.valueOf(final_value), saveCallProductListArrayList.get(j).getSample_qty(), saveCallProductListArrayList.get(j).getRx_qty(), saveCallProductListArrayList.get(j).getRcpa_qty(), saveCallProductListArrayList.get(j).getPromoted(), saveCallProductListArrayList.get(j).isClicked()));
+                                }
+                            }
+                        }
+                        finalProductCallAdapter = new FinalProductCallAdapter(requireActivity(), requireContext(), saveCallProductListArrayList, checkedPrdList);
+                        ProductFragment.productsBinding.rvListPrd.setAdapter(finalProductCallAdapter);
+                        finalProductCallAdapter.notifyDataSetChanged();
                     }
                 }
-
-
-                saveInputCallAdapter = new SaveInputCallAdapter(requireActivity(), requireContext(), saveCallInputListArrayList, callCommonCheckedListArrayList);
-                InputFragment.fragmentInputBinding.rvListInput.setAdapter(saveInputCallAdapter);
-                saveInputCallAdapter.notifyDataSetChanged();
             }
         }
-
-        if (addSampleAdditionalCallArrayList.size() > 0) {
-            for (int i = 0; i < addSampleAdditionalCallArrayList.size(); i++) {
-                SaveAdditionalCallAdapter.nestedAddSampleCallDetails.add(new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(i).getCust_name(), addSampleAdditionalCallArrayList.get(i).getCust_code(), addSampleAdditionalCallArrayList.get(i).getPrd_name(), addSampleAdditionalCallArrayList.get(i).getPrd_code(), addSampleAdditionalCallArrayList.get(i).getBalance_stock(), addSampleAdditionalCallArrayList.get(i).getLast_stock(), addSampleAdditionalCallArrayList.get(i).getSample_qty(), addSampleAdditionalCallArrayList.get(i).getCategory()));
-            }
-        }
-
-
-      /*  if (addInputAdditionalCallArrayList.size() > 0) {
-            for (int i = 0; i < addInputAdditionalCallArrayList.size(); i++) {
-                SaveAdditionalCallAdapter.nestedAddInputCallDetails.add(new AddInputAdditionalCall(addInputAdditionalCallArrayList.get(i).getCust_name(), addInputAdditionalCallArrayList.get(i).getCust_code(), addInputAdditionalCallArrayList.get(i).getInput_name(),addInputAdditionalCallArrayList.get(i).getInput_code(),addInputAdditionalCallArrayList.get(i).getBalance_stock(),addInputAdditionalCallArrayList.get(i).getLast_stock(), addInputAdditionalCallArrayList.get(i).getInp_qty()));
-            }
-        }
-
-        if (addSampleAdditionalCallArrayList.size() > 0) {
-            for (int i = 0; i < addSampleAdditionalCallArrayList.size(); i++) {
-                SaveAdditionalCallAdapter.nestedAddSampleCallDetails.add(new AddSampleAdditionalCall(addSampleAdditionalCallArrayList.get(i).getCust_name(), addSampleAdditionalCallArrayList.get(i).getCust_code(), addSampleAdditionalCallArrayList.get(i).getPrd_name(), addSampleAdditionalCallArrayList.get(i).getPrd_code(),addSampleAdditionalCallArrayList.get(i).getBalance_stock() ,addSampleAdditionalCallArrayList.get(i).getLast_stock(),addSampleAdditionalCallArrayList.get(i).getSample_qty(),addSampleAdditionalCallArrayList.get(i).getCategory()));
-            }
-        }*/
     }
 
     private void HideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(callDetailsSideBinding.tabLayout.getWindowToken(), 0);
     }
 
     private void setUpData() {
-        //  adapterInputAdditionalCall = new AdapterInputAdditionalCall(getActivity(), addInputAdditionalCallArrayList, callInputList);
         adapterInputAdditionalCall = new AdapterInputAdditionalCall(getActivity(), addInputAdditionalCallArrayList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
         callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
 
-        // adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(getActivity(), addSampleAdditionalCallArrayList, callSampleList);
-        adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(getActivity(), addSampleAdditionalCallArrayList);
+        adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(getActivity(), addProductAdditionalCallArrayList);
         RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(getActivity());
         callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerprd);
         callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);

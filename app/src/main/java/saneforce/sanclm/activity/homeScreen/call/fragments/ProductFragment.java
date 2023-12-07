@@ -19,18 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.homeScreen.call.adapter.product.CallProductListAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.product.SaveProductCallAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.product.CheckProductListAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.product.FinalProductCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.sanclm.databinding.FragmentProductsBinding;
 import saneforce.sanclm.storage.SQLite;
 
 public class ProductFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentProductsBinding productsBinding;
-    public static ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList;
-    CallProductListAdapter callProductListAdapter;
-  SaveProductCallAdapter saveProductCallAdapter;
+    public static ArrayList<CallCommonCheckedList> checkedPrdList;
+    CheckProductListAdapter checkProductListAdapter;
+  FinalProductCallAdapter finalProductCallAdapter;
     SQLite sqLite;
 
     @Nullable
@@ -96,7 +97,7 @@ public class ProductFragment extends Fragment {
 
     private void HiddenVisibleFunction() {
         productsBinding.tagSamples.setText(DCRCallActivity.CapSamQty);
-        productsBinding.tagRxQty.setText(DCRCallActivity.CapRxqty);
+        productsBinding.tagRxQty.setText(DCRCallActivity.CapRxQty);
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
                 if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
@@ -119,29 +120,30 @@ public class ProductFragment extends Fragment {
     }
 
     private void AddProductList() {
-        callProductListAdapter = new CallProductListAdapter(getActivity(), getContext(), callCommonCheckedListArrayList);
+        checkProductListAdapter = new CheckProductListAdapter(getActivity(), getContext(), checkedPrdList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         productsBinding.rvCheckDataList.setLayoutManager(mLayoutManager);
         productsBinding.rvCheckDataList.setItemAnimator(new DefaultItemAnimator());
-        productsBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        productsBinding.rvCheckDataList.setAdapter(callProductListAdapter);
+        productsBinding.rvCheckDataList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        productsBinding.rvCheckDataList.setAdapter(checkProductListAdapter);
 
-        saveProductCallAdapter = new SaveProductCallAdapter(getActivity(), getContext(), CallProductListAdapter.saveCallProductListArrayList, callCommonCheckedListArrayList);
-        RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(getActivity());
-        productsBinding.rvListPrd.setLayoutManager(mLayoutManagerprd);
+        finalProductCallAdapter = new FinalProductCallAdapter(getActivity(), getContext(), CheckProductListAdapter.saveCallProductListArrayList, checkedPrdList);
+        productsBinding.rvListPrd.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
+       // RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(getActivity());
+       // productsBinding.rvListPrd.setLayoutManager(mLayoutManagerprd);
         productsBinding.rvListPrd.setItemAnimator(new DefaultItemAnimator());
-        productsBinding.rvListPrd.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        productsBinding.rvListPrd.setAdapter(saveProductCallAdapter);
+        productsBinding.rvListPrd.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        productsBinding.rvListPrd.setAdapter(finalProductCallAdapter);
     }
 
     private void filter(String text) {
-        ArrayList<CallCommonCheckedList> filterdNames = new ArrayList<>();
+        ArrayList<CallCommonCheckedList> filteredNames = new ArrayList<>();
 
       /*  if (text.toLowerCase().equalsIgnoreCase("SL")) {
             if (s.getCategory().equalsIgnoreCase("Sale")) {
                 sale = s.getCategory();
             }*/
-        for (CallCommonCheckedList s : callCommonCheckedListArrayList) {
+        for (CallCommonCheckedList s : checkedPrdList) {
             String Category = "";
 
             if (s.getCategory().equalsIgnoreCase("Sale")) {
@@ -157,9 +159,9 @@ public class ProductFragment extends Fragment {
             }
 
             if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getCategory().toLowerCase().contains(text.toLowerCase()) || Category.toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        callProductListAdapter.filterList(filterdNames);
+        checkProductListAdapter.filterList(filteredNames);
     }
 }

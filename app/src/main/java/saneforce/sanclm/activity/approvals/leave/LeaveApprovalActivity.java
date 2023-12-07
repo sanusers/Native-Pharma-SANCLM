@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +34,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class LeaveApprovalActivity extends AppCompatActivity {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode;
+    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode;
     ActivityLeaveBinding leaveBinding;
     ArrayList<LeaveModelList> leaveModelLists = new ArrayList<>();
     LeaveApprovalAdapter leaveApprovalAdapter;
@@ -47,6 +49,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         leaveBinding = ActivityLeaveBinding.inflate(getLayoutInflater());
         setContentView(leaveBinding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
@@ -85,17 +88,18 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             jsonLeave.put("Designation", Designation);
             jsonLeave.put("state_code", SubDivisionCode);
             Log.v("json_get_lvl_list", jsonLeave.toString());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
 
-        Call<JsonArray> callGetLeaveApproval = null;
+        Call<JsonArray> callGetLeaveApproval;
         callGetLeaveApproval = api_interface.getLeaveApprovalList(jsonLeave.toString());
         callGetLeaveApproval.enqueue(new Callback<JsonArray>() {
             @Override
-            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                Log.v("jjj", response.body().toString() + "--" + response.isSuccessful());
+            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                assert response.body() != null;
+                Log.v("jjj", response.body() + "--" + response.isSuccessful());
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -118,7 +122,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(LeaveApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
             }
@@ -136,16 +140,16 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
-        TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(LeaveApprovalActivity.this);
+        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(LeaveApprovalActivity.this);
     }
 
     private void filter(String text) {
-        ArrayList<LeaveModelList> filterdNames = new ArrayList<>();
+        ArrayList<LeaveModelList> filteredNames = new ArrayList<>();
         for (LeaveModelList s : leaveModelLists) {
             if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getLeave_type().contains(text.toLowerCase()) || s.getReason().contains(text.toLowerCase()) || s.getLeave_id().contains(text.toLowerCase()) || s.getAddr().contains(text.toLowerCase()) || s.getNo_of_days().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        leaveApprovalAdapter.filterList(filterdNames);
+        leaveApprovalAdapter.filterList(filteredNames);
     }
 }

@@ -22,13 +22,9 @@ public class GeoTaggingActivity extends AppCompatActivity {
         geoTaggingBinding = ActivityGeoTaggingBinding.inflate(getLayoutInflater());
         setContentView(geoTaggingBinding.getRoot());
         setUpAdapter();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        geoTaggingBinding.ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        geoTaggingBinding.ivBack.setOnClickListener(view -> finish());
     }
 
     private void setUpAdapter() {

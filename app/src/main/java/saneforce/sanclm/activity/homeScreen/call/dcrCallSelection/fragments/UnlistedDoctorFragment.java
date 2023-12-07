@@ -64,6 +64,7 @@ public class UnlistedDoctorFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.v("fragment","---"+ "unlisted");
         View v = inflater.inflate(R.layout.fragment_unlisted_doctor, container, false);
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
         ed_search = v.findViewById(R.id.search_cust);
@@ -73,11 +74,10 @@ public class UnlistedDoctorFragment extends Fragment {
         sqLite = new SQLite(getContext());
 
         SetupAdapter();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);
 
         iv_filter.setOnClickListener(view -> {
-
             dialogFilter = new Dialog(getActivity());
             dialogFilter.setContentView(R.layout.popup_dcr_filter);
             dialogFilter.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -196,12 +196,12 @@ public class UnlistedDoctorFragment extends Fragment {
     }
 
     private void filter(String text) {
-        ArrayList<CustList> filterdNames = new ArrayList<>();
+        ArrayList<CustList> filteredNames = new ArrayList<>();
         for (CustList s : custListArrayList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getTown_name().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        adapterDCRCallSelection.filterList(filterdNames);
+        adapterDCRCallSelection.filterList(filteredNames);
     }
 }

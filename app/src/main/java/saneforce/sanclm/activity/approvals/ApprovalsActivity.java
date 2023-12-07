@@ -4,7 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -36,7 +38,7 @@ public class ApprovalsActivity extends AppCompatActivity {
     ApiInterface api_interface;
     LoginResponse loginResponse;
     SQLite sqLite;
-    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayplanSfCode;
+    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode;
     ArrayList<AdapterModel> list_approvals = new ArrayList<>();
     AdapterApprovals adapterApprovals;
     ProgressDialog progressDialog = null;
@@ -59,7 +61,8 @@ public class ApprovalsActivity extends AppCompatActivity {
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-       // progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         getRequiredData();
         if (SharedPref.getApprovalsCounts(ApprovalsActivity.this).equalsIgnoreCase("false")) {
             CallListCountAPI();
@@ -77,24 +80,25 @@ public class ApprovalsActivity extends AppCompatActivity {
             jsonGetCount.put("tableName", "getapprovalcheck");
             jsonGetCount.put("sfcode", SfCode);
             jsonGetCount.put("division_code", DivCode);
-            jsonGetCount.put("Rsf", TodayplanSfCode);
+            jsonGetCount.put("Rsf", TodayPlanSfCode);
             jsonGetCount.put("sf_type", SfType);
             jsonGetCount.put("Designation", Designation);
             jsonGetCount.put("state_code", StateCode);
             jsonGetCount.put("subdivision_code", SubDivisionCode);
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Call<JsonObject> callGetCountApprovals = null;
+        Call<JsonObject> callGetCountApprovals;
         callGetCountApprovals = api_interface.getListCountApprovals(jsonGetCount.toString());
 
         callGetCountApprovals.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.v("counts", "-0-" + response.body().toString());
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                assert response.body() != null;
+                Log.v("counts", "-0-" + response.body());
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -118,7 +122,7 @@ public class ApprovalsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
             }
         });
@@ -150,6 +154,6 @@ public class ApprovalsActivity extends AppCompatActivity {
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
-        TodayplanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
+        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
     }
 }

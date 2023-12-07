@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.StockInput;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall.addedInpList;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.callDetailsSideBinding;
 
@@ -34,7 +35,8 @@ import saneforce.sanclm.databinding.FragmentAcSelectInputSideBinding;
 
 public class AddCallSelectInpSide extends Fragment {
     public static ArrayList<CallCommonCheckedList> callInputList;
-    FragmentAcSelectInputSideBinding selectInputSideBinding;
+    @SuppressLint("StaticFieldLeak")
+    public static FragmentAcSelectInputSideBinding selectInputSideBinding;
     SelectACInputAdapter selectACInputAdapter;
 
     @Nullable
@@ -53,15 +55,7 @@ public class AddCallSelectInpSide extends Fragment {
         selectInputSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         selectInputSideBinding.selectListView.setAdapter(selectACInputAdapter);
 
-
-        /*saveInputCallAdapter = new SaveInputCallAdapter(requireActivity(),requireContext(), );
-        RecyclerView.LayoutManager mLayoutManagerChe = new LinearLayoutManager(getActivity());
-        selectInputSideBinding.selectListView.setLayoutManager(mLayoutManagerChe);
-        selectInputSideBinding.selectListView.setItemAnimator(new DefaultItemAnimator());
-        selectInputSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-        selectInputSideBinding.selectListView.setAdapter(selectACInputAdapter);*/
-
-        selectInputSideBinding.imgClose.setOnClickListener(view -> dcrcallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE));
+        selectInputSideBinding.imgClose.setOnClickListener(view -> dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE));
 
         selectInputSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
@@ -84,13 +78,13 @@ public class AddCallSelectInpSide extends Fragment {
     }
 
     private void filterInp(String text) {
-        ArrayList<CallCommonCheckedList> filterdNames = new ArrayList<>();
+        ArrayList<CallCommonCheckedList> filteredNames = new ArrayList<>();
         for (CallCommonCheckedList s : callInputList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        selectACInputAdapter.filterList(filterdNames);
+        selectACInputAdapter.filterList(filteredNames);
     }
 
     public static class SelectACInputAdapter extends RecyclerView.Adapter<SelectACInputAdapter.ViewHolder> {
@@ -119,13 +113,18 @@ public class AddCallSelectInpSide extends Fragment {
             holder.tv_name.setText(callInputList.get(position).getName());
             holder.tv_name.setOnClickListener(view -> {
                 if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
+                    for (int i = 0; i < StockInput.size(); i++) {
+                        if (StockInput.get(i).getStockCode().equalsIgnoreCase(callInputList.get(position).getCode())) {
+                            callInputList.set(position, new CallCommonCheckedList(callInputList.get(position).getName(), callInputList.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
+                        }
+                    }
                     if (Integer.parseInt(callInputList.get(position).getStock_balance()) > 0) {
-                        SelectContent(holder.getAdapterPosition());
+                        SelectContent(holder.getBindingAdapterPosition());
                     } else {
                         Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    SelectContent(holder.getAdapterPosition());
+                    SelectContent(holder.getBindingAdapterPosition());
                 }
             });
         }
@@ -146,7 +145,7 @@ public class AddCallSelectInpSide extends Fragment {
                 commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
                 callDetailsSideBinding.rvAddInputsAdditional.setAdapter(AdditionalCallDetailedSide.adapterInputAdditionalCall);
                 AdditionalCallDetailedSide.adapterInputAdditionalCall.notifyDataSetChanged();
-                dcrcallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE);
+                dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE);
             } else {
                 Toast.makeText(context, "You Already Select this Input", Toast.LENGTH_SHORT).show();
             }
@@ -159,8 +158,8 @@ public class AddCallSelectInpSide extends Fragment {
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        public void filterList(ArrayList<CallCommonCheckedList> filterdNames) {
-            this.callInputList = filterdNames;
+        public void filterList(ArrayList<CallCommonCheckedList> filteredNames) {
+            this.callInputList = filteredNames;
             notifyDataSetChanged();
         }
 

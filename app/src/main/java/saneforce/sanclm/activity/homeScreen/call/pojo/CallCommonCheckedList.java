@@ -1,7 +1,5 @@
 package saneforce.sanclm.activity.homeScreen.call.pojo;
 
-import com.google.android.material.circularreveal.CircularRevealHelper;
-
 public class CallCommonCheckedList {
     boolean checkedItem;
     String name;

@@ -51,7 +51,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                onDayClickInterface.onDayClicked(holder.getAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition()));
+                onDayClickInterface.onDayClicked(holder.getBindingAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition()));
             }
         });
     }

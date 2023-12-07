@@ -56,7 +56,7 @@ public class GPSTrack implements LocationListener {
     @Override
     public void onProviderEnabled(String s) {
 
-        Log.v("that_provider_are", "enableddddd");
+        Log.v("that_provider_are", "enabled");
     }
 
     @Override
@@ -90,7 +90,7 @@ public class GPSTrack implements LocationListener {
 
             Log.v("isNetworkEnabled", "=" + isNetworkEnabled);
 
-            if (isGPSEnabled == false && isNetworkEnabled == false) {
+            if (!isGPSEnabled && !isNetworkEnabled) {
                 // no network provider is enabled
                // isLocationEnabled();
             } else {
@@ -206,21 +206,21 @@ public class GPSTrack implements LocationListener {
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
-                        Log.i("permission_grantt", "All location settings are satisfied.");
+                        Log.i("permission_grant", "All location settings are satisfied.");
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Log.i("permission_grantt", "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
+                        Log.i("permission_grant", "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
 
                         try {
                             // Show the dialog by calling startResolutionForResult(), and check the result
                             // in onActivityResult().
                             status.startResolutionForResult(activity, 1);
                         } catch (IntentSender.SendIntentException e) {
-                            Log.i("permission_grantt", "PendingIntent unable to execute request.");
+                            Log.i("permission_grant", "PendingIntent unable to execute request.");
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.i("permission_grantt", "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
+                        Log.i("permission_grant", "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
                         break;
                 }
             }

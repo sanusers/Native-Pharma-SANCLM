@@ -24,38 +24,36 @@ import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     Context context;
-    ArrayList<CustList> custListArrayList;
+    ArrayList<CustList> cusListArrayList;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
 
-    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> custListArrayList) {
+    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList) {
         this.activity = activity;
         this.context = context;
-        this.custListArrayList = custListArrayList;
+        this.cusListArrayList = cusListArrayList;
     }
 
     @NonNull
     @Override
     public AdapterDCRCallSelection.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.adapter_call_cust_list, parent, false);
-        return new AdapterDCRCallSelection.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AdapterDCRCallSelection.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
-        holder.tv_name.setText(custListArrayList.get(position).getName());
-        holder.tv_category.setText(custListArrayList.get(position).getCategory());
-        holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
-        holder.tv_area.setText(custListArrayList.get(position).getTown_name());
+        holder.tv_name.setText(cusListArrayList.get(position).getName());
+        holder.tv_category.setText(cusListArrayList.get(position).getCategory());
+        holder.tv_specialist.setText(cusListArrayList.get(position).getSpecialist());
+        holder.tv_area.setText(cusListArrayList.get(position).getTown_name());
 
-        holder.tv_name.setOnClickListener(view -> {
-            commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
-        });
+        holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, cusListArrayList.get(position).getName()));
 
         for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
-            if (custListArrayList.get(position).getType().equalsIgnoreCase("3")) {
-                if (custListArrayList.get(position).getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
+            if (cusListArrayList.get(position).getType().equalsIgnoreCase("3")) {
+                if (cusListArrayList.get(position).getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
                     holder.view_top.setVisibility(View.VISIBLE);
                     holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
                     break;
@@ -64,7 +62,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
                 }
             } else {
-                if (custListArrayList.get(position).getTown_code().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
+                if (cusListArrayList.get(position).getTown_code().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
                     holder.view_top.setVisibility(View.VISIBLE);
                     holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
                     break;
@@ -75,21 +73,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             }
         }
 
-      /*  for (int i = 0; i < TodayPlanClusterList.size(); i++) {
-            if (TodayPlanClusterList.get(i).equalsIgnoreCase(custListArrayList.get(position).getTown_code())) {
-                Log.v("Tod", TodayPlanClusterList.get(i) + "---" + custListArrayList.get(position).getTown_code());
-                holder.view_top.setVisibility(View.VISIBLE);
-                holder.tv_area.setTextColor(context.getResources().getColor(R.color.pink));
-            } else {
-                holder.view_top.setVisibility(View.GONE);
-                holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
-            }
-        }*/
-
-
         holder.constraint_main.setOnClickListener(view -> {
             DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(custListArrayList.get(position).getName(), custListArrayList.get(position).getCode(), custListArrayList.get(position).getType(), custListArrayList.get(position).getCategory(), custListArrayList.get(position).getCategoryCode(), custListArrayList.get(position).getSpecialist(), custListArrayList.get(position).getTown_name(), custListArrayList.get(position).getTown_code(), custListArrayList.get(position).getMaxTag(), custListArrayList.get(position).getTag(), custListArrayList.get(position).getPosition(), custListArrayList.get(position).getLatitude(), custListArrayList.get(position).getLongitude(), custListArrayList.get(position).getAddress(), custListArrayList.get(position).getDob(), custListArrayList.get(position).getWedding_date(), custListArrayList.get(position).getEmail(), custListArrayList.get(position).getMobile(), custListArrayList.get(position).getPhone(), custListArrayList.get(position).getQualification(), custListArrayList.get(position).getPriorityPrdCode()));
+            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode()));
             Intent intent = new Intent(context, CustomerProfile.class);
             context.startActivity(intent);
         });
@@ -97,16 +83,16 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
     @Override
     public int getItemCount() {
-        return custListArrayList.size();
+        return cusListArrayList.size();
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<CustList> filterdNames) {
-        this.custListArrayList = filterdNames;
+    public void filterList(ArrayList<CustList> filteredNames) {
+        this.cusListArrayList = filteredNames;
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name, tv_category, tv_specialist, tv_area;
         ConstraintLayout constraint_main;
         View view_top;

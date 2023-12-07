@@ -2,7 +2,6 @@ package saneforce.sanclm.activity.approvals.dcr.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,26 +21,19 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
     ArrayList<AdapterModel> adapterModels;
     int selectedPosition = -1;
     int lastSelectedPosition = -1;
-    AdapterCustMainList adapterCustMainList;
+    AdapterCusMainList adapterCusMainList;
     ArrayList<DcrDetailModelList> dcrApprovalLists;
-    String DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption;
+    String DrCaption, ChemistCaption, StockistCaption, UnDrCaption;
 
-    public AdapterSelectionList(Context context, ArrayList<AdapterModel> adapterModels, ArrayList<DcrDetailModelList> dcrApprovalLists, AdapterCustMainList adapterCustMainList) {
-        this.context = context;
-        this.adapterModels = adapterModels;
-        this.dcrApprovalLists = dcrApprovalLists;
-        this.adapterCustMainList = adapterCustMainList;
-    }
-
-    public AdapterSelectionList(Context context, ArrayList<AdapterModel> adapterModels, ArrayList<DcrDetailModelList> dcrDetailedList, AdapterCustMainList adapterCustMainList, String drCaption, String chemistCaption, String stockistCaption, String undrCaption) {
+    public AdapterSelectionList(Context context, ArrayList<AdapterModel> adapterModels, ArrayList<DcrDetailModelList> dcrDetailedList, AdapterCusMainList adapterCusMainList, String drCaption, String chemistCaption, String stockistCaption, String unDrCaption) {
         this.context = context;
         this.adapterModels = adapterModels;
         this.dcrApprovalLists = dcrDetailedList;
-        this.adapterCustMainList = adapterCustMainList;
+        this.adapterCusMainList = adapterCusMainList;
         this.DrCaption = drCaption;
         this.ChemistCaption = chemistCaption;
         this.StockistCaption = stockistCaption;
-        this.UndrCaption = undrCaption;
+        this.UnDrCaption = unDrCaption;
     }
 
     @NonNull
@@ -54,7 +46,6 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull AdapterSelectionList.ViewHolder holder, int position) {
-        Log.v("tytyty", adapterModels.get(position).getName());
         holder.tv_name.setText(adapterModels.get(position).getName());
         holder.tv_count.setText(adapterModels.get(position).getCount());
 
@@ -75,7 +66,7 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
                 holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample_border));
                 holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
                 filter("3");
-            } else if (adapterModels.get(position).getName().equalsIgnoreCase(UndrCaption)) {
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(UnDrCaption)) {
                 holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample_border));
                 holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
                 filter("4");
@@ -97,7 +88,7 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(StockistCaption)) {
                 holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample));
                 holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
-            } else if (adapterModels.get(position).getName().equalsIgnoreCase(UndrCaption)) {
+            } else if (adapterModels.get(position).getName().equalsIgnoreCase(UnDrCaption)) {
                 holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample));
                 holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
             } else if (adapterModels.get(position).getName().equalsIgnoreCase("Hospital")) {
@@ -116,13 +107,13 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
     }
 
     private void filter(String text) {
-        ArrayList<DcrDetailModelList> filterdNames = new ArrayList<>();
+        ArrayList<DcrDetailModelList> filteredNames = new ArrayList<>();
         for (DcrDetailModelList s : dcrApprovalLists) {
             if (s.getType().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        adapterCustMainList.filterList(filterdNames);
+        adapterCusMainList.filterList(filteredNames);
     }
 
     @Override

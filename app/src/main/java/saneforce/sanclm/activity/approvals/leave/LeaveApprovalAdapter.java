@@ -92,7 +92,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
             btn_reject.setOnClickListener(view13 -> {
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
-                    RejectedLeave(leaveModelLists.get(holder.getAdapterPosition()).getLeave_id(), holder.getAdapterPosition(), ed_reason.getText().toString());
+                    RejectedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition(), ed_reason.getText().toString());
                 } else {
                     Toast.makeText(context, context.getResources().getText(R.string.toast_enter_reason_for_reject), Toast.LENGTH_SHORT).show();
                 }
@@ -100,7 +100,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             dialogReject.show();
         });
 
-        holder.btn_accept.setOnClickListener(view -> ApprovedLeave(leaveModelLists.get(holder.getAdapterPosition()).getLeave_id(), holder.getAdapterPosition()));
+        holder.btn_accept.setOnClickListener(view -> ApprovedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition()));
     }
 
     private void RejectedLeave(String leave_id, int Position, String reason) {
@@ -112,23 +112,24 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("RejRem", reason);
             jsonLeave.put("sfcode", LeaveApprovalActivity.SfCode);
             jsonLeave.put("division_code", LeaveApprovalActivity.DivCode.replace(",", "").trim());
-            jsonLeave.put("Rsf", LeaveApprovalActivity.TodayplanSfCode);
+            jsonLeave.put("Rsf", LeaveApprovalActivity.TodayPlanSfCode);
             jsonLeave.put("sf_type", LeaveApprovalActivity.SfType);
             jsonLeave.put("Designation", LeaveApprovalActivity.Designation);
             jsonLeave.put("state_code", LeaveApprovalActivity.StateCode);
             jsonLeave.put("subdivision_code", LeaveApprovalActivity.SubDivisionCode);
             Log.v("reject_leave", jsonLeave.toString());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
-        Call<JsonObject> callRejectedLeave = null;
+        Call<JsonObject> callRejectedLeave;
         callRejectedLeave = api_interface.saveLeaveApproval(jsonLeave.toString());
         callRejectedLeave.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
+                        assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             Toast.makeText(context, "Rejected Successfully", Toast.LENGTH_SHORT).show();
@@ -147,7 +148,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
                 dialogReject.dismiss();
@@ -165,31 +166,32 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("RejRem", "");
             jsonLeave.put("sfcode", LeaveApprovalActivity.SfCode);
             jsonLeave.put("division_code", LeaveApprovalActivity.DivCode.replace(",", "").trim());
-            jsonLeave.put("Rsf", LeaveApprovalActivity.TodayplanSfCode);
+            jsonLeave.put("Rsf", LeaveApprovalActivity.TodayPlanSfCode);
             jsonLeave.put("sf_type", LeaveApprovalActivity.SfType);
             jsonLeave.put("Designation", LeaveApprovalActivity.Designation);
             jsonLeave.put("state_code", LeaveApprovalActivity.StateCode);
             jsonLeave.put("subdivision_code", LeaveApprovalActivity.SubDivisionCode);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        Call<JsonObject> callApprovedLeave = null;
+        Call<JsonObject> callApprovedLeave;
         callApprovedLeave = api_interface.saveLeaveApproval(jsonLeave.toString());
 
         callApprovedLeave.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
+                        assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             Toast.makeText(context, "Approved Successfully", Toast.LENGTH_SHORT).show();
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
                         }
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 } else {
                     progressDialog.dismiss();
@@ -198,7 +200,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
             }
@@ -217,13 +219,20 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<LeaveModelList> filterdNames) {
-        this.leaveModelLists = filterdNames;
+    public void filterList(ArrayList<LeaveModelList> filteredNames) {
+        this.leaveModelLists = filteredNames;
         notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_name, tv_emp_code, tv_reason, tv_from_date, tv_to_date, tv_no_of_days, tv_leave_type, tv_availability, tv_address;
+        TextView tv_name;
+        TextView tv_emp_code;
+        TextView tv_reason;
+        TextView tv_from_date;
+        TextView tv_to_date;
+        TextView tv_no_of_days;
+        TextView tv_leave_type;
+        TextView tv_address;
         Button btn_accept, btn_reject;
 
         public ViewHolder(@NonNull View item) {
@@ -235,7 +244,6 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             tv_to_date = item.findViewById(R.id.tv_leave_to);
             tv_leave_type = item.findViewById(R.id.tv_leave_type);
             tv_no_of_days = item.findViewById(R.id.tv_no_of_days);
-            // tv_availability = item.findViewById(R.id.tv_available_days);
             tv_address = item.findViewById(R.id.tv_address);
             btn_accept = item.findViewById(R.id.btn_approved);
             btn_reject = item.findViewById(R.id.btn_reject);

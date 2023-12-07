@@ -11,12 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import java.util.ArrayList;
 
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.pojo.detailing.CallDetailingList;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class DetailedCallAdapter extends RecyclerView.Adapter<DetailedCallAdapter.ViewHolder> {
     Context context;
@@ -43,9 +42,7 @@ public class DetailedCallAdapter extends RecyclerView.Adapter<DetailedCallAdapte
         holder.tv_brand_name.setText(callDetailingLists.get(position).getBrand_name());
         holder.tv_timeline.setText(callDetailingLists.get(position).getTimeline());
         holder.ratingBar.setRating(Float.parseFloat(callDetailingLists.get(position).getRating()));
-        holder.tv_brand_name.setOnClickListener(view -> {
-                commonUtilsMethods.displayPopupWindow(activity, context, view, callDetailingLists.get(position).getBrand_name());
-        });
+        holder.tv_brand_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, callDetailingLists.get(position).getBrand_name()));
     }
 
     @Override
@@ -53,7 +50,7 @@ public class DetailedCallAdapter extends RecyclerView.Adapter<DetailedCallAdapte
         return callDetailingLists.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_brand_name, tv_timeline;
         RatingBar ratingBar;
 
