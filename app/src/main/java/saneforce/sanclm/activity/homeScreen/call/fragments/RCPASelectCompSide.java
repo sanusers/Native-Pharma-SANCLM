@@ -65,6 +65,7 @@ public class RCPASelectCompSide extends Fragment {
     ArrayList<Double> CompQty = new ArrayList<>();
     JSONArray jsonArray;
     JSONObject jsonObject, jsonObject1;
+    ArrayList<String> SelectedChk = new ArrayList<>();
 
     @SuppressLint({"ResourceType", "NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
     @Nullable
@@ -121,61 +122,67 @@ public class RCPASelectCompSide extends Fragment {
         });
 
         rcpaSideBinding.btnSave.setOnClickListener(view -> {
+            SelectedChk.clear();
             for (int i = 0; i < AdapterCompetitorPrd.CompetitorList.size(); i++) {
                 if (AdapterCompetitorPrd.CompetitorList.get(i).isSelected()) {
+                    SelectedChk.add(AdapterCompetitorPrd.CompetitorList.get(i).getChem_names());
                     rcpa_comp_list.add(new RCPAAddedCompList(AdapterCompetitorPrd.CompetitorList.get(i).getChem_names(), AdapterCompetitorPrd.CompetitorList.get(i).getChem_Code(), AdapterCompetitorPrd.CompetitorList.get(i).getPrd_name(), AdapterCompetitorPrd.CompetitorList.get(i).getPrd_code(), AdapterCompetitorPrd.CompetitorList.get(i).getComp_company_name(), AdapterCompetitorPrd.CompetitorList.get(i).getComp_company_code(), AdapterCompetitorPrd.CompetitorList.get(i).getComp_product(), AdapterCompetitorPrd.CompetitorList.get(i).getComp_product_code(), "1", AdapterCompetitorPrd.CompetitorList.get(i).getRate(), AdapterCompetitorPrd.CompetitorList.get(i).getRate(), "", AdapterCompetitorPrd.CompetitorList.get(i).getTotalPrdValue()));
                 }
             }
 
-            for (int j = 0; j < ProductSelectedList.size(); j++) {
-                CompQty = new ArrayList<>();
-                for (int i = 0; i < rcpa_comp_list.size(); i++) {
-                    if (rcpa_comp_list.get(i).getChem_Code().equalsIgnoreCase(ProductSelectedList.get(j).getChe_codes()) && rcpa_comp_list.get(i).getPrd_code().equalsIgnoreCase(ProductSelectedList.get(j).getPrd_code())) {
-                        if (!rcpa_comp_list.get(i).getValue().isEmpty()) {
-                            getTotalValue = Double.parseDouble(ProductSelectedList.get(j).getValue());
-                            CompQty.add(Double.parseDouble(rcpa_comp_list.get(i).getValue()));
+            if (SelectedChk.size() > 0) {
+                for (int j = 0; j < ProductSelectedList.size(); j++) {
+                    CompQty = new ArrayList<>();
+                    for (int i = 0; i < rcpa_comp_list.size(); i++) {
+                        if (rcpa_comp_list.get(i).getChem_Code().equalsIgnoreCase(ProductSelectedList.get(j).getChe_codes()) && rcpa_comp_list.get(i).getPrd_code().equalsIgnoreCase(ProductSelectedList.get(j).getPrd_code())) {
+                            if (!rcpa_comp_list.get(i).getValue().isEmpty()) {
+                                getTotalValue = Double.parseDouble(ProductSelectedList.get(j).getValue());
+                                CompQty.add(Double.parseDouble(rcpa_comp_list.get(i).getValue()));
+                            }
                         }
                     }
-                }
 
-                if (CompQty.size() > 0) {
-                    for (int i = 0; i < CompQty.size(); i++) {
-                        getTotalValue = getTotalValue + CompQty.get(i);
+                    if (CompQty.size() > 0) {
+                        for (int i = 0; i < CompQty.size(); i++) {
+                            getTotalValue = getTotalValue + CompQty.get(i);
+                        }
+                        valueRounded = Math.round(getTotalValue * 100D) / 100D;
+                        ProductSelectedList.set(j, new RCPAAddedProdList(ProductSelectedList.get(j).getChem_names(), ProductSelectedList.get(j).getChe_codes(), ProductSelectedList.get(j).getPrd_name(), ProductSelectedList.get(j).getPrd_code(), ProductSelectedList.get(j).getQty(), ProductSelectedList.get(j).getRate(), ProductSelectedList.get(j).getValue(), String.valueOf(valueRounded)));
+                    } else {
+                        ProductSelectedList.set(j, new RCPAAddedProdList(ProductSelectedList.get(j).getChem_names(), ProductSelectedList.get(j).getChe_codes(), ProductSelectedList.get(j).getPrd_name(), ProductSelectedList.get(j).getPrd_code(), ProductSelectedList.get(j).getQty(), ProductSelectedList.get(j).getRate(), ProductSelectedList.get(j).getValue(), ProductSelectedList.get(j).getValue()));
                     }
-                    valueRounded = Math.round(getTotalValue * 100D) / 100D;
-                    ProductSelectedList.set(j, new RCPAAddedProdList(ProductSelectedList.get(j).getChem_names(), ProductSelectedList.get(j).getChe_codes(), ProductSelectedList.get(j).getPrd_name(), ProductSelectedList.get(j).getPrd_code(), ProductSelectedList.get(j).getQty(), ProductSelectedList.get(j).getRate(), ProductSelectedList.get(j).getValue(), String.valueOf(valueRounded)));
-                } else {
-                    ProductSelectedList.set(j, new RCPAAddedProdList(ProductSelectedList.get(j).getChem_names(), ProductSelectedList.get(j).getChe_codes(), ProductSelectedList.get(j).getPrd_name(), ProductSelectedList.get(j).getPrd_code(), ProductSelectedList.get(j).getQty(), ProductSelectedList.get(j).getRate(), ProductSelectedList.get(j).getValue(), ProductSelectedList.get(j).getValue()));
                 }
-            }
 
 
-            for (int j = 0; j < ChemistSelectedList.size(); j++) {
-                CompQty = new ArrayList<>();
-                for (int i = 0; i < ProductSelectedList.size(); i++) {
-                    if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(ChemistSelectedList.get(j).getCode())) {
-                        if (!ProductSelectedList.get(i).getTotalPrdValue().isEmpty()) {
-                            getTotalValue = 0.0;
-                            CompQty.add(Double.parseDouble(ProductSelectedList.get(i).getTotalPrdValue()));
+                for (int j = 0; j < ChemistSelectedList.size(); j++) {
+                    CompQty = new ArrayList<>();
+                    for (int i = 0; i < ProductSelectedList.size(); i++) {
+                        if (ProductSelectedList.get(i).getChe_codes().equalsIgnoreCase(ChemistSelectedList.get(j).getCode())) {
+                            if (!ProductSelectedList.get(i).getTotalPrdValue().isEmpty()) {
+                                getTotalValue = 0.0;
+                                CompQty.add(Double.parseDouble(ProductSelectedList.get(i).getTotalPrdValue()));
+                            }
                         }
                     }
-                }
 
-                if (CompQty.size() > 0) {
-                    for (int i = 0; i < CompQty.size(); i++) {
-                        getTotalValue = getTotalValue + CompQty.get(i);
+                    if (CompQty.size() > 0) {
+                        for (int i = 0; i < CompQty.size(); i++) {
+                            getTotalValue = getTotalValue + CompQty.get(i);
+                        }
+                        valueRounded = Math.round(getTotalValue * 100D) / 100D;
+                        ChemistSelectedList.set(j, new CustList(ChemistSelectedList.get(j).getName(), ChemistSelectedList.get(j).getCode(), String.valueOf(valueRounded), ""));
                     }
-                    valueRounded = Math.round(getTotalValue * 100D) / 100D;
-                    ChemistSelectedList.set(j, new CustList(ChemistSelectedList.get(j).getName(), ChemistSelectedList.get(j).getCode(), String.valueOf(valueRounded), ""));
                 }
+
+                rcpaChemistAdapter = new RCPAChemistAdapter(requireActivity(), requireContext(), ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
+                commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
+                rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
+                rcpaChemistAdapter.notifyDataSetChanged();
+
+                dcrCallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
+            } else {
+                Toast.makeText(requireContext(), "Add AtLeast One Competitor to Save", Toast.LENGTH_SHORT).show();
             }
-
-            rcpaChemistAdapter = new RCPAChemistAdapter(requireContext(), ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
-            commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
-            rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
-            rcpaChemistAdapter.notifyDataSetChanged();
-
-            dcrCallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
         });
 
         rcpaSideBinding.imgAddComp.setOnClickListener(view -> {

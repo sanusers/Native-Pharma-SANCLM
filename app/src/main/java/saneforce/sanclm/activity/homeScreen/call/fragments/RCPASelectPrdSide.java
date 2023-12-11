@@ -38,7 +38,7 @@ import saneforce.sanclm.storage.SQLite;
 public class RCPASelectPrdSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectProductSideBinding selectProductSideBinding;
-    ArrayList<SaveCallProductList> PrdFullList = new ArrayList<>();
+    public static ArrayList<SaveCallProductList> PrdFullList;
     SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
@@ -78,12 +78,12 @@ public class RCPASelectPrdSide extends Fragment {
 
     private void AddProductsData() {
         try {
-            PrdFullList.clear();
+         /*   PrdFullList.clear();
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
-            }
+            }*/
 
             PrdAdapter = new ProductAdapter(requireContext(), PrdFullList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());

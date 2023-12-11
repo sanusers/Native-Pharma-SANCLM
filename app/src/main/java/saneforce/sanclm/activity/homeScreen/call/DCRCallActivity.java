@@ -66,7 +66,9 @@ import saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSid
 import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectCompSide;
+import saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectPrdSide;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.activity.map.custSelection.CustList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
@@ -99,7 +101,7 @@ public class DCRCallActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
     LoginResponse loginResponse;
     JSONObject jsonSaveDcr;
-    String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, PrdMandatory, InpMandatory, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory;
+    String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, PrdMandatory, InpMandatory, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, RCPAWOSample;
     double lat, lng;
     ApiInterface api_interface;
 
@@ -985,9 +987,17 @@ public class DCRCallActivity extends AppCompatActivity {
                 customSetupResponse = new Gson().fromJson(String.valueOf(CusSetupData), typeCustomSetup);
                 HosNeed = customSetupResponse.getHospNeed();
                 if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
-
+                    if (CusSetupData.has("Alba_Nd")) {
+                        RCPAWOSample = customSetupResponse.getRCPAWOSample();
+                    } else {
+                        RCPAWOSample = "1";
+                    }
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
-
+                    if (CusSetupData.has("Alba_Nd")) {
+                        RCPAWOSample = customSetupResponse.getRCPAWOSample();
+                    } else {
+                        RCPAWOSample = "1";
+                    }
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
                     PobNeed = customSetupResponse.getStockistPobNeed();
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
@@ -1109,6 +1119,7 @@ public class DCRCallActivity extends AppCompatActivity {
         ProductFragment.checkedPrdList = new ArrayList<>();
         CheckProductListAdapter.saveCallProductListArrayList = new ArrayList<>();
         AddCallSelectPrdSide.callSampleList = new ArrayList<>();
+        RCPASelectPrdSide.PrdFullList = new ArrayList<>();
         StockSample.clear();
         try {
             int Priority_count = 1;
@@ -1116,6 +1127,15 @@ public class DCRCallActivity extends AppCompatActivity {
             JSONArray jsonArrayPrdStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                if (RCPAWOSample.equalsIgnoreCase("0")) {
+                    if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sample")) {
+                        RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
+                    }
+                } else {
+                    RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
+                }
+
                 if (CallActivityCustDetails.get(0).getPriorityPrdCode().contains(jsonObject.getString("Code"))) {
                     ProductFragment.checkedPrdList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), "0", false, "P" + Priority_count++, jsonObject.getString("Product_Mode")));
                     StockSample.add(new CallCommonCheckedList(jsonObject.getString("Code"), "0", "0"));

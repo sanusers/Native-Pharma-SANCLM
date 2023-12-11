@@ -118,7 +118,7 @@ public class RCPAFragment extends Fragment {
                 rcpaBinding.tvRate.setText("");
                 rcpaBinding.tvValue.setText("");
 
-                rcpaChemistAdapter = new RCPAChemistAdapter(requireContext(), ChemistSelectedList, ProductSelectedList, RCPASelectCompSide.rcpa_comp_list);
+                rcpaChemistAdapter = new RCPAChemistAdapter(requireActivity(), requireContext(), ChemistSelectedList, ProductSelectedList, RCPASelectCompSide.rcpa_comp_list);
                 RecyclerView.LayoutManager mLayoutManagerChe = new LinearLayoutManager(getActivity());
                 rcpaBinding.rvRcpaChemistList.setLayoutManager(mLayoutManagerChe);
                 commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);

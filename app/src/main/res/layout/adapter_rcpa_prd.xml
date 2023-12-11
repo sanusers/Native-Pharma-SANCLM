@@ -7,11 +7,9 @@
 
     <TextView
         android:id="@+id/tv_prd_name"
-        android:layout_width="@dimen/_55sdp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_bold"
-        android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:singleLine="true"
         android:text=""
@@ -24,10 +22,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_list_prod"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_2sdp"
-        android:layout_marginEnd="@dimen/_4sdp"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:paddingVertical="@dimen/_1sdp"
         app:layout_constraintBottom_toBottomOf="@id/tv_prd_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +47,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_qty"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -168,7 +166,7 @@
 
         <ImageView
             android:id="@+id/img_del_prd"
-            android:layout_width="@dimen/_20sdp"
+            android:layout_width="@dimen/_12sdp"
             android:layout_height="@dimen/_15sdp"
             android:paddingVertical="@dimen/_4sdp"
             android:src="@drawable/iv_del"
@@ -205,7 +203,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_prd_name"
             app:layout_constraintTop_toBottomOf="@id/img_view">
-            
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_list_comp"
                 android:layout_width="match_parent"

@@ -5,7 +5,6 @@ import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.StockInp
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -39,8 +38,6 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
     ArrayList<SaveCallInputList> saveCallInputLists;
     CheckInputListAdapter checkInputListAdapter;
     CommonUtilsMethods commonUtilsMethods;
-    ProgressDialog progressDialog = null;
-
 
     public FinalInputCallAdapter(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputLists, ArrayList<CallCommonCheckedList> callCommonCheckedLists) {
         this.activity = activity;
@@ -134,16 +131,16 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
 
                         public void onFinish() {
                             try {
-                                    for (int i = 0; i < StockInput.size(); i++) {
-                                        int currentBalance;
-                                        if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
-                                            if (saveCallInputLists.get(position).getInp_qty().equalsIgnoreCase("0") || saveCallInputLists.get(position).getInp_qty().isEmpty()) {
-                                                currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock());
-                                            } else {
-                                                currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock()) + Integer.parseInt(saveCallInputLists.get(position).getInp_qty());
-                                            }
-                                            StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(currentBalance)));
+                                for (int i = 0; i < StockInput.size(); i++) {
+                                    int currentBalance;
+                                    if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
+                                        if (saveCallInputLists.get(position).getInp_qty().equalsIgnoreCase("0") || saveCallInputLists.get(position).getInp_qty().isEmpty()) {
+                                            currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock());
+                                        } else {
+                                            currentBalance = Integer.parseInt(StockInput.get(i).getCurrentStock()) + Integer.parseInt(saveCallInputLists.get(position).getInp_qty());
                                         }
+                                        StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(currentBalance)));
+                                    }
                                 }
                                 removeAt(position);
                                 CheckInputListAdapter.isCheckedInp = false;
@@ -199,7 +196,6 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
     }
 
     public static class InputFilterMinMax implements InputFilter {
-
         private final int min;
         private final int max;
 

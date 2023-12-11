@@ -6,6 +6,7 @@ import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.r
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectCompSide.rcpa_comp_list;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -41,6 +42,7 @@ import saneforce.sanclm.commonClasses.ListenerEditText;
 
 public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapter.ViewHolder> {
     Context context;
+    Activity activity;
     ArrayList<RCPAAddedCompList> CompetitorList;
     Dialog dialogRemarks;
     double getQty;
@@ -52,7 +54,8 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
     ArrayList<Double> CompQty = new ArrayList<>();
 
 
-    public RCPACompListAdapter(Context context, ArrayList<RCPAAddedCompList> CompetitorList) {
+    public RCPACompListAdapter(Activity activity,Context context, ArrayList<RCPAAddedCompList> CompetitorList) {
+        this.activity = activity;
         this.context = context;
         this.CompetitorList = CompetitorList;
     }
@@ -84,6 +87,11 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
         } else {
             holder.img_remarks.setImageDrawable(context.getResources().getDrawable(R.drawable.img_remarks_1));
         }
+
+
+        holder.tv_company.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, holder.tv_company.getText().toString()));
+
+        holder.tv_brand.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, holder.tv_brand.getText().toString()));
 
 
         holder.ed_qty.setKeyImeChangeListener((keyCode, event) -> {
@@ -279,7 +287,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
             }
         }
 
-        rcpaChemistAdapter = new RCPAChemistAdapter(context, ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
+        rcpaChemistAdapter = new RCPAChemistAdapter(activity,context, ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
         commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
         rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
         rcpaChemistAdapter.notifyDataSetChanged();

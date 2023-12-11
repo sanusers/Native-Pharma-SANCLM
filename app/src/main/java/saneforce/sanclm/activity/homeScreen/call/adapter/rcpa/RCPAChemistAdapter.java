@@ -3,6 +3,7 @@ package saneforce.sanclm.activity.homeScreen.call.adapter.rcpa;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.ChemistSelectedList;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,13 +32,15 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
     @SuppressLint("StaticFieldLeak")
     public static RCPAProductsAdapter rcpaProductsAdapter;
     Context context;
+    Activity activity;
     ArrayList<RCPAAddedProdList> FilterPrdList = new ArrayList<>();
     ArrayList<RCPAAddedCompList> rcpaCompList;
     String ChemCode;
     ArrayList<Double> PrdQty = new ArrayList<>();
 
-    public RCPAChemistAdapter(Context context, ArrayList<CustList> chemistNames, ArrayList<RCPAAddedProdList> rcpaProdArrayList, ArrayList<RCPAAddedCompList> rcpaCompList) {
+    public RCPAChemistAdapter(Activity activity,Context context, ArrayList<CustList> chemistNames, ArrayList<RCPAAddedProdList> rcpaProdArrayList, ArrayList<RCPAAddedCompList> rcpaCompList) {
         this.context = context;
+        this.activity = activity;
         RCPAChemistAdapter.chemistNames = chemistNames;
         rcpaProdList = rcpaProdArrayList;
         this.rcpaCompList = rcpaCompList;
@@ -53,7 +56,7 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.chemist_name.setText(chemistNames.get(position).getName());
-         holder.tv_total.setText(String.format("%s  %s", context.getResources().getString(R.string.total), chemistNames.get(position).getTotalrcpa()));
+        holder.tv_total.setText(String.format("%s  %s", context.getResources().getString(R.string.total), chemistNames.get(position).getTotalrcpa()));
         rv_prd_list = holder.rv_prdList;
 
         FilterPrdList = new ArrayList<>();
@@ -62,7 +65,7 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
             if (rcpaProdList.get(i).getChe_codes().equalsIgnoreCase(chemistNames.get(position).getCode())) {
                 Log.v("chemist", rcpaProdList.get(i).getPrd_name() + "---" + rcpaProdList.get(i).getTotalPrdValue());
                 FilterPrdList.add(new RCPAAddedProdList(rcpaProdList.get(i).getChem_names(), rcpaProdList.get(i).getChe_codes(), rcpaProdList.get(i).getPrd_name(), rcpaProdList.get(i).getPrd_code(), rcpaProdList.get(i).getQty(), rcpaProdList.get(i).getRate(), rcpaProdList.get(i).getValue(), rcpaProdList.get(i).getTotalPrdValue()));
-                rcpaProductsAdapter = new RCPAProductsAdapter(context, FilterPrdList, rcpaCompList);
+                rcpaProductsAdapter = new RCPAProductsAdapter(activity, context, FilterPrdList, rcpaCompList);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
                 rv_prd_list.setLayoutManager(mLayoutManager);
                 rv_prd_list.setAdapter(rcpaProductsAdapter);

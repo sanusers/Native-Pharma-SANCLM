@@ -114,7 +114,6 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
             }
-
             isCheckedInp = false;
             checked_arrayList.get(adapterPosition).setCheckedItem(true);
             saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
@@ -146,7 +145,6 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
         commonUtilsMethods.recycleTestWithDivider(InputFragment.fragmentInputBinding.rvListInput);
         InputFragment.fragmentInputBinding.rvListInput.setAdapter(finalInputCallAdapter);
     }
-
 
     @Override
     public int getItemCount() {

@@ -7,19 +7,23 @@ import static saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragmen
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,6 +60,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
@@ -95,10 +100,22 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
 
 
         if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
-            holder.ed_rxQty.setEnabled(false);
+            //  holder.ed_rxQty.setEnabled(false);
+            holder.ed_rxQty.setInputType(InputType.TYPE_NULL);
+            holder.ed_rxQty.setShowSoftInputOnFocus(false);
+            holder.ed_rxQty.setShowSoftInputOnFocus(false);
+            holder.ed_rxQty.setCursorVisible(false);
+            holder.ed_rxQty.setFocusableInTouchMode(false);
+            holder.ed_rxQty.setFocusable(false);
             holder.ed_rxQty.setText("0");
         } else if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
-            holder.ed_samplesQty.setEnabled(false);
+            //  holder.ed_samplesQty.setEnabled(false);
+            holder.ed_samplesQty.setInputType(InputType.TYPE_NULL);
+            holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+            holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+            holder.ed_samplesQty.setCursorVisible(false);
+            holder.ed_samplesQty.setFocusableInTouchMode(false);
+            holder.ed_samplesQty.setFocusable(false);
             holder.ed_samplesQty.setText("0");
         }
 
@@ -111,7 +128,13 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                 if (Integer.parseInt(productListArrayList.get(position).getLast_stock()) > 0) {
                     holder.ed_samplesQty.setEnabled(true);
                 } else {
-                    holder.ed_samplesQty.setEnabled(false);
+                    //  holder.ed_samplesQty.setEnabled(false);
+                    holder.ed_samplesQty.setInputType(InputType.TYPE_NULL);
+                    holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+                    holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+                    holder.ed_samplesQty.setCursorVisible(false);
+                    holder.ed_samplesQty.setFocusableInTouchMode(false);
+                    holder.ed_samplesQty.setFocusable(false);
                     holder.ed_samplesQty.setText("0");
                 }
             }
@@ -137,6 +160,17 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
 
         holder.tv_prd_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, productListArrayList.get(position).getName()));
 
+        holder.ed_samplesQty.setOnClickListener(view -> {
+            if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(holder.ed_samplesQty.getWindowToken(), 0);
+                holder.ed_samplesQty.setShowSoftInputOnFocus(false);
+                holder.ed_samplesQty.setCursorVisible(false);
+                holder.ed_samplesQty.setFocusableInTouchMode(false);
+                holder.ed_samplesQty.setFocusable(false);
+            }
+        });
+
         holder.ed_samplesQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -151,8 +185,8 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             public void afterTextChanged(Editable editable) {
                 try {
                     if (SampleValidation.equalsIgnoreCase("1")) {
-                      /*  if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
-                            productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
+                       /* if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
+                             //  productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
                         } else*/
                         if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
                             holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
@@ -180,6 +214,18 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                     }
                 } catch (Exception ignored) {
                 }
+            }
+        });
+
+
+        holder.ed_rxQty.setOnClickListener(view -> {
+            if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(holder.ed_rxQty.getWindowToken(), 0);
+                holder.ed_rxQty.setShowSoftInputOnFocus(false);
+                holder.ed_rxQty.setCursorVisible(false);
+                holder.ed_rxQty.setFocusableInTouchMode(false);
+                holder.ed_rxQty.setFocusable(false);
             }
         });
 

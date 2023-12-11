@@ -11,6 +11,7 @@ import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectComp
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectCompSide.rcpa_comp_list;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -44,6 +45,7 @@ import saneforce.sanclm.storage.SQLite;
 
 public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapter.ViewHolder> {
     Context context;
+    Activity activity;
     ArrayList<RCPAAddedCompList> CompList;
     ArrayList<RCPAAddedCompList> CompListFilter = new ArrayList<>();
     ArrayList<RCPAAddedProdList> ProductList;
@@ -57,7 +59,8 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
     ArrayList<Double> CompQty = new ArrayList<>();
     RCPAChemistAdapter rcpaChemistAdapter;
 
-    public RCPAProductsAdapter(Context context, ArrayList<RCPAAddedProdList> productList, ArrayList<RCPAAddedCompList> CompList) {
+    public RCPAProductsAdapter(Activity activity,Context context, ArrayList<RCPAAddedProdList> productList, ArrayList<RCPAAddedCompList> CompList) {
+        this.activity = activity;
         this.context = context;
         this.ProductList = productList;
         this.CompList = CompList;
@@ -82,6 +85,8 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
         holder.tv_value.setText(ProductList.get(position).getValue());
         holder.tv_total.setText(ProductList.get(position).getTotalPrdValue());
 
+        holder.prd_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, holder.prd_name.getText().toString()));
+
         if (CompList.size() > 0) {
             holder.constraint_comp_list.setVisibility(View.VISIBLE);
         } else {
@@ -101,7 +106,7 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
                 CompListFilter.add(new RCPAAddedCompList(CompList.get(i).getChem_names(), CompList.get(i).getChem_Code(), CompList.get(i).getPrd_name(), CompList.get(i).getPrd_code(), CompList.get(i).getComp_company_name(), CompList.get(i).getComp_company_code(), CompList.get(i).getComp_product(), CompList.get(i).getComp_product_code(), CompList.get(i).getQty(), CompList.get(i).getRate(), CompList.get(i).getValue(), CompList.get(i).getRemarks(), ProductList.get(position).getTotalPrdValue()));
             }
 
-            rcpaCompListAdapter = new RCPACompListAdapter(context, CompListFilter);
+            rcpaCompListAdapter = new RCPACompListAdapter(activity,context, CompListFilter);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             ViewHolder.rv_added_comp_list.setLayoutManager(mLayoutManager);
             ViewHolder.rv_added_comp_list.setAdapter(rcpaCompListAdapter);
@@ -119,13 +124,13 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
                     AddCompetitorValues(holder.getBindingAdapterPosition(), Constants.MAPPED_COMPETITOR_PROD);
                 }
 
-                if (addCompList.size() == 0) {
+           /*     if (addCompList.size() == 0) {
                     rcpaSideBinding.constraintPreviewCompList.setVisibility(View.GONE);
                     rcpaSideBinding.constraintAddCompList.setVisibility(View.VISIBLE);
-                } else {
-                    rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
-                    rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
-                }
+                } else {*/
+                rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
+                rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
+                //   }
 
                 adapterCompetitorPrd = new RCPASelectCompSide.AdapterCompetitorPrd(context, addCompList);
                 commonUtilsMethods.recycleTestWithDivider(rcpaSideBinding.rvCompPrdList);
@@ -178,7 +183,7 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
                 }
             }
 
-            rcpaChemistAdapter = new RCPAChemistAdapter(context, ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
+            rcpaChemistAdapter = new RCPAChemistAdapter(activity,context, ChemistSelectedList, ProductSelectedList, rcpa_comp_list);
             commonUtilsMethods.recycleTestWithoutDivider(rcpaBinding.rvRcpaChemistList);
             rcpaBinding.rvRcpaChemistList.setAdapter(rcpaChemistAdapter);
             rcpaChemistAdapter.notifyDataSetChanged();
