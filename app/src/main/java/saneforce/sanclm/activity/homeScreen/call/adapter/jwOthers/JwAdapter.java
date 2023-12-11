@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,60 +92,10 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<CallCommonCheckedList> filterdNames) {
-        Log.v("sasas", String.valueOf(filterdNames));
-        this.jwLists = filterdNames;
+    public void filterList(ArrayList<CallCommonCheckedList> filteredNames) {
+        this.jwLists = filteredNames;
         notifyDataSetChanged();
     }
-
-   /* @Override
-    public Filter getFilter() {
-        return filter;
-       *//* if (filter == null) {
-            filter = new MyFilter(this, getElements());
-        }
-        return filter;*//*
-    }*/
-
-    /*private static class MyFilter extends Filter {
-        private final JwAdapter adapter;
-        private final List<Object> originalList;
-        private final List<Object> filteredList;
-
-        private MyFilter(JwAdapter adapter, List<Object> originalList) {
-            super();
-            this.adapter = adapter;
-            this.originalList = new LinkedList<Object>(originalList);
-            this.filteredList = new ArrayList<>();
-        }
-
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            filteredList.clear();
-            final FilterResults results = new FilterResults();
-            if (charSequence.length() == 0) {
-                filteredList.addAll(originalList);
-            } else {
-                final String filterPattern = charSequence.toString().toLowerCase().trim();
-                for (Object item : originalList) {
-                    if (item.toLowerCase().contains(filterPattern) {
-                        filteredList.add(item);
-                    }
-                }
-            }
-            results.values = filteredList;
-            results.count = filteredList.size();
-            return results;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            mDataset.clear();
-            mDataset.add(filterResults.values);
-            adapter.notifyDataSetChanged();
-        }
-    }*/
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name;

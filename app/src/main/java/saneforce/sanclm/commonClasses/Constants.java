@@ -62,6 +62,7 @@ public class Constants {
     public static final String COMPETITOR_PROD = "Competitor Product";
     public static final String INPUT = "Input";
     public static final String MAPPED_COMPETITOR_PROD = "Mapped Competitor Product";
+    public static final String LOCAL_MAPPED_COMPETITOR_PROD = "Local Mapped Competitor Product";
 
     //Cluster
     public static final String CLUSTER = "Cluster_";

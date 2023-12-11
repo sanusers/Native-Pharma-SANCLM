@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="@dimen/_180sdp"
-        android:layout_height="@dimen/_182sdp"
-        android:id="@+id/cal1"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_5sdp"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:background="@drawable/border_white"
-        tools:context=".activity.leave.CalendarActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_180sdp"
+    android:layout_height="@dimen/_182sdp"
+    android:id="@+id/cal1"
+    android:layout_gravity="center"
+    android:layout_marginLeft="@dimen/_5sdp"
+    android:layout_marginTop="@dimen/_5sdp"
+    android:layout_marginRight="@dimen/_5sdp"
+    android:layout_marginBottom="@dimen/_5sdp"
+    android:background="@drawable/border_white"
+    tools:context=".activity.leave.CalendarActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,14 +34,15 @@
 
                         <ImageView
                             android:id="@+id/bfr_month"
-                            android:layout_width="@dimen/_8sdp"
+                            android:layout_width="0dp"
                             android:layout_height="@dimen/_8sdp"
                             android:layout_marginTop="@dimen/_1sdp"
                             android:layout_weight="0.5"
                             android:background="@null"
                             android:onClick="previousMonthAction"
                             android:src="@drawable/less_than_black"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,UsingOnClickInXml" />
 
                     </LinearLayout>
 
@@ -56,10 +56,13 @@
                         android:textAlignment="center"
                         android:textColor="#282A3C"
                         android:textSize="@dimen/_8sdp" />
+
                     <LinearLayout
                         android:layout_width="@dimen/_15sdp"
                         android:layout_height="@dimen/_15sdp"
-                        android:onClick="nextMonthAction">
+                        android:onClick="nextMonthAction"
+                        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck">
+
                         <ImageView
                             android:layout_width="@dimen/_8sdp"
                             android:layout_height="@dimen/_8sdp"
@@ -111,6 +114,7 @@
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
                         android:textSize="@dimen/_8sdp" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -119,7 +123,8 @@
                         android:text="Fr"
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="TextSizeCheck" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

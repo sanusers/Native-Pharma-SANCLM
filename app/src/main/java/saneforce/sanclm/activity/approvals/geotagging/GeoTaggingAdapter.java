@@ -55,7 +55,6 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             tv_address = itemView.findViewById(R.id.tv_address_geo);
             btn_approved = itemView.findViewById(R.id.btn_approved);
             btn_rejected = itemView.findViewById(R.id.btn_reject);
-
         }
     }
 }

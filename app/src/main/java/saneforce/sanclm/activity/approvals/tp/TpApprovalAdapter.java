@@ -65,8 +65,8 @@ public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.Vi
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void filterList(ArrayList<TpModelList> filterdNames) {
-        this.tpModelLists = filterdNames;
+    public void filterList(ArrayList<TpModelList> filteredNames) {
+        this.tpModelLists = filteredNames;
         notifyDataSetChanged();
     }
 

@@ -1,15 +1,17 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment.jwothersBinding;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -51,8 +53,10 @@ public class FeedbackSelectionSide extends Fragment {
 
 
         selectFbSideBinding.imgClose.setOnClickListener(view -> {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(selectFbSideBinding.imgClose.getWindowToken(), 0);
             selectFbSideBinding.searchList.setText("");
-            dcrcallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
+            dcrCallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
         });
 
         selectFbSideBinding.searchList.addTextChangedListener(new TextWatcher() {
@@ -77,7 +81,7 @@ public class FeedbackSelectionSide extends Fragment {
             feedbackName = list_name.get(i);
             selectFbSideBinding.searchList.setText("");
             jwothersBinding.tvFeedback.setText(selectFbSideBinding.selectListView.getItemAtPosition(i).toString());
-            dcrcallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
+            dcrCallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
         });
         return v;
     }
@@ -93,8 +97,7 @@ public class FeedbackSelectionSide extends Fragment {
                 list_name.add(jsonObject.getString("name"));
                 list_code.add(jsonObject.getString("id"));
             }
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
         dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.listview_items, list_name);
         selectFbSideBinding.selectListView.setAdapter(dataAdapter);

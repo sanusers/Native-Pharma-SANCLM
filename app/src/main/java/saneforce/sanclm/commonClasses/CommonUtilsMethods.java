@@ -1,18 +1,17 @@
 package saneforce.sanclm.commonClasses;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
@@ -20,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import saneforce.sanclm.R;
 
@@ -42,11 +43,31 @@ import saneforce.sanclm.R;
 public class CommonUtilsMethods {
     Context context;
     Activity activity;
+    RecyclerView.OnItemTouchListener mScrollTouchListener = new RecyclerView.OnItemTouchListener() {
+        @Override
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, MotionEvent e) {
+            int action = e.getAction();
+            if (action == MotionEvent.ACTION_MOVE) {
+                rv.getParent().requestDisallowInterceptTouchEvent(true);
+            }
+            return false;
+        }
 
+        @Override
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
+    };
 
     public CommonUtilsMethods(Activity activity) {
         this.activity = activity;
     }
+
 
     public CommonUtilsMethods(Context context) {
         this.context = context;
@@ -54,18 +75,18 @@ public class CommonUtilsMethods {
 
     public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
         Geocoder geocoder;
-        List<Address> addresses = null;
+        List<Address> addresses;
         String address = "";
         geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
             if (addresses.size() > 0) {
                 address = addresses.get(0).getAddressLine(0);
-                String city = addresses.get(0).getLocality();
+                /*String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
                 String country = addresses.get(0).getCountryName();
                 String postalCode = addresses.get(0).getPostalCode();
-                String knownName = addresses.get(0).getFeatureName();
+                String knownName = addresses.get(0).getFeatureName();*/
             } else {
                 address = "No Address Found";
             }
@@ -89,11 +110,9 @@ public class CommonUtilsMethods {
                 .setTitle("Alert")  // GPS not found
                 .setCancelable(false)
                 .setMessage("Activate the Gps to proceed futher") // Want to enable?
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        dialogInterface.dismiss();
-                    }
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    dialogInterface.dismiss();
                 })
                 .show();
     }
@@ -118,6 +137,40 @@ public class CommonUtilsMethods {
                 .check();
     }
 
+    public static String getCurrentTime() {
+        Date currentTime = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        return sdf.format(currentTime);
+    }
+
+    public static String getCurrentInstance() {
+        Calendar c = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(c.getTimeInMillis());
+    }
+
+    public static String getCurrentDateDMY() {
+        Date currentTime = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        return sdf.format(currentTime);
+    }
+
+    public static ProgressDialog createProgressDialog(Context context) {
+        ProgressDialog dialog = new ProgressDialog(context);
+        try {
+            dialog.show();
+        } catch (WindowManager.BadTokenException ignored) {
+
+        }
+
+        dialog.setCancelable(false);
+        dialog.setIndeterminate(true);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.loading_progress);
+        return dialog;
+    }
+
+
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
         try {
             if (rv_test.getItemDecorationCount() > 0) {
@@ -127,15 +180,15 @@ public class CommonUtilsMethods {
             }
             rv_test.setItemAnimator(new DefaultItemAnimator());
             Parcelable recyclerViewState;
-            recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
+            recyclerViewState = Objects.requireNonNull(rv_test.getLayoutManager()).onSaveInstanceState();
             rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
     public void displayPopupWindow(Activity activity, Context context, View view, String name) {
         PopupWindow popup = new PopupWindow(context);
-        View layout = activity.getLayoutInflater().inflate(R.layout.popup_text, null);
+        @SuppressLint("InflateParams") View layout = activity.getLayoutInflater().inflate(R.layout.popup_text, null);
         popup.setContentView(layout);
         popup.setBackgroundDrawable(new ColorDrawable(
                 android.graphics.Color.TRANSPARENT));
@@ -155,34 +208,11 @@ public class CommonUtilsMethods {
         rv_test.setItemAnimator(new DefaultItemAnimator());
         rv_test.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
         Parcelable recyclerViewState;
-        recyclerViewState = rv_test.getLayoutManager().onSaveInstanceState();
+        recyclerViewState = Objects.requireNonNull(rv_test.getLayoutManager()).onSaveInstanceState();
         rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-
     }
 
-    public static String getCurrentTime() {
-        Date currentTime = Calendar.getInstance().getTime();;
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        return sdf.format(currentTime);
-    }
-
-    public static String getCurrentInstance() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(c.getTimeInMillis());
-    }
-
-    public static String getCurrentDateDMY() {
-        Date currentTime = Calendar.getInstance().getTime();
-        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
-        Log.v("Printing_current_time", String.valueOf(currentTime));
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        String val = sdf.format(currentTime);
-        Log.v("Printing_current_date", String.valueOf(val));
-        return val;
-    }
-
-    public void setSpinText(Spinner spin, String text) {
+    public void setSpinnerText(Spinner spin, String text) {
         for (int i = 0; i < spin.getAdapter().getCount(); i++) {
             if (spin.getAdapter().getItem(i).toString().contains(text)) {
                 spin.setSelection(i);
@@ -210,16 +240,8 @@ public class CommonUtilsMethods {
 
     public void FullScreencall() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) {
-            // lower api
-            View v = activity.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            //for new api versions.
-            View decorView = activity.getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
+        View decorView = activity.getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
-
 }

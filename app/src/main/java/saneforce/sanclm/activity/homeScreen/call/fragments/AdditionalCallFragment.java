@@ -16,19 +16,20 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import java.util.ArrayList;
+
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.CallAddCustListAdapter;
-import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.SaveAdditionalCallAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.AdditionalCusListAdapter;
+import saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.sanclm.commonClasses.WrapContentLinearLayoutManager;
 
 public class AdditionalCallFragment extends Fragment {
     public static RecyclerView rv_list_data, rv_add_call_list;
     public static ArrayList<CallCommonCheckedList> custListArrayList;
-    CallAddCustListAdapter callAddCustListAdapter;
+    AdditionalCusListAdapter additionalCusListAdapter;
     EditText editTextSearch;
-    SaveAdditionalCallAdapter saveAdditionalCallAdapter;
+    FinalAdditionalCallAdapter finalAdditionalCallAdapter;
 
     @Nullable
     @Override
@@ -60,27 +61,28 @@ public class AdditionalCallFragment extends Fragment {
 
     private void dummyAdapter() {
 
-        callAddCustListAdapter = new CallAddCustListAdapter(getActivity(),getContext(), custListArrayList);
+        additionalCusListAdapter = new AdditionalCusListAdapter(getActivity(), getContext(), custListArrayList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         rv_list_data.setLayoutManager(mLayoutManager);
         rv_list_data.setItemAnimator(new DefaultItemAnimator());
-        rv_list_data.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        rv_list_data.setAdapter(callAddCustListAdapter);
+        rv_list_data.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        rv_list_data.setAdapter(additionalCusListAdapter);
 
-        saveAdditionalCallAdapter = new SaveAdditionalCallAdapter(getActivity(),getContext(), CallAddCustListAdapter.saveAdditionalCallArrayList, custListArrayList);
-        RecyclerView.LayoutManager mLayoutManagerinp = new LinearLayoutManager(getActivity());
-        rv_add_call_list.setLayoutManager(mLayoutManagerinp);
+        finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), AdditionalCusListAdapter.saveAdditionalCallArrayList, custListArrayList);
+        rv_add_call_list.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
+        //RecyclerView.LayoutManager mLayoutManagerinp = new LinearLayoutManager(getActivity());
+        // rv_add_call_list.setLayoutManager(mLayoutManagerinp);
         rv_add_call_list.setItemAnimator(new DefaultItemAnimator());
-        rv_add_call_list.setAdapter(saveAdditionalCallAdapter);
+        rv_add_call_list.setAdapter(finalAdditionalCallAdapter);
     }
 
     private void filter(String text) {
-        ArrayList<CallCommonCheckedList> filterdNames = new ArrayList<>();
+        ArrayList<CallCommonCheckedList> filteredNames = new ArrayList<>();
         for (CallCommonCheckedList s : custListArrayList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        callAddCustListAdapter.filterList(filterdNames);
+        additionalCusListAdapter.filterList(filteredNames);
     }
 }

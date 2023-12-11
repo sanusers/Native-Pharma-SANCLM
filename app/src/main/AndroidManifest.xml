@@ -12,6 +12,11 @@
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -73,7 +78,7 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
-            android:name=".activity.approvals.dcr.dcrdetaillist.DcrDetailViewActivity"
+            android:name=".activity.approvals.dcr.call.DcrDetailViewActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
@@ -121,17 +126,17 @@
             android:name=".activity.approvals.tpdeviation.TpDeviationApprovalActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.approvals.dcr.DcrApprovalActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.map.custSelection.TagCustSelectionList"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.profile.CustomerProfile"
             android:exported="false"
@@ -141,17 +146,18 @@
             android:name=".activity.homeScreen.call.DCRCallActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.map.MapsActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".activity.leave.Leave_Application"
             android:exported="false"

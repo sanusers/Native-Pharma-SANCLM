@@ -1,7 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +15,18 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
-public class AdapterNestedSample extends RecyclerView.Adapter<AdapterNestedSample.ViewHolder> {
-    ArrayList<AddSampleAdditionalCall> nestedAddSampleCallDetails;
+public class AdapterNestedProduct extends RecyclerView.Adapter<AdapterNestedProduct.ViewHolder> {
+    ArrayList<AddSampleAdditionalCall> nestedProduct;
     Context context;
+    CommonUtilsMethods commonUtilsMethods;
+    Activity activity;
 
-    public AdapterNestedSample(Context context, ArrayList<AddSampleAdditionalCall> nestedAddSampleCallDetails) {
+    public AdapterNestedProduct(Activity activity,Context context, ArrayList<AddSampleAdditionalCall> nestedProduct) {
+      this.activity = activity;
         this.context = context;
-        this.nestedAddSampleCallDetails = nestedAddSampleCallDetails;
+        this.nestedProduct = nestedProduct;
     }
 
 
@@ -35,10 +39,18 @@ public class AdapterNestedSample extends RecyclerView.Adapter<AdapterNestedSampl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.v("countnested", "--sam-" + nestedAddSampleCallDetails.size());
-        holder.tv_sam_name.setText(nestedAddSampleCallDetails.get(position).getPrd_name());
-        holder.tv_sam_qty.setText(nestedAddSampleCallDetails.get(position).getSample_qty());
-        if (nestedAddSampleCallDetails.size() > 1) {
+        commonUtilsMethods = new CommonUtilsMethods(context);
+        holder.tv_sam_name.setText(nestedProduct.get(position).getPrd_name());
+
+        holder.tv_sam_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, nestedProduct.get(position).getPrd_name()));
+
+        if (nestedProduct.get(position).getSample_qty().isEmpty()) {
+            holder.tv_sam_qty.setText("0");
+        } else {
+            holder.tv_sam_qty.setText(nestedProduct.get(position).getSample_qty());
+        }
+
+        if (nestedProduct.size() > 1) {
             holder.viewBottom.setVisibility(View.VISIBLE);
         } else {
             holder.viewBottom.setVisibility(View.GONE);
@@ -47,7 +59,7 @@ public class AdapterNestedSample extends RecyclerView.Adapter<AdapterNestedSampl
 
     @Override
     public int getItemCount() {
-        return nestedAddSampleCallDetails.size();
+        return nestedProduct.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

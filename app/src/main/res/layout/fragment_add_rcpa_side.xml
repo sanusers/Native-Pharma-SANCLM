@@ -87,7 +87,7 @@
             android:id="@+id/constraint_top"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/constraint_btns"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/constraint_header"
@@ -108,7 +108,7 @@
                     android:id="@+id/search_comp_prd"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_20sdp"
-                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginHorizontal="@dimen/_5sdp"
                     android:background="@drawable/border_shape_spinner"
                     android:drawableStart="@drawable/grey_search"
                     android:drawablePadding="@dimen/_5sdp"
@@ -128,8 +128,9 @@
                     android:id="@+id/img_add_comp"
                     android:layout_width="@dimen/_12sdp"
                     android:layout_height="@dimen/_12sdp"
-                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:src="@drawable/img_add_button"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/search_comp_prd"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/search_comp_prd"
@@ -142,11 +143,63 @@
                     android:layout_marginHorizontal="@dimen/_3sdp"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/bg_white_without_border"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/constraint_btns"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/search_comp_prd"
                     app:layout_constraintVertical_bias="0.0" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_btns"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rv_comp_prd_list"
+                    app:layout_constraintVertical_bias="1.0">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:background="@drawable/bg_border_with_pink"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:paddingHorizontal="@dimen/_4sdp"
+                        android:text="@string/clear"
+                        android:textAllCaps="false"
+                        android:textColor="@color/dark_purple"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btn_save"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_save"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_6sdp"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:background="@drawable/bg_purple"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="@string/save"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@id/btn_clear"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -160,7 +213,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-
 
                 <TextView
                     android:id="@+id/tag_comp_prd"
@@ -211,17 +263,17 @@
                     android:fontFamily="@font/satoshi_bold"
                     android:paddingHorizontal="@dimen/_2sdp"
                     android:paddingVertical="@dimen/_3sdp"
-                    android:text="@string/comp_brand"
+                    android:text="@string/comp_company"
                     android:textColor="@color/bg_txt_color"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@id/tv_select_product"
+                    app:layout_constraintBottom_toTopOf="@id/ed_comp_company"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ed_comp_prd" />
 
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/tv_select_product"
+                    android:id="@+id/ed_comp_company"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_4sdp"
@@ -229,7 +281,7 @@
                     android:background="@drawable/bg_light_grey_border"
                     android:fontFamily="@font/satoshi_medium"
                     android:gravity="center|start"
-                    android:hint="@string/ent_brand_name"
+                    android:hint="@string/ent_company_name"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:padding="@dimen/_6sdp"
@@ -241,576 +293,574 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tag_comp_brnd" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_btns_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_clear_add_comp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:background="@drawable/bg_border_with_pink"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:paddingHorizontal="@dimen/_4sdp"
+                        android:text="@string/clear"
+                        android:textAllCaps="false"
+                        android:textColor="@color/dark_purple"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btn_add"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_add"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_6sdp"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:background="@drawable/bg_purple"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:text="@string/save"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@id/btn_clear_add_comp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_btns"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraint_top"
-            app:layout_constraintVertical_bias="1.0">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_5sdp"
-                android:background="@drawable/bg_border_with_pink"
-                android:fontFamily="@font/satoshi_bold"
-                android:paddingHorizontal="@dimen/_4sdp"
-                android:text="@string/clear"
-                android:textAllCaps="false"
-                android:textColor="@color/dark_purple"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_save"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_6sdp"
-                android:layout_marginHorizontal="@dimen/_5sdp"
-                android:layout_marginVertical="@dimen/_5sdp"
-                android:background="@drawable/bg_purple"
-                android:fontFamily="@font/satoshi_bold"
-                android:text="@string/save"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@id/btn_clear"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!-- <androidx.constraintlayout.widget.ConstraintLayout
-         android:id="@+id/constraint_main_1"
-         android:layout_width="@dimen/_180sdp"
-         android:layout_height="match_parent"
-         android:background="@drawable/bg_white"
-         android:visibility="gone"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintHorizontal_bias="1.0"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toTopOf="parent"
-         app:layout_constraintVertical_bias="1.0">
-
-
-         <androidx.constraintlayout.widget.ConstraintLayout
-             android:layout_width="match_parent"
-             android:layout_height="0dp"
-             android:layout_marginStart="@dimen/_2sdp"
+        <!-- <androidx.constraintlayout.widget.ConstraintLayout
+             android:id="@+id/constraint_main_1"
+             android:layout_width="@dimen/_180sdp"
+             android:layout_height="match_parent"
+             android:background="@drawable/bg_white"
+             android:visibility="gone"
              app:layout_constraintBottom_toBottomOf="parent"
              app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintHorizontal_bias="1.0"
              app:layout_constraintStart_toStartOf="parent"
-             app:layout_constraintTop_toBottomOf="@id/constraint_header"
-             app:layout_constraintVertical_bias="0.0">
+             app:layout_constraintTop_toTopOf="parent"
+             app:layout_constraintVertical_bias="1.0">
 
-             <TextView
-                 android:id="@+id/tag_comp_prd"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginHorizontal="@dimen/_2sdp"
-                 android:layout_marginTop="@dimen/_1sdp"
-                 android:fontFamily="@font/satoshi_bold"
-                 android:paddingHorizontal="@dimen/_2sdp"
-                 android:paddingVertical="@dimen/_3sdp"
-                 android:text="@string/chemist_name"
-                 android:textColor="@color/bg_txt_color"
-                 android:textSize="14sp"
-                 app:layout_constraintBottom_toTopOf="@id/ed_comp_prd"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintHorizontal_bias="0.0"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toTopOf="parent" />
 
-             <TextView
-                 android:id="@+id/ed_comp_prd"
+             <androidx.constraintlayout.widget.ConstraintLayout
                  android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_gravity="center"
-                 android:layout_marginHorizontal="@dimen/_2sdp"
-                 android:layout_marginVertical="@dimen/_1sdp"
-                 android:background="@drawable/border_shape_spinner"
-                 android:drawableEnd="@drawable/spin_down_arrow"
-                 android:drawablePadding="@dimen/_4sdp"
-                 android:fontFamily="@font/satoshi_medium"
-                 android:gravity="left|center"
-                 android:hint="@string/select"
-                 android:padding="@dimen/_6sdp"
-                 android:textColor="@color/black"
-                 android:textColorHint="@color/black"
-                 android:textSize="14sp"
-                 android:textStyle="normal"
-                 app:layout_constraintBottom_toTopOf="@id/tag_comp_brnd"
+                 android:layout_height="0dp"
+                 android:layout_marginStart="@dimen/_2sdp"
+                 app:layout_constraintBottom_toBottomOf="parent"
                  app:layout_constraintEnd_toEndOf="parent"
                  app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toBottomOf="@id/tag_comp_prd" />
+                 app:layout_constraintTop_toBottomOf="@id/constraint_header"
+                 app:layout_constraintVertical_bias="0.0">
+
+                 <TextView
+                     android:id="@+id/tag_comp_prd"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginHorizontal="@dimen/_2sdp"
+                     android:layout_marginTop="@dimen/_1sdp"
+                     android:fontFamily="@font/satoshi_bold"
+                     android:paddingHorizontal="@dimen/_2sdp"
+                     android:paddingVertical="@dimen/_3sdp"
+                     android:text="@string/chemist_name"
+                     android:textColor="@color/bg_txt_color"
+                     android:textSize="14sp"
+                     app:layout_constraintBottom_toTopOf="@id/ed_comp_prd"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="0.0"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toTopOf="parent" />
+
+                 <TextView
+                     android:id="@+id/ed_comp_prd"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:layout_marginHorizontal="@dimen/_2sdp"
+                     android:layout_marginVertical="@dimen/_1sdp"
+                     android:background="@drawable/border_shape_spinner"
+                     android:drawableEnd="@drawable/spin_down_arrow"
+                     android:drawablePadding="@dimen/_4sdp"
+                     android:fontFamily="@font/satoshi_medium"
+                     android:gravity="left|center"
+                     android:hint="@string/select"
+                     android:padding="@dimen/_6sdp"
+                     android:textColor="@color/black"
+                     android:textColorHint="@color/black"
+                     android:textSize="14sp"
+                     android:textStyle="normal"
+                     app:layout_constraintBottom_toTopOf="@id/tag_comp_brnd"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/tag_comp_prd" />
 
 
-             <TextView
-                 android:id="@+id/tag_comp_brnd"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginHorizontal="@dimen/_2sdp"
-                 android:layout_marginTop="@dimen/_1sdp"
-                 android:fontFamily="@font/satoshi_bold"
-                 android:paddingHorizontal="@dimen/_2sdp"
-                 android:paddingVertical="@dimen/_3sdp"
-                 android:text="@string/our_prd_name"
-                 android:textColor="@color/bg_txt_color"
-                 android:textSize="14sp"
-                 app:layout_constraintBottom_toTopOf="@id/tv_select_product"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintHorizontal_bias="0.0"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toBottomOf="@id/ed_comp_prd" />
+                 <TextView
+                     android:id="@+id/tag_comp_brnd"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginHorizontal="@dimen/_2sdp"
+                     android:layout_marginTop="@dimen/_1sdp"
+                     android:fontFamily="@font/satoshi_bold"
+                     android:paddingHorizontal="@dimen/_2sdp"
+                     android:paddingVertical="@dimen/_3sdp"
+                     android:text="@string/our_prd_name"
+                     android:textColor="@color/bg_txt_color"
+                     android:textSize="14sp"
+                     app:layout_constraintBottom_toTopOf="@id/tv_select_product"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="0.0"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/ed_comp_prd" />
 
 
-             <TextView
-                 android:id="@+id/tv_select_product"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_gravity="center"
-                 android:layout_marginHorizontal="@dimen/_2sdp"
-                 android:layout_marginVertical="@dimen/_1sdp"
-                 android:background="@drawable/border_shape_spinner"
-                 android:drawableEnd="@drawable/spin_down_arrow"
-                 android:drawablePadding="@dimen/_4sdp"
-                 android:fontFamily="@font/satoshi_medium"
-                 android:gravity="left|center"
-                 android:hint="@string/select"
-                 android:padding="@dimen/_6sdp"
-                 android:textColor="@color/black"
-                 android:textColorHint="@color/black"
-                 android:textSize="14sp"
-                 android:textStyle="normal"
-                 app:layout_constraintBottom_toTopOf="@id/constraint_mid"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toBottomOf="@id/tag_comp_brnd" />
+                 <TextView
+                     android:id="@+id/tv_select_product"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_gravity="center"
+                     android:layout_marginHorizontal="@dimen/_2sdp"
+                     android:layout_marginVertical="@dimen/_1sdp"
+                     android:background="@drawable/border_shape_spinner"
+                     android:drawableEnd="@drawable/spin_down_arrow"
+                     android:drawablePadding="@dimen/_4sdp"
+                     android:fontFamily="@font/satoshi_medium"
+                     android:gravity="left|center"
+                     android:hint="@string/select"
+                     android:padding="@dimen/_6sdp"
+                     android:textColor="@color/black"
+                     android:textColorHint="@color/black"
+                     android:textSize="14sp"
+                     android:textStyle="normal"
+                     app:layout_constraintBottom_toTopOf="@id/constraint_mid"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/tag_comp_brnd" />
 
 
-             &lt;!&ndash; <androidx.constraintlayout.widget.ConstraintLayout
-                  android:id="@+id/constraint_spin_products"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginHorizontal="@dimen/_2sdp"
-                  android:layout_marginVertical="@dimen/_1sdp"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toBottomOf="@id/tag_product_name">
-
-                  <Spinner
-                      android:id="@+id/spin_products_name"
+                 &lt;!&ndash; <androidx.constraintlayout.widget.ConstraintLayout
+                      android:id="@+id/constraint_spin_products"
                       android:layout_width="match_parent"
-                      android:layout_height="@dimen/_20sdp"
-                      android:background="@drawable/border_shape_spinner"
-                      android:paddingHorizontal="@dimen/_2sdp"
-                      android:paddingVertical="@dimen/_2sdp"
-                      app:layout_constraintBottom_toBottomOf="parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginHorizontal="@dimen/_2sdp"
+                      android:layout_marginVertical="@dimen/_1sdp"
+                      app:layout_constraintEnd_toEndOf="parent"
+                      app:layout_constraintStart_toStartOf="parent"
+                      app:layout_constraintTop_toBottomOf="@id/tag_product_name">
+
+                      <Spinner
+                          android:id="@+id/spin_products_name"
+                          android:layout_width="match_parent"
+                          android:layout_height="@dimen/_20sdp"
+                          android:background="@drawable/border_shape_spinner"
+                          android:paddingHorizontal="@dimen/_2sdp"
+                          android:paddingVertical="@dimen/_2sdp"
+                          app:layout_constraintBottom_toBottomOf="parent"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintHorizontal_bias="0.0"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent" />
+
+                      <ImageView
+                          android:layout_width="@dimen/_10sdp"
+                          android:layout_height="@dimen/_15sdp"
+                          android:layout_marginEnd="@dimen/_4sdp"
+                          android:padding="@dimen/_2sdp"
+                          android:src="@drawable/spin_down_arrow"
+                          app:layout_constraintBottom_toBottomOf="parent"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintHorizontal_bias="1.0"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent" />
+                  </androidx.constraintlayout.widget.ConstraintLayout>&ndash;&gt;
+
+                 <androidx.constraintlayout.widget.ConstraintLayout
+                     android:id="@+id/constraint_mid"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="@dimen/_1sdp"
+                     app:layout_constraintBottom_toTopOf="@id/btn_add_conmpetitor"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/tv_select_product">
+
+                     <TextView
+                         android:id="@+id/tag_qty"
+                         android:layout_width="0dp"
+                         android:layout_height="wrap_content"
+                         android:layout_marginHorizontal="@dimen/_2sdp"
+                         android:fontFamily="@font/satoshi_bold"
+                         android:paddingHorizontal="@dimen/_2sdp"
+                         android:paddingVertical="@dimen/_3sdp"
+                         android:text="@string/qty"
+                         android:textColor="@color/bg_txt_color"
+                         android:textSize="14sp"
+                         app:layout_constraintBottom_toTopOf="@id/ed_qty"
+                         app:layout_constraintEnd_toStartOf="@id/tag_rate"
+                         app:layout_constraintStart_toStartOf="parent"
+                         app:layout_constraintTop_toTopOf="parent" />
+
+                     <TextView
+                         android:id="@+id/tag_rate"
+                         android:layout_width="0dp"
+                         android:layout_height="wrap_content"
+                         android:layout_marginHorizontal="@dimen/_2sdp"
+                         android:fontFamily="@font/satoshi_bold"
+                         android:paddingHorizontal="@dimen/_2sdp"
+                         android:paddingVertical="@dimen/_3sdp"
+                         android:text="@string/rate"
+                         android:textColor="@color/bg_txt_color"
+                         android:textSize="14sp"
+                         app:layout_constraintBottom_toTopOf="@id/tv_rate"
+                         app:layout_constraintEnd_toStartOf="@id/tag_value"
+                         app:layout_constraintStart_toEndOf="@id/tag_qty"
+                         app:layout_constraintTop_toTopOf="parent" />
+
+                     <TextView
+                         android:id="@+id/tag_value"
+                         android:layout_width="0dp"
+                         android:layout_height="wrap_content"
+                         android:layout_marginHorizontal="@dimen/_2sdp"
+                         android:fontFamily="@font/satoshi_bold"
+                         android:paddingHorizontal="@dimen/_2sdp"
+                         android:paddingVertical="@dimen/_3sdp"
+                         android:text="@string/value"
+                         android:textColor="@color/bg_txt_color"
+                         android:textSize="14sp"
+                         app:layout_constraintBottom_toTopOf="@id/tv_value"
+                         app:layout_constraintEnd_toEndOf="parent"
+                         app:layout_constraintStart_toEndOf="@id/tag_rate"
+                         app:layout_constraintTop_toTopOf="parent" />
+
+                     <EditText
+                         android:id="@+id/ed_qty"
+                         android:layout_width="0dp"
+                         android:layout_height="@dimen/_20sdp"
+                         android:layout_marginHorizontal="@dimen/_2sdp"
+                         android:layout_marginVertical="@dimen/_1sdp"
+                         android:background="@drawable/bg_light_grey_border"
+                         android:fontFamily="@font/satoshi_medium"
+                         android:gravity="center|start"
+                         android:hint="@string/enter_qty"
+                         android:imeOptions="actionDone"
+                         android:inputType="number"
+                         android:paddingHorizontal="@dimen/_6sdp"
+                         android:paddingVertical="@dimen/_3sdp"
+                         android:textColor="@color/dark_purple"
+                         android:textColorHint="@color/black"
+                         android:textSize="14sp"
+                         app:layout_constraintBottom_toBottomOf="parent"
+                         app:layout_constraintEnd_toStartOf="@id/tv_rate"
+                         app:layout_constraintStart_toStartOf="parent"
+                         app:layout_constraintTop_toBottomOf="@id/tag_qty" />
+
+                     <TextView
+                         android:id="@+id/tv_rate"
+                         android:layout_width="0dp"
+                         android:layout_height="@dimen/_20sdp"
+                         android:layout_marginHorizontal="@dimen/_2sdp"
+                         android:layout_marginVertical="@dimen/_1sdp"
+                         android:background="@drawable/bg_light_grey_border"
+                         android:fontFamily="@font/satoshi_bold"
+                         android:gravity="center|start"
+                         android:paddingHorizontal="@dimen/_2sdp"
+                         android:paddingVertical="@dimen/_3sdp"
+                         android:textColor="@color/bg_txt_color"
+                         android:textSize="14sp"
+                         app:layout_constraintBottom_toBottomOf="parent"
+                         app:layout_constraintEnd_toStartOf="@id/tv_value"
+                         app:layout_constraintStart_toEndOf="@id/ed_qty"
+                         app:layout_constraintTop_toBottomOf="@id/tag_rate" />
+
+                     <TextView
+                         android:id="@+id/tv_value"
+                         android:layout_width="0dp"
+                         android:layout_height="@dimen/_20sdp"
+                         android:layout_marginHorizontal="@dimen/_2sdp"
+                         android:layout_marginVertical="@dimen/_1sdp"
+                         android:background="@drawable/bg_light_grey_border"
+                         android:fontFamily="@font/satoshi_bold"
+                         android:gravity="center|start"
+                         android:paddingHorizontal="@dimen/_2sdp"
+                         android:paddingVertical="@dimen/_3sdp"
+                         android:textColor="@color/bg_txt_color"
+                         android:textSize="14sp"
+                         app:layout_constraintBottom_toBottomOf="parent"
+                         app:layout_constraintEnd_toEndOf="parent"
+                         app:layout_constraintStart_toEndOf="@id/tv_rate"
+                         app:layout_constraintTop_toBottomOf="@id/tag_value" />
+                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                 <androidx.appcompat.widget.AppCompatTextView
+                     android:id="@+id/btn_add_conmpetitor"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="@dimen/_4sdp"
+                     android:background="@drawable/bg_green_dot"
+                     android:drawableStart="@drawable/iv_add"
+                     android:fontFamily="@font/satoshi_bold"
+                     android:paddingVertical="@dimen/_3sdp"
+                     android:paddingStart="10dp"
+                     android:paddingEnd="15dp"
+                     android:text="@string/add_competitor"
+                     android:textColor="@color/green_2"
+                     android:textSize="16sp"
+                     android:visibility="visible"
+                     app:layout_constraintBottom_toTopOf="@id/rv_add_rcpa"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="0.0"
+                     app:layout_constraintStart_toStartOf="@id/tag_comp_prd"
+                     app:layout_constraintTop_toBottomOf="@id/constraint_mid" />
+
+                 <androidx.cardview.widget.CardView
+                     android:id="@+id/listCv_chemist"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:visibility="gone"
+                     app:cardCornerRadius="@dimen/_2sdp"
+                     app:contentPadding="@dimen/_6sdp"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="@id/ed_comp_prd"
+                     app:layout_constraintStart_toStartOf="@id/ed_comp_prd"
+                     app:layout_constraintTop_toBottomOf="@id/ed_comp_prd"
+                     app:layout_constraintVertical_bias="0.0">
+
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="vertical">
+
+                         <LinearLayout
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:background="@drawable/edittext_stroke"
+                             android:orientation="horizontal"
+                             android:padding="@dimen/_5sdp">
+
+                             <ImageView
+                                 android:layout_width="@dimen/_6sdp"
+                                 android:layout_height="@dimen/_6sdp"
+                                 android:layout_gravity="center"
+                                 android:scaleType="centerInside"
+                                 android:src="@drawable/search_icon_gray" />
+
+                             <EditText
+                                 android:id="@+id/searchChemist"
+                                 android:layout_width="0dp"
+                                 android:layout_height="wrap_content"
+                                 android:layout_marginStart="@dimen/_5sdp"
+                                 android:layout_weight="1"
+                                 android:background="@null"
+                                 android:gravity="start|center"
+                                 android:hint="Search"
+                                 android:singleLine="true"
+                                 android:textColor="@color/text_dark_65"
+                                 android:textColorHint="@color/text_dark_65"
+                                 android:textSize="@dimen/_6sdp"
+                                 tools:ignore="SpUsage" />
+
+                             <ImageView
+                                 android:id="@+id/searchClearIconChe"
+                                 android:layout_width="@dimen/_8sdp"
+                                 android:layout_height="@dimen/_8sdp"
+                                 android:layout_gravity="center"
+                                 android:layout_marginStart="@dimen/_5sdp"
+                                 android:scaleType="centerInside"
+                                 android:src="@drawable/img_close"
+                                 android:visibility="gone" />
+
+                         </LinearLayout>
+
+                         <ListView
+                             android:id="@+id/lv_chemist"
+                             android:layout_width="match_parent"
+                             android:layout_height="@dimen/_100sdp"
+                             android:background="@color/white"
+                             android:divider="@color/light_grey"
+                             android:dividerHeight="1dp"
+                             android:visibility="visible" />
+                     </LinearLayout>
+                 </androidx.cardview.widget.CardView>
+
+                 <androidx.cardview.widget.CardView
+                     android:id="@+id/listCv_product"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:visibility="gone"
+                     app:cardCornerRadius="@dimen/_2sdp"
+                     app:contentPadding="@dimen/_6sdp"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="@id/tv_select_product"
+                     app:layout_constraintStart_toStartOf="@id/tv_select_product"
+                     app:layout_constraintTop_toBottomOf="@id/tv_select_product"
+                     app:layout_constraintVertical_bias="0.0">
+
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="vertical">
+
+                         <LinearLayout
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:background="@drawable/edittext_stroke"
+                             android:orientation="horizontal"
+                             android:padding="@dimen/_5sdp">
+
+                             <ImageView
+                                 android:layout_width="@dimen/_6sdp"
+                                 android:layout_height="@dimen/_6sdp"
+                                 android:layout_gravity="center"
+                                 android:scaleType="centerInside"
+                                 android:src="@drawable/search_icon_gray" />
+
+                             <EditText
+                                 android:id="@+id/searchProduct"
+                                 android:layout_width="0dp"
+                                 android:layout_height="wrap_content"
+                                 android:layout_marginStart="@dimen/_5sdp"
+                                 android:layout_weight="1"
+                                 android:background="@null"
+                                 android:gravity="start|center"
+                                 android:hint="Search"
+                                 android:singleLine="true"
+                                 android:textColor="@color/text_dark_65"
+                                 android:textColorHint="@color/text_dark_65"
+                                 android:textSize="@dimen/_6sdp"
+                                 tools:ignore="SpUsage" />
+
+                             <ImageView
+                                 android:id="@+id/searchClearIconPrd"
+                                 android:layout_width="@dimen/_8sdp"
+                                 android:layout_height="@dimen/_8sdp"
+                                 android:layout_gravity="center"
+                                 android:layout_marginStart="@dimen/_5sdp"
+                                 android:scaleType="centerInside"
+                                 android:src="@drawable/img_close"
+                                 android:visibility="gone" />
+
+                         </LinearLayout>
+
+                         <ListView
+                             android:id="@+id/lv_product"
+                             android:layout_width="match_parent"
+                             android:layout_height="@dimen/_100sdp"
+                             android:background="@color/white"
+                             android:divider="@color/light_grey"
+                             android:dividerHeight="1dp"
+                             android:visibility="visible" />
+                     </LinearLayout>
+                 </androidx.cardview.widget.CardView>
+
+                 <androidx.recyclerview.widget.RecyclerView
+                     android:id="@+id/rv_add_rcpa"
+                     android:layout_width="match_parent"
+                     android:layout_height="0dp"
+                     android:layout_margin="@dimen/_1sdp"
+                     android:clipToPadding="false"
+                     app:layout_constraintBottom_toTopOf="@id/btn_save_rcpa"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="0.0"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/btn_add_conmpetitor"
+                     app:layout_constraintVertical_bias="0.0"
+                     app:reverseLayout="true"
+                     app:stackFromEnd="true" />
+
+                 <androidx.appcompat.widget.AppCompatButton
+                     android:id="@+id/btn_save_rcpa"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentTop="true"
+                     android:layout_alignParentEnd="true"
+                     android:layout_margin="@dimen/_6sdp"
+                     android:layout_marginHorizontal="@dimen/_5sdp"
+                     android:layout_marginVertical="@dimen/_5sdp"
+                     android:background="@drawable/bg_purple"
+                     android:fontFamily="@font/satoshi_bold"
+                     android:text="@string/save"
+                     android:textAllCaps="false"
+                     android:textColor="@color/white"
+                     android:textStyle="bold"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintEnd_toEndOf="parent"
+                     app:layout_constraintHorizontal_bias="1.0"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@id/rv_add_rcpa"
+                     app:layout_constraintVertical_bias="1.0" />
+                 &lt;!&ndash; <androidx.core.widget.NestedScrollView
+                      android:id="@+id/nested_scroll"
+                      android:layout_width="match_parent"
+                      android:layout_height="0dp"
+                      app:layout_constraintBottom_toTopOf="@id/btn_save_rcpa"
                       app:layout_constraintEnd_toEndOf="parent"
                       app:layout_constraintHorizontal_bias="0.0"
                       app:layout_constraintStart_toStartOf="parent"
-                      app:layout_constraintTop_toTopOf="parent" />
+                      app:layout_constraintTop_toBottomOf="@id/btn_add_conmpetitor"
+                      app:layout_constraintVertical_bias="0.0">
 
-                  <ImageView
-                      android:layout_width="@dimen/_10sdp"
-                      android:layout_height="@dimen/_15sdp"
-                      android:layout_marginEnd="@dimen/_4sdp"
-                      android:padding="@dimen/_2sdp"
-                      android:src="@drawable/spin_down_arrow"
+                      <androidx.constraintlayout.widget.ConstraintLayout
+                          android:layout_width="match_parent"
+                          android:layout_height="0dp">
+
+                          <androidx.recyclerview.widget.RecyclerView
+                              android:id="@+id/rv_add_rcpa"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:layout_margin="@dimen/_1sdp"
+                              android:clipToPadding="false"
+                              app:layout_constraintBottom_toBottomOf="parent"
+                              app:layout_constraintEnd_toEndOf="parent"
+                              app:layout_constraintStart_toStartOf="parent"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintVertical_bias="0.4"
+                              app:reverseLayout="true"
+                              app:stackFromEnd="true" />
+
+                      </androidx.constraintlayout.widget.ConstraintLayout>
+                  </androidx.core.widget.NestedScrollView>
+                  <androidx.appcompat.widget.AppCompatButton
+                      android:id="@+id/btn_save_rcpa"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_alignParentTop="true"
+                      android:layout_alignParentEnd="true"
+                      android:layout_margin="@dimen/_6sdp"
+                      android:layout_marginHorizontal="@dimen/_5sdp"
+                      android:layout_marginVertical="@dimen/_5sdp"
+                      android:background="@drawable/bg_purple"
+                      android:fontFamily="@font/satoshi_bold"
+                      android:text="@string/save"
+                      android:textAllCaps="false"
+                      android:textColor="@color/white"
+                      android:textStyle="bold"
                       app:layout_constraintBottom_toBottomOf="parent"
                       app:layout_constraintEnd_toEndOf="parent"
                       app:layout_constraintHorizontal_bias="1.0"
                       app:layout_constraintStart_toStartOf="parent"
-                      app:layout_constraintTop_toTopOf="parent" />
-              </androidx.constraintlayout.widget.ConstraintLayout>&ndash;&gt;
-
-             <androidx.constraintlayout.widget.ConstraintLayout
-                 android:id="@+id/constraint_mid"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="@dimen/_1sdp"
-                 app:layout_constraintBottom_toTopOf="@id/btn_add_conmpetitor"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toBottomOf="@id/tv_select_product">
-
-                 <TextView
-                     android:id="@+id/tag_qty"
-                     android:layout_width="0dp"
-                     android:layout_height="wrap_content"
-                     android:layout_marginHorizontal="@dimen/_2sdp"
-                     android:fontFamily="@font/satoshi_bold"
-                     android:paddingHorizontal="@dimen/_2sdp"
-                     android:paddingVertical="@dimen/_3sdp"
-                     android:text="@string/qty"
-                     android:textColor="@color/bg_txt_color"
-                     android:textSize="14sp"
-                     app:layout_constraintBottom_toTopOf="@id/ed_qty"
-                     app:layout_constraintEnd_toStartOf="@id/tag_rate"
-                     app:layout_constraintStart_toStartOf="parent"
-                     app:layout_constraintTop_toTopOf="parent" />
-
-                 <TextView
-                     android:id="@+id/tag_rate"
-                     android:layout_width="0dp"
-                     android:layout_height="wrap_content"
-                     android:layout_marginHorizontal="@dimen/_2sdp"
-                     android:fontFamily="@font/satoshi_bold"
-                     android:paddingHorizontal="@dimen/_2sdp"
-                     android:paddingVertical="@dimen/_3sdp"
-                     android:text="@string/rate"
-                     android:textColor="@color/bg_txt_color"
-                     android:textSize="14sp"
-                     app:layout_constraintBottom_toTopOf="@id/tv_rate"
-                     app:layout_constraintEnd_toStartOf="@id/tag_value"
-                     app:layout_constraintStart_toEndOf="@id/tag_qty"
-                     app:layout_constraintTop_toTopOf="parent" />
-
-                 <TextView
-                     android:id="@+id/tag_value"
-                     android:layout_width="0dp"
-                     android:layout_height="wrap_content"
-                     android:layout_marginHorizontal="@dimen/_2sdp"
-                     android:fontFamily="@font/satoshi_bold"
-                     android:paddingHorizontal="@dimen/_2sdp"
-                     android:paddingVertical="@dimen/_3sdp"
-                     android:text="@string/value"
-                     android:textColor="@color/bg_txt_color"
-                     android:textSize="14sp"
-                     app:layout_constraintBottom_toTopOf="@id/tv_value"
-                     app:layout_constraintEnd_toEndOf="parent"
-                     app:layout_constraintStart_toEndOf="@id/tag_rate"
-                     app:layout_constraintTop_toTopOf="parent" />
-
-                 <EditText
-                     android:id="@+id/ed_qty"
-                     android:layout_width="0dp"
-                     android:layout_height="@dimen/_20sdp"
-                     android:layout_marginHorizontal="@dimen/_2sdp"
-                     android:layout_marginVertical="@dimen/_1sdp"
-                     android:background="@drawable/bg_light_grey_border"
-                     android:fontFamily="@font/satoshi_medium"
-                     android:gravity="center|start"
-                     android:hint="@string/enter_qty"
-                     android:imeOptions="actionDone"
-                     android:inputType="number"
-                     android:paddingHorizontal="@dimen/_6sdp"
-                     android:paddingVertical="@dimen/_3sdp"
-                     android:textColor="@color/dark_purple"
-                     android:textColorHint="@color/black"
-                     android:textSize="14sp"
-                     app:layout_constraintBottom_toBottomOf="parent"
-                     app:layout_constraintEnd_toStartOf="@id/tv_rate"
-                     app:layout_constraintStart_toStartOf="parent"
-                     app:layout_constraintTop_toBottomOf="@id/tag_qty" />
-
-                 <TextView
-                     android:id="@+id/tv_rate"
-                     android:layout_width="0dp"
-                     android:layout_height="@dimen/_20sdp"
-                     android:layout_marginHorizontal="@dimen/_2sdp"
-                     android:layout_marginVertical="@dimen/_1sdp"
-                     android:background="@drawable/bg_light_grey_border"
-                     android:fontFamily="@font/satoshi_bold"
-                     android:gravity="center|start"
-                     android:paddingHorizontal="@dimen/_2sdp"
-                     android:paddingVertical="@dimen/_3sdp"
-                     android:textColor="@color/bg_txt_color"
-                     android:textSize="14sp"
-                     app:layout_constraintBottom_toBottomOf="parent"
-                     app:layout_constraintEnd_toStartOf="@id/tv_value"
-                     app:layout_constraintStart_toEndOf="@id/ed_qty"
-                     app:layout_constraintTop_toBottomOf="@id/tag_rate" />
-
-                 <TextView
-                     android:id="@+id/tv_value"
-                     android:layout_width="0dp"
-                     android:layout_height="@dimen/_20sdp"
-                     android:layout_marginHorizontal="@dimen/_2sdp"
-                     android:layout_marginVertical="@dimen/_1sdp"
-                     android:background="@drawable/bg_light_grey_border"
-                     android:fontFamily="@font/satoshi_bold"
-                     android:gravity="center|start"
-                     android:paddingHorizontal="@dimen/_2sdp"
-                     android:paddingVertical="@dimen/_3sdp"
-                     android:textColor="@color/bg_txt_color"
-                     android:textSize="14sp"
-                     app:layout_constraintBottom_toBottomOf="parent"
-                     app:layout_constraintEnd_toEndOf="parent"
-                     app:layout_constraintStart_toEndOf="@id/tv_rate"
-                     app:layout_constraintTop_toBottomOf="@id/tag_value" />
+                      app:layout_constraintTop_toBottomOf="@id/nested_scroll"
+                      app:layout_constraintVertical_bias="1.0" />
+          &ndash;&gt;
              </androidx.constraintlayout.widget.ConstraintLayout>
-
-             <androidx.appcompat.widget.AppCompatTextView
-                 android:id="@+id/btn_add_conmpetitor"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="@dimen/_4sdp"
-                 android:background="@drawable/bg_green_dot"
-                 android:drawableStart="@drawable/iv_add"
-                 android:fontFamily="@font/satoshi_bold"
-                 android:paddingVertical="@dimen/_3sdp"
-                 android:paddingStart="10dp"
-                 android:paddingEnd="15dp"
-                 android:text="@string/add_competitor"
-                 android:textColor="@color/green_2"
-                 android:textSize="16sp"
-                 android:visibility="visible"
-                 app:layout_constraintBottom_toTopOf="@id/rv_add_rcpa"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintHorizontal_bias="0.0"
-                 app:layout_constraintStart_toStartOf="@id/tag_comp_prd"
-                 app:layout_constraintTop_toBottomOf="@id/constraint_mid" />
-
-             <androidx.cardview.widget.CardView
-                 android:id="@+id/listCv_chemist"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:visibility="gone"
-                 app:cardCornerRadius="@dimen/_2sdp"
-                 app:contentPadding="@dimen/_6sdp"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintEnd_toEndOf="@id/ed_comp_prd"
-                 app:layout_constraintStart_toStartOf="@id/ed_comp_prd"
-                 app:layout_constraintTop_toBottomOf="@id/ed_comp_prd"
-                 app:layout_constraintVertical_bias="0.0">
-
-                 <LinearLayout
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:orientation="vertical">
-
-                     <LinearLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/edittext_stroke"
-                         android:orientation="horizontal"
-                         android:padding="@dimen/_5sdp">
-
-                         <ImageView
-                             android:layout_width="@dimen/_6sdp"
-                             android:layout_height="@dimen/_6sdp"
-                             android:layout_gravity="center"
-                             android:scaleType="centerInside"
-                             android:src="@drawable/search_icon_gray" />
-
-                         <EditText
-                             android:id="@+id/searchChemist"
-                             android:layout_width="0dp"
-                             android:layout_height="wrap_content"
-                             android:layout_marginStart="@dimen/_5sdp"
-                             android:layout_weight="1"
-                             android:background="@null"
-                             android:gravity="start|center"
-                             android:hint="Search"
-                             android:singleLine="true"
-                             android:textColor="@color/text_dark_65"
-                             android:textColorHint="@color/text_dark_65"
-                             android:textSize="@dimen/_6sdp"
-                             tools:ignore="SpUsage" />
-
-                         <ImageView
-                             android:id="@+id/searchClearIconChe"
-                             android:layout_width="@dimen/_8sdp"
-                             android:layout_height="@dimen/_8sdp"
-                             android:layout_gravity="center"
-                             android:layout_marginStart="@dimen/_5sdp"
-                             android:scaleType="centerInside"
-                             android:src="@drawable/img_close"
-                             android:visibility="gone" />
-
-                     </LinearLayout>
-
-                     <ListView
-                         android:id="@+id/lv_chemist"
-                         android:layout_width="match_parent"
-                         android:layout_height="@dimen/_100sdp"
-                         android:background="@color/white"
-                         android:divider="@color/light_grey"
-                         android:dividerHeight="1dp"
-                         android:visibility="visible" />
-                 </LinearLayout>
-             </androidx.cardview.widget.CardView>
-
-             <androidx.cardview.widget.CardView
-                 android:id="@+id/listCv_product"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:visibility="gone"
-                 app:cardCornerRadius="@dimen/_2sdp"
-                 app:contentPadding="@dimen/_6sdp"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintEnd_toEndOf="@id/tv_select_product"
-                 app:layout_constraintStart_toStartOf="@id/tv_select_product"
-                 app:layout_constraintTop_toBottomOf="@id/tv_select_product"
-                 app:layout_constraintVertical_bias="0.0">
-
-                 <LinearLayout
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:orientation="vertical">
-
-                     <LinearLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/edittext_stroke"
-                         android:orientation="horizontal"
-                         android:padding="@dimen/_5sdp">
-
-                         <ImageView
-                             android:layout_width="@dimen/_6sdp"
-                             android:layout_height="@dimen/_6sdp"
-                             android:layout_gravity="center"
-                             android:scaleType="centerInside"
-                             android:src="@drawable/search_icon_gray" />
-
-                         <EditText
-                             android:id="@+id/searchProduct"
-                             android:layout_width="0dp"
-                             android:layout_height="wrap_content"
-                             android:layout_marginStart="@dimen/_5sdp"
-                             android:layout_weight="1"
-                             android:background="@null"
-                             android:gravity="start|center"
-                             android:hint="Search"
-                             android:singleLine="true"
-                             android:textColor="@color/text_dark_65"
-                             android:textColorHint="@color/text_dark_65"
-                             android:textSize="@dimen/_6sdp"
-                             tools:ignore="SpUsage" />
-
-                         <ImageView
-                             android:id="@+id/searchClearIconPrd"
-                             android:layout_width="@dimen/_8sdp"
-                             android:layout_height="@dimen/_8sdp"
-                             android:layout_gravity="center"
-                             android:layout_marginStart="@dimen/_5sdp"
-                             android:scaleType="centerInside"
-                             android:src="@drawable/img_close"
-                             android:visibility="gone" />
-
-                     </LinearLayout>
-
-                     <ListView
-                         android:id="@+id/lv_product"
-                         android:layout_width="match_parent"
-                         android:layout_height="@dimen/_100sdp"
-                         android:background="@color/white"
-                         android:divider="@color/light_grey"
-                         android:dividerHeight="1dp"
-                         android:visibility="visible" />
-                 </LinearLayout>
-             </androidx.cardview.widget.CardView>
-
-             <androidx.recyclerview.widget.RecyclerView
-                 android:id="@+id/rv_add_rcpa"
-                 android:layout_width="match_parent"
-                 android:layout_height="0dp"
-                 android:layout_margin="@dimen/_1sdp"
-                 android:clipToPadding="false"
-                 app:layout_constraintBottom_toTopOf="@id/btn_save_rcpa"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintHorizontal_bias="0.0"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toBottomOf="@id/btn_add_conmpetitor"
-                 app:layout_constraintVertical_bias="0.0"
-                 app:reverseLayout="true"
-                 app:stackFromEnd="true" />
-
-             <androidx.appcompat.widget.AppCompatButton
-                 android:id="@+id/btn_save_rcpa"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_alignParentTop="true"
-                 android:layout_alignParentEnd="true"
-                 android:layout_margin="@dimen/_6sdp"
-                 android:layout_marginHorizontal="@dimen/_5sdp"
-                 android:layout_marginVertical="@dimen/_5sdp"
-                 android:background="@drawable/bg_purple"
-                 android:fontFamily="@font/satoshi_bold"
-                 android:text="@string/save"
-                 android:textAllCaps="false"
-                 android:textColor="@color/white"
-                 android:textStyle="bold"
-                 app:layout_constraintBottom_toBottomOf="parent"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintHorizontal_bias="1.0"
-                 app:layout_constraintStart_toStartOf="parent"
-                 app:layout_constraintTop_toBottomOf="@id/rv_add_rcpa"
-                 app:layout_constraintVertical_bias="1.0" />
-             &lt;!&ndash; <androidx.core.widget.NestedScrollView
-                  android:id="@+id/nested_scroll"
-                  android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  app:layout_constraintBottom_toTopOf="@id/btn_save_rcpa"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintHorizontal_bias="0.0"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toBottomOf="@id/btn_add_conmpetitor"
-                  app:layout_constraintVertical_bias="0.0">
-
-                  <androidx.constraintlayout.widget.ConstraintLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="0dp">
-
-                      <androidx.recyclerview.widget.RecyclerView
-                          android:id="@+id/rv_add_rcpa"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_margin="@dimen/_1sdp"
-                          android:clipToPadding="false"
-                          app:layout_constraintBottom_toBottomOf="parent"
-                          app:layout_constraintEnd_toEndOf="parent"
-                          app:layout_constraintStart_toStartOf="parent"
-                          app:layout_constraintTop_toTopOf="parent"
-                          app:layout_constraintVertical_bias="0.4"
-                          app:reverseLayout="true"
-                          app:stackFromEnd="true" />
-
-                  </androidx.constraintlayout.widget.ConstraintLayout>
-              </androidx.core.widget.NestedScrollView>
-              <androidx.appcompat.widget.AppCompatButton
-                  android:id="@+id/btn_save_rcpa"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentTop="true"
-                  android:layout_alignParentEnd="true"
-                  android:layout_margin="@dimen/_6sdp"
-                  android:layout_marginHorizontal="@dimen/_5sdp"
-                  android:layout_marginVertical="@dimen/_5sdp"
-                  android:background="@drawable/bg_purple"
-                  android:fontFamily="@font/satoshi_bold"
-                  android:text="@string/save"
-                  android:textAllCaps="false"
-                  android:textColor="@color/white"
-                  android:textStyle="bold"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintHorizontal_bias="1.0"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toBottomOf="@id/nested_scroll"
-                  app:layout_constraintVertical_bias="1.0" />
-      &ndash;&gt;
-         </androidx.constraintlayout.widget.ConstraintLayout>
-     </androidx.constraintlayout.widget.ConstraintLayout>-->
+         </androidx.constraintlayout.widget.ConstraintLayout>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

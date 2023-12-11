@@ -1,10 +1,21 @@
 package saneforce.sanclm.activity.homeScreen.call.pojo.rcpa;
 
+import saneforce.sanclm.response.SetupResponse;
+
 public class RCPAAddedProdList {
     String prd_name;
     String che_codes;
     String prd_code;
     String chem_names;
+    String totalPrdValue;
+
+    public String getTotalPrdValue() {
+        return totalPrdValue;
+    }
+
+    public void setTotalPrdValue(String totalPrdValue) {
+        this.totalPrdValue = totalPrdValue;
+    }
 
     public String getChe_codes() {
         return che_codes;
@@ -26,7 +37,7 @@ public class RCPAAddedProdList {
     String rate;
     String value;
 
-    public RCPAAddedProdList(String chem_names,String chem_codes,String prd_name, String prd_codes, String qty, String rate, String value) {
+    public RCPAAddedProdList(String chem_names, String chem_codes, String prd_name, String prd_codes, String qty, String rate, String value, String totalPrdValue) {
         this.prd_name = prd_name;
         this.prd_code = prd_codes;
         this.qty = qty;
@@ -34,6 +45,7 @@ public class RCPAAddedProdList {
         this.value = value;
         this.chem_names = chem_names;
         this.che_codes = chem_codes;
+        this.totalPrdValue = totalPrdValue;
     }
     public RCPAAddedProdList(String prd_name) {
         this.prd_name = prd_name;

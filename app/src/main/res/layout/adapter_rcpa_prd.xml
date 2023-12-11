@@ -7,14 +7,12 @@
 
     <TextView
         android:id="@+id/tv_prd_name"
-        android:layout_width="@dimen/_55sdp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_bold"
-        android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_5sdp"
-        android:text="Prd Name"
         android:singleLine="true"
+        android:text=""
         android:textColor="@color/pink"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@id/constraint_list_prod"
@@ -24,10 +22,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_list_prod"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_2sdp"
-        android:layout_marginEnd="@dimen/_4sdp"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:paddingVertical="@dimen/_1sdp"
         app:layout_constraintBottom_toBottomOf="@id/tv_prd_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,10 +44,10 @@
             android:text="@string/qty"
             android:textColor="@color/light_grey_2"
             android:textSize="14sp"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_qty"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,7 +60,6 @@
             android:fontFamily="@font/satoshi_medium"
             android:paddingHorizontal="@dimen/_2sdp"
             android:paddingVertical="@dimen/_4sdp"
-            android:text="@string/qty"
             android:textColor="@color/dark_purple"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -169,10 +166,11 @@
 
         <ImageView
             android:id="@+id/img_del_prd"
-            android:layout_width="@dimen/_20sdp"
+            android:layout_width="@dimen/_12sdp"
             android:layout_height="@dimen/_15sdp"
             android:paddingVertical="@dimen/_4sdp"
             android:src="@drawable/iv_del"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -187,7 +185,6 @@
         android:id="@+id/card_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_2sdp"
         android:elevation="@dimen/_2sdp"
         android:visibility="visible"
@@ -207,12 +204,11 @@
             app:layout_constraintStart_toStartOf="@id/tv_prd_name"
             app:layout_constraintTop_toBottomOf="@id/img_view">
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_list_comp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/rv_comp_added_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -286,13 +282,13 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tag_value_comp"
+                    app:layout_constraintEnd_toStartOf="@id/tv_value_comp"
                     app:layout_constraintStart_toEndOf="@id/tag_qty_comp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
-                    android:id="@+id/tag_value_comp"
+                    android:id="@+id/tv_value_comp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_2sdp"
@@ -311,7 +307,7 @@
 
                 <TextView
                     android:id="@+id/tag_remarks"
-                    android:layout_width="@dimen/_22sdp"
+                    android:layout_width="@dimen/_24sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_2sdp"
                     android:layout_marginVertical="@dimen/_1sdp"
@@ -323,7 +319,7 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/img_del_dummy"
-                    app:layout_constraintStart_toEndOf="@id/tag_value_comp"
+                    app:layout_constraintStart_toEndOf="@id/tv_value_comp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
@@ -358,8 +354,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_6sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
-                android:background="@drawable/bg_green_dot"
+                android:layout_marginVertical="@dimen/_4sdp"
+                android:background="@drawable/bg_green_lite"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
                 android:padding="@dimen/_4sdp"

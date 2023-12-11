@@ -1,7 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +15,18 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
 public class AdapterNestedInput extends RecyclerView.Adapter<AdapterNestedInput.ViewHolder> {
-    ArrayList<AddInputAdditionalCall> nestedAddInputCallDetails;
+    ArrayList<AddInputAdditionalCall> nestedInput;
     Context context;
+    Activity activity;
+    CommonUtilsMethods commonUtilsMethods;
 
-    public AdapterNestedInput(Context context, ArrayList<AddInputAdditionalCall> nestedAddInputCallDetails) {
+    public AdapterNestedInput(Activity activity,Context context, ArrayList<AddInputAdditionalCall> nestedInput) {
         this.context = context;
-        this.nestedAddInputCallDetails = nestedAddInputCallDetails;
+        this.nestedInput = nestedInput;
+        this.activity = activity;
     }
 
     @NonNull
@@ -34,10 +38,17 @@ public class AdapterNestedInput extends RecyclerView.Adapter<AdapterNestedInput.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.v("countnested", "--inp--" + nestedAddInputCallDetails.size());
-        holder.tv_inp_name.setText(nestedAddInputCallDetails.get(position).getInput_name());
-        holder.tv_inp_qty.setText(nestedAddInputCallDetails.get(position).getInp_qty());
-        if (nestedAddInputCallDetails.size() > 1) {
+        commonUtilsMethods = new CommonUtilsMethods(context);
+        holder.tv_inp_name.setText(nestedInput.get(position).getInput_name());
+
+        holder.tv_inp_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, nestedInput.get(holder.getBindingAdapterPosition()).getInput_name()));
+
+        if (nestedInput.get(position).getInp_qty().isEmpty()) {
+            holder.tv_inp_qty.setText("0");
+        } else {
+            holder.tv_inp_qty.setText(nestedInput.get(position).getInp_qty());
+        }
+        if (nestedInput.size() > 1) {
             holder.viewBottom.setVisibility(View.VISIBLE);
         } else {
             holder.viewBottom.setVisibility(View.GONE);
@@ -46,7 +57,7 @@ public class AdapterNestedInput extends RecyclerView.Adapter<AdapterNestedInput.
 
     @Override
     public int getItemCount() {
-        return nestedAddInputCallDetails.size();
+        return nestedInput.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

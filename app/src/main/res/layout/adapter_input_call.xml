@@ -59,12 +59,15 @@
         android:textSize="16sp"
         android:inputType="number"
         android:maxLength="4"
+        android:hint="0"
+        android:imeOptions="actionDone"
+        tools:ignore="HardcodedText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/img_del_input"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_input_stk"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp"  />
+        tools:layout_editor_absoluteY="2dp" />
 
     <ImageView
         android:id="@+id/img_del_input"
@@ -74,7 +77,6 @@
         android:layout_marginHorizontal="@dimen/_4sdp"
         android:layout_marginVertical="@dimen/_2sdp"
         android:src="@drawable/iv_del"
-        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

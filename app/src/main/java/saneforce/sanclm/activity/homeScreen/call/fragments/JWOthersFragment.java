@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide.JwList;
 
@@ -12,16 +12,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -74,28 +76,26 @@ public class JWOthersFragment extends Fragment {
         SetupAdapter();
 
 
-        jwothersBinding.tvFeedback.setOnClickListener(view -> {
-            dcrcallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
-        });
+        jwothersBinding.tvFeedback.setOnClickListener(view -> dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE));
 
         jwothersBinding.btnAddJw.setOnClickListener(view -> {
-            dcrcallBinding.fragmentSelectJwSide.setVisibility(View.VISIBLE);
+            dcrCallBinding.fragmentSelectJwSide.setVisibility(View.VISIBLE);
             HideKeyboard();
         });
 
         jwothersBinding.tvFeedback.setOnClickListener(view -> {
             HideKeyboard();
-            dcrcallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
+            dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
         });
 
         jwothersBinding.btnAddImgCapture.setOnClickListener(view -> {
             if (callCaptureImageLists.size() < 2) {
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 5);
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 5);
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                   // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         captureFile();
-                    } else captureFileLower();
+                   // } else captureFileLower();
                 }
             } else {
                 Toast.makeText(getContext(), "Not able to Add more Images", Toast.LENGTH_SHORT).show();
@@ -105,7 +105,7 @@ public class JWOthersFragment extends Fragment {
     }
 
     private void HideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(jwothersBinding.btnAddJw.getWindowToken(), 0);
     }
 
@@ -120,6 +120,12 @@ public class JWOthersFragment extends Fragment {
             jwothersBinding.constraintFeedback.setVisibility(View.VISIBLE);
         } else {
             jwothersBinding.constraintFeedback.setVisibility(View.GONE);
+        }
+
+        if (jwothersBinding.constraintFeedback.getVisibility() == View.VISIBLE && jwothersBinding.constraintPob.getVisibility() == View.GONE) {
+            jwothersBinding.viewInPobFb.setVisibility(View.GONE);
+        } else if (jwothersBinding.constraintFeedback.getVisibility() == View.GONE && jwothersBinding.constraintPob.getVisibility() == View.VISIBLE) {
+            jwothersBinding.viewInPobFb.setVisibility(View.GONE);
         }
 
         if (!DCRCallActivity.PobNeed.equalsIgnoreCase("0") && !DCRCallActivity.OverallFeedbackNeed.equalsIgnoreCase("0")) {
@@ -146,26 +152,26 @@ public class JWOthersFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
         jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
-        jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
 
         adapterCallJointWorkList = new AdapterCallJointWorkList(getContext(), getActivity(), callAddedJointList, JwList);
         RecyclerView.LayoutManager mLayoutManagerJW = new LinearLayoutManager(getActivity());
         jwothersBinding.rvJointwork.setLayoutManager(mLayoutManagerJW);
         jwothersBinding.rvJointwork.setItemAnimator(new DefaultItemAnimator());
-        jwothersBinding.rvJointwork.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        jwothersBinding.rvJointwork.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         jwothersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
     }
 
 
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputFileUri = FileProvider.getUriForFile(requireContext(), getActivity().getPackageName() + ".fileprovider", new File(getContext().getExternalCacheDir().getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
+        outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(requireContext().getExternalCacheDir().getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
         imageName = "E_" + SfCode + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT,picUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(intent, 1888);
+        someActivityResultLauncher.launch(intent);
+       // startActivityForResult(intent, 1888);
     }
 
     public void captureFileLower() {
@@ -176,10 +182,37 @@ public class JWOthersFragment extends Fragment {
         //content://com.saneforce.sbiapplication.fileprovider/shared_video/Android/data/com.saneforce.sbiapplication/cache/pickImageResult.jpeg
         //intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(intent, 19);
+      //  startActivityForResult(intent, 19);
     }
 
-    @Override
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    try {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            String finalPath = "/storage/emulated/0";
+                           Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
+                            filePath = outputFileUri.getPath();
+                            filePath = filePath.substring(1);
+                            filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+
+                            callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
+                            adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
+                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                            jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+                            jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+                            jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+                            jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+                        }
+                    } catch (Exception ignored) {
+
+                    }
+                }
+            });
+
+   /* @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
@@ -187,23 +220,21 @@ public class JWOthersFragment extends Fragment {
                 String finalPath = "/storage/emulated/0";
                 //   Uri imageUri = data.getData();
                 //  Bitmap photo = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
-                Bitmap photo = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), outputFileUri);
+                Bitmap photo = MediaStore.Images.Media.getBitmap(this.requireContext().getContentResolver(), outputFileUri);
                 filePath = outputFileUri.getPath();
                 filePath = filePath.substring(1);
                 filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-                String result = String.valueOf(resultCode);
-                if (result.equalsIgnoreCase("-1")) {
-                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
-                    adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                    jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
-                    jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
-                    jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-                    jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
-                }
+
+                callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
+                adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+                jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+                jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+                jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
             }
         } catch (Exception e) {
             Log.e("imagerror", "--" + e);
         }
-    }
+    }*/
 }

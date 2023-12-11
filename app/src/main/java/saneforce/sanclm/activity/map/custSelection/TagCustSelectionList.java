@@ -92,10 +92,10 @@ public class TagCustSelectionList extends AppCompatActivity {
                 if (MapsActivity.GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                     mm.setGeoTagStatus("1");
                 }
-                Log.v("latttlng", "--taggedonstart--" + MapsActivity.TaggedLaty + "---" + MapsActivity.TaggedLngy);
-                mm.setLatitude(String.valueOf(MapsActivity.TaggedLaty));
-                mm.setLongitude(String.valueOf(MapsActivity.TaggedLngy));
-                mm.setAddress(String.valueOf(MapsActivity.TaggedAddr));
+                Log.v("latttlng", "--taggedonstart--" + MapsActivity.TaggedLat + "---" + MapsActivity.TaggedLng);
+                mm.setLatitude(String.valueOf(MapsActivity.TaggedLat));
+                mm.setLongitude(String.valueOf(MapsActivity.TaggedLng));
+                mm.setAddress(String.valueOf(MapsActivity.TaggedAdd));
                 custListAdapter.notifyDataSetChanged();
                 MapsActivity.isTagged = false;
                 // SharedPref.setTaggedSuccessfully(TagCustSelectionList.this, "false");

@@ -71,6 +71,7 @@
         android:layout_marginVertical="@dimen/_2sdp"
         android:background="@drawable/bg_light_grey_border"
         android:fontFamily="@font/satoshi_bold"
+        android:hint="0"
         android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="4"
@@ -84,6 +85,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_stock"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText"
         tools:layout_editor_absoluteY="2dp" />
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -93,6 +95,7 @@
         android:layout_marginVertical="@dimen/_2sdp"
         android:background="@drawable/bg_light_grey_border"
         android:fontFamily="@font/satoshi_bold"
+        android:hint="0"
         android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="4"
@@ -106,6 +109,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/ed_samples"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText"
         tools:layout_editor_absoluteY="2dp" />
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -116,6 +120,7 @@
         android:layout_marginEnd="@dimen/_20sdp"
         android:background="@drawable/bg_light_grey_border"
         android:fontFamily="@font/satoshi_bold"
+        android:hint="0"
         android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="4"
@@ -129,6 +134,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/ed_rx_qty"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText"
         tools:layout_editor_absoluteY="2dp" />
 
     <ImageView

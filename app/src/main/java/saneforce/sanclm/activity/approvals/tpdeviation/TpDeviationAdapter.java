@@ -32,7 +32,7 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TpDeviationAdapter.ViewHolder holder, int position) {
-        holder.tv_worktypeS1.setText(tpDeviationModelLists.get(position).getWtName());
+        holder.tv_WorkTypeS1.setText(tpDeviationModelLists.get(position).getWtName());
         holder.tv_clusterS1.setText(tpDeviationModelLists.get(position).getCluster());
         holder.tv_hqS1.setText(tpDeviationModelLists.get(position).getHq());
         holder.tv_remarkS1.setText(tpDeviationModelLists.get(position).getRemarks());
@@ -45,12 +45,12 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_worktypeS1, tv_clusterS1, tv_hqS1, tv_remarkS1, tv_deviationRemarks;
+        TextView tv_WorkTypeS1, tv_clusterS1, tv_hqS1, tv_remarkS1, tv_deviationRemarks;
         Button btn_reject, btn_approve;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tv_worktypeS1 = itemView.findViewById(R.id.tv_worktype_1);
+            tv_WorkTypeS1 = itemView.findViewById(R.id.tv_worktype_1);
             tv_clusterS1 = itemView.findViewById(R.id.tv_cluster_1);
             tv_hqS1 = itemView.findViewById(R.id.tv_hq_1);
             tv_remarkS1 = itemView.findViewById(R.id.tv_remark_1);

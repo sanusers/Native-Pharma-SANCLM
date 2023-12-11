@@ -85,13 +85,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/iv_filter"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
             android:layout_marginStart="@dimen/_3sdp"
-            android:background="@drawable/bg_purple"
-            android:src="@drawable/iv_filter"
+            android:src="@drawable/img_filter_2"
             app:layout_constraintBottom_toBottomOf="@id/search_tp_deviation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/search_tp_deviation"

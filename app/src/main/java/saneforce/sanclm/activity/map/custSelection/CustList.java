@@ -24,6 +24,17 @@ public class CustList {
     String dob;
     String phone;
     String PriorityPrdCode;
+    String dummy;
+
+    public String getTotalrcpa() {
+        return totalrcpa;
+    }
+
+    public void setTotalrcpa(String totalrcpa) {
+        this.totalrcpa = totalrcpa;
+    }
+
+    String totalrcpa;
 
     public String getPriorityPrdCode() {
         return PriorityPrdCode;
@@ -36,6 +47,13 @@ public class CustList {
     public CustList(String name, String code) {
         this.name = name;
         this.code = code;
+    }
+
+    public CustList(String name, String code,String totalrcpa,String dummy) {
+        this.name = name;
+        this.code = code;
+        this.totalrcpa = totalrcpa;
+        this.dummy = dummy;
     }
 
     public CustList(String code) {

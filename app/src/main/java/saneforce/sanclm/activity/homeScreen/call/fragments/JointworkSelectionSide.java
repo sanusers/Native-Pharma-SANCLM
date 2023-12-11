@@ -1,7 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrcallBinding;
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
 
 import android.annotation.SuppressLint;
@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,11 +40,11 @@ public class JointworkSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectJwSideBinding selectJwSideBinding;
     public static ArrayList<CallCommonCheckedList> JwList;
+    @SuppressLint("StaticFieldLeak")
+    public static JwAdapter jwAdapter;
     SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
-    @SuppressLint("StaticFieldLeak")
-    public static JwAdapter jwAdapter;
     AdapterCallJointWorkList adapterCallJointWorkList;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -80,14 +81,16 @@ public class JointworkSelectionSide extends Fragment {
                 }
             }
             selectJwSideBinding.searchJw.setText("");
-            dcrcallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
+            dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
             AssignRecyclerView(getActivity(), context, JWOthersFragment.callAddedJointList, JwList);
         });
 
         selectJwSideBinding.imgClose.setOnClickListener(view -> {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(selectJwSideBinding.imgClose.getWindowToken(), 0);
             SetupAdapter();
             selectJwSideBinding.searchJw.setText("");
-            dcrcallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
+            dcrCallBinding.fragmentSelectJwSide.setVisibility(View.GONE);
         });
 
 
@@ -112,13 +115,13 @@ public class JointworkSelectionSide extends Fragment {
 
 
     private void filter(String text) {
-        ArrayList<CallCommonCheckedList> filterdNames = new ArrayList<>();
+        ArrayList<CallCommonCheckedList> filteredNames = new ArrayList<>();
         for (CallCommonCheckedList s : JwList) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        jwAdapter.filterList(filterdNames);
+        jwAdapter.filterList(filteredNames);
     }
 
     public void SetupAdapter() {
@@ -130,109 +133,20 @@ public class JointworkSelectionSide extends Fragment {
                 JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
             }
         } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         jwAdapter = new JwAdapter(getContext(), JwList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         selectJwSideBinding.rvJwList.setLayoutManager(mLayoutManager);
         selectJwSideBinding.rvJwList.setItemAnimator(new DefaultItemAnimator());
-        selectJwSideBinding.rvJwList.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        selectJwSideBinding.rvJwList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
     }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<CallCommonCheckedList> selectedJwList, ArrayList<CallCommonCheckedList> Jwlist) {
         adapterCallJointWorkList = new AdapterCallJointWorkList(context, activity, selectedJwList, Jwlist);
-      //  commonUtilsMethods.recycleTestWithDivider(JWOthersFragment.jwothersBinding.rvJointwork);
+        //  commonUtilsMethods.recycleTestWithDivider(JWOthersFragment.jwothersBinding.rvJointwork);
         JWOthersFragment.jwothersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
     }
-
-  /*  public static class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
-        public static ArrayList<CallCommonCheckedList> jwLists;
-        Context context;
-        Activity activity;
-
-        public JwAdapter(Context context, Activity activity, ArrayList<CallCommonCheckedList> jwLists) {
-            this.context = context;
-            this.activity = activity;
-            JwAdapter.jwLists = jwLists;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data_inp, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-            for (int j = 0; j < JWOthersFragment.callAddedJointList.size(); j++) {
-                if (JWOthersFragment.callAddedJointList.get(j).getCode().equalsIgnoreCase(jwLists.get(position).getCode())) {
-                    jwLists.set(position, new CallCommonCheckedList(jwLists.get(position).getName(), jwLists.get(position).getCode(), true));
-                }
-            }
-
-            holder.tv_name.setText(jwLists.get(position).getName());
-            holder.checkBox.setChecked(jwLists.get(position).isCheckedItem());
-
-            if (holder.checkBox.isChecked()) {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-                }
-            } else {
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                }
-            }
-
-
-            holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (holder.checkBox.isPressed()) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-                        }
-                        jwLists.get(position).setCheckedItem(true);
-                    } else {
-                        holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                        }
-                        jwLists.get(position).setCheckedItem(false);
-                        for (int j = 0; j < JWOthersFragment.callAddedJointList.size(); j++) {
-                            if (JWOthersFragment.callAddedJointList.get(j).getCode().equalsIgnoreCase(jwLists.get(position).getCode())) {
-                                JWOthersFragment.callAddedJointList.remove(j);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return jwLists.size();
-        }
-
-        @SuppressLint("NotifyDataSetChanged")
-        public void filterList(ArrayList<CallCommonCheckedList> filterdNames) {
-            this.jwLists = filterdNames;
-            notifyDataSetChanged();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tv_name;
-            CheckBox checkBox;
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                tv_name = itemView.findViewById(R.id.tv_data_name);
-                checkBox = itemView.findViewById(R.id.chk_box);
-            }
-        }
-    }*/
 }

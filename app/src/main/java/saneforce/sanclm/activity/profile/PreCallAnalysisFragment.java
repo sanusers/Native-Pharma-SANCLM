@@ -1,8 +1,8 @@
 package saneforce.sanclm.activity.profile;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +14,12 @@ import androidx.fragment.app.Fragment;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.databinding.FragmentPrecallAnalysisBinding;
 import saneforce.sanclm.network.ApiInterface;
@@ -31,13 +31,14 @@ import saneforce.sanclm.storage.SharedPref;
 
 public class PreCallAnalysisFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
-    public static FragmentPrecallAnalysisBinding precallAnalysisBinding;
+    public static FragmentPrecallAnalysisBinding preCallAnalysisBinding;
     public static ApiInterface apiInterface;
-    public static String SfName, SfType, SfCode, RSFCode, DivCode, Designation, StateCode, SubDivisionCode, pdtDtls;
+    public static String SfName, SfType, SfCode, RSFCode, DivCode, Designation, StateCode, SubDivisionCode, prdDetails;
+
     LoginResponse loginResponse;
     SQLite sqLite;
 
-    public static void CallPreCallAPI() {
+    public static void CallPreCallAPI(Activity activity) {
         JSONObject json = new JSONObject();
         try {
             json.put("tableName", "getcuslvst");
@@ -59,70 +60,68 @@ public class PreCallAnalysisFragment extends Fragment {
             json.put("state_code", StateCode);
             json.put("subdivision_code", SubDivisionCode);
             Log.v("json_cus_l_visit", json.toString());
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
-        ArrayList<String> prdNames = new ArrayList<>();
-        Call<List<DCRLastVisitDetails>> dcrlastcallDtls = apiInterface.LastVisitDetails(String.valueOf(json));
-        dcrlastcallDtls.enqueue(new Callback<List<DCRLastVisitDetails>>() {
+        Call<List<DCRLastVisitDetails>> dcrLastCallDetails = apiInterface.LastVisitDetails(String.valueOf(json));
+        dcrLastCallDetails.enqueue(new Callback<List<DCRLastVisitDetails>>() {
             @Override
-            public void onResponse(Call<List<DCRLastVisitDetails>> call, Response<List<DCRLastVisitDetails>> response) {
+            public void onResponse(@NonNull Call<List<DCRLastVisitDetails>> call, @NonNull Response<List<DCRLastVisitDetails>> response) {
                 if (response.isSuccessful()) {
+
                     try {
                         CustomerProfile.progressDialog.dismiss();
+                        activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                         CustomerProfile.isPreAnalysisCalled = true;
-                        List<DCRLastVisitDetails> dcrLastvstDtls = response.body();
-                        if (dcrLastvstDtls.get(0).getProdSamp().isEmpty()) {
-                            precallAnalysisBinding.tvPrdPromoted.setText("No Products Promoted");
+                        List<DCRLastVisitDetails> dcrLastVstDetails = response.body();
+                        assert dcrLastVstDetails != null;
+                        if (dcrLastVstDetails.get(0).getProdSamp().isEmpty()) {
+                            preCallAnalysisBinding.tvPrdPromoted.setText(R.string.no_prds_promoted);
                         } else {
-                            pdtDtls = dcrLastvstDtls.get(0).getProdSamp().replace("#", " , ");
-                            pdtDtls = pdtDtls.replace("~", "-");
-                            pdtDtls = pdtDtls.replace("$", "-");
-                            pdtDtls = pdtDtls.replace("^", "-");
-                            precallAnalysisBinding.tvPrdPromoted.setText(pdtDtls);
-                         /*   pdtDtls = extractValues(dcrLastvstDtls.get(0).getProdSamp());
-                            String[] separated = pdtDtls.split(",");
-                            Collections.addAll(prdNames, separated);*/
-
-                           /* ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), R.layout.listview_items, prdNames);
-                            precallAnalysisBinding.lvTagPromotedPrd.setAdapter(adapter);*/
+                            prdDetails = dcrLastVstDetails.get(0).getProdSamp().replace("#", " , ");
+                            prdDetails = prdDetails.replace("~", "-");
+                            prdDetails = prdDetails.replace("$", "-");
+                            prdDetails = prdDetails.replace("^", "-");
+                            preCallAnalysisBinding.tvPrdPromoted.setText(prdDetails);
                         }
 
-                        if (dcrLastvstDtls.get(0).getInputs().equalsIgnoreCase("( 0 ),")) {
-                            precallAnalysisBinding.tvInputs.setText("No Inputs");
+                        if (dcrLastVstDetails.get(0).getInputs().equalsIgnoreCase("( 0 ),")) {
+                            preCallAnalysisBinding.tvInputs.setText(R.string.no_inputs);
                         } else {
-                            precallAnalysisBinding.tvInputs.setText(dcrLastvstDtls.get(0).getInputs());
+                            preCallAnalysisBinding.tvInputs.setText(dcrLastVstDetails.get(0).getInputs());
                         }
 
-                        if (dcrLastvstDtls.get(0).getVstDate().getDate().isEmpty()) {
-                            precallAnalysisBinding.tvLastVisit.setText("No Visit Date");
+                        if (dcrLastVstDetails.get(0).getVstDate().getDate().isEmpty()) {
+                            preCallAnalysisBinding.tvLastVisit.setText(R.string.no_visit_date);
                         } else {
-                            precallAnalysisBinding.tvLastVisit.setText(dcrLastvstDtls.get(0).getVstDate().getDate());
+                            preCallAnalysisBinding.tvLastVisit.setText(dcrLastVstDetails.get(0).getVstDate().getDate());
                         }
 
-                        if (dcrLastvstDtls.get(0).getFeedbk().isEmpty()) {
-                            precallAnalysisBinding.tvFeedback.setText("No Feedback");
+                        if (dcrLastVstDetails.get(0).getFeedbk().isEmpty()) {
+                            preCallAnalysisBinding.tvFeedback.setText(R.string.no_feedback);
                         } else {
-                            precallAnalysisBinding.tvFeedback.setText(dcrLastvstDtls.get(0).getFeedbk());
+                            preCallAnalysisBinding.tvFeedback.setText(dcrLastVstDetails.get(0).getFeedbk());
                         }
 
-                        if (dcrLastvstDtls.get(0).getRemks().isEmpty()) {
-                            precallAnalysisBinding.tvRemark.setText("No Remarks");
+                        if (dcrLastVstDetails.get(0).getRemks().isEmpty()) {
+                            preCallAnalysisBinding.tvRemark.setText(R.string.no_remarks);
                         } else {
-                            precallAnalysisBinding.tvRemark.setText(dcrLastvstDtls.get(0).getRemks());
+                            preCallAnalysisBinding.tvRemark.setText(dcrLastVstDetails.get(0).getRemks());
                         }
 
 
                     } catch (Exception e) {
                         CustomerProfile.progressDialog.dismiss();
+                        activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<List<DCRLastVisitDetails>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<DCRLastVisitDetails>> call, @NonNull Throwable t) {
                 CustomerProfile.progressDialog.dismiss();
+                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
         });
     }
@@ -130,8 +129,8 @@ public class PreCallAnalysisFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        precallAnalysisBinding = FragmentPrecallAnalysisBinding.inflate(inflater);
-        View v = precallAnalysisBinding.getRoot();
+        preCallAnalysisBinding = FragmentPrecallAnalysisBinding.inflate(inflater);
+        View v = preCallAnalysisBinding.getRoot();
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         sqLite = new SQLite(requireContext());
         getRequiredData();
@@ -155,23 +154,5 @@ public class PreCallAnalysisFragment extends Fragment {
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
-    }
-
-    public String extractValues(String s) {
-        if (TextUtils.isEmpty(s)) return "";
-
-        String[] clstarrrayqty = s.split(",");
-        Log.v("DcrDetail_extract", "products--000--" + clstarrrayqty[0] + "----" + clstarrrayqty[1]);
-        StringBuilder ss1 = new StringBuilder();
-
-        for (String value : clstarrrayqty) {
-            Log.v("DcrDetail_extract", "product_inputs_qty--111--" + value);
-            ss1.append(value.substring(0, value.indexOf("(")));
-            Log.v("DcrDetail_extract", "product_inputs_qty--222--" + ss1);
-        }
-        String finalValue = "";
-        finalValue = ss1.substring(0, ss1.length() - 1);
-        Log.v("DcrDetail_extract", "product_inputs_qty--333--" + finalValue);
-        return finalValue;
     }
 }

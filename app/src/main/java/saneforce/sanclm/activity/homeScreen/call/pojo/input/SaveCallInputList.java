@@ -1,28 +1,34 @@
 package saneforce.sanclm.activity.homeScreen.call.pojo.input;
 
 public class SaveCallInputList {
-
     String input_name;
-
     String inp_qty;
-
     String inp_code;
     String balance_inp_stk;
-    String inp_stk;
+    String last_inp_stk;
+    String dataFrom;
 
-    public SaveCallInputList( String inp_code, String input_name,String inp_qty) {
+    public String getDataFrom() {
+        return dataFrom;
+    }
+
+    public void setDataFrom(String dataFrom) {
+        this.dataFrom = dataFrom;
+    }
+
+    public SaveCallInputList(String inp_code, String input_name, String inp_qty) {
         this.input_name = input_name;
         this.inp_code = inp_code;
         this.inp_qty = inp_qty;
     }
 
 
-    public SaveCallInputList(String input_name, String inp_code, String inp_qty, String balance_inp_stk, String inp_stk) {
+    public SaveCallInputList(String input_name, String inp_code, String inp_qty, String balance_inp_stk, String last_inp_stk) {
         this.input_name = input_name;
         this.inp_code = inp_code;
         this.inp_qty = inp_qty;
         this.balance_inp_stk = balance_inp_stk;
-        this.inp_stk = inp_stk;
+        this.last_inp_stk = last_inp_stk;
     }
 
     public String getInp_code() {
@@ -57,12 +63,12 @@ public class SaveCallInputList {
         this.balance_inp_stk = balance_inp_stk;
     }
 
-    public String getInp_stk() {
-        return inp_stk;
+    public String getLast_inp_stk() {
+        return last_inp_stk;
     }
 
-    public void setInp_stk(String inp_stk) {
-        this.inp_stk = inp_stk;
+    public void setLast_inp_stk(String last_inp_stk) {
+        this.last_inp_stk = last_inp_stk;
     }
 
 }

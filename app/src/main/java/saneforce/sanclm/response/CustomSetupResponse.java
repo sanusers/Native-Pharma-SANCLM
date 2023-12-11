@@ -31,6 +31,17 @@ public class CustomSetupResponse implements Serializable {
     private String CallDCRDirectly;
     @SerializedName("addAct")
     private String ActivityNeed;
+
+    public String getRCPAWOSample() {
+        return RCPAWOSample;
+    }
+
+    public void setRCPAWOSample(String RCPAWOSample) {
+        this.RCPAWOSample = RCPAWOSample;
+    }
+
+    @SerializedName("Alba_Nd")
+    private String RCPAWOSample;
     @SerializedName("PresentNd")
     private String PresentationNeed;
     @SerializedName("CustNd")

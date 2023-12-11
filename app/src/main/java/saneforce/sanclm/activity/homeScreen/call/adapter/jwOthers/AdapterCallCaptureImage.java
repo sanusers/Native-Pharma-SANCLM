@@ -46,14 +46,9 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
         holder.img_view.setImageBitmap(callCaptureImageLists.get(position).getImg_view());
 
-        holder.img_del_img.setOnClickListener(view -> removeAt(holder.getAdapterPosition()));
+        holder.img_del_img.setOnClickListener(view -> removeAt(holder.getBindingAdapterPosition()));
 
-        holder.img_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showImage(callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view());
-            }
-        });
+        holder.img_view.setOnClickListener(view -> showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view()));
         holder.tv_image_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -67,7 +62,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getAdapterPosition()).getSystemImgName()));
+                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName()));
             }
         });
 
@@ -84,7 +79,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getAdapterPosition()).getSystemImgName()));
+                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName()));
             }
         });
     }
@@ -99,16 +94,9 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.setCancelable(true);
         builder.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-      /*  builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //nothing;
-            }
-        });*/
 
         ImageView imageView = new ImageView(context);
         imageView.setImageBitmap(img_view);
-        // builder.addContentView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
         builder.show();
     }
@@ -119,7 +107,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         notifyItemRangeChanged(position, callCaptureImageLists.size());
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView img_view, img_del_img;
         EditText tv_image_name;
         EditText ed_img_desc;

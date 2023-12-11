@@ -1,5 +1,6 @@
 package saneforce.sanclm.commonClasses;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -48,6 +49,7 @@ public class VerticalScrollview extends ScrollView {
         return false;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         super.onTouchEvent(ev);

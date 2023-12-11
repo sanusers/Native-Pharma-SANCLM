@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.approvals.dcr.dcrdetaillist;
+package saneforce.sanclm.activity.approvals.dcr.call;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
-import saneforce.sanclm.activity.approvals.dcr.dcrdetaillist.adapter.AdapterCustSingleList;
+import saneforce.sanclm.activity.approvals.dcr.call.adapter.AdapterCusSingleList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.sanclm.activity.approvals.tp.TpModelList;
@@ -25,8 +25,8 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     public static String SelectedCode;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrDetailViewBinding dcrDetailViewBinding;
-    AdapterCustSingleList adapterCustSingleList;
-    String hq_name, cust_pob, cust_jw, cust_type, cust_cluster, cust_remark, cust_feedback, cust_modTime, cust_visitTime;
+    AdapterCusSingleList adapterCusSingleList;
+    String hq_name, Cus_pob, Cus_jw, Cus_type, Cus_cluster, Cus_remark, Cus_feedback, Cus_modTime, Cus_visitTime;
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -34,30 +34,31 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         super.onCreate(savedInstanceState);
         dcrDetailViewBinding = ActivityDcrDetailViewBinding.inflate(getLayoutInflater());
         setContentView(dcrDetailViewBinding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             hq_name = extra.getString("hq_name");
-            cust_cluster = extra.getString("cust_cluster");
-            cust_pob = extra.getString("cust_pob");
-            cust_jw = extra.getString("cust_jw");
-            cust_type = extra.getString("cust_type");
-            cust_remark = extra.getString("cust_fb");
-            cust_feedback = extra.getString("cust_remark");
-            cust_modTime = extra.getString("cust_mod_time");
-            cust_visitTime = extra.getString("cust_visit_time");
+            Cus_cluster = extra.getString("cus_cluster");
+            Cus_pob = extra.getString("cus_pob");
+            Cus_jw = extra.getString("cus_jw");
+            Cus_type = extra.getString("cus_type");
+            Cus_remark = extra.getString("cus_fb");
+            Cus_feedback = extra.getString("cus_remark");
+            Cus_modTime = extra.getString("cus_mod_time");
+            Cus_visitTime = extra.getString("cus_visit_time");
         }
 
         dcrDetailViewBinding.tagHeader.setText(hq_name);
-        if (!cust_cluster.isEmpty()) dcrDetailViewBinding.tvClusterTop.setText(cust_cluster);
-        if (!cust_pob.isEmpty()) dcrDetailViewBinding.tvPob.setText(cust_pob);
-        if (!cust_jw.isEmpty()) dcrDetailViewBinding.tvJw.setText(cust_jw);
-        if (!cust_remark.isEmpty()) dcrDetailViewBinding.tvOverallRemarks.setText(cust_remark);
-        if (!cust_feedback.isEmpty()) dcrDetailViewBinding.tvOverallFeedback.setText(cust_feedback);
-        if (!cust_visitTime.isEmpty()) dcrDetailViewBinding.tvVisitTime.setText(cust_visitTime);
-        if (!cust_modTime.isEmpty()) dcrDetailViewBinding.tvModifiedTime.setText(cust_modTime);
+        if (!Cus_cluster.isEmpty()) dcrDetailViewBinding.tvClusterTop.setText(Cus_cluster);
+        if (!Cus_pob.isEmpty()) dcrDetailViewBinding.tvPob.setText(Cus_pob);
+        if (!Cus_jw.isEmpty()) dcrDetailViewBinding.tvJw.setText(Cus_jw);
+        if (!Cus_remark.isEmpty()) dcrDetailViewBinding.tvOverallRemarks.setText(Cus_remark);
+        if (!Cus_feedback.isEmpty()) dcrDetailViewBinding.tvOverallFeedback.setText(Cus_feedback);
+        if (!Cus_visitTime.isEmpty()) dcrDetailViewBinding.tvVisitTime.setText(Cus_visitTime);
+        if (!Cus_modTime.isEmpty()) dcrDetailViewBinding.tvModifiedTime.setText(Cus_modTime);
 
-        switch (cust_type) {
+        switch (Cus_type) {
             case "1":
                 dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_dr_img));
                 break;
@@ -72,20 +73,14 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
                 break;
         }
 
-        SetupCustListAdapter();
+        SetUpCusListAdapter();
 
-        dcrDetailViewBinding.ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();   /*startActivity(new Intent(DcrDetailViewActivity.this, DcrCallApprovalActivity.class));*/
-            }
+        dcrDetailViewBinding.ivBack.setOnClickListener(view -> {
+            finish();   /*startActivity(new Intent(DcrDetailViewActivity.this, DcrCallApprovalActivity.class));*/
         });
 
-        dcrDetailViewBinding.btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();   /*startActivity(new Intent(DcrDetailViewActivity.this, DcrCallApprovalActivity.class));*/
-            }
+        dcrDetailViewBinding.btnBack.setOnClickListener(view -> {
+            finish();   /*startActivity(new Intent(DcrDetailViewActivity.this, DcrCallApprovalActivity.class));*/
         });
 
         dcrDetailViewBinding.searchDcr.addTextChangedListener(new TextWatcher() {
@@ -106,21 +101,21 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         });
     }
 
-    private void SetupCustListAdapter() {
-        adapterCustSingleList = new AdapterCustSingleList(DcrDetailViewActivity.this, dcrDetailModelLists, DcrDetailViewActivity.this);
+    private void SetUpCusListAdapter() {
+        adapterCusSingleList = new AdapterCusSingleList(DcrDetailViewActivity.this, dcrDetailModelLists, DcrDetailViewActivity.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         dcrDetailViewBinding.rvDcrListNames.setLayoutManager(mLayoutManager);
-        dcrDetailViewBinding.rvDcrListNames.setAdapter(adapterCustSingleList);
+        dcrDetailViewBinding.rvDcrListNames.setAdapter(adapterCusSingleList);
     }
 
     private void filter(String text) {
-        ArrayList<DcrDetailModelList> filterdNames = new ArrayList<>();
+        ArrayList<DcrDetailModelList> filteredNames = new ArrayList<>();
         for (DcrDetailModelList s : dcrDetailModelLists) {
             if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filterdNames.add(s);
+                filteredNames.add(s);
             }
         }
-        adapterCustSingleList.filterList(filterdNames);
+        adapterCusSingleList.filterList(filteredNames);
     }
 
     @Override

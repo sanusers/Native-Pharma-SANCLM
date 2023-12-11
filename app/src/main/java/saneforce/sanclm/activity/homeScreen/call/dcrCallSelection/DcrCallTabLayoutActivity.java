@@ -3,6 +3,7 @@ package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,7 +22,6 @@ import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.Chem
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.StockiestFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
-import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.databinding.CallDcrSelectionBinding;
@@ -36,7 +36,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     public static double laty, lngy, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
-    CommonUtilsMethods commonUtilsMethods;
     LoginResponse loginResponse;
     SetupResponse setupResponse;
     DCRCallSelectionTabLayoutAdapter viewPagerAdapter;
@@ -53,8 +52,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         dcrSelectionBinding = CallDcrSelectionBinding.inflate(getLayoutInflater());
         setContentView(dcrSelectionBinding.getRoot());
-      //  commonUtilsMethods = new CommonUtilsMethods(this);
-        //commonUtilsMethods.FullScreencall();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         sqLite = new SQLite(this);
 
         getRequiredData();
@@ -65,7 +64,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         if (ChemistNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new ChemistFragment(), CapChemist);
         }
-
         if (CipNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new ChemistFragment(), CapCip);
         }
@@ -76,10 +74,10 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUndr);
         }
 
-        Log.v("dfsdf", "---" + viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
         dcrSelectionBinding.tabLayoutCall.setupWithViewPager(dcrSelectionBinding.viewPagerCallSelection);
-        dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(0);
         dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
     }
 
@@ -110,7 +108,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 } else {
                     GeoTagApproval = "1";
                 }
-              //  GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
+                //  GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
                 TpBasedDcr = setupResponse.getTpBasedDcr();
 
                 DrGeoTag = setupResponse.getDrGeoTagNeed();

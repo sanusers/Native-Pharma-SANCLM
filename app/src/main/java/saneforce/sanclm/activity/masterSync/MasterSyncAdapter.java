@@ -66,7 +66,7 @@ public class MasterSyncAdapter extends RecyclerView.Adapter<MasterSyncAdapter.My
             public void onClick (View view) {
                 holder.progressBar.setVisibility(View.VISIBLE);
                 holder.syncErrorIcon.setVisibility(View.GONE);
-                masterSyncItemClick.itemClick(data,holder.getAdapterPosition());
+                masterSyncItemClick.itemClick(data,holder.getBindingAdapterPosition());
             }
         });
     }
