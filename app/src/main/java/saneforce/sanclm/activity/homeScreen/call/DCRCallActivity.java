@@ -707,7 +707,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         if (!FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name().equalsIgnoreCase("Select") && !FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name().isEmpty()) {
                             json_AdditionalSample.put("Code", FinalAdditionalCallAdapter.nestedInput.get(j).getInput_code());
                             json_AdditionalSample.put("Name", FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name());
-                            json_AdditionalSample.put("SmpQty", FinalAdditionalCallAdapter.nestedInput.get(j).getInp_qty());
+                            json_AdditionalSample.put("InpQty", FinalAdditionalCallAdapter.nestedInput.get(j).getInp_qty());
                             jsonArrayInput.put(json_AdditionalSample);
                         }
                     }
