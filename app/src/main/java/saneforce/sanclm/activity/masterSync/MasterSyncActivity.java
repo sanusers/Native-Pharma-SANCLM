@@ -67,9 +67,9 @@ public class MasterSyncActivity extends AppCompatActivity {
     String cheNeed = "",stockiestNeed = "",unListedDrNeed = "",hospNeed = "",cipNeed = "",rcpaNeed = "",tpNeed = "";
 
     int doctorCount = 0,specialityCount = 0,qualificationCount = 0,categoryCount = 0,departmentCount = 0,classCount = 0,feedbackCount = 0;
-    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpCount =0,clusterCount = 0;
+    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpSetupCount =0,clusterCount = 0;
     int dcrCount = 0,visitControlCount= 0,missedDateCount = 0;
-    int productCount = 0, proCatCount = 0,brandCount = 0, compProCount = 0, mapComPrdCount = 0,localmapComPrdCount = 0;
+    int productCount = 0, proCatCount = 0,brandCount = 0, compProCount = 0, mapComPrdCount = 0;
     int workTypeCount = 0,holidayCount = 0,weeklyOfCount = 0;
     int proSlideCount = 0,proSpeSlideCount = 0,brandSlideCount = 0, therapticCount = 0;
     int subordinateCount = 0,subMgrCount = 0,jWorkCount= 0;
@@ -79,7 +79,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     int doctorStatus = 0,specialityStatus = 0,qualificationStatus = 0,categoryStatus = 0,departmentStatus = 0,classStatus = 0,feedbackStatus = 0;
     int unlistedDrStatus = 0,chemistStatus = 0,stockiestStatus = 0,hospitalStatus = 0,cipStatus = 0, inputStatus = 0, leaveStatus = 0,leaveStatusStatus = 0, tpSetupStatus =0 , tourPLanStatus = 0,clusterStatus = 0;
     int dcrStatus = 0,myDayPlanStatus = 0,visitControlStatus= 0,missedDateStatus = 0,stockBalanceStatus = 0;
-    int productStatus = 0, proCatStatus = 0,brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0,localmapCompPrdStatus = 0;
+    int productStatus = 0, proCatStatus = 0,brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0;
     int workTypeStatus = 0,holidayStatus = 0,weeklyOfStatus = 0;
     int proSlideStatus = 0,proSpeSlideStatus = 0,brandSlideStatus = 0, therapticStatus = 0;
     int subordinateStatus = 0,subMgrStatus = 0,jWorkStatus= 0;

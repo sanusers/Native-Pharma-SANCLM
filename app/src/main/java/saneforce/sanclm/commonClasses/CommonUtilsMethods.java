@@ -220,24 +220,6 @@ public class CommonUtilsMethods {
         }
     }
 
-    public static ProgressDialog createProgressDialog(Context context) {
-        ProgressDialog dialog = new ProgressDialog(context);
-        try {
-            dialog.show();
-        } catch (WindowManager.BadTokenException e) {
-
-        }
-
-        dialog.setCancelable(false);
-        dialog.setIndeterminate(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setContentView(R.layout.loading_progress);
-        // dialog.setMessage(Message);
-        return dialog;
-    }
-
-
-
     public void FullScreencall() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         View decorView = activity.getWindow().getDecorView();

@@ -1160,17 +1160,6 @@ public class TourPlanActivity extends AppCompatActivity {
         sqLite.saveTPData(month, new Gson().toJson(arrayList));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        uiInitialization();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        uiInitialization();
-    }
 
 
 }

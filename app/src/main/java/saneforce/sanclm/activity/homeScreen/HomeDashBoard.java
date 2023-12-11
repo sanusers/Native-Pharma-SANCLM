@@ -77,7 +77,6 @@ import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.myresource.MyResource_Activity;
 import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanclm.activity.reports.ReportsActivity;
-import saneforce.sanclm.activity.presentation.PresentationActivity;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.GPSTrack;
@@ -409,7 +408,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
       //  getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(this);
-        commonUtilsMethods.FullScreenCall();
+        commonUtilsMethods.FullScreencall();
 
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
