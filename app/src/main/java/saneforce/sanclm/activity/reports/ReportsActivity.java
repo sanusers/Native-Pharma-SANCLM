@@ -3,8 +3,9 @@ package saneforce.sanclm.activity.reports;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -17,8 +18,9 @@ import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,14 +29,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
+import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityReportsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
-import saneforce.sanclm.storage.SharedPref;
+import saneforce.sanclm.utility.TimeUtils;
 
 public class ReportsActivity extends AppCompatActivity {
 
@@ -61,7 +63,6 @@ public class ReportsActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void populateAdapter(){
@@ -78,9 +79,11 @@ public class ReportsActivity extends AppCompatActivity {
         binding.recView.setAdapter(reportsAdapter);
     }
 
-    public void getData(String report){
+    public void getData(String report,String date){
+
         binding.progressBar.setVisibility(View.VISIBLE);
-        if(UtilityClass.isNetworkAvailable(ReportsActivity.this)){
+        if(UtilityClass.isNetworkAvailable(getApplicationContext())){
+
 //                apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
             apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, "http://sanffa.info/server/db_native_app.php/?");
 
@@ -94,7 +97,7 @@ public class ReportsActivity extends AppCompatActivity {
             map.put("rptSF", "MGR2240");
             map.put("rSF", "MGR2240");
             map.put("sfCode", "MGR2240");
-            map.put("rptDt", "2023-11-30");
+            map.put("rptDt", date);
 
             switch (report.toUpperCase()){
                 case "DAY REPORT" : {
@@ -126,9 +129,8 @@ public class ReportsActivity extends AppCompatActivity {
                             JSONArray jsonArray = new JSONArray();
                             if(jsonElement.isJsonArray()){
                                 jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                Log.e("test","data : " + jsonArray);
                             }
-                            navigate(jsonArray,report);
+                            navigate(jsonArray,report,date);
                         }
                     }catch (JSONException e){
                         throw new RuntimeException(e);
@@ -149,16 +151,16 @@ public class ReportsActivity extends AppCompatActivity {
 
     }
 
-    public void navigate(JSONArray jsonArray,String report){
+    public void navigate(JSONArray jsonArray,String report,String date){
         Intent intent = new Intent(ReportsActivity.this, ReportFragContainerActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("data",jsonArray.toString());
+        bundle.putString("date",date);
         bundle.putString("fragment",report);
         intent.putExtra("reportBundle",bundle);
         startActivity(intent);
 
     }
-
 
 
 }

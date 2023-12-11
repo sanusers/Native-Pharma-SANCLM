@@ -2,35 +2,56 @@ package saneforce.sanclm.activity.reports;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.reports.dayReport.DayReportFragment;
+import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
+import saneforce.sanclm.activity.reports.dayReport.fragment.DayReportFragment;
 import saneforce.sanclm.databinding.ActivityReportFragContainerBinding;
 
 public class ReportFragContainerActivity extends AppCompatActivity {
 
     ActivityReportFragContainerBinding binding;
+    DataViewModel dataViewModel;
+    public TextView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityReportFragContainerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        title = binding.title;
+        initialization();
 
-        String data = "";
+        binding.backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+    }
+
+    public void initialization(){
+        dataViewModel = new ViewModelProvider(this).get(DataViewModel.class);
         String fragmentStr = "";
         Bundle bundle = getIntent().getBundleExtra("reportBundle");
         if(bundle != null){
-            data = bundle.getString("data");
+            dataViewModel.saveSummaryData(bundle.getString("data"));
+            dataViewModel.saveDate(bundle.getString("date"));
             fragmentStr = bundle.getString("fragment");
         }
 
         switch (fragmentStr.toUpperCase()){
             case "DAY REPORT" : {
-                loadFragment(new DayReportFragment(),data);
+                loadFragment(new DayReportFragment());
+
                 break;
             }
 //            case "MONTHLY REPORT" : {
@@ -46,15 +67,25 @@ public class ReportFragContainerActivity extends AppCompatActivity {
 //                break;
 //            }
         }
-
-
     }
 
-    public void loadFragment(Fragment fragment,String data){
-        Bundle bundle = new Bundle();
-        bundle.putString("reportData",data);
-        fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,fragment).commit();
-
+    public void loadFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout,fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+        if(fragment instanceof DayReportFragment){
+            Intent intent = new Intent(ReportFragContainerActivity.this,ReportsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+        super.onBackPressed();
+    }
+
 }

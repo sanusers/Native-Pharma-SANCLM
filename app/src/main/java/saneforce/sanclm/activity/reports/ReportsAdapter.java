@@ -1,10 +1,6 @@
 package saneforce.sanclm.activity.reports;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.crashlytics.internal.report.model.Report;
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.MainActivity;
+import saneforce.sanclm.utility.TimeUtils;
 
 public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHolder> {
 
@@ -70,7 +66,8 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 ReportsActivity activity = (ReportsActivity) context;
-                activity.getData(name);
+                activity.getData(name, TimeUtils.GetCurrentDateTime(TimeUtils.FORMAT_4));
+
             }
         });
     }

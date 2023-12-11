@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/_6sdp"
     android:background="@color/background"
-    tools:context=".activity.reports.dayReport.DayReportFragment">
+    tools:context=".activity.reports.dayReport.fragment.DayReportFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -30,7 +30,7 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="01 Dec 2023"
+                android:text=""
                 android:textSize="@dimen/_6sdp"
                 android:textColor="@color/text_dark"
                 android:fontFamily="@font/satoshi_medium"
@@ -96,6 +96,23 @@
                     android:padding="@dimen/_5sdp"
                     tools:ignore="SpUsage"/>
 
+                <LinearLayout
+                    android:id="@+id/searchClearIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_8sdp"
+                        android:src="@drawable/img_close"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerInside" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -128,6 +145,15 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@id/linearLayout"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/_2sdp"/>
+        android:layout_marginTop="@dimen/_3sdp"
+        android:scrollbars="vertical"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateTint="@color/text_dark"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

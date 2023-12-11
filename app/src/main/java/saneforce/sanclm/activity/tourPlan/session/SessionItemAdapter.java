@@ -103,10 +103,10 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
             ArrayList<EditModelClass> filteredModelArray = new ArrayList<>();
             if(charSequence!=null && charSequence.length() > 0){
                 supportModelArray = new ArrayList<>();
-                for(int i = 0; i< arrayList.size(); i++){
-                    if((arrayList.get(i).getName().toUpperCase()).contains(charSequence.toString().toUpperCase())) {
-                        filteredModelArray.add(arrayList.get(i));
-                        supportModelArray.add(arrayList.get(i));
+                for(int i = 0; i< arrayForFilter.size(); i++){
+                    if((arrayForFilter.get(i).getName().toUpperCase()).contains(charSequence.toString().toUpperCase())) {
+                        filteredModelArray.add(arrayForFilter.get(i));
+                        supportModelArray.add(arrayForFilter.get(i));
                     }
                 }
                 results.count=filteredModelArray.size();
