@@ -1,10 +1,8 @@
 package saneforce.sanclm.activity.tourPlan.summary;
 
-import java.util.ArrayList;
-
-import saneforce.sanclm.activity.tourPlan.ModelClass;
+import saneforce.sanclm.activity.tourPlan.model.ModelClass;
 
 public interface SummaryInterface {
 
-    public void onClick(ModelClass arrayList, int position);
+    void onClick(ModelClass arrayList, int position);
 }

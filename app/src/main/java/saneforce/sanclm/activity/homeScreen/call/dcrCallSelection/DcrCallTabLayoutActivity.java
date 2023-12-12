@@ -45,6 +45,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override
@@ -93,7 +94,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             SfCode = loginResponse.getSF_Code();
             SfName = loginResponse.getSF_Name();
 
-            JSONArray jsonArray = new JSONArray();
+            JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
@@ -108,7 +109,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 } else {
                     GeoTagApproval = "1";
                 }
-                //  GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
+
                 TpBasedDcr = setupResponse.getTpBasedDcr();
 
                 DrGeoTag = setupResponse.getDrGeoTagNeed();
@@ -163,15 +164,17 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
 
             JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + TodayPlanSfCode);
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < jsonArray2.length(); i++) {
                 JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
-                TodayPlanClusterList.add(jsonClusterList.getString("Code"));
-                TodayPlanClusterList.add(jsonClusterList.getString("Name"));
+                if (SharedPref.getTodayDayPlanClusterCode(this).contains(jsonClusterList.getString("Code"))) {
+                    TodayPlanClusterList.add(jsonClusterList.getString("Code"));
+                    TodayPlanClusterList.add(jsonClusterList.getString("Name"));
+                }
             }
 
 
-        } catch (Exception e) {
-            Log.v("fff", e.toString());
+        } catch (Exception ignored) {
+
         }
     }
 }

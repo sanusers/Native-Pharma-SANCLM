@@ -105,6 +105,7 @@ public class DCRCallActivity extends AppCompatActivity {
     double lat, lng;
     ApiInterface api_interface;
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
     }
@@ -707,7 +708,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         if (!FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name().equalsIgnoreCase("Select") && !FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name().isEmpty()) {
                             json_AdditionalSample.put("Code", FinalAdditionalCallAdapter.nestedInput.get(j).getInput_code());
                             json_AdditionalSample.put("Name", FinalAdditionalCallAdapter.nestedInput.get(j).getInput_name());
-                            json_AdditionalSample.put("InpQty", FinalAdditionalCallAdapter.nestedInput.get(j).getInp_qty());
+                            json_AdditionalSample.put("SmpQty", FinalAdditionalCallAdapter.nestedInput.get(j).getInp_qty());
                             jsonArrayInput.put(json_AdditionalSample);
                         }
                     }
@@ -1000,8 +1001,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
                     PobNeed = customSetupResponse.getStockistPobNeed();
+                    RCPAWOSample = "1";
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
                     PobNeed = customSetupResponse.getUndrPobNeed();
+                    RCPAWOSample = "1";
                 }
             }
 

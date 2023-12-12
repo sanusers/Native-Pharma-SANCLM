@@ -68,7 +68,8 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/tv_chemist_name"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp" />
+            tools:layout_editor_absoluteY="2dp"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_2sdp"
@@ -17,7 +18,8 @@
         app:layout_constraintEnd_toStartOf="@id/tv_name"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -142,14 +144,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableStart="@drawable/marker_geo_approval"
                 android:drawablePadding="@dimen/_3sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="start|center"
                 android:paddingVertical="@dimen/_2sdp"
                 android:text="@string/view"
                 android:textColor="@color/light_grey_2"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                app:drawableStartCompat="@drawable/marker_geo_approval" />
 
         </LinearLayout>
         <!--   <TextView
@@ -212,7 +214,8 @@
             app:layout_constraintEnd_toStartOf="@id/btn_approved"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraint_detail" />
+            app:layout_constraintTop_toBottomOf="@id/constraint_detail"
+            tools:ignore="NotSibling" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_approved"

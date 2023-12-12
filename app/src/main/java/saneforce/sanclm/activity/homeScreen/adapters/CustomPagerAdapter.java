@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.adapters;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -15,6 +16,7 @@ public class CustomPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         switch (position) {

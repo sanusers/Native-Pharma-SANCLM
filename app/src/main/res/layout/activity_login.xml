@@ -26,7 +26,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scaleType="fitXY"
-                        android:src="@drawable/login_bg" />
+                        android:src="@drawable/login_bg"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -40,7 +41,8 @@
                         android:visibility="invisible"
                         android:layout_height="wrap_content"
                         android:src="@drawable/login_bg"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -95,10 +97,10 @@
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_40sdp"
-
+                        android:src="@drawable/original"
                         android:layout_gravity="center"
-                        android:background="@color/white" />
-<!--                    android:src="@drawable/original"-->
+                        android:background="@color/white"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -170,7 +172,8 @@
                             android:layout_height="@dimen/_15sdp"
                             android:src="@drawable/eye_visible"
                             android:layout_gravity="center"
-                            android:paddingEnd="@dimen/_5sdp"/>
+                            android:paddingEnd="@dimen/_5sdp"
+                            tools:ignore="ContentDescription,RtlSymmetry" />
 
                     </LinearLayout>
 
@@ -213,7 +216,8 @@
                                 android:layout_width="@dimen/_7sdp"
                                 android:layout_height="@dimen/_7sdp"
                                 android:src="@drawable/rotate_left"
-                                android:layout_gravity="center"/>
+                                android:layout_gravity="center"
+                                tools:ignore="ContentDescription" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -279,7 +283,8 @@
                     android:layout_height="@dimen/_16sdp"
                     android:src="@drawable/saneforce_img"
                     android:scaleType="fitXY"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 

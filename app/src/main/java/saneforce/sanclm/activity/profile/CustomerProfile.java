@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
-import saneforce.sanclm.activity.presentation.PresentationActivity;
+import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.UtilityClass;
 
@@ -34,7 +34,7 @@ public class CustomerProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
     }
 
     @Override

@@ -1,9 +1,10 @@
 package saneforce.sanclm.activity.presentation.createPresentation;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -11,21 +12,27 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-import io.reactivex.annotations.NonNull;
-import saneforce.sanclm.activity.presentation.PresentationActivity;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameInterFace;
+import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemDragListener;
 import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemTouchHelperCallBack;
 import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.SelectedSlidesAdapter;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.ImageSelectionInterface;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.SlideImageAdapter;
+import saneforce.sanclm.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityCreatePresentationBinding;
 import saneforce.sanclm.storage.SQLite;
@@ -38,9 +45,12 @@ public class CreatePresentationActivity extends AppCompatActivity {
     SelectedSlidesAdapter selectedSlidesAdapter;
     SQLite sqLite;
     ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
+    ArrayList<BrandModelClass.Product> selectedSlideArrayList = new ArrayList<>();
+    ArrayList<BrandModelClass.Product> savedPresentation = new ArrayList<>();
+    ArrayList<String> brandCodeList = new ArrayList<>();
     ImageSelectionInterface imageSelectionInterface;
-
-    ItemTouchHelper.SimpleCallback simpleCallback;
+    ItemTouchHelper itemTouchHelper;
+    String oldName = "";
 
 
     @Override
@@ -48,134 +58,239 @@ public class CreatePresentationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCreatePresentationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         sqLite = new SQLite(CreatePresentationActivity.this);
         uiInitialisation();
-        simpleCallback = new ItemTouchHelper.SimpleCallback(
 
-                ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
-
+        binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
-
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-
-                return false;
-
+            public void onClick(View view) {
+                startActivity(new Intent(CreatePresentationActivity.this, PresentationActivity.class));
             }
+        });
 
+        binding.playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+            public void onClick(View view) {
+                if(selectedSlideArrayList.size()>0) {
+                    Intent intent = new Intent(CreatePresentationActivity.this, PlaySlidePreviewActivity.class);
+                    String data = new Gson().toJson(selectedSlideArrayList);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("slideBundle", data);
+                    intent.putExtra("bundle", bundle);
+                    startActivity(intent);
+                }
             }
+        });
 
-        } ;
+        binding.clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.presentationNameEt.setText("");
+            }
+        });
 
-        binding.backArrow.setOnClickListener(view -> startActivity(new Intent(CreatePresentationActivity.this, PresentationActivity.class)));
+        binding.save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(selectedSlideArrayList.size()>0) {
+                    String name = binding.presentationNameEt.getText().toString();
+
+                    if(!name.isEmpty()) {
+                        if(!oldName.isEmpty()) {
+                            if(!oldName.equalsIgnoreCase(name)) {
+                                if(!sqLite.presentationExists(name)) {
+                                    intentAction(oldName, name);
+                                }else {
+                                    Toast.makeText(CreatePresentationActivity.this, "Already a Presentation has saved in the same name..Change name and try again! ", Toast.LENGTH_LONG).show();
+                                }
+                            }else {
+                                intentAction(oldName, name);
+                            }
+                        }else {
+                            if(!sqLite.presentationExists(name)) {
+                                intentAction("", name);
+                            }else {
+                                Toast.makeText(CreatePresentationActivity.this, "Already a Presentation has saved in the same name..Change name and try again! ", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }else {
+                        Toast.makeText(CreatePresentationActivity.this, "Enter the Presentation name", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
     }
 
-    public void uiInitialisation(){
+    public void uiInitialisation() {
         try {
+
+            Bundle bundle = getIntent().getBundleExtra("bundle");
+            if(bundle != null) {
+                String data = bundle.getString("slideBundle");
+                oldName = bundle.getString("presentationName");
+                binding.presentationNameEt.setText(oldName);
+                JSONArray jsonArray = new JSONArray(data);
+                Type type = new TypeToken<ArrayList<BrandModelClass.Product>>() {
+                }.getType();
+                savedPresentation = new Gson().fromJson(jsonArray.toString(), type);
+            }
+
             JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
             JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
 
-            for (int i=0;i<brandSlide.length();i++){
+            for (int i = 0; i<brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandName = "";
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
 
                 ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
-                for (int j=0;j<prodSlide.length();j++){
+                for (int j = 0; j<prodSlide.length(); j++) {
                     JSONObject productObject = prodSlide.getJSONObject(j);
-                    if (productObject.getString("Code").equalsIgnoreCase(brandObject.getString("Product_Brd_Code"))){
+                    if(productObject.getString("Code").equalsIgnoreCase(brandCode)) {
                         brandName = productObject.getString("Name");
                         String code = productObject.getString("Code");
                         String slideId = productObject.getString("SlideId");
                         String fileName = productObject.getString("FilePath");
-                        BrandModelClass.Product product = new BrandModelClass.Product(code,brandName,slideId,fileName,false);
+                        String slidePriority = productObject.getString("Priority");
+                        BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
                         productArrayList.add(product);
                     }
                 }
                 boolean brandSelected = i == 0;
-                BrandModelClass brandModelClass = new BrandModelClass(brandName,brandCode,priority,0,brandSelected,productArrayList);
-                brandProductArrayList.add(brandModelClass);
+                if(!brandCodeList.contains(brandCode)) { //To avoid repeated of same brand
+                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
+                    brandProductArrayList.add(brandModelClass);
+                    brandCodeList.add(brandCode);
+                }
             }
 
-        } catch (JSONException e){
+            //savedPresentation.size will be > 0 only when we lunch this activity by click on "Edit" in Presentation Activity.
+            //savedPresentation.size will be 0 when we launch this activity by click on create presentation btn in Presentation Activity.
+            if(savedPresentation.size()>0) { //Changing image selection state if there are data in savedPresentation.same time load data of selected image to the SelectedSlideAdapter
+                for (BrandModelClass.Product savedProduct : savedPresentation) {
+                    for (BrandModelClass brandModelClass : brandProductArrayList) {
+                        if(savedProduct.getBrandCode().equals(brandModelClass.brandCode)) {
+                            for (BrandModelClass.Product product : brandModelClass.productArrayList) {
+                                if(savedProduct.getSlideId().equals(product.getSlideId())) {
+                                    product.setImageSelected(true);
+                                    selectedSlideArrayList.add(product); //selectedSlideArrayList is the array we pass to SelectedSlideAdapter
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
         populateBrandNameAdapter(brandProductArrayList);
+        populateSelectedSlideAdapter(selectedSlideArrayList);
 
     }
 
-    public void getFromFilePath(String imageName){
-        File file = new File(getApplicationContext().getExternalFilesDir(null)+ "/Slides/",imageName);
-        if (file.exists()){
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-        }
-    }
+    public void populateBrandNameAdapter(ArrayList<BrandModelClass> arrayList) {
 
-    public void populateBrandNameAdapter(ArrayList<BrandModelClass> arrayList){
         brandNameAdapter = new BrandNameAdapter(CreatePresentationActivity.this, arrayList, new BrandNameInterFace() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onBrandClick (ArrayList<BrandModelClass> arrayList,int position) {
-                for (BrandModelClass brandModelClass : arrayList){
-                    brandModelClass.setBrandSelected(false);
-                }
-                arrayList.get(position).setBrandSelected(true);
-                brandNameAdapter.notifyDataSetChanged();
+            public void onBrandClick(ArrayList<BrandModelClass> arrayList, int position) {
                 populateSlideImageAdapter(arrayList.get(position).getProductArrayList());
+                brandNameAdapter.notifyDataSetChanged();
             }
         });
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CreatePresentationActivity.this);
         binding.brandNameRecView.setLayoutManager(layoutManager);
         binding.brandNameRecView.setAdapter(brandNameAdapter);
-        brandNameAdapter.notifyDataSetChanged();
 
-        if (arrayList.size() > 0)
+        if(arrayList.size()>0)
             populateSlideImageAdapter(arrayList.get(0).getProductArrayList());
     }
 
-    public void populateSlideImageAdapter(ArrayList<BrandModelClass.Product> arrayList){
+    public void populateSlideImageAdapter(ArrayList<BrandModelClass.Product> arrayList) {
 
         imageSelectionInterface = new ImageSelectionInterface() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void imageSelection (ArrayList<BrandModelClass.Product> arrayList, int position) {
+            public void imageSelection(ArrayList<BrandModelClass.Product> arrayList, int position) {
                 brandNameAdapter.notifyDataSetChanged();
-                slideImageAdapter.notifyDataSetChanged();
+                slideImageAdapter.notifyItemChanged(position);
 
-                ArrayList<BrandModelClass.Product> selectedProductArrayList = new ArrayList<>();
-                for (BrandModelClass brandModelClass : brandProductArrayList){
-                    for (BrandModelClass.Product product : brandModelClass.getProductArrayList()){
-                        if (product.isImageSelected()){
-                            selectedProductArrayList.add(product);
+                selectedSlideArrayList = new ArrayList<>();
+                for (BrandModelClass brandModelClass : brandProductArrayList) {
+                    for (BrandModelClass.Product product : brandModelClass.getProductArrayList()) {
+                        if(product.isImageSelected()) {
+                            if(product.getDraggedPosition() == -1) {
+                                product.setDraggedPosition(selectedSlideArrayList.size());
+                            }
+                            selectedSlideArrayList.add(product);
                         }
                     }
                 }
-//                Log.e("test","productArrayList size : " + selectedProductArrayList.size());
-                populateSlideAdapter(selectedProductArrayList);
+                populateSelectedSlideAdapter(selectedSlideArrayList);
+                binding.playBtn.setEnabled(selectedSlideArrayList.size()>0);
+                binding.save.setEnabled(selectedSlideArrayList.size()>0);
             }
         };
 
+
+        Collections.sort(arrayList, new Comparator<BrandModelClass.Product>() {
+            @Override
+            public int compare(BrandModelClass.Product product, BrandModelClass.Product t1) {
+                return product.getPriority().compareTo(t1.getPriority());
+            }
+        });
+
         slideImageAdapter = new SlideImageAdapter(CreatePresentationActivity.this, arrayList, imageSelectionInterface);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(CreatePresentationActivity.this,2);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(CreatePresentationActivity.this, 2);
         binding.slideImageRecView.setLayoutManager(layoutManager);
         binding.slideImageRecView.setAdapter(slideImageAdapter);
-        slideImageAdapter.notifyDataSetChanged();
+
+        binding.playBtn.setEnabled(selectedSlideArrayList.size()>0);
+        binding.save.setEnabled(selectedSlideArrayList.size()>0);
+
     }
 
-    public void populateSlideAdapter(ArrayList<BrandModelClass.Product> arrayList){
-        selectedSlidesAdapter = new SelectedSlidesAdapter(CreatePresentationActivity.this, arrayList, imageSelectionInterface);
+    public void populateSelectedSlideAdapter(ArrayList<BrandModelClass.Product> arrayList) {
+
+        Collections.sort(arrayList);
+        selectedSlidesAdapter = new SelectedSlidesAdapter(CreatePresentationActivity.this, arrayList, imageSelectionInterface, new ItemDragListener() {
+            @Override
+            public void requestDrag(RecyclerView.ViewHolder viewHolder) {
+                itemTouchHelper.startDrag(viewHolder);
+            }
+        });
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CreatePresentationActivity.this);
         binding.slidesRecView.setLayoutManager(layoutManager);
 
         ItemTouchHelperCallBack itemTouchHelperCallBack = new ItemTouchHelperCallBack(selectedSlidesAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallBack);
+        itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallBack);
         itemTouchHelper.attachToRecyclerView(binding.slidesRecView);
         binding.slideImageRecView.setHasFixedSize(false);
         binding.slidesRecView.setAdapter(selectedSlidesAdapter);
-        selectedSlidesAdapter.notifyDataSetChanged();
 
         binding.selectedSlideCount.setText(String.valueOf(arrayList.size()));
+
     }
+
+    public void intentAction(String oldName, String name) {
+        try {
+            BrandModelClass.Presentation presentation = new BrandModelClass.Presentation();
+            presentation.setPresentationName(name);
+            presentation.setProducts(selectedSlideArrayList);
+            JSONObject jsonObject = new JSONObject(new Gson().toJson(presentation));
+
+            sqLite.savePresentation(oldName, name, jsonObject.toString());
+            startActivity(new Intent(CreatePresentationActivity.this, PresentationActivity.class));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

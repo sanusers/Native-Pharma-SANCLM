@@ -1,9 +1,11 @@
 package saneforce.sanclm.activity.tourPlan.session;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.ArrayList;
+
+import saneforce.sanclm.activity.tourPlan.model.EditModelClass;
 
 public interface SessionItemInterface {
 
-    public void itemClicked(JSONArray jsonArray, JSONObject jsonObject);
+    void itemClicked(ArrayList<EditModelClass> arrayList, EditModelClass editModelClass);
+
 }

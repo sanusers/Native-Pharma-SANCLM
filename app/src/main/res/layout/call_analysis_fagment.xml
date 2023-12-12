@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:clickable="true">
+        android:clickable="true"
+        android:focusable="true">
 
         <TextView
             android:id="@+id/text_call_analysis"
@@ -21,7 +22,8 @@
             android:text="Call Analysis"
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_8sdp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold"
+            tools:ignore="SpUsage"></TextView>
 
 
         <LinearLayout
@@ -37,19 +39,22 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_1sdp"
-                android:src="@drawable/tab_dark_line" />
+                android:src="@drawable/tab_dark_line"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_1sdp"
-                android:src="@drawable/tab_litte_line" />
+                android:src="@drawable/tab_litte_line"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_1sdp"
-                android:src="@drawable/tab_litte_line" />
+                android:src="@drawable/tab_litte_line"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <HorizontalScrollView
@@ -59,7 +64,7 @@
 
             <LinearLayout
                 android:id="@+id/ll_calls_layout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:layout_marginEnd="@dimen/_2sdp"
@@ -75,9 +80,9 @@
                     <LinearLayout
                         android:id="@+id/ll_doc_child"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:background="@drawable/custom_background_green"
                         android:orientation="vertical">
@@ -86,18 +91,19 @@
                             android:id="@+id/txt_doc_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="Doctor calls"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -112,15 +118,16 @@
                                 android:gravity="top"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_9sdp"
-                                android:visibility="visible" />
+                                android:visibility="visible"
+                                tools:ignore="SpUsage" />
 
 
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginLeft="@dimen/_4sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginStart="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
@@ -142,7 +149,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@android:color/white"
-                                    android:textSize="@dimen/_7sdp" />
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage" />
                             </FrameLayout>
 
                         </LinearLayout>
@@ -155,7 +163,8 @@
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_green" />
+                        android:src="@drawable/down_triangle_green"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -168,10 +177,10 @@
                     <LinearLayout
                         android:id="@+id/ll_che_child"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:background="@drawable/custom_background_blue"
                         android:orientation="vertical">
@@ -180,18 +189,19 @@
                             android:id="@+id/txt_che_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="Chemist calls"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -204,15 +214,16 @@
                                 android:fontFamily="@font/satoshi_medium"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_9sdp"
-                                android:visibility="visible" />
+                                android:visibility="visible"
+                                tools:ignore="SpUsage" />
 
 
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginLeft="@dimen/_4sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginStart="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
@@ -234,7 +245,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@android:color/white"
-                                    android:textSize="@dimen/_7sdp" />
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage" />
                             </FrameLayout>
 
                         </LinearLayout>
@@ -245,7 +257,8 @@
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_blue" />
+                        android:src="@drawable/down_triangle_blue"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -258,10 +271,10 @@
                     <LinearLayout
                         android:id="@+id/ll_stock_child"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:background="@drawable/custom_background_pink"
                         android:orientation="vertical">
@@ -270,19 +283,20 @@
                             android:id="@+id/txt_stock_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="Stockiest Calls"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
 
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -295,15 +309,16 @@
                                 android:fontFamily="@font/satoshi_medium"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_9sdp"
-                                android:visibility="visible" />
+                                android:visibility="visible"
+                                tools:ignore="SpUsage" />
 
 
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginLeft="@dimen/_4sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginStart="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
@@ -325,7 +340,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@android:color/white"
-                                    android:textSize="@dimen/_7sdp" />
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage" />
                             </FrameLayout>
 
                         </LinearLayout>
@@ -337,7 +353,8 @@
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_red" />
+                        android:src="@drawable/down_triangle_red"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -352,10 +369,10 @@
                     <LinearLayout
                         android:id="@+id/ll_unli_child"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:background="@drawable/custom_background_gray"
                         android:orientation="vertical">
@@ -364,18 +381,19 @@
                             android:id="@+id/txt_unli_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="Unlistered Calls"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -388,15 +406,16 @@
                                 android:fontFamily="@font/satoshi_medium"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_9sdp"
-                                android:visibility="visible" />
+                                android:visibility="visible"
+                                tools:ignore="SpUsage" />
 
 
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginLeft="@dimen/_4sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginStart="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
@@ -418,7 +437,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@android:color/white"
-                                    android:textSize="@dimen/_7sdp" />
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage" />
                             </FrameLayout>
 
                         </LinearLayout>
@@ -429,7 +449,8 @@
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_gray" />
+                        android:src="@drawable/down_triangle_gray"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -443,9 +464,9 @@
                     <LinearLayout
                         android:id="@+id/ll_cip_child"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:background="@drawable/custom_background_yellow"
                         android:orientation="vertical">
@@ -454,18 +475,19 @@
                             android:id="@+id/txt_cip_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="CIP calls"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -480,15 +502,16 @@
                                 android:gravity="top"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_9sdp"
-                                android:visibility="visible" />
+                                android:visibility="visible"
+                                tools:ignore="SpUsage" />
 
 
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginLeft="@dimen/_4sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginStart="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
@@ -510,7 +533,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@android:color/white"
-                                    android:textSize="@dimen/_7sdp" />
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage" />
                             </FrameLayout>
 
                         </LinearLayout>
@@ -523,7 +547,8 @@
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_yellow" />
+                        android:src="@drawable/down_triangle_yellow"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -536,9 +561,9 @@
                     <LinearLayout
                         android:id="@+id/ll_hos_child"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:background="@drawable/custom_background_trendy_pink"
                         android:orientation="vertical">
@@ -547,18 +572,19 @@
                             android:id="@+id/txt_hos_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:fontFamily="@font/satoshi_medium"
                             android:text="Hospital calls"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_4sdp"
+                            android:layout_marginStart="@dimen/_4sdp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -573,15 +599,16 @@
                                 android:gravity="top"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_9sdp"
-                                android:visibility="visible" />
+                                android:visibility="visible"
+                                tools:ignore="SpUsage" />
 
 
                             <FrameLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:layout_marginLeft="@dimen/_4sdp"
-                                android:layout_marginRight="@dimen/_4sdp"
+                                android:layout_marginStart="@dimen/_4sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
                                 android:layout_marginBottom="@dimen/_5sdp"
                                 android:layout_weight="1">
 
@@ -603,7 +630,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:textColor="@android:color/white"
-                                    android:textSize="@dimen/_7sdp" />
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage" />
                             </FrameLayout>
 
                         </LinearLayout>
@@ -616,7 +644,8 @@
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:src="@drawable/down_triangle_trendy_pink" />
+                        android:src="@drawable/down_triangle_trendy_pink"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -643,7 +672,8 @@
             android:text="Average Doctors Calls"
             android:textColor="@color/text_dark"
             android:textSize="@dimen/_8sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
         <TextView
             android:id="@+id/text_date"
@@ -653,7 +683,8 @@
             android:fontFamily="@font/satoshi_medium"
             android:text="June 2023 - August 2023"
             android:textColor="@color/txt_lite_black"
-            android:textSize="@dimen/_7sdp" />
+            android:textSize="@dimen/_7sdp"
+            tools:ignore="SpUsage" />
 
         <include
             layout="@layout/linecharmap"

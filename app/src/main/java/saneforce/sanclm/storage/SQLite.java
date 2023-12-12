@@ -16,9 +16,11 @@ import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanclm.response.LoginResponse;
 
 
@@ -58,6 +60,11 @@ public class SQLite extends SQLiteOpenHelper {
     private static final String LINECHAR_AMSLNO = "LINECHAR_AMSLNO";
     private static final String LINECHAR_FM_INDICATOR = "LINECHAR_FM_INDICATOR";
 
+    //Presentation Table
+    public static final String PRESENTATION_TABLE = "presentation_table";
+    public static final String PRESENTATION_NAME = "presentation_name";
+    public static final String PRESENTATION_DATA = "presentation_data";
+
     public SQLite(@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);
     }
@@ -70,6 +77,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
                 LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
                 LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + PRESENTATION_TABLE + "(" + PRESENTATION_NAME + " TEXT PRIMARY KEY, " + PRESENTATION_DATA + " TEXT)");
 
     }
 
@@ -79,6 +87,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + TOUR_PLAN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + LINE_CHAT_DATA_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + PRESENTATION_TABLE);
 
         onCreate(db);
     }
@@ -89,6 +98,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE);
         db.execSQL("DELETE FROM " + TOUR_PLAN_TABLE);
         db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
+        db.execSQL("DELETE FROM " + PRESENTATION_TABLE);
 
         db.close();
     }
@@ -158,7 +168,7 @@ public class SQLite extends SQLiteOpenHelper {
         JSONArray jsonArray = new JSONArray();
         try {
             if (data != null && !data.isEmpty())
-                return jsonArray = new JSONArray(data.toString());
+                return jsonArray = new JSONArray(data);
         }catch (Exception exception){
             exception.printStackTrace();
         }
@@ -190,42 +200,7 @@ public class SQLite extends SQLiteOpenHelper {
         return data;
     }
 
-//    public void saveDrMaster(String hqCode,String drList){
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(HQ_CODE, hqCode);
-//        contentValues.put(DOCTOR_DATA,drList);
-//
-//        String[] args = new String[]{hqCode};
-//        int updated = db.update(DOCTOR_MASTER_TABLE, contentValues, HQ_CODE + "=?", args);
-//        if (updated <= 0){
-//            db.insert(DOCTOR_MASTER_TABLE,null,contentValues);
-//        }
-//        db.close();
-//    }
-
-//    public JSONArray getDrMaster(String hqCode){
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + DOCTOR_MASTER_TABLE + "WHERE " + HQ_CODE + "=" + "'" + hqCode + "';", null);
-//        String data = "";
-//        if (cursor.moveToNext()){
-//            data = cursor.getString(1);
-//        }
-//
-//        JSONArray jsonArray = new JSONArray();
-//        try {
-//            if (!data.equals("")){
-//                jsonArray = new JSONArray(data.toString());
-//            }
-//        }catch (Exception exception){
-//            exception.printStackTrace();
-//        }
-//        cursor.close();
-//        return jsonArray;
-//    }
-
     //----------------------------Tour Plan----------------------
-
     public void saveTPData(String month,String data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -260,9 +235,56 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
 
+    //--------------Presentation Table-------------------
+    public void savePresentation(String oldName,String newName, String data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PRESENTATION_NAME,newName);
+        contentValues.put(PRESENTATION_DATA,data);
 
+        if (!oldName.isEmpty()){
+            String[] args = new String[]{oldName};
+            int updated = db.update(PRESENTATION_TABLE,contentValues,PRESENTATION_NAME + "=?",args);
+            if (updated <= 0){
+                db.insert(PRESENTATION_TABLE,null,contentValues);
+            }
+        }else{
+            db.insert(PRESENTATION_TABLE,null,contentValues);
+        }
 
-    // insertdata Linechart
+        db.close();
+    }
+
+    public ArrayList<BrandModelClass.Presentation> getPresentationData(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor =  db.rawQuery("select * from " + PRESENTATION_TABLE ,null);
+        String data = "";
+        ArrayList<BrandModelClass.Presentation> arrayList = new ArrayList<>();
+        while(cursor.moveToNext()){
+            data = cursor.getString(1);
+            if (data != null){
+                Type type = new TypeToken<BrandModelClass.Presentation>(){}.getType();
+                BrandModelClass.Presentation presentations = new Gson().fromJson(data,type);
+                arrayList.add(presentations);
+            }
+        }
+        return arrayList;
+    }
+
+    public boolean presentationExists(String presentationName){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + PRESENTATION_TABLE + " where " + PRESENTATION_NAME + "='"  + presentationName + "';",null);
+        return cursor.moveToNext();
+    }
+
+    public boolean presentationDelete(String presentationName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete( PRESENTATION_TABLE ,PRESENTATION_NAME + "='" + presentationName +"'",null) > 0;
+    }
+
+    //---------------------------------------------
+
+    // insertdata Li nechart
     public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode,
                                    String townName, String dcrFlag, String sfCode, String transSlNo, String amslNo,String fw_indicater) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -309,7 +331,7 @@ public class SQLite extends SQLiteOpenHelper {
         }
         db.close();
         return count;
-    };
+    }
 
 
     public int getcalls_count_by_range(String startDate, String endDate, String custType) {
@@ -326,7 +348,7 @@ public class SQLite extends SQLiteOpenHelper {
         }
         db.close();
         return count;
-    };
+    }
 
 //    public int getHalfMonthDataCount(String startDate, String endDate, String custType) {
 //        SQLiteDatabase db = this.getReadableDatabase();

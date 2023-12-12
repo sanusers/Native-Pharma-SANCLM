@@ -29,7 +29,7 @@
             android:id="@+id/nav_tour_plan"
             android:textSize="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_medium"
-            android:icon="@drawable/tourplan"
+            android:icon="@drawable/calendar_clock"
             android:title="Tour Plan" />
 
         <item

@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            tools:ignore="DuplicateIncludedIds">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -28,7 +29,8 @@
                 android:backgroundTint="@color/text_dark"
                 android:minHeight="?attr/actionBarSize"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp">
+                tools:layout_editor_absoluteY="0dp"
+                tools:ignore="DuplicateIncludedIds">
 
                 <LinearLayout
                     android:id="@+id/backArrow"
@@ -40,7 +42,8 @@
                         android:id="@+id/back_btn"
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_10sdp"
-                        android:src="@drawable/arrow_back_white" />
+                        android:src="@drawable/arrow_back_white"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -58,9 +61,9 @@
                     android:id="@+id/hq_view"
                     android:layout_width="@dimen/_120sdp"
                     android:layout_height="@dimen/_15sdp"
-                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
                     android:background="@drawable/border_white"
-                    android:layout_gravity="right">
+                    android:layout_gravity="end">
 
                     <TextView
                         android:id="@+id/hq_head"
@@ -72,7 +75,7 @@
                         android:text="@string/headquarter"
                         android:textSize="@dimen/_7sdp"
 
-                        />
+                        tools:ignore="SpUsage" />
 
                 </LinearLayout>
 
@@ -94,9 +97,9 @@
                 android:id="@+id/resource_id"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_marginStart="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_3sdp"
-                android:layout_marginRight="@dimen/_3sdp"
+                android:layout_marginEnd="@dimen/_3sdp"
                 android:layout_marginBottom="@dimen/_3sdp"
                 android:background="#EAECEE">
 
@@ -106,7 +109,8 @@
 
     <include
         android:id="@+id/navigationview"
-        layout="@layout/side_screen" />
+        layout="@layout/side_screen"
+        tools:ignore="DuplicateIncludedIds" />
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

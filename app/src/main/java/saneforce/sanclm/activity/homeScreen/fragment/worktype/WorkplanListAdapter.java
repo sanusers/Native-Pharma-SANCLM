@@ -19,12 +19,12 @@ import saneforce.sanclm.R;
 
 public class WorkplanListAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<JSONObject> itemList;
+    private final Context context;
+    private final List<JSONObject> itemList;
     private List<JSONObject> filteredList;
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
 
-    private String type;
+    private final String type;
     public WorkplanListAdapter(Context context, List<JSONObject> itemList, String type) {
         this.context = context;
         this.filteredList = itemList;
@@ -68,12 +68,7 @@ public class WorkplanListAdapter extends BaseAdapter {
                 checkBox.setVisibility(View.VISIBLE);
             }else {
                 checkBox.setVisibility(View.GONE);
-
             }
-
-
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();

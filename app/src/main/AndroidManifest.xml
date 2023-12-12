@@ -9,6 +9,9 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
@@ -51,10 +54,19 @@
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
         <activity
-            android:name=".activity.presentation.preview.PresentationPreviewActivity"
-            android:exported="false" />
+            android:name=".activity.reports.ReportFragContainerActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity
+            android:name=".activity.reports.ReportsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.presentation.playPreview.PlaySlidePreviewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.approvals.tp.TpApprovalActivity"
             android:exported="false"
@@ -90,15 +102,9 @@
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
             android:name=".activity.tourPlan.TourPlanActivity"
-            android:exported="true"
-            android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="saneforce.sanclm.activity.tourPlan.TourPlanActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".activity.masterSync.MasterSyncActivity"
             android:exported="false"
@@ -156,25 +162,24 @@
             android:name=".activity.leave.Leave_Application"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
             android:name=".activity.approvals.ApprovalsActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
-            android:name=".activity.presentation.PresentationActivity"
+            android:name=".activity.presentation.presentation.PresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
             android:name=".activity.presentation.createPresentation.CreatePresentationActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".activity.SplashScreen"
+            android:name=".activity.splash.SplashScreen"
             android:exported="true"
             android:screenOrientation="landscape">
             <intent-filter>
@@ -183,7 +188,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
@@ -191,25 +195,18 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="false"
-            android:permission="TODO">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <activity
-            android:name="saneforce.sanclm.activity.myresource.MyResource_mapview"
+            android:name=".activity.myresource.MyResource_mapview"
             android:exported="false"
             android:screenOrientation="landscape" />
-
         <activity
-            android:name="saneforce.sanclm.activity.forms.changepassword.Change_passwordActivity"
-            android:exported="false"
-            android:screenOrientation="landscape" />
-
-        <activity
-            android:name="saneforce.sanclm.activity.forms.weekoff.weekoff_viewscreen"
+            android:name=".activity.forms.weekoff.weekoff_viewscreen"
             android:exported="false"
             android:screenOrientation="landscape" />
 
@@ -227,6 +224,5 @@
                 android:resource="@xml/filepaths" />
         </provider>
     </application>
-
 
 </manifest>

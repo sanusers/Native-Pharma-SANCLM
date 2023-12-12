@@ -11,7 +11,7 @@ public class ImageStorage {
     public static String saveImage (Bitmap bitmap,String filePath, String filename) {
 
         String stored = null;
-        File folder = new File(filePath, "images");  //the dot makes this directory hidden to the user
+        File folder = new File(filePath, "images");
         folder.mkdir();
         File file = new File(folder.getAbsoluteFile(), filename );
         if (file.exists())

@@ -39,7 +39,8 @@
                     <ImageView
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_10sdp"
-                        android:src="@drawable/arrow_back_white" />
+                        android:src="@drawable/arrow_back_white"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -86,7 +87,8 @@
                         android:orientation="horizontal"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true">
+                        android:layout_alignParentTop="true"
+                        tools:ignore="DuplicateIncludedIds">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -107,7 +109,8 @@
                                 android:paddingBottom="@dimen/_6sdp"
                                 android:paddingStart="@dimen/_12sdp"
                                 android:paddingEnd="@dimen/_12sdp"
-                                app:tint="@color/black_45"/>
+                                app:tint="@color/black_45"
+                                tools:ignore="ContentDescription" />
 
                             <TextView
                                 android:id="@+id/monthYear"
@@ -131,7 +134,8 @@
                                 android:paddingTop="@dimen/_6sdp"
                                 android:paddingBottom="@dimen/_6sdp"
                                 android:paddingStart="@dimen/_12sdp"
-                                android:paddingEnd="@dimen/_12sdp"/>
+                                android:paddingEnd="@dimen/_12sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -144,7 +148,8 @@
                             android:text="Planning..."
                             android:textColor="#00C689"
                             android:textSize="@dimen/_5sdp"
-                            android:fontFamily="@font/satoshi_variable"/>
+                            android:fontFamily="@font/satoshi_variable"
+                            tools:ignore="SpUsage" />
 
                     </RelativeLayout>
 
@@ -334,7 +339,8 @@
         app:drawerLayoutCornerSize="0dp">
 
         <include android:id="@+id/tp_navigation"
-            layout="@layout/tp_nav_drawer"/>
+            layout="@layout/tp_nav_drawer"
+            tools:ignore="DuplicateIncludedIds" />
 
     </com.google.android.material.navigation.NavigationView>
 

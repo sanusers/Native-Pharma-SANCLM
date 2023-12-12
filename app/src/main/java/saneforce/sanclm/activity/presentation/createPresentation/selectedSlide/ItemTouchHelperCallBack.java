@@ -21,8 +21,30 @@ public class ItemTouchHelperCallBack extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove (@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-       selectedSlidesAdapter.onItemMove(viewHolder.getAbsoluteAdapterPosition(),target.getAbsoluteAdapterPosition());
+        selectedSlidesAdapter.onRowMoved(viewHolder.getAbsoluteAdapterPosition(), target.getAbsoluteAdapterPosition());
         return true;
+    }
+
+    @Override
+    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+            if (viewHolder instanceof SelectedSlidesAdapter.MyViewHolder) {
+                SelectedSlidesAdapter.MyViewHolder myViewHolder= (SelectedSlidesAdapter.MyViewHolder) viewHolder;
+                selectedSlidesAdapter.onRowSelected(myViewHolder);
+            }
+        }
+
+        super.onSelectedChanged(viewHolder, actionState);
+    }
+    @Override
+    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        super.clearView(recyclerView, viewHolder);
+
+        if (viewHolder instanceof SelectedSlidesAdapter.MyViewHolder) {
+            SelectedSlidesAdapter.MyViewHolder myViewHolder= (SelectedSlidesAdapter.MyViewHolder) viewHolder;
+            selectedSlidesAdapter.onRowClear(myViewHolder);
+        }
     }
 
     @Override
@@ -30,13 +52,23 @@ public class ItemTouchHelperCallBack extends ItemTouchHelper.Callback {
 
     }
 
-//    @Override
-//    public boolean isLongPressDragEnabled () {
+    @Override
+    public boolean isLongPressDragEnabled () {
 //        return super.isLongPressDragEnabled();
-//    }
-//
-//    @Override
-//    public boolean isItemViewSwipeEnabled () {
+        return false;
+    }
+
+    @Override
+    public boolean isItemViewSwipeEnabled () {
 //        return super.isItemViewSwipeEnabled();
-//    }
+        return false;
+    }
+
+    public interface ItemTouchHelperContract {
+
+        void onRowMoved(int fromPosition, int toPosition);
+        void onRowSelected(SelectedSlidesAdapter.MyViewHolder myViewHolder);
+        void onRowClear(SelectedSlidesAdapter.MyViewHolder myViewHolder);
+
+    }
 }

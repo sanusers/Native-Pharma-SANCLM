@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,7 @@ import saneforce.sanclm.activity.homeScreen.modelClass.GroupModelClass;
 
 public class OutBoxAdapter extends BaseExpandableListAdapter {
 
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
     Context contxt;
 
     List<GroupModelClass>  list=new ArrayList<>();
@@ -62,6 +63,7 @@ public class OutBoxAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 

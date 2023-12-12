@@ -24,6 +24,7 @@ public class SharedPref {
 
 
     //Login
+    public static final String LOGIN_USER_ID = "login_userId";
     public static final String LOGIN_STATE = "login_state";
     public static final String DEVICE_ID = "device_id";
     public static final String FCM_TOKEN = "fcm_token";
@@ -56,6 +57,8 @@ public class SharedPref {
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
+
+
 
     public static void ClearSharedPreference(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -134,6 +137,16 @@ public class SharedPref {
 
     public static boolean getSettingState(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETTING_STATE, false);
+    }
+
+    public static void saveLoginId(Context context, String id) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGIN_USER_ID, id).apply();
+    }
+
+    public static String getLoginId(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_USER_ID, "");
     }
 
     public static void saveLoginState(Context context, boolean state) {
@@ -234,151 +247,6 @@ public class SharedPref {
     public static String getApprovalsCounts(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(APPROVAL_COUNT, "");
     }
-
-
-    /*   public static void saveSetups(Context context, String geoNeed, String geoChk, String CheNeed, String StkistNeed, String UndrNeed, String DrPrdNeed,
-                                  String DrInpNeed, String ChePrdNeed, String CheInpNeed, String StkPrdNeed, String StkInpNeed,
-                                  String UndrPrdNeed, String UndrInpNeed, String CapDr, String CapChe, String CapStk, String CapUndr, String CapDrPrd,
-                                  String CapChePrd, String CapStkPrd, String CapUndrPrd, String CapDrInp, String CapCheInp, String CapStkInp, String CapUndrInp,
-                                  String DrJwNeed, String CheJwNeed, String StkJwNeed, String UndrJwNeed, String CapCheSamQty, String CheRcpaMandatory, String CapDrRxQty, String CapDrSamQty, String CapCheRxQty,
-                                  String CapStkRxQty, String MgrDrRcpaMandatory, String CapCluster, String MgrCheRcpaMandatory, String DrECMandatory,
-                                  String CheECMandatory, String StkECMandatory, String UndrECMandatory, String CapUndrRxQty, String CapUndrSamQty, String DrRxNeed, String DrSamNeed, String DrRxQtyMandatory,
-                                  String DrSamQtyMandatory, String CheckInOut, String DrECNeed, String CheECNeed, String StkECNeed, String UndrECNeed, String DrPrdMandatory,
-                                  String DrInpMandatory, String DrRcpaNeed, String CheRcpaNeed, String DrGeoTagNeed, String CheGeoTagNeed, String UndrGeoTagNeed,
-                                  String CipGeoTagNeed, String GeoFenceCirRad, String GeoTagImage, String DevRegId, String ProMclDetailing, String PreNActNeed,
-                                  String PreSpecFilter, String CheRxNeed,
-                                  String AddDr, String ShowDel, String DetCheSkip, String DetStkSkip, String DetUndrSkip,
-                                  String AddChemist, String StkPobNeed, String UndrPobNeed, String TpNeed, String SurveyNeed, String PastLeavePost, String RcpaMandatory,
-                                  String QuizNeed, String QuizMandatory,
-                                  String MissedDateMandatory, String TpDcrDeviation, String TpBasedDcr, String TpMandatoryNeed,
-                                  String TpStartDate, String TpEndDate, String CheSamQtyNeed, String DtCipSkip, String DrFBMandatory, String DrFBNeed,
-                                  String CheFBNeed, String StkFBNeed, String UndrFBNeed, String CipFBNeed, String DrPobNeed, String DrPobMandatory, String ChePobNeed, String ChePobMandatory, String StkPobMandatory,
-                                  String UndrPobMandatory, String CipPobNeed, String CipPobMandatory, String DrRemNeed,
-                                  String SalRepNeed, String VisitControl, String MultiCluster, String SamVal, String InpVal,
-                                  String LeaveEntitleNeed, String RemCallNeed, String RemCallPrdNeed) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(GEO_NEED, geoNeed);
-        editor.putString(GEO_CHECK, geoChk);
-        editor.putString(CHEMIST_NEED, CheNeed);
-        editor.putString(STOCKIST_NEED, StkistNeed);
-        editor.putString(UNDR_NEED, UndrNeed);
-        editor.putString(DR_PRD_NEED, DrPrdNeed);
-        editor.putString(DR_INP_NEED, DrInpNeed);
-        editor.putString(CHE_PRD_NEED, ChePrdNeed);
-        editor.putString(CHE_INP_NEED, CheInpNeed);
-        editor.putString(STK_PRD_NEED, StkPrdNeed);
-        editor.putString(STK_INP_NEED, StkInpNeed);
-        editor.putString(UNDR_PRD_NEED, UndrPrdNeed);
-        editor.putString(UNDR_INP_NEED, UndrInpNeed);
-        editor.putString(CAPTION_DR, CapDr);
-        editor.putString(CAPTION_CHEMIST, CapChe);
-        editor.putString(CAPTION_STOCKIST, CapStk);
-        editor.putString(CAPTION_UNDR, CapUndr);
-        editor.putString(CAPTION_DR_PRD, CapDrPrd);
-        editor.putString(CAPTION_CHEMIST_PRD, CapChePrd);
-        editor.putString(CAPTION_STOCKIST_PRD, CapStkPrd);
-        editor.putString(CAPTION_UNDR_PRD, CapUndrPrd);
-        editor.putString(CAPTION_DR_INP, CapDrInp);
-        editor.putString(CAPTION_CHEMIST_INP, CapCheInp);
-        editor.putString(CAPTION_STOCKIST_INP, CapStkInp);
-        editor.putString(CAPTION_UN_DR_INP, CapUndrInp);
-        editor.putString(DR_JW_NEED, DrJwNeed);
-        editor.putString(CHEMIST_JW_NEED, CheJwNeed);
-        editor.putString(CAPTION_STOCKIST_INP, StkJwNeed);
-        editor.putString(UNDR_JW_NEED, UndrJwNeed);
-        editor.putString(CAPTION_CHE_SAM_QTY, CapCheSamQty);
-        editor.putString(CHEMIST_RCPA_MANDATORY, CheRcpaMandatory);
-        editor.putString(CAPTION_DR_RX_QTY, CapDrRxQty);
-        editor.putString(CAPTION_DR_SAM_QTY, CapDrSamQty);
-        editor.putString(CAPTION_CHE_RX_QTY, CapCheRxQty);
-        editor.putString(CAPTION_STK_RX_QTY, CapStkRxQty);
-        editor.putString(MGR_DR_RCPA_MANDATORY, MgrDrRcpaMandatory);
-        editor.putString(CAPTION_CLUSTER, CapCluster);
-        editor.putString(MGR_CHE_RCPA_MANDATORY, MgrCheRcpaMandatory);
-        editor.putString(DR_EVENT_CAPTURE_MANDATORY, DrECMandatory);
-        editor.putString(CHE_EVENT_CAPTURE_MANDATORY, CheECMandatory);
-        editor.putString(STK_EVENT_CAPTURE_MANDATORY, StkECMandatory);
-        editor.putString(UNDR_EVENT_CAPTURE_MANDATORY, UndrECMandatory);
-        editor.putString(CAPTION_UNDR_RX_QTY, CapUndrRxQty);
-        editor.putString(CAPTION_UNDR_SAM_QTY, CapUndrSamQty);
-        editor.putString(DR_RX_NEED, DrRxNeed);
-        editor.putString(DR_SAM_NEED, DrSamNeed);
-        editor.putString(DR_RX_QTY_MANDATORY, DrRxQtyMandatory);
-        editor.putString(DR_SAM_QTY_MANDATORY, DrSamQtyMandatory);
-        editor.putString(CHECK_IN_OUT_NEED, CheckInOut);
-        editor.putString(DR_EVENT_CAPTURE, DrECNeed);
-        editor.putString(CHEMIST_EVENT_CAPTURE, CheECNeed);
-        editor.putString(STOCKIST_EVENT_CAPTURE, StkECNeed);
-        editor.putString(UNDR_EVENT_CAPTURE, UndrECNeed);
-        editor.putString(DR_PRD_MANDATORY, DrPrdMandatory);
-        editor.putString(DR_INP_MANDATORY, DrInpMandatory);
-        editor.putString(DR_RCPA_NEED, DrRcpaNeed);
-        editor.putString(CHEMIST_RCPA_NEED, CheRcpaNeed);
-        editor.putString(DR_GEO_TAG_NEED, DrGeoTagNeed);
-        editor.putString(CHEMIST_GEO_TAG_NEED, CheGeoTagNeed);
-        editor.putString(STK_GEO_TAG_NEED, UndrGeoTagNeed);
-        editor.putString(UNDR_GEO_TAG_NEED, CipGeoTagNeed);
-        editor.putString(CIP_GEO_TAG_NEED, GeoFenceCirRad);
-        editor.putString(GEOFENCING_CIRCLE_RADIUS, GeoTagImage);
-        editor.putString(GEOTAG_IMAGE, DevRegId);
-        editor.putString(DEVICE_REG_ID, ProMclDetailing);
-        editor.putString(PROFILE_MCL_DETAILING, PreNActNeed);
-        editor.putString(PRESENTATION_N_ACTIVITY_NEED, PreNActNeed);
-        editor.putString(PRESENTATION_SPEC_FILTER, PreSpecFilter);
-        editor.putString(CHEMIST_RX_NEED, CheRxNeed);
-        editor.putString(ADD_DR, AddDr);
-        editor.putString(SHOW_DELETE_OPTION, ShowDel);
-        editor.putString(DETAILING_CHEM_SKIP, DetCheSkip);
-        editor.putString(DETAILING_STOCKIST_SKIP, DetStkSkip);
-        editor.putString(DETAILING_UNDR_SKIP, DetUndrSkip);
-        editor.putString(ADD_CHEMIST, AddChemist);
-        editor.putString(STOCKIST_POB_NEED, StkPobNeed);
-        editor.putString(UNDR_POB_NEED, UndrPobNeed);
-        editor.putString(TP_NEED, TpNeed);
-        editor.putString(SURVEY_NEED, SurveyNeed);
-        editor.putString(PAST_LEAVE_POST, PastLeavePost);
-        editor.putString(RCPA_MANDATORY, RcpaMandatory);
-        editor.putString(QUIZ_NEED, QuizNeed);
-        editor.putString(QUIZ_NEED_MANDATORY, QuizMandatory);
-        editor.putString(MISSED_DATE_MANDATORY, MissedDateMandatory);
-        editor.putString(TP_DCR_DEVIATION, TpDcrDeviation);
-        editor.putString(TP_BASED_DCR, TpBasedDcr);
-        editor.putString(TP_MANDATORY_NEED, TpMandatoryNeed);
-        editor.putString(TP_START_DATE, TpStartDate);
-        editor.putString(TP_END_DATE, TpEndDate);
-        editor.putString(CHEMIST_SAM_QTY_NEED, CheSamQtyNeed);
-        editor.putString(DR_JW_MANDATORY, DrJwNeed);
-        editor.putString(CHEMIST_JW_MANDATORY, CheJwNeed);
-        editor.putString(STOCKIST_JW_MANDATORY, StkJwNeed);
-        editor.putString(UNDR_JW_MANDATORY, UndrJwNeed);
-        editor.putString(DETAILING_CIP_SKIP, DtCipSkip);
-        editor.putString(DR_FEEDBACK_MANDATORY, DrFBMandatory);
-        editor.putString(DR_FEEDBACK_NEED, DrFBNeed);
-        editor.putString(CHEMIST_FEEDBACK_NEED, CheFBNeed);
-        editor.putString(STOCKIST_FEEDBACK_NEED, StkFBNeed);
-        editor.putString(UNDR_FEEDBACK_NEED, UndrFBNeed);
-        editor.putString(CIP_FEEDBACK_NEED, CipFBNeed);
-        editor.putString(DR_POB_NEED, DrPobNeed);
-        editor.putString(DR_POB_MANDATORY, DrPobMandatory);
-        editor.putString(CHEMIST_POB_NEED, ChePobNeed);
-        editor.putString(CHEMIST_POB_MANDATORY, ChePobMandatory);
-        editor.putString(STOCKIST_POB_MANDATORY, StkPobMandatory);
-        editor.putString(UNDR_POB_MANDATORY, UndrPobMandatory);
-        editor.putString(CIP_POB_NEED, CipPobNeed);
-        editor.putString(CIP_POB_MANDATORY, CipPobMandatory);
-        editor.putString(DR_REMARKS_NEED, DrRemNeed);
-        editor.putString(SALES_REPORT_NEED, SalRepNeed);
-        editor.putString(VISIT_CONTROL, VisitControl);
-        editor.putString(MULTI_CLUSTER, MultiCluster);
-        editor.putString(SAMPLE_VALIDATION, SamVal);
-        editor.putString(INPUT_VALIDATION, InpVal);
-        editor.putString(LEAVE_ENTITLEMENT_NEED, LeaveEntitleNeed);
-        editor.putString(REMINDER_CALL_NEED, RemCallNeed);
-        editor.putString(REMINDER_CALL_PRD_MANDATORY, RemCallPrdNeed);
-        editor.apply();
-    }*/
-
 
     public static void setTodayDayPlanClusterCode(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

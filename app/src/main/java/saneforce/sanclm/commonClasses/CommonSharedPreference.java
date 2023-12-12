@@ -46,7 +46,7 @@ public class CommonSharedPreference {
     }
 
     public Boolean getBooleanValueFromPreference(String mTAG) {
-        Boolean mResult = false;
+        boolean mResult = false;
 
         if (sharedpreferences.contains(mTAG)) {
             mResult = sharedpreferences.getBoolean(mTAG, false);

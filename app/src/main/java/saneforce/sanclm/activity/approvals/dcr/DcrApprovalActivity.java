@@ -451,7 +451,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
     }
 
     private void CallDcrListApi() {

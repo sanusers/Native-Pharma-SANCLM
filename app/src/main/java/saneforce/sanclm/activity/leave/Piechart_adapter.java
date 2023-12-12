@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.leave;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -95,8 +96,9 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
     }
 
 
-    public void Chartview(PieChart chart, String L_Available,String  L_Elgable, String L_taken,String taken, TextView c_val, TextView c_val_tol,TextView ltype_name,String pie_value,
-                          TextView Ltype,RelativeLayout chartview_value) {
+    @SuppressLint("SetTextI18n")
+    public void Chartview(PieChart chart, String L_Available, String  L_Elgable, String L_taken, String taken, TextView c_val, TextView c_val_tol, TextView ltype_name, String pie_value,
+                          TextView Ltype, RelativeLayout chartview_value) {
 
         int countdata1=0,countdata2=0;
         if(L_Available.equals("LOP")){
@@ -220,7 +222,7 @@ public class Piechart_adapter extends RecyclerView.Adapter<Piechart_adapter.View
             chartview_value.setVisibility(View.GONE);
             Ltype.setVisibility(View.VISIBLE);
             String centertxt = String.valueOf(countdata2);
-            int seconddata = (countdata1- countdata2);
+            int seconddata = (0);
             ArrayList<PieEntry> values = new ArrayList<PieEntry>();
             PieEntry pieEntry = new PieEntry(countdata1, "");
             values.add(pieEntry);

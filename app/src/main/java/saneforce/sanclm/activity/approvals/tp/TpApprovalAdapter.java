@@ -35,7 +35,7 @@ public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.Vi
         return new ViewHolder(view);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull TpApprovalAdapter.ViewHolder holder, int position) {
         holder.tv_name.setText(tpModelLists.get(position).getName());

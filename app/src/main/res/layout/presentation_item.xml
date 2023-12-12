@@ -1,96 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_3sdp"
-    android:background="@color/white"
-    app:cardCornerRadius="@dimen/_2sdp">
+    android:background="@drawable/clear_btn_stroke"
+    android:padding="1dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/img_view"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_60sdp"
-            android:background="@color/green_2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/text_dark"
-            android:paddingStart="@dimen/_6sdp"
-            android:paddingTop="@dimen/_3sdp"
-            android:paddingBottom="@dimen/_4sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:cardCornerRadius="@dimen/_2sdp"
+            app:cardElevation="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_view">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/presentationName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Presentation Name"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_6sdp"
-                android:fontFamily="@font/satoshi_medium"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@id/assertCount"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/assertCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="12 Asserts"
-                android:textColor="@color/light_cement"
-                android:textSize="@dimen/_5sdp"
-                android:fontFamily="@font/satoshi_medium"
-                android:textStyle="normal"
-                android:layout_marginTop="@dimen/_2sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/presentationName" />
-
-            <LinearLayout
-                android:id="@+id/verticalDot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintVertical_bias="1.0"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@id/assertCount"
-                app:layout_constraintTop_toTopOf="parent">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_60sdp"
+                    android:src="@drawable/no_image"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/img_menu"
-                    android:layout_gravity="center"
-                    android:paddingEnd="@dimen/_6sdp"
-                    android:paddingStart="@dimen/_6sdp"
-                    android:paddingTop="@dimen/_6sdp"/>
+                    android:background="@color/text_dark"
+                   android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/imageView">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/presentationName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Presentation Name"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_6sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/assertCount"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:paddingStart="@dimen/_6sdp"
+                        android:paddingTop="@dimen/_3sdp"
+                        tools:ignore="RtlSymmetry,SpUsage" />
 
+                    <TextView
+                        android:id="@+id/assertCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12 Asserts"
+                        android:textColor="@color/light_cement"
+                        android:textSize="@dimen/_5sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:textStyle="normal"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/presentationName"
+                        android:paddingStart="@dimen/_6sdp"
+                        android:paddingBottom="@dimen/_4sdp"
+                        tools:ignore="RtlSymmetry,SpUsage" />
 
+                    <LinearLayout
+                        android:id="@+id/verticalDot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        app:layout_constraintVertical_bias="1.0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@id/assertCount"
+                        app:layout_constraintTop_toTopOf="parent">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/img_menu"
+                            android:layout_gravity="center"
+                            android:padding="@dimen/_6sdp"
+                            tools:ignore="ContentDescription" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/_2sdp"
+    android:layout_marginBottom="@dimen/_2sdp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_2sdp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:text="Wasim Jaffer Ahmeed - HQ - designation"
+                android:textSize="@dimen/_6sdp"
+                android:textColor="@color/txt_sample"
+                android:fontFamily="@font/satoshi_bold"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                tools:ignore="SpUsage" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/name"
+                android:background="@color/text_dark_15" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/view"
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp">
+
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/_5sdp"
+                    tools:ignore="RtlSymmetry">
+
+                    <TextView
+                        android:id="@+id/workTypeTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:text="Work Type"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark_65"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/workType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/workTypeTxt"
+                        android:text="Field Work"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/checkIn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/workType"
+                        android:text="Check IN time &amp; Location"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark_65"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        tools:ignore="SpUsage" />
+
+                    <LinearLayout
+                        android:id="@+id/checkInLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_below="@id/checkIn"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/checkInTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="17 Oct 2023 04:32 PM"
+                            android:textSize="@dimen/_5sdp"
+                            android:textColor="@color/text_dark"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="center"
+                            android:gravity="bottom"
+                            tools:ignore="SpUsage" />
+
+                        <TextView
+                            android:id="@+id/markerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:text="View"
+                            android:textSize="@dimen/_5sdp"
+                            android:textColor="@color/pink"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="center"
+                            android:gravity="bottom|start"
+                            android:drawablePadding="@dimen/_5sdp"
+                            tools:ignore="SpUsage"
+                            app:drawableStartCompat="@drawable/marker_geo_approval" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/inAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/checkInLayout"
+                        android:text="No.4 Chaimers Road, Nandanam, Chennai."
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/remarksTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/inAddress"
+                        android:text="Remarks"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark_65"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/remarks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/remarksTxt"
+                        android:text="Field Work planned according to allocation"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:gravity="start"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/_10sdp"
+                    tools:ignore="RtlSymmetry">
+
+                    <TextView
+                        android:id="@+id/submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:text="Submitted date"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark_65"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/submitDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/submit"
+                        android:text="20 Oct 2023"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/checkOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/submitDate"
+                        android:text="Check Out time &amp; Location"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark_65"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_7sdp"
+                        tools:ignore="SpUsage" />
+
+                    <LinearLayout
+                        android:id="@+id/checkOutLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_below="@id/checkOut"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/checkOutTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="18 Oct 2023 01:32 AM"
+                            android:textSize="@dimen/_5sdp"
+                            android:textColor="@color/text_dark"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="center"
+                            android:gravity="bottom"
+                            tools:ignore="SpUsage" />
+
+                        <TextView
+                            android:id="@+id/markerViewOut"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:text="View"
+                            android:textSize="@dimen/_5sdp"
+                            android:textColor="@color/pink"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="center"
+                            android:gravity="bottom|start"
+                            android:drawablePadding="@dimen/_5sdp"
+                            tools:ignore="SpUsage"
+                            app:drawableStartCompat="@drawable/marker_geo_approval" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/outAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/checkOutLayout"
+                        android:text="No.4 Chaimers Road, Nandanam, Chennai."
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        tools:ignore="SpUsage" />
+
+                    <LinearLayout
+                        android:id="@+id/iconLayout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/outAddress">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/drLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/drIcon"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:src="@drawable/tp_dr_icon"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/drCount"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:background="@drawable/tp_badge_circle"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                app:layout_constraintBottom_toTopOf="@id/drIcon"
+                                app:layout_constraintStart_toEndOf="@id/drIcon"
+                                tools:ignore="SpUsage" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/cheLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_3sdp">
+
+                            <ImageView
+                                android:id="@+id/chemistIcon"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:src="@drawable/tp_chemist_icon"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/chemistCount"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:background="@drawable/tp_badge_circle"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                app:layout_constraintBottom_toTopOf="@id/chemistIcon"
+                                app:layout_constraintStart_toEndOf="@id/chemistIcon"
+                                tools:ignore="SpUsage" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/stkLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_3sdp">
+
+                            <ImageView
+                                android:id="@+id/stockiestIcon"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:src="@drawable/tp_stockiest_icon"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/stockiestCount"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:background="@drawable/tp_badge_circle"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                app:layout_constraintBottom_toTopOf="@id/stockiestIcon"
+                                app:layout_constraintStart_toEndOf="@id/stockiestIcon"
+                                tools:ignore="SpUsage" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/cipLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_3sdp">
+
+                            <ImageView
+                                android:id="@+id/cipIcon"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:src="@drawable/tp_cip_icon"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/cipCount"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:background="@drawable/tp_badge_circle"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                app:layout_constraintBottom_toTopOf="@id/cipIcon"
+                                app:layout_constraintStart_toEndOf="@id/cipIcon"
+                                tools:ignore="SpUsage" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/unDrLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_3sdp">
+
+                            <ImageView
+                                android:id="@+id/unDrIcon"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:src="@drawable/tp_unlist_dr_icon"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/unDrCount"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:background="@drawable/tp_badge_circle"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
+                                android:layout_marginStart="@dimen/_minus6sdp"
+                                app:layout_constraintBottom_toTopOf="@id/unDrIcon"
+                                app:layout_constraintStart_toEndOf="@id/unDrIcon"
+                                tools:ignore="SpUsage" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/hospLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_3sdp">
+
+                            <ImageView
+                                android:id="@+id/hospIcon"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:src="@drawable/tp_hospital_icon"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/hospCount"
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:background="@drawable/tp_badge_circle"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
+                                android:layout_marginStart="@dimen/_minus6sdp"
+                                app:layout_constraintBottom_toTopOf="@id/hospIcon"
+                                app:layout_constraintStart_toEndOf="@id/hospIcon"
+                                tools:ignore="SpUsage" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:paddingStart="@dimen/_10sdp"
+                    tools:ignore="RtlSymmetry">
+
+                    <TextView
+                        android:id="@+id/status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:text="Status"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark_65"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/status"
+                        android:text="Pending"
+                        android:textSize="@dimen/_5sdp"
+                        android:textColor="@color/text_dark"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:background="@drawable/backround_text"
+                        android:backgroundTint="@color/text_dark_15"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_5sdp"
+                        android:paddingTop="@dimen/_2sdp"
+                        android:paddingBottom="@dimen/_2sdp"
+                        tools:ignore="SpUsage" />
+
+                    <LinearLayout
+                        android:id="@+id/arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="bottom|right"
+                        android:padding="@dimen/_6sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_10sdp"
+                            android:layout_height="@dimen/_10sdp"
+                            android:src="@drawable/arrow_right_"
+                            tools:ignore="ContentDescription" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/count_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,38 +17,41 @@
             android:id="@+id/txt_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/satoshi_medium"
             android:text="Docter calls"
             android:textColor="@color/white"
-            android:textSize="@dimen/_13sdp" />
+            android:textSize="@dimen/_13sdp"
+            tools:ignore="SpUsage" />
 
         <TextView
             android:id="@+id/txt_name1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_name"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/satoshi_regular"
             android:text="55/20"
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="SpUsage" />
 
         <TextView
             android:id="@+id/txt_name2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_name"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/satoshi_regular"
             android:text="ddd"
             android:textColor="@color/white"
             android:textSize="@dimen/_8sdp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="SpUsage" />
 
 
         <RelativeLayout
@@ -77,7 +81,8 @@
                 android:text="10%"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_8sdp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="SpUsage" />
         </RelativeLayout>
     </LinearLayout>
 

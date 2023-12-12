@@ -6,10 +6,10 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -18,6 +18,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import saneforce.sanclm.activity.profile.DCRLastVisitDetails;
 
@@ -127,6 +128,9 @@ public interface ApiInterface {
     @POST("?axn=get/tp")
     Call<JsonElement> getTP(@Field("data") String postObj);
 
+    @FormUrlEncoded
+    @POST("?axn=savenew/tp ")
+    Call<JsonObject> saveTP(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")
@@ -152,4 +156,8 @@ public interface ApiInterface {
     @POST("?axn=save/approvals")
         // Approved & Reject Leave
     Call<JsonObject> saveLeaveApproval(@Field("data") String SaveLeaveApproval);
+
+    @POST
+    Call<JsonElement> getDayReport(@Url String url ,@QueryMap Map<String,String> params);
+
 }

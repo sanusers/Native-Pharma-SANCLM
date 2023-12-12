@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +76,7 @@ public class TagCustSelectionList extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -249,7 +251,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 }
                 TpBasedDcr = setUpResponse.getTpBasedDcr();
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -289,7 +291,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             }
             AddCustList(SelectedHqCode);
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -357,7 +359,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                                 try {
                                     JsonElement jsonElement = response.body();
                                     JSONArray jsonArray = new JSONArray();
-                                    if (!jsonElement.isJsonNull()) {
+                                    if (!Objects.requireNonNull(jsonElement).isJsonNull()) {
                                         if (jsonElement.isJsonArray()) {
                                             JsonArray jsonArray1 = jsonElement.getAsJsonArray();
                                             jsonArray = new JSONArray(jsonArray1.toString());
@@ -495,7 +497,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                             custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
                 break;
@@ -529,7 +531,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                             custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, "Category", "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
                 break;
@@ -563,7 +565,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                             custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("CategoryName"), jsonObject.getString("SpecialtyName"), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
                 break;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -7,9 +8,9 @@
         android:layout_width="@dimen/_50sdp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_6sdp"
-        android:layout_marginLeft="@dimen/_4sdp"
+        android:layout_marginStart="@dimen/_4sdp"
         android:layout_gravity="right"
-        android:layout_marginRight="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
         android:paddingBottom="@dimen/_4sdp">
 
         <LinearLayout
@@ -26,11 +27,12 @@
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_bold"
-                android:layout_marginLeft="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_2sdp"
                 android:gravity="center"
                 android:text="2023"
                 android:textColor="#808B96"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="@dimen/_8sdp"
+                tools:ignore="SpUsage" />
 
 
 

@@ -1,6 +1,5 @@
 package saneforce.sanclm.services;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,11 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Html;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,10 +22,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Random;
 
 import saneforce.sanclm.R;
@@ -99,31 +89,8 @@ public class NotificationClass extends ContextWrapper {
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             getImageFromUrl(imageUrl);
-//            Bitmap bitmap = getBitmapFromURL(imageUrl);
-//            NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
-//            bigPictureStyle.setBigContentTitle(title);
-//            bigPictureStyle.setSummaryText(Html.fromHtml(body).toString());
-//
-//            bigPictureStyle.bigPicture(bitmap);
-//            notificationBuilder.setStyle(bigPictureStyle);
-//            notificationManager.notify(notificationId, notificationBuilder.build());
         } else {
             notificationManager.notify(notificationId, notificationBuilder.build());
-        }
-
-    }
-
-    private Bitmap getBitmapFromURL (String strURL) {
-        try {
-            URL url = new URL(strURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -134,10 +101,7 @@ public class NotificationClass extends ContextWrapper {
             @Override
             public void onResourceReady (@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 bitmap[0] = resource;
-
                 NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
-//                bigPictureStyle.setBigContentTitle(title);
-//                bigPictureStyle.setSummaryText(Html.fromHtml(body).toString());
                 bigPictureStyle.bigPicture(bitmap[0]);
                 notificationBuilder.setStyle(bigPictureStyle);
                 notificationManager.notify(notificationId, notificationBuilder.build());

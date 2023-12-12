@@ -7,10 +7,7 @@
     android:background="@color/backround_graey"
     tools:context=".activity.homeScreen.HomeDashBoard">
 
-    <RelativeLayout
-        android:id="@+id/Relative_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/Toolbar"
@@ -36,47 +33,49 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/_8sdp"
-                    android:layout_toRightOf="@+id/back_arrow"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_toEndOf="@+id/back_arrow"
                     android:fontFamily="@font/satoshi_variable"
-                    android:gravity="left"
+                    android:gravity="start"
                     android:text="SAN Media Pvt Ltd"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_8sdp" />
-
+                    android:textSize="@dimen/_8sdp"
+                    tools:ignore="HardcodedText,RtlHardcoded,SpUsage,TextSizeCheck" />
 
                 <ImageView
                     android:id="@+id/img_notofication"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_2sdp"
-                    android:layout_toLeftOf="@id/img_sync"
-                    android:src="@drawable/notification"/>
-
+                    android:layout_toStartOf="@id/img_sync"
+                    android:src="@drawable/notification"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/img_sync"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_1sdp"
-                    android:layout_toLeftOf="@id/img_account"
-                    android:src="@drawable/sync_img"/>
+                    android:layout_toStartOf="@id/img_account"
+                    android:src="@drawable/sync_img"
+                    tools:ignore="ContentDescription" />
 
 
                 <ImageView
                     android:id="@+id/img_account"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_2sdp"
-                    android:src="@drawable/acount_img"/>
+                    android:src="@drawable/acount_img"
+                    tools:ignore="ContentDescription" />
 
             <RelativeLayout
                 android:id="@+id/img_account1"
@@ -87,22 +86,20 @@
 
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
-    </RelativeLayout>
 
 
     <androidx.drawerlayout.widget.DrawerLayout
-
         android:id="@+id/my_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/Relative_layout"
+        android:layout_below="@+id/Toolbar"
         tools:context=".activity.DashBoard.HomeDashBoard">
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -116,9 +113,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_4sdp"
                     android:layout_marginTop="@dimen/_3sdp"
-                    android:layout_marginRight="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
                     android:background="@drawable/custom_backround_layout"
                     android:backgroundTint="@color/white"
                     android:orientation="horizontal">
@@ -127,10 +124,11 @@
                         android:id="@+id/caleder_img"
                         android:layout_width="@dimen/_9sdp"
                         android:layout_height="@dimen/_9sdp"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="@dimen/_10sdp"
-                        android:src="@drawable/calendar_img" />
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:src="@drawable/calendar_img"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/text_date"
@@ -139,19 +137,23 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/satoshi_medium"
                         android:gravity="center"
+                        android:hint="@string/select_date"
                         android:padding="@dimen/_5sdp"
-                        android:text="Select Date"
+                        android:text=""
                         android:textColor="@color/text_dark"
+                        android:textColorHint="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="RelativeOverlap,SpUsage,TextSizeCheck" />
 
                     <ImageView
                         android:layout_width="@dimen/_9sdp"
                         android:layout_height="@dimen/_9sdp"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:src="@drawable/arrow_bot_top_img" />
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:src="@drawable/arrow_bot_top_img"
+                        tools:ignore="ContentDescription" />
                 </RelativeLayout>
 
                 <include
@@ -159,20 +161,21 @@
                     layout="@layout/customize_tablayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_4sdp"
-                    android:layout_marginRight="@dimen/_4sdp" />
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_4sdp" />
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_margin="@dimen/_4sdp"
-                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_4sdp"
                     android:layout_marginTop="@dimen/_6sdp"
-                    android:layout_marginRight="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
                     android:layout_weight="1"
                     android:background="@drawable/backround_text"
-                    android:backgroundTint="@color/white" />
+                    android:backgroundTint="@color/white"
+                    tools:ignore="NestedWeights" />
 
 
                     <include
@@ -180,11 +183,10 @@
                         layout="@layout/call_status_calender_layout"
                         android:layout_width="match_parent"
                         android:layout_marginTop="@dimen/_6sdp"
-                        android:layout_marginLeft="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_4sdp"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_4sdp"
                         android:visibility="gone"
-                        android:layout_height="match_parent"
-                      />
+                        android:layout_height="match_parent" />
 
             </LinearLayout>
 
@@ -195,29 +197,23 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
                     <saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager
                         android:id="@+id/view_pager1"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_2sdp"
-                        android:layout_marginTop="@dimen/_4sdp"
-                        android:layout_marginRight="@dimen/_2sdp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/white" />
-
-                </LinearLayout>
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
+                        android:backgroundTint="@color/white"
+                        tools:ignore="NestedWeights,SpeakableTextPresentCheck" />
 
                 <RelativeLayout
                     android:id="@+id/rl_quick_link"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/_2sdp"
-                    android:layout_marginRight="@dimen/_2sdp"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_weight="5">
 
@@ -229,7 +225,8 @@
                         android:text="Quick Link"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText,SpUsage,TextSizeCheck" />
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
@@ -237,7 +234,7 @@
                         android:layout_below="@+id/txt_quik_link">
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:layout_marginEnd="@dimen/_2sdp"
@@ -259,29 +256,33 @@
                                 <ImageView
                                     android:layout_width="@dimen/_9sdp"
                                     android:layout_height="@dimen/_9sdp"
-                                    android:layout_gravity="center|left"
-                                    android:layout_marginLeft="@dimen/_5sdp"
-                                    android:src="@drawable/image_img"/>
+                                    android:layout_gravity="center|start"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:contentDescription="TODO"
+                                    android:src="@drawable/image_img"
+                                    tools:ignore="ContentDescription,HardcodedText,ImageContrastCheck" />
 
 
                                 <TextView
-                                    android:layout_width="match_parent"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="left|center"
+                                    android:layout_gravity="start|center"
                                     android:layout_marginStart="@dimen/_5sdp"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:gravity="left"
-                                    android:text="Presentation"
+                                    android:gravity="start"
+                                    android:text="@string/presentation"
                                     android:textColor="@color/black_45"
-                                    android:textSize="@dimen/_7sdp"/>
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage,TextSizeCheck" />
 
                                 <ImageView
                                     android:layout_width="@dimen/_8sdp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center|right"
+                                    android:layout_gravity="center|end"
                                     android:layout_marginEnd="@dimen/_5sdp"
-                                    android:src="@drawable/arrow_right_"/>
+                                    android:src="@drawable/arrow_right_"
+                                    tools:ignore="ContentDescription" />
 
                             </LinearLayout>
 
@@ -298,31 +299,34 @@
                                 <ImageView
                                     android:layout_width="@dimen/_9sdp"
                                     android:layout_height="@dimen/_9sdp"
-                                    android:layout_gravity="center|left"
+                                    android:layout_gravity="center|start"
                                     android:layout_marginStart="@dimen/_5sdp"
-                                    android:src="@drawable/eye_img"/>
+                                    android:src="@drawable/eye_img"
+                                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
 
                                 <TextView
-                                    android:layout_width="match_parent"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="left|center"
+                                    android:layout_gravity="start|center"
                                     android:layout_marginStart="@dimen/_5sdp"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:gravity="left"
-                                    android:text="Preview"
+                                    android:gravity="start"
+                                    android:text="@string/preview"
                                     android:textColor="@color/black_45"
-                                    android:textSize="@dimen/_7sdp">
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage,TextSizeCheck">
 
                                 </TextView>
 
                                 <ImageView
                                     android:layout_width="@dimen/_8sdp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center|right"
+                                    android:layout_gravity="center|end"
                                     android:layout_marginEnd="@dimen/_5sdp"
-                                    android:src="@drawable/arrow_right_">
+                                    android:src="@drawable/arrow_right_"
+                                    tools:ignore="ContentDescription">
 
                                 </ImageView>
                             </LinearLayout>
@@ -340,30 +344,33 @@
                                 <ImageView
                                     android:layout_width="@dimen/_9sdp"
                                     android:layout_height="@dimen/_9sdp"
-                                    android:layout_gravity="center|left"
+                                    android:layout_gravity="center|start"
                                     android:layout_marginStart="@dimen/_5sdp"
-                                    android:src="@drawable/file_chart_img"/>
+                                    android:src="@drawable/file_chart_img"
+                                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                                 <TextView
-                                    android:layout_width="match_parent"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center|left"
+                                    android:layout_gravity="center|start"
                                     android:layout_marginStart="@dimen/_5sdp"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:gravity="left"
-                                    android:text="Report"
+                                    android:gravity="start"
+                                    android:text="@string/report"
                                     android:textColor="@color/black_45"
-                                    android:textSize="@dimen/_7sdp">
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage,TextSizeCheck">
 
                                 </TextView>
 
                                 <ImageView
                                     android:layout_width="@dimen/_8sdp"
                                     android:layout_height="@dimen/_8sdp"
-                                    android:layout_gravity="center|right"
+                                    android:layout_gravity="center|end"
                                     android:layout_marginEnd="@dimen/_5sdp"
-                                    android:src="@drawable/arrow_right_">
+                                    android:src="@drawable/arrow_right_"
+                                    tools:ignore="ContentDescription">
 
                                 </ImageView>
 
@@ -384,29 +391,32 @@
                                 <ImageView
                                     android:layout_width="@dimen/_9sdp"
                                     android:layout_height="@dimen/_9sdp"
-                                    android:layout_gravity="center|left"
+                                    android:layout_gravity="center|start"
                                     android:layout_marginStart="@dimen/_5sdp"
-                                    android:src="@drawable/image_img"/>
+                                    android:src="@drawable/image_img"
+                                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
 
                                 <TextView
-                                    android:layout_width="match_parent"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center|left"
+                                    android:layout_gravity="center|start"
                                     android:layout_marginStart="@dimen/_5sdp"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/satoshi_medium"
-                                    android:gravity="left"
-                                    android:text="Analysis"
+                                    android:gravity="start"
+                                    android:text="@string/analysis"
                                     android:textColor="@color/black_45"
-                                    android:textSize="@dimen/_7sdp"/>
+                                    android:textSize="@dimen/_7sdp"
+                                    tools:ignore="SpUsage,TextSizeCheck" />
 
                                 <ImageView
                                     android:layout_width="@dimen/_8sdp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center|right"
+                                    android:layout_gravity="center|end"
                                     android:layout_marginEnd="@dimen/_5sdp"
-                                    android:src="@drawable/arrow_right_">
+                                    android:src="@drawable/arrow_right_"
+                                    tools:ignore="ContentDescription">
 
                                 </ImageView>
 
@@ -439,7 +449,7 @@
             android:id="@+id/nav_view1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:background="@drawable/bg_white"
             android:foregroundGravity="center">
 
@@ -448,7 +458,7 @@
                 layout="@layout/list_item_worktye"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                />
+                tools:ignore="DuplicateIncludedIds" />
 
         </com.google.android.material.navigation.NavigationView>
 

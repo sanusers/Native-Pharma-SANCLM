@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/custom_backround_layout">
@@ -20,7 +21,8 @@
          android:layout_marginTop="@dimen/_5sdp"
          android:text="Slide downloader"
          android:textColor="@color/black_45"
-         android:textStyle="bold" />
+         android:textStyle="bold"
+         tools:ignore="SpUsage" />
 
      <TextView
          android:id="@+id/txt_downloadcount"
@@ -34,7 +36,8 @@
          android:text="55/55"
          android:layout_marginEnd="@dimen/_20sdp"
          android:textColor="@color/black_45"
-         android:textStyle="bold">
+         android:textStyle="bold"
+         tools:ignore="SpUsage">
 
      </TextView>
 
@@ -47,7 +50,8 @@
          android:background="@color/white"
          android:layout_alignParentTop="true"
          android:layout_alignParentEnd="true"
-         android:src="@drawable/close_icon" />
+         android:src="@drawable/close_icon"
+         tools:ignore="ContentDescription" />
 
  </RelativeLayout>
 

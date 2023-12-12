@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:windowSoftInputMode="adjustResize">
@@ -15,7 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/tv_img_name"
@@ -28,7 +30,7 @@
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:singleLine="true"
-        android:hint="Type Image Name"
+        android:hint="@string/type_image_name"
         android:textColor="@color/text_qty_prd"
         android:textColorHint="@color/bg_txt_color"
         android:textSize="14sp"
@@ -77,7 +79,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_img_name"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

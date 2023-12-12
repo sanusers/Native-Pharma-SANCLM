@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.setting;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -22,26 +23,27 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonArray;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.R;
+import saneforce.sanclm.activity.login.LoginActivity;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
+import saneforce.sanclm.databinding.ActivitySettingsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
-import saneforce.sanclm.R;
-import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.databinding.ActivitySettingsBinding;
 import saneforce.sanclm.utility.ImageStorage;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -55,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
     String deviceId = "", url = "", licenseKey ="",divisionCode = "",baseWebUrl="", phpPathUrl ="",reportsUrl="", slidesUrl ="",logoUrl="";
     int hitCount = 0;
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +137,6 @@ public class SettingsActivity extends AppCompatActivity {
                 } else{
 
                       SharedPref.Loginsite(getApplicationContext(),url);
-
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())){
                         if (checkURL(url)){
                             configuration("https://" + url + "/apps/");
@@ -150,6 +152,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("SetTextI18n")
     public void selectLanguage(){
 
         final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH"};
@@ -205,7 +208,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                     binding.configurationPB.setVisibility(View.GONE);
                     if (response.isSuccessful()){
-                        Log.e("test","success : "+ response.body().toString());
+                        Log.e("test","success : "+ Objects.requireNonNull(response.body()).toString());
                         JSONArray jsonArray = null;
                         try {
                             jsonArray = new JSONArray(response.body().toString());
@@ -244,7 +247,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                    Log.e("test","failed : " + t.toString());
+                    Log.e("test","failed : " + t);
                     hitCount++;
                     if (hitCount < 2){
                         configuration("http://" + url + "/apps/");
@@ -278,13 +281,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void taskCompleted (boolean status) {
                 downloaderClass.cancel(true);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run () {
-                        Toast.makeText(getApplicationContext(), "Configured Successfully", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+                navigate();
             }
         };
 
@@ -293,11 +290,21 @@ public class SettingsActivity extends AppCompatActivity {
             downloaderClass = (DownloaderClass) new DownloaderClass(url, fileDirectory, imageName, asyncInterface).execute();
         }else{
             Log.e("test","image exists");
-            Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+            navigate();
         }
 
+    }
 
+    public void navigate(){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+        intent.putExtra(Constants.NAVIGATE_FROM, "Setting");
+        startActivity(intent);
+        finish();
     }
 
 

@@ -179,6 +179,12 @@
     <string name="no_prds_promoted">No Products Promoted</string>
     <string name="no_inputs">No Inputs</string>
     <string name="no_visit_date">No Visit Date</string>
+    <string name="specialist">Specialist</string>
+    <string name="type_image_name">Type Image Name</string>
+    <string name="select_date">Select Date</string>
+    <string name="preview">Preview</string>
+    <string name="report">Report</string>
+    <string name="analysis">Analysis</string>
 
 
 </resources>

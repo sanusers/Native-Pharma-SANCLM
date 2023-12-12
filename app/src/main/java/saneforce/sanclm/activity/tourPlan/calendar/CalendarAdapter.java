@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.tourPlan.ModelClass;
+import saneforce.sanclm.activity.tourPlan.model.ModelClass;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
 
@@ -45,13 +45,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         String date = modelClass.getDayNo();
         holder.dateNo.setText(date);
 
-        if (!date.isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty())
+        if (!date.isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) //if work type is not empty means tour plan added for the date
             holder.cornerImage.setVisibility(View.VISIBLE);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                onDayClickInterface.onDayClicked(holder.getBindingAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition()));
+                onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition()));
             }
         });
     }

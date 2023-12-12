@@ -10,8 +10,8 @@ import java.util.List;
 
 
 public class forms_viewpager extends FragmentPagerAdapter {
-    private List<Fragment> fragments = new ArrayList<>();
-    private List<String> fragmentTitles = new ArrayList<>();
+    private final List<Fragment> fragments = new ArrayList<>();
+    private final List<String> fragmentTitles = new ArrayList<>();
 
 
 

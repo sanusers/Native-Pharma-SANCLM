@@ -63,7 +63,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/rating_bar"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp" />
+            tools:layout_editor_absoluteY="2dp"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tv_timeline"

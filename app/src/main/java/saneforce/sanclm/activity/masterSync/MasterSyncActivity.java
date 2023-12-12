@@ -1,8 +1,9 @@
 package saneforce.sanclm.activity.masterSync;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,22 +24,26 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideModelClass;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMasterSyncBinding;
@@ -62,9 +67,9 @@ public class MasterSyncActivity extends AppCompatActivity {
     String cheNeed = "",stockiestNeed = "",unListedDrNeed = "",hospNeed = "",cipNeed = "",rcpaNeed = "",tpNeed = "";
 
     int doctorCount = 0,specialityCount = 0,qualificationCount = 0,categoryCount = 0,departmentCount = 0,classCount = 0,feedbackCount = 0;
-    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpCount =0,clusterCount = 0;
-    int dcrCount = 0,visitControlCount= 0,missedDateCount = 0,stockBalanceCount = 0;
-    int productCount = 0, proCatCount = 0,brandCount = 0, compProCount = 0, mapComPrdCount = 0,localmapComPrdCount = 0;
+    int unlistedDrCount = 0,chemistCount = 0,stockiestCount = 0,hospitalCount = 0,cipCount = 0, inputCount = 0, leaveCount = 0,leaveStatusCount = 0,tpSetupCount =0,clusterCount = 0;
+    int dcrCount = 0,visitControlCount= 0,missedDateCount = 0;
+    int productCount = 0, proCatCount = 0,brandCount = 0, compProCount = 0, mapComPrdCount = 0;
     int workTypeCount = 0,holidayCount = 0,weeklyOfCount = 0;
     int proSlideCount = 0,proSpeSlideCount = 0,brandSlideCount = 0, therapticCount = 0;
     int subordinateCount = 0,subMgrCount = 0,jWorkCount= 0;
@@ -72,9 +77,9 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     // Api call status
     int doctorStatus = 0,specialityStatus = 0,qualificationStatus = 0,categoryStatus = 0,departmentStatus = 0,classStatus = 0,feedbackStatus = 0;
-    int unlistedDrStatus = 0,chemistStatus = 0,stockiestStatus = 0,hospitalStatus = 0,cipStatus = 0, inputStatus = 0, leaveStatus = 0,leaveStatusStatus = 0,tpStatus =0,clusterStatus = 0;
+    int unlistedDrStatus = 0,chemistStatus = 0,stockiestStatus = 0,hospitalStatus = 0,cipStatus = 0, inputStatus = 0, leaveStatus = 0,leaveStatusStatus = 0, tpSetupStatus =0 , tourPLanStatus = 0,clusterStatus = 0;
     int dcrStatus = 0,myDayPlanStatus = 0,visitControlStatus= 0,missedDateStatus = 0,stockBalanceStatus = 0;
-    int productStatus = 0, proCatStatus = 0,brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0,localmapCompPrdStatus = 0;
+    int productStatus = 0, proCatStatus = 0,brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0;
     int workTypeStatus = 0,holidayStatus = 0,weeklyOfStatus = 0;
     int proSlideStatus = 0,proSpeSlideStatus = 0,brandSlideStatus = 0, therapticStatus = 0;
     int subordinateStatus = 0,subMgrStatus = 0,jWorkStatus= 0;
@@ -103,6 +108,9 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
 
+    public static   ArrayList<SlideModelClass> Slide_list=new ArrayList<>();
+    public static    ArrayList<String> slideId =new  ArrayList<>();
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -113,10 +121,10 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
-
+        sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
-            navigateFrom = getIntent().getExtras().getString("Origin");
+            navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
 
         //Initializing all the data array
@@ -146,6 +154,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.hq.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
 
@@ -226,6 +235,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.listedDoctor.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.listDrArrow, binding.listedDoctor);
@@ -238,6 +248,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.chemist.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.chemistArrow, binding.chemist);
@@ -250,6 +261,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.stockiest.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.stockArrow, binding.stockiest);
@@ -262,6 +274,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.unlistedDoctor.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.unListDrArrow, binding.unlistedDoctor);
@@ -274,6 +287,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.hospital.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.hospitalArrow, binding.hospital);
@@ -286,6 +300,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.cip.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.cipArrow, binding.cip);
@@ -298,6 +313,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.input.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.inputArrow, binding.input);
@@ -310,6 +326,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.product.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.productArrow, binding.product);
@@ -322,6 +339,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.cluster.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.clusterArrow, binding.cluster);
@@ -334,6 +352,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.leave.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.leaveArrow, binding.leave);
@@ -346,6 +365,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.dcr.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.dcrArrow, binding.dcr);
@@ -358,6 +378,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.workType.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.workTypeArrow, binding.workType);
@@ -370,6 +391,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.tourPlan.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.tpArrow, binding.tourPlan);
@@ -382,6 +404,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.slide.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.slideArrow, binding.slide);
@@ -394,6 +417,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         });
 
         binding.subordinate.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.subordinateArrow, binding.subordinate);
@@ -408,6 +432,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
 
         binding.setup.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 listItemClicked(binding.setupArrow, binding.setup);
@@ -529,7 +554,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
         holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
         weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
-        tpCount = sqLite.getMasterSyncDataByKey(Constants.TP_PLAN).length();
+        tpSetupCount = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP).length();
         productCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length();
         proCatCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT_CATEGORY).length();
         brandCount = sqLite.getMasterSyncDataByKey(Constants.BRAND).length();
@@ -570,7 +595,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
         holidayStatus = sqLite.getMasterSyncStatusByKey(Constants.HOLIDAY);
         weeklyOfStatus = sqLite.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
-        tpStatus = sqLite.getMasterSyncStatusByKey(Constants.TP_PLAN);
+        tpSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.TP_SETUP);
+        tourPLanStatus = sqLite.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
         productStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT);
         proCatStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
         brandStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND);
@@ -685,10 +711,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel dcrModel = new MasterSyncItemModel(Constants.DCR,dcrCount,"Home","gethome",Constants.DCR,dcrStatus,false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,dcrCount,Constants.DOCTOR,"gettodaytpnew",Constants.MY_DAY_PLAN,myDayPlanStatus,false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN,-1,Constants.DOCTOR,"gettodaytpnew",Constants.MY_DAY_PLAN,myDayPlanStatus,false);
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL,visitControlCount,"AdditionalDcr","getvisit_contro",Constants.VISIT_CONTROL,visitControlStatus,false);
         MasterSyncItemModel missedDateModel = new MasterSyncItemModel(Constants.MISSED_DATE,missedDateCount,"MissedDate","getmissdates",Constants.MISSED_DATE,missedDateStatus,false);
-        MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,0,"AdditionalDcr","getstockbalance",Constants.STOCK_BALANCE_MASTER,stockBalanceStatus,false);
+        MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE,-1,"AdditionalDcr","getstockbalance",Constants.STOCK_BALANCE_MASTER,stockBalanceStatus,false);
         dcrModelArray.add(dcrModel);
         dcrModelArray.add(myDayPlanModel);
         dcrModelArray.add(visitControlModel);
@@ -707,8 +733,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         //Tour Plan
         tpModelArray.clear();
         if (tpNeed.equalsIgnoreCase("0")){
-            MasterSyncItemModel tp = new MasterSyncItemModel("Tour Plan Setup",tpCount,Constants.SETUP,"gettpsetup",Constants.TP_PLAN,tpStatus,false);
-            tpModelArray.add(tp);
+            MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, tpSetupCount, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
+            MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, -1, Constants.TOUR_PLAN, "gettpdetail", Constants.TOUR_PLAN, tourPLanStatus, false);
+            tpModelArray.add(tpSetup);
+            tpModelArray.add(tPlan);
         }else
             binding.tourPlan.setVisibility(View.GONE);
 
@@ -743,6 +771,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void listItemClicked(ImageView imageView, LinearLayout view){
         binding.listDrArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.arrow_down, null));
         binding.chemistArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
@@ -939,6 +968,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                         jsonObject.put("ReqDt",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                         break;
                     }
+                    case "gettpdetail" :{
+                        jsonObject.put("Month",TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5,TimeUtils.FORMAT_8,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                        jsonObject.put("Year",TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5,TimeUtils.FORMAT_10,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                        break;
+                    }
                 }
 
 //            Log.e("test","master sync obj : " + jsonObject);
@@ -961,7 +995,10 @@ public class MasterSyncActivity extends AppCompatActivity {
                     call = apiInterface.getSlideMaster(jsonObject.toString());
                 }else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
                     call = apiInterface.getSetupMaster(jsonObject.toString());
+                }else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
+                    call = apiInterface.getTP(jsonObject.toString());
                 }
+
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
@@ -972,17 +1009,15 @@ public class MasterSyncActivity extends AppCompatActivity {
                             boolean success = false;
                             JSONArray jsonArray = new JSONArray();
                             if (response.isSuccessful()) {
-                                Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
+                                Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + Objects.requireNonNull(response.body()).toString());
                                 try {
                                     JsonElement jsonElement = response.body();
                                     if (!jsonElement.isJsonNull()){
                                         if (jsonElement.isJsonArray()){
-                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                            jsonArray = new JSONArray(jsonArray1.toString());
+                                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                             success = true;
                                         } else if (jsonElement.isJsonObject()) {
-                                            JsonObject jsonObject1 = jsonElement.getAsJsonObject();
-                                            JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
+                                            JSONObject jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
                                             if (!jsonObject2.has("success")){ // "success" will not be received when api call is success,response as jsonObject with {"success" : "fail" } will be received only when api call is failed for any reasons
                                                 jsonArray.put(jsonObject2);
                                                 success = true;
@@ -1011,11 +1046,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
                                                     sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
                                                 }
-
                                             }else if(masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")){
                                                 if(mgrInitialSync)
                                                     setHq(jsonArray);
-
                                             }else if(masterSyncItemModels.get(position).getName().equalsIgnoreCase(Constants.SETUP)){
                                                 if (jsonArray.length() > 0){
                                                     JSONObject jsonSetup = jsonArray.getJSONObject(0);
@@ -1024,12 +1057,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                     if (jsonSetup.has("GeoTagApprovalNeed"))
                                                         SharedPref.setGeotagApprovalNeed(getApplicationContext(), jsonSetup.getString("GeoTagApprovalNeed"));
                                                 }
+                                            } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
+                                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "0",slideListPrepared("1"));
                                             }
-                                        }
-
-                                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
-//                                            startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                            saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
                                         }
 
                                     } else {
@@ -1045,6 +1075,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),1);
                             }
 
+                            // when all the master synced and intent from Login Activity
+                            if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
+                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1",slideListPrepared("0"));
+                            }
+
                             masterSyncAdapter.notifyDataSetChanged();
                              Log.e("test","success count : " + apiSuccessCount);
                         }
@@ -1053,15 +1088,13 @@ public class MasterSyncActivity extends AppCompatActivity {
                         public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test","failed : " + t);
                             ++apiSuccessCount;
-                              Log.e("test","success count at error : " + apiSuccessCount);
+                            Log.e("test","success count at error : " + apiSuccessCount);
                             sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(),  1);
                             masterSyncItemModels.get(position).setPBarVisibility(false);
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             masterSyncAdapter.notifyDataSetChanged();
                             if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")){
-//                                startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class));
-                                saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1");
-
+                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1",slideListPrepared("0"));
                             }
                         }
                     });
@@ -1069,7 +1102,9 @@ public class MasterSyncActivity extends AppCompatActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-        }else{
+        }
+        else{
+            ++apiSuccessCount;
             Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
     }
@@ -1090,63 +1125,48 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-    public static void callList(SQLite sqLite, ApiInterface apiInterface, Context context, String masterFor, String tablename, String sfCode, String DivCode, String RSF, String SfType, String Designation, String StateCode, String SubDivCode) {
-        try {
-            sqLite = new SQLite(context);
-            sqLite.getWritableDatabase();
-            String baseUrl = SharedPref.getBaseWebUrl(context);
-            String pathUrl = SharedPref.getPhpPathUrl(context);
-            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-            apiInterface = RetrofitClient.getRetrofit(context, baseUrl + replacedUrl);
+   ArrayList<SlideModelClass> slideListPrepared(String nfolg){
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("tableName", tablename);
-            jsonObject.put("sfcode", sfCode);
-            jsonObject.put("division_code", DivCode);
-            jsonObject.put("Rsf", RSF);
-            jsonObject.put("sf_type", SfType);
-            jsonObject.put("Designation", Designation);
-            jsonObject.put("state_code", StateCode);
-            jsonObject.put("subdivision_code", SubDivCode);
-            Log.v("table_json", jsonObject.toString());
-
-            Call<JsonElement> call = null;
-            call = apiInterface.getDrMaster(jsonObject.toString());
-
-            SQLite finalSqLite = sqLite;
-            call.enqueue(new Callback<JsonElement>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                    Log.v("table_json", response.body().toString());
-                    if (response.isSuccessful()) {
-                        try {
-                            JsonElement jsonElement = response.body();
-                            JSONArray jsonArray = new JSONArray();
-                            if (jsonElement.isJsonArray()) {
-                                JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                jsonArray = new JSONArray(jsonArray1.toString());
-                            } else if (jsonElement.isJsonObject()) {
-                                JsonObject jsonObject1 = jsonElement.getAsJsonObject();
-                                JSONObject jsonObject2 = new JSONObject(jsonObject1.toString());
-                                jsonArray.put(jsonObject2);
-                            }
-
-                            finalSqLite.saveMasterSyncData(masterFor + "_" + sfCode, jsonArray.toString(),0);
-
-                        } catch (Exception e) {
-                            Log.v("table_json", "error---" + e);
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-
-                }
-            });
-
-        } catch (Exception e) {
-
+        retrieveLists();
+        if(nfolg.equalsIgnoreCase("0")){
+            Slide_list.clear();
+            slideId.clear();
         }
+        SQLite sqLite =new SQLite(MasterSyncActivity.this);
+       JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+       try {
+           if (slidedata.length() > 0) {
+               for (int i = 0; i < slidedata.length(); i++) {
+                   JSONObject jsonObject = slidedata.getJSONObject(i);
+                   String FilePath = jsonObject.optString("FilePath");
+                   String id = jsonObject.optString("SlideId");
+                   if(!slideId.contains(id)){
+                       slideId.add(id);
+                       Slide_list.add(new SlideModelClass(FilePath,false,"0","0"));
+                   }
+               }
+           }
+       } catch (Exception a) {
+           a.printStackTrace();
+       }
+       SharedPreferences.Editor editor = sharedpreferences.edit();
+       editor.putString("SLIDEID", new Gson().toJson(slideId));
+       editor.apply();
+    return Slide_list;
+
+   }
+
+    private void retrieveLists() {
+
+        String slideID = sharedpreferences.getString("SLIDEID", "[]");
+        String slideLIST = sharedpreferences.getString("SLIDELIST", "[]");
+        String conut = sharedpreferences.getString("SLIDEDONWLOADCOUNT", "0");
+        Type listType = new TypeToken<ArrayList<String>>() {}.getType();
+        Type listType1 = new TypeToken<ArrayList<SlideModelClass>>() {}.getType();
+        slideId = new Gson().fromJson(slideID, listType);
+        Slide_list= new Gson().fromJson(slideLIST, listType1);
+        SlideDownloaderAlertBox.downloading_count=Integer.valueOf(conut);
+
     }
 
 }

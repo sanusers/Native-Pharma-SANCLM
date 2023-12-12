@@ -125,7 +125,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/_2sdp"
-            android:background="@color/bg_grey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -135,7 +134,6 @@
                 android:id="@+id/rv_cust_list_selection"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@color/bg_grey"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -185,7 +183,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@id/tv_tag_header"
-                app:layout_constraintTop_toTopOf="@id/tv_tag_header" />
+                app:layout_constraintTop_toTopOf="@id/tv_tag_header"
+                tools:ignore="ContentDescription" />
 
             <View
                 android:id="@+id/view_dummy"
@@ -196,7 +195,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_tag_header"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="NotSibling" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/search_filter"
@@ -215,7 +215,8 @@
                 app:layout_constraintBottom_toTopOf="@id/hq_list_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_dummy" />
+                app:layout_constraintTop_toBottomOf="@id/view_dummy"
+                tools:ignore="NotSibling" />
 
             <ListView
                 android:id="@+id/filter_list_view"

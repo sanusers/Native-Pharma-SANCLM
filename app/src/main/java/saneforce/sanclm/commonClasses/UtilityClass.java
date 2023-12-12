@@ -1,12 +1,12 @@
 package saneforce.sanclm.commonClasses;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -16,7 +16,7 @@ import saneforce.sanclm.storage.SharedPref;
 
 
 public class UtilityClass {
-    public static boolean isNetworkAvailable(final Context context) {
+    public static boolean isNetworkAvailable(Context context) {
 
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
@@ -46,14 +46,15 @@ public class UtilityClass {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    @SuppressLint("AppBundleLocaleChanges")
     public static void setLanguage(Context context){
         String language = SharedPref.getSelectedLanguage(context);
-        Log.e("test","selected language is " + language);
         Locale locale = new Locale(language);
         Resources resources = context.getResources();
         Configuration configuration = resources.getConfiguration();
         configuration.setLocale(locale);
         resources.updateConfiguration(configuration,resources.getDisplayMetrics());
     }
+
 
 }

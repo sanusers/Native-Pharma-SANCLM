@@ -1,9 +1,7 @@
 package saneforce.sanclm.activity.myresource;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +40,7 @@ public class resvisitctrl_adapter extends RecyclerView.Adapter<resvisitctrl_adap
         return new MyViewHolder(itemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Resourcemodel_class app_list = resList.get(position);

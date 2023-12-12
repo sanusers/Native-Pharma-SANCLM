@@ -18,7 +18,8 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/triangle" />
+            android:src="@drawable/triangle"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
@@ -42,7 +43,8 @@
                 android:layout_height="@dimen/_35sdp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:src="@drawable/profileview" />
+                android:src="@drawable/acount_img"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
@@ -60,7 +62,8 @@
                 android:gravity="center"
                 android:text="User Name"
                 android:textColor="#282A3C"
-                android:textSize="@dimen/_7sdp" />
+                android:textSize="@dimen/_7sdp"
+                tools:ignore="SpUsage" />
 
             <TextView
                 android:id="@+id/sf_name"
@@ -70,7 +73,8 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="center"
                 android:text="User Roll"
-                android:textSize="@dimen/_6sdp" />
+                android:textSize="@dimen/_6sdp"
+                tools:ignore="SpUsage" />
 
             <TextView
                 android:id="@+id/clut"
@@ -81,7 +85,8 @@
                 android:gravity="center"
                 android:text="Cluster - Headquaters"
                 android:textColor="#00C689"
-                android:textSize="@dimen/_6sdp" />
+                android:textSize="@dimen/_6sdp"
+                tools:ignore="SpUsage" />
 
 
         </LinearLayout>
@@ -91,18 +96,19 @@
             android:id="@+id/change_passwrd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_6sdp"
-            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
             android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="@dimen/_28sdp"
                 android:layout_height="@dimen/_12sdp"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:src="@drawable/password" />
+                android:src="@drawable/password"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -111,16 +117,17 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:text="Change Password"
                 android:textColor="#282A3C"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="@dimen/_8sdp"
+                tools:ignore="SpUsage" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
             android:background="#808B96"
             android:orientation="vertical"
             android:padding=".3dp" />
@@ -129,9 +136,9 @@
             android:id="@+id/user_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/_2sdp">
 
@@ -139,9 +146,10 @@
                 android:layout_width="@dimen/_28sdp"
                 android:layout_height="@dimen/_12sdp"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:src="@drawable/logout" />
+                android:src="@drawable/logout"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -150,7 +158,8 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:text="Logout"
                 android:textColor="#282A3C"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="@dimen/_8sdp"
+                tools:ignore="SpUsage" />
 
         </LinearLayout>
 

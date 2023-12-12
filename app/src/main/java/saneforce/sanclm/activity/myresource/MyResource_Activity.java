@@ -1,74 +1,37 @@
 package saneforce.sanclm.activity.myresource;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.content.ContentValues.TAG;
-import static java.util.Locale.filter;
 import static saneforce.sanclm.commonClasses.UtilityClass.hideKeyboard;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
@@ -170,7 +133,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
 
         close_sideview.setOnClickListener(v -> {
-            drawerLayout.closeDrawer(Gravity.END);
+            drawerLayout.closeDrawer(GravityCompat.END);
             et_Custsearch.getText().clear();
             hideKeyboard(MyResource_Activity.this);
         });
@@ -187,123 +150,111 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
             String Doc_code="",Chm_code="",Stk_code="",Cip_code="",Hosp_code="",Unlist_code="";
             String doctor= String.valueOf(jsonDoc);
-            if (!doctor.equals("") || !doctor.equals("null")) {
-                count_list.clear();
+            count_list.clear();
 
-                if (jsonDoc.length() > 0) {
-                    for (int i = 0; i < jsonDoc.length(); i++) {
-                        JSONObject jsonObject = jsonDoc.getJSONObject(i);
+            if (jsonDoc.length() > 0) {
+                for (int i = 0; i < jsonDoc.length(); i++) {
+                    JSONObject jsonObject = jsonDoc.getJSONObject(i);
 
-                        if (!Doc_code.equals(jsonObject.getString("Code"))) {
-                            Doc_code = jsonObject.getString("Code");
-                            count_list.add(Doc_code);
-                            Doc_count= String.valueOf(count_list.size());
-                            Log.d("doctor_23", String.valueOf(count_list));
-                        }
+                    if (!Doc_code.equals(jsonObject.getString("Code"))) {
+                        Doc_code = jsonObject.getString("Code");
+                        count_list.add(Doc_code);
+                        Doc_count= String.valueOf(count_list.size());
+                        Log.d("doctor_23", String.valueOf(count_list));
                     }
-                }else{
-                    Doc_count="0";
                 }
+            }else{
+                Doc_count="0";
             }
 
             JSONArray jsonChm = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
             String chemist= String.valueOf(jsonChm);
-            if (!chemist.equals("") || !chemist.equals("null")) {
-                count_list.clear();
+            count_list.clear();
 
-                if (jsonChm.length() > 0) {
-                    for (int i = 0; i < jsonChm.length(); i++) {
-                        JSONObject jsonObject = jsonChm.getJSONObject(i);
+            if (jsonChm.length() > 0) {
+                for (int i = 0; i < jsonChm.length(); i++) {
+                    JSONObject jsonObject = jsonChm.getJSONObject(i);
 
-                        if (!Chm_code.equals(jsonObject.getString("Code"))) {
-                            Chm_code = jsonObject.getString("Code");
-                            count_list.add(Chm_code);
-                            Che_count= String.valueOf(count_list.size());
-                        }
+                    if (!Chm_code.equals(jsonObject.getString("Code"))) {
+                        Chm_code = jsonObject.getString("Code");
+                        count_list.add(Chm_code);
+                        Che_count= String.valueOf(count_list.size());
                     }
-                }else{
-                    Che_count="0";
                 }
+            }else{
+                Che_count="0";
             }
 
             JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
             String stockist= String.valueOf(jsonstock);
-            if (!stockist.equals("") || !stockist.equals("null")) {
-                count_list.clear();
-                if (jsonstock.length() > 0) {
-                    for (int i = 0; i < jsonstock.length(); i++) {
-                        JSONObject jsonObject = jsonstock.getJSONObject(i);
+            count_list.clear();
+            if (jsonstock.length() > 0) {
+                for (int i = 0; i < jsonstock.length(); i++) {
+                    JSONObject jsonObject = jsonstock.getJSONObject(i);
 
-                        if (!Stk_code.equals(jsonObject.getString("Code"))) {
-                            Stk_code = jsonObject.getString("Code");
-                            count_list.add(Stk_code);
-                            Strck_count= String.valueOf(count_list.size());
-                        }
+                    if (!Stk_code.equals(jsonObject.getString("Code"))) {
+                        Stk_code = jsonObject.getString("Code");
+                        count_list.add(Stk_code);
+                        Strck_count= String.valueOf(count_list.size());
                     }
-                }else{
-                    Strck_count="0";
                 }
+            }else{
+                Strck_count="0";
             }
 
 
             JSONArray jsonunlisted = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
             String unlisted= String.valueOf(jsonunlisted);
-            if (!unlisted.equals("") || !unlisted.equals("null")) {
-                count_list.clear();
+            count_list.clear();
 
-                if (jsonunlisted.length() > 0) {
-                    for (int i = 0; i < jsonunlisted.length(); i++) {
-                        JSONObject jsonObject = jsonunlisted.getJSONObject(i);
+            if (jsonunlisted.length() > 0) {
+                for (int i = 0; i < jsonunlisted.length(); i++) {
+                    JSONObject jsonObject = jsonunlisted.getJSONObject(i);
 
-                        if (!Unlist_code.equals(jsonObject.getString("Code"))) {
-                            Stk_code = jsonObject.getString("Code");
-                            count_list.add(Stk_code);
-                            Unlist_count= String.valueOf(count_list.size());
-                        }
+                    if (!Unlist_code.equals(jsonObject.getString("Code"))) {
+                        Stk_code = jsonObject.getString("Code");
+                        count_list.add(Stk_code);
+                        Unlist_count= String.valueOf(count_list.size());
                     }
-                }else{
-                    Unlist_count="0";
                 }
+            }else{
+                Unlist_count="0";
             }
 
             JSONArray jsoncip = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(this));
             String cip= String.valueOf(jsoncip);
-            if (!cip.equals("") || !cip.equals("null")) {
-                count_list.clear();
+            count_list.clear();
 
-                if (jsoncip.length() > 0) {
-                    for (int i = 0; i < jsoncip.length(); i++) {
-                        JSONObject jsonObject = jsoncip.getJSONObject(i);
+            if (jsoncip.length() > 0) {
+                for (int i = 0; i < jsoncip.length(); i++) {
+                    JSONObject jsonObject = jsoncip.getJSONObject(i);
 
-                        if (!Cip_code.equals(jsonObject.getString("Code"))) {
-                            Cip_code= jsonObject.getString("Code");
-                            count_list.add(Cip_code);
-                            Cip_count= String.valueOf(count_list.size());
-                        }
+                    if (!Cip_code.equals(jsonObject.getString("Code"))) {
+                        Cip_code= jsonObject.getString("Code");
+                        count_list.add(Cip_code);
+                        Cip_count= String.valueOf(count_list.size());
                     }
-                }else{
-                    Cip_count="0";
                 }
+            }else{
+                Cip_count="0";
             }
 
             JSONArray jsonhosp = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(this));
             String hosp= String.valueOf(jsonhosp);
-            if (!hosp.equals("") || !hosp.equals("null")) {
-                count_list.clear();
+            count_list.clear();
 
-                if (jsonhosp.length() > 0) {
-                    for (int i = 0; i < jsonhosp.length(); i++) {
-                        JSONObject jsonObject = jsonhosp.getJSONObject(i);
+            if (jsonhosp.length() > 0) {
+                for (int i = 0; i < jsonhosp.length(); i++) {
+                    JSONObject jsonObject = jsonhosp.getJSONObject(i);
 
-                        if (!Hosp_code.equals(jsonObject.getString("Code"))) {
-                            Hosp_code= jsonObject.getString("Code");
-                            count_list.add(Hosp_code);
-                            Hosp_count= String.valueOf(count_list.size());
-                        }
+                    if (!Hosp_code.equals(jsonObject.getString("Code"))) {
+                        Hosp_code= jsonObject.getString("Code");
+                        count_list.add(Hosp_code);
+                        Hosp_count= String.valueOf(count_list.size());
                     }
-                }else{
-                    Hosp_count="0";
                 }
+            }else{
+                Hosp_count="0";
             }
 
             Docvisit();
@@ -373,14 +324,11 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                     values1= String.valueOf(count_list.size());
                     System.out.println("Tlvst: " + count_list + ", Count: " + visitcount_list);
                 }
-
-            }else{
-                values1="0";
             }
 
-
-
-
+            if(idCounts.isEmpty()){
+                values1="0";
+            }
 
         }catch (Exception a){
             a.printStackTrace();

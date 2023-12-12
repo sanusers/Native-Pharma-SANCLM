@@ -1,7 +1,7 @@
 package saneforce.sanclm.activity.presentation.createPresentation.brand;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +38,7 @@ public class BrandNameAdapter extends RecyclerView.Adapter<BrandNameAdapter.MyVi
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder (@NonNull BrandNameAdapter.MyViewHolder holder, int position) {
         BrandModelClass modelClass = arrayList.get(holder.getAbsoluteAdapterPosition());
@@ -65,7 +66,10 @@ public class BrandNameAdapter extends RecyclerView.Adapter<BrandNameAdapter.MyVi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                Log.e("test","clicked");
+                for (int i=0;i<arrayList.size();i++){
+                    arrayList.get(i).setBrandSelected(false);
+                }
+                arrayList.get(holder.getAbsoluteAdapterPosition()).setBrandSelected(true);
                 brandNameInterFace.onBrandClick(arrayList,holder.getAbsoluteAdapterPosition());
             }
         });
@@ -79,7 +83,6 @@ public class BrandNameAdapter extends RecyclerView.Adapter<BrandNameAdapter.MyVi
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView brandName,count;
-
         ImageView arrow;
 
         public MyViewHolder (@NonNull View itemView) {

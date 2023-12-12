@@ -32,7 +32,7 @@ public class LoginRepo {
 
             @Override
             public void onFailure (@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                Log.e("test","login failed : " + t.toString());
+                Log.e("test","login failed : " + t);
             }
         });
 

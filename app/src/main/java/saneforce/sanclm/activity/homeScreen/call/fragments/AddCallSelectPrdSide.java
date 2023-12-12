@@ -104,7 +104,7 @@ public class AddCallSelectPrdSide extends Fragment {
             return new ViewHolder(view);
         }
 
-        @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
+        @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "SetTextI18n"})
         @Override
         public void onBindViewHolder(@NonNull SelectACProductAdapter.ViewHolder holder, int position) {
             commonUtilsMethods = new CommonUtilsMethods(context);

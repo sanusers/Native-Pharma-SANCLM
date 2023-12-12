@@ -1,10 +1,8 @@
 package saneforce.sanclm.commonClasses;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.widget.EditText;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
@@ -24,7 +22,7 @@ public class ListenerEditText extends AppCompatEditText {
     }
 
     public interface KeyImeChange {
-        public void onKeyIme(int keyCode, KeyEvent event);
+        void onKeyIme(int keyCode, KeyEvent event);
     }
 
     @Override

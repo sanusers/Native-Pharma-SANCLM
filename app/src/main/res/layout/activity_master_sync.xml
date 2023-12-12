@@ -33,7 +33,8 @@
                 <ImageView
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"
-                    android:src="@drawable/arrow_back_white" />
+                    android:src="@drawable/arrow_back_white"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -92,7 +93,8 @@
                 android:layout_height="@dimen/_6sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
-                android:src="@drawable/arrow_down" />
+                android:src="@drawable/arrow_down"
+                tools:ignore="ContentDescription" />
 
         </RelativeLayout>
 
@@ -163,7 +165,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#ececec"
-                    android:paddingEnd="@dimen/_3sdp">
+                    android:paddingEnd="@dimen/_3sdp"
+                    tools:ignore="RtlSymmetry">
 
                     <LinearLayout
                         android:id="@+id/listedDoctor"
@@ -193,7 +196,8 @@
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
                             android:src="@drawable/greater_than_black"
-                            android:layout_gravity="center"/>
+                            android:layout_gravity="center"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -225,7 +229,8 @@
                             android:id="@+id/chemistArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -257,7 +262,8 @@
                             android:id="@+id/stockArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -289,7 +295,8 @@
                             android:id="@+id/unListDrArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -321,7 +328,8 @@
                             android:id="@+id/hospitalArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -353,7 +361,8 @@
                             android:id="@+id/cipArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -385,7 +394,8 @@
                             android:id="@+id/clusterArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -417,7 +427,8 @@
                             android:id="@+id/inputArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -449,7 +460,8 @@
                             android:id="@+id/productArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -481,7 +493,8 @@
                             android:id="@+id/leaveArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -513,7 +526,8 @@
                             android:id="@+id/dcrArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -545,7 +559,8 @@
                             android:id="@+id/tpArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -577,7 +592,8 @@
                             android:id="@+id/workTypeArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -609,7 +625,8 @@
                             android:id="@+id/slideArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -641,7 +658,8 @@
                             android:id="@+id/subordinateArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -673,7 +691,8 @@
                             android:id="@+id/setupArrow"
                             android:layout_width="@dimen/_6sdp"
                             android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
+                            android:src="@drawable/arrow_down"
+                            tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
@@ -690,7 +709,8 @@
                         <ImageView
                             android:layout_width="@dimen/_9sdp"
                             android:layout_height="@dimen/_9sdp"
-                            android:src="@drawable/refresh_icon"/>
+                            android:src="@drawable/refresh_icon"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -725,7 +745,8 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="@dimen/_3sdp">
+                        android:paddingStart="@dimen/_3sdp"
+                        tools:ignore="RtlSymmetry">
 
                         <LinearLayout
                             android:id="@+id/ll3"
@@ -751,7 +772,8 @@
                                         android:layout_width="@dimen/_2sdp"
                                         android:layout_height="match_parent"
                                         app:cardCornerRadius="@dimen/_2sdp"
-                                        android:backgroundTint="@color/dark_pink"/>
+                                        android:backgroundTint="@color/dark_pink"
+                                        tools:ignore="TooDeepLayout" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -815,7 +837,8 @@
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="@dimen/_3sdp"
                                 android:layout_marginEnd="@dimen/_3sdp"
-                                android:visibility="invisible"/>
+                                android:visibility="invisible"
+                                tools:ignore="TooManyViews" />
 
                             <Button
                                 android:layout_weight="1"

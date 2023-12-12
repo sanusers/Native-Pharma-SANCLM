@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,7 +33,8 @@
                     android:id="@+id/back_btn"
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"
-                    android:src="@drawable/arrow_back_white" />
+                    android:src="@drawable/arrow_back_white"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
@@ -67,7 +67,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginStart="@dimen/_2sdp"
                     android:layout_marginTop="@dimen/_3sdp">
 
                     <ImageView
@@ -76,20 +76,21 @@
                         android:layout_height="@dimen/_10sdp"
                         android:layout_gravity="center"
 
-                        />
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/custname"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_marginStart="@dimen/_2sdp"
                         android:layout_weight="1"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
                         android:text="DCR name"
                         android:textColor="#282A3C"
                         android:textSize="@dimen/_6sdp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
 
 
                 </LinearLayout>
@@ -97,25 +98,27 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_2sdp">
+                    android:layout_marginStart="@dimen/_2sdp">
 
                     <ImageView
                         android:layout_width="@dimen/_9sdp"
                         android:layout_height="@dimen/_8sdp"
                         android:layout_gravity="center"
-                        android:src="@drawable/location" />
+                        android:src="@drawable/location"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/town_name"
-                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_marginStart="@dimen/_2sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
                         android:text="address"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_6sdp" />
+                        android:textSize="@dimen/_6sdp"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -145,7 +148,8 @@
                         android:text="14"
                         android:textColor="#F1536E"
                         android:textSize="@dimen/_8sdp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/dis_name"
@@ -156,7 +160,8 @@
                         android:paddingBottom="@dimen/_2sdp"
                         android:text="km"
                         android:textColor="#F1536E"
-                        android:textSize="@dimen/_6sdp" />
+                        android:textSize="@dimen/_6sdp"
+                        tools:ignore="SpUsage" />
 
                 </LinearLayout>
 
@@ -165,8 +170,8 @@
                     android:id="@+id/view_img"
                     android:layout_width="@dimen/_30sdp"
                     android:layout_height="@dimen/_20sdp"
-                    android:layout_marginLeft="@dimen/_4sdp"
-                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
                     android:gravity="center"
                     android:background="@drawable/draktheme_"
                     android:orientation="vertical">
@@ -176,7 +181,8 @@
                         android:layout_height="@dimen/_10sdp"
                         android:layout_gravity="center"
 
-                        android:src="@drawable/view_pic" />
+                        android:src="@drawable/view_pic"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -184,7 +190,8 @@
                         android:text="View"
                         android:gravity="center"
                         android:textColor="#F1536E"
-                        android:textSize="@dimen/_6sdp" />
+                        android:textSize="@dimen/_6sdp"
+                        tools:ignore="SpUsage" />
 
 
                 </LinearLayout>
@@ -203,7 +210,7 @@
 
 
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_below="@+id/appBar"

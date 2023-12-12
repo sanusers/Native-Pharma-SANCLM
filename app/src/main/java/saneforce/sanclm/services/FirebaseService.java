@@ -1,7 +1,6 @@
 package saneforce.sanclm.services;
 
-import android.app.ActivityManager;
-import android.app.Notification;
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,15 +8,14 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Objects;
 import java.util.Random;
 
-import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.storage.SharedPref;
 
@@ -49,26 +47,19 @@ public class FirebaseService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.e("test","remote msg notification : " + remoteMessage.getNotification().getBody());
+        Log.e("test","remote msg notification : " + Objects.requireNonNull(remoteMessage.getNotification()).getBody());
         imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
         title = remoteMessage.getNotification().getTitle();
         body = remoteMessage.getNotification().getBody();
         notificationId = random.nextInt(1000);
 
         createNotification();
-
-    }
-
-    public boolean isAppInForeground () {
-        ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(appProcessInfo);
-        return (appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND || appProcessInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE);
     }
 
     public void createNotification(){
         Intent intent = new Intent(this, HomeDashBoard.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationClass notificationClass = new NotificationClass(this,title, body, imageUrl, pendingIntent);
         notificationClass.createNotification();

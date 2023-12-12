@@ -188,7 +188,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -872,7 +872,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "PotentialBehaviorOverride"})
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.v("hhh", "---");
@@ -976,6 +976,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     private void AddTaggedDetails(String selected, String sfCode) {
         taggedMapListArrayList.clear();
         mMap.clear();

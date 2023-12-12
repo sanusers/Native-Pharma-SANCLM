@@ -10,6 +10,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Objects;
+
 import saneforce.sanclm.R;
 
 public class weekoff_viewscreen extends AppCompatActivity {
@@ -51,7 +53,7 @@ public class weekoff_viewscreen extends AppCompatActivity {
         viewPager.setAdapter(formsviewpager);        //set the icons
         tabLayout.getTabAt(0);
         tabLayout.getTabAt(1);
-        BadgeDrawable badgeDrawable = tabLayout.getTabAt(0).getOrCreateBadge();
+        BadgeDrawable badgeDrawable = Objects.requireNonNull(tabLayout.getTabAt(0)).getOrCreateBadge();
         badgeDrawable.setVisible(false);
 
 

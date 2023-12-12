@@ -66,7 +66,8 @@
                             <ImageView
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
-                                android:src="@drawable/trash_icon" />
+                                android:src="@drawable/trash_icon"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -122,7 +123,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -181,7 +183,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -258,7 +261,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -332,7 +336,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -407,7 +412,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -482,7 +488,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -557,7 +564,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -632,7 +640,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -707,7 +716,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -782,7 +792,8 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"/>
+                                android:layout_marginStart="@dimen/_3sdp"
+                                tools:ignore="ContentDescription" />
 
                         </LinearLayout>
 
@@ -854,7 +865,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:padding="@dimen/_5sdp"
                         android:background="@drawable/edittext_stroke">
 
                         <ImageView
@@ -862,7 +872,9 @@
                             android:layout_height="@dimen/_6sdp"
                             android:src="@drawable/search_icon_gray"
                             android:layout_gravity="center"
-                            android:scaleType="centerInside"/>
+                            android:scaleType="centerInside"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            tools:ignore="ContentDescription" />
 
                         <EditText
                             android:layout_weight="1"
@@ -876,18 +888,26 @@
                             android:singleLine="true"
                             android:background="@null"
                             android:gravity="start|center"
-                            android:layout_marginStart="@dimen/_5sdp"
+                            android:padding="@dimen/_5sdp"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
+                        <LinearLayout
                             android:id="@+id/searchClearIcon"
-                            android:layout_width="@dimen/_8sdp"
-                            android:layout_height="@dimen/_8sdp"
-                            android:src="@drawable/img_close"
-                            android:layout_marginStart="@dimen/_5sdp"
-                            android:layout_gravity="center"
-                            android:scaleType="centerInside"
-                            android:visibility="gone"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:padding="@dimen/_5sdp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="@dimen/_8sdp"
+                                android:src="@drawable/img_close"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:layout_gravity="center"
+                                android:scaleType="centerInside"
+                                tools:ignore="ContentDescription" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 

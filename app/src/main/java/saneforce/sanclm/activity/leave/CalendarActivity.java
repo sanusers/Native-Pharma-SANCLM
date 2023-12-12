@@ -33,7 +33,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
     private LocalDate date1;
     ArrayList<String> listdate = new ArrayList<>();
 
-    @SuppressLint("NewApi")
+    @SuppressLint({"NewApi", "AppCompatMethod"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,6 +162,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void onItemClick(int position, String dayText) {
         if (!dayText.equals("")) {
             String from_val1, from_val;

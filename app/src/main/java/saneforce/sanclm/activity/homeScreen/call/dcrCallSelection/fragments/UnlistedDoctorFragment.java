@@ -129,43 +129,45 @@ public class UnlistedDoctorFragment extends Fragment {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (UndrGeoTag.equalsIgnoreCase("1")) {
-                    if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
-                        if (GeoTagApproval.equalsIgnoreCase("0")) {
-                            Log.v("dfdfs", "--11-");
-                            float[] distance = new float[2];
-                            Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);
-                            if (distance[0] < limitKm * 1000.0) {
-                                if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+                if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
+                    if (UndrGeoTag.equalsIgnoreCase("1")) {
+                        if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
+                            if (GeoTagApproval.equalsIgnoreCase("0")) {
+                                Log.v("dfdfs", "--11-");
+                                float[] distance = new float[2];
+                                Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);
+                                if (distance[0] < limitKm * 1000.0) {
+                                    if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
+                                        JSONObject jsonObjectdob = new JSONObject(jsonObject.getString("DOB"));
+                                        JSONObject jsonObjectdow = new JSONObject(jsonObject.getString("DOW"));
+                                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObjectdob.getString("date"), jsonObjectdow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", ""));
+                                    }
+                                }
+                            } else {
+                                Log.v("dfdfs", "--22-");
+                                float[] distance = new float[2];
+                                Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);
+                                if (distance[0] < limitKm * 1000.0) {
                                     JSONObject jsonObjectdob = new JSONObject(jsonObject.getString("DOB"));
                                     JSONObject jsonObjectdow = new JSONObject(jsonObject.getString("DOW"));
                                     custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObjectdob.getString("date"), jsonObjectdow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", ""));
                                 }
                             }
-                        } else {
-                            Log.v("dfdfs", "--22-");
-                            float[] distance = new float[2];
-                            Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), laty, lngy, distance);
-                            if (distance[0] < limitKm * 1000.0) {
+                        }
+                    } else {
+                        if (TpBasedDcr.equalsIgnoreCase("0")) {
+                            Log.v("dfdfs", "--33-");
+                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
                                 JSONObject jsonObjectdob = new JSONObject(jsonObject.getString("DOB"));
                                 JSONObject jsonObjectdow = new JSONObject(jsonObject.getString("DOW"));
                                 custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObjectdob.getString("date"), jsonObjectdow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", ""));
                             }
-                        }
-                    }
-                } else {
-                    if (TpBasedDcr.equalsIgnoreCase("0")) {
-                        Log.v("dfdfs", "--33-");
-                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
+                        } else {
+                            Log.v("dfdfs", "--44-");
                             JSONObject jsonObjectdob = new JSONObject(jsonObject.getString("DOB"));
                             JSONObject jsonObjectdow = new JSONObject(jsonObject.getString("DOW"));
                             custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObjectdob.getString("date"), jsonObjectdow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", ""));
                         }
-                    } else {
-                        Log.v("dfdfs", "--44-");
-                        JSONObject jsonObjectdob = new JSONObject(jsonObject.getString("DOB"));
-                        JSONObject jsonObjectdow = new JSONObject(jsonObject.getString("DOW"));
-                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "4", jsonObject.getString("CategoryName"), jsonObject.getString("Category"), jsonObject.getString("SpecialtyName"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObjectdob.getString("date"), jsonObjectdow.getString("date"), jsonObject.getString("Email"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), "", ""));
                     }
                 }
             }

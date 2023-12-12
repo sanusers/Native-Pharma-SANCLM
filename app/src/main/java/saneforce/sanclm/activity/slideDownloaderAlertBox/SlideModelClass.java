@@ -3,12 +3,13 @@ package saneforce.sanclm.activity.slideDownloaderAlertBox;
 public class SlideModelClass {
 
     public String ImageName;
-    public String DownloadStatus;
+    public boolean DownloadStatus;
 
     public  String DownloadSizeStatus;
     public String progressValue;
 
-    public SlideModelClass(String imageName, String downloadStatus, String downloadSizeStatus, String progressValue) {
+    public String slideid;
+    public SlideModelClass(String imageName, boolean downloadStatus, String downloadSizeStatus, String progressValue) {
         ImageName = imageName;
         DownloadStatus = downloadStatus;
         DownloadSizeStatus = downloadSizeStatus;
@@ -24,11 +25,11 @@ public class SlideModelClass {
         ImageName = imageName;
     }
 
-    public String getDownloadStatus () {
+    public boolean getDownloadStatus () {
         return DownloadStatus;
     }
 
-    public void setDownloadStatus (String downloadStatus) {
+    public void setDownloadStatus (boolean downloadStatus) {
         DownloadStatus = downloadStatus;
     }
 

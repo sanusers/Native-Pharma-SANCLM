@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/_3sdp"
     android:layout_marginVertical="@dimen/_2sdp"
     android:elevation="@dimen/_2sdp"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/_2sdp"
-    tools:ignore="UnusedAttribute">
+    app:cardCornerRadius="@dimen/_2sdp">
 
     <View
         android:id="@+id/view_top"
@@ -40,7 +37,6 @@
             android:paddingHorizontal="2dp"
             android:paddingVertical="4dp"
             android:singleLine="true"
-            android:text="Name"
             android:textColor="@color/dark_purple"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/txt_cat"
@@ -78,7 +74,7 @@
             android:gravity="start"
             android:paddingHorizontal="2dp"
             android:paddingVertical="3dp"
-            android:text="Cardio Surgeon"
+            android:text="@string/specialist"
             android:textColor="@color/light_grey_2"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@id/txt_address"
@@ -98,7 +94,7 @@
             android:gravity="center"
             android:paddingHorizontal="@dimen/_8sdp"
             android:paddingVertical="@dimen/_3sdp"
-            android:text="Anna Nagar"
+            android:text="@string/cluster"
             android:textColor="@color/dark_purple"
             android:textSize="14sp"
             android:textStyle="bold"

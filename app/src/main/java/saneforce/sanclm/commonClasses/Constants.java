@@ -6,6 +6,10 @@ public class Constants {
     public static final String APP_VERSION = "V2.0.8";
     public static final String APP_MODE = "Android-Edet";
 
+    //Intent Key
+    public static final String NAVIGATE_FROM = "NavigateFrom";
+
+
     //----------------------------------------------------
     //Master sync table key names
     public static final String DOCTOR = "Doctor_";
@@ -42,7 +46,9 @@ public class Constants {
     public static final String WEEKLY_OFF = "Weekly Off";
 
     //TP
-    public static final String TP_PLAN = "Tour Plan";
+    public static final String TOUR_PLAN = "Tour Plan";
+    public static final String TP_SETUP = "Tour Plan Setup";
+
 
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";
