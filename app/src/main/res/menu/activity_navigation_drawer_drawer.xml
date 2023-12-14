@@ -3,48 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-
+    <group android:checkableBehavior="none">
 
         <item
             android:id="@+id/nav_home"
+            android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/activity"
             android:textSize="@dimen/_7sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:title="Home" />
+            android:title="@string/home" />
         <item
             android:id="@+id/nav_refresh"
+            android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/refresh"
             android:textSize="@dimen/_7sdp"
-            android:fontFamily="@font/satoshi_medium"
-            android:title="Refresh" />
+            android:title="@string/refresh" />
 
         <item
             android:id="@+id/nav_presentation"
             android:fontFamily="@font/satoshi_medium"
-            android:textSize="@dimen/_7sdp"
             android:icon="@drawable/presentation"
-            android:title="Presentation" />
+            android:textSize="@dimen/_7sdp"
+            android:title="@string/presentation" />
         <item
             android:id="@+id/nav_tour_plan"
-            android:textSize="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/calendar_clock"
-            android:title="Tour Plan" />
+            android:textSize="@dimen/_1sdp"
+            android:title="@string/tour_plan" />
 
         <item
             android:id="@+id/nav_myresource"
-            android:textSize="@dimen/_7sdp"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/leave"
-            android:title="My Resource" />
+            android:textSize="@dimen/_7sdp"
+            android:title="@string/my_resource" />
 
         <item
             android:id="@+id/nav_leave_appln"
-            android:textSize="@dimen/_7sdp"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/leave"
-            android:title="Leave Application" />
+            android:textSize="@dimen/_7sdp"
+            android:title="@string/leave_application" />
 
         <item
             android:id="@+id/nav_approvals"
@@ -58,34 +57,34 @@
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/report"
             android:textSize="@dimen/_7sdp"
-            android:title="Reports" />
+            android:title="@string/reports" />
         <item
             android:id="@+id/nav_activity"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/activity"
             android:textSize="@dimen/_7sdp"
-            android:title="Activity"
+            android:title="@string/activity"
             android:visible="false" />
         <item
             android:id="@+id/nav_nearme"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/nearme"
             android:textSize="@dimen/_7sdp"
-            android:title="Near Me" />
+            android:title="@string/near_me" />
 
         <item
             android:id="@+id/nav_quiz"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/survey"
             android:textSize="@dimen/_7sdp"
-            android:title="Survey" />
+            android:title="@string/survey" />
 
         <item
-            android:textSize="@dimen/_7sdp"
-            android:icon="@drawable/form"
-            android:fontFamily="@font/satoshi_medium"
             android:id="@+id/nav_forms"
-            android:title="Forms" />
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/form"
+            android:textSize="@dimen/_7sdp"
+            android:title="@string/forms" />
 
     </group>
 

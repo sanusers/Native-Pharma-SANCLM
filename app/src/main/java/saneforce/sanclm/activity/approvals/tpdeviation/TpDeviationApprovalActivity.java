@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.approvals.tpdeviation;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.databinding.ActivityTpDeviationApprovalBinding;
 
 public class TpDeviationApprovalActivity extends AppCompatActivity {
@@ -26,7 +24,8 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         SetupAdapter();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        tpDeviationApprovalBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(TpDeviationApprovalActivity.this, ApprovalsActivity.class)));
+        tpDeviationApprovalBinding.ivBack.setOnClickListener(view -> onBackPressed());
+      //  tpDeviationApprovalBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(TpDeviationApprovalActivity.this, ApprovalsActivity.class)));
     }
 
     private void SetupAdapter() {

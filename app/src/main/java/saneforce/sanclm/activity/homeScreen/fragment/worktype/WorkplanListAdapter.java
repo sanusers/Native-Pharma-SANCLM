@@ -19,14 +19,12 @@ import saneforce.sanclm.R;
 
 public class WorkplanListAdapter extends BaseAdapter {
 
-    private final Context context;
     private final List<JSONObject> itemList;
     private List<JSONObject> filteredList;
     private final LayoutInflater inflater;
 
     private final String type;
     public WorkplanListAdapter(Context context, List<JSONObject> itemList, String type) {
-        this.context = context;
         this.filteredList = itemList;
         this.itemList = itemList;
         this.type = type;

@@ -73,8 +73,6 @@ public class InputFragment extends Fragment {
         fragmentInputBinding.rvCheckDataList.setAdapter(checkInputListAdapter);
 
         finalInputCallAdapter = new FinalInputCallAdapter(getActivity(), getContext(), CheckInputListAdapter.saveCallInputListArrayList, checkedInputList);
-       // RecyclerView.LayoutManager mLayoutManagerInp = new LinearLayoutManager(getActivity());
-      //  fragmentInputBinding.rvListInput.setLayoutManager(mLayoutManagerInp);
         fragmentInputBinding.rvListInput.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
         fragmentInputBinding.rvListInput.setItemAnimator(new DefaultItemAnimator());
         fragmentInputBinding.rvListInput.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));

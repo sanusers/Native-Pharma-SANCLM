@@ -22,9 +22,6 @@ public class weekoff_viewscreen extends AppCompatActivity {
     forms_viewpager formsviewpager;
     int tab_pos = 0;
 
-    private Holiday_fragment holidayfragment;
-    private weekoff_fragment weekofffragment;
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +36,8 @@ public class weekoff_viewscreen extends AppCompatActivity {
             finish();
         });
 
-        holidayfragment = new Holiday_fragment();
-        weekofffragment = new weekoff_fragment();
+        Holiday_fragment holidayfragment = new Holiday_fragment();
+        weekoff_fragment weekofffragment = new weekoff_fragment();
 
 
 

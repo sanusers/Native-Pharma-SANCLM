@@ -185,6 +185,15 @@
     <string name="preview">Preview</string>
     <string name="report">Report</string>
     <string name="analysis">Analysis</string>
+    <string name="home">Home</string>
+    <string name="refresh">Refresh</string>
+    <string name="tour_plan">Tour Plan</string>
+    <string name="leave_application">Leave Application</string>
+    <string name="reports">Reports</string>
+    <string name="activity">Activity</string>
+    <string name="near_me">Near Me</string>
+    <string name="survey">Survey</string>
+    <string name="forms">Forms</string>
 
 
 </resources>

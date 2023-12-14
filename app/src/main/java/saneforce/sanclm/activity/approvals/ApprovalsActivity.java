@@ -1,7 +1,6 @@
 package saneforce.sanclm.activity.approvals;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +21,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.ActivityApprovalsBinding;
 import saneforce.sanclm.network.ApiInterface;
@@ -48,10 +46,6 @@ public class ApprovalsActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +64,13 @@ public class ApprovalsActivity extends AppCompatActivity {
             AssignCountValues();
         }
 
-        approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
+        approvalsBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+
+        // approvalsBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(ApprovalsActivity.this, HomeDashBoard.class)));
     }
 
     private void CallListCountAPI() {
-            progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
+        progressDialog = CommonUtilsMethods.createProgressDialog(ApprovalsActivity.this);
 
         try {
             jsonGetCount.put("tableName", "getapprovalcheck");

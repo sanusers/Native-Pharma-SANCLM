@@ -121,7 +121,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         sqLiteHandler = new SQLiteHandler(this);
         sqLiteHandler.open();
         sqLite = new SQLite(getApplicationContext());
-       // commonUtilsMethods.FullScreencall();
+        // commonUtilsMethods.FullScreencall();
 
         getRequiredData();
 
@@ -215,8 +215,6 @@ public class TagCustSelectionList extends AppCompatActivity {
             binding.txtSelectedHq.setText(SelectedHqName);
             MapsActivity.SelectedHqName = HqNameList.get(i);
             MapsActivity.SelectedHqCode = SelectedHqCode;
-            /*SharedPref.setSelectedHqCode(TagCustSelectionList.this, SelectedHqCode);
-            SharedPref.setSelectedHqName(TagCustSelectionList.this, HqNameList.get(i));*/
             AddCustList(SelectedHqCode);
         });
     }
@@ -261,8 +259,6 @@ public class TagCustSelectionList extends AppCompatActivity {
         HqCodeList.clear();
         SelectedHqCode = MapsActivity.SelectedHqCode;
         SelectedHqName = MapsActivity.SelectedHqName;
-      /*  SelectedHqCode = SharedPref.getSelectedHqCode(TagCustSelectionList.this);
-        SelectedHqName = SharedPref.getSelectedHqName(TagCustSelectionList.this);*/
         Log.v("dddd", "-1sds-" + SelectedHqCode + "---" + SelectedHqName);
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Subordinate");
@@ -309,8 +305,6 @@ public class TagCustSelectionList extends AppCompatActivity {
         MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
         MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor", "gethospital", Constants.HOSPITAL + hqCode);
         MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor", "getcip", Constants.CIP + hqCode);
-        //  MasterSyncItemModel cluster = new MasterSyncItemModel("Doctor", "getterritory", Constants.CLUSTER + hqCode);
-        //  MasterSyncItemModel jWorkModel = new MasterSyncItemModel("Subordinate", "getjointwork", Constants.JOINT_WORK + hqCode);
 
         masterSyncArray.add(doctorModel);
         masterSyncArray.add(cheModel);
@@ -318,8 +312,6 @@ public class TagCustSelectionList extends AppCompatActivity {
         masterSyncArray.add(unListModel);
         masterSyncArray.add(hospModel);
         masterSyncArray.add(ciModel);
-        // masterSyncArray.add(cluster);
-        // masterSyncArray.add(jWorkModel);
         for (int i = 0; i < masterSyncArray.size(); i++) {
             sync(masterSyncArray.get(i), hqCode);
         }
@@ -421,16 +413,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     if (jsonArray.length() == 0) {
                         Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
                     }
-                 /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
-                    Log.v("jsonArray", "--" + jsonArray.length() + "---" + jsonArray);
-                    if (jsonArray.length() == 0) {
-                        if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
-                            Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
-                        } else {
-                            Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
-                        }
-                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
 
@@ -441,25 +423,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                             custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
                             custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
                         }
-                      /*  if (jsonObject.getString("Code").equalsIgnoreCase("24482") && jsonObject.getString("uRwID").equalsIgnoreCase("2")) {
-                            jsonObject.put("cust_status", "1");
-                        }
-
-                        if (jsonObject.getString("Code").equalsIgnoreCase("24526") && jsonObject.getString("uRwID").equalsIgnoreCase("4")) {
-                            jsonObject.put("cust_status", "1");
-                        }
-
-                        if (jsonObject.getString("Code").equalsIgnoreCase("24517") && jsonObject.getString("uRwID").equalsIgnoreCase("2")) {
-                            jsonObject.put("cust_status", "1");
-                        }
-
-                        if (jsonObject.getString("Code").equalsIgnoreCase("24574")) {
-                            jsonObject.put("cust_status", "1");
-                        }
-
-                        if (jsonObject.getString("Code").equalsIgnoreCase("24543")) {
-                            jsonObject.put("cust_status", "1");
-                        }*/
 
                     }
                 } catch (Exception e) {
@@ -478,15 +441,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     if (jsonArray.length() == 0) {
                         Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
                     }
-                /*    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
-                    if (jsonArray.length() == 0) {
-                        if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
-                            Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Chemist", "getchemist", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
-                        } else {
-                            Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
-                        }
-                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.has("cust_status")) {
@@ -512,15 +466,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     if (jsonArray.length() == 0) {
                         Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
                     }
-                /*    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
-                    if (jsonArray.length() == 0) {
-                        if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
-                            Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Stockiest", "getstockist", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
-                        } else {
-                            Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
-                        }
-                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.has("cust_status")) {
@@ -546,15 +491,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     if (jsonArray.length() == 0) {
                         Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
                     }
-                 /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
-                    if (jsonArray.length() == 0) {
-                        if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
-                            Toast.makeText(TagCustSelectionList.this, "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                            MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Unlisted_Doctor", "getunlisteddr", SfCode, DivCode, selectedHqCode, SfType, Designation, StateCode, SubDivisionCode);
-                        } else {
-                            Toast.makeText(TagCustSelectionList.this, Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
-                        }
-                    }*/
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.has("cust_status")) {

@@ -2,7 +2,6 @@ package saneforce.sanclm.activity.myresource;
 
 import static saneforce.sanclm.commonClasses.UtilityClass.hideKeyboard;
 
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -34,7 +33,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.response.LoginResponse;
@@ -116,8 +114,9 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
 
         backArrow.setOnClickListener(v -> {
-            Intent l = new Intent(MyResource_Activity.this, HomeDashBoard.class);
-            startActivity(l);
+             getOnBackPressedDispatcher().onBackPressed();
+           /* Intent l = new Intent(MyResource_Activity.this, HomeDashBoard.class);
+            startActivity(l);*/
         });
 
         if(loginResponse.getDesig_Code().equals("MR")){

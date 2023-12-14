@@ -53,7 +53,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -133,8 +132,10 @@ public class Leave_Application extends AppCompatActivity {
 
         sqLite = new SQLite(this);
         back_btn.setOnClickListener(v -> {
-            Intent l = new Intent(Leave_Application.this, HomeDashBoard.class);
-            startActivity(l);
+          //  onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
+          /*  Intent l = new Intent(Leave_Application.this, HomeDashBoard.class);
+            startActivity(l);*/
         });
 //L_count
 

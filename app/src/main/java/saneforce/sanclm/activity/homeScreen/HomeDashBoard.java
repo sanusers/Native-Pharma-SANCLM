@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -61,7 +62,7 @@ import saneforce.sanclm.activity.forms.Forms_activity;
 import saneforce.sanclm.activity.homeScreen.adapters.Callstatusadapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.adapters.CustomViewPager;
-import saneforce.sanclm.activity.homeScreen.adapters.ViewpagetAdapter;
+import saneforce.sanclm.activity.homeScreen.adapters.ViewPagerAdapter;
 import saneforce.sanclm.activity.homeScreen.modelClass.CallStatusModelClass;
 import saneforce.sanclm.activity.leave.Leave_Application;
 import saneforce.sanclm.activity.login.LoginActivity;
@@ -80,7 +81,6 @@ import saneforce.sanclm.storage.SharedPref;
 
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-
     public static ViewPager2 viewPager;
     public static CustomViewPager viewPager1;
     @SuppressLint("StaticFieldLeak")
@@ -94,11 +94,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static EditText et_search;
     @SuppressLint("StaticFieldLeak")
     public static View ll_tab_layout, view_calender_layout;
+    final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
+    final ArrayList<CallStatusModelClass> callStatusList1 = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
     ImageView imageView;
     TabLayout tabLayout;
     GPSTrack gpsTrack;
-    ViewpagetAdapter viewpagetAdapter;
+    ViewPagerAdapter viewPagerAdapter;
     NavigationView navigationView;
     LinearLayout pre_layout, slide_layout, report_layout, anLast_layout, ll_next_month, ll_bfr_month;
     ImageView masterSync, img_account, img_notification;
@@ -113,14 +115,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     TextView monthYearText;
     Callstatusadapter callstatusadapter;
     ArrayList<String> calendarDays = new ArrayList<>();
-    ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
-    ArrayList<CallStatusModelClass> callStatusList1 = new ArrayList<>();
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     private LocalDate selectedDate;
 
     @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            imageView.setBackgroundResource(R.drawable.bars_sort_img);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -169,15 +179,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         navigationView.setNavigationItemSelectedListener(this);
         imageView.setBackgroundResource(R.drawable.bars_sort_img);
 
-        viewpagetAdapter = new ViewpagetAdapter(this, 1);
-        viewPager.setAdapter(viewpagetAdapter);
-       // viewPager.setOffscreenPageLimit(ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT);
+        viewPagerAdapter = new ViewPagerAdapter(this, 1);
+        viewPager.setAdapter(viewPagerAdapter);
+        // viewPager.setOffscreenPageLimit(ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT);
 
         CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
         viewPager1.setAdapter(adapter);
-       // viewPager1.setOffscreenPageLimit(0);
+        // viewPager1.setOffscreenPageLimit(0);
 
-        int width = (int) ((((DeviceWith / 3) * 2) / 3) - 30);
+        int width = (((DeviceWith / 3) * 2) / 3) - 30;
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
         param.setMargins(0, 5, 10, 0);
 
@@ -199,7 +209,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         vto.addOnGlobalLayoutListener(() -> {
 
             int getLayout = rl_quick_link.getMeasuredWidth();
-            int width1 = (int) (getLayout / 3 - 8);
+            int width1 = getLayout / 3 - 8;
             LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(width1, ViewGroup.LayoutParams.MATCH_PARENT);
             param1.setMargins(0, 5, 10, 0);
             pre_layout.setLayoutParams(param1);
@@ -223,7 +233,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             public void onTabUnselected(TabLayout.Tab tab) {
                 TextView tabTitle = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tablayname);
                 tabTitle.setTextColor(ContextCompat.getColor(context, R.color.text_dark_65));
-
             }
 
             @Override
@@ -235,7 +244,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
             }
 
             @Override
@@ -285,8 +293,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         callstatusadapter = new Callstatusadapter(calendarDays, getApplicationContext(), selectedDate);
         calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
         calendarRecyclerView.setAdapter(callstatusadapter);
-
-
     }
 
     private ArrayList<String> daysInMonthArray(LocalDate date) {
@@ -493,7 +499,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 drawerLayout.openDrawer(GravityCompat.START);
                 imageView.setBackgroundResource(R.drawable.cross_img);
-
             }
         }
         if (id == R.id.nav_tour_plan) {
@@ -528,18 +533,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (id == R.id.nav_nearme) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-                Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
-                intent.putExtra("from", "not_tagging");
-                MapsActivity.SelectedTab = "D";
-                if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null")) {
-                    MapsActivity.SelectedHqCode = "";
-                    MapsActivity.SelectedHqName = "";
+                if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).isEmpty()) {
+                    Toast.makeText(HomeDashBoard.this, "Kindly Submit MyDayPlan", Toast.LENGTH_SHORT).show();
+                    //   MapsActivity.SelectedHqCode = "";
+                    //   MapsActivity.SelectedHqName = "";
                 } else {
+                    Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
+                    intent.putExtra("from", "not_tagging");
+                    MapsActivity.SelectedTab = "D";
                     MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
                     MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
+                    startActivity(intent);
                 }
-
-                startActivity(intent);
                 return true;
             } else {
                 Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
@@ -703,7 +708,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         nCallList.add(new CallStatusModelClass("", "", list1, workTypeList123.getWorktype()));
                     } else {
                         nCallList.add(new CallStatusModelClass("", "", list1, ""));
-
                     }
                 }
             } else {

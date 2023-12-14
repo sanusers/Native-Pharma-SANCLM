@@ -193,12 +193,15 @@ public class DCRCallActivity extends AppCompatActivity {
         dcrCallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
 
         dcrCallBinding.ivBack.setOnClickListener(view -> {
+            // onBackPressed();
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
 

@@ -93,10 +93,16 @@ public class CommonUtilsMethods {
 
             if (toastMsg) {
                 Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.setGravity(Gravity.BOTTOM, 0, 0);
                 toast.show();
             }
         } catch (IOException e) {
+            if (toastMsg) {
+                address = "No Address Found";
+                Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, 0);
+                toast.show();
+            }
             e.printStackTrace();
         }
         return address;
@@ -106,23 +112,19 @@ public class CommonUtilsMethods {
         // LocationManager locationManager = (LocationManager) activity.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
         // if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-        new android.app.AlertDialog.Builder(activity)
-                .setTitle("Alert")  // GPS not found
-                .setCancelable(false)
-                .setMessage("Activate the Gps to proceed futher") // Want to enable?
+        new android.app.AlertDialog.Builder(activity).setTitle("Alert")  // GPS not found
+                .setCancelable(false).setMessage("Activate the Gps to proceed futher") // Want to enable?
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
                     activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     dialogInterface.dismiss();
-                })
-                .show();
+                }).show();
     }
 
     public static void RequestPermissions(Activity context, String[] Permissions, boolean isRefresh) {
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
-                if (isRefresh)
-                    context.startActivity(context.getIntent());
+                if (isRefresh) context.startActivity(context.getIntent());
             }
 
             @Override
@@ -130,11 +132,7 @@ public class CommonUtilsMethods {
             }
         };
 
-        TedPermission.create()
-                .setPermissionListener(permissionlistener)
-                .setPermissions(Permissions)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .check();
+        TedPermission.create().setPermissionListener(permissionlistener).setPermissions(Permissions).setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]").check();
     }
 
     public static String getCurrentTime() {
@@ -190,8 +188,7 @@ public class CommonUtilsMethods {
         PopupWindow popup = new PopupWindow(context);
         @SuppressLint("InflateParams") View layout = activity.getLayoutInflater().inflate(R.layout.popup_text, null);
         popup.setContentView(layout);
-        popup.setBackgroundDrawable(new ColorDrawable(
-                android.graphics.Color.TRANSPARENT));
+        popup.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         TextView tv_name = layout.findViewById(R.id.tv_name);
         tv_name.setText(name);
         popup.setOutsideTouchable(true);

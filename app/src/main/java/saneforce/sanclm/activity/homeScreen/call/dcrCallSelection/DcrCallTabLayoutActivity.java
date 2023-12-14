@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +15,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.DCRCallSelectionTabLayoutAdapter;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ChemistFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment;
@@ -43,10 +41,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
     CustomSetupResponse customSetupResponse;
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +73,10 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         dcrSelectionBinding.tabLayoutCall.setupWithViewPager(dcrSelectionBinding.viewPagerCallSelection);
         //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(0);
-        dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
+
+        dcrSelectionBinding.ivBack.setOnClickListener(view -> onBackPressed());
+
+        //  dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
     }
 
     private void getRequiredData() {

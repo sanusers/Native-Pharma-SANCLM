@@ -94,18 +94,6 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             }
         }
 
-       /* if (holder.checkBox.isChecked()) {
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-            }
-        } else {
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-            }
-        }*/
-
 
         if (holder.tv_category.getText().toString().contains("P")) {
             holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_priority));
@@ -186,18 +174,6 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             finalProductCallAdapter.notifyDataSetChanged();
         }
     }
-
- /*   private void displayPopupWindow(View view, String name) {
-        PopupWindow popup = new PopupWindow(context);
-        View layout = activity.getLayoutInflater().inflate(popup_text, null);
-        popup.setContentView(layout);
-        popup.setBackgroundDrawable(new ColorDrawable(
-                android.graphics.Color.TRANSPARENT));
-        TextView tv_name = layout.findViewById(R.id.tv_name);
-        tv_name.setText(name);
-        popup.setOutsideTouchable(true);
-        popup.showAsDropDown(view);
-    }*/
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveCallProductList> saveCallProductListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
         finalProductCallAdapter = new FinalProductCallAdapter(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);

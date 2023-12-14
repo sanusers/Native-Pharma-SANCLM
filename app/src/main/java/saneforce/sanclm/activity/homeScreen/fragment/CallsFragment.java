@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,7 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.adapters.Call_adapter;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.sanclm.activity.homeScreen.modelClass.CallsModalClass;
+import saneforce.sanclm.storage.SharedPref;
 
 
 public class CallsFragment extends Fragment {
@@ -30,7 +32,7 @@ public class CallsFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.calls_fragment, container, false);
-        Log.v("fragment","calllsss");
+        Log.v("fragment", "CallFragment");
         recyclerView = v.findViewById(R.id.recyelerview);
         tv_add_call = v.findViewById(R.id.tv_add_call);
         adapter = new Call_adapter(getData());
@@ -39,7 +41,16 @@ public class CallsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-        tv_add_call.setOnClickListener(view -> startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class)));
+
+        tv_add_call.setOnClickListener(view -> {
+            if (SharedPref.getTodayDayPlanSfCode(requireActivity()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireActivity()).isEmpty()) {
+                Toast.makeText(requireActivity(), "Kindly Submit MyDayPlan", Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+            }
+        });
+
+        //  tv_add_call.setOnClickListener(view -> startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class)));
 
         return v;
     }
@@ -53,7 +64,6 @@ public class CallsFragment extends Fragment {
 
         return list;
     }
-
 
 
 }

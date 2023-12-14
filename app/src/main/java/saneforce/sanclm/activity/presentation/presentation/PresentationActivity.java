@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanclm.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanclm.databinding.ActivityPresentationBinding;
@@ -33,29 +32,15 @@ public class PresentationActivity extends AppCompatActivity {
         savedPresentation = sqLite.getPresentationData();
         populateAdapter();
 
-        binding.backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                startActivity(new Intent(PresentationActivity.this, HomeDashBoard.class));
-                finish();
-            }
-        });
+        binding.backArrow.setOnClickListener(view -> onBackPressed());
 
-        binding.createPresentationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class));
-            }
-        });
-
+        binding.createPresentationBtn.setOnClickListener(view -> startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class)));
 
     }
 
-    public void populateAdapter(){
+    public void populateAdapter() {
         presentationAdapter = new PresentationAdapter(this, savedPresentation);
         binding.presentationRecView.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
         binding.presentationRecView.setAdapter(presentationAdapter);
     }
-
-
 }

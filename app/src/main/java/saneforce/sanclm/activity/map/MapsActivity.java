@@ -82,7 +82,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.map.custSelection.CustListAdapter;
 import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanclm.activity.masterSync.MasterSyncItemModel;
@@ -126,7 +125,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     LoginResponse loginResponse;
     SetupResponse setUpResponse;
     CustomSetupResponse customSetupResponse;
-    String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
+    String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double lat, lng, limitKm = 0.5;
     Dialog dialogTagCust;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -186,11 +185,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }*//*
     }*/
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +192,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
         sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
 
@@ -232,7 +225,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 TagCustSelectionList.SelectedCustPos = "";
                 SelectedHqCode = "";
                 SelectedHqName = "";
-                startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
+                getOnBackPressedDispatcher().onBackPressed();
+                // startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
             } else {
                 TagCustSelectionList.SelectedCustPos = "";
                 finish();
@@ -391,7 +385,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     GeoTagApprovalNeed = "0";
                 }
-                limitKm = parseDouble(setUpResponse.getMapGeoFenceCircleRad());
+                if (!setUpResponse.getMapGeoFenceCircleRad().equalsIgnoreCase("0")) {
+                    limitKm = parseDouble(setUpResponse.getMapGeoFenceCircleRad());
+                }
             }
 
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
@@ -433,7 +429,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void TabSelected(String CustSelected, String sfCode) {
         SelectedTab = CustSelected;
-        AddTaggedDetails(CustSelected, sfCode);
+        //   AddTaggedDetails(CustSelected, sfCode);
+        runOnUiThread(() -> AddTaggedDetails(CustSelected, sfCode));
+
         if (CustSelected.equalsIgnoreCase("D")) {
             mapsBinding.tagTvDoctor.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_light_purple));
             mapsBinding.tagTvChemist.setBackground(null);
@@ -585,7 +583,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         btn_cancel.setOnClickListener(view -> {
-            Log.v("ck", "000");
             dialogTagCust.dismiss();
             mapsBinding.btnTag.setText(R.string.tag);
             mapsBinding.imgRefreshMap.setVisibility(View.GONE);
@@ -604,7 +601,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private RequestBody createFromString(String txt) {
         return RequestBody.create(txt, MultipartBody.FORM);
-        // return RequestBody.create(MultipartBody.FORM, txt);
     }
 
     @Override
@@ -875,7 +871,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint({"SetTextI18n", "PotentialBehaviorOverride"})
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        Log.v("hhh", "---");
+
         mMap = googleMap;
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
@@ -911,7 +907,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 lng = mMap.getCameraPosition().target.longitude;
                 mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
             });
-
         } else if (from_tagging.equalsIgnoreCase("view_tagged")) {
             mMap.setOnMarkerClickListener(this);
             mapsBinding.btnTag.setVisibility(View.GONE);
@@ -976,6 +971,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
     @SuppressLint("PotentialBehaviorOverride")
     private void AddTaggedDetails(String selected, String sfCode) {
         taggedMapListArrayList.clear();
@@ -985,16 +981,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
         sqLiteHandler.open();
-        Log.v("final_assigned", "-111--" + selected + "--" + SfType + "---" + SfCode + "---" + SelectedHqCode);
+
         switch (selected) {
             case "D":
                 try {
                     JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + sfCode);
-                    Log.v("ggg", "len---" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("Addrs");
-                        Log.v("ggg", jsonObject.getString("Name"));
                         if (!jsonObject.getString("Lat").trim().isEmpty() || !jsonObject.getString("Long").trim().isEmpty()) {
                             if (!cust_address.isEmpty()) {
                                 list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "1", jsonObject.getString("Lat"), jsonObject.getString("Long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
@@ -1009,7 +1003,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 } catch (Exception e) {
-                    Log.v("error", "error---dr-" + e);
+                    Log.v("map_camera_tt", "error---dr-" + e);
                 }
                 break;
             case "C":
@@ -1026,13 +1020,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "2", jsonObject.getString("lat"), jsonObject.getString("long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
                         }
                     }
-                } catch (Exception ignored) {
-
+                } catch (Exception e) {
+                    Log.v("map_camera_tt", "error---che-" + e);
                 }
                 break;
             case "S":
@@ -1049,13 +1043,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "3", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "3", jsonObject.getString("lat"), jsonObject.getString("long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
                         }
                     }
-                } catch (Exception ignored) {
-
+                } catch (Exception e) {
+                    Log.v("map_camera_tt", "error---stk-" + e);
                 }
                 break;
             case "U":
@@ -1072,13 +1066,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     cust_address = "No Address Found";
                                 } else {
                                     cust_address = CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(jsonObject.getString("lat")), parseDouble(jsonObject.getString("long")), false);
-                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addr"), jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
+                                    list.add(new ViewTagModel(jsonObject.getString("Code"), jsonObject.getString("Name"), "4", jsonObject.getString("lat"), jsonObject.getString("long"), cust_address, jsonObject.getString("img_name"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code")));
                                 }
                             }
                         }
                     }
                 } catch (Exception e) {
-                    Log.v("error", "error---dr-" + e);
+                    Log.v("map_camera_tt", "error---UnDr-" + e);
                 }
                 break;
         }
@@ -1098,7 +1092,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(gpsTrack.getLatitude(), gpsTrack.getLongitude()), 16.2f));
                 marker = mMap.addMarker(new MarkerOptions().position(latLng).snippet(mm.getName() + "&" + mm.getAddress() + "$" + mm.getCode() + "%" + mm.getLat() + "#" + mm.getLng() + "^" + mm.getImageName()).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
 
-                Log.v("map_camera_tt", mm.getName());
                 mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(mm, MapsActivity.this));
             }
 
@@ -1107,7 +1100,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Dialog dialog = new Dialog(MapsActivity.this);
                     dialog.setContentView(R.layout.map_img_layout);
                     ImageView imageView = dialog.findViewById(R.id.img_dr_content);
-                    Log.v("getCode", "---" + marker.getPosition().latitude + "----" + marker.getPosition().longitude);
 
                     if (Objects.requireNonNull(marker.getSnippet()).substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
                         Toast.makeText(MapsActivity.this, getResources().getString(R.string.toast_no_img_found), Toast.LENGTH_SHORT).show();

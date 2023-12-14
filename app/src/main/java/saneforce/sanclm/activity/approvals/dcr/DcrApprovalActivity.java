@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -42,7 +41,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.AdapterModel;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterCusMainList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterDcrApprovalList;
@@ -281,7 +279,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         dcrCallApprovalBinding.ivBack.setOnClickListener(view -> {
             SelectedSfCode = "";
             SelectedActivityDate = "";
-            startActivity(new Intent(DcrApprovalActivity.this, ApprovalsActivity.class));
+             getOnBackPressedDispatcher().onBackPressed();
+          //  startActivity(new Intent(DcrApprovalActivity.this, ApprovalsActivity.class));
         });
 
         dcrCallApprovalBinding.btnApproved.setOnClickListener(view -> CallApprovalApi());
