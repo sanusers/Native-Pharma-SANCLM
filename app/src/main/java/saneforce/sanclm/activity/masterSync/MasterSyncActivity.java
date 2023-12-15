@@ -233,11 +233,11 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         });
 
-        binding.listedDoctor.setOnClickListener(new View.OnClickListener() {
+        binding.listedDr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.listDrArrow, binding.listedDoctor);
+                    listItemClicked(binding.listedDr);
                     binding.childSync.setText("Sync Listed Doctor");
 
                     arrayForAdapter.clear();
@@ -251,7 +251,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.chemistArrow, binding.chemist);
+                    listItemClicked(binding.chemist);
                     binding.childSync.setText("Sync Chemist");
 
                     arrayForAdapter.clear();
@@ -265,7 +265,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.stockArrow, binding.stockiest);
+                    listItemClicked(binding.stockiest);
                     binding.childSync.setText("Sync Stockiest");
 
                     arrayForAdapter.clear();
@@ -279,7 +279,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.unListDrArrow, binding.unlistedDoctor);
+                    listItemClicked(binding.unlistedDoctor);
                     binding.childSync.setText("Sync Unlisted Doctor");
 
                     arrayForAdapter.clear();
@@ -293,7 +293,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.hospitalArrow, binding.hospital);
+                    listItemClicked(binding.hospital);
                     binding.childSync.setText("Sync Hospital");
 
                     arrayForAdapter.clear();
@@ -307,7 +307,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.cipArrow, binding.cip);
+                    listItemClicked(binding.cip);
                     binding.childSync.setText("Sync CIP");
 
                     arrayForAdapter.clear();
@@ -321,7 +321,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.inputArrow, binding.input);
+                    listItemClicked(binding.input);
                     binding.childSync.setText("Sync Input");
 
                     arrayForAdapter.clear();
@@ -335,7 +335,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.productArrow, binding.product);
+                    listItemClicked(binding.product);
                     binding.childSync.setText("Sync Product");
 
                     arrayForAdapter.clear();
@@ -349,7 +349,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.clusterArrow, binding.cluster);
+                    listItemClicked(binding.cluster);
                     binding.childSync.setText("Sync Cluster");
 
                     arrayForAdapter.clear();
@@ -363,7 +363,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.leaveArrow, binding.leave);
+                    listItemClicked(binding.leave);
                     binding.childSync.setText("Sync Leave");
 
                     arrayForAdapter.clear();
@@ -377,7 +377,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.dcrArrow, binding.dcr);
+                    listItemClicked(binding.dcr);
                     binding.childSync.setText("Sync DCR");
 
                     arrayForAdapter.clear();
@@ -391,7 +391,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.workTypeArrow, binding.workType);
+                    listItemClicked(binding.workType);
                     binding.childSync.setText("Sync Work Type");
 
                     arrayForAdapter.clear();
@@ -405,7 +405,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.tpArrow, binding.tourPlan);
+                    listItemClicked(binding.tourPlan);
                     binding.childSync.setText("Sync Tour Plan");
 
                     arrayForAdapter.clear();
@@ -419,7 +419,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.slideArrow, binding.slide);
+                    listItemClicked(binding.slide);
                     binding.childSync.setText("Sync Slide");
 
                     arrayForAdapter.clear();
@@ -433,7 +433,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.subordinateArrow, binding.subordinate);
+                    listItemClicked(binding.subordinate);
                     binding.childSync.setText("Sync Subordinate");
 
                     arrayForAdapter.clear();
@@ -449,7 +449,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!view.isSelected()){
-                    listItemClicked(binding.setupArrow, binding.setup);
+                    listItemClicked(binding.setup);
                     binding.childSync.setText("Sync Setup");
 
                     arrayForAdapter.clear();
@@ -464,7 +464,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ArrayList<MasterSyncItemModel> arrayList = new ArrayList<>();
 
-                if (binding.listedDoctor.isSelected()) {
+                if (binding.listedDr.isSelected()) {
                     arrayList.addAll(doctorModelArray);
                 } else if (binding.chemist.isSelected()) {
                     arrayList.addAll(chemistModelArray);
@@ -540,12 +540,12 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.hq.setEnabled(sfType.equalsIgnoreCase("2"));
         binding.lastSyncTime.setText(SharedPref.getLastSync(getApplicationContext()));
 
-        binding.listedDrTxt.setText(loginResponse.getDrCap());
-        binding.chemistTxt.setText(loginResponse.getChmCap());
-        binding.stockiestTxt.setText(loginResponse.getStkCap());
-        binding.unlistedDoctorTxt.setText(loginResponse.getNLCap());
-        binding.hospitalTxt.setText(loginResponse.getHosp_caption());
-        binding.cipTxt.setText(loginResponse.getCIP_Caption());
+        binding.listedDr.setText(loginResponse.getDrCap());
+        binding.chemist.setText(loginResponse.getChmCap());
+        binding.stockiest.setText(loginResponse.getStkCap());
+        binding.unlistedDoctor.setText(loginResponse.getNLCap());
+        binding.hospital.setText(loginResponse.getHosp_caption());
+        binding.cip.setText(loginResponse.getCIP_Caption());
 
         doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
         specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
@@ -628,7 +628,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         setupStatus = sqLite.getMasterSyncStatusByKey(Constants.SETUP);
         customSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
-        binding.listedDoctor.setSelected(true);
+        binding.listedDr.setSelected(true);
         prepareArray(rsf);
 
     }
@@ -786,25 +786,25 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     }
 
-    public void listItemClicked(ImageView imageView, LinearLayout view){
-        binding.listDrArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.arrow_down, null));
-        binding.chemistArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.stockArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.unListDrArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.hospitalArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.cipArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.inputArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.productArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.clusterArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.leaveArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.dcrArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.workTypeArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.tpArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.slideArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.subordinateArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
-        binding.setupArrow.setImageDrawable(getResources().getDrawable(R.drawable.arrow_down));
+    public void listItemClicked(TextView view){
+        binding.listedDr.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.unlistedDoctor.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.chemist.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.stockiest.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.hospital.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.cip.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.input.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.product.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.cluster.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.leave.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.dcr.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.workType.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.tourPlan.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.slide.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.subordinate.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
+        binding.setup.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.arrow_down,0);
 
-        binding.listedDoctor.setSelected(false);
+        binding.listedDr.setSelected(false);
         binding.unlistedDoctor.setSelected(false);
         binding.chemist.setSelected(false);
         binding.stockiest.setSelected(false);
@@ -821,7 +821,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.subordinate.setSelected(false);
         binding.setup.setSelected(false);
 
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_arrow_white, null));
+        view.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.greater_than_black,0);
         view.setSelected(true);
     }
 
@@ -830,7 +830,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         masterSyncAdapter = new MasterSyncAdapter(masterSyncItemModels, getApplicationContext(), new MasterSyncItemClick() {
             @Override
             public void itemClick (MasterSyncItemModel masterSyncItemModel1,int position) {
-                if (binding.listedDoctor.isSelected()){
+                if (binding.listedDr.isSelected()){
                     sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), doctorModelArray, position);
                 } else if (binding.chemist.isSelected()) {
                     sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), chemistModelArray, position);
@@ -872,7 +872,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     public void passDataToAdapter() {
-        if (binding.listedDoctor.isSelected()) {
+        if (binding.listedDr.isSelected()) {
             populateAdapter(doctorModelArray);
         } else if (binding.chemist.isSelected()) {
             populateAdapter(chemistModelArray);

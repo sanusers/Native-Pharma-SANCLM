@@ -165,517 +165,276 @@
                     android:background="#ececec"
                     android:paddingEnd="@dimen/_3sdp">
 
-                    <LinearLayout
-                        android:id="@+id/listedDoctor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true">
-
                         <TextView
-                            android:id="@+id/listedDrTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/listedDr"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
                             android:text="Listed Doctor"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:layout_gravity="center"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:drawableEnd="@drawable/greater_than_black"
+                            android:background="@drawable/selector_box"
+                            android:padding="@dimen/_7sdp"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/listDrArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/greater_than_black"
-                            android:layout_gravity="center"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/chemist"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/listedDoctor">
-
                         <TextView
-                            android:id="@+id/chemistTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/chemist"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Chemist"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/listedDr"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/chemistArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/stockiest"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/chemist">
-
-                        <TextView
-                            android:id="@+id/stockiestTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                    <TextView
+                            android:id="@+id/stockiest"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Stockist"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/chemist"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/stockArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/unlistedDoctor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/stockiest">
-
                         <TextView
-                            android:id="@+id/unlistedDoctorTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/unlistedDoctor"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Unlisted Doctor"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/stockiest"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/unListDrArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/hospital"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/unlistedDoctor">
-
                         <TextView
-                            android:id="@+id/hospitalTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/hospital"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Hospital"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/unlistedDoctor"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/hospitalArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/cip"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/hospital">
-
                         <TextView
-                            android:id="@+id/cipTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/cip"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="CIP"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/hospital"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/cipArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/cluster"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/cip">
-
                         <TextView
-                            android:id="@+id/clusterTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/cluster"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Cluster"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/cip"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/clusterArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/input"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/cluster">
-
                         <TextView
-                            android:id="@+id/inputTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/input"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Input"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/cluster"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/inputArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/product"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/input">
-
                         <TextView
-                            android:id="@+id/productTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/product"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Product"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/input"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/productArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/leave"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/product">
-
                         <TextView
-                            android:id="@+id/leaveTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/leave"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Leave"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                           android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/product"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/leaveArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/dcr"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/leave">
-
                         <TextView
-                            android:id="@+id/dcrTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/dcr"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="DCR"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/leave"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/dcrArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/tourPlan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/dcr">
-
                         <TextView
-                            android:id="@+id/tourPlanTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/tourPlan"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Tour Plan"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/dcr"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/tpArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/workType"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/tourPlan">
-
                         <TextView
-                            android:id="@+id/workTypeTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/workType"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Work Type"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/tourPlan"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/workTypeArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/slide"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/workType" >
-
                         <TextView
-                            android:id="@+id/slideTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/slide"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Slide"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/workType"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/slideArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/subordinate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/slide" >
-
                         <TextView
-                            android:id="@+id/subordinateTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/subordinate"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Subordinate"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/slide"
                             tools:ignore="SpUsage"/>
 
-                        <ImageView
-                            android:id="@+id/subordinateArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/setup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_7sdp"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@drawable/selector_box"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/subordinate">
-
                         <TextView
-                            android:id="@+id/setupTxt"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
+                            android:id="@+id/setup"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Setup"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_6sdp"
                             android:textStyle="bold"
                             android:fontFamily="@font/satoshi_medium"
+                            android:padding="@dimen/_7sdp"
+                            android:drawableEnd="@drawable/arrow_down"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@drawable/selector_box"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@id/subordinate"
                             tools:ignore="SpUsage"/>
-
-                        <ImageView
-                            android:id="@+id/setupArrow"
-                            android:layout_width="@dimen/_6sdp"
-                            android:layout_height="@dimen/_6sdp"
-                            android:src="@drawable/arrow_down"/>
-
-                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/masterSyncAll"
