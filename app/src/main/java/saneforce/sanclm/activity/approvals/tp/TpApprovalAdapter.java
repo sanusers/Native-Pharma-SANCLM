@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -35,22 +36,22 @@ public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.Vi
         return new ViewHolder(view);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull TpApprovalAdapter.ViewHolder holder, int position) {
         holder.tv_name.setText(tpModelLists.get(position).getName());
         holder.tv_date.setText(String.format("%s %s", tpModelLists.get(position).getMonth(), tpModelLists.get(position).getYear()));
 
         if (tpModelLists.get(position).getCode().equalsIgnoreCase(TpApprovalActivity.SelectedSfCode) && String.format("%s %s", tpModelLists.get(position).getMonth(), tpModelLists.get(position).getYear()).equalsIgnoreCase(TpApprovalActivity.SelectedMonthYear)) {
-            holder.constraint_main.setBackground(context.getResources().getDrawable(R.drawable.bg_purple));
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.white));
-            holder.tv_date.setBackground(context.getResources().getDrawable(R.drawable.selector_box));
-            holder.list_arrow.setImageDrawable(context.getResources().getDrawable(R.drawable.greater_than_white));
+            holder.constraint_main.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_purple));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.white));
+            holder.tv_date.setBackground(ContextCompat.getDrawable(context,R.drawable.selector_box));
+            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.greater_than_white));
         } else {
-            holder.constraint_main.setBackground(context.getResources().getDrawable(R.drawable.selector_box));
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.dark_purple));
-            holder.tv_date.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1));
-            holder.list_arrow.setImageDrawable(context.getResources().getDrawable(R.drawable.greater_than_purple));
+            holder.constraint_main.setBackground(ContextCompat.getDrawable(context,R.drawable.selector_box));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.dark_purple));
+            holder.tv_date.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_light_grey_1));
+            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.greater_than_purple));
         }
 
         holder.constraint_main.setOnClickListener(view -> {

@@ -7,18 +7,15 @@ package saneforce.sanclm.activity.homeScreen.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDate;
@@ -33,8 +30,8 @@ import saneforce.sanclm.activity.homeScreen.modelClass.CallStatusModelClass;
 
 
 public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.CalendarViewHolder> {
-        private List<String> days;
-        private Context context;
+        private final List<String> days;
+        private final Context context;
        LocalDate selectedMonth;
     ArrayList<CallStatusModelClass> callsatuslist =new ArrayList<>();
 
@@ -44,6 +41,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         this.selectedMonth = selectedMonth;
     }
 
+    @NonNull
     @Override
         public CalendarViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_calderdate_layout, parent, false);
@@ -72,7 +70,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
             }
 
-             GradientDrawable drawable = (GradientDrawable) context.getResources().getDrawable(R.drawable.event_point_background);
+             @SuppressLint("UseCompatLoadingForDrawables") GradientDrawable drawable = (GradientDrawable) context.getResources().getDrawable(R.drawable.event_point_background);
                 drawable.setColor(Color.GREEN);
                 holder.imageView.setImageDrawable(drawable);
 
@@ -92,12 +90,13 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             }
 
             holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View v) {
                     if(!day.equalsIgnoreCase("")) {
 
                         HomeDashBoard.text_date.setText(fullMonthName + " " + day + ", " + year);
-                        HomeDashBoard.view_calerder_layout.setVisibility(View.GONE);
+                        HomeDashBoard.view_calender_layout.setVisibility(View.GONE);
                         HomeDashBoard.ll_tab_layout.setVisibility(View.VISIBLE);
                         HomeDashBoard.viewPager.setVisibility(View.VISIBLE);
 

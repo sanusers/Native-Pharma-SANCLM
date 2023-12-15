@@ -1,7 +1,6 @@
 package saneforce.sanclm.activity.approvals.tp;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
@@ -60,7 +58,8 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         tpApprovalBinding.ivBack.setOnClickListener(view -> {
             SelectedSfCode = "";
             SelectedMonthYear = "";
-            startActivity(new Intent(TpApprovalActivity.this, ApprovalsActivity.class));
+             getOnBackPressedDispatcher().onBackPressed();
+         //   startActivity(new Intent(TpApprovalActivity.this, ApprovalsActivity.class));
         });
         tpApprovalBinding.searchTp.addTextChangedListener(new TextWatcher() {
             @Override

@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -36,13 +35,13 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.AdapterModel;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterCusMainList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterDcrApprovalList;
@@ -281,7 +280,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         dcrCallApprovalBinding.ivBack.setOnClickListener(view -> {
             SelectedSfCode = "";
             SelectedActivityDate = "";
-            startActivity(new Intent(DcrApprovalActivity.this, ApprovalsActivity.class));
+             getOnBackPressedDispatcher().onBackPressed();
+          //  startActivity(new Intent(DcrApprovalActivity.this, ApprovalsActivity.class));
         });
 
         dcrCallApprovalBinding.btnApproved.setOnClickListener(view -> CallApprovalApi());
@@ -289,7 +289,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         dcrCallApprovalBinding.btnReject.setOnClickListener(view -> {
             dialogReject = new Dialog(DcrApprovalActivity.this);
             dialogReject.setContentView(R.layout.popup_leave_reject);
-            dialogReject.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogReject.setCancelable(false);
 
             ImageView iv_close = dialogReject.findViewById(R.id.img_close);
@@ -451,7 +451,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
     }
 
     private void CallDcrListApi() {

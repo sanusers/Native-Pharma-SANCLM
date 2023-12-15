@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_resource"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/border_white"
-    android:layout_marginLeft="@dimen/_3sdp"
+    android:layout_marginStart="@dimen/_3sdp"
     android:layout_marginTop="@dimen/_3sdp"
-    android:layout_marginRight="@dimen/_3sdp"
+    android:layout_marginEnd="@dimen/_3sdp"
     android:layout_marginBottom="@dimen/_3sdp"
     >
 
@@ -22,7 +23,7 @@
             android:layout_width="@dimen/_24sdp"
             android:layout_height="@dimen/_20sdp"
 
-            />
+            tools:ignore="ContentDescription" />
 
 
 
@@ -42,7 +43,7 @@ android:layout_marginTop="@dimen/_5sdp"
             android:fontFamily="@font/satoshi_medium"
             android:textStyle="bold"
             android:textColor="#282A3C"
-            />
+            tools:ignore="SpUsage" />
 
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -15,7 +16,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/_8sdp"
 
-        />
+        tools:ignore="SpUsage" />
     <TextView
         android:id="@+id/victer_name"
         android:layout_width="match_parent"
@@ -28,7 +29,7 @@
         android:textSize="@dimen/_6sdp"
         android:fontFamily="@font/satoshi_bold"
 
-        />
+        tools:ignore="SpUsage" />
     <TextView
         android:id="@+id/vist_count"
         android:layout_width="match_parent"
@@ -42,7 +43,7 @@
         android:textSize="@dimen/_6sdp"
         android:fontFamily="@font/satoshi_bold"
 
-        />
+        tools:ignore="SpUsage" />
 
 
 

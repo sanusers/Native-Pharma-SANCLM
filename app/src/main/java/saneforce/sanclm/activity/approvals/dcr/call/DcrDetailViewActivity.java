@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,16 +61,16 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
 
         switch (Cus_type) {
             case "1":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_dr_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
                 break;
             case "2":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_chemist_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_chemist_img));
                 break;
             case "3":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_stockist_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_stockist_img));
                 break;
             case "4":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_unlistdr_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_unlistdr_img));
                 break;
         }
 
@@ -131,16 +132,16 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
 
         switch (dcrDetailModelList.getType()) {
             case "1":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_dr_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
                 break;
             case "2":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_chemist_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_chemist_img));
                 break;
             case "3":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_stockist_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_stockist_img));
                 break;
             case "4":
-                dcrDetailViewBinding.imgCust.setImageDrawable(getResources().getDrawable(R.drawable.map_unlistdr_img));
+                dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_unlistdr_img));
                 break;
         }
 

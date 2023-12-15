@@ -2,7 +2,6 @@ package saneforce.sanclm.activity.tourPlan.summary;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;

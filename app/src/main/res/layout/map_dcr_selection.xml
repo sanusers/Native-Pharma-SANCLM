@@ -108,7 +108,8 @@
         app:layout_constraintEnd_toEndOf="@id/search_cust"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/search_cust"
-        app:layout_constraintTop_toTopOf="@id/search_cust" />
+        app:layout_constraintTop_toTopOf="@id/search_cust"
+        tools:ignore="ContentDescription" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_cust_list"
@@ -175,7 +176,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/tv_tag_header"
-            app:layout_constraintTop_toTopOf="@id/tv_tag_header" />
+            app:layout_constraintTop_toTopOf="@id/tv_tag_header"
+            tools:ignore="ContentDescription" />
 
         <View
             android:id="@+id/view_dummy"

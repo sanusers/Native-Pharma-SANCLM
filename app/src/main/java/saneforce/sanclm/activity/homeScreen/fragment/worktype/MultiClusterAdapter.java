@@ -21,7 +21,7 @@ import saneforce.sanclm.activity.homeScreen.modelClass.Multicheckclass_clust;
 public class MultiClusterAdapter extends RecyclerView.Adapter<MultiClusterAdapter.ViewHolder> {
 
     private final Context context;
-    private List<Multicheckclass_clust> itemList;
+    private final List<Multicheckclass_clust> itemList;
     private List<Multicheckclass_clust> filteredList;
     private final LayoutInflater inflater;
     OnClusterClicklistener onCampclicklistener;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/_150sdp"
+    android:layout_width="@dimen/_180sdp"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_gravity="right"
+    android:layout_gravity="end"
     android:background="@drawable/border_white"
     android:orientation="vertical"
 
@@ -11,21 +11,19 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
-        android:layout_width="@dimen/_150sdp"
+        android:layout_width="@dimen/_180sdp"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
+        tools:ignore="DuplicateIncludedIds">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="@dimen/_150sdp"
+            android:layout_width="@dimen/_180sdp"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
+            tools:layout_editor_absoluteY="0dp"
+            tools:ignore="DuplicateIncludedIds">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,18 +41,19 @@
                     android:text="Listed doctor"
                     android:textColor="#282A3C"
                     android:textSize="@dimen/_8sdp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="SpUsage" />
 
                 <ImageView
                     android:id="@+id/close_sideview"
                     android:layout_width="@dimen/_19sdp"
                     android:layout_height="@dimen/_18sdp"
-                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
                     android:layout_gravity="center"
                     android:layout_weight=".3"
                     android:src="@drawable/close_icon"
 
-                    />
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
 
@@ -67,9 +66,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
         android:background="@drawable/edittext_stroke"
         android:orientation="horizontal">
 
@@ -77,14 +76,14 @@
             android:layout_width="@dimen/_8sdp"
             android:layout_height="@dimen/_7sdp"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/_3sdp"
-            android:src="@drawable/grey_search" />
+            android:layout_marginStart="@dimen/_3sdp"
+            android:src="@drawable/grey_search"
+            tools:ignore="ContentDescription" />
 
         <EditText
             android:id="@+id/et_Custsearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lineid"
             android:layout_margin="@dimen/_1sdp"
 
             android:background="@null"
@@ -93,7 +92,8 @@
             android:hint="Search "
             android:inputType="text"
             android:padding="@dimen/_5sdp"
-            android:textSize="@dimen/_6sdp" />
+            android:textSize="@dimen/_6sdp"
+            tools:ignore="SpUsage" />
 
 
     </LinearLayout>
@@ -104,10 +104,9 @@
         android:id="@+id/app_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/et_Custsearch"
-        android:layout_marginLeft="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_2sdp"
         android:layout_marginTop="@dimen/_3sdp"
-        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:layout_marginBottom="@dimen/_3sdp"
         android:visibility="gone"/>
 

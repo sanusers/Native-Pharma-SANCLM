@@ -3,7 +3,7 @@ package saneforce.sanclm.activity.homeScreen.call;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment.callAddedJointList;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment.callCaptureImageLists;
-import static saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment.jwothersBinding;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment.jwOthersBinding;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectCompSide.rcpa_comp_list;
 import static saneforce.sanclm.activity.profile.CustomerProfile.isDetailingRequired;
 
@@ -62,7 +62,7 @@ import saneforce.sanclm.activity.homeScreen.call.fragments.DetailedFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.FeedbackSelectionSide;
 import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment;
-import saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide;
+import saneforce.sanclm.activity.homeScreen.call.fragments.JointWorkSelectionSide;
 import saneforce.sanclm.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment;
 import saneforce.sanclm.activity.homeScreen.call.fragments.RCPASelectCompSide;
@@ -105,6 +105,7 @@ public class DCRCallActivity extends AppCompatActivity {
     double lat, lng;
     ApiInterface api_interface;
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
     }
@@ -192,12 +193,15 @@ public class DCRCallActivity extends AppCompatActivity {
         dcrCallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
 
         dcrCallBinding.ivBack.setOnClickListener(view -> {
+            // onBackPressed();
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
 
@@ -282,21 +286,21 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
-                    if (Objects.requireNonNull(jwothersBinding.edPob.getText()).toString().isEmpty() || jwothersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
+                    if (Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString().isEmpty() || jwOthersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getApplicationContext(), "Add Pob values", Toast.LENGTH_LONG).show();
                         return false;
                     }
                 }
 
                 if (FeedbackMandatory.equalsIgnoreCase("1")) {
-                    if (jwothersBinding.tvFeedback.getText().toString().isEmpty()) {
+                    if (jwOthersBinding.tvFeedback.getText().toString().isEmpty()) {
                         Toast.makeText(getApplicationContext(), "Add Feedback", Toast.LENGTH_LONG).show();
                         return false;
                     }
                 }
 
                 if (RemarkMandatory.equalsIgnoreCase("0")) {
-                    if (Objects.requireNonNull(jwothersBinding.edRemarks.getText()).toString().isEmpty() || jwothersBinding.edRemarks.getText().toString().equalsIgnoreCase("")) {
+                    if (Objects.requireNonNull(jwOthersBinding.edRemarks.getText()).toString().isEmpty() || jwOthersBinding.edRemarks.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getApplicationContext(), "Add Remarks", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -357,7 +361,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
-                    if (Objects.requireNonNull(jwothersBinding.edPob.getText()).toString().isEmpty() || jwothersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
+                    if (Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString().isEmpty() || jwOthersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getApplicationContext(), "Add Pob Values", Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -798,7 +802,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("ModTime", CurrentDate + " " + CurrentTime);
             jsonSaveDcr.put("ReqDt", CurrentDate + " " + CurrentTime);
             jsonSaveDcr.put("vstTime", CurrentDate + " " + CurrentTime);
-            jsonSaveDcr.put("Remarks", jwothersBinding.edRemarks.getText());
+            jsonSaveDcr.put("Remarks", jwOthersBinding.edRemarks.getText());
             jsonSaveDcr.put("amc", "");
             if (!TextUtils.isEmpty(HosNeed)) {
                 jsonSaveDcr.put("hospital_code", "");
@@ -825,7 +829,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             //POB
-            String pobValue = Objects.requireNonNull(jwothersBinding.edPob.getText()).toString();
+            String pobValue = Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString();
             if (PobNeed.equalsIgnoreCase("0") && !pobValue.isEmpty()) {
                 jsonSaveDcr.put("DCSUPOB", pobValue);
             } else {
@@ -1000,8 +1004,10 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
                     PobNeed = customSetupResponse.getStockistPobNeed();
+                    RCPAWOSample = "1";
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
                     PobNeed = customSetupResponse.getUndrPobNeed();
+                    RCPAWOSample = "1";
                 }
             }
 
@@ -1013,7 +1019,7 @@ public class DCRCallActivity extends AppCompatActivity {
     private void AddJWData() {
         callCaptureImageLists = new ArrayList<>();
         JWOthersFragment.callAddedJointList = new ArrayList<>();
-        JointworkSelectionSide.JwList = new ArrayList<>();
+        JointWorkSelectionSide.JwList = new ArrayList<>();
     }
 
     private void AddRCPAData() {
@@ -1158,12 +1164,10 @@ public class DCRCallActivity extends AppCompatActivity {
                         JSONObject jsonObjectSample = jsonArrayPrdStk.getJSONObject(j);
                         if (!ProductFragment.checkedPrdList.get(i).getCategory().equalsIgnoreCase("Sale") && jsonObjectSample.getString("Code").equalsIgnoreCase(ProductFragment.checkedPrdList.get(i).getCode())) {
                             ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
-                            // AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
                             StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), jsonObjectSample.getString("Balance_Stock"), jsonObjectSample.getString("Balance_Stock")));
                             break;
                         } else {
                             ProductFragment.checkedPrdList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
-                            //  AddCallSelectPrdSide.callSampleList.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getName(), ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).isCheckedItem(), ProductFragment.checkedPrdList.get(i).getCategory(), ProductFragment.checkedPrdList.get(i).getCategoryExtra()));
                             StockSample.set(i, new CallCommonCheckedList(ProductFragment.checkedPrdList.get(i).getCode(), ProductFragment.checkedPrdList.get(i).getStock_balance(), ProductFragment.checkedPrdList.get(i).getStock_balance()));
                         }
                     }
@@ -1180,7 +1184,6 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
                     }
                 }
-
             }
 
             Collections.sort(ProductFragment.checkedPrdList, Comparator.comparing(CallCommonCheckedList::getCategory));
@@ -1197,7 +1200,7 @@ public class DCRCallActivity extends AppCompatActivity {
         1) Add CustStatus for Setup; --> GeoTagApprovalNeed
         2) Add Cust_status for all Doctor,Chemist,Cip,Stockist,UnDr --> cust_status
         3) Add Cust_status for json_object to send the mapped tagged Customer
-        4) Add Promoted Products for json_object to send the dcr call Customer
+        4) Add Promoted & RCPA Products for json_object to send the dcr call Customer
         5) Add Sample and Input Data for Additional_Call_Screen*/
 
 

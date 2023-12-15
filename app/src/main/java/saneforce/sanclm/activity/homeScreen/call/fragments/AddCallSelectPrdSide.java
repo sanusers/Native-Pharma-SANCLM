@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -35,6 +36,7 @@ import saneforce.sanclm.databinding.FragmentAcSelectProductSideBinding;
 
 public class AddCallSelectPrdSide extends Fragment {
     public static ArrayList<CallCommonCheckedList> callSampleList;
+    @SuppressLint("StaticFieldLeak")
     public static FragmentAcSelectProductSideBinding selectProductSideBinding;
     SelectACProductAdapter selectACProductAdapter;
 
@@ -104,7 +106,7 @@ public class AddCallSelectPrdSide extends Fragment {
             return new ViewHolder(view);
         }
 
-        @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
+        @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "SetTextI18n"})
         @Override
         public void onBindViewHolder(@NonNull SelectACProductAdapter.ViewHolder holder, int position) {
             commonUtilsMethods = new CommonUtilsMethods(context);
@@ -118,14 +120,14 @@ public class AddCallSelectPrdSide extends Fragment {
             }
 
             if (holder.tv_category.getText().toString().contains("P")) {
-                holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_priority));
-                holder.tv_category.setBackground(context.getResources().getDrawable(R.drawable.bg_priority));
+                holder.tv_category.setTextColor(ContextCompat.getColor(context,R.color.txt_priority));
+                holder.tv_category.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_priority));
             } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SM")) {
-                holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_sample));
-                holder.tv_category.setBackground(context.getResources().getDrawable(R.drawable.bg_sample));
+                holder.tv_category.setTextColor(ContextCompat.getColor(context,R.color.txt_sample));
+                holder.tv_category.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sample));
             } else if (holder.tv_category.getText().toString().equalsIgnoreCase("SL/SM")) {
-                holder.tv_category.setTextColor(context.getResources().getColor(R.color.txt_sale_sample));
-                holder.tv_category.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample));
+                holder.tv_category.setTextColor(ContextCompat.getColor(context,R.color.txt_sale_sample));
+                holder.tv_category.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sale_sample));
             }
 
             holder.tv_name.setOnClickListener(view -> {

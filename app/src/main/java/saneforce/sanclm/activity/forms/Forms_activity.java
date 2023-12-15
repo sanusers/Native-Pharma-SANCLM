@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.forms;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -69,7 +70,7 @@ public class Forms_activity extends AppCompatActivity {
     private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText, boolean isTabTitleInvisible) {
         TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
         if (tab != null) {
-            View customView = LayoutInflater.from(this).inflate(R.layout.customtab_item, null);
+            @SuppressLint("InflateParams") View customView = LayoutInflater.from(this).inflate(R.layout.customtab_item, null);
             tab.setCustomView(customView);
             TextView tabTitle = customView.findViewById(R.id.tablayname);
             if (tabIndex == 0) {

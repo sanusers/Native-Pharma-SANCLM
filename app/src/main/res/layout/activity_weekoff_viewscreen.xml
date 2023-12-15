@@ -48,7 +48,7 @@
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintLeft_toRightOf="@id/iv_back"
         app:layout_constraintTop_toTopOf="@id/view_top"
-        tools:ignore="TextSizeCheck" />
+        tools:ignore="SpUsage,TextSizeCheck" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"

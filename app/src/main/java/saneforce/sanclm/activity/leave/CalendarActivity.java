@@ -25,15 +25,15 @@ import java.util.ArrayList;
 import saneforce.sanclm.R;
 import saneforce.sanclm.utility.TimeUtils;
 
-public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener{
-    private  TextView monthYearText;
+public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener {
+    String frm_date;
+    ArrayList<String> listdate = new ArrayList<>();
+    private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate, dateval, date1val, Afterdate, date;
-    String frm_date;
     private LocalDate date1;
-    ArrayList<String> listdate = new ArrayList<>();
 
-    @SuppressLint("NewApi")
+    @SuppressLint({"NewApi", "AppCompatMethod"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +42,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
         Intent intent = getIntent();
         String selectefromdDate = intent.getStringExtra("selectefromdDate");
-        if(!Leave_Application.Fromdate.getText().toString().equals("")){
-            date1 =LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
+        if (!Leave_Application.Fromdate.getText().toString().equals("")) {
+            date1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
 
         }
 
@@ -62,14 +62,14 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         if (frm_date.equals("1")) {
             monthYearText.setText(monthYearFromDate(selectedDate));
             ArrayList<String> daysInMonth = daysInMonthArray(selectedDate);
-            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, selectedDate, monthYearFromDate(selectedDate), "","1"); // Pass selectedDate
+            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, selectedDate, monthYearFromDate(selectedDate), "", "1"); // Pass selectedDate
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
             calendarRecyclerView.setLayoutManager(layoutManager);
             calendarRecyclerView.setAdapter(calendarAdapter);
         } else {
             monthYearText.setText(monthYearFromDate(date1));
             ArrayList<String> daysInMonth = daysInMonthArray(date1);
-            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, date1, monthYearFromDate(date1), Leave_Application.Fromdate.getText().toString(),"2"); // Pass selectedDate
+            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, date1, monthYearFromDate(date1), Leave_Application.Fromdate.getText().toString(), "2"); // Pass selectedDate
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
             calendarRecyclerView.setLayoutManager(layoutManager);
             calendarRecyclerView.setAdapter(calendarAdapter);
@@ -95,12 +95,12 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
         } else {
             if (frm_date.equals("2")) {
-                LocalDate today1= LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
-                int fromdate=today1.getMonthValue();
+                LocalDate today1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
+                int fromdate = today1.getMonthValue();
                 int fromyear = today1.getYear();
                 YearMonth yearMonth1 = YearMonth.from(date1);//2023-11
 
-                if(yearMonth1.equals(yearMonth1)){
+                if (yearMonth1.equals(yearMonth1)) {
 
                 }
 
@@ -142,7 +142,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         if (frm_date.equals("1")) {
             selectedDate = selectedDate.minusMonths(1);
             setMonthView();
-        }else{
+        } else {
             date1 = date1.minusMonths(1);
             setMonthView();
         }
@@ -154,7 +154,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         if (frm_date.equals("1")) {
             selectedDate = selectedDate.plusMonths(1);
             setMonthView();
-        }else{
+        } else {
             date1 = date1.plusMonths(1);
             setMonthView();
         }
@@ -162,6 +162,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void onItemClick(int position, String dayText) {
         if (!dayText.equals("")) {
             String from_val1, from_val;
@@ -218,13 +219,13 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
                     int day = Integer.parseInt(dayText);
                     Afterdate = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
 
-                    if (Afterdate.isBefore(date1val) || Afterdate.equals(date1val) ) {
+                    if (Afterdate.isBefore(date1val) || Afterdate.equals(date1val)) {
                         Leave_Application.Todate.setText(from_val1);
 
                         finish();
                     } else {
 
-                        Toast.makeText(CalendarActivity.this, "Not Select Date"+"--"+Afterdate+"--"+date1val, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CalendarActivity.this, "Not Select Date" + "--" + Afterdate + "--" + date1val, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -232,9 +233,6 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
     }
 
     //-----------------
-
-
-
 
 
 }

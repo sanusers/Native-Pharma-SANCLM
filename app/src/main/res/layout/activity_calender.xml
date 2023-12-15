@@ -5,9 +5,9 @@
     android:layout_height="@dimen/_182sdp"
     android:id="@+id/cal1"
     android:layout_gravity="center"
-    android:layout_marginLeft="@dimen/_5sdp"
+    android:layout_marginStart="@dimen/_5sdp"
     android:layout_marginTop="@dimen/_5sdp"
-    android:layout_marginRight="@dimen/_5sdp"
+    android:layout_marginEnd="@dimen/_5sdp"
     android:layout_marginBottom="@dimen/_5sdp"
     android:background="@drawable/border_white"
     tools:context=".activity.leave.CalendarActivity">
@@ -42,7 +42,7 @@
                             android:onClick="previousMonthAction"
                             android:src="@drawable/less_than_black"
                             android:textStyle="bold"
-                            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,UsingOnClickInXml" />
+                            tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck,UsingOnClickInXml" />
 
                     </LinearLayout>
 
@@ -55,7 +55,8 @@
                         android:text="Feb 2021"
                         android:textAlignment="center"
                         android:textColor="#282A3C"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
 
                     <LinearLayout
                         android:layout_width="@dimen/_15sdp"
@@ -68,7 +69,8 @@
                             android:layout_height="@dimen/_8sdp"
                             android:background="@null"
                             android:src="@drawable/greater_than_black"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="ContentDescription" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -86,7 +88,8 @@
                         android:text="Mo"
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -95,7 +98,8 @@
                         android:text="Tu"
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -104,7 +108,8 @@
                         android:text="We"
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -113,7 +118,8 @@
                         android:text="Th"
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -124,7 +130,7 @@
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
                         android:textSize="@dimen/_8sdp"
-                        tools:ignore="TextSizeCheck" />
+                        tools:ignore="SpUsage,TextSizeCheck" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -133,7 +139,8 @@
                         android:text="Sa"
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -142,7 +149,8 @@
                         android:text="Su"
                         android:textAlignment="center"
                         android:textColor="#abb2b9"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -150,9 +158,9 @@
                 android:id="@+id/calendarRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp" />
 
         </LinearLayout>

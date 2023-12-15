@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.login;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Objects;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
@@ -82,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         binding.eyeImage.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onClick (View view) {
                 if (passwordNotVisible == 1) {
@@ -175,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
         if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
             File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
-            String path = file.getAbsolutePath();
+            String path = Objects.requireNonNull(file).getAbsolutePath();
             Bitmap b = BitmapFactory.decodeFile(path);
             binding.logoImg.setImageBitmap(b);
             binding.logoImg.setBackgroundColor(getResources().getColor(android.R.color.transparent));
@@ -187,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void taskCompleted (boolean status) {
                         if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
                             File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
-                            String path = file.getAbsolutePath();
+                            String path = Objects.requireNonNull(file).getAbsolutePath();
                             Bitmap b = BitmapFactory.decodeFile(path);
                             binding.logoImg.setImageBitmap(b);
                         }
@@ -208,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.e("test","login url : "  + baseUrl + replacedUrl);
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl+replacedUrl);
 
-            String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+            @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", userId);
             jsonObject.put("password", password);
@@ -228,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
                         if (responseObject.getBoolean("success")){
-                            Log.e("test","login response : " + jsonObject.toString());
+                            Log.e("test","login response : " + jsonObject);
                             process(responseObject);
                         }else{
                             if (responseObject.has("msg")){

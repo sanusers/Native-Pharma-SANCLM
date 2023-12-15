@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -49,7 +50,8 @@
                     android:padding="@dimen/_4sdp"
                     android:text="month_name"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_8sdp" />
+                    android:textSize="@dimen/_8sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:id="@+id/day"
@@ -60,7 +62,8 @@
 
                     android:text="day"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_8sdp" />
+                    android:textSize="@dimen/_8sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:id="@+id/weekdays"
@@ -70,7 +73,8 @@
                     android:padding="@dimen/_4sdp"
                     android:text="weekdays"
                     android:textColor="#5D6D7E "
-                    android:textSize="@dimen/_8sdp" />
+                    android:textSize="@dimen/_8sdp"
+                    tools:ignore="SpUsage" />
 
 
             </LinearLayout>
@@ -118,7 +122,8 @@
                         android:padding="@dimen/_4sdp"
                         android:text="Holiday"
                         android:textColor="#00C689"
-                        android:textSize="@dimen/_8sdp" />
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
 
                 </LinearLayout>
             </LinearLayout>

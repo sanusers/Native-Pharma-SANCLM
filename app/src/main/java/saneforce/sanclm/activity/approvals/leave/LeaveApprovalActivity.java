@@ -1,7 +1,6 @@
 package saneforce.sanclm.activity.approvals.leave;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.ActivityLeaveBinding;
 import saneforce.sanclm.network.ApiInterface;
@@ -57,7 +55,10 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         getRequiredData();
         CallApiLeave();
 
-        leaveBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(LeaveApprovalActivity.this, ApprovalsActivity.class)));
+        leaveBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+
+
+     //   leaveBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(LeaveApprovalActivity.this, ApprovalsActivity.class)));
 
         leaveBinding.searchLeave.addTextChangedListener(new TextWatcher() {
             @Override

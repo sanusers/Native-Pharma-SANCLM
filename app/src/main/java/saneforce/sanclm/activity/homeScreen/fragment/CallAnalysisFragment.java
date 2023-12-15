@@ -3,41 +3,32 @@ package saneforce.sanclm.activity.homeScreen.fragment;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.LineChart;
-
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -53,20 +44,17 @@ import java.util.Date;
 import java.util.List;
 
 import saneforce.sanclm.R;
-
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.view.CustomMarkerView;
 import saneforce.sanclm.activity.homeScreen.view.ImageLineChartRenderer;
 import saneforce.sanclm.commonClasses.Constants;
-import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
 
-    LinearLayout doc_layout, che_layout, stokiest_layout, unlistered_layout, cip_layout, hos_layout, ll_calls_layout, rl_linrchartmap,ll_monthlayout;
+    LinearLayout doc_layout, che_layout, stockiest_layout, unListed_layout, cip_layout, hos_layout, ll_calls_layout, rl_linrchartmap, ll_monthlayout;
 
-    ApiInterface apiInterface;
     LineChart lineChart;
     SQLite sqLite;
 
@@ -81,19 +69,26 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     ImageView doc_img_down_triangle, che_img_down_triangle, stock_img_down_triangle, unlisred_img_down_triangle, cip_img_down_triangle, hos_img_down_triangle;
 
     JSONArray dcrdatas;
-    @SuppressLint("MissingInflatedId")
+
+    public static int computePercent(int current, int total) {
+        int percent = 0;
+        if (total > 0) percent = current * 100 / total;
+        return percent;
+    }
+
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.call_analysis_fagment, container, false);
-
+        Log.v("fragment", "callanalysis");
         doc_layout = v.findViewById(R.id.ll_doc_child);
         che_layout = v.findViewById(R.id.ll_che_child);
-        stokiest_layout = v.findViewById(R.id.ll_stock_child);
-        unlistered_layout = v.findViewById(R.id.ll_unli_child);
+        stockiest_layout = v.findViewById(R.id.ll_stock_child);
+        unListed_layout = v.findViewById(R.id.ll_unli_child);
         cip_layout = v.findViewById(R.id.ll_cip_child);
         hos_layout = v.findViewById(R.id.ll_hos_child);
-        ll_monthlayout=v.findViewById(R.id.ll_monthlayout);
+        ll_monthlayout = v.findViewById(R.id.ll_monthlayout);
         ll_calls_layout = v.findViewById(R.id.ll_calls_layout);
         rl_linrchartmap = v.findViewById(R.id.rl_linrchartmap);
         lineChart = v.findViewById(R.id.lineChart);
@@ -125,8 +120,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         txt_hos_progress_value = v.findViewById(R.id.txt_hos_value);
 
 
-
-
         doc_progress_bar = v.findViewById(R.id.doc_progress_bar);
         che_progress_bar = v.findViewById(R.id.che_progress_bar);
         stock_progress_bar = v.findViewById(R.id.stock_progress_bar);
@@ -144,8 +137,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         doc_layout.setOnClickListener(this);
         che_layout.setOnClickListener(this);
-        stokiest_layout.setOnClickListener(this);
-        unlistered_layout.setOnClickListener(this);
+        stockiest_layout.setOnClickListener(this);
+        unListed_layout.setOnClickListener(this);
         cip_layout.setOnClickListener(this);
         hos_layout.setOnClickListener(this);
 
@@ -154,45 +147,35 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         ViewTreeObserver vto = rl_relative_layout.getViewTreeObserver();
 
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
+        vto.addOnGlobalLayoutListener(() -> {
 
-                int getwidhtlayout = rl_relative_layout.getMeasuredWidth();
-                int getlayoutlayout = rl_relative_layout.getMeasuredHeight();
+            int getwidhtlayout = rl_relative_layout.getMeasuredWidth();
+            int getlayoutlayout = rl_relative_layout.getMeasuredHeight();
 
 
-                int width = (getwidhtlayout / 3 - 8);
-                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, (int) (getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp)));
-                param.setMargins(0, 5, 10, 0);
-                doc_layout.setLayoutParams(param);
-                che_layout.setLayoutParams(param);
-                stokiest_layout.setLayoutParams(param);
-                unlistered_layout.setLayoutParams(param);
-                cip_layout.setLayoutParams(param);
-                hos_layout.setLayoutParams(param);
+            int width = (getwidhtlayout / 3 - 8);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp));
+            param.setMargins(0, 5, 10, 0);
+            doc_layout.setLayoutParams(param);
+            che_layout.setLayoutParams(param);
+            stockiest_layout.setLayoutParams(param);
+            unListed_layout.setLayoutParams(param);
+            cip_layout.setLayoutParams(param);
+            hos_layout.setLayoutParams(param);
 
 
-            }
         });
 
 
-        ll_calls_layout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                HomeDashBoard.viewPager1.setScrollEnabled(false);
-                return false;
-            }
+        ll_calls_layout.setOnTouchListener((v1, event) -> {
+            HomeDashBoard.viewPager1.setScrollEnabled(false);
+            return false;
         });
 
 
-        lineChart.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                HomeDashBoard.viewPager1.setScrollEnabled(true);
-                return false;
-            }
+        lineChart.setOnTouchListener((v12, event) -> {
+            HomeDashBoard.viewPager1.setScrollEnabled(true);
+            return false;
         });
 
 
@@ -212,21 +195,19 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         return v;
     }
 
-
-
-
+    @SuppressLint("SetTextI18n")
     private void callDetails() {
         sqLite.clearLinecharTable();
         try {
 
             JSONArray Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(requireContext()));
-            JSONArray Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST  + SharedPref.getHqCode(requireContext()));
-            JSONArray Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST  + SharedPref.getHqCode(requireContext()));
-            JSONArray unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR  + SharedPref.getHqCode(requireContext()));
-            JSONArray cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP  + SharedPref.getHqCode(requireContext()));
+            JSONArray Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(requireContext()));
+            JSONArray Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(requireContext()));
+            JSONArray unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(requireContext()));
+            JSONArray cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(requireContext()));
             JSONArray hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(requireContext()));
 
-            dcrdatas  = sqLite.getMasterSyncDataByKey(Constants.DCR);
+            dcrdatas = sqLite.getMasterSyncDataByKey(Constants.DCR);
             if (dcrdatas.length() > 0) {
                 for (int i = 0; i < dcrdatas.length(); i++) {
 
@@ -258,12 +239,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
 
 
-                doc_call_count.setText(String.valueOf(doc_current_callcount) + " / " + Doctor_list.length());
-                che_call_count.setText(String.valueOf(che_current_callcount) + " / " + Chemist_list.length());
-                stockiest_call_count.setText(String.valueOf(stockiest_current_callcount) + " / " + Stockiest_list.length());
-                unlisted_call_count.setText(String.valueOf(unlistered_current_callcount) + " / " + unlistered_list.length());
-                cip_call_count.setText(String.valueOf(cip_current_callcount) + " / " + cip_list.length());
-                hospital_call_count.setText(String.valueOf(hos_current_callcount) + " / " + hos_list.length());
+                doc_call_count.setText(doc_current_callcount + " / " + Doctor_list.length());
+                che_call_count.setText(che_current_callcount + " / " + Chemist_list.length());
+                stockiest_call_count.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
+                unlisted_call_count.setText(unlistered_current_callcount + " / " + unlistered_list.length());
+                cip_call_count.setText(cip_current_callcount + " / " + cip_list.length());
+                hospital_call_count.setText(hos_current_callcount + " / " + hos_list.length());
 
 
                 int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
@@ -275,12 +256,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
                 hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
 
-                txt_doc_progress_value.setText(String.valueOf(doc_progress_value) + "%");
-                txt_che_progress_value.setText(String.valueOf(che_progress_value) + "%");
-                txt_stockiest_progress_value.setText(String.valueOf(stockiest_progress_value) + "%");
-                txt_Unlistered_progress_value.setText(String.valueOf(unlistered_progress_value) + "%");
-                txt_cip_progress_value.setText(String.valueOf(stockiest_progress_value) + "%");
-                txt_hos_progress_value.setText(String.valueOf(unlistered_progress_value) + "%");
+                txt_doc_progress_value.setText(doc_progress_value + "%");
+                txt_che_progress_value.setText(che_progress_value + "%");
+                txt_stockiest_progress_value.setText(stockiest_progress_value + "%");
+                txt_Unlistered_progress_value.setText(unlistered_progress_value + "%");
+                txt_cip_progress_value.setText(stockiest_progress_value + "%");
+                txt_hos_progress_value.setText(unlistered_progress_value + "%");
 
                 doc_progress_bar.setProgress(doc_progress_value);
                 che_progress_bar.setProgress(che_progress_value);
@@ -294,12 +275,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 setLineChartData("1");
                 ll_monthlayout.setVisibility(View.VISIBLE);
 
-            }else {
+            } else {
                 ll_monthlayout.setVisibility(View.GONE);
                 doc_layout.setOnClickListener(null);
                 che_layout.setOnClickListener(null);
-                stokiest_layout.setOnClickListener(null);
-                unlistered_layout.setOnClickListener(null);
+                stockiest_layout.setOnClickListener(null);
+                unListed_layout.setOnClickListener(null);
                 cip_layout.setOnClickListener(null);
                 hos_layout.setOnClickListener(null);
 
@@ -311,10 +292,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 txt_cip_progress_value.setText("0%");
                 txt_hos_progress_value.setText("0%");
 
-                doc_call_count.setText(  "0 / " + Doctor_list.length());
+                doc_call_count.setText("0 / " + Doctor_list.length());
                 che_call_count.setText("0 / " + Chemist_list.length());
-                stockiest_call_count.setText( " 0/ " + Stockiest_list.length());
-                unlisted_call_count.setText( " 0/ " + unlistered_list.length());
+                stockiest_call_count.setText(" 0/ " + Stockiest_list.length());
+                unlisted_call_count.setText(" 0/ " + unlistered_list.length());
                 cip_call_count.setText("0 / " + cip_list.length());
                 hospital_call_count.setText("0 / " + hos_list.length());
 
@@ -328,21 +309,13 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public static int computePercent(int current, int total) {
-        int percent = 0;
-        if (total > 0)
-            percent = current * 100 / total;
-        return percent;
-    }
-
-
     void setLineChartData(String Custype) {
 
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd");
 
-        SimpleDateFormat sdfs = new SimpleDateFormat("MMMM");
-        SimpleDateFormat sdfss = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfs = new SimpleDateFormat("MMMM");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfss = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -2);
@@ -351,57 +324,48 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         Date firstDate = calendar.getTime();
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date lastDate = calendar.getTime();
-        String First_Date_of_Two_Months_Ago = sdf.format(firstDate);
         String Last_Date_of_Two_Months_Ago = sdf.format(lastDate);
 
         calendar.set(Calendar.DAY_OF_MONTH, 15);
         Date fifteenthDate = calendar.getTime();
 
         calendar.set(Calendar.DAY_OF_MONTH, 16);
-        Date sixteenthDate = calendar.getTime();
 
         String firstDateStr = sdfss.format(firstDate);
         String fifteenthDateStr = sdfss.format(fifteenthDate);
-        String sixteenthDateStr = sdfss.format(sixteenthDate);
         String enddate = sdfss.format(lastDate);
         String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
 
 
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.add(calendar1.MONTH, -1);
+        calendar1.add(Calendar.MONTH, -1);
         calendar1.set(Calendar.DAY_OF_MONTH, 1);
         Date firstDate1 = calendar1.getTime();
         calendar1.set(Calendar.DAY_OF_MONTH, calendar1.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date lastDate1 = calendar1.getTime();
-        String First_Date_of_pastmonth = sdf.format(firstDate1);
         String Last_Date_of_pastmonth = sdf.format(lastDate1);
         calendar1.set(Calendar.DAY_OF_MONTH, 15);
         Date fifteenthDate1 = calendar1.getTime();
         calendar1.set(Calendar.DAY_OF_MONTH, 16);
-        Date sixteenthDate1 = calendar1.getTime();
         String firstDatepastmonth = sdfss.format(firstDate1);
         String fifteenthDatepastmonth = sdfss.format(fifteenthDate1);
-        String sixteenthDatepastmonth = sdfss.format(sixteenthDate1);
         String enddatepastmonth = sdfss.format(lastDate1);
         String month1 = String.valueOf(calendar1.get(Calendar.MONTH) + 1);
 
 
         Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(calendar1.DAY_OF_MONTH, 1);
+        calendar2.set(Calendar.DAY_OF_MONTH, 1);
         Date firstDate2 = calendar2.getTime();
         calendar2.set(Calendar.DAY_OF_MONTH, calendar2.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date lastDate2 = calendar2.getTime();
-        String currentfirstdate = sdf.format(firstDate2);
         String cutrrentlastdate = sdf.format(lastDate2);
         calendar2.set(Calendar.DAY_OF_MONTH, 15);
         Date fifteenthDate2 = calendar2.getTime();
 
         calendar2.set(Calendar.DAY_OF_MONTH, 16);
-        Date sixteenthDate2 = calendar2.getTime();
 
         String firstDatecurrent = sdfss.format(firstDate2);
         String fifteenthDatecurrent = sdfss.format(fifteenthDate2);
-        String sixteenthDatecurrent = sdfss.format(sixteenthDate2);
         String enddatecurrent = sdfss.format(lastDate2);
 
 
@@ -641,10 +605,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         leftYAxis.setCenterAxisLabels(true);
         leftYAxis.setEnabled(true);
         leftYAxis.setTextSize(12);
-        leftYAxis.setGridColor(getResources().getColor(R.color.charline_color));
+        leftYAxis.setGridColor(ContextCompat.getColor(requireContext(), R.color.charline_color));
 
         leftYAxis.setDrawZeroLine(true);
-        leftYAxis.setZeroLineColor(getResources().getColor(R.color.gray_45));
+        leftYAxis.setZeroLineColor(ContextCompat.getColor(requireContext(), R.color.gray_45));
         leftYAxis.setZeroLineWidth(1.2f);
 
 
@@ -654,7 +618,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         lineChart.setMarkerView(mv);
         YAxis rightAxis = lineChart.getAxisRight();
 
-        rightAxis.setAxisLineColor(getResources().getColor(R.color.white));
+        rightAxis.setAxisLineColor(ContextCompat.getColor(requireContext(), R.color.white));
         rightAxis.setDrawAxisLine(false);
         rightAxis.setDrawLabels(false);
         lineChart.setDrawMarkerViews(true);
@@ -705,6 +669,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
 

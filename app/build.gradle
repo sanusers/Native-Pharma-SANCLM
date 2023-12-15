@@ -39,6 +39,9 @@ android {
 
         }
     }
+    lintOptions {
+        abortOnError true
+    }
     compileOptions {
         //To use java Local(Date) library below api level 26
         coreLibraryDesugaringEnabled = true
@@ -122,6 +125,7 @@ dependencies {
 
     //imageview
     implementation 'com.squareup.picasso:picasso:2.71828'
+
 
 
 

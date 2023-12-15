@@ -136,7 +136,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                tools:ignore="ImageContrastCheck" />
+                tools:ignore="ContentDescription,ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/tv_name"
@@ -179,7 +179,8 @@
                 app:layout_constraintBottom_toTopOf="@id/constraint_detailed"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_cluster_top" />
+                app:layout_constraintTop_toBottomOf="@id/tv_cluster_top"
+                tools:ignore="NotSibling" />
 
             <ScrollView
                 android:id="@+id/scroll_view"
@@ -457,7 +458,6 @@
                         android:layout_marginHorizontal="@dimen/_6sdp"
                         android:paddingHorizontal="@dimen/_5sdp"
                         android:visibility="gone"
-                        app:layout_constraintBottom_toTopOf="@id/tag_sample_prd"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/constraint_tag_detail_prd" />
@@ -1120,7 +1120,8 @@
                         android:background="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_overall_feedback" />
+                        app:layout_constraintTop_toBottomOf="@id/tv_overall_feedback"
+                        tools:ignore="NotSibling" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </ScrollView>
 

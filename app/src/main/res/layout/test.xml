@@ -2,6 +2,7 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -30,7 +31,8 @@ android:paddingTop="@dimen/_2sdp">
         android:padding="@dimen/_3sdp"
         android:text="Feild work"
         android:textColor="@color/green_60"
-        android:textSize="@dimen/_5sdp" />
+        android:textSize="@dimen/_5sdp"
+        tools:ignore="SpUsage" />
 
 
     <TextView
@@ -48,7 +50,8 @@ android:paddingTop="@dimen/_2sdp">
         android:padding="@dimen/_3sdp"
         android:text="Non-Feild work"
         android:textColor="@color/blue_60"
-        android:textSize="@dimen/_5sdp" />
+        android:textSize="@dimen/_5sdp"
+        tools:ignore="SpUsage" />
 
     <TextView
         android:id="@+id/txt_week_off"
@@ -64,7 +67,8 @@ android:paddingTop="@dimen/_2sdp">
         android:padding="@dimen/_3sdp"
         android:text="Weekly off"
         android:textColor="@color/yellow_60"
-        android:textSize="@dimen/_5sdp" />
+        android:textSize="@dimen/_5sdp"
+        tools:ignore="SpUsage" />
 
 </LinearLayout>
 
@@ -91,7 +95,8 @@ android:paddingTop="@dimen/_2sdp">
             android:padding="@dimen/_3sdp"
             android:text="Holiday"
             android:textColor="@color/lustylavender_60"
-            android:textSize="@dimen/_5sdp" />
+            android:textSize="@dimen/_5sdp"
+            tools:ignore="SpUsage" />
         <TextView
             android:id="@+id/txt_leave_pending"
             android:layout_width="wrap_content"
@@ -108,7 +113,8 @@ android:paddingTop="@dimen/_2sdp">
             android:padding="@dimen/_3sdp"
             android:text="Leave Approval Pending"
             android:textColor="@color/GlassSea_60"
-            android:textSize="@dimen/_5sdp" />
+            android:textSize="@dimen/_5sdp"
+            tools:ignore="SpUsage" />
 
 
     </LinearLayout>
@@ -138,7 +144,8 @@ android:paddingTop="@dimen/_2sdp">
     android:padding="@dimen/_3sdp"
     android:text="Leave"
     android:textColor="@color/red_60"
-    android:textSize="@dimen/_5sdp" />
+    android:textSize="@dimen/_5sdp"
+    tools:ignore="SpUsage" />
 
 
         <TextView
@@ -158,7 +165,8 @@ android:paddingTop="@dimen/_2sdp">
             android:padding="@dimen/_3sdp"
             android:text="TP Deviation Released"
             android:textColor="@color/dark_green_60"
-            android:textSize="@dimen/_5sdp" />
+            android:textSize="@dimen/_5sdp"
+            tools:ignore="SpUsage" />
 
         <TextView
             android:id="@+id/txt_tp_deviation"
@@ -176,7 +184,8 @@ android:paddingTop="@dimen/_2sdp">
             android:padding="@dimen/_3sdp"
             android:text="TP Deviation"
             android:textColor="@color/Evening_Blue_60"
-            android:textSize="@dimen/_5sdp" />
+            android:textSize="@dimen/_5sdp"
+            tools:ignore="SpUsage" />
 
     </LinearLayout>
 
@@ -208,7 +217,8 @@ android:paddingTop="@dimen/_2sdp">
         android:padding="@dimen/_3sdp"
         android:text="Missed Released"
         android:textColor="@color/Hilo_bay_60"
-        android:textSize="@dimen/_5sdp" />
+        android:textSize="@dimen/_5sdp"
+        tools:ignore="SpUsage" />
 
     <TextView
         android:id="@+id/txt_re_entry"
@@ -223,7 +233,8 @@ android:paddingTop="@dimen/_2sdp">
         android:padding="@dimen/_3sdp"
         android:textSize="@dimen/_5sdp"
         android:text="Re Entry"
-        android:textColor="@color/pink_60" />
+        android:textColor="@color/pink_60"
+        tools:ignore="SpUsage" />
     </LinearLayout>
 </LinearLayout>
 </ScrollView>

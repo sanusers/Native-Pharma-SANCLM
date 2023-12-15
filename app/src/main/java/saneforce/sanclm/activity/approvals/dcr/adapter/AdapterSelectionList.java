@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -51,49 +52,49 @@ public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionL
 
         if (selectedPosition == holder.getBindingAdapterPosition()) {
             if (adapterModels.get(position).getName().equalsIgnoreCase("ALL")) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1_border));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_purple_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_light_grey_1_border));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_dark_purple_round));
                 filter("");
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(DrCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_priority_border));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_green_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_priority_border));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_green_round));
                 filter("1");
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(ChemistCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_border));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_lite_blue_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sale_border));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_lite_blue_round));
                 filter("2");
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(StockistCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample_border));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sample_border));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_pink_round));
                 filter("3");
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(UnDrCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample_border));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sale_sample_border));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_dark_grey_round));
                 filter("4");
             } else if (adapterModels.get(position).getName().equalsIgnoreCase("Hospital")) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_hospital_border));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_hospital_border));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_dark_grey_round));
                 filter("7");
             }
         } else {
             if (adapterModels.get(position).getName().equalsIgnoreCase("ALL")) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_light_grey_1));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_purple_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_light_grey_1));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_dark_purple_round));
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(DrCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_priority));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_green_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_priority));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_green_round));
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(ChemistCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_lite_blue_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sale));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_lite_blue_round));
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(StockistCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sample));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_pink_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sample));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_pink_round));
             } else if (adapterModels.get(position).getName().equalsIgnoreCase(UnDrCaption)) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_sale_sample));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_sale_sample));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_dark_grey_round));
             } else if (adapterModels.get(position).getName().equalsIgnoreCase("Hospital")) {
-                holder.tv_name.setBackground(context.getResources().getDrawable(R.drawable.bg_hospital));
-                holder.tv_count.setBackground(context.getResources().getDrawable(R.drawable.bg_dark_grey_round));
+                holder.tv_name.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_hospital));
+                holder.tv_count.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_dark_grey_round));
             }
         }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -51,16 +52,16 @@ public class AdapterCusMainList extends RecyclerView.Adapter<AdapterCusMainList.
 
         switch (dcrApprovalLists.get(position).getType()) {
             case "1":
-                holder.img_cus.setImageDrawable(context.getResources().getDrawable(R.drawable.map_dr_img));
+                holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_dr_img));
                 break;
             case "2":
-                holder.img_cus.setImageDrawable(context.getResources().getDrawable(R.drawable.map_chemist_img));
+                holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_chemist_img));
                 break;
             case "3":
-                holder.img_cus.setImageDrawable(context.getResources().getDrawable(R.drawable.map_stockist_img));
+                holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_stockist_img));
                 break;
             case "4":
-                holder.img_cus.setImageDrawable(context.getResources().getDrawable(R.drawable.map_unlistdr_img));
+                holder.img_cus.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.map_unlistdr_img));
                 break;
         }
 

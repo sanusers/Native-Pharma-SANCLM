@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/_300sdp"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
@@ -40,7 +41,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/tv_head"
-            app:layout_constraintTop_toTopOf="@id/tv_head" />
+            app:layout_constraintTop_toTopOf="@id/tv_head"
+            tools:ignore="ContentDescription" />
 
 
         <androidx.appcompat.widget.AppCompatEditText

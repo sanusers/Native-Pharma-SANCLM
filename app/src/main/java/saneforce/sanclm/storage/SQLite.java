@@ -375,7 +375,7 @@ public class SQLite extends SQLiteOpenHelper {
         }
         db.close();
         return count;
-    };
+    }
 
 
     public int getcalls_count_by_range(String startDate, String endDate, String custType) {
@@ -392,14 +392,7 @@ public class SQLite extends SQLiteOpenHelper {
         }
         db.close();
         return count;
-    };
-
-//    public int getHalfMonthDataCount(String startDate, String endDate, String custType) {
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        String query = "SELECT COUNT(*) FROM " + LINECHAT_DATA +
-//                " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " +
-//                " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " ;
-//    }
+    }
 
     public int getfeildworkcount(String startDate, String endDate ) {
         SQLiteDatabase db = this.getReadableDatabase();

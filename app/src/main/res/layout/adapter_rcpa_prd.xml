@@ -176,7 +176,8 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/tv_total"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp" />
+            tools:layout_editor_absoluteY="2dp"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -213,7 +214,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="NotSibling">
 
                 <TextView
                     android:id="@+id/tag_comp_cmpy"
@@ -335,7 +337,8 @@
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/tag_remarks"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteY="2dp" />
+                    tools:layout_editor_absoluteY="2dp"
+                    tools:ignore="ContentDescription" />
 
 
                 <androidx.recyclerview.widget.RecyclerView

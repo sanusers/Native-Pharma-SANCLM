@@ -6,6 +6,6 @@ import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass
 
 public interface ImageSelectionInterface {
 
-    public void imageSelection(ArrayList<BrandModelClass.Product> arrayList, int position);
+    void imageSelection(ArrayList<BrandModelClass.Product> arrayList, int position);
 
 }

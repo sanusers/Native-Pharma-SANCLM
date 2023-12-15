@@ -39,18 +39,7 @@ public class holiday_adapter extends RecyclerView.Adapter<holiday_adapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final fromsmodelclass app_adapt = res_List.get(position);
-//        String dateval = app_adapt.getHoliday_date();
-//        String today1 = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_4, dateval));//2023-01-01
 
-//        if (position == 0) {
-//            holder.line.setVisibility(View.VISIBLE);
-//            holder.line_2.setBackgroundColor(Color.parseColor("#3DA5F4"));
-//            holder.Holiday.setBackgroundColor(Color.parseColor("#F1FCF7"));
-//        } else {
-//            holder.line.setVisibility(View.GONE);
-//            holder.Holiday.setTextColor(Color.parseColor("#57C1E5"));
-//            holder.Holiday.setBackgroundColor(Color.parseColor("#F1F9FC"));
-//        }
         holder.month_name.setText(app_adapt.getMonthname());
         holder.day.setText(app_adapt.getDate());
         String bar = app_adapt.getWeekname().substring(0, 3);

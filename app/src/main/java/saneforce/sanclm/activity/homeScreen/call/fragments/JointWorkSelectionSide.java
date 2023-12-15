@@ -36,7 +36,7 @@ import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.FragmentSelectJwSideBinding;
 import saneforce.sanclm.storage.SQLite;
 
-public class JointworkSelectionSide extends Fragment {
+public class JointWorkSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectJwSideBinding selectJwSideBinding;
     public static ArrayList<CallCommonCheckedList> JwList;
@@ -144,9 +144,8 @@ public class JointworkSelectionSide extends Fragment {
         selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
     }
 
-    private void AssignRecyclerView(Activity activity, Context context, ArrayList<CallCommonCheckedList> selectedJwList, ArrayList<CallCommonCheckedList> Jwlist) {
-        adapterCallJointWorkList = new AdapterCallJointWorkList(context, activity, selectedJwList, Jwlist);
-        //  commonUtilsMethods.recycleTestWithDivider(JWOthersFragment.jwothersBinding.rvJointwork);
-        JWOthersFragment.jwothersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
+    private void AssignRecyclerView(Activity activity, Context context, ArrayList<CallCommonCheckedList> selectedJwList, ArrayList<CallCommonCheckedList> JwList) {
+        adapterCallJointWorkList = new AdapterCallJointWorkList(context, activity, selectedJwList, JwList);
+        JWOthersFragment.jwOthersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
     }
 }

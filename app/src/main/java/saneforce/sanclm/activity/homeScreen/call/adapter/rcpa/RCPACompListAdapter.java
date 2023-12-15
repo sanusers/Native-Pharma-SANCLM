@@ -29,9 +29,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.pojo.rcpa.RCPAAddedCompList;
@@ -83,9 +85,9 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
         getPrdTotalStatic = Double.parseDouble(CompetitorList.get(holder.getBindingAdapterPosition()).getTotalPrdValue());
 
         if (!CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks().isEmpty()) {
-            holder.img_remarks.setImageDrawable(context.getResources().getDrawable(R.drawable.img_remarks_0));
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
         } else {
-            holder.img_remarks.setImageDrawable(context.getResources().getDrawable(R.drawable.img_remarks_1));
+            holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_1));
         }
 
 
@@ -176,7 +178,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
         holder.img_remarks.setOnClickListener(view -> {
             dialogRemarks = new Dialog(context);
             dialogRemarks.setContentView(R.layout.popup_rcpa_remarks);
-            dialogRemarks.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Objects.requireNonNull(dialogRemarks.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogRemarks.setCancelable(false);
 
             ImageView iv_close = dialogRemarks.findViewById(R.id.img_close);
@@ -210,7 +212,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                         }
                     }
                     dialogRemarks.dismiss();
-                    holder.img_remarks.setImageDrawable(context.getResources().getDrawable(R.drawable.img_remarks_0));
+                    holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
                 } else {
                     Toast.makeText(context, context.getResources().getText(R.string.toast_enter_remarks), Toast.LENGTH_SHORT).show();
                 }

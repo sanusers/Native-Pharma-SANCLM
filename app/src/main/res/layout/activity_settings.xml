@@ -181,7 +181,8 @@
                                     android:layout_alignParentEnd="true"
                                     android:layout_centerInParent="true"
                                     android:layout_marginEnd="@dimen/_6sdp"
-                                    android:background="@drawable/arrow_down" />
+                                    android:background="@drawable/arrow_down"
+                                    tools:ignore="ContentDescription" />
 
                             </RelativeLayout>
 

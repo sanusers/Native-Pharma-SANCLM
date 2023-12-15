@@ -94,7 +94,7 @@
             app:layout_constraintTop_toTopOf="@id/view_one">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -363,7 +363,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/img_cur_loc"
         app:layout_constraintTop_toBottomOf="@id/constraint_tagged_view"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription" />
 
 
     <ImageView
@@ -378,7 +379,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/rv_list"
         app:layout_constraintTop_toBottomOf="@id/constraint_tagged_view"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
@@ -408,7 +410,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/img_cur_loc"
         app:layout_constraintTop_toBottomOf="@id/img_cur_loc"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/img_rv_left"
@@ -424,7 +427,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_cur_loc"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="ContentDescription" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

@@ -1,6 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.adapter.jwOthers;
 
-import static saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide.jwAdapter;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.JointWorkSelectionSide.jwAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide;
+import saneforce.sanclm.activity.homeScreen.call.fragments.JointWorkSelectionSide;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 
@@ -51,17 +51,17 @@ public class AdapterCallJointWorkList extends RecyclerView.Adapter<AdapterCallJo
 
         holder.img_del.setOnClickListener(view -> {
             try {
-                for (int j = 0; j < JointworkSelectionSide.JwList.size(); j++) {
-                    if (JointworkSelectionSide.JwList.get(j).getCode().equalsIgnoreCase(jwAddedList.get(position).getCode())) {
-                        JointworkSelectionSide.JwList.set(j, new CallCommonCheckedList(JointworkSelectionSide.JwList.get(j).getName(), JointworkSelectionSide.JwList.get(j).getCode(), false));
+                for (int j = 0; j < JointWorkSelectionSide.JwList.size(); j++) {
+                    if (JointWorkSelectionSide.JwList.get(j).getCode().equalsIgnoreCase(jwAddedList.get(position).getCode())) {
+                        JointWorkSelectionSide.JwList.set(j, new CallCommonCheckedList(JointWorkSelectionSide.JwList.get(j).getName(), JointWorkSelectionSide.JwList.get(j).getCode(), false));
                     }
                 }
             } catch (Exception ignored) {
             }
 
-            jwAdapter = new JwAdapter(activity, JointworkSelectionSide.JwList);
-            commonUtilsMethods.recycleTestWithDivider(JointworkSelectionSide.selectJwSideBinding.rvJwList);
-            JointworkSelectionSide.selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
+            jwAdapter = new JwAdapter(activity, JointWorkSelectionSide.JwList);
+            commonUtilsMethods.recycleTestWithDivider(JointWorkSelectionSide.selectJwSideBinding.rvJwList);
+            JointWorkSelectionSide.selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
             jwAdapter.notifyDataSetChanged();
             removeAt(holder.getBindingAdapterPosition());
         });

@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -70,16 +70,12 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
 
         if (checked_arrayList.get(position).isCheckedItem()) {
             holder.checkBox.setChecked(true);
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-            }
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
         } else {
             holder.checkBox.setChecked(false);
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-            }
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
         }
 
         holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName()));
@@ -110,10 +106,8 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
     @SuppressLint("NotifyDataSetChanged")
     private void CheckBoxContents(CheckBox checkBox, TextView tv_name, int adapterPosition) {
         if (checkBox.isChecked()) {
-            tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-            }
+            tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+            checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
             isCheckedInp = false;
             checked_arrayList.get(adapterPosition).setCheckedItem(true);
             saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
@@ -128,10 +122,8 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                     checkBox.setEnabled(true);
                 }
             }.start();
-            tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-            }
+            tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+            checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
             isCheckedInp = true;
             UnSelectedInpCode = checked_arrayList.get(adapterPosition).getCode();
             checked_arrayList.get(adapterPosition).setCheckedItem(false);

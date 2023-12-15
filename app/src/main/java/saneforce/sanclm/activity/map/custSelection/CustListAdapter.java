@@ -108,6 +108,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 intent.putExtra("cus_code", custListArrayList.get(position).getCode());
                 intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
                 intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 TagCustSelectionList.SelectedCustPos = custListArrayList.get(position).getPosition();
                 //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
                 context.startActivity(intent);
@@ -134,6 +135,8 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 intent.putExtra("from", "view_tagged");
                 intent.putExtra("cus_name", custListArrayList.get(position).getName());
                 intent.putExtra("cus_add", custListArrayList.get(position).getAddress());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

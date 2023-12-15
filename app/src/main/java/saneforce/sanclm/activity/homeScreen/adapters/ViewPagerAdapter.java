@@ -13,9 +13,9 @@ import saneforce.sanclm.activity.homeScreen.fragment.SalesAnalysisFragment;
 import saneforce.sanclm.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 
 
-public class ViewpagetAdapter extends FragmentStateAdapter {
-   private int key;
-    public ViewpagetAdapter(@NonNull FragmentActivity fragmentActivity,int key) {
+public class ViewPagerAdapter extends FragmentStateAdapter {
+   private final int key;
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, int key) {
         super(fragmentActivity);
         this.key=key;
 

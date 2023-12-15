@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +15,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.DCRCallSelectionTabLayoutAdapter;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ChemistFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment;
@@ -32,8 +30,8 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
-    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StokistGeoTag, UndrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UndrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUndr, HospNeed;
-    public static double laty, lngy, limitKm = 0.5;
+    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StockiestGeoTag, UnDrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, HospNeed;
+    public static double lat, lng, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
     LoginResponse loginResponse;
@@ -43,9 +41,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
     CustomSetupResponse customSetupResponse;
 
-    @Override
-    public void onBackPressed() {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,22 +65,25 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         if (StockistNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new StockiestFragment(), CapStockist);
         }
-        if (UndrNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUndr);
+        if (UnDrNeed.equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUnDr);
         }
 
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
         dcrSelectionBinding.tabLayoutCall.setupWithViewPager(dcrSelectionBinding.viewPagerCallSelection);
         //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(0);
-        dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
+
+        dcrSelectionBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+
+        //  dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
     }
 
     private void getRequiredData() {
         try {
             gpsTrack = new GPSTrack(this);
-            laty = gpsTrack.getLatitude();
-            lngy = gpsTrack.getLongitude();
+            lat = gpsTrack.getLatitude();
+            lng = gpsTrack.getLongitude();
             loginResponse = new LoginResponse();
             loginResponse = sqLite.getLoginData();
 
@@ -93,7 +91,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             SfCode = loginResponse.getSF_Code();
             SfName = loginResponse.getSF_Name();
 
-            JSONArray jsonArray = new JSONArray();
+            JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
@@ -108,14 +106,14 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 } else {
                     GeoTagApproval = "1";
                 }
-                //  GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
+
                 TpBasedDcr = setupResponse.getTpBasedDcr();
 
                 DrGeoTag = setupResponse.getDrGeoTagNeed();
                 CheGeoTag = setupResponse.getChemistGeoTagNeed();
                 CipGeoTag = setupResponse.getCipGeoTagNeed();
-                StokistGeoTag = setupResponse.getStockistGeoTagNeed();
-                UndrGeoTag = setupResponse.getUndrGeoTagNeed();
+                StockiestGeoTag = setupResponse.getStockistGeoTagNeed();
+                UnDrGeoTag = setupResponse.getUndrGeoTagNeed();
 
                 CapDr = setupResponse.getCaptionDr();
                 ChemistNeed = setupResponse.getChemistNeed();
@@ -129,19 +127,19 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }
                 StockistNeed = setupResponse.getStockistNeed();
                 CapStockist = setupResponse.getCaptionStockist();
-                UndrNeed = setupResponse.getUnDrNeed();
-                CapUndr = setupResponse.getCaptionUndr();
+                UnDrNeed = setupResponse.getUnDrNeed();
+                CapUnDr = setupResponse.getCaptionUndr();
             }
 
 
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject CustsetupData = jsonArray.getJSONObject(0);
+                JSONObject CustSetupData = jsonArray.getJSONObject(0);
 
                 customSetupResponse = new CustomSetupResponse();
                 Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
                 }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(CustsetupData), typeCustomSetup);
+                customSetupResponse = new Gson().fromJson(String.valueOf(CustSetupData), typeCustomSetup);
                 HospNeed = customSetupResponse.getHospNeed();
             }
             Log.v("fff", "-00--" + TodayPlanSfCode);
@@ -163,15 +161,17 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
 
             JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + TodayPlanSfCode);
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < jsonArray2.length(); i++) {
                 JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
-                TodayPlanClusterList.add(jsonClusterList.getString("Code"));
-                TodayPlanClusterList.add(jsonClusterList.getString("Name"));
+                if (SharedPref.getTodayDayPlanClusterCode(this).contains(jsonClusterList.getString("Code"))) {
+                    TodayPlanClusterList.add(jsonClusterList.getString("Code"));
+                    TodayPlanClusterList.add(jsonClusterList.getString("Name"));
+                }
             }
 
 
-        } catch (Exception e) {
-            Log.v("fff", e.toString());
+        } catch (Exception ignored) {
+
         }
     }
 }

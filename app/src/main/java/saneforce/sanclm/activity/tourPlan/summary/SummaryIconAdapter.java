@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.tourPlan.summary;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ public class SummaryIconAdapter extends RecyclerView.Adapter<SummaryIconAdapter.
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder (@NonNull MyViewHolder holder, int position) {
         ModelClass.CountModel model = modelClass.get(holder.getAbsoluteAdapterPosition());

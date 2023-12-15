@@ -10,6 +10,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Objects;
+
 import saneforce.sanclm.R;
 
 public class weekoff_viewscreen extends AppCompatActivity {
@@ -19,9 +21,6 @@ public class weekoff_viewscreen extends AppCompatActivity {
     ViewPager viewPager;
     forms_viewpager formsviewpager;
     int tab_pos = 0;
-
-    private Holiday_fragment holidayfragment;
-    private weekoff_fragment weekofffragment;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -37,8 +36,8 @@ public class weekoff_viewscreen extends AppCompatActivity {
             finish();
         });
 
-        holidayfragment = new Holiday_fragment();
-        weekofffragment = new weekoff_fragment();
+        Holiday_fragment holidayfragment = new Holiday_fragment();
+        weekoff_fragment weekofffragment = new weekoff_fragment();
 
 
 
@@ -51,7 +50,7 @@ public class weekoff_viewscreen extends AppCompatActivity {
         viewPager.setAdapter(formsviewpager);        //set the icons
         tabLayout.getTabAt(0);
         tabLayout.getTabAt(1);
-        BadgeDrawable badgeDrawable = tabLayout.getTabAt(0).getOrCreateBadge();
+        BadgeDrawable badgeDrawable = Objects.requireNonNull(tabLayout.getTabAt(0)).getOrCreateBadge();
         badgeDrawable.setVisible(false);
 
 

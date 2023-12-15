@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/custom_backround_layout"
@@ -12,13 +13,14 @@
         android:id="@+id/txt_call"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginStart="@dimen/_3sdp"
         android:fontFamily="@font/satoshi_medium"
         android:text="Call Status"
         android:layout_marginTop="@dimen/_2sdp"
         android:textColor="@color/black_45"
         android:textSize="@dimen/_7sdp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="SpUsage" />
 
 
     <RelativeLayout
@@ -32,7 +34,8 @@
         android:gravity="center"
         android:layout_marginBottom="@dimen/_2sdp"
         android:orientation="horizontal"
-        android:padding="@dimen/_3sdp">
+        android:padding="@dimen/_3sdp"
+        tools:ignore="DuplicateIncludedIds">
 
 
         <ImageView
@@ -41,7 +44,8 @@
             android:layout_height="@dimen/_10sdp"
             android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginEnd="@dimen/_3sdp"
-            android:src="@drawable/refresh_1" />
+            android:src="@drawable/refresh_1"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +57,8 @@
             android:text="Sync Status"
             android:textColor="@color/text_sync"
             android:textSize="@dimen/_6sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
     </RelativeLayout>
 
@@ -93,13 +98,14 @@
 
                     <ImageView
                         android:id="@+id/bfr_month"
-                        android:layout_width="@dimen/_6sdp"
+                        android:layout_width="0dp"
                         android:layout_height="@dimen/_6sdp"
                         android:layout_marginTop="@dimen/_1sdp"
                         android:layout_weight="0.5"
                         android:background="@null"
                         android:src="@drawable/less_than_black"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="ContentDescription" />
 
                 </LinearLayout>
 
@@ -112,7 +118,8 @@
                     android:text="Feb 2021"
                     android:textAlignment="center"
                     android:textColor="#282A3C"
-                    android:textSize="@dimen/_7sdp" />
+                    android:textSize="@dimen/_7sdp"
+                    tools:ignore="SpUsage" />
 
                 <LinearLayout
                     android:id="@+id/ll_next_month"
@@ -125,7 +132,8 @@
                         android:layout_height="@dimen/_6sdp"
                         android:background="@null"
                         android:src="@drawable/greater_than_black"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="ContentDescription" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -145,7 +153,8 @@
                     android:text="Su"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -155,7 +164,8 @@
                     android:text="Mo"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -165,7 +175,8 @@
                     android:text="Tu"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -175,7 +186,8 @@
                     android:text="We"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -185,7 +197,8 @@
                     android:text="Th"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -195,7 +208,8 @@
                     android:text="Fr"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -205,7 +219,8 @@
                     android:text="Sa"
                     android:textAlignment="center"
                     android:textColor="#abb2b9"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
             </LinearLayout>
         </LinearLayout>
@@ -249,7 +264,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Field work"
                         android:textColor="@color/green_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
 
                     <TextView
@@ -267,7 +283,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Non-Field work"
                         android:textColor="@color/blue_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/txt_week_off"
@@ -283,7 +300,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Weekly off"
                         android:textColor="@color/yellow_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
                 </LinearLayout>
 
@@ -310,7 +328,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Holiday"
                         android:textColor="@color/lustylavender_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
                     <TextView
                         android:id="@+id/txt_leave_pending"
                         android:layout_width="wrap_content"
@@ -327,7 +346,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Leave Approval Pending"
                         android:textColor="@color/GlassSea_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
 
                 </LinearLayout>
@@ -357,7 +377,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Leave"
                         android:textColor="@color/red_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
 
                     <TextView
@@ -377,7 +398,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="TP Deviation Released"
                         android:textColor="@color/dark_green_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/txt_tp_deviation"
@@ -395,7 +417,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="TP Deviation"
                         android:textColor="@color/Evening_Blue_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
                 </LinearLayout>
 
@@ -427,7 +450,8 @@
                         android:padding="@dimen/_3sdp"
                         android:text="Missed Released"
                         android:textColor="@color/Hilo_bay_60"
-                        android:textSize="@dimen/_5sdp" />
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/txt_re_entry"
@@ -442,7 +466,8 @@
                         android:padding="@dimen/_3sdp"
                         android:textSize="@dimen/_5sdp"
                         android:text="Re Entry"
-                        android:textColor="@color/pink_60" />
+                        android:textColor="@color/pink_60"
+                        tools:ignore="SpUsage" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

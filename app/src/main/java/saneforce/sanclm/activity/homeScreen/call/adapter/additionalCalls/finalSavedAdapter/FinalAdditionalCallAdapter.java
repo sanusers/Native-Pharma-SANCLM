@@ -22,10 +22,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
@@ -137,19 +139,19 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
 
         if (saveAdditionalCalls.get(position).isSamInpView()) {
             AssignRVInputSampleFull(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
-            holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_rv_down));
+            holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_rv_down));
         } else {
             AssignRVInputSampleSingle(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
-            holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_right_rv));
+            holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_right_rv));
         }
 
         holder.img_view_rv.setOnClickListener(view -> {
-            if (holder.img_view_rv.getDrawable().getConstantState().equals(context.getResources().getDrawable(R.drawable.arrow_right_rv).getConstantState())) {
-                holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_rv_down));
+            if (Objects.equals(holder.img_view_rv.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.arrow_right_rv)).getConstantState())) {
+                holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_rv_down));
                 AssignRVInputSampleFull(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
                 saveAdditionalCalls.set(position, new SaveAdditionalCall(saveAdditionalCalls.get(position).getName(), saveAdditionalCalls.get(position).getCode(), saveAdditionalCalls.get(position).getTown_name(), saveAdditionalCalls.get(position).getTown_code(), true));
             } else {
-                holder.img_view_rv.setImageDrawable(context.getResources().getDrawable(R.drawable.arrow_right_rv));
+                holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_right_rv));
                 AssignRVInputSampleSingle(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
                 saveAdditionalCalls.set(position, new SaveAdditionalCall(saveAdditionalCalls.get(position).getName(), saveAdditionalCalls.get(position).getCode(), saveAdditionalCalls.get(position).getTown_name(), saveAdditionalCalls.get(position).getTown_code(), false));
             }

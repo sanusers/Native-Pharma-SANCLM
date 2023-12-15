@@ -112,6 +112,7 @@ public interface ApiInterface {
     @POST("?axn=save/approvals")
         //Send DCR Reject
     Call<JsonObject> sendDCRReject(@Field("data") String SendDcrReject);
+
     @FormUrlEncoded
     @POST("?axn=home")
     Call<JsonArray> getcalldetails(@Field("data") String postObj);

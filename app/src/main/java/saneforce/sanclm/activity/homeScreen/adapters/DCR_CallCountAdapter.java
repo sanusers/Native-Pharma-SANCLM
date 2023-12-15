@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.adapters;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -42,6 +43,7 @@ public class DCR_CallCountAdapter extends RecyclerView.Adapter<DCR_CallCountAdap
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull listDataViewholider holder, int position) {
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(with, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -141,7 +143,6 @@ public class DCR_CallCountAdapter extends RecyclerView.Adapter<DCR_CallCountAdap
 
         RelativeLayout linearLayout;
         TextView txt_name, txt_value, txt_value2,txt_value3;
-        ;
         ProgressBar progress_bar;
 
         public listDataViewholider(@NonNull View itemView) {

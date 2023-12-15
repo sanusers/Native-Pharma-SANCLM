@@ -54,8 +54,6 @@ public class SharedPref {
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
 
-
-
     public static void ClearSharedPreference(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();

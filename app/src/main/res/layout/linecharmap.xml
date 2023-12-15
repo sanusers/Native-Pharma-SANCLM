@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/rl_linrchartmap"
     android:orientation="vertical"
@@ -42,7 +43,8 @@
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="@dimen/_5sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
         <TextView
             android:layout_width="match_parent"
@@ -59,7 +61,8 @@
             android:layout_marginEnd="@dimen/_5sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_5sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
         <TextView
             android:layout_width="match_parent"
@@ -76,7 +79,8 @@
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="@dimen/_5sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
 
 
     </LinearLayout>

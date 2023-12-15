@@ -4,5 +4,5 @@ import saneforce.sanclm.activity.tourPlan.model.ModelClass;
 
 public interface OnDayClickInterface {
 
-    public void onDayClicked(int position, String date, ModelClass modelClass);
+    void onDayClicked(int position, String date, ModelClass modelClass);
 }

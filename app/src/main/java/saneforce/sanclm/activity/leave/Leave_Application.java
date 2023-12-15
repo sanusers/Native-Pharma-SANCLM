@@ -6,7 +6,6 @@ import static saneforce.sanclm.commonClasses.UtilityClass.hideKeyboard;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -34,32 +33,27 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.Constants;
-
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
@@ -102,7 +96,7 @@ public class Leave_Application extends AppCompatActivity {
     Piechart_adapter piechart_adapter;
     CardView mtcard;
 
-    @SuppressLint("WrongConstant")
+    @SuppressLint({"WrongConstant", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,8 +132,10 @@ public class Leave_Application extends AppCompatActivity {
 
         sqLite = new SQLite(this);
         back_btn.setOnClickListener(v -> {
-            Intent l = new Intent(Leave_Application.this, HomeDashBoard.class);
-            startActivity(l);
+          //  onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
+          /*  Intent l = new Intent(Leave_Application.this, HomeDashBoard.class);
+            startActivity(l);*/
         });
 //L_count
 
@@ -369,7 +365,7 @@ public class Leave_Application extends AppCompatActivity {
                     public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
 
                         if (response.isSuccessful()) {
-                            Log.e("test", "response : " + " : " + response.body().toString());
+                            Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
                             try {
                                 JSONArray jsonArray = new JSONArray(response.body().toString());
                                 Log.d("responce1", String.valueOf(jsonArray));
@@ -428,6 +424,7 @@ public class Leave_Application extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     public void Leavedetails() {
         listdate.clear();
         List_LeaveDates.clear();
@@ -574,7 +571,7 @@ public class Leave_Application extends AppCompatActivity {
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
 
-            String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+            @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
             l_address = ed_Address.getText().toString();
             l_reason = ed_Reason.getText().toString();
 
@@ -631,7 +628,7 @@ public class Leave_Application extends AppCompatActivity {
                         public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
 
                             if (response.isSuccessful()) {
-                                Log.e("test", "response : " + " : " + response.body().toString());
+                                Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
 
                                 Toast.makeText(Leave_Application.this, "Leave submit successfully", Toast.LENGTH_SHORT).show();
                                 finish();

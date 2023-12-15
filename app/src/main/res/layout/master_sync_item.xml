@@ -47,7 +47,8 @@
                 android:layout_height="@dimen/_6sdp"
                 android:src="@drawable/icon_sync_failed"
                 android:layout_gravity="center"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginVertical="@dimen/_4sdp"
-    android:background="@color/background">
+    android:layout_marginVertical="@dimen/_4sdp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -265,7 +264,8 @@
                                     android:layout_height="@dimen/_6sdp"
                                     android:layout_gravity="center"
                                     android:scaleType="centerInside"
-                                    android:src="@drawable/search_icon_gray" />
+                                    android:src="@drawable/search_icon_gray"
+                                    tools:ignore="ContentDescription" />
 
                                 <EditText
                                     android:id="@+id/searchChemist"
@@ -292,7 +292,8 @@
                                     android:layout_marginStart="@dimen/_5sdp"
                                     android:scaleType="centerInside"
                                     android:src="@drawable/img_close"
-                                    android:visibility="gone" />
+                                    android:visibility="gone"
+                                    tools:ignore="ContentDescription" />
 
                             </LinearLayout>
 
@@ -337,7 +338,8 @@
                                     android:layout_height="@dimen/_6sdp"
                                     android:layout_gravity="center"
                                     android:scaleType="centerInside"
-                                    android:src="@drawable/search_icon_gray" />
+                                    android:src="@drawable/search_icon_gray"
+                                    tools:ignore="ContentDescription" />
 
                                 <EditText
                                     android:id="@+id/searchProduct"
@@ -364,7 +366,8 @@
                                     android:layout_marginStart="@dimen/_5sdp"
                                     android:scaleType="centerInside"
                                     android:src="@drawable/img_close"
-                                    android:visibility="gone" />
+                                    android:visibility="gone"
+                                    tools:ignore="ContentDescription" />
 
                             </LinearLayout>
 
@@ -442,7 +445,8 @@
                     android:layout_height="@dimen/_120sdp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:src="@drawable/img_rcpa" />
+                    android:src="@drawable/img_rcpa"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -510,6 +514,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_add_rcpa"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="NotSibling" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
