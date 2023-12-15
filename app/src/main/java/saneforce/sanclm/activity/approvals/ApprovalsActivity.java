@@ -10,11 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -22,10 +25,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityApprovalsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
+import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
@@ -35,8 +40,9 @@ public class ApprovalsActivity extends AppCompatActivity {
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
     LoginResponse loginResponse;
+    SetupResponse setupResponse;
     SQLite sqLite;
-    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode;
+    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TpDevNeed = "1", GeoTagNeed = "1", TpNeed = "1", TodayPlanSfCode;
     ArrayList<AdapterModel> list_approvals = new ArrayList<>();
     AdapterApprovals adapterApprovals;
     ProgressDialog progressDialog = null;
@@ -81,6 +87,10 @@ public class ApprovalsActivity extends AppCompatActivity {
             jsonGetCount.put("Designation", Designation);
             jsonGetCount.put("state_code", StateCode);
             jsonGetCount.put("subdivision_code", SubDivisionCode);
+            jsonGetCount.put("Tp_need", TpNeed);
+            jsonGetCount.put("geotag_need", GeoTagNeed);
+            jsonGetCount.put("TPdev_need", TpDevNeed);
+
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());
 
         } catch (Exception ignored) {
@@ -150,6 +160,27 @@ public class ApprovalsActivity extends AppCompatActivity {
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
+
+        TpNeed = loginResponse.getTp_need();
+        TpDevNeed = loginResponse.getTPDCR_MGRAppr();
         TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
+
+        try {
+            JSONArray jsonArray;
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject setupData = jsonArray.getJSONObject(0);
+
+                setupResponse = new SetupResponse();
+                Type typeSetup = new TypeToken<SetupResponse>() {
+                }.getType();
+                setupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+
+                if (setupData.has("GeoTagApprovalNeed")) {
+                    GeoTagNeed = setupResponse.getGeoTagApprovalNeed();
+                }
+            }
+        } catch (Exception ignored) {
+        }
     }
 }
