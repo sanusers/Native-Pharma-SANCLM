@@ -121,7 +121,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         JSONObject jsonDeviation = jsonArray.getJSONObject(3);
                         DeviationCount = jsonDeviation.getInt("devappr_count");
                         JSONObject jsonGeoTag = jsonArray.getJSONObject(4);
-                        GeoTagCount = jsonDeviation.getInt("geotag_count");
+                        GeoTagCount = jsonGeoTag.getInt("geotag_count");
                         AssignCountValues();
                     } catch (Exception e) {
                         Log.v("counts", "-error-" + e);
