@@ -300,11 +300,60 @@
                             android:layout_alignParentTop="true"
                             tools:ignore="SpUsage"/>
 
+                        <LinearLayout
+                            android:id="@+id/rejectionReasonLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/summary"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="@dimen/_6sdp"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="@dimen/_1sdp"
+                                android:layout_height="match_parent"
+                                android:background="@color/pink"/>
+
+                            <LinearLayout
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/_3sdp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Rejected Reason"
+                                    android:textSize="@dimen/_5sdp"
+                                    android:textColor="@color/pink"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/satoshi_light"
+                                    tools:ignore="SpUsage"/>
+
+                                <TextView
+                                    android:id="@+id/rejectedReasonTxt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Reason"
+                                    android:textSize="@dimen/_5sdp"
+                                    android:textColor="@color/text_dark"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/satoshi_medium"
+                                    android:layout_marginTop="@dimen/_1sdp"
+                                    tools:ignore="SpUsage"/>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/summaryRecView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/summary"
+                            android:layout_below="@id/rejectionReasonLayout"
                             android:paddingBottom="@dimen/_5sdp"/>
 
                     </RelativeLayout>
@@ -330,6 +379,14 @@
 
         </LinearLayout>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:indeterminateTint="@color/text_dark"
+            android:layout_centerInParent="true"/>
+
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -343,5 +400,7 @@
             tools:ignore="DuplicateIncludedIds" />
 
     </com.google.android.material.navigation.NavigationView>
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

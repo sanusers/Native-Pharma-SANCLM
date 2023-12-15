@@ -57,7 +57,6 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         return new MyViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         BrandModelClass.Presentation presentation = arrayList.get(position);
@@ -72,44 +71,48 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         else
             holder.count.setText(products.size() + " Assert");
 
-        holder.menu.setOnClickListener(view -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
-            popup.inflate(R.menu.presentation_menu);
+        holder.menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.presentation_menu);
 
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    PresentationActivity presentationActivity = (PresentationActivity) context;
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        PresentationActivity presentationActivity = (PresentationActivity) context;
 
-                    if (menuItem.getItemId() == R.id.menuPlay) {
-                        Intent intent = new Intent(presentationActivity, PlaySlidePreviewActivity.class);
-                        String data = new Gson().toJson(products);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("slideBundle",data);
-                        intent.putExtra("bundle",bundle);
-                        context.startActivity(intent);
-                    } else if (menuItem.getItemId() == R.id.menuEdit) {
-                        Intent intent = new Intent(presentationActivity, CreatePresentationActivity.class);
-                        String data = new Gson().toJson(products);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("slideBundle",data);
-                        bundle.putString("presentationName",presentation.getPresentationName());
-                        intent.putExtra("bundle",bundle);
-                        context.startActivity(intent);
-                    } else if (menuItem.getItemId() == R.id.menuDelete) {
-                        removeAt(position);
-                        sqLite.presentationDelete(presentation.getPresentationName());
+                        if (menuItem.getItemId() == R.id.menuPlay) {
+                            Intent intent = new Intent(presentationActivity, PlaySlidePreviewActivity.class);
+                            String data = new Gson().toJson(products);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("slideBundle",data);
+                            intent.putExtra("bundle",bundle);
+                            context.startActivity(intent);
+                        } else if (menuItem.getItemId() == R.id.menuEdit) {
+                            Intent intent = new Intent(presentationActivity, CreatePresentationActivity.class);
+                            String data = new Gson().toJson(products);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("slideBundle",data);
+                            bundle.putString("presentationName",presentation.getPresentationName());
+                            intent.putExtra("bundle",bundle);
+                            context.startActivity(intent);
+                        } else if (menuItem.getItemId() == R.id.menuDelete) {
+                            removeAt(position);
+                            sqLite.presentationDelete(presentation.getPresentationName());
+                        }
+                        return true;
                     }
-                    return true;
-                }
-            });
+                });
             /* setPopUpWindow(view);
             mypopupWindow.showAsDropDown(view, -153, 0);*/
          /*   PopupMenu popup = new PopupMenu(context, view);
             popup.getMenuInflater().inflate(R.menu.presentation_menu, popup.getMenu());*/
-            popup.show();
+                popup.show();
+            }
         });
+
     }
 
     @Override
@@ -169,7 +172,6 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         notifyItemRangeChanged(position, arrayList.size());
     }
 
-    @SuppressLint("InflateParams")
     private void setPopUpWindow(View view) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.pop_up_presentation, null);

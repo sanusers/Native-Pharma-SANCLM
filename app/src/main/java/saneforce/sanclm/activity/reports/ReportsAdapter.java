@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.reports;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,6 @@ public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHo
         return new MyViewHolder(view);
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull ReportsAdapter.MyViewHolder holder, int position) {
         String name = arrayList.get(holder.getAbsoluteAdapterPosition());

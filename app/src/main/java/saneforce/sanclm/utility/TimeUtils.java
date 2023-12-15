@@ -92,7 +92,6 @@ public class TimeUtils {
         try {
             Date ConvertedDate = currentDateFormat.parse(mDate);
             outputDate = requiredDateFormat.format(Objects.requireNonNull(ConvertedDate));
-            Log.d(TAG, "Formatted Date : " + outputDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

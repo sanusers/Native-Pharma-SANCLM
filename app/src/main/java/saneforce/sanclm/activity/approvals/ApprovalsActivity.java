@@ -35,7 +35,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
-    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0;
+    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0,GeoTagCount = 0;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
@@ -120,6 +120,8 @@ public class ApprovalsActivity extends AppCompatActivity {
                         LeaveCount = jsonLeave.getInt("leaveappr_count");
                         JSONObject jsonDeviation = jsonArray.getJSONObject(3);
                         DeviationCount = jsonDeviation.getInt("devappr_count");
+                        JSONObject jsonGeoTag = jsonArray.getJSONObject(4);
+                        GeoTagCount = jsonDeviation.getInt("geotag_count");
                         AssignCountValues();
                     } catch (Exception e) {
                         Log.v("counts", "-error-" + e);
@@ -135,12 +137,12 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void AssignCountValues() {
-        Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount);
+        Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount + "---" + GeoTagCount);
         list_approvals.add(new AdapterModel(getResources().getString(R.string.leave_approvals), String.valueOf(LeaveCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
-        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), "0"));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging),  String.valueOf(GeoTagCount)));
 
         adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);
         approvalsBinding.rvApprovalList.setItemAnimator(new DefaultItemAnimator());

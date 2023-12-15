@@ -22,6 +22,6 @@ public class SQLiteHandler {
     }
 
     public Cursor select_master_list(String tableName) {
-        return db.rawQuery(" SELECT * FROM " + saneforce.sanclm.storage.SQLite.MASTER_SYNC_TABLE + " WHERE " + saneforce.sanclm.storage.SQLite.MASTER_KEY + " = '" + tableName + "' ", null);
+        return db.rawQuery(" SELECT * FROM " + SQLite.MASTER_SYNC_TABLE+ " WHERE " + SQLite.MASTER_KEY + " = '" + tableName + "' ", null);
     }
 }

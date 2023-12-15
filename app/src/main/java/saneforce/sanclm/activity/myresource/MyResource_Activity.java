@@ -2,6 +2,7 @@ package saneforce.sanclm.activity.myresource;
 
 import static saneforce.sanclm.commonClasses.UtilityClass.hideKeyboard;
 
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.response.LoginResponse;
@@ -114,9 +116,8 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
 
         backArrow.setOnClickListener(v -> {
-             getOnBackPressedDispatcher().onBackPressed();
-           /* Intent l = new Intent(MyResource_Activity.this, HomeDashBoard.class);
-            startActivity(l);*/
+            Intent l = new Intent(MyResource_Activity.this, HomeDashBoard.class);
+            startActivity(l);
         });
 
         if(loginResponse.getDesig_Code().equals("MR")){
@@ -149,111 +150,123 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
             String Doc_code="",Chm_code="",Stk_code="",Cip_code="",Hosp_code="",Unlist_code="";
             String doctor= String.valueOf(jsonDoc);
-            count_list.clear();
+            if (!doctor.equals("") || !doctor.equals("null")) {
+                count_list.clear();
 
-            if (jsonDoc.length() > 0) {
-                for (int i = 0; i < jsonDoc.length(); i++) {
-                    JSONObject jsonObject = jsonDoc.getJSONObject(i);
+                if (jsonDoc.length() > 0) {
+                    for (int i = 0; i < jsonDoc.length(); i++) {
+                        JSONObject jsonObject = jsonDoc.getJSONObject(i);
 
-                    if (!Doc_code.equals(jsonObject.getString("Code"))) {
-                        Doc_code = jsonObject.getString("Code");
-                        count_list.add(Doc_code);
-                        Doc_count= String.valueOf(count_list.size());
-                        Log.d("doctor_23", String.valueOf(count_list));
+                        if (!Doc_code.equals(jsonObject.getString("Code"))) {
+                            Doc_code = jsonObject.getString("Code");
+                            count_list.add(Doc_code);
+                            Doc_count= String.valueOf(count_list.size());
+                            Log.d("doctor_23", String.valueOf(count_list));
+                        }
                     }
+                }else{
+                    Doc_count="0";
                 }
-            }else{
-                Doc_count="0";
             }
 
             JSONArray jsonChm = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
             String chemist= String.valueOf(jsonChm);
-            count_list.clear();
+            if (!chemist.equals("") || !chemist.equals("null")) {
+                count_list.clear();
 
-            if (jsonChm.length() > 0) {
-                for (int i = 0; i < jsonChm.length(); i++) {
-                    JSONObject jsonObject = jsonChm.getJSONObject(i);
+                if (jsonChm.length() > 0) {
+                    for (int i = 0; i < jsonChm.length(); i++) {
+                        JSONObject jsonObject = jsonChm.getJSONObject(i);
 
-                    if (!Chm_code.equals(jsonObject.getString("Code"))) {
-                        Chm_code = jsonObject.getString("Code");
-                        count_list.add(Chm_code);
-                        Che_count= String.valueOf(count_list.size());
+                        if (!Chm_code.equals(jsonObject.getString("Code"))) {
+                            Chm_code = jsonObject.getString("Code");
+                            count_list.add(Chm_code);
+                            Che_count= String.valueOf(count_list.size());
+                        }
                     }
+                }else{
+                    Che_count="0";
                 }
-            }else{
-                Che_count="0";
             }
 
             JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
             String stockist= String.valueOf(jsonstock);
-            count_list.clear();
-            if (jsonstock.length() > 0) {
-                for (int i = 0; i < jsonstock.length(); i++) {
-                    JSONObject jsonObject = jsonstock.getJSONObject(i);
+            if (!stockist.equals("") || !stockist.equals("null")) {
+                count_list.clear();
+                if (jsonstock.length() > 0) {
+                    for (int i = 0; i < jsonstock.length(); i++) {
+                        JSONObject jsonObject = jsonstock.getJSONObject(i);
 
-                    if (!Stk_code.equals(jsonObject.getString("Code"))) {
-                        Stk_code = jsonObject.getString("Code");
-                        count_list.add(Stk_code);
-                        Strck_count= String.valueOf(count_list.size());
+                        if (!Stk_code.equals(jsonObject.getString("Code"))) {
+                            Stk_code = jsonObject.getString("Code");
+                            count_list.add(Stk_code);
+                            Strck_count= String.valueOf(count_list.size());
+                        }
                     }
+                }else{
+                    Strck_count="0";
                 }
-            }else{
-                Strck_count="0";
             }
 
 
             JSONArray jsonunlisted = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
             String unlisted= String.valueOf(jsonunlisted);
-            count_list.clear();
+            if (!unlisted.equals("") || !unlisted.equals("null")) {
+                count_list.clear();
 
-            if (jsonunlisted.length() > 0) {
-                for (int i = 0; i < jsonunlisted.length(); i++) {
-                    JSONObject jsonObject = jsonunlisted.getJSONObject(i);
+                if (jsonunlisted.length() > 0) {
+                    for (int i = 0; i < jsonunlisted.length(); i++) {
+                        JSONObject jsonObject = jsonunlisted.getJSONObject(i);
 
-                    if (!Unlist_code.equals(jsonObject.getString("Code"))) {
-                        Stk_code = jsonObject.getString("Code");
-                        count_list.add(Stk_code);
-                        Unlist_count= String.valueOf(count_list.size());
+                        if (!Unlist_code.equals(jsonObject.getString("Code"))) {
+                            Stk_code = jsonObject.getString("Code");
+                            count_list.add(Stk_code);
+                            Unlist_count= String.valueOf(count_list.size());
+                        }
                     }
+                }else{
+                    Unlist_count="0";
                 }
-            }else{
-                Unlist_count="0";
             }
 
             JSONArray jsoncip = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(this));
             String cip= String.valueOf(jsoncip);
-            count_list.clear();
+            if (!cip.equals("") || !cip.equals("null")) {
+                count_list.clear();
 
-            if (jsoncip.length() > 0) {
-                for (int i = 0; i < jsoncip.length(); i++) {
-                    JSONObject jsonObject = jsoncip.getJSONObject(i);
+                if (jsoncip.length() > 0) {
+                    for (int i = 0; i < jsoncip.length(); i++) {
+                        JSONObject jsonObject = jsoncip.getJSONObject(i);
 
-                    if (!Cip_code.equals(jsonObject.getString("Code"))) {
-                        Cip_code= jsonObject.getString("Code");
-                        count_list.add(Cip_code);
-                        Cip_count= String.valueOf(count_list.size());
+                        if (!Cip_code.equals(jsonObject.getString("Code"))) {
+                            Cip_code= jsonObject.getString("Code");
+                            count_list.add(Cip_code);
+                            Cip_count= String.valueOf(count_list.size());
+                        }
                     }
+                }else{
+                    Cip_count="0";
                 }
-            }else{
-                Cip_count="0";
             }
 
             JSONArray jsonhosp = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(this));
             String hosp= String.valueOf(jsonhosp);
-            count_list.clear();
+            if (!hosp.equals("") || !hosp.equals("null")) {
+                count_list.clear();
 
-            if (jsonhosp.length() > 0) {
-                for (int i = 0; i < jsonhosp.length(); i++) {
-                    JSONObject jsonObject = jsonhosp.getJSONObject(i);
+                if (jsonhosp.length() > 0) {
+                    for (int i = 0; i < jsonhosp.length(); i++) {
+                        JSONObject jsonObject = jsonhosp.getJSONObject(i);
 
-                    if (!Hosp_code.equals(jsonObject.getString("Code"))) {
-                        Hosp_code= jsonObject.getString("Code");
-                        count_list.add(Hosp_code);
-                        Hosp_count= String.valueOf(count_list.size());
+                        if (!Hosp_code.equals(jsonObject.getString("Code"))) {
+                            Hosp_code= jsonObject.getString("Code");
+                            count_list.add(Hosp_code);
+                            Hosp_count= String.valueOf(count_list.size());
+                        }
                     }
+                }else{
+                    Hosp_count="0";
                 }
-            }else{
-                Hosp_count="0";
             }
 
             Docvisit();

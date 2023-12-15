@@ -74,7 +74,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
         return new ViewHolder(view);
     }
 
-    @SuppressLint({"WrongConstant", "NotifyDataSetChanged"})
+    @SuppressLint("WrongConstant")
     @Override
     public void onBindViewHolder(@NonNull Resource_adapter.ViewHolder holder, int position) {
         final Resourcemodel_class app_adapt = listeduser.get(position);
@@ -271,7 +271,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         }
                         break;
                     case ("9"):
-                        MyResource_Activity.Key = sqLite.getMasterSyncDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context);
+                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context));
                         JSONArray jsonculst = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(context));
                         String culst_val = "";
                         Valcount = "";

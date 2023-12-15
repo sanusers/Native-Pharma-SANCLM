@@ -21,8 +21,7 @@
             android:layout_width="@dimen/_12sdp"
             android:layout_height="@dimen/_12sdp"
             android:src="@drawable/report_day_icon"
-            android:layout_gravity="center|start"
-            tools:ignore="ContentDescription" />
+            android:layout_gravity="center|start" />
 
         <TextView
             android:id="@+id/reportName"

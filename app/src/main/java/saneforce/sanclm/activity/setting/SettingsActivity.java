@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.setting;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -29,7 +28,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
@@ -57,7 +55,6 @@ public class SettingsActivity extends AppCompatActivity {
     String deviceId = "", url = "", licenseKey ="",divisionCode = "",baseWebUrl="", phpPathUrl ="",reportsUrl="", slidesUrl ="",logoUrl="";
     int hitCount = 0;
 
-    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
                             Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
                         }
                     }else{
-                        Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -152,7 +149,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    @SuppressLint("SetTextI18n")
     public void selectLanguage(){
 
         final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH"};
@@ -208,7 +204,7 @@ public class SettingsActivity extends AppCompatActivity {
                 public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                     binding.configurationPB.setVisibility(View.GONE);
                     if (response.isSuccessful()){
-                        Log.e("test","success : "+ Objects.requireNonNull(response.body()).toString());
+                        Log.e("test","success : "+ response.body().toString());
                         JSONArray jsonArray = null;
                         try {
                             jsonArray = new JSONArray(response.body().toString());
@@ -247,7 +243,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                    Log.e("test","failed : " + t);
+                    Log.e("test","failed : " + t.toString());
                     hitCount++;
                     if (hitCount < 2){
                         configuration("http://" + url + "/apps/");

@@ -66,8 +66,7 @@
                             <ImageView
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
-                                android:src="@drawable/trash_icon"
-                                tools:ignore="ContentDescription" />
+                                android:src="@drawable/trash_icon" />
 
                         </LinearLayout>
 
@@ -123,8 +122,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -183,8 +181,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -261,8 +258,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -336,8 +332,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -412,8 +407,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -488,8 +482,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -564,8 +557,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -640,8 +632,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -716,8 +707,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -792,8 +782,7 @@
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/arrow_down"
-                                android:layout_marginStart="@dimen/_3sdp"
-                                tools:ignore="ContentDescription" />
+                                android:layout_marginStart="@dimen/_3sdp"/>
 
                         </LinearLayout>
 
@@ -873,8 +862,7 @@
                             android:src="@drawable/search_icon_gray"
                             android:layout_gravity="center"
                             android:scaleType="centerInside"
-                            android:layout_marginStart="@dimen/_5sdp"
-                            tools:ignore="ContentDescription" />
+                            android:layout_marginStart="@dimen/_5sdp"/>
 
                         <EditText
                             android:layout_weight="1"
@@ -904,8 +892,7 @@
                                 android:src="@drawable/img_close"
                                 android:layout_marginStart="@dimen/_5sdp"
                                 android:layout_gravity="center"
-                                android:scaleType="centerInside"
-                                tools:ignore="ContentDescription" />
+                                android:scaleType="centerInside" />
 
                         </LinearLayout>
 

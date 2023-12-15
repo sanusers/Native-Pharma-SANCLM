@@ -7,7 +7,7 @@ public class MasterSyncItemModel {
     String remoteTableName = "";
     String localTableKeyName ="";
     boolean PBarVisibility = false;
-    int syncSuccess = 0;
+    int syncSuccess = 0; //0 - success , 1- failed
 
     public MasterSyncItemModel(){
 

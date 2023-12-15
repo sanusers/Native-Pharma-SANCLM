@@ -56,7 +56,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.commonClasses.Constants;
@@ -126,7 +125,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        Objects.requireNonNull(mapFragment).getMapAsync(this);
+        mapFragment.getMapAsync(this);
 
 
         view_img.setOnClickListener(v -> {
@@ -183,6 +182,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
             Toast toast = Toast.makeText(MyResource_mapview.this, getResources().getString(R.string.loc_not_detect), Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
+            val = false;
         }
         return val;
     }
@@ -190,7 +190,6 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
 
 
 
-    @SuppressLint({"DefaultLocale", "PotentialBehaviorOverride", "SetTextI18n"})
     public void DCR_VAlues(JSONArray jsonArray, String val) {
         mMap.clear();
         listed_cust.clear();
@@ -270,24 +269,24 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
                         custname.setText(listed_cust.get(i).getStrname() + " - " + listed_cust.get(i).getStr_townname());
                         if (val.equals("1")) {
                             DCr_icons = findViewById(R.id.DCr_icons); // Replace with your ImageView ID
-                            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_dr_icon); // Replace with your drawable resource ID
+                            Drawable drawable = getResources().getDrawable(R.drawable.tp_dr_icon); // Replace with your drawable resource ID
                             DCr_icons.setImageDrawable(drawable);
                         } else if (val.equals("2")) {
                             DCr_icons = findViewById(R.id.DCr_icons);
-                            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_chemist_icon);
+                            Drawable drawable = getResources().getDrawable(R.drawable.tp_chemist_icon);
                             DCr_icons.setImageDrawable(drawable);
                         } else if (val.equals("3")) {
                             DCr_icons = findViewById(R.id.DCr_icons);
-                            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_cip_icon);
+                            Drawable drawable = getResources().getDrawable(R.drawable.tp_cip_icon);
                             DCr_icons.setImageDrawable(drawable);
                         } else if (val.equals("4")) {
                             DCr_icons = findViewById(R.id.DCr_icons);
-                            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_unlist_dr_icon);
+                            Drawable drawable = getResources().getDrawable(R.drawable.tp_unlist_dr_icon);
                             DCr_icons.setImageDrawable(drawable);
                         }
                         address.setText(getAddress(Double.parseDouble(listed_cust.get(i).getStrlat()), Double.parseDouble(listed_cust.get(i).getStrlong())));
 
-                        Objects.requireNonNull(marker).setTag(listed_cust.get(i));
+                        marker.setTag(listed_cust.get(i));
                         mMap.setOnMarkerClickListener(this);
 
                         Log.e("location_latlong", str1 + "--" + str2);
@@ -306,10 +305,10 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
                                 dis_name.setText("Km");
 
                             } else {
-                                @SuppressLint("DefaultLocale") String ss = String.format("%.3f", dd);
+                                String ss = String.format("%.3f", dd);
                                 double k = Double.parseDouble(ss);
                                 double kk = k * 1000;
-                                @SuppressLint("DefaultLocale") String km = String.format("%.0f", kk);
+                                String km = String.format("%.0f", kk);
                                 distance.setText(km);
                                 dis_name.setText("Meters");
 
@@ -416,29 +415,28 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
 
 
 
-    @SuppressLint({"DefaultLocale", "SetTextI18n"})
     public boolean onMarkerClick(@NonNull Marker marker) {
         Mapview_modelclass markerData = (Mapview_modelclass) marker.getTag();
-        custname.setText(Objects.requireNonNull(markerData).getStrname() + " - " + markerData.getStr_townname());
+        custname.setText(markerData.getStrname() + " - " + markerData.getStr_townname());
 
         if (Dcr_val.equals("1")) {
             DCr_icons = findViewById(R.id.DCr_icons); // Replace with your ImageView ID
-            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_dr_icon); // Replace with your drawable resource ID
+            Drawable drawable = getResources().getDrawable(R.drawable.tp_dr_icon); // Replace with your drawable resource ID
             DCr_icons.setImageDrawable(drawable);
 
         } else if (Dcr_val.equals("2")) {
             DCr_icons = findViewById(R.id.DCr_icons);
-            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_chemist_icon);
+            Drawable drawable = getResources().getDrawable(R.drawable.tp_chemist_icon);
             DCr_icons.setImageDrawable(drawable);
 
         } else if (Dcr_val.equals("3")) {
             DCr_icons = findViewById(R.id.DCr_icons);
-            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_cip_icon);
+            Drawable drawable = getResources().getDrawable(R.drawable.tp_cip_icon);
             DCr_icons.setImageDrawable(drawable);
 
         } else if (Dcr_val.equals("4")) {
             DCr_icons = findViewById(R.id.DCr_icons);
-            @SuppressLint("UseCompatLoadingForDrawables") Drawable drawable = getResources().getDrawable(R.drawable.tp_unlist_dr_icon);
+            Drawable drawable = getResources().getDrawable(R.drawable.tp_unlist_dr_icon);
             DCr_icons.setImageDrawable(drawable);
         }
         address.setText(getAddress(Double.parseDouble(markerData.getStrlat()), Double.parseDouble(markerData.getStrlong())));

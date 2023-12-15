@@ -32,7 +32,7 @@ public class ReportFragContainerActivity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 getOnBackPressedDispatcher().onBackPressed();
+                onBackPressed();
             }
         });
 
@@ -51,7 +51,6 @@ public class ReportFragContainerActivity extends AppCompatActivity {
         switch (fragmentStr.toUpperCase()){
             case "DAY REPORT" : {
                 loadFragment(new DayReportFragment());
-
                 break;
             }
 //            case "MONTHLY REPORT" : {

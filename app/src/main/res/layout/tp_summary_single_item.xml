@@ -66,7 +66,7 @@
                 android:fontFamily="@font/satoshi_variable"
                 android:singleLine="true"
                 android:paddingEnd="@dimen/_5sdp"
-                tools:ignore="RtlSymmetry,SpUsage"/>
+                tools:ignore="SpUsage"/>
 
             <View
                 android:layout_width="1dp"
@@ -86,7 +86,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:paddingStart="@dimen/_5sdp"
-                tools:ignore="RtlSymmetry,SpUsage"/>
+                tools:ignore="SpUsage"/>
 
         </LinearLayout>
 
@@ -108,7 +108,7 @@
                 android:fontFamily="@font/satoshi_variable"
                 android:singleLine="true"
                 android:paddingEnd="@dimen/_5sdp"
-                tools:ignore="RtlSymmetry,SpUsage"/>
+                tools:ignore="SpUsage"/>
 
             <View
                 android:layout_width="1dp"
@@ -128,7 +128,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:paddingStart="@dimen/_5sdp"
-                tools:ignore="RtlSymmetry,SpUsage"/>
+                tools:ignore="SpUsage"/>
 
         </LinearLayout>
 
@@ -150,7 +150,7 @@
                 android:fontFamily="@font/satoshi_variable"
                 android:singleLine="true"
                 android:paddingEnd="@dimen/_5sdp"
-                tools:ignore="RtlSymmetry,SpUsage"/>
+                tools:ignore="SpUsage"/>
 
             <View
                 android:layout_width="1dp"
@@ -170,7 +170,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:paddingStart="@dimen/_5sdp"
-                tools:ignore="RtlSymmetry,SpUsage"/>
+                tools:ignore="SpUsage"/>
 
         </LinearLayout>
 

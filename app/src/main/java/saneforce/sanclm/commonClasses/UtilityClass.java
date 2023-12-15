@@ -1,6 +1,5 @@
 package saneforce.sanclm.commonClasses;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -46,7 +45,6 @@ public class UtilityClass {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    @SuppressLint("AppBundleLocaleChanges")
     public static void setLanguage(Context context){
         String language = SharedPref.getSelectedLanguage(context);
         Locale locale = new Locale(language);

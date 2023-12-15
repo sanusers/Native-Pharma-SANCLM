@@ -3,7 +3,6 @@ package saneforce.sanclm.activity.slideDownloaderAlertBox;
 import static android.content.Context.MODE_PRIVATE;
 import static saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.downloading_count;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,13 +15,12 @@ import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -30,7 +28,7 @@ import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 
 public class DownloadTask {
     private static final String TAG = "DownloadTask";
-    private final Activity activity;
+    private Activity activity;
     private String downloadUrl = "";
     private String downloadFileName = "";
 
@@ -139,12 +137,11 @@ public class DownloadTask {
             }
         }
 
-        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             int progress = values[0];
-            @SuppressLint("DefaultLocale") String progressText = String.format("%.1f MB of %.1f MB", downloadedSize / (1024.0 * 1024), totalSize / (1024.0 * 1024));
+            String progressText = String.format("%.1f MB of %.1f MB", downloadedSize / (1024.0 * 1024), totalSize / (1024.0 * 1024));
             Slidevalue.setDownloadSizeStatus(progressText);
             Slidevalue.setProgressValue(String.valueOf(progress));
             Slidevalue.setDownloadStatus(true);
@@ -163,8 +160,8 @@ public class DownloadTask {
                 Slidevalue.setDownloadStatus(true);
                 downloading_count++;
                 SlideDownloaderAlertBox.dialogdismisscount++;
-                SlideDownloaderAlertBox.txt_downloadcount.setText(downloading_count + "/" + SlideDownloaderAlertBox.adapter.getItemCount());
-                Objects.requireNonNull(SlideDownloaderAlertBox.recyclerView.getLayoutManager()).scrollToPosition(downloading_count);
+                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(downloading_count) + "/" + String.valueOf( SlideDownloaderAlertBox.adapter.getItemCount()));
+                SlideDownloaderAlertBox.recyclerView.getLayoutManager().scrollToPosition(downloading_count);
                 SlideDownloaderAlertBox.adapter.notifyDataSetChanged();
                 if (SlideDownloaderAlertBox.dialogdismisscount ==  SlideDownloaderAlertBox.adapter.getItemCount()) {
                     SlideDownloaderAlertBox.dialog.dismiss();
@@ -184,7 +181,7 @@ public class DownloadTask {
 
             } else {
                 Slidevalue.setProgressValue(String.valueOf(processvalue));
-                SlideDownloaderAlertBox.txt_downloadcount.setText(downloading_count + "/" + SlideDownloaderAlertBox.adapter.getItemCount());
+                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(downloading_count) + "/" + String.valueOf( SlideDownloaderAlertBox.adapter.getItemCount()));
                 Slidevalue.setDownloadSizeStatus("Download failed");
                 Slidevalue.setDownloadStatus(false);
                 SlideDownloaderAlertBox.dialogdismisscount++;
@@ -217,7 +214,7 @@ public class DownloadTask {
     public static void unzip (String filepath, File targetDirectory) throws IOException {
 
         File zipFile = new File(filepath);
-        ZipInputStream zis = new ZipInputStream (new BufferedInputStream(Files.newInputStream(zipFile.toPath())));
+        ZipInputStream zis = new ZipInputStream (new BufferedInputStream(new FileInputStream(zipFile)));
         try {
 
             ZipEntry ze;

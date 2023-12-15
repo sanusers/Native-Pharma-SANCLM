@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_3sdp"
@@ -29,8 +28,7 @@
                     android:scaleType="fitXY"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="ContentDescription" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -55,8 +53,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:paddingStart="@dimen/_6sdp"
-                        android:paddingTop="@dimen/_3sdp"
-                        tools:ignore="RtlSymmetry,SpUsage" />
+                        android:paddingTop="@dimen/_3sdp" />
 
                     <TextView
                         android:id="@+id/assertCount"
@@ -74,8 +71,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/presentationName"
                         android:paddingStart="@dimen/_6sdp"
-                        android:paddingBottom="@dimen/_4sdp"
-                        tools:ignore="RtlSymmetry,SpUsage" />
+                        android:paddingBottom="@dimen/_4sdp"/>
 
                     <LinearLayout
                         android:id="@+id/verticalDot"
@@ -94,8 +90,7 @@
                             android:layout_height="wrap_content"
                             android:src="@drawable/img_menu"
                             android:layout_gravity="center"
-                            android:padding="@dimen/_6sdp"
-                            tools:ignore="ContentDescription" />
+                            android:padding="@dimen/_6sdp"/>
 
                     </LinearLayout>
 

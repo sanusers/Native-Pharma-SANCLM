@@ -132,8 +132,7 @@
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:max="100"
                 android:min="0"
-                android:progressTint="#ACBF60"
-                tools:ignore="UnusedAttribute" />
+                android:progressTint="#ACBF60"/>
 
 
         </LinearLayout>
@@ -170,8 +169,7 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:src="@drawable/arrow_up_white"
             android:scaleType="centerInside"
-            android:layout_marginBottom="@dimen/_4sdp"
-            tools:ignore="ContentDescription" />
+            android:layout_marginBottom="@dimen/_4sdp"/>
 
     </RelativeLayout>
 
@@ -186,7 +184,6 @@
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintVertical_bias="0.95"
         android:src="@drawable/play_icon"
-        app:tint="@color/black_45"
-        tools:ignore="ContentDescription" />
+        app:tint="@color/black_45" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

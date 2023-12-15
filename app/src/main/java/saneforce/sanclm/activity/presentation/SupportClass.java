@@ -11,7 +11,7 @@ import java.io.FilenameFilter;
 public class SupportClass {
 
     public static String getFileExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
+        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
     }
 
     public static Bitmap pdfToBitmap(File pdfFile) {

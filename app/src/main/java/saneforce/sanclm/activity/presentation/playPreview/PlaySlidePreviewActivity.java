@@ -1,7 +1,6 @@
 package saneforce.sanclm.activity.presentation.playPreview;
 
 
-import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -103,12 +102,11 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
         binding.exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 getOnBackPressedDispatcher().onBackPressed();
+                onBackPressed();
             }
         });
 
         binding.playBtn.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetJavaScriptEnabled")
             @Override
             public void onClick (View view) {
 

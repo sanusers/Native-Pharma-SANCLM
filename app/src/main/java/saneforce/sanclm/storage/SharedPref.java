@@ -48,17 +48,11 @@ public class SharedPref {
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
 
-    //SetUp
-    public static final String GEOTAG_IMAGE = "geo_tag_img";
-    public static final String GEOTAG_APPROVAL_NEED = "geotag_approval_need";
-
     //Approval
     public static final String APPROVAL_COUNT = "approval_count";
 
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
-
-
 
     public static void ClearSharedPreference(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -277,5 +271,6 @@ public class SharedPref {
     public static String getTodayDayPlanSfName(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanSfName, "");
     }
+
 
 }

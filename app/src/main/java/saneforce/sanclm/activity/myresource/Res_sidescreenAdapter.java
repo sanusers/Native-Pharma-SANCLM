@@ -64,7 +64,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         return new ViewHolder(view);
     }
 
-    @SuppressLint({"ResourceAsColor", "SetTextI18n"})
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull Res_sidescreenAdapter.ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
@@ -148,70 +148,72 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             });
 
         } else {
-            holder.Res_Table1.setVisibility(View.GONE);
-            holder.Res_Table2.setVisibility(View.GONE);
-            holder.Res_Edit.setVisibility(View.GONE);
-            holder.Res_visitcntl.setVisibility(View.VISIBLE);
-            holder.tertry_list.setVisibility(View.VISIBLE);
-            holder.end_line.setVisibility(View.VISIBLE);
-            holder.topline.setVisibility(View.VISIBLE);
-            holder.line_endshow.setVisibility(View.GONE);
-            resList1.clear();
-            int vcount = 0;
+            if (split_val.equals("2")) {
+                holder.Res_Table1.setVisibility(View.GONE);
+                holder.Res_Table2.setVisibility(View.GONE);
+                holder.Res_Edit.setVisibility(View.GONE);
+                holder.Res_visitcntl.setVisibility(View.VISIBLE);
+                holder.tertry_list.setVisibility(View.VISIBLE);
+                holder.end_line.setVisibility(View.VISIBLE);
+                holder.topline.setVisibility(View.VISIBLE);
+                holder.line_endshow.setVisibility(View.GONE);
+                resList1.clear();
+                int vcount = 0;
 
-            try {
-                uniqueValues.clear();
-                duplicateValues.clear();
-                L_cLasses.clear();
-                JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
+                try {
+                    uniqueValues.clear();
+                    duplicateValues.clear();
+                    L_cLasses.clear();
+                    JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
 //                   ==============================
-                String colorText1 = "<font color=\"#F1536E\">" + count + " )" + "</font>";
-                holder.listcount.setText(Html.fromHtml(colorText1));
-                String val = "-(" + app_adapt.getRes_Category() + ")";
-                String colorText = "<font color=\"#F1536E\">" + app_adapt.getDcr_name() + val + "</font>";
-                holder.Res_Name.setText(Html.fromHtml(colorText));
+                    String colorText1 = "<font color=\"#F1536E\">" + count + " )" + "</font>";
+                    holder.listcount.setText(Html.fromHtml(colorText1));
+                    String val = "-(" + app_adapt.getRes_Category() + ")";
+                    String colorText = "<font color=\"#F1536E\">" + app_adapt.getDcr_name() + val + "</font>";
+                    holder.Res_Name.setText(Html.fromHtml(colorText));
 
 
-                Log.d("vistdates", "vist_ctrlDate" + "--" + app_adapt.getCustoum_name() + "--" + app_adapt.getVisit_count() + "--" + app_adapt.cust_name + "--" + app_adapt.getLatitude());
-                for (int i = 0; i < jsonvst_ctl.length(); i++) {
-                    JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
+                    Log.d("vistdates", "vist_ctrlDate" + "--" + app_adapt.getCustoum_name() + "--" + app_adapt.getVisit_count() + "--" + app_adapt.cust_name + "--" + app_adapt.getLatitude());
+                    for (int i = 0; i < jsonvst_ctl.length(); i++) {
+                        JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
 
-                    if (app_adapt.getRes_custname().equals(jsonObject.getString("CustCode"))) {
+                        if (app_adapt.getRes_custname().equals(jsonObject.getString("CustCode"))) {
 
-                        if (app_adapt.getLatitude().equals(jsonObject.getString("Mnth"))) {
-                            String custom_name = ((jsonObject.getString("CustName")));
-                            String custom_code = ((jsonObject.getString("CustCode")));
-                            String Dcr_dt = ((jsonObject.getString("Dcr_dt")));
-                            String vist_ctrlDate = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, (jsonObject.getString("Dcr_dt"))));
-                            vcount++;
+                            if (app_adapt.getLatitude().equals(jsonObject.getString("Mnth"))) {
+                                String custom_name = ((jsonObject.getString("CustName")));
+                                String custom_code = ((jsonObject.getString("CustCode")));
+                                String Dcr_dt = ((jsonObject.getString("Dcr_dt")));
+                                String vist_ctrlDate = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, (jsonObject.getString("Dcr_dt"))));
+                                vcount++;
 
-                            L_cLasses.add(new Resourcemodel_class(custom_name, custom_code, vist_ctrlDate, Dcr_dt));
+                                L_cLasses.add(new Resourcemodel_class(custom_name, custom_code, vist_ctrlDate, Dcr_dt));
 
-                            Collections.sort(L_cLasses, new Comparator<Resourcemodel_class>() {
-                                @Override
-                                public int compare(Resourcemodel_class lhs, Resourcemodel_class rhs) {
-                                    return lhs.getMax_count().compareTo(rhs.getMax_count());
-                                }
-                            });
-                            Collections.reverse(L_cLasses);
+                                Collections.sort(L_cLasses, new Comparator<Resourcemodel_class>() {
+                                    @Override
+                                    public int compare(Resourcemodel_class lhs, Resourcemodel_class rhs) {
+                                        return lhs.getMax_count().compareTo(rhs.getMax_count());
+                                    }
+                                });
+                                Collections.reverse(L_cLasses);
+                            }
+
+                            resvisitctrl_adapter resvisitctrladapter = new resvisitctrl_adapter(context, L_cLasses);
+                            LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
+                            holder.tertry_list.setLayoutManager(mLayoutManager);
+                            holder.tertry_list.setItemAnimator(new DefaultItemAnimator());
+                            holder.tertry_list.setAdapter(resvisitctrladapter);
+                            resvisitctrladapter.notifyDataSetChanged();
                         }
-
-                        resvisitctrl_adapter resvisitctrladapter = new resvisitctrl_adapter(context, L_cLasses);
-                        LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
-                        holder.tertry_list.setLayoutManager(mLayoutManager);
-                        holder.tertry_list.setItemAnimator(new DefaultItemAnimator());
-                        holder.tertry_list.setAdapter(resvisitctrladapter);
-                        resvisitctrladapter.notifyDataSetChanged();
                     }
+
+                    holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-Visit");
+
+
+                } catch (Exception a) {
+                    a.printStackTrace();
                 }
 
-                holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-Visit");
-
-
-            } catch (Exception a) {
-                a.printStackTrace();
             }
-
         }
     }
 

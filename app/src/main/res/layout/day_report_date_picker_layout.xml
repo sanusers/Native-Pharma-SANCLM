@@ -25,8 +25,7 @@
             android:paddingTop="@dimen/_6sdp"
             android:paddingBottom="@dimen/_6sdp"
             android:paddingStart="@dimen/_12sdp"
-            android:paddingEnd="@dimen/_12sdp"
-            tools:ignore="ContentDescription" />
+            android:paddingEnd="@dimen/_12sdp" />
 
         <TextView
             android:id="@+id/monthYear"
@@ -53,8 +52,7 @@
             android:paddingTop="@dimen/_6sdp"
             android:paddingBottom="@dimen/_6sdp"
             android:paddingStart="@dimen/_12sdp"
-            android:paddingEnd="@dimen/_12sdp"
-            tools:ignore="ContentDescription" />
+            android:paddingEnd="@dimen/_12sdp" />
 
     </LinearLayout>
 

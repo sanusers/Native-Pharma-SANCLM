@@ -1,6 +1,5 @@
 package saneforce.sanclm.services;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -13,7 +12,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.Objects;
 import java.util.Random;
 
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
@@ -47,7 +45,7 @@ public class FirebaseService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.e("test","remote msg notification : " + Objects.requireNonNull(remoteMessage.getNotification()).getBody());
+        Log.e("test","remote msg notification : " + remoteMessage.getNotification().getBody());
         imageUrl = String.valueOf(remoteMessage.getNotification().getImageUrl());
         title = remoteMessage.getNotification().getTitle();
         body = remoteMessage.getNotification().getBody();
@@ -59,7 +57,7 @@ public class FirebaseService extends FirebaseMessagingService {
     public void createNotification(){
         Intent intent = new Intent(this, HomeDashBoard.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationClass notificationClass = new NotificationClass(this,title, body, imageUrl, pendingIntent);
         notificationClass.createNotification();

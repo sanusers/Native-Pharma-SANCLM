@@ -48,7 +48,7 @@ public  class SlideDownloaderAlertBox {
         recyclerView = dialogView.findViewById(R.id.recyelerview123);
         txt_downloadcount = dialogView.findViewById(R.id.txt_downloadcount);
 
-        txt_downloadcount.setText(downloading_count + "/" + totalcount);
+        txt_downloadcount.setText(String.valueOf(downloading_count) + "/" +String.valueOf(totalcount ));
         ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
         adapter = new Slide_adapter(activity, Slide_list);
         LinearLayoutManager  manager = new LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false);
@@ -71,7 +71,7 @@ public  class SlideDownloaderAlertBox {
             if(!downloadStatus){
 
             String url= "https://"+SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+imageName;
-            new DownloadTask(activity, url, imageName, progressValue, false, img_size_status, slide,MoveingFlog);
+            new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide,MoveingFlog);
             }
         }
 

@@ -32,9 +32,22 @@ public class PresentationActivity extends AppCompatActivity {
         savedPresentation = sqLite.getPresentationData();
         populateAdapter();
 
-        binding.backArrow.setOnClickListener(view -> onBackPressed());
+        binding.backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+                //startActivity(new Intent(PresentationActivity.this, HomeDashBoard.class));
+                // finish();
+            }
+        });
 
-        binding.createPresentationBtn.setOnClickListener(view -> startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class)));
+        binding.createPresentationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class));
+            }
+        });
+
 
     }
 

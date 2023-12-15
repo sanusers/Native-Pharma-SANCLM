@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.presentation.playPreview;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,7 +35,7 @@ public class PlaySlidePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        @SuppressLint("InflateParams") View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
+        View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
 
         ImageView imageView = sliderLayout.findViewById(R.id.imageView);
         getFromFilePath(productArrayList.get(position).getFileName(),imageView);

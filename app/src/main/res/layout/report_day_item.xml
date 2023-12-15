@@ -55,11 +55,10 @@
                 android:padding="@dimen/_5sdp">
 
                 <RelativeLayout
-                    android:layout_weight="1"
+                    android:layout_weight="1.1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_5sdp"
-                    tools:ignore="RtlSymmetry">
+                    android:paddingStart="@dimen/_5sdp">
 
                     <TextView
                         android:id="@+id/workTypeTxt"
@@ -192,11 +191,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_weight="1"
+                    android:layout_weight="1.1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_10sdp"
-                    tools:ignore="RtlSymmetry">
+                    android:paddingStart="@dimen/_8sdp">
 
                     <TextView
                         android:id="@+id/submit"
@@ -275,9 +273,9 @@
                             android:fontFamily="@font/satoshi_medium"
                             android:layout_gravity="center"
                             android:gravity="bottom|start"
+                            android:drawableStart="@drawable/marker_geo_approval"
                             android:drawablePadding="@dimen/_5sdp"
-                            tools:ignore="SpUsage"
-                            app:drawableStartCompat="@drawable/marker_geo_approval" />
+                            tools:ignore="SpUsage" />
 
                     </LinearLayout>
 
@@ -318,8 +316,7 @@
                                 android:src="@drawable/tp_dr_icon"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:ignore="ContentDescription" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/drCount"
@@ -353,8 +350,7 @@
                                 android:src="@drawable/tp_chemist_icon"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                tools:ignore="ContentDescription" />
+                                app:layout_constraintBottom_toBottomOf="parent" />
 
                             <TextView
                                 android:id="@+id/chemistCount"
@@ -388,8 +384,7 @@
                                 android:src="@drawable/tp_stockiest_icon"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                tools:ignore="ContentDescription" />
+                                app:layout_constraintBottom_toBottomOf="parent" />
 
                             <TextView
                                 android:id="@+id/stockiestCount"
@@ -423,8 +418,7 @@
                                 android:src="@drawable/tp_cip_icon"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                tools:ignore="ContentDescription" />
+                                app:layout_constraintBottom_toBottomOf="parent" />
 
                             <TextView
                                 android:id="@+id/cipCount"
@@ -458,8 +452,7 @@
                                 android:src="@drawable/tp_unlist_dr_icon"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                tools:ignore="ContentDescription" />
+                                app:layout_constraintBottom_toBottomOf="parent" />
 
                             <TextView
                                 android:id="@+id/unDrCount"
@@ -493,8 +486,7 @@
                                 android:src="@drawable/tp_hospital_icon"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                tools:ignore="ContentDescription" />
+                                app:layout_constraintBottom_toBottomOf="parent" />
 
                             <TextView
                                 android:id="@+id/hospCount"
@@ -520,11 +512,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_weight="1"
+                    android:layout_weight="0.8"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:paddingStart="@dimen/_10sdp"
-                    tools:ignore="RtlSymmetry">
+                    android:paddingStart="@dimen/_10sdp">
 
                     <TextView
                         android:id="@+id/status"
@@ -571,8 +562,7 @@
                         <ImageView
                             android:layout_width="@dimen/_10sdp"
                             android:layout_height="@dimen/_10sdp"
-                            android:src="@drawable/arrow_right_"
-                            tools:ignore="ContentDescription" />
+                            android:src="@drawable/arrow_right_" />
 
                     </LinearLayout>
 

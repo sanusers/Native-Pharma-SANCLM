@@ -3,51 +3,51 @@ package saneforce.sanclm.activity.reports.dayReport;
 import java.io.Serializable;
 
 public class DayReportModel implements Serializable {
-  private String Udr;
+  private String Udr="";
 
-  private String intime;
+  private String intime="";
 
-  private String Drs;
+  private String Drs="";
 
-  private String inaddress;
+  private String inaddress="";
 
-  private String HalfDay_FW_Type;
+  private String HalfDay_FW_Type="";
 
-  private String outtime;
+  private String outtime="";
 
-  private String Chm;
+  private String Chm="";
 
-  private String Desig_Code;
+  private String Desig_Code="";
 
-  private String SF_Code;
+  private String SF_Code="";
 
-  private String Stk;
+  private String Stk="";
 
-  private String Cip;
+  private String Cip="";
 
-  private String Adate;
+  private String Adate="";
 
-  private String Hos;
+  private String Hos="";
 
-  private String SF_Name;
+  private String SF_Name="";
 
-  private String Rmdr;
+  private String Rmdr="";
 
-  private String rptdate;
+  private String rptdate="";
 
-  private String wtype;
+  private String wtype="";
 
-  private String FWFlg;
+  private String FWFlg="";
 
   private Activity_Date Activity_Date;
 
-  private String outaddress;
+  private String outaddress="";
 
-  private String ACode;
+  private String ACode="";
 
-  private String remarks;
+  private String remarks="";
 
-  private String TerrWrk;
+  private String TerrWrk="";
 
   public String getUdr() {
     return this.Udr;
@@ -234,9 +234,9 @@ public class DayReportModel implements Serializable {
   }
 
   public static class Activity_Date implements Serializable {
-    private String date;
+    private String date="";
 
-    private String timezone;
+    private String timezone="";
 
     private Integer timezone_type;
 

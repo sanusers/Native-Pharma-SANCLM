@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (UtilityClass.isNetworkAvailable(LoginActivity.this)){
                         login(userId,password);
                     }else{
-                        Toast.makeText(LoginActivity.this, "Internet is not available", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.tourPlan.session;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
         return new MyViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder (@NonNull SessionViewAdapter.MyViewHolder holder, int position) {
 

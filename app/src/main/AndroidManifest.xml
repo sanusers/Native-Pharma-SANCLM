@@ -54,6 +54,8 @@
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+
         <activity
             android:name=".activity.reports.ReportFragContainerActivity"
             android:exported="false"
@@ -195,7 +197,7 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

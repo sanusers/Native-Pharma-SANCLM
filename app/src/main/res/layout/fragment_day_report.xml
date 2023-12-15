@@ -52,8 +52,7 @@
                     android:layout_gravity="center"
                     android:padding="@dimen/_4sdp"
                     app:tint="@color/white"
-                    android:background="@color/text_dark"
-                    tools:ignore="ContentDescription" />
+                    android:background="@color/text_dark" />
 
             </LinearLayout>
 
@@ -80,8 +79,7 @@
                     android:src="@drawable/search_icon_gray"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    tools:ignore="ContentDescription" />
+                    android:layout_marginStart="@dimen/_5sdp"/>
 
                 <EditText
                     android:layout_weight="1"
@@ -96,6 +94,7 @@
                     android:background="@null"
                     android:gravity="start|center"
                     android:padding="@dimen/_5sdp"
+                    android:imeOptions="actionDone"
                     tools:ignore="SpUsage"/>
 
                 <LinearLayout
@@ -111,14 +110,14 @@
                         android:src="@drawable/img_close"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        tools:ignore="ContentDescription" />
+                        android:scaleType="centerInside" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/sortIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_5sdp"
@@ -132,8 +131,7 @@
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/report_sort_icon"
-                    app:tint="@color/white"
-                    tools:ignore="ContentDescription" />
+                    app:tint="@color/white" />
 
             </LinearLayout>
 
@@ -151,6 +149,20 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/_3sdp"
         android:scrollbars="vertical"/>
+
+    <TextView
+        android:id="@+id/noReportFoundTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Reports Found!"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/text_dark"
+        android:fontFamily="@font/satoshi_medium"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:visibility="gone"
+        tools:ignore="SpUsage"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

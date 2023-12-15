@@ -14,20 +14,20 @@ import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityReportsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
+import saneforce.sanclm.storage.SharedPref;
+import saneforce.sanclm.utility.NetworkStatusTask;
 
 public class ReportsActivity extends AppCompatActivity {
 
@@ -50,7 +50,7 @@ public class ReportsActivity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 getOnBackPressedDispatcher().onBackPressed();
+                onBackPressed();
             }
         });
 
@@ -73,28 +73,35 @@ public class ReportsActivity extends AppCompatActivity {
     public void getData(String report,String date){
 
         binding.progressBar.setVisibility(View.VISIBLE);
-        if(UtilityClass.isNetworkAvailable(getApplicationContext())){
+        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, new NetworkStatusTask.NetworkStatusInterface() {
+            @Override
+            public void isNetworkAvailable(Boolean status) {
+                if(status){
 
-//                apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
-            apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, "http://sanffa.info/server/db_native_app.php/?");
+                    try {
+//                    apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
+                        apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
 
-            Map<String,String> map = new HashMap<>();
-//                map.put("divisionCode", loginResponse.getDivision_Code());
-//                map.put("rptSF", loginResponse.getSF_Code());
-//                map.put("rSF", loginResponse.getSF_Code());
-//                map.put("axn", "get/DayReports");
-//                map.put("sfCode", loginResponse.getSF_Code());
-            map.put("divisionCode", "25");
-            map.put("rptSF", "MGR2240");
-            map.put("rSF", "MGR2240");
-            map.put("sfCode", "MGR2240");
-            map.put("rptDt", date);
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("sfcode", loginResponse.getSF_Code());
+                        jsonObject.put("sf_type", loginResponse.getSf_type());
+                        jsonObject.put("divisionCode", loginResponse.getDivision_Code());
+                        jsonObject.put("Rsf", loginResponse.getSF_Code());
+                        jsonObject.put("Designation", loginResponse.getDesig());
+                        jsonObject.put("state_code", loginResponse.getState_Code());
+                        jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                        jsonObject.put("rptDt", date);
 
-            switch (report.toUpperCase()){
-                case "DAY REPORT" : {
-                    map.put("axn", "get/DayReports");
-                    break;
-                }
+//                        jsonObject.put("divisionCode", "25");
+//                        jsonObject.put("rptSF", "MGR2240");
+//                        jsonObject.put("rSF", "MGR2240");
+//                        jsonObject.put("sfCode", "MGR2240");
+
+                        switch (report.toUpperCase()){
+                            case "DAY REPORT" : {
+                                jsonObject.put("tableName", "getdayrpt");
+                                break;
+                            }
 //                case "MONTHLY REPORT" : {
 //                    break;
 //                }
@@ -107,39 +114,45 @@ public class ReportsActivity extends AppCompatActivity {
 //                case "VISIT MONITOR" : {
 //                    break;
 //                }
-            }
-
-            Call<JsonElement> call = apiInterface.getDayReport("",map);
-            call.enqueue(new Callback<JsonElement>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                    binding.progressBar.setVisibility(View.GONE);
-                    try {
-                        if(response.isSuccessful() && response.body() != null){
-                            JsonElement jsonElement = response.body();
-                            JSONArray jsonArray = new JSONArray();
-                            if(jsonElement.isJsonArray()){
-                                jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                            }
-                            navigate(jsonArray,report,date);
                         }
+
+                        Call<JsonElement> call = apiInterface.getReports(jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                binding.progressBar.setVisibility(View.GONE);
+                                try {
+                                    if(response.isSuccessful() && response.body() != null){
+                                        JsonElement jsonElement = response.body();
+                                        JSONArray jsonArray = new JSONArray();
+                                        if(jsonElement.isJsonArray()){
+                                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                        }
+                                        navigate(jsonArray,report,date);
+                                    }
+                                }catch (JSONException e){
+                                    throw new RuntimeException(e);
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                binding.progressBar.setVisibility(View.GONE);
+
+                            }
+                        });
                     }catch (JSONException e){
                         throw new RuntimeException(e);
                     }
 
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                }else{
                     binding.progressBar.setVisibility(View.GONE);
-
+                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
                 }
-            });
-        }else{
-            binding.progressBar.setVisibility(View.GONE);
-            Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
-        }
-
+            }
+        });
+        networkStatusTask.execute();
     }
 
     public void navigate(JSONArray jsonArray,String report,String date){

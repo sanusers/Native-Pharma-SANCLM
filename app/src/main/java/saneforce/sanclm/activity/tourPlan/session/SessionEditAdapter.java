@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.tourPlan.session;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
@@ -40,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,7 +75,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public SessionEditAdapter(ModelClass inputDataArray, Context context, SessionInterface sessionInterface) {
-        SessionEditAdapter.inputDataArray = inputDataArray;
+        this.inputDataArray = inputDataArray;
         this.context = context;
         this.sessionInterface = sessionInterface;
 
@@ -125,7 +123,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         return new MyViewHolder(view);
     }
 
-    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull SessionEditAdapter.MyViewHolder holder, int position) {
 
@@ -676,15 +673,17 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             }
         });
 
-        holder.remarks.setOnTouchListener((v, event) -> {
-            if (holder.remarks.hasFocus()) {
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
-                    v.getParent().requestDisallowInterceptTouchEvent(false);
-                    return true;
+        holder.remarks.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (holder.remarks.hasFocus()) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
         });
 
         holder.remarks.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -1111,7 +1110,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 try {
                                     JsonElement jsonElement = response.body();
                                     JSONArray jsonArray = new JSONArray();
-                                    if (!Objects.requireNonNull(jsonElement).isJsonNull()) {
+                                    if (!jsonElement.isJsonNull()) {
                                         if (jsonElement.isJsonArray()) {
                                             JsonArray jsonArray1 = jsonElement.getAsJsonArray();
                                             jsonArray = new JSONArray(jsonArray1.toString());
@@ -1151,7 +1150,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 e.printStackTrace();
             }
         }else {
-            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1178,7 +1177,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         });
 
         sessionItemAdapter = new SessionItemAdapter(holder.sessionItemAdapterArray, checkBoxNeed, new SessionItemInterface() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void itemClicked(ArrayList<EditModelClass> jsonArray, EditModelClass jsonObject) {
                 if (holder.workTypeLayout.getVisibility() == View.VISIBLE) {
@@ -1395,7 +1393,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     public void changeUIState(MyViewHolder holder, LinearLayout linearLayout, ImageView imageView, boolean allLayoutVisible) {
 
         if (allLayoutVisible) {
@@ -1429,7 +1426,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
     }
 
-    @SuppressLint("SetTextI18n")
     public static void setSelectedCount(MyViewHolder holder, ArrayList<EditModelClass> arrayList, boolean selectState, TextView selectedNameTxtView, TextView countTxt) {
 
             if (!selectState) { // if its false we should show the text as "Selected" with count or just "Select" .if its true we need to show the selected item name in TextView.
@@ -1553,7 +1549,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         }
     }
 
-    @SuppressLint("SetTextI18n")
     public void clearSelectedItem(MyViewHolder holder, TextView labelTxt, TextView countTxt) {
          // un check the all check boxes
         for (int i = 0; i<holder.sessionItemAdapterArray.size(); i++) {
@@ -1612,7 +1607,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         onEdit(holder.getAbsoluteAdapterPosition(), true, "");
     }
 
-    @SuppressLint("SetTextI18n")
     public void clusterChanged(ArrayList<String> clusterCodes, ArrayList<EditModelClass> arrayList, TextView label, String master, MyViewHolder holder) {
 
             for (int i = 0; i<arrayList.size(); i++) {
