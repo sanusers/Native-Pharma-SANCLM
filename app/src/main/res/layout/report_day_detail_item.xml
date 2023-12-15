@@ -10,8 +10,6 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_2sdp"
         app:cardElevation="0.5dp"
-        android:outlineAmbientShadowColor="@color/green_2"
-        android:outlineSpotShadowColor="@color/green_2"
         android:layout_margin="@dimen/_5sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,37 +20,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/nameLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:gravity="center"
                 android:padding="@dimen/_5sdp">
 
                 <ImageView
                     android:id="@+id/iconName"
                     android:layout_width="@dimen/_14sdp"
                     android:layout_height="@dimen/_14sdp"
-                    android:src="@drawable/tp_dr_icon"
-                    android:layout_gravity="center"/>
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/tp_dr_icon" />
 
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/iconName"
+                    android:layout_centerInParent="true"
                     android:text="Ram Kumar"
                     android:textSize="@dimen/_6sdp"
                     android:textColor="@color/text_dark"
                     android:fontFamily="@font/satoshi_medium"
-                    android:layout_gravity="center"
                     android:layout_marginStart="@dimen/_5sdp"
                     tools:ignore="SpUsage"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:id="@+id/view"
@@ -107,7 +105,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/visitTimeTxt"
-                            android:text="04:32 PM"
+                            android:text=""
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -145,7 +143,7 @@
                             android:layout_gravity="center"
                             android:layout_marginTop="@dimen/_3sdp"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="04:32 PM"
+                            android:text=""
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -178,7 +176,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/clusterTxt"
-                            android:text="Nadanam"
+                            android:text=""
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -214,7 +212,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/pobTxt"
-                            android:text="5000"
+                            android:text=""
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -250,7 +248,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/feedbackTxt"
-                            android:text="Good"
+                            android:text=""
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -308,7 +306,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/jointWorkTxt"
-                            android:text="Ashwin Kumar HQ Name Designation"
+                            android:text=""
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -331,13 +329,13 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/remarksTxt"
+                            android:id="@+id/nextVisitTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentTop="true"
-                            android:text="Remarks"
+                            android:text="Next Visit date"
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark_65"
                             android:fontFamily="@font/satoshi_medium"
@@ -345,13 +343,13 @@
                             tools:ignore="SpUsage"/>
 
                         <TextView
-                            android:id="@+id/remarks"
+                            android:id="@+id/nextVisit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
-                            android:layout_below="@id/remarksTxt"
-                            android:text="Interested, but need some.."
+                            android:layout_below="@id/nextVisitTxt"
+                            android:text=""
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -423,7 +421,7 @@
                                     android:id="@+id/checkInTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:text="17 Oct 2023 04:32 PM"
+                                    android:text=""
                                     android:textSize="@dimen/_5sdp"
                                     android:textColor="@color/text_dark"
                                     android:fontFamily="@font/satoshi_medium"
@@ -454,7 +452,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
                                 android:layout_below="@id/checkInLayout"
-                                android:text="No.4 Chaimers Road, Nandanam, Chennai."
+                                android:text=""
                                 android:textSize="@dimen/_5sdp"
                                 android:textColor="@color/text_dark"
                                 android:fontFamily="@font/satoshi_medium"
@@ -506,7 +504,7 @@
                                     android:id="@+id/checkOutTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:text="18 Oct 2023 01:32 AM"
+                                    android:text=""
                                     android:textSize="@dimen/_5sdp"
                                     android:textColor="@color/text_dark"
                                     android:fontFamily="@font/satoshi_medium"
@@ -537,7 +535,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
                                 android:layout_below="@id/checkOutLayout"
-                                android:text="No.4 Chaimers Road, Nandanam, Chennai."
+                                android:text=""
                                 android:textSize="@dimen/_5sdp"
                                 android:textColor="@color/text_dark"
                                 android:fontFamily="@font/satoshi_medium"
@@ -672,12 +670,54 @@
                     </RelativeLayout>
 
                     <View
-                        android:id="@+id/view6"
+                        android:id="@+id/view5"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/productLayout"
+                        android:background="#DCDCDC"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"/>
+
+                    <LinearLayout
+                        android:id="@+id/rcpaLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/view5"
+                        android:padding="@dimen/_5sdp">
+
+                        <TextView
+                            android:id="@+id/rcpa"
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RCPA"
+                            android:textSize="@dimen/_5sdp"
+                            android:textColor="@color/text_dark"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="center"
+                            tools:ignore="SpUsage"/>
+
+                        <ImageView
+                            android:layout_width="@dimen/_7sdp"
+                            android:layout_height="@dimen/_7sdp"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:src="@drawable/arrow_down"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/view6"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/rcpaLayout"
                         android:background="#DCDCDC"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:layout_marginBottom="@dimen/_5sdp"/>
@@ -710,7 +750,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/overAllRemarkTxt"
-                            android:text="Our Product stands out on arrangements"
+                            android:text=""
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -756,11 +796,11 @@
 
                 <ImageView
                     android:id="@+id/viewMoreArrow"
-                    android:layout_width="@dimen/_5sdp"
-                    android:layout_height="@dimen/_5sdp"
+                    android:layout_width="@dimen/_4sdp"
+                    android:layout_height="@dimen/_4sdp"
                     android:layout_marginStart="@dimen/_5sdp"
                     android:src="@drawable/arrow_down"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center|bottom"/>
 
             </LinearLayout>
             

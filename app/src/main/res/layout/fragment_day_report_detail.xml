@@ -45,11 +45,30 @@
                 android:background="@null"
                 android:gravity="start|center"
                 android:padding="@dimen/_5sdp"
+                android:imeOptions="actionDone"
                 tools:ignore="SpUsage"/>
+
+            <LinearLayout
+                android:id="@+id/searchClearIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_5sdp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_8sdp"
+                    android:src="@drawable/img_close"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/sortIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
@@ -70,6 +89,7 @@
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_2sdp"
@@ -90,7 +110,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:text="Wasim Jaffer Ahmeed - HQ - designation"
+                android:text="Name"
                 android:textSize="@dimen/_6sdp"
                 android:textColor="@color/txt_sample"
                 android:fontFamily="@font/satoshi_bold"
@@ -154,7 +174,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/clusterTxt"
-                            android:text="Nandanam, Alwarpet, Velacherry"
+                            android:text="Cluster"
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -190,7 +210,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/hqTxt"
-                            android:text="Siva Kumar HQ - designation"
+                            android:text="HQ"
                             android:textSize="@dimen/_5sdp"
                             android:textColor="@color/text_dark"
                             android:fontFamily="@font/satoshi_medium"
@@ -262,25 +282,35 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_3sdp">
 
-                        <TextView
+                        <LinearLayout
                             android:id="@+id/doctor"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:text="Doctor"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:layout_gravity="center"
-                            android:background="@drawable/selector_box"
-                            android:backgroundTint="#2600C689"
-                            android:paddingStart="@dimen/_10sdp"
-                            android:paddingEnd="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_5sdp"
-                            android:paddingBottom="@dimen/_5sdp"
-                            tools:ignore="SpUsage"/>
+                            android:background="@drawable/selector_box">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="Doctor"
+                                android:textSize="@dimen/_5sdp"
+                                android:textColor="@color/text_dark"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_gravity="center"
+                                android:background="@drawable/selector_box"
+                                android:backgroundTint="#2600C689"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/drCount"
@@ -308,26 +338,35 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_3sdp">
 
-                        <TextView
+                        <LinearLayout
                             android:id="@+id/chemist"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:text="Chemist"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:layout_gravity="center"
-                            android:background="@drawable/selector_box"
-                            android:backgroundTint="#263DA5F4"
-                            android:paddingStart="@dimen/_10sdp"
-                            android:paddingEnd="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_5sdp"
-                            android:paddingBottom="@dimen/_5sdp"
-                            tools:ignore="SpUsage"/>
+                            android:background="@drawable/selector_box">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="Chemist"
+                                android:textSize="@dimen/_5sdp"
+                                android:textColor="@color/text_dark"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_gravity="center"
+                                android:background="@drawable/selector_box"
+                                android:backgroundTint="#263DA5F4"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/cheCount"
@@ -355,25 +394,35 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_3sdp">
 
-                        <TextView
+                        <LinearLayout
                             android:id="@+id/stockiest"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:text="Stockiest"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:layout_gravity="center"
-                            android:background="@drawable/selector_box"
-                            android:backgroundTint="@color/pink_15"
-                            android:paddingStart="@dimen/_10sdp"
-                            android:paddingEnd="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_5sdp"
-                            android:paddingBottom="@dimen/_5sdp"
-                            tools:ignore="SpUsage"/>
+                            android:background="@drawable/selector_box">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="Stockiest"
+                                android:textSize="@dimen/_5sdp"
+                                android:textColor="@color/text_dark"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_gravity="center"
+                                android:background="@drawable/selector_box"
+                                android:backgroundTint="@color/pink_15"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/stkCount"
@@ -401,25 +450,35 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_3sdp">
 
-                        <TextView
+                        <LinearLayout
                             android:id="@+id/unDr"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:text="Unlisted Doctor"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:layout_gravity="center"
-                            android:background="@drawable/selector_box"
-                            android:backgroundTint="#268C8C94"
-                            android:paddingStart="@dimen/_10sdp"
-                            android:paddingEnd="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_5sdp"
-                            android:paddingBottom="@dimen/_5sdp"
-                            tools:ignore="SpUsage"/>
+                            android:background="@drawable/selector_box">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="Unlisted Doctor"
+                                android:textSize="@dimen/_5sdp"
+                                android:textColor="@color/text_dark"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_gravity="center"
+                                android:background="@drawable/selector_box"
+                                android:backgroundTint="#268C8C94"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/unDrCount"
@@ -447,25 +506,35 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_3sdp">
 
-                        <TextView
+                        <LinearLayout
                             android:id="@+id/cip"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:text="CIP"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:layout_gravity="center"
-                            android:background="@drawable/selector_box"
-                            android:backgroundTint="#26FFBC40"
-                            android:paddingStart="@dimen/_10sdp"
-                            android:paddingEnd="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_5sdp"
-                            android:paddingBottom="@dimen/_5sdp"
-                            tools:ignore="SpUsage"/>
+                            android:background="@drawable/selector_box">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="CIP"
+                                android:textSize="@dimen/_5sdp"
+                                android:textColor="@color/text_dark"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_gravity="center"
+                                android:background="@drawable/selector_box"
+                                android:backgroundTint="#26FFBC40"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/cipCount"
@@ -493,25 +562,35 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_3sdp">
 
-                        <TextView
+                        <LinearLayout
                             android:id="@+id/hosp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:text="Hospital"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:layout_gravity="center"
-                            android:background="@drawable/selector_box"
-                            android:backgroundTint="#2672526F"
-                            android:paddingStart="@dimen/_10sdp"
-                            android:paddingEnd="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_5sdp"
-                            android:paddingBottom="@dimen/_5sdp"
-                            tools:ignore="SpUsage"/>
+                            android:background="@drawable/selector_box">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="Hospital"
+                                android:textSize="@dimen/_5sdp"
+                                android:textColor="@color/text_dark"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:layout_gravity="center"
+                                android:background="@drawable/selector_box"
+                                android:backgroundTint="#2672526F"
+                                android:paddingStart="@dimen/_10sdp"
+                                android:paddingEnd="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_5sdp"
+                                android:paddingBottom="@dimen/_5sdp"
+                                tools:ignore="SpUsage"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/hospCount"
@@ -549,6 +628,31 @@
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/noReportFoundTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/cardView"
+        android:layout_alignParentBottom="true"
+        android:text="No Reports Found!"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/text_dark"
+        android:fontFamily="@font/satoshi_medium"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:visibility="gone"
+        tools:ignore="SpUsage"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateTint="@color/text_dark"
+        android:layout_centerInParent="true"/>
 
 
 </RelativeLayout>

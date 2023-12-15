@@ -355,7 +355,7 @@
                                             android:layout_alignParentRight="true"
                                             android:layout_centerInParent="true"
                                             android:layout_marginRight="13dp"
-                                            android:src="@drawable/vector" />
+                                            android:src="@drawable/arrow_down" />
                                     </RelativeLayout>
 
                                     <RelativeLayout

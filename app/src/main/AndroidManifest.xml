@@ -54,6 +54,8 @@
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+
         <activity
             android:name=".activity.reports.ReportFragContainerActivity"
             android:exported="false"

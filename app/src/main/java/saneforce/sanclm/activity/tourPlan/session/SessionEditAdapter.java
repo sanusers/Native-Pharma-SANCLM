@@ -1150,7 +1150,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 e.printStackTrace();
             }
         }else {
-            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
         }
     }
 

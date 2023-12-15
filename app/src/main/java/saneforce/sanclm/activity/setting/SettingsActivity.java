@@ -144,7 +144,7 @@ public class SettingsActivity extends AppCompatActivity {
                             Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
                         }
                     }else{
-                        Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

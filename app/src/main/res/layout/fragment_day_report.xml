@@ -94,6 +94,7 @@
                     android:background="@null"
                     android:gravity="start|center"
                     android:padding="@dimen/_5sdp"
+                    android:imeOptions="actionDone"
                     tools:ignore="SpUsage"/>
 
                 <LinearLayout
@@ -116,6 +117,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/sortIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_5sdp"
@@ -147,6 +149,20 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/_3sdp"
         android:scrollbars="vertical"/>
+
+    <TextView
+        android:id="@+id/noReportFoundTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Reports Found!"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/text_dark"
+        android:fontFamily="@font/satoshi_medium"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:visibility="gone"
+        tools:ignore="SpUsage"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

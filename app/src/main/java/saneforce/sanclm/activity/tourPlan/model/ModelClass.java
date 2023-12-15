@@ -14,7 +14,7 @@ public class ModelClass implements Serializable {
   private String year = "";
   private Boolean onEdit = false;
   private String submittedTime = "";
-  private boolean sentForApproval = false;
+  private String syncStatus = ""; // 0 - Success(Data successfully sent to Remote data base), 1 - Failed(failed to send Remote data base for any reason like no internet or api called failed)
   private ArrayList<ModelClass.SessionList> sessionList;
 
   public ModelClass () {
@@ -104,12 +104,12 @@ public class ModelClass implements Serializable {
     this.submittedTime = submittedTime;
   }
 
-  public boolean isSentForApproval () {
-    return sentForApproval;
+  public String isSyncStatus() {
+    return syncStatus;
   }
 
-  public void setSentForApproval (boolean sentForApproval) {
-    this.sentForApproval = sentForApproval;
+  public void setSyncStatus(String syncStatus) {
+    this.syncStatus = syncStatus;
   }
 
   public ArrayList<ModelClass.SessionList> getSessionList() {

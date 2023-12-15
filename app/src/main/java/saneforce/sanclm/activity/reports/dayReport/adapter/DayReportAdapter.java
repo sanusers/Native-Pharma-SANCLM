@@ -62,41 +62,12 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.remarks.setText(dayReportModel.getRemarks());
 //        holder.status.setText(dayReportModel.getS());
 
-        if(!dayReportModel.getDrs().equals("0") && !dayReportModel.getDrs().equals("") && dayReportModel.getDrs() != null){
-            holder.drCount.setText(dayReportModel.getDrs());
-        }else{
-            holder.drIcon.setVisibility(View.GONE);
-        }
-
-        if(!dayReportModel.getChm().equals("0") && !dayReportModel.getChm().equals("") && dayReportModel.getChm() != null){
-            holder.chemCount.setText(dayReportModel.getChm());
-        }else{
-            holder.cheIcon.setVisibility(View.GONE);
-        }
-
-        if(!dayReportModel.getStk().equals("0") && !dayReportModel.getStk().equals("") && dayReportModel.getStk() != null){
-            holder.stockCount.setText(dayReportModel.getStk());
-        }else{
-            holder.stockIcon.setVisibility(View.GONE);
-        }
-
-        if(!dayReportModel.getCip().equals("0") && !dayReportModel.getCip().equals("") && dayReportModel.getCip() != null){
-            holder.cipCount.setText(dayReportModel.getCip());
-        }else{
-            holder.cipIcon.setVisibility(View.GONE);
-        }
-
-        if(!dayReportModel.getUdr().equals("0") && !dayReportModel.getUdr().equals("") && dayReportModel.getUdr() != null){
-            holder.unDrCount.setText(dayReportModel.getUdr());
-        }else{
-            holder.unDrIcon.setVisibility(View.GONE);
-        }
-
-        if(!dayReportModel.getHos().equals("0") && !dayReportModel.getHos().equals("") && dayReportModel.getHos() != null){
-            holder.hospCount.setText(dayReportModel.getHos());
-        }else{
-            holder.hospIcon.setVisibility(View.GONE);
-        }
+        holder.drCount.setText(dayReportModel.getDrs());
+        holder.chemCount.setText(dayReportModel.getChm());
+        holder.stockCount.setText(dayReportModel.getStk());
+        holder.cipCount.setText(dayReportModel.getCip());
+        holder.unDrCount.setText(dayReportModel.getUdr());
+        holder.hospCount.setText(dayReportModel.getHos());
 
         holder.arrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,11 +144,6 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
                         filteredModelArray.add(dayReportModel);
                     }
                 }
-//                for(int i = 0; i< supportModelArray.size(); i++){
-//                    if(supportModelArray.get(i).getTerrWrk().toUpperCase().contains(charSequence.toString().toUpperCase()) || supportModelArray.get(i).getWtype().toUpperCase().contains(charSequence.toString().toUpperCase())) {
-//                        filteredModelArray.add(supportModelArray.get(i));
-//                    }
-//                }
                 results.count=filteredModelArray.size();
                 results.values=filteredModelArray;
             }else{

@@ -44,7 +44,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:layout_marginRight="@dimen/_5sdp"
-                    android:src="@drawable/vector" />
+                    android:src="@drawable/arrow_down" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -87,7 +87,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:layout_marginRight="@dimen/_5sdp"
-                    android:src="@drawable/vector" />
+                    android:src="@drawable/arrow_down" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -122,7 +122,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:layout_marginRight="@dimen/_5sdp"
-                    android:src="@drawable/vector" />
+                    android:src="@drawable/arrow_down" />
             </RelativeLayout>
 
 

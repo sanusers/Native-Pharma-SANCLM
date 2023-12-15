@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -46,7 +45,6 @@ import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanclm.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.sanclm.activity.tourPlan.model.ModelClass;
-import saneforce.sanclm.activity.tourPlan.model.ObjectModelClass;
 import saneforce.sanclm.activity.tourPlan.session.SessionInterface;
 import saneforce.sanclm.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.sanclm.activity.tourPlan.session.SessionViewAdapter;
@@ -60,6 +58,7 @@ import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
+import saneforce.sanclm.utility.NetworkStatusTask;
 import saneforce.sanclm.utility.TimeUtils;
 
 public class TourPlanActivity extends AppCompatActivity {
@@ -99,9 +98,8 @@ public class TourPlanActivity extends AppCompatActivity {
         dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
         populateCalendarAdapter(dayWiseArrayCurrentMonth);
 
-//        getTPData();
+        getRemoteTPData();
         binding.tpDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
         binding.tpDrawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -432,7 +430,6 @@ public class TourPlanActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ArrayList<ObjectModelClass> objectModelClasses = new ArrayList<>();
                 JSONArray jsonArray = new JSONArray();
                 if(monthInAdapterFlag == 0) {
                     jsonArray = sqLite.getTPData(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
@@ -449,7 +446,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
 
                     for (ModelClass modelClass : arrayList) {
-                        if(!modelClass.getDate().equals("") && !modelClass.isSentForApproval()) {
+                        if(!modelClass.getDate().equals("") && !modelClass.isSyncStatus().equals("1")) {
                             prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList);
                         }
                     }
@@ -485,11 +482,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 weeklyOffEditable = jsonObject.getString("Weeklyoff_Editable");
             }
 
-            if(addSessionNeed.equalsIgnoreCase("0")) {
+            if(addSessionNeed.equalsIgnoreCase("0"))
                 binding.tpNavigation.addSession.setVisibility(View.VISIBLE);
-            }else {
+            else
                 binding.tpNavigation.addSession.setVisibility(View.GONE);
-            }
 
             holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
             JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
@@ -536,13 +532,11 @@ public class TourPlanActivity extends AppCompatActivity {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i<workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
-                if(jsonObject.getString("Name").equalsIgnoreCase("Weekly Off")) {
+                if(jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
                     weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                }else if(jsonObject.getString("Name").equalsIgnoreCase("Holiday")) {
+                else if(jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
                     holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                }
             }
-
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -643,8 +637,7 @@ public class TourPlanActivity extends AppCompatActivity {
             //Data from Tour Plan table
             JSONArray savedDataArray = new JSONArray(sqLite.getTPData(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
             if(savedDataArray.length()>0) { //Use the saved data if Tour Plan table has data of a selected month
-                Type type = new TypeToken<ArrayList<ModelClass>>() {
-                }.getType();
+                Type type = new TypeToken<ArrayList<ModelClass>>() {}.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
             }else { //if tour plan table has no data
 
@@ -656,9 +649,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
                 ArrayList<String> holidayDateArray = new ArrayList<>();
                 for (int i = 0; i<holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                    if(holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate1.getMonthValue()))) {
+                    if(holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate1.getMonthValue())))
                         holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-                    }
                 }
 
                 for (String day : days) {
@@ -884,50 +876,72 @@ public class TourPlanActivity extends AppCompatActivity {
         }, 50);
     }
 
-    public void getTPData() {
+    public void getRemoteTPData() {
+        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, new NetworkStatusTask.NetworkStatusInterface() {
+            @Override
+            public void isNetworkAvailable(Boolean status) {
+                if(status){
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("tableName", "getall_tp");
+                        jsonObject.put("sfcode", loginResponse.getSF_Code());
+                        jsonObject.put("division_code", loginResponse.getDivision_Code());
+                        jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
+                        jsonObject.put("sf_type", loginResponse.getSf_type());
+                        jsonObject.put("Designation", loginResponse.getDesig());
+                        jsonObject.put("state_code", loginResponse.getState_Code());
+                        jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                        jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25,TimeUtils.FORMAT_8,LocalDate.now().getMonth().toString()));
+                        jsonObject.put("tp_year", LocalDate.now().getYear());
 
-        try {
-            if(UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
+                        Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                try {
+                                    if(response.body() != null && !response.body().isJsonNull()) {
+                                        JSONObject jsonObject1 = new JSONObject();
+                                        if(response.body().isJsonObject()){
+                                            jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
+                                            if(jsonObject1.has("previous")){
+                                                JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("previous").toString());
+                                                if(previousArray.length() > 0){
+                                                    String month = String.valueOf(LocalDate.now().minusMonths(1));
+                                                }
+                                            }
+                                            if(jsonObject1.has("current")){
+                                                JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
+                                            }
+                                            if(jsonObject1.has("next")){
+                                                JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
+                                            }
+                                        }
+                                    }
+                                }catch (JSONException e){
+                                    throw new RuntimeException(e);
+                                }
+                            }
 
-                apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("tableName", "getall_tp");
-                jsonObject.put("sfcode", loginResponse.getSF_Code());
-                jsonObject.put("division_code", loginResponse.getDivision_Code());
-                jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                jsonObject.put("sf_type", loginResponse.getSf_type());
-                jsonObject.put("Designation", loginResponse.getDesig());
-                jsonObject.put("state_code", loginResponse.getState_Code());
-                jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
-                jsonObject.put("tp_month", "10,");
-                jsonObject.put("tp_year", "2023,");
-
-                Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
-                call.enqueue(new Callback<JsonElement>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                        Log.e("test", "getTp response : " + response.body());
-                        if(response.body() != null) {
-
-                        }
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                Log.e("test", "error getTp : " + t);
+                            }
+                        });
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
-
-                    @Override
-                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                        Log.e("test", "error getTp : " + t);
-                    }
-                });
-            }else {
-                Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
+                }
             }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
+        });
+        networkStatusTask.execute();
     }
 
     public void prepareObjectToSendForApproval(String month, String dateForApproval, ArrayList<ModelClass> arrayList) {
         try {
+            binding.progressBar.setVisibility(View.VISIBLE);
             JSONArray jsonArray = new JSONArray();
             for (ModelClass modelClass : arrayList) {
                 if(!modelClass.getDayNo().isEmpty()) {
@@ -977,7 +991,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                 hosp_code = textBuilder(sessionList.getHospital(), true);
                                 hosp_Name = textBuilder(sessionList.getHospital(), false);
                                 DayRemarks = sessionList.getRemarks();
-
                             }else if(i == 1) {
                                 WTCode2 = sessionList.getWorkType().getCode();
                                 WTName2 = sessionList.getWorkType().getName();
@@ -999,7 +1012,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                 hosp_code2 = textBuilder(sessionList.getHospital(), true);
                                 hosp_Name2 = textBuilder(sessionList.getHospital(), false);
                                 DayRemarks2 = sessionList.getRemarks();
-
                             }else if(i == 2) {
                                 WTCode3 = sessionList.getWorkType().getCode();
                                 WTName3 = sessionList.getWorkType().getName();
@@ -1092,10 +1104,10 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
             }
-
             sendTpForApproval(jsonArray, arrayList, dateForApproval, month);
 
         } catch (JSONException ex) {
+            binding.progressBar.setVisibility(View.GONE);
             throw new RuntimeException(ex);
         }
 
@@ -1114,48 +1126,56 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void sendTpForApproval(JSONArray jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month) {
-
-        if(UtilityClass.isNetworkAvailable(TourPlanActivity.this)) {
-            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-            Call<JsonObject> call = apiInterface.saveTP(jsonArray.toString());
-            call.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                    Log.e("test", "saveTp response : " + response.body());
-                    try {
-                        if(response.isSuccessful() && response.body() != null) {
-                            JsonObject jsonObject = response.body();
-                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
-                            saveTpLocal(modelClassArrayList, date, month, jsonObject.has("success") && jsonObject1.getBoolean("success"));
-                        }else {
-                            saveTpLocal(modelClassArrayList, date, month, false);
+        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, new NetworkStatusTask.NetworkStatusInterface() {
+            @Override
+            public void isNetworkAvailable(Boolean status) {
+                if(status){
+                    apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                    Call<JsonObject> call = apiInterface.saveTP(jsonArray.toString());
+                    call.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            Log.e("test", "saveTp response : " + response.body());
+                            binding.progressBar.setVisibility(View.GONE);
+                            try {
+                                if(response.isSuccessful() && response.body() != null) {
+                                    JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                                    if(jsonObject1.getBoolean("success"))
+                                        saveTpLocal(modelClassArrayList, date, month,"0"); // Sync Success
+                                    else
+                                        saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
+                                }else {
+                                    saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
+                                }
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    Log.e("test", "onFailure saveTp : " + t);
-                    saveTpLocal(modelClassArrayList, date, month, false);
+                        @Override
+                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            Log.e("test", "onFailure saveTp : " + t);
+                            binding.progressBar.setVisibility(View.GONE);
+                            saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
+                        }
+                    });
+                }else{
+                    binding.progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+                    saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
                 }
-            });
-
-        }else {
-            Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
-            saveTpLocal(modelClassArrayList, date, month, false);
-        }
+            }
+        });
+        networkStatusTask.execute();
 
     }
 
-    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String month, boolean status) {
+    public void saveTpLocal(ArrayList<ModelClass> arrayList, String date, String month, String status) {
         for (ModelClass modelClass : arrayList) {
             if(modelClass.getDayNo().equals(date)) {
-                modelClass.setSentForApproval(status);
+                modelClass.setSyncStatus(status);
                 break;
             }
-
         }
         sqLite.saveTPData(month, new Gson().toJson(arrayList));
     }

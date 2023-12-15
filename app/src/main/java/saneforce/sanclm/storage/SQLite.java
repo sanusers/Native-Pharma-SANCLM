@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.response.LoginResponse;
 
 
@@ -42,6 +43,8 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String TOUR_PLAN_TABLE = "tour_plan_table";
     public static final String TP_MONTH = "tp_month";
     public static final String TP_DATA = "tp_data";
+    public static final String TP_APPROVAL_STATUS = "tp_approval_status"; // 0 - Planning, 1 - Pending, 2 - Rejected, 3 - Approved
+    public static final String TP_REJECTION_REASON = "tp_rejection_reason";
 
     //Line Chat table
     private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
@@ -73,7 +76,7 @@ public class SQLite extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LOGIN_TABLE + "(" + LOGIN_DATA + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text," + SYNC_STATUS + " INTEGER" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
                 LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
                 LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
@@ -215,9 +218,23 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void saveMonthlyApprovalStatus(String month, String status){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TP_MONTH,month);
+        contentValues.put(TP_APPROVAL_STATUS,status);
+
+        String[] args = new String[]{month};
+        int updated = db.update(TOUR_PLAN_TABLE,contentValues,TP_MONTH + "=?", args);
+        if(updated <= 0){
+            db.insert(TOUR_PLAN_TABLE,null,contentValues);
+        }
+        db.close();
+    }
+
     public JSONArray getTPData(String month) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "=" + "'" + month + "';",null);
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "='" + month + "';",null);
         String data = "";
         if (cursor.moveToNext())
             data = cursor.getString(1);
@@ -232,6 +249,33 @@ public class SQLite extends SQLiteOpenHelper {
            throw new RuntimeException(e);
        }
         return jsonArray;
+    }
+
+    public String getMonthlyApprovalStatus(String month){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "='" + month + "';",null);
+        String data = "";
+        if(cursor.moveToNext()){
+            data = cursor.getString(2);
+        }
+        cursor.close();
+
+        if(data != null){
+            return data;
+        }else{
+            return "";
+        }
+    }
+
+    public String getRejectionReasonOfMonth(String month){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "='" + month + "';",null);
+        String data = "";
+        if(cursor.moveToNext()){
+            data = cursor.getString(3);
+        }
+        cursor.close();
+        return data;
     }
 
 

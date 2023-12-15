@@ -55,7 +55,7 @@
                 android:padding="@dimen/_5sdp">
 
                 <RelativeLayout
-                    android:layout_weight="1"
+                    android:layout_weight="1.1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/_5sdp">
@@ -191,10 +191,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_weight="1"
+                    android:layout_weight="1.1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_10sdp">
+                    android:paddingStart="@dimen/_8sdp">
 
                     <TextView
                         android:id="@+id/submit"
@@ -512,7 +512,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_weight="1"
+                    android:layout_weight="0.8"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:paddingStart="@dimen/_10sdp">

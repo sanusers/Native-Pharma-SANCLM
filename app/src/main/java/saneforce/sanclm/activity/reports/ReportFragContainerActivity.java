@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import saneforce.sanclm.R;
@@ -51,7 +52,6 @@ public class ReportFragContainerActivity extends AppCompatActivity {
         switch (fragmentStr.toUpperCase()){
             case "DAY REPORT" : {
                 loadFragment(new DayReportFragment());
-
                 break;
             }
 //            case "MONTHLY REPORT" : {
