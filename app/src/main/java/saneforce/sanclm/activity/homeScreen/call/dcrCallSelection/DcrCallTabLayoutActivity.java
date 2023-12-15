@@ -30,8 +30,8 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
-    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StokistGeoTag, UndrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UndrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUndr, HospNeed;
-    public static double laty, lngy, limitKm = 0.5;
+    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StockiestGeoTag, UnDrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, HospNeed;
+    public static double lat, lng, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
     LoginResponse loginResponse;
@@ -65,8 +65,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         if (StockistNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new StockiestFragment(), CapStockist);
         }
-        if (UndrNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUndr);
+        if (UnDrNeed.equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUnDr);
         }
 
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
@@ -74,7 +74,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
         dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(0);
 
-        dcrSelectionBinding.ivBack.setOnClickListener(view -> onBackPressed());
+        dcrSelectionBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
         //  dcrSelectionBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(DcrCallTabLayoutActivity.this, HomeDashBoard.class)));
     }
@@ -82,8 +82,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     private void getRequiredData() {
         try {
             gpsTrack = new GPSTrack(this);
-            laty = gpsTrack.getLatitude();
-            lngy = gpsTrack.getLongitude();
+            lat = gpsTrack.getLatitude();
+            lng = gpsTrack.getLongitude();
             loginResponse = new LoginResponse();
             loginResponse = sqLite.getLoginData();
 
@@ -112,8 +112,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 DrGeoTag = setupResponse.getDrGeoTagNeed();
                 CheGeoTag = setupResponse.getChemistGeoTagNeed();
                 CipGeoTag = setupResponse.getCipGeoTagNeed();
-                StokistGeoTag = setupResponse.getStockistGeoTagNeed();
-                UndrGeoTag = setupResponse.getUndrGeoTagNeed();
+                StockiestGeoTag = setupResponse.getStockistGeoTagNeed();
+                UnDrGeoTag = setupResponse.getUndrGeoTagNeed();
 
                 CapDr = setupResponse.getCaptionDr();
                 ChemistNeed = setupResponse.getChemistNeed();
@@ -127,19 +127,19 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }
                 StockistNeed = setupResponse.getStockistNeed();
                 CapStockist = setupResponse.getCaptionStockist();
-                UndrNeed = setupResponse.getUnDrNeed();
-                CapUndr = setupResponse.getCaptionUndr();
+                UnDrNeed = setupResponse.getUnDrNeed();
+                CapUnDr = setupResponse.getCaptionUndr();
             }
 
 
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject CustsetupData = jsonArray.getJSONObject(0);
+                JSONObject CustSetupData = jsonArray.getJSONObject(0);
 
                 customSetupResponse = new CustomSetupResponse();
                 Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
                 }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(CustsetupData), typeCustomSetup);
+                customSetupResponse = new Gson().fromJson(String.valueOf(CustSetupData), typeCustomSetup);
                 HospNeed = customSetupResponse.getHospNeed();
             }
             Log.v("fff", "-00--" + TodayPlanSfCode);

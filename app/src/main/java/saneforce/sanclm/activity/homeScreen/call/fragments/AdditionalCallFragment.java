@@ -70,8 +70,6 @@ public class AdditionalCallFragment extends Fragment {
 
         finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), AdditionalCusListAdapter.saveAdditionalCallArrayList, custListArrayList);
         rv_add_call_list.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
-        //RecyclerView.LayoutManager mLayoutManagerinp = new LinearLayoutManager(getActivity());
-        // rv_add_call_list.setLayoutManager(mLayoutManagerinp);
         rv_add_call_list.setItemAnimator(new DefaultItemAnimator());
         rv_add_call_list.setAdapter(finalAdditionalCallAdapter);
     }

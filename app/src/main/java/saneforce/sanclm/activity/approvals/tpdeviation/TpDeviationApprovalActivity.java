@@ -24,7 +24,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         SetupAdapter();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        tpDeviationApprovalBinding.ivBack.setOnClickListener(view -> onBackPressed());
+        tpDeviationApprovalBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
       //  tpDeviationApprovalBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(TpDeviationApprovalActivity.this, ApprovalsActivity.class)));
     }
 

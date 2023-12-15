@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,7 +73,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         holder.btn_reject.setOnClickListener(view -> {
             dialogReject = new Dialog(context);
             dialogReject.setContentView(R.layout.popup_leave_reject);
-            dialogReject.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogReject.setCancelable(false);
 
             ImageView iv_close = dialogReject.findViewById(R.id.img_close);

@@ -278,26 +278,4 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanSfName, "");
     }
 
-    public static void setGeotagApprovalNeed(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(GEOTAG_APPROVAL_NEED, status).apply();
-    }
-
-    public static String getGeotagApprovalNeed(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(GEOTAG_APPROVAL_NEED, "");
-    }
-
-    public static void setGeotagImage(Context context, String status) {
-        sharedPreferences = context.getSharedPreferences(GEOTAG_IMAGE, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(GEOTAG_IMAGE, status).apply();
-    }
-
-    public static String getGeotagImage(Context context) {
-        return context.getSharedPreferences(GEOTAG_IMAGE, MODE_PRIVATE).getString(GEOTAG_IMAGE, "");
-    }
-
-
-
 }

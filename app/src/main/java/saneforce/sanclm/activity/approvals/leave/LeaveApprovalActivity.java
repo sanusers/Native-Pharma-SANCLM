@@ -55,7 +55,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         getRequiredData();
         CallApiLeave();
 
-        leaveBinding.ivBack.setOnClickListener(view -> onBackPressed());
+        leaveBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
 
      //   leaveBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(LeaveApprovalActivity.this, ApprovalsActivity.class)));

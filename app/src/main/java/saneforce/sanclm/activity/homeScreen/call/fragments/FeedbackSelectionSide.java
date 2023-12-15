@@ -1,7 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
-import static saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment.jwothersBinding;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment.jwOthersBinding;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -80,7 +80,7 @@ public class FeedbackSelectionSide extends Fragment {
             feedbackCode = list_code.get(i);
             feedbackName = list_name.get(i);
             selectFbSideBinding.searchList.setText("");
-            jwothersBinding.tvFeedback.setText(selectFbSideBinding.selectListView.getItemAtPosition(i).toString());
+            jwOthersBinding.tvFeedback.setText(selectFbSideBinding.selectListView.getItemAtPosition(i).toString());
             dcrCallBinding.fragmentSelectFbSide.setVisibility(View.GONE);
         });
         return v;
@@ -99,7 +99,7 @@ public class FeedbackSelectionSide extends Fragment {
             }
         } catch (Exception ignored) {
         }
-        dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.listview_items, list_name);
+        dataAdapter = new ArrayAdapter<>(requireActivity(), R.layout.listview_items, list_name);
         selectFbSideBinding.selectListView.setAdapter(dataAdapter);
     }
 

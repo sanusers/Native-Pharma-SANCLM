@@ -295,8 +295,8 @@ public class AdditionalCallDetailedSide extends Fragment {
         callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
 
         adapterSampleAdditionalCall = new AdapterSampleAdditionalCall(getActivity(), addProductAdditionalCallArrayList);
-        RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(getActivity());
-        callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerprd);
+        RecyclerView.LayoutManager mLayoutManagerPrd = new LinearLayoutManager(getActivity());
+        callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerPrd);
         callDetailsSideBinding.rvAddSampleAdditional.setAdapter(adapterSampleAdditionalCall);
     }
 }

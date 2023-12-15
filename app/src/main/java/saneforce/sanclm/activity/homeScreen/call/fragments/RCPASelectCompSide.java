@@ -10,7 +10,6 @@ import static saneforce.sanclm.activity.homeScreen.call.fragments.RCPAFragment.r
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -205,9 +205,9 @@ public class RCPASelectCompSide extends Fragment {
                 Toast.makeText(requireContext(), "Enter Company", Toast.LENGTH_SHORT).show();
             } else {
                 try {
-                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.LOCAL_MAPPED_COMPETITOR_PROD);
-                    jsonObject = new JSONObject();
-                    if (jsonArray.length() > 0) {
+                    if (sqLite.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
+                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.LOCAL_MAPPED_COMPETITOR_PROD);
+                        jsonObject = new JSONObject();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             jsonObject = jsonArray.getJSONObject(i);
                             String CompCompanyName = extractValues(jsonObject.getString("Competitor_Prd_bulk"), "CompCompanyName");
@@ -235,7 +235,6 @@ public class RCPASelectCompSide extends Fragment {
 
                             rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                             rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
-                            rcpaSideBinding.imgClose.setImageDrawable(requireContext().getResources().getDrawable(R.drawable.img_close));
                             rcpaSideBinding.edCompPrd.setText("");
                             rcpaSideBinding.edCompPrd.setHint(requireContext().getString(R.string.enter_name));
                             rcpaSideBinding.edCompCompany.setText("");
@@ -252,6 +251,8 @@ public class RCPASelectCompSide extends Fragment {
                             Toast.makeText(requireContext(), "This Product & Company Already Available!", Toast.LENGTH_SHORT).show();
                         }
                     } else {
+                        jsonArray = new JSONArray();
+                        jsonObject = new JSONObject();
                         jsonObject.put("Our_prd_code", Integer.parseInt(PrdCode));
                         jsonObject.put("Our_prd_name", PrdName);
                         jsonObject.put("Competitor_Prd_bulk", "-1#" + rcpaSideBinding.edCompPrd.getText().toString() + "~" + "-1" + "$" + rcpaSideBinding.edCompCompany.getText().toString() + "/");
@@ -264,7 +265,6 @@ public class RCPASelectCompSide extends Fragment {
 
                         rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                         rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
-                        rcpaSideBinding.imgClose.setImageDrawable(requireContext().getResources().getDrawable(R.drawable.img_close));
                         rcpaSideBinding.edCompPrd.setText("");
                         rcpaSideBinding.edCompPrd.setHint(requireContext().getString(R.string.enter_name));
                         rcpaSideBinding.edCompCompany.setText("");
@@ -277,16 +277,14 @@ public class RCPASelectCompSide extends Fragment {
                         rcpaSideBinding.rvCompPrdList.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
                         rcpaSideBinding.rvCompPrdList.setAdapter(adapterCompetitorPrd);
                         adapterCompetitorPrd.notifyDataSetChanged();
-
                     }
                 } catch (Exception e) {
-                    Log.v("dfgdfgdf", "error" + e);
+                    Log.v("add_competitor", "error" + e);
                 }
             }
         });
         return v;
     }
-
 
     private void filter(String text) {
         ArrayList<RCPAAddedCompList> filteredNames = new ArrayList<>();
@@ -300,9 +298,9 @@ public class RCPASelectCompSide extends Fragment {
 
     public String extractValues(String s, String data) {
         if (TextUtils.isEmpty(s)) return "";
-        String[] clstarrrayqty = s.split("/");
+        String[] ArrQty = s.split("/");
         StringBuilder ss1 = new StringBuilder();
-        for (String value : clstarrrayqty) {
+        for (String value : ArrQty) {
             if (data.equalsIgnoreCase("CompPrdCode")) {
                 ss1.append(value.substring(0, value.indexOf("#"))).append(",");
             } else if (data.equalsIgnoreCase("CompPrdName")) {
@@ -355,16 +353,12 @@ public class RCPASelectCompSide extends Fragment {
 
             if (CompetitorList.get(position).isSelected()) {
                 holder.checkBox.setChecked(true);
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-                }
+                holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.cheked_txt_color));
+                holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
             } else {
                 holder.checkBox.setChecked(false);
-                holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                }
+                holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.bg_txt_color));
+                holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
             }
 
             holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -379,10 +373,8 @@ public class RCPASelectCompSide extends Fragment {
                         }
 
                         if (dummyArray.size() == 0) {
-                            holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-                            }
+                            holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.cheked_txt_color));
+                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                             CompetitorList.get(position).setSelected(true);
                         } else {
                             Toast.makeText(context, "Already Selected this Product", Toast.LENGTH_SHORT).show();
@@ -390,10 +382,8 @@ public class RCPASelectCompSide extends Fragment {
                         }
 
                     } else {
-                        holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                        }
+                        holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.bg_txt_color));
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                         CompetitorList.get(position).setSelected(false);
                     }
                 }

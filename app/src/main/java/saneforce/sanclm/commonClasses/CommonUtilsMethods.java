@@ -80,7 +80,7 @@ public class CommonUtilsMethods {
         geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);
-            if (addresses.size() > 0) {
+            if (Objects.requireNonNull(addresses).size() > 0) {
                 address = addresses.get(0).getAddressLine(0);
                 /*String city = addresses.get(0).getLocality();
                 String state = addresses.get(0).getAdminArea();
@@ -113,7 +113,7 @@ public class CommonUtilsMethods {
 
         // if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
         new android.app.AlertDialog.Builder(activity).setTitle("Alert")  // GPS not found
-                .setCancelable(false).setMessage("Activate the Gps to proceed futher") // Want to enable?
+                .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
                     activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     dialogInterface.dismiss();
@@ -122,6 +122,7 @@ public class CommonUtilsMethods {
 
     public static void RequestPermissions(Activity context, String[] Permissions, boolean isRefresh) {
         PermissionListener permissionlistener = new PermissionListener() {
+            @SuppressLint("UnsafeIntentLaunch")
             @Override
             public void onPermissionGranted() {
                 if (isRefresh) context.startActivity(context.getIntent());
@@ -163,7 +164,7 @@ public class CommonUtilsMethods {
 
         dialog.setCancelable(false);
         dialog.setIndeterminate(true);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setContentView(R.layout.loading_progress);
         return dialog;
     }
@@ -217,7 +218,7 @@ public class CommonUtilsMethods {
         }
     }
 
-    public void FullScreencall() {
+    public void FullScreenCall() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         View decorView = activity.getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;

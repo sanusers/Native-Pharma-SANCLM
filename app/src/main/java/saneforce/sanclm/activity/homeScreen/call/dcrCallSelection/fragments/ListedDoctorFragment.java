@@ -16,10 +16,10 @@ import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCall
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfName;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TpBasedDcr;
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.UndrNeed;
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.laty;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.UnDrNeed;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.lat;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.limitKm;
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.lngy;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.lng;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -62,6 +62,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -81,6 +82,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ListedDoctorFragment extends Fragment {
+    @SuppressLint("StaticFieldLeak")
     public static ListView filterList;
     public static ConstraintLayout constraintFilter;
     RecyclerView rv_list;
@@ -97,12 +99,11 @@ public class ListedDoctorFragment extends Fragment {
     ListView lv_spec, lv_cate, lv_terr;
     SQLite sqLite;
     JSONArray jsonArray;
-    ArrayAdapter arrayAdapter;
     CommonUtilsMethods commonUtilsMethods;
     ArrayList<String> filterSelectionList = new ArrayList<>();
     ArrayList<FilterDataList> filteredDataList = new ArrayList<>();
     ArrayList<String> listOfItems = new ArrayList<>();
-    TextView tvSpec, tvCate, tvTerriorty, tvClass;
+    TextView tvSpec, tvCate, tvTerritory, tvClass;
     JSONObject jsonObject;
     ApiInterface apiInterface;
     int count = 0;
@@ -131,9 +132,9 @@ public class ListedDoctorFragment extends Fragment {
         custListArrayList.clear();
         SetupAdapter("", "");
 
-        dialogFilter = new Dialog(getActivity());
+        dialogFilter = new Dialog(requireContext());
         dialogFilter.setContentView(R.layout.popup_dcr_filter);
-        dialogFilter.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(dialogFilter.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogFilter.setCancelable(false);
         img_close = dialogFilter.findViewById(R.id.img_close);
         img_del = dialogFilter.findViewById(R.id.img_del);
@@ -142,7 +143,7 @@ public class ListedDoctorFragment extends Fragment {
         //   rv_filter = dialogFilter.findViewById(R.id.rv_conditions);
         tv_add_condition = dialogFilter.findViewById(R.id.btn_add_condition);
         tvSpec = dialogFilter.findViewById(R.id.constraint_speciality);
-        tvTerriorty = dialogFilter.findViewById(R.id.constraint_territory);
+        tvTerritory = dialogFilter.findViewById(R.id.constraint_territory);
         tvCate = dialogFilter.findViewById(R.id.constraint_category);
         tvClass = dialogFilter.findViewById(R.id.constraint_class);
 
@@ -168,11 +169,11 @@ public class ListedDoctorFragment extends Fragment {
             tv_add_condition.setVisibility(View.VISIBLE);
         });
 
-        tvTerriorty.setOnClickListener(view -> SetupListviewAdapter(lv_terr, "Territory"));
+        tvTerritory.setOnClickListener(view -> SetupListviewAdapter(lv_terr, "Territory"));
 
         lv_terr.setOnItemClickListener((adapterView, view, i, l) -> {
             territoryTxt = lv_terr.getItemAtPosition(i).toString();
-            tvTerriorty.setText(lv_terr.getItemAtPosition(i).toString());
+            tvTerritory.setText(lv_terr.getItemAtPosition(i).toString());
             lv_terr.setVisibility(View.GONE);
             tv_add_condition.setVisibility(View.VISIBLE);
         });
@@ -184,41 +185,38 @@ public class ListedDoctorFragment extends Fragment {
         iv_filter.setOnClickListener(view -> {
             tvSpec.setText(specialityTxt);
             tvCate.setText(categoryTxt);
-            tvTerriorty.setText(territoryTxt);
+            tvTerritory.setText(territoryTxt);
             if (count == 3) {
-                tvTerriorty.setVisibility(View.VISIBLE);
+                tvTerritory.setVisibility(View.VISIBLE);
             } else if (count == 4) {
-                tvTerriorty.setVisibility(View.VISIBLE);
+                tvTerritory.setVisibility(View.VISIBLE);
                 tvClass.setVisibility(View.VISIBLE);
             }
 
             dialogFilter.show();
 
             tv_add_condition.setOnClickListener(view13 -> {
-                if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerriorty.getVisibility() == View.VISIBLE) {
+                if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
                     tvClass.setVisibility(View.VISIBLE);
                 } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE) {
-                    tvTerriorty.setVisibility(View.VISIBLE);
+                    tvTerritory.setVisibility(View.VISIBLE);
                 }
             });
 
             img_del.setOnClickListener(view14 -> {
                 if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvClass.getVisibility() == View.GONE) {
-                    tvTerriorty.setVisibility(View.GONE);
-                    tvTerriorty.setText(R.string.territory);
-                } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerriorty.getVisibility() == View.VISIBLE) {
+                    tvTerritory.setVisibility(View.GONE);
+                    tvTerritory.setText(R.string.territory);
+                } else if (tvSpec.getVisibility() == View.VISIBLE && tvCate.getVisibility() == View.VISIBLE && tvTerritory.getVisibility() == View.VISIBLE) {
                     tvClass.setVisibility(View.GONE);
                     tvClass.setText(R.string.class_filter);
                 }
-               /* int count = ArrayFilteredList.size();
-                ArrayFilteredList.remove(count - 1);
-                adapterFilterSelection.notifyDataSetChanged();*/
             });
 
 
             btn_clear.setOnClickListener(view15 -> {
                 tvSpec.setText(R.string.speciality);
-                tvTerriorty.setText(R.string.territory);
+                tvTerritory.setText(R.string.territory);
                 tvCate.setText(R.string.category);
                 tvClass.setText(R.string.class_filter);
            /*     ArrayFilteredList.clear();
@@ -228,9 +226,7 @@ public class ListedDoctorFragment extends Fragment {
                 rv_filter.setAdapter(adapterFilterSelection);*/
             });
 
-            img_close.setOnClickListener(view12 -> {
-                dialogFilter.dismiss();
-            });
+            img_close.setOnClickListener(view12 -> dialogFilter.dismiss());
 
             btn_apply.setOnClickListener(view1 -> {
                 dialogFilter.dismiss();
@@ -256,9 +252,9 @@ public class ListedDoctorFragment extends Fragment {
                     categoryTxt = "Category";
                 }
 
-                if (!tvTerriorty.getText().toString().equalsIgnoreCase("Territory") && !tvTerriorty.getText().toString().isEmpty()) {
-                    // SetupAdapter(tvTerriorty.getText().toString(), "Territory");
-                    territoryTxt = tvTerriorty.getText().toString();
+                if (!tvTerritory.getText().toString().equalsIgnoreCase("Territory") && !tvTerritory.getText().toString().isEmpty()) {
+                    // SetupAdapter(tvTerritory.getText().toString(), "Territory");
+                    territoryTxt = tvTerritory.getText().toString();
                     count++;
                 } else {
                     territoryTxt = "Territory";
@@ -275,7 +271,7 @@ public class ListedDoctorFragment extends Fragment {
                     if (ArrayFilteredList.get(i).getName().equalsIgnoreCase("Speciality") || ArrayFilteredList.get(i).getName().equalsIgnoreCase("Category") || ArrayFilteredList.get(i).getName().equalsIgnoreCase("Qualification") || ArrayFilteredList.get(i).getName().equalsIgnoreCase("Class")) {
 
                     } else {
-                        Log.v("ttrtr", ArrayFilteredList.get(i).getName());
+                        Log.v("sss", ArrayFilteredList.get(i).getName());
                         filter(ArrayFilteredList.get(i).getName());
                         count++;
                     }
@@ -328,7 +324,7 @@ public class ListedDoctorFragment extends Fragment {
                     break;
             }
 
-            arrayAdapter = new ArrayAdapter(getContext(), R.layout.listview_items, filterSelectionList);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(requireContext(), R.layout.listview_items, filterSelectionList);
             lv.setAdapter(arrayAdapter);
             lv.setVisibility(View.VISIBLE);
             tv_add_condition.setVisibility(View.INVISIBLE);
@@ -371,7 +367,7 @@ public class ListedDoctorFragment extends Fragment {
             masterSyncArray.add(stockModel);
         }
 
-        if (UndrNeed.equalsIgnoreCase("0")) {
+        if (UnDrNeed.equalsIgnoreCase("0")) {
             MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
             masterSyncArray.add(unListModel);
         }
@@ -491,7 +487,7 @@ public class ListedDoctorFragment extends Fragment {
                                 if (GeoTagApproval.equalsIgnoreCase("0")) {
                                     Log.v("CheckSelCall", "111");
                                     float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), laty, lngy, distance);
+                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
                                     if (distance[0] < limitKm * 1000.0) {
                                         if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
                                             if (jsonObject.has("Product_Code")) {
@@ -504,7 +500,7 @@ public class ListedDoctorFragment extends Fragment {
                                 } else {
                                     Log.v("CheckSelCall", "222");
                                     float[] distance = new float[2];
-                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), laty, lngy, distance);
+                                    Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
                                     if (distance[0] < limitKm * 1000.0) {
                                         if (jsonObject.has("Product_Code")) {
                                             custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));
@@ -592,7 +588,7 @@ public class ListedDoctorFragment extends Fragment {
                     if (GeoTagApproval.equalsIgnoreCase("0")) {
                         Log.v("CheckSelCall", "111");
                         float[] distance = new float[2];
-                        Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), laty, lngy, distance);
+                        Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
                         if (distance[0] < limitKm * 1000.0) {
                             if (jsonObject.getString("cust_status").equalsIgnoreCase("0")) {
                                 if (jsonObject.has("Product_Code")) {
@@ -605,7 +601,7 @@ public class ListedDoctorFragment extends Fragment {
                     } else {
                         Log.v("CheckSelCall", "222");
                         float[] distance = new float[2];
-                        Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), laty, lngy, distance);
+                        Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
                         if (distance[0] < limitKm * 1000.0) {
                             if (jsonObject.has("Product_Code")) {
                                 custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));

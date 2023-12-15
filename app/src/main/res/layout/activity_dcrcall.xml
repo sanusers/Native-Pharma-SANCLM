@@ -242,7 +242,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_jw_side"
-        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide"
+        android:name="saneforce.sanclm.activity.homeScreen.call.fragments.JointWorkSelectionSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"

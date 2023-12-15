@@ -40,8 +40,6 @@ public class RCPASelectPrdSide extends Fragment {
     public static FragmentSelectProductSideBinding selectProductSideBinding;
     public static ArrayList<SaveCallProductList> PrdFullList;
     SQLite sqLite;
-    JSONArray jsonArray;
-    JSONObject jsonObject;
     ProductAdapter PrdAdapter;
 
     @Nullable
@@ -78,13 +76,6 @@ public class RCPASelectPrdSide extends Fragment {
 
     private void AddProductsData() {
         try {
-         /*   PrdFullList.clear();
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
-            }*/
-
             PrdAdapter = new ProductAdapter(requireContext(), PrdFullList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             selectProductSideBinding.selectListView.setLayoutManager(mLayoutManager);
@@ -132,18 +123,18 @@ public class RCPASelectPrdSide extends Fragment {
             holder.tv_name.setText(prdList.get(position).getName());
             holder.tv_name.setOnClickListener(view -> {
 
-                ArrayList<String> dummyChck = new ArrayList<>();
+                ArrayList<String> dummyCheck = new ArrayList<>();
                 if (DCRCallActivity.RcpaCompetitorAdd.equalsIgnoreCase("0")) {
                     try {
                         if (RCPAFragment.ProductSelectedList.size() > 0) {
                             for (int j = 0; j < RCPAFragment.ProductSelectedList.size(); j++) {
                                 if (RCPAFragment.ProductSelectedList.get(j).getChe_codes().equalsIgnoreCase(RCPAFragment.CheCode) && RCPAFragment.ProductSelectedList.get(j).getPrd_code().equalsIgnoreCase(prdList.get(holder.getBindingAdapterPosition()).getCode())) {
-                                    dummyChck.add(RCPAFragment.CheCode);
+                                    dummyCheck.add(RCPAFragment.CheCode);
                                 }
                             }
                         }
 
-                        if (dummyChck.size() == 0) {
+                        if (dummyCheck.size() == 0) {
                             RCPAFragment.PrdName = prdList.get(holder.getBindingAdapterPosition()).getName();
                             RCPAFragment.PrdCode = prdList.get(holder.getBindingAdapterPosition()).getCode();
                             rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getBindingAdapterPosition()).getName());
@@ -154,8 +145,7 @@ public class RCPASelectPrdSide extends Fragment {
                         } else {
                             Toast.makeText(context, "Already this Product Selected!", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
+                    } catch (Exception ignored) {
                     }
                 } else try {
                     jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
@@ -173,14 +163,14 @@ public class RCPASelectPrdSide extends Fragment {
                         if (RCPAFragment.ProductSelectedList.size() > 0) {
                             for (int j = 0; j < RCPAFragment.ProductSelectedList.size(); j++) {
                                 if (RCPAFragment.ProductSelectedList.get(j).getChe_codes().equalsIgnoreCase(RCPAFragment.CheCode) && RCPAFragment.ProductSelectedList.get(j).getPrd_code().equalsIgnoreCase(prdList.get(holder.getBindingAdapterPosition()).getCode())) {
-                                    dummyChck.add(RCPAFragment.CheCode);
+                                    dummyCheck.add(RCPAFragment.CheCode);
                                 }
                             }
                         }
                     }
 
                     if (isAvailableCompetitor) {
-                        if (dummyChck.size() == 0) {
+                        if (dummyCheck.size() == 0) {
                             RCPAFragment.PrdName = prdList.get(holder.getBindingAdapterPosition()).getName();
                             RCPAFragment.PrdCode = prdList.get(holder.getBindingAdapterPosition()).getCode();
                             rcpaBinding.tvSelectProduct.setText(prdList.get(holder.getBindingAdapterPosition()).getName());

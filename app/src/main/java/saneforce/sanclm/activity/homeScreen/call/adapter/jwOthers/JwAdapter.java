@@ -3,7 +3,6 @@ package saneforce.sanclm.activity.homeScreen.call.adapter.jwOthers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,14 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.call.fragments.JWOthersFragment;
-import saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide;
+import saneforce.sanclm.activity.homeScreen.call.fragments.JointWorkSelectionSide;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 
 public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
@@ -48,33 +48,27 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
         holder.checkBox.setChecked(jwLists.get(position).isCheckedItem());
 
         if (holder.checkBox.isChecked()) {
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-            }
+            holder.checkBox.setChecked(true);
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
         } else {
-            holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-            }
+            holder.checkBox.setChecked(false);
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
         }
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
                 if (holder.checkBox.isChecked()) {
-                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.cheked_txt_color));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_2)));
-                    }
+                    holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                     jwLists.get(position).setCheckedItem(true);
-                    JointworkSelectionSide.JwList.get(position).setCheckedItem(true);
+                    JointWorkSelectionSide.JwList.get(position).setCheckedItem(true);
                 } else {
-                    holder.tv_name.setTextColor(context.getResources().getColor(R.color.bg_txt_color));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.bg_txt_color)));
-                    }
+                    holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+                    holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                     jwLists.get(position).setCheckedItem(false);
-                    JointworkSelectionSide.JwList.get(position).setCheckedItem(false);
+                    JointWorkSelectionSide.JwList.get(position).setCheckedItem(false);
                     for (int j = 0; j < JWOthersFragment.callAddedJointList.size(); j++) {
                         if (JWOthersFragment.callAddedJointList.get(j).getCode().equalsIgnoreCase(jwLists.get(position).getCode())) {
                             JWOthersFragment.callAddedJointList.remove(j);

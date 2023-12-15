@@ -6,6 +6,8 @@ import saneforce.sanclm.activity.approvals.tp.TpModelList;
 
 public interface OnItemClickListenerApproval {
     void onClick(DCRApprovalList dcrApprovalList, int pos);
+
     void onClickDcrDetail(DcrDetailModelList dcrDetailModelList);
+
     void onItemClick(TpModelList tpModelLists);
 }

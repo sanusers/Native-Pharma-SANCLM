@@ -2,7 +2,7 @@ package saneforce.sanclm.activity.homeScreen.call.fragments;
 
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
-import static saneforce.sanclm.activity.homeScreen.call.fragments.JointworkSelectionSide.JwList;
+import static saneforce.sanclm.activity.homeScreen.call.fragments.JointWorkSelectionSide.JwList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import saneforce.sanclm.activity.homeScreen.call.DCRCallActivity;
 import saneforce.sanclm.activity.homeScreen.call.adapter.jwOthers.AdapterCallCaptureImage;
@@ -51,7 +52,7 @@ import saneforce.sanclm.storage.SQLite;
 public class JWOthersFragment extends Fragment {
     public static ArrayList<CallCaptureImageList> callCaptureImageLists;
     @SuppressLint("StaticFieldLeak")
-    public static FragmentJwothersBinding jwothersBinding;
+    public static FragmentJwothersBinding jwOthersBinding;
     public static String filePath = "", imageName = "";
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallCaptureImage adapterCallCaptureImage;
@@ -67,8 +68,8 @@ public class JWOthersFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        jwothersBinding = FragmentJwothersBinding.inflate(inflater);
-        View v = jwothersBinding.getRoot();
+        jwOthersBinding = FragmentJwothersBinding.inflate(inflater);
+        View v = jwOthersBinding.getRoot();
         sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(getActivity());
 
@@ -76,19 +77,19 @@ public class JWOthersFragment extends Fragment {
         SetupAdapter();
 
 
-        jwothersBinding.tvFeedback.setOnClickListener(view -> dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE));
+        jwOthersBinding.tvFeedback.setOnClickListener(view -> dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE));
 
-        jwothersBinding.btnAddJw.setOnClickListener(view -> {
+        jwOthersBinding.btnAddJw.setOnClickListener(view -> {
             dcrCallBinding.fragmentSelectJwSide.setVisibility(View.VISIBLE);
             HideKeyboard();
         });
 
-        jwothersBinding.tvFeedback.setOnClickListener(view -> {
+        jwOthersBinding.tvFeedback.setOnClickListener(view -> {
             HideKeyboard();
             dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE);
         });
 
-        jwothersBinding.btnAddImgCapture.setOnClickListener(view -> {
+        jwOthersBinding.btnAddImgCapture.setOnClickListener(view -> {
             if (callCaptureImageLists.size() < 2) {
                 if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                     ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 5);
@@ -106,67 +107,67 @@ public class JWOthersFragment extends Fragment {
 
     private void HideKeyboard() {
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(jwothersBinding.btnAddJw.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(jwOthersBinding.btnAddJw.getWindowToken(), 0);
     }
 
     private void HiddenVisibleFunction() {
         if (DCRCallActivity.PobNeed.equalsIgnoreCase("0")) {
-            jwothersBinding.constraintPob.setVisibility(View.VISIBLE);
+            jwOthersBinding.constraintPob.setVisibility(View.VISIBLE);
         } else {
-            jwothersBinding.constraintPob.setVisibility(View.GONE);
+            jwOthersBinding.constraintPob.setVisibility(View.GONE);
         }
 
         if (DCRCallActivity.OverallFeedbackNeed.equalsIgnoreCase("0")) {
-            jwothersBinding.constraintFeedback.setVisibility(View.VISIBLE);
+            jwOthersBinding.constraintFeedback.setVisibility(View.VISIBLE);
         } else {
-            jwothersBinding.constraintFeedback.setVisibility(View.GONE);
+            jwOthersBinding.constraintFeedback.setVisibility(View.GONE);
         }
 
-        if (jwothersBinding.constraintFeedback.getVisibility() == View.VISIBLE && jwothersBinding.constraintPob.getVisibility() == View.GONE) {
-            jwothersBinding.viewInPobFb.setVisibility(View.GONE);
-        } else if (jwothersBinding.constraintFeedback.getVisibility() == View.GONE && jwothersBinding.constraintPob.getVisibility() == View.VISIBLE) {
-            jwothersBinding.viewInPobFb.setVisibility(View.GONE);
+        if (jwOthersBinding.constraintFeedback.getVisibility() == View.VISIBLE && jwOthersBinding.constraintPob.getVisibility() == View.GONE) {
+            jwOthersBinding.viewInPobFb.setVisibility(View.GONE);
+        } else if (jwOthersBinding.constraintFeedback.getVisibility() == View.GONE && jwOthersBinding.constraintPob.getVisibility() == View.VISIBLE) {
+            jwOthersBinding.viewInPobFb.setVisibility(View.GONE);
         }
 
         if (!DCRCallActivity.PobNeed.equalsIgnoreCase("0") && !DCRCallActivity.OverallFeedbackNeed.equalsIgnoreCase("0")) {
-            jwothersBinding.constraintTopFirst.setVisibility(View.GONE);
+            jwOthersBinding.constraintTopFirst.setVisibility(View.GONE);
         } else {
-            jwothersBinding.constraintTopFirst.setVisibility(View.VISIBLE);
+            jwOthersBinding.constraintTopFirst.setVisibility(View.VISIBLE);
         }
 
         if (DCRCallActivity.EventCaptureNeed.equalsIgnoreCase("0")) {
-            jwothersBinding.constraintCapture.setVisibility(View.VISIBLE);
+            jwOthersBinding.constraintCapture.setVisibility(View.VISIBLE);
         } else {
-            jwothersBinding.constraintCapture.setVisibility(View.GONE);
+            jwOthersBinding.constraintCapture.setVisibility(View.GONE);
         }
 
         if (DCRCallActivity.JwNeed.equalsIgnoreCase("0")) {
-            jwothersBinding.constraintJointWork.setVisibility(View.VISIBLE);
+            jwOthersBinding.constraintJointWork.setVisibility(View.VISIBLE);
         } else {
-            jwothersBinding.constraintJointWork.setVisibility(View.GONE);
+            jwOthersBinding.constraintJointWork.setVisibility(View.GONE);
         }
     }
 
     private void SetupAdapter() {
         adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
-        jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
-        jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-        jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+        jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+        jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+        jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
 
         adapterCallJointWorkList = new AdapterCallJointWorkList(getContext(), getActivity(), callAddedJointList, JwList);
         RecyclerView.LayoutManager mLayoutManagerJW = new LinearLayoutManager(getActivity());
-        jwothersBinding.rvJointwork.setLayoutManager(mLayoutManagerJW);
-        jwothersBinding.rvJointwork.setItemAnimator(new DefaultItemAnimator());
-        jwothersBinding.rvJointwork.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-        jwothersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
+        jwOthersBinding.rvJointwork.setLayoutManager(mLayoutManagerJW);
+        jwOthersBinding.rvJointwork.setItemAnimator(new DefaultItemAnimator());
+        jwOthersBinding.rvJointwork.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+        jwOthersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
     }
 
 
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(requireContext().getExternalCacheDir().getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
+        outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(requireContext().getExternalCacheDir()).getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
         imageName = "E_" + SfCode + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -178,8 +179,7 @@ public class JWOthersFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
         //outputFileUri = FileProvider.getUriForFile(FeedbackActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(getExternalCacheDir().getPath(), "pickImageResult"+System.currentTimeMillis()+".jpeg"));
-        //Log.v("priniting_uri",outputFileUri.toString()+" output "+outputFileUri.getPath()+" raw_msg "+getExternalCacheDir().getPath());
-        //content://com.saneforce.sbiapplication.fileprovider/shared_video/Android/data/com.saneforce.sbiapplication/cache/pickImageResult.jpeg
+        //Log.v("Printing_uri",outputFileUri.toString()+" output "+outputFileUri.getPath()+" raw_msg "+getExternalCacheDir().getPath());
         //intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
       //  startActivityForResult(intent, 19);
@@ -195,16 +195,16 @@ public class JWOthersFragment extends Fragment {
                             String finalPath = "/storage/emulated/0";
                            Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
                             filePath = outputFileUri.getPath();
-                            filePath = filePath.substring(1);
+                            filePath = Objects.requireNonNull(filePath).substring(1);
                             filePath = finalPath + filePath.substring(filePath.indexOf("/"));
 
                             callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
                             adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                            jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
-                            jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
-                            jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-                            jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+                            jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+                            jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+                            jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+                            jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
                         }
                     } catch (Exception ignored) {
 
@@ -228,13 +228,13 @@ public class JWOthersFragment extends Fragment {
                 callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
                 adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                jwothersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
-                jwothersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
-                jwothersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-                jwothersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+                jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+                jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+                jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+                jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
             }
         } catch (Exception e) {
-            Log.e("imagerror", "--" + e);
+            Log.e("imgError", "--" + e);
         }
     }*/
 }

@@ -48,32 +48,6 @@ public class ProductFragment extends Fragment {
         }
 
         HiddenVisibleFunction();
-
-       /* if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") && DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
-            productsBinding.tagSamples.setVisibility(View.VISIBLE);
-        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2") && DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0")) {
-            productsBinding.tagSamples.setVisibility(View.VISIBLE);
-        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-            productsBinding.tagSamples.setVisibility(View.VISIBLE);
-        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-            productsBinding.tagSamples.setVisibility(View.VISIBLE);
-        } else {
-            productsBinding.tagSamples.setVisibility(View.GONE);
-        }
-
-        if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
-            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
-            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
-            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-        } else if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4") && DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")) {
-            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-        } else {
-            productsBinding.tagRxQty.setVisibility(View.GONE);
-        }*/
-
-
         AddProductList();
 
         productsBinding.searchPrd.addTextChangedListener(new TextWatcher() {
@@ -129,8 +103,6 @@ public class ProductFragment extends Fragment {
 
         finalProductCallAdapter = new FinalProductCallAdapter(getActivity(), getContext(), CheckProductListAdapter.saveCallProductListArrayList, checkedPrdList);
         productsBinding.rvListPrd.setLayoutManager(new WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
-       // RecyclerView.LayoutManager mLayoutManagerprd = new LinearLayoutManager(getActivity());
-       // productsBinding.rvListPrd.setLayoutManager(mLayoutManagerprd);
         productsBinding.rvListPrd.setItemAnimator(new DefaultItemAnimator());
         productsBinding.rvListPrd.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         productsBinding.rvListPrd.setAdapter(finalProductCallAdapter);
