@@ -22,6 +22,9 @@ import java.util.Locale;
 
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
+import java.util.Date;
+import java.util.Locale;
+
 import saneforce.sanclm.response.LoginResponse;
 
 
@@ -226,7 +229,7 @@ public class SQLite extends SQLiteOpenHelper {
 
         String[] args = new String[]{month};
         int updated = db.update(TOUR_PLAN_TABLE,contentValues,TP_MONTH + "=?", args);
-        if(updated <= 0){
+        if (updated <= 0) {
             db.insert(TOUR_PLAN_TABLE,null,contentValues);
         }
         db.close();

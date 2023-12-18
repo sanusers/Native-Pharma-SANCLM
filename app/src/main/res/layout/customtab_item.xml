@@ -19,7 +19,7 @@
         android:textColor="@color/text_dark_65"
         android:fontFamily="@font/satoshi_medium"
         android:layout_marginTop="@dimen/_5sdp"
-        tools:ignore="MissingConstraints,SpUsage"
+        tools:ignore="MissingConstraints"
         />
 
     <TextView
@@ -34,5 +34,5 @@
         android:textStyle="bold"
         android:textSize="@dimen/_6sdp"
         android:textColor="@color/white"
-        tools:ignore="MissingConstraints,SpUsage" />
+        tools:ignore="MissingConstraints" />
 </RelativeLayout>

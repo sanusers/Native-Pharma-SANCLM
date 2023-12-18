@@ -25,7 +25,7 @@ public class SalesAnalysisFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.sales_analysis, container, false);
-        Log.v("fragment","salesanaylysis");
+
         txt_month=v.findViewById(R.id.text_month);
         txt_yearly=v.findViewById(R.id.text_yearly);
         txt_quaterly=v.findViewById(R.id.text_Quaterly);

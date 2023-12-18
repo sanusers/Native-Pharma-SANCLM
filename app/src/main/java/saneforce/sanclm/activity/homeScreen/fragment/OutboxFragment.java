@@ -17,6 +17,7 @@ import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.adapters.OutBoxAdapter;
 import saneforce.sanclm.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.sanclm.activity.homeScreen.modelClass.GroupModelClass;
+import saneforce.sanclm.databinding.OutboxFragmentBinding;
 
 
 public class OutboxFragment extends Fragment {
@@ -26,7 +27,6 @@ public class OutboxFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.outbox_fragment, container, false);
-        Log.v("fragment","outboxx");
         expandableListView=v.findViewById(R.id.Expandapleview);
         List<GroupModelClass> listnew=new ArrayList<>();
         listnew.add(new GroupModelClass("September 13,1998",getData()));

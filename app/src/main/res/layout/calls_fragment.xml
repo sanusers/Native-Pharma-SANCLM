@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/_4sdp"
@@ -10,13 +9,12 @@
   <TextView
       android:id="@+id/txt_call"
       android:layout_marginTop="@dimen/_3sdp"
-      android:layout_marginStart="@dimen/_3sdp"
+      android:layout_marginLeft="@dimen/_3sdp"
       android:fontFamily="@font/satoshi_medium"
       android:layout_width="wrap_content"
       android:text="Call Count :"
       android:textSize="@dimen/_7sdp"
-      android:layout_height="wrap_content"
-      tools:ignore="SpUsage">
+      android:layout_height="wrap_content">
 
   </TextView>
   <TextView
@@ -25,11 +23,10 @@
         android:textSize="@dimen/_7sdp"
         android:fontFamily="@font/satoshi_medium"
         android:layout_marginTop="@dimen/_3sdp"
-        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginLeft="@dimen/_3sdp"
         android:layout_toRightOf="@+id/txt_call"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-      tools:ignore="SpUsage">
+        android:layout_height="wrap_content">
 
     </TextView>
 
@@ -53,8 +50,7 @@
         android:layout_marginStart="@dimen/_3sdp"
         android:layout_marginEnd="@dimen/_3sdp"
         android:layout_height="@dimen/_10sdp"
-        android:src="@drawable/refresh_1"
-        tools:ignore="ContentDescription" />
+        android:src="@drawable/refresh_1" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,8 +61,7 @@
         android:layout_marginEnd="@dimen/_3sdp"
         android:textStyle="bold"
         android:textSize="@dimen/_7sdp"
-        android:textColor="@color/text_sync"
-        tools:ignore="SpUsage">
+        android:textColor="@color/text_sync">
 
     </TextView>
 
@@ -80,15 +75,14 @@
       android:id="@+id/text_date"
       android:layout_below="@+id/txt_call"
       android:layout_marginTop="@dimen/_10sdp"
-      android:layout_marginStart="@dimen/_3sdp"
+      android:layout_marginLeft="@dimen/_3sdp"
       android:layout_width="wrap_content"
       android:fontFamily="@font/satoshi_medium"
       android:textStyle="bold"
       android:textSize="@dimen/_7sdp"
       android:textColor="@color/black_45"
       android:text="September 13, 2023"
-      android:layout_height="wrap_content"
-      tools:ignore="SpUsage">
+      android:layout_height="wrap_content">
 
   </TextView>
 
@@ -97,14 +91,13 @@
       android:layout_marginTop="@dimen/_10sdp"
       android:textStyle="normal"
       android:layout_width="wrap_content"
-      android:layout_marginEnd="@dimen/_3sdp"
+      android:layout_marginRight="@dimen/_3sdp"
       android:text="Collapse"
       android:layout_alignParentRight="true"
       android:textSize="@dimen/_7sdp"
       android:fontFamily="@font/satoshi_medium"
       android:layout_alignParentEnd="true"
-      android:layout_height="wrap_content"
-      tools:ignore="SpUsage">
+      android:layout_height="wrap_content">
 
   </TextView>
 
@@ -146,10 +139,10 @@
         android:textAllCaps="false"
         android:textStyle="bold"
         android:fontFamily="@font/satoshi_medium"
-        android:layout_marginEnd="@dimen/_3sdp"
+        android:layout_marginRight="@dimen/_3sdp"
         android:textColor="@color/black"
         android:background="@drawable/background_button_border_black"
-        tools:ignore="SpUsage" />
+         />
 
     <TextView
         android:layout_width="match_parent"
@@ -162,8 +155,7 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="@dimen/_7sdp"
-        android:textStyle="bold"
-        tools:ignore="SpUsage" />
+        android:textStyle="bold" />
 
   </LinearLayout>
 
@@ -178,8 +170,7 @@
         android:text="Final Sumit"
         android:textStyle="bold"
         android:textSize="@dimen/_7sdp"
-        app:backgroundTint="#282A3C"
-        tools:ignore="SpUsage" />
+        app:backgroundTint="#282A3C" />
 
   </RelativeLayout>
 

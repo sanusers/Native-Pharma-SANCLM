@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/_4sdp"
@@ -11,13 +10,12 @@
     <TextView
         android:id="@+id/txt_call"
         android:layout_marginTop="@dimen/_3sdp"
-        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginLeft="@dimen/_3sdp"
         android:textSize="@dimen/_7sdp"
         android:fontFamily="@font/satoshi_medium"
         android:layout_width="wrap_content"
         android:text="Count :"
-        android:layout_height="wrap_content"
-        tools:ignore="SpUsage">
+        android:layout_height="wrap_content">
 
     </TextView>
 
@@ -25,13 +23,12 @@
         android:id="@+id/txt_callcount"
         android:text="06"
         android:layout_marginTop="@dimen/_3sdp"
-        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginLeft="@dimen/_3sdp"
         android:textSize="@dimen/_7sdp"
         android:fontFamily="@font/satoshi_medium"
         android:layout_toRightOf="@+id/txt_call"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="SpUsage">
+        android:layout_height="wrap_content">
 
     </TextView>
 
@@ -53,8 +50,7 @@
             android:layout_marginStart="@dimen/_3sdp"
             android:layout_marginEnd="@dimen/_3sdp"
             android:layout_height="@dimen/_10sdp"
-            android:src="@drawable/refresh_1"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/refresh_1" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,8 +61,7 @@
             android:layout_marginEnd="@dimen/_3sdp"
             android:textStyle="bold"
             android:textSize="@dimen/_7sdp"
-            android:textColor="@color/text_sync"
-            tools:ignore="SpUsage">
+            android:textColor="@color/text_sync">
 
         </TextView>
 
@@ -106,8 +101,7 @@
             android:background="@drawable/edittext_stroke"
             android:text="Clear Calls"
             android:textColor="@color/white"
-            app:backgroundTint="@color/black_45"
-            tools:ignore="SpUsage" />
+            app:backgroundTint="@color/black_45" />
 
     </RelativeLayout>
 

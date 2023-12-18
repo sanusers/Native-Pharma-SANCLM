@@ -29,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
+import saneforce.sanclm.storage.SharedPref;
 
 public class DownloadTask {
     private static final String TAG = "DownloadTask";
@@ -175,12 +176,7 @@ public class DownloadTask {
                         context.startActivity(intent);
                         activity.finish();
                     }
-
-                    sharedpreferences = activity.getSharedPreferences("SLIDES", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putString("SLIDEDONWLOADCOUNT", String.valueOf(downloading_count));
-                    editor.putString("SLIDELIST", new Gson().toJson( SlideDownloaderAlertBox.adapter.getList()));
-                    editor.apply();
+                    SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count),SlideDownloaderAlertBox.adapter.getList());
                 }
 
             } else {
@@ -202,11 +198,7 @@ public class DownloadTask {
                         }
                     }
 
-                    sharedpreferences =activity.getSharedPreferences("SLIDES", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putString("SLIDEDONWLOADCOUNT", String.valueOf(downloading_count));
-                    editor.putString("SLIDELIST", new Gson().toJson(SlideDownloaderAlertBox.adapter.getList()));
-                    editor.apply();
+                    SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count),SlideDownloaderAlertBox.adapter.getList());
                 }
 
             }

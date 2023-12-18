@@ -37,6 +37,7 @@
     <string name="select">Select</string>
     <string name="rx_qty">RX Qty</string>
     <string name="add_product_input">Add Product/Input</string>
+    <string name="add_sample_input">Add Sample/Input</string>
     <string name="add_input_amp_sample"><![CDATA[Add Input & Sample]]></string>
     <string name="add_input">Add Input</string>
     <string name="save">Save</string>

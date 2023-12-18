@@ -799,4 +799,3 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         }
     }
 }
-

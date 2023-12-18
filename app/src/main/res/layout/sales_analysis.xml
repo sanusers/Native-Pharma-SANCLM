@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -17,8 +16,7 @@
         android:text="Sales Analysis"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/_8sdp"
-        android:textStyle="bold"
-        tools:ignore="SpUsage" />
+        android:textStyle="bold" />
 
 
     <LinearLayout
@@ -34,22 +32,19 @@
             android:layout_width="@dimen/_20sdp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_1sdp"
-            android:src="@drawable/tab_litte_line"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/tab_litte_line" />
 
         <ImageView
             android:layout_width="@dimen/_20sdp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_1sdp"
-            android:src="@drawable/tab_litte_line"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/tab_litte_line" />
 
         <ImageView
             android:layout_width="@dimen/_20sdp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_1sdp"
-            android:src="@drawable/tab_dark_line"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/tab_dark_line" />
     </LinearLayout>
 
     <LinearLayout
@@ -69,7 +64,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_15sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
             android:layout_weight="1.8"
             android:background="@drawable/backround_lite_gray_border">
 
@@ -87,8 +82,7 @@
                 android:gravity="center"
                 android:text="Monthly"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_6sdp"
-                tools:ignore="SpUsage"></TextView>
+                android:textSize="@dimen/_6sdp"></TextView>
 
             <TextView
                 android:id="@+id/text_Quaterly"
@@ -102,15 +96,14 @@
                 android:gravity="center"
                 android:text="Quarterly"
                 android:textColor="@color/txt_lite_black"
-                android:textSize="@dimen/_6sdp"
-                tools:ignore="SpUsage"></TextView>
+                android:textSize="@dimen/_6sdp"></TextView>
 
             <TextView
                 android:id="@+id/text_yearly"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="1dp"
-                android:layout_marginEnd="1dp"
+                android:layout_marginRight="1dp"
                 android:layout_marginBottom="1dp"
                 android:layout_weight="1"
                 android:background="@drawable/cutom_backround_grey"
@@ -118,8 +111,7 @@
                 android:gravity="center"
                 android:text="Yearly"
                 android:textColor="@color/txt_lite_black"
-                android:textSize="@dimen/_6sdp"
-                tools:ignore="SpUsage"></TextView>
+                android:textSize="@dimen/_6sdp"></TextView>
         </LinearLayout>
     </LinearLayout>
 
@@ -166,8 +158,7 @@
                         android:text="Primary Sales"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -182,8 +173,7 @@
                         android:text="106.56L"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_11sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -198,8 +188,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentBottom="true"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -219,8 +208,7 @@
                         android:text="39%Growth"
                         android:textColor="#00c689"
                         android:textSize="@dimen/_5sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
                 </RelativeLayout>
@@ -252,8 +240,7 @@
                         android:text="Secondary Sales"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -270,8 +257,7 @@
                         android:text="39% Growth"
                         android:textColor="#41a1ef"
                         android:textSize="@dimen/_5sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -285,8 +271,7 @@
                         android:text="106.56L"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_11sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -301,8 +286,7 @@
                         android:text="Target 282.2L"
                         android:textColor="#a9a8af"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -337,8 +321,7 @@
                         android:text="RCPA"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -355,8 +338,7 @@
                         android:text="39% Growth"
                         android:textColor="#fe5876"
                         android:textSize="@dimen/_5sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -371,8 +353,7 @@
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_11sdp"
 
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -386,8 +367,7 @@
                         android:text="Target 282.2L"
                         android:textColor="#a9a8af"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -428,8 +408,7 @@
                         android:text="PCPM"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -447,8 +426,7 @@
                         android:text="39% Growth"
                         android:textColor="#feda86"
                         android:textSize="@dimen/_5sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -465,8 +443,7 @@
                         android:text="106.56L"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_11sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
                     </TextView>
 
 
@@ -482,8 +459,7 @@
                         android:text="Target 282.2L"
                         android:textColor="#a9a8af"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -517,8 +493,7 @@
                             android:layout_centerInParent="true"
                             android:text="25%"
                             android:textColor="#bab9bf"
-                            android:textSize="@dimen/_7sdp"
-                            tools:ignore="SpUsage" />
+                            android:textSize="@dimen/_7sdp" />
                     </RelativeLayout>
 
                 </RelativeLayout>
@@ -552,8 +527,7 @@
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_7sdp"
 
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -570,8 +544,7 @@
                         android:text="106.56L"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_11sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -589,7 +562,7 @@
                         android:textSize="@dimen/_7sdp"
                         android:textStyle="bold"
 
-                        tools:ignore="SpUsage">
+                        >
 
                     </TextView>
 
@@ -609,7 +582,7 @@
                         android:textStyle="bold"
 
 
-                        tools:ignore="SpUsage">
+                        >
 
                     </TextView>
 
@@ -629,7 +602,7 @@
                         android:textSize="@dimen/_7sdp"
                         android:textStyle="bold"
 
-                        tools:ignore="SpUsage">
+                        >
 
                     </TextView>
 
@@ -646,8 +619,7 @@
                         android:textColor="#85858f"
 
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -657,16 +629,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/text_BDL_target1"
-                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
                         android:layout_marginTop="@dimen/_4sdp"
                         android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_8sdp"
                         android:layout_marginBottom="@dimen/_4sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text="26.75L"
                         android:textColor="#00c689"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -699,8 +671,7 @@
                         android:text="RCPA"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage">
+                        android:textStyle="bold">
 
                     </TextView>
 
@@ -717,8 +688,7 @@
                         android:text="106.56L"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_11sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage" />
+                        android:textStyle="bold" />
 
 
                     <TextView
@@ -733,8 +703,7 @@
 
                         android:textColor="#a9a8af"
                         android:textSize="@dimen/_7sdp"
-                        android:textStyle="bold"
-                        tools:ignore="SpUsage" />
+                        android:textStyle="bold" />
 
 
                 </RelativeLayout>

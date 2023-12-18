@@ -5,6 +5,12 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+
+import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideModelClass;
+
 public class SharedPref {
 
     public static final String SP_NAME = "e_detail";
@@ -51,8 +57,44 @@ public class SharedPref {
     //Approval
     public static final String APPROVAL_COUNT = "approval_count";
 
+    // Slide
+    public static final String SLIDEID = "slideid";
+    public static final String SLIDELIST = "slidelist";
+
+    public static final String SLIDEDOWNCOUNT = "slidedowncount";
+
     public static SharedPreferences sharedPreferences;
     public static SharedPreferences.Editor editor;
+
+
+
+
+    public static void saveSlideListID(Context context, ArrayList<String> List){
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SLIDEID, new Gson().toJson(List)).apply();
+
+    }
+
+
+    public static void saveSlideDownloadingList(Context context, String  Downloadcount,ArrayList<SlideModelClass> List){
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SLIDEDOWNCOUNT, String.valueOf(Downloadcount));
+        editor.putString(SLIDELIST, new Gson().toJson(List));
+        editor.apply();
+    }
+
+
+    public static String GetSlideID(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDEID,"[]");
+    }
+    public static String GetSlideDownloadingcount(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDEDOWNCOUNT,"0");
+    }  public static String GetSlideList(Context context){
+        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDELIST,"");
+    }
+
 
     public static void ClearSharedPreference(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

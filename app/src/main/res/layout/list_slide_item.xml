@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -26,8 +24,7 @@
             android:text="Slide downloader"
             android:textColor="@color/black_45"
             android:textSize="@dimen/_8sdp"
-            android:textStyle="bold"
-            tools:ignore="SpUsage" />
+            android:textStyle="bold" />
 
 
         <TextView
@@ -36,10 +33,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/_3sdp"
+            android:layout_marginRight="@dimen/_3sdp"
             android:visibility="gone"
             android:layout_weight="1"
             android:background="@drawable/background_button_border_black"
+            android:drawableLeft="@drawable/background_drawable_icon"
             android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
             android:padding="@dimen/_3sdp"
@@ -47,9 +45,7 @@
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="@dimen/_8sdp"
-            android:textStyle="bold"
-            app:drawableLeftCompat="@drawable/background_drawable_icon"
-            tools:ignore="SpUsage" />
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
@@ -75,6 +71,5 @@
         android:gravity="center"
         android:textColor="@color/gray_45"
         android:textSize="@dimen/_6sdp"
-        android:textStyle="bold"
-        tools:ignore="SpUsage" />
+        android:textStyle="bold" />
 </LinearLayout>

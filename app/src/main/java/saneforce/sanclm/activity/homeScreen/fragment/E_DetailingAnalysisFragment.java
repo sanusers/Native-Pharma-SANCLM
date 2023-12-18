@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 
@@ -26,12 +27,12 @@ public class E_DetailingAnalysisFragment extends Fragment {
     RelativeLayout e_detailing_layout;
 
 
-    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.e_detailing_analysis, container, false);
-        Log.v("fragment","edetailing");
+
         doc_layout = v.findViewById(R.id.ll_doc_child);
         che_layout = v.findViewById(R.id.ll_che_child);
         stokiest_layout = v.findViewById(R.id.ll_stock_child);

@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.homeScreen.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,10 +16,9 @@ import saneforce.sanclm.storage.SQLite;
 
 public class CustomMarkerView extends MarkerView {
 
-    private final TextView Total_Call_count;
-    private final TextView Avg_calls;
-    private final ImageView imageView;
-    private final RelativeLayout layout;
+    private TextView Total_Call_count, Avg_calls;
+    private ImageView imageView;
+    private RelativeLayout layout;
 
     SQLite sqLite;
     String cus, firstDateStr, fifteenthDateStr, enddate, firstDatepastmonth, fifteenthDatepastmonth, enddatepastmonth, firstDatecurrent, fifteenthDatecurrent, enddatecurrent, linekey;

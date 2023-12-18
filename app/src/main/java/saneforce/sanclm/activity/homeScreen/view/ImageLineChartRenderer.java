@@ -54,7 +54,7 @@ public class ImageLineChartRenderer extends LineChartRenderer {
             ILineDataSet set = lineData.getDataSetByIndex(dataSetIndex);
             Transformer trans = lineChart.getTransformer(set.getAxisDependency());
 
-            if (!set.isHighlightEnabled())
+            if (set == null || !set.isHighlightEnabled())
                 continue;
 
             Entry e = set.getEntryForXValue(high.getX(), high.getY());

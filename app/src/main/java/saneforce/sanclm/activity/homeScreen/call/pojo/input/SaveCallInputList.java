@@ -8,6 +8,7 @@ public class SaveCallInputList {
     String last_inp_stk;
     String dataFrom;
 
+
     public String getDataFrom() {
         return dataFrom;
     }

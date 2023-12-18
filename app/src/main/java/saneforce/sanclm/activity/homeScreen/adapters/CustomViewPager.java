@@ -1,6 +1,5 @@
 package saneforce.sanclm.activity.homeScreen.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -22,7 +21,6 @@ public class CustomViewPager extends ViewPager {
         this.isScrollEnabled = enabled;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return isScrollEnabled && super.onTouchEvent(event);
