@@ -26,16 +26,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginVertical="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_bold"
-        android:padding="@dimen/_3sdp"
+        android:paddingHorizontal="@dimen/_3sdp"
+        android:paddingVertical="@dimen/_2sdp"
         android:text="Name"
         android:textColor="@color/pink"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/img_cust"
+        app:layout_constraintBottom_toTopOf="@id/tv_name_tag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_cust"
-        app:layout_constraintTop_toTopOf="@id/img_cust" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_name_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/satoshi_medium"
+        android:paddingHorizontal="@dimen/_3sdp"
+        android:text="Doctor"
+        android:textColor="@color/light_grey_2"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/view_dummy"
+        app:layout_constraintEnd_toEndOf="@id/tv_name"
+        app:layout_constraintStart_toEndOf="@id/img_cust"
+        app:layout_constraintStart_toStartOf="@id/tv_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
     <View
         android:id="@+id/view_dummy"

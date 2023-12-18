@@ -35,7 +35,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
-    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0,GeoTagCount = 0;
+    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
@@ -112,16 +112,19 @@ public class ApprovalsActivity extends AppCompatActivity {
                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
                         JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
 
-                        JSONObject jsonDcr = jsonArray.getJSONObject(0);
-                        DcrCount = jsonDcr.getInt("dcrappr_count");
-                        JSONObject jsonTp = jsonArray.getJSONObject(1);
-                        TpCount = jsonTp.getInt("tpappr_count");
-                        JSONObject jsonLeave = jsonArray.getJSONObject(2);
-                        LeaveCount = jsonLeave.getInt("leaveappr_count");
-                        JSONObject jsonDeviation = jsonArray.getJSONObject(3);
-                        DeviationCount = jsonDeviation.getInt("devappr_count");
-                        JSONObject jsonGeoTag = jsonArray.getJSONObject(4);
-                        GeoTagCount = jsonGeoTag.getInt("geotag_count");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonCounts = jsonArray.getJSONObject(i);
+                            if (jsonCounts.has("dcrappr_count"))
+                                DcrCount = jsonCounts.getInt("dcrappr_count");
+                            if (jsonCounts.has("tpappr_count"))
+                                TpCount = jsonCounts.getInt("tpappr_count");
+                            if (jsonCounts.has("leaveappr_count"))
+                                LeaveCount = jsonCounts.getInt("leaveappr_count");
+                            if (jsonCounts.has("devappr_count"))
+                                DeviationCount = jsonCounts.getInt("devappr_count");
+                            if (jsonCounts.has("geotag_count"))
+                                GeoTagCount = jsonCounts.getInt("geotag_count");
+                        }
                         AssignCountValues();
                     } catch (Exception e) {
                         Log.v("counts", "-error-" + e);
@@ -142,7 +145,7 @@ public class ApprovalsActivity extends AppCompatActivity {
         list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
-        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging),  String.valueOf(GeoTagCount)));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), String.valueOf(GeoTagCount)));
 
         adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);
         approvalsBinding.rvApprovalList.setItemAnimator(new DefaultItemAnimator());
