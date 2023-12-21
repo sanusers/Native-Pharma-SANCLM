@@ -104,7 +104,7 @@ public class ModelClass implements Serializable {
     this.submittedTime = submittedTime;
   }
 
-  public String isSyncStatus() {
+  public String getSyncStatus () {
     return syncStatus;
   }
 
@@ -151,7 +151,10 @@ public class ModelClass implements Serializable {
     public SessionList () {
     }
 
-    public SessionList (String layoutVisible, Boolean isVisible,String remarks, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass HQ, List<ModelClass.SessionList.SubClass> subClass, List<ModelClass.SessionList.SubClass> JC, List<ModelClass.SessionList.SubClass> listedDr, List<ModelClass.SessionList.SubClass> chemist, List<ModelClass.SessionList.SubClass> stockiest, List<ModelClass.SessionList.SubClass> unListedDr, List<ModelClass.SessionList.SubClass> cip, List<ModelClass.SessionList.SubClass> hospital) {
+    public SessionList (String layoutVisible, Boolean isVisible,String remarks, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass HQ,
+                        List<ModelClass.SessionList.SubClass> subClass, List<ModelClass.SessionList.SubClass> JC, List<ModelClass.SessionList.SubClass> listedDr,
+                        List<ModelClass.SessionList.SubClass> chemist, List<ModelClass.SessionList.SubClass> stockiest, List<ModelClass.SessionList.SubClass> unListedDr,
+                        List<ModelClass.SessionList.SubClass> cip, List<ModelClass.SessionList.SubClass> hospital) {
       this.layoutVisible = layoutVisible;
       this.isVisible = isVisible;
       this.remarks = remarks;

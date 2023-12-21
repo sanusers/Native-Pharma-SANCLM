@@ -13,6 +13,9 @@ import saneforce.sanclm.activity.slideDownloaderAlertBox.SlideModelClass;
 
 public class SharedPref {
 
+    public static SharedPreferences sharedPreferences;
+    public static SharedPreferences.Editor editor;
+
     public static final String SP_NAME = "e_detail";
 
     //Setting
@@ -63,11 +66,11 @@ public class SharedPref {
 
     public static final String SLIDEDOWNCOUNT = "slidedowncount";
 
-    public static SharedPreferences sharedPreferences;
-    public static SharedPreferences.Editor editor;
-
-
-
+    public static void clearSP(Context context){
+        sharedPreferences = context.getSharedPreferences(SP_NAME,MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.clear().apply();
+    }
 
     public static void saveSlideListID(Context context, ArrayList<String> List){
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

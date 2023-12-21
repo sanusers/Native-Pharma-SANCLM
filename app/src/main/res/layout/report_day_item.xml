@@ -43,7 +43,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/name"
-                android:background="@color/text_dark_15" />
+                android:background="#ededed" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -127,7 +127,7 @@
                             tools:ignore="SpUsage" />
 
                         <TextView
-                            android:id="@+id/markerView"
+                            android:id="@+id/checkInMarker"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_5sdp"
@@ -263,7 +263,7 @@
                             tools:ignore="SpUsage" />
 
                         <TextView
-                            android:id="@+id/markerViewOut"
+                            android:id="@+id/checkOutMarker"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_5sdp"
@@ -273,9 +273,9 @@
                             android:fontFamily="@font/satoshi_medium"
                             android:layout_gravity="center"
                             android:gravity="bottom|start"
-                            android:drawableStart="@drawable/marker_geo_approval"
                             android:drawablePadding="@dimen/_5sdp"
-                            tools:ignore="SpUsage" />
+                            tools:ignore="SpUsage"
+                            app:drawableStartCompat="@drawable/marker_geo_approval" />
 
                     </LinearLayout>
 
@@ -517,38 +517,45 @@
                     android:layout_height="match_parent"
                     android:paddingStart="@dimen/_10sdp">
 
-                    <TextView
-                        android:id="@+id/status"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/statusLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
-                        android:text="Status"
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark_65"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        tools:ignore="SpUsage" />
+                        android:gravity="start">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/status"
-                        android:text="Pending"
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:background="@drawable/backround_text"
-                        android:backgroundTint="@color/text_dark_15"
-                        android:paddingStart="@dimen/_5sdp"
-                        android:paddingEnd="@dimen/_5sdp"
-                        android:paddingTop="@dimen/_2sdp"
-                        android:paddingBottom="@dimen/_2sdp"
-                        tools:ignore="SpUsage" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Status"
+                            android:textSize="@dimen/_5sdp"
+                            android:textColor="@color/text_dark_65"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="start"
+                            tools:ignore="SpUsage" />
+
+                        <TextView
+                            android:id="@+id/status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pending"
+                            android:textSize="@dimen/_5sdp"
+                            android:textColor="@color/text_dark"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_gravity="start"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:background="@drawable/backround_text"
+                            android:backgroundTint="@color/text_dark_15"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_5sdp"
+                            android:paddingTop="@dimen/_2sdp"
+                            android:paddingBottom="@dimen/_2sdp"
+                            tools:ignore="SpUsage" />
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/arrow"

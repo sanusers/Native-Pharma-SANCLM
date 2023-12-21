@@ -128,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick (View view) {
                 sqLite.deleteAllTable();
+                SharedPref.clearSP(LoginActivity.this);
                 File apkStorage = new File(LoginActivity.this.getExternalFilesDir(null) + "/Slides/");
                 if (apkStorage.exists() && apkStorage.isDirectory()) {
                     File[] files = apkStorage.listFiles();
@@ -239,7 +240,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 }
             });

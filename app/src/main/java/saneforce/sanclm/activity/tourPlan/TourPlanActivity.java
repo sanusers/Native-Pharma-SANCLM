@@ -45,6 +45,7 @@ import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.sanclm.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.sanclm.activity.tourPlan.model.ModelClass;
+import saneforce.sanclm.activity.tourPlan.model.ReceiveModel;
 import saneforce.sanclm.activity.tourPlan.session.SessionInterface;
 import saneforce.sanclm.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.sanclm.activity.tourPlan.session.SessionViewAdapter;
@@ -98,7 +99,7 @@ public class TourPlanActivity extends AppCompatActivity {
         dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
         populateCalendarAdapter(dayWiseArrayCurrentMonth);
 
-        getRemoteTPData();
+        get3MonthRemoteTPData();
         binding.tpDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.tpDrawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
@@ -118,7 +119,6 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                onBackPressed();
                 startActivity(new Intent(TourPlanActivity.this, HomeDashBoard.class));
             }
         });
@@ -133,9 +133,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 if(LocalDate.now().plusMonths(1).isEqual(localDate)) {
                     binding.calendarNextButton.setEnabled(false);
                     binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-                }else {
+                }else
                     binding.calendarNextButton.setEnabled(true);
-                }
 
                 if(localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
                     monthInAdapterFlag = 0;
@@ -162,9 +161,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 if(LocalDate.now().minusMonths(1).isEqual(localDate)) {
                     binding.calendarPrevButton.setEnabled(false);
                     binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-                }else {
+                }else
                     binding.calendarPrevButton.setEnabled(true);
-                }
 
                 if(localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
                     monthInAdapterFlag = 0;
@@ -314,7 +312,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         position = i;
                         Toast.makeText(TourPlanActivity.this, "Complete Session " + (i + 1), Toast.LENGTH_SHORT).show();
                         break;
-                    }else if(modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
+                    }else if(modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
                         if(modelClass.getHQ().getName().isEmpty()) {
                             isEmpty = true;
                             position = i;
@@ -430,25 +428,34 @@ public class TourPlanActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                JSONArray jsonArray = new JSONArray();
-                if(monthInAdapterFlag == 0) {
-                    jsonArray = sqLite.getTPData(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-                }else if(monthInAdapterFlag == 1) {
-                    jsonArray = sqLite.getTPData(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.plusMonths(1))));
-                }else if(monthInAdapterFlag == -1) {
-                    jsonArray = sqLite.getTPData(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate.minusMonths(1))));
-                }
+                JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
 
                 ArrayList<ModelClass> arrayList = new ArrayList<>();
-                if(jsonArray.length()>0) {
-                    Type type = new TypeToken<ArrayList<ModelClass>>() {
-                    }.getType();
+                Type type = new TypeToken<ArrayList<ModelClass>>() {}.getType();
+                if(jsonArray.length() > 0) {
                     arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-
                     for (ModelClass modelClass : arrayList) {
-                        if(!modelClass.getDate().equals("") && !modelClass.isSyncStatus().equals("1")) {
+                        if(!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
                             prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList);
                         }
+                    }
+
+                    jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                    boolean allDateSynced = false;
+                    for (ModelClass modelClass : arrayList){
+                        if(!modelClass.getDate().isEmpty()){
+                            if(modelClass.getSyncStatus().equals("0")){
+                                allDateSynced = true;
+                            }else{
+                                allDateSynced = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if(allDateSynced){
+                        sendWholeMonthStatus(localDate);
                     }
                 }
 
@@ -538,12 +545,12 @@ public class TourPlanActivity extends AppCompatActivity {
                     holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
             }
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }
 
-    private ArrayList<String> daysInMonthArray(LocalDate date) {
+    private ArrayList<String> daysInMonthArray (LocalDate date) {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
         YearMonth yearMonth = YearMonth.from(date);
         int daysInMonth = yearMonth.lengthOfMonth();
@@ -617,7 +624,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return daysInMonthArray;
     }
 
-    private String monthYearFromDate(LocalDate date) {
+    private String monthYearFromDate (LocalDate date) {
         DateTimeFormatter formatter = null;
         formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
 
@@ -635,12 +642,12 @@ public class TourPlanActivity extends AppCompatActivity {
         ArrayList<ModelClass> modelClasses = new ArrayList<>();
         try {
             //Data from Tour Plan table
-            JSONArray savedDataArray = new JSONArray(sqLite.getTPData(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
+            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
+
             if(savedDataArray.length()>0) { //Use the saved data if Tour Plan table has data of a selected month
                 Type type = new TypeToken<ArrayList<ModelClass>>() {}.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
-            }else { //if tour plan table has no data
-
+            }else { //If tour plan table has no data
                 SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate1));
                 String monthYear = monthYearFromDate(localDate1);
@@ -679,12 +686,12 @@ public class TourPlanActivity extends AppCompatActivity {
             }
 
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return modelClasses;
     }
 
-    public ModelClass.SessionList prepareSessionListForAdapter() {
+    public static ModelClass.SessionList prepareSessionListForAdapter () {
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
 
@@ -793,7 +800,6 @@ public class TourPlanActivity extends AppCompatActivity {
                 populateSessionEditAdapter(arrayList);
                 scrollToPosition(position, false);
             }
-
         });
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(TourPlanActivity.this);
         binding.tpNavigation.tpSessionRecView.setLayoutManager(layoutManager);
@@ -845,8 +851,13 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.summaryRecView.setLayoutManager(layoutManager);
         binding.summaryRecView.setAdapter(summaryAdapter);
 
+        changeApprovalBtnState(arrayList);
+
+    }
+
+    public void changeApprovalBtnState(ArrayList<ModelClass> arrayList){ // To set send to approval btn enable/disable  based on syncStatus and  workType
         boolean wholeMonthTpCompleted = false;
-        for (int i = 0; i<arrayList.size(); i++) {  // to enable/disable the send to approval button
+        for (int i = 0; i<arrayList.size(); i++) { // to enable/disable the send to approval button
             if(!arrayList.get(i).getDayNo().isEmpty()) {
                 ModelClass.SessionList.WorkType workType = arrayList.get(i).getSessionList().get(0).getWorkType();
                 if(!workType.getName().isEmpty()) {
@@ -857,7 +868,43 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
             }
         }
-        binding.tpSendToApproval.setEnabled(wholeMonthTpCompleted);
+        String status = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+
+        if(status.equals("1") || status.equals("3")){ // when waiting for approval or approved by manager
+            binding.tpNavigation.sessionEdit.setEnabled(false);
+        }else if(status.equals("") || status.equals("0") || status.equals("-1") || status.equals("2")) { // when planning(0),monthly status send call failed(-1)  or rejected by manager
+            binding.tpNavigation.sessionEdit.setEnabled(true);
+        }
+        binding.tpSendToApproval.setEnabled(wholeMonthTpCompleted && (status.equals("0") || status.equals("-1") || status.equals("")));
+
+        switch (status){
+            case "" :
+            case "0" :{
+                binding.tpStatusTxt.setText(Constants.STATUS_0);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                break;
+            }
+            case "-1" : {
+                binding.tpStatusTxt.setText(Constants.STATUS_4);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                break;
+            }
+            case "1" : {
+                binding.tpStatusTxt.setText(Constants.STATUS_1);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                break;
+            }
+            case "2" : {
+                binding.tpStatusTxt.setText(Constants.STATUS_2);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
+                break;
+            }
+            case "3" : {
+                binding.tpStatusTxt.setText(Constants.STATUS_3);
+                binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+                break;
+            }
+        }
 
     }
 
@@ -876,7 +923,8 @@ public class TourPlanActivity extends AppCompatActivity {
         }, 50);
     }
 
-    public void getRemoteTPData() {
+
+    public void get3MonthRemoteTPData(){
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
             public void isNetworkAvailable(Boolean status) {
@@ -907,19 +955,43 @@ public class TourPlanActivity extends AppCompatActivity {
                                             if(jsonObject1.has("previous")){
                                                 JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("previous").toString());
                                                 if(previousArray.length() > 0){
-                                                    String month = String.valueOf(LocalDate.now().minusMonths(1));
+                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,String.valueOf(LocalDate.now().minusMonths(1)));
+                                                    String rejectionReason = previousArray.getJSONObject(0).getString("Rejection_Reason");
+                                                    String status = previousArray.getJSONObject(0).getString("Change_Status");
+                                                    sqLite.saveTPDataOnlineTable(month,previousArray.toString(),status,rejectionReason);
+                                                    Type type = new TypeToken<ArrayList<ReceiveModel>>() {}.getType();
+                                                    ArrayList<ReceiveModel> arrayList = new Gson().fromJson(previousArray.toString(),type);
+                                                    for (int i=0;i<arrayList.size();i++){
+                                                        ReceiveModel receiveModel = arrayList.get(i);
+                                                        ModelClass.SessionList sessionList = new ModelClass.SessionList();
+                                                        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
+                                                        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(),receiveModel.getWTName(),terrSlFlag,receiveModel.getWTCode());
+                                                        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(),receiveModel.getHQCodes());
+                                                    }
                                                 }
                                             }
                                             if(jsonObject1.has("current")){
                                                 JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
+                                                if(currentArray.length() > 0){
+                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,String.valueOf(LocalDate.now()));
+                                                    String rejectionReason = currentArray.getJSONObject(0).getString("Rejection_Reason");
+                                                    String status = currentArray.getJSONObject(0).getString("Change_Status");
+                                                    sqLite.saveTPDataOnlineTable(month,currentArray.toString(),status,rejectionReason);
+                                                }
                                             }
                                             if(jsonObject1.has("next")){
                                                 JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
+                                                if(nextArray.length() > 0){
+                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,String.valueOf(LocalDate.now().plusMonths(1)));
+                                                    String rejectionReason = nextArray.getJSONObject(0).getString("Rejection_Reason");
+                                                    String status = nextArray.getJSONObject(0).getString("Change_Status");
+                                                    sqLite.saveTPDataOnlineTable(month,nextArray.toString(),status,rejectionReason);
+                                                }
                                             }
                                         }
                                     }
                                 }catch (JSONException e){
-                                    throw new RuntimeException(e);
+                                    e.printStackTrace();
                                 }
                             }
 
@@ -929,187 +1001,331 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         });
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
         networkStatusTask.execute();
     }
 
-    public void prepareObjectToSendForApproval(String month, String dateForApproval, ArrayList<ModelClass> arrayList) {
+    public void get1MonthRemoteTPData(LocalDate localDate1){
         try {
-            binding.progressBar.setVisibility(View.VISIBLE);
-            JSONArray jsonArray = new JSONArray();
-            for (ModelClass modelClass : arrayList) {
-                if(!modelClass.getDayNo().isEmpty()) {
-                    if(modelClass.getDayNo().equals(dateForApproval)) {
-                        JSONObject jsonObject = new JSONObject();
+            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this,SharedPref.getCallApiUrl(TourPlanActivity.this));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("tableName", "gettpdetail");
+            jsonObject.put("sfcode", loginResponse.getSF_Code());
+            jsonObject.put("division_code", loginResponse.getDivision_Code());
+            jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
+            jsonObject.put("sf_type", loginResponse.getSf_type());
+            jsonObject.put("Designation", loginResponse.getDesig());
+            jsonObject.put("state_code", loginResponse.getState_Code());
+            jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+            jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25,TimeUtils.FORMAT_8,localDate1.getMonth().toString()));
+            jsonObject.put("Year", localDate1.getYear());
 
-                        jsonObject.put("SFCode", sfCode);
-                        jsonObject.put("SFName", sfName);
-                        jsonObject.put("Div", division_code);
-                        jsonObject.put("Mnth", modelClass.getMonth());
-                        jsonObject.put("Yr", modelClass.getYear());
-                        jsonObject.put("dayno", modelClass.getDayNo());
-                        jsonObject.put("Change_Status", "0");
-                        jsonObject.put("Rejection_Reason", "");
-                        jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
-                        jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                        jsonObject.put("Entry_mode", "0");
-                        jsonObject.put("Approve_mode", "");
-                        jsonObject.put("Approved_time", "");
-                        jsonObject.put("app_version", BuildConfig.VERSION_NAME);
-                        jsonObject.put("Mode", "Android-Edet");
+            Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if(response.isSuccessful() && response.body() != null){
+                        if(response.body().isJsonArray()){
+                            try {
+                                JSONArray jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                if(jsonArray.length() > 0){
+                                    String status = jsonArray.getJSONObject(0).getString("Change_Status");
+                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),status);
 
-                        String WTCode = "", WTName = "", FWFlg = "", HQCodes = "", HQNames = "", clusterCodes = "", clusterNames = "", JWCodes = "", JWNames = "", Dr_Code = "", Dr_Name = "", Chem_Code = "", Chem_Name = "", Stockist_Code = "", Stockist_Name = "", cip_code = "", cip_name = "", hosp_code = "", hosp_Name = "", DayRemarks = "";
-                        String WTCode2 = "", WTName2 = "", FWFlg2 = "", HQCodes2 = "", HQNames2 = "", clusterCode2 = "", clusterName2 = "", JWCodes2 = "", JWNames2 = "", Dr_two_code = "", Dr_two_name = "", Chem_two_code = "", Chem_two_name = "", Stockist_two_code = "", Stockist_two_name = "", cip_code2 = "", cip_name2 = "", hosp_code2 = "", hosp_Name2 = "", DayRemarks2 = "";
-                        String WTCode3 = "", WTName3 = "", FWFlg3 = "", HQCodes3 = "", HQNames3 = "", clusterCode3 = "", clusterName3 = "", JWCodes3 = "", JWNames3 = "", Dr_three_code = "", Dr_three_name = "", Chem_three_code = "", Chem_three_name = "", Stockist_three_code = "", Stockist_three_name = "", cip_code3 = "", cip_name3 = "", hosp_code3 = "", hosp_Name3 = "", DayRemarks3 = "";
+                                    switch (status){
+                                        case "0" : {
+                                            binding.tpStatusTxt.setText(Constants.STATUS_0);
+                                            break;
+                                        }
+                                        case "1" : {
+                                            binding.tpStatusTxt.setText(Constants.STATUS_1);
+                                            break;
+                                        }
+                                        case "2" : {
+                                            binding.tpStatusTxt.setText(Constants.STATUS_2);
+                                            break;
+                                        }
+                                        case "3" : {
+                                            binding.tpStatusTxt.setText(Constants.STATUS_3);
+                                            break;
+                                        }
+                                    }
+                                    binding.tpSendToApproval.setEnabled(false);
+                                    binding.tpNavigation.sessionEdit.setEnabled(false);
+                                }
 
-                        for (int i = 0; i<modelClass.getSessionList().size(); i++) {
-                            ModelClass.SessionList sessionList = modelClass.getSessionList().get(i);
-                            if(i == 0) {
-                                WTCode = sessionList.getWorkType().getCode();
-                                WTName = sessionList.getWorkType().getName();
-                                FWFlg = sessionList.getWorkType().getFWFlg();
-                                HQCodes = sessionList.getHQ().getCode();
-                                HQNames = sessionList.getHQ().getName();
-                                clusterCodes = textBuilder(sessionList.getCluster(), true);
-                                clusterNames = textBuilder(sessionList.getCluster(), false);
-                                JWCodes = textBuilder(sessionList.getJC(), true);
-                                JWNames = textBuilder(sessionList.getJC(), false);
-                                Dr_Code = textBuilder(sessionList.getListedDr(), true);
-                                Dr_Name = textBuilder(sessionList.getListedDr(), false);
-                                Chem_Code = textBuilder(sessionList.getChemist(), true);
-                                Chem_Name = textBuilder(sessionList.getChemist(), false);
-                                Stockist_Code = textBuilder(sessionList.getStockiest(), true);
-                                Stockist_Name = textBuilder(sessionList.getStockiest(), false);
-                                cip_code = textBuilder(sessionList.getCip(), true);
-                                cip_name = textBuilder(sessionList.getCip(), false);
-                                hosp_code = textBuilder(sessionList.getHospital(), true);
-                                hosp_Name = textBuilder(sessionList.getHospital(), false);
-                                DayRemarks = sessionList.getRemarks();
-                            }else if(i == 1) {
-                                WTCode2 = sessionList.getWorkType().getCode();
-                                WTName2 = sessionList.getWorkType().getName();
-                                FWFlg2 = sessionList.getWorkType().getFWFlg();
-                                HQCodes2 = sessionList.getHQ().getCode();
-                                HQNames2 = sessionList.getHQ().getName();
-                                clusterCode2 = textBuilder(sessionList.getCluster(), true);
-                                clusterName2 = textBuilder(sessionList.getCluster(), false);
-                                JWCodes2 = textBuilder(sessionList.getJC(), true);
-                                JWNames2 = textBuilder(sessionList.getJC(), false);
-                                Dr_two_code = textBuilder(sessionList.getListedDr(), true);
-                                Dr_two_name = textBuilder(sessionList.getListedDr(), false);
-                                Chem_two_code = textBuilder(sessionList.getChemist(), true);
-                                Chem_two_name = textBuilder(sessionList.getChemist(), false);
-                                Stockist_two_code = textBuilder(sessionList.getStockiest(), true);
-                                Stockist_two_name = textBuilder(sessionList.getStockiest(), false);
-                                cip_code2 = textBuilder(sessionList.getCip(), true);
-                                cip_name2 = textBuilder(sessionList.getCip(), false);
-                                hosp_code2 = textBuilder(sessionList.getHospital(), true);
-                                hosp_Name2 = textBuilder(sessionList.getHospital(), false);
-                                DayRemarks2 = sessionList.getRemarks();
-                            }else if(i == 2) {
-                                WTCode3 = sessionList.getWorkType().getCode();
-                                WTName3 = sessionList.getWorkType().getName();
-                                FWFlg3 = sessionList.getWorkType().getFWFlg();
-                                HQCodes3 = sessionList.getHQ().getCode();
-                                HQNames3 = sessionList.getHQ().getName();
-                                clusterCode3 = textBuilder(sessionList.getCluster(), true);
-                                clusterName3 = textBuilder(sessionList.getCluster(), false);
-                                JWCodes3 = textBuilder(sessionList.getJC(), true);
-                                JWNames3 = textBuilder(sessionList.getJC(), false);
-                                Dr_three_code = textBuilder(sessionList.getListedDr(), true);
-                                Dr_three_name = textBuilder(sessionList.getListedDr(), false);
-                                Chem_three_code = textBuilder(sessionList.getChemist(), true);
-                                Chem_three_name = textBuilder(sessionList.getChemist(), false);
-                                Stockist_three_code = textBuilder(sessionList.getStockiest(), true);
-                                Stockist_three_name = textBuilder(sessionList.getStockiest(), false);
-                                cip_code3 = textBuilder(sessionList.getCip(), true);
-                                cip_name3 = textBuilder(sessionList.getCip(), false);
-                                hosp_code3 = textBuilder(sessionList.getHospital(), true);
-                                hosp_Name3 = textBuilder(sessionList.getHospital(), false);
-                                DayRemarks3 = sessionList.getRemarks();
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
                             }
                         }
-
-                        jsonObject.put("WTCode", WTCode);
-                        jsonObject.put("WTName", WTName);
-                        jsonObject.put("FWFlg", FWFlg);
-                        jsonObject.put("HQCodes", HQCodes);
-                        jsonObject.put("HQNames", HQNames);
-                        jsonObject.put("clusterCode", clusterCodes);
-                        jsonObject.put("clusterName", clusterNames);
-                        jsonObject.put("JWCodes", JWCodes);
-                        jsonObject.put("JWNames", JWNames);
-                        jsonObject.put("Dr_Code", Dr_Code);
-                        jsonObject.put("Dr_Name", Dr_Name);
-                        jsonObject.put("Chem_Code", Chem_Code);
-                        jsonObject.put("Chem_Name", Chem_Name);
-                        jsonObject.put("Stockist_Code", Stockist_Code);
-                        jsonObject.put("Stockist_Name", Stockist_Name);
-                        jsonObject.put("cip_code", cip_code);
-                        jsonObject.put("cip_name", cip_name);
-                        jsonObject.put("hosp_code", hosp_code);
-                        jsonObject.put("hosp_Name", hosp_Name);
-                        jsonObject.put("DayRemarks", DayRemarks);
-
-                        jsonObject.put("WTCode2", WTCode2);
-                        jsonObject.put("WTName2", WTName2);
-                        jsonObject.put("FWFlg2", FWFlg2);
-                        jsonObject.put("HQCodes2", HQCodes2);
-                        jsonObject.put("HQNames2", HQNames2);
-                        jsonObject.put("clusterCode2", clusterCode2);
-                        jsonObject.put("clusterName2", clusterName2);
-                        jsonObject.put("JWCodes2", JWCodes2);
-                        jsonObject.put("JWNames2", JWNames2);
-                        jsonObject.put("Dr_two_code", Dr_two_code);
-                        jsonObject.put("Dr_two_name", Dr_two_name);
-                        jsonObject.put("Chem_two_code", Chem_two_code);
-                        jsonObject.put("Chem_two_name", Chem_two_name);
-                        jsonObject.put("Stockist_two_code", Stockist_two_code);
-                        jsonObject.put("Stockist_Name2", Stockist_two_name);
-                        jsonObject.put("cip_code2", cip_code2);
-                        jsonObject.put("cip_name2", cip_name2);
-                        jsonObject.put("hosp_code2", hosp_code2);
-                        jsonObject.put("hosp_Name2", hosp_Name2);
-                        jsonObject.put("DayRemarks2", DayRemarks2);
-
-                        jsonObject.put("WTCode3", WTCode3);
-                        jsonObject.put("WTName3", WTName3);
-                        jsonObject.put("FWFlg3", FWFlg3);
-                        jsonObject.put("HQCodes3", HQCodes3);
-                        jsonObject.put("HQNames3", HQNames3);
-                        jsonObject.put("clusterCode3", clusterCode3);
-                        jsonObject.put("clusterName3", clusterName3);
-                        jsonObject.put("JWCodes3", JWCodes3);
-                        jsonObject.put("JWNames3", JWNames3);
-                        jsonObject.put("Dr_three_code", Dr_three_code);
-                        jsonObject.put("Dr_three_name", Dr_three_name);
-                        jsonObject.put("Chem_three_code", Chem_three_code);
-                        jsonObject.put("Chem_three_name", Chem_three_name);
-                        jsonObject.put("Stockist_three_code", Stockist_three_code);
-                        jsonObject.put("Stockist_three_name", Stockist_three_name);
-                        jsonObject.put("cip_code3", cip_code3);
-                        jsonObject.put("cip_name3", cip_name3);
-                        jsonObject.put("hosp_code3", hosp_code3);
-                        jsonObject.put("hosp_Name3", hosp_Name3);
-                        jsonObject.put("DayRemarks3", DayRemarks3);
-
-                        jsonArray.put(jsonObject);
-                        break;
                     }
                 }
-            }
-            sendTpForApproval(jsonArray, arrayList, dateForApproval, month);
 
-        } catch (JSONException ex) {
-            binding.progressBar.setVisibility(View.GONE);
-            throw new RuntimeException(ex);
+                @Override
+                public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+                }
+            });
+
+        }catch (JSONException e){
+            e.printStackTrace();
         }
+
+    }
+
+    public void sendWholeMonthStatus (LocalDate localDate1){
+        NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+            @Override
+            public void isNetworkAvailable (Boolean status) {
+                if(status){
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("tableName", "tpsend_appr");
+                        jsonObject.put("sfcode", loginResponse.getSF_Code());
+                        jsonObject.put("SFName", loginResponse.getSF_Name());
+                        jsonObject.put("division_code", loginResponse.getDivision_Code());
+                        jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
+                        jsonObject.put("Designation", loginResponse.getDesig());
+                        jsonObject.put("state_code", loginResponse.getState_Code());
+                        jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25,TimeUtils.FORMAT_8,localDate1.getMonth().toString()));
+                        jsonObject.put("TPYear", localDate1.getYear());
+
+                        Call<JsonObject> call = apiInterface.saveTPStatus(jsonObject.toString());
+                        call.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse (@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                               if(response.body() != null){
+                                   try {
+                                       JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
+                                       if(jsonObject1.has("success") && jsonObject1.getBoolean("success")){
+                                           sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"0"); // "0" - success
+                                           get1MonthRemoteTPData(localDate1);
+                                       }else
+                                           sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
+                                   } catch (JSONException e) {
+                                       e.printStackTrace();
+                                   }
+                               }else
+                                   sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
+                            }
+
+                            @Override
+                            public void onFailure (@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
+                            }
+                        });
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
+                }
+            }
+        });
+        networkStatusTask.execute();
+    }
+
+    public String findTerrSlFlag(String code){
+        try {
+            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
+            for (int i = 0; i<workTypeArray.length(); i++) {
+                JSONObject jsonObject = workTypeArray.getJSONObject(i);
+                if(code.equals(jsonObject.getString("Code")))
+                    return jsonObject.getString("TerrSlFlg");
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public void prepareObjectToSendForApproval(String month, String dateForApproval, ArrayList<ModelClass> arrayList) {
+
+        binding.progressBar.setVisibility(View.VISIBLE);
+        NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+            @Override
+            public void isNetworkAvailable (Boolean status) {
+                if(status){
+                    try {
+                        JSONArray jsonArray = new JSONArray();
+                        for (ModelClass modelClass : arrayList) {
+                            if(!modelClass.getDayNo().isEmpty()) {
+                                if(modelClass.getDayNo().equals(dateForApproval)) {
+                                    JSONObject jsonObject = new JSONObject();
+
+                                    jsonObject.put("SFCode", sfCode);
+                                    jsonObject.put("SFName", sfName);
+                                    jsonObject.put("Div", division_code);
+                                    jsonObject.put("Mnth", modelClass.getMonth());
+                                    jsonObject.put("Yr", modelClass.getYear());
+                                    jsonObject.put("dayno", modelClass.getDayNo());
+                                    jsonObject.put("Change_Status", "0");
+                                    jsonObject.put("Rejection_Reason", "");
+                                    jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
+                                    jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                                    jsonObject.put("Entry_mode", "0");
+                                    jsonObject.put("Approve_mode", "");
+                                    jsonObject.put("Approved_time", "");
+                                    jsonObject.put("app_version", BuildConfig.VERSION_NAME);
+                                    jsonObject.put("Mode", "Android-Edet");
+
+                                    String WTCode = "", WTName = "", FWFlg = "", HQCodes = "", HQNames = "", clusterCodes = "", clusterNames = "", JWCodes = "", JWNames = "", Dr_Code = "", Dr_Name = "", Chem_Code = "", Chem_Name = "", Stockist_Code = "", Stockist_Name = "", cip_code = "", cip_name = "", hosp_code = "", hosp_Name = "", DayRemarks = "";
+                                    String WTCode2 = "", WTName2 = "", FWFlg2 = "", HQCodes2 = "", HQNames2 = "", clusterCode2 = "", clusterName2 = "", JWCodes2 = "", JWNames2 = "", Dr_two_code = "", Dr_two_name = "", Chem_two_code = "", Chem_two_name = "", Stockist_two_code = "", Stockist_two_name = "", cip_code2 = "", cip_name2 = "", hosp_code2 = "", hosp_Name2 = "", DayRemarks2 = "";
+                                    String WTCode3 = "", WTName3 = "", FWFlg3 = "", HQCodes3 = "", HQNames3 = "", clusterCode3 = "", clusterName3 = "", JWCodes3 = "", JWNames3 = "", Dr_three_code = "", Dr_three_name = "", Chem_three_code = "", Chem_three_name = "", Stockist_three_code = "", Stockist_three_name = "", cip_code3 = "", cip_name3 = "", hosp_code3 = "", hosp_Name3 = "", DayRemarks3 = "";
+
+                                    for (int i = 0; i<modelClass.getSessionList().size(); i++) {
+                                        ModelClass.SessionList sessionList = modelClass.getSessionList().get(i);
+                                        if(i == 0) {
+                                            WTCode = sessionList.getWorkType().getCode();
+                                            WTName = sessionList.getWorkType().getName();
+                                            FWFlg = sessionList.getWorkType().getFWFlg();
+                                            HQCodes = sessionList.getHQ().getCode();
+                                            HQNames = sessionList.getHQ().getName();
+                                            clusterCodes = textBuilder(sessionList.getCluster(), true);
+                                            clusterNames = textBuilder(sessionList.getCluster(), false);
+                                            JWCodes = textBuilder(sessionList.getJC(), true);
+                                            JWNames = textBuilder(sessionList.getJC(), false);
+                                            Dr_Code = textBuilder(sessionList.getListedDr(), true);
+                                            Dr_Name = textBuilder(sessionList.getListedDr(), false);
+                                            Chem_Code = textBuilder(sessionList.getChemist(), true);
+                                            Chem_Name = textBuilder(sessionList.getChemist(), false);
+                                            Stockist_Code = textBuilder(sessionList.getStockiest(), true);
+                                            Stockist_Name = textBuilder(sessionList.getStockiest(), false);
+                                            cip_code = textBuilder(sessionList.getCip(), true);
+                                            cip_name = textBuilder(sessionList.getCip(), false);
+                                            hosp_code = textBuilder(sessionList.getHospital(), true);
+                                            hosp_Name = textBuilder(sessionList.getHospital(), false);
+                                            DayRemarks = sessionList.getRemarks();
+                                        }else if(i == 1) {
+                                            WTCode2 = sessionList.getWorkType().getCode();
+                                            WTName2 = sessionList.getWorkType().getName();
+                                            FWFlg2 = sessionList.getWorkType().getFWFlg();
+                                            HQCodes2 = sessionList.getHQ().getCode();
+                                            HQNames2 = sessionList.getHQ().getName();
+                                            clusterCode2 = textBuilder(sessionList.getCluster(), true);
+                                            clusterName2 = textBuilder(sessionList.getCluster(), false);
+                                            JWCodes2 = textBuilder(sessionList.getJC(), true);
+                                            JWNames2 = textBuilder(sessionList.getJC(), false);
+                                            Dr_two_code = textBuilder(sessionList.getListedDr(), true);
+                                            Dr_two_name = textBuilder(sessionList.getListedDr(), false);
+                                            Chem_two_code = textBuilder(sessionList.getChemist(), true);
+                                            Chem_two_name = textBuilder(sessionList.getChemist(), false);
+                                            Stockist_two_code = textBuilder(sessionList.getStockiest(), true);
+                                            Stockist_two_name = textBuilder(sessionList.getStockiest(), false);
+                                            cip_code2 = textBuilder(sessionList.getCip(), true);
+                                            cip_name2 = textBuilder(sessionList.getCip(), false);
+                                            hosp_code2 = textBuilder(sessionList.getHospital(), true);
+                                            hosp_Name2 = textBuilder(sessionList.getHospital(), false);
+                                            DayRemarks2 = sessionList.getRemarks();
+                                        }else if(i == 2) {
+                                            WTCode3 = sessionList.getWorkType().getCode();
+                                            WTName3 = sessionList.getWorkType().getName();
+                                            FWFlg3 = sessionList.getWorkType().getFWFlg();
+                                            HQCodes3 = sessionList.getHQ().getCode();
+                                            HQNames3 = sessionList.getHQ().getName();
+                                            clusterCode3 = textBuilder(sessionList.getCluster(), true);
+                                            clusterName3 = textBuilder(sessionList.getCluster(), false);
+                                            JWCodes3 = textBuilder(sessionList.getJC(), true);
+                                            JWNames3 = textBuilder(sessionList.getJC(), false);
+                                            Dr_three_code = textBuilder(sessionList.getListedDr(), true);
+                                            Dr_three_name = textBuilder(sessionList.getListedDr(), false);
+                                            Chem_three_code = textBuilder(sessionList.getChemist(), true);
+                                            Chem_three_name = textBuilder(sessionList.getChemist(), false);
+                                            Stockist_three_code = textBuilder(sessionList.getStockiest(), true);
+                                            Stockist_three_name = textBuilder(sessionList.getStockiest(), false);
+                                            cip_code3 = textBuilder(sessionList.getCip(), true);
+                                            cip_name3 = textBuilder(sessionList.getCip(), false);
+                                            hosp_code3 = textBuilder(sessionList.getHospital(), true);
+                                            hosp_Name3 = textBuilder(sessionList.getHospital(), false);
+                                            DayRemarks3 = sessionList.getRemarks();
+                                        }
+                                    }
+
+                                    jsonObject.put("WTCode", WTCode);
+                                    jsonObject.put("WTName", WTName);
+                                    jsonObject.put("FWFlg", FWFlg);
+                                    jsonObject.put("HQCodes", HQCodes);
+                                    jsonObject.put("HQNames", HQNames);
+                                    jsonObject.put("clusterCode", clusterCodes);
+                                    jsonObject.put("clusterName", clusterNames);
+                                    jsonObject.put("JWCodes", JWCodes);
+                                    jsonObject.put("JWNames", JWNames);
+                                    jsonObject.put("Dr_Code", Dr_Code);
+                                    jsonObject.put("Dr_Name", Dr_Name);
+                                    jsonObject.put("Chem_Code", Chem_Code);
+                                    jsonObject.put("Chem_Name", Chem_Name);
+                                    jsonObject.put("Stockist_Code", Stockist_Code);
+                                    jsonObject.put("Stockist_Name", Stockist_Name);
+                                    jsonObject.put("cip_code", cip_code);
+                                    jsonObject.put("cip_name", cip_name);
+                                    jsonObject.put("hosp_code", hosp_code);
+                                    jsonObject.put("hosp_Name", hosp_Name);
+                                    jsonObject.put("DayRemarks", DayRemarks);
+
+                                    jsonObject.put("WTCode2", WTCode2);
+                                    jsonObject.put("WTName2", WTName2);
+                                    jsonObject.put("FWFlg2", FWFlg2);
+                                    jsonObject.put("HQCodes2", HQCodes2);
+                                    jsonObject.put("HQNames2", HQNames2);
+                                    jsonObject.put("clusterCode2", clusterCode2);
+                                    jsonObject.put("clusterName2", clusterName2);
+                                    jsonObject.put("JWCodes2", JWCodes2);
+                                    jsonObject.put("JWNames2", JWNames2);
+                                    jsonObject.put("Dr_two_code", Dr_two_code);
+                                    jsonObject.put("Dr_two_name", Dr_two_name);
+                                    jsonObject.put("Chem_two_code", Chem_two_code);
+                                    jsonObject.put("Chem_two_name", Chem_two_name);
+                                    jsonObject.put("Stockist_two_code", Stockist_two_code);
+                                    jsonObject.put("Stockist_Name2", Stockist_two_name);
+                                    jsonObject.put("cip_code2", cip_code2);
+                                    jsonObject.put("cip_name2", cip_name2);
+                                    jsonObject.put("hosp_code2", hosp_code2);
+                                    jsonObject.put("hosp_Name2", hosp_Name2);
+                                    jsonObject.put("DayRemarks2", DayRemarks2);
+
+                                    jsonObject.put("WTCode3", WTCode3);
+                                    jsonObject.put("WTName3", WTName3);
+                                    jsonObject.put("FWFlg3", FWFlg3);
+                                    jsonObject.put("HQCodes3", HQCodes3);
+                                    jsonObject.put("HQNames3", HQNames3);
+                                    jsonObject.put("clusterCode3", clusterCode3);
+                                    jsonObject.put("clusterName3", clusterName3);
+                                    jsonObject.put("JWCodes3", JWCodes3);
+                                    jsonObject.put("JWNames3", JWNames3);
+                                    jsonObject.put("Dr_three_code", Dr_three_code);
+                                    jsonObject.put("Dr_three_name", Dr_three_name);
+                                    jsonObject.put("Chem_three_code", Chem_three_code);
+                                    jsonObject.put("Chem_three_name", Chem_three_name);
+                                    jsonObject.put("Stockist_three_code", Stockist_three_code);
+                                    jsonObject.put("Stockist_three_name", Stockist_three_name);
+                                    jsonObject.put("cip_code3", cip_code3);
+                                    jsonObject.put("cip_name3", cip_name3);
+                                    jsonObject.put("hosp_code3", hosp_code3);
+                                    jsonObject.put("hosp_Name3", hosp_Name3);
+                                    jsonObject.put("DayRemarks3", DayRemarks3);
+
+                                    jsonArray.put(jsonObject);
+                                    break;
+                                }
+                            }
+                        }
+                        sendTpForApproval(jsonArray, arrayList, dateForApproval, month);
+                    } catch (JSONException ex) {
+                        binding.progressBar.setVisibility(View.GONE);
+                        ex.printStackTrace();
+                    }
+                }else{
+                    binding.progressBar.setVisibility(View.GONE);
+                    saveTpLocal(arrayList,dateForApproval,month,"1"); // Sync Failed
+                }
+            }
+        });
+        networkStatusTask.execute();
 
     }
 
@@ -1126,47 +1342,32 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void sendTpForApproval(JSONArray jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month) {
-        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, new NetworkStatusTask.NetworkStatusInterface() {
+        apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
+        Call<JsonObject> call = apiInterface.saveTP(jsonArray.toString());
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void isNetworkAvailable(Boolean status) {
-                if(status){
-                    apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                    Call<JsonObject> call = apiInterface.saveTP(jsonArray.toString());
-                    call.enqueue(new Callback<JsonObject>() {
-                        @Override
-                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                            Log.e("test", "saveTp response : " + response.body());
-                            binding.progressBar.setVisibility(View.GONE);
-                            try {
-                                if(response.isSuccessful() && response.body() != null) {
-                                    JSONObject jsonObject1 = new JSONObject(response.body().toString());
-                                    if(jsonObject1.getBoolean("success"))
-                                        saveTpLocal(modelClassArrayList, date, month,"0"); // Sync Success
-                                    else
-                                        saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
-                                }else {
-                                    saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
-                                }
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                            Log.e("test", "onFailure saveTp : " + t);
-                            binding.progressBar.setVisibility(View.GONE);
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                binding.progressBar.setVisibility(View.GONE);
+                try {
+                    if(response.isSuccessful() && response.body() != null) {
+                        JSONObject jsonObject1 = new JSONObject(response.body().toString());
+                        if(jsonObject1.getBoolean("success"))
+                            saveTpLocal(modelClassArrayList, date, month,"0"); // Sync Success
+                        else
                             saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
-                        }
-                    });
-                }else{
-                    binding.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
-                    saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
+                    }else {
+                        saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                binding.progressBar.setVisibility(View.GONE);
+                saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
+            }
         });
-        networkStatusTask.execute();
 
     }
 
@@ -1179,7 +1380,5 @@ public class TourPlanActivity extends AppCompatActivity {
         }
         sqLite.saveTPData(month, new Gson().toJson(arrayList));
     }
-
-
 
 }

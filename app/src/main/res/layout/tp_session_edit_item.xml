@@ -814,12 +814,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:fontFamily="@font/satoshi_medium"
-                                android:hint="Enter Remarks here"
+                                android:hint="Type here.."
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_6sdp"
                                 android:inputType="textMultiLine"
-                                android:gravity="start"
-                                android:lines="3"
+                                android:gravity="start|top"
+                                android:lines="5"
                                 android:background="@drawable/edittext_stroke"
                                 android:padding="@dimen/_5sdp"
                                 android:layout_marginTop="@dimen/_2sdp"
@@ -877,6 +877,7 @@
                             android:background="@null"
                             android:gravity="start|center"
                             android:padding="@dimen/_5sdp"
+                            android:imeOptions="actionDone"
                             tools:ignore="SpUsage"/>
 
                         <LinearLayout

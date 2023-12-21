@@ -1,8 +1,6 @@
 package saneforce.sanclm.activity.reports.dayReport.fragment;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,14 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,13 +39,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.presentation.createPresentation.CreatePresentationActivity;
-import saneforce.sanclm.activity.presentation.playPreview.PlaySlidePreviewActivity;
-import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanclm.activity.reports.CalendarAdapter;
 import saneforce.sanclm.activity.reports.ReportFragContainerActivity;
 import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
-import saneforce.sanclm.activity.reports.dayReport.DayReportModel;
+import saneforce.sanclm.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanclm.activity.reports.dayReport.adapter.DayReportAdapter;
 import saneforce.sanclm.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.sanclm.activity.tourPlan.model.ModelClass;
@@ -144,9 +135,6 @@ public class DayReportFragment extends Fragment {
         activity.title.setText("Day Report");
         Type type = new TypeToken<ArrayList<DayReportModel>>(){}.getType();
         arrayListOfReportData = new Gson().fromJson(dataViewModel.getSummaryData().getValue(), type);
-
-//        alertDialog = new AlertDialog.Builder(getContext());
-//        calendarDialog = alertDialog.create();
 
     }
 
@@ -327,7 +315,7 @@ public class DayReportFragment extends Fragment {
                                         populateAdapter();
                                     }
                                 }catch (JSONException e){
-                                    throw new RuntimeException(e);
+                                    e.printStackTrace();
                                 }
                             }
                             @Override
@@ -336,7 +324,7 @@ public class DayReportFragment extends Fragment {
                             }
                         });
                     }catch (JSONException e){
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 }else{
                     binding.progressBar.setVisibility(View.GONE);

@@ -21,9 +21,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
-import java.util.Date;
-import java.util.Locale;
 
 import saneforce.sanclm.response.LoginResponse;
 
@@ -43,9 +40,11 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String SYNC_STATUS = "sync_status"; // 0 - success, 1 - failed
 
     //Tour PLan Table
-    public static final String TOUR_PLAN_TABLE = "tour_plan_table";
+    public static final String TOUR_PLAN_OFFLINE_TABLE = "tour_plan_offline_table";
+    public static final String TOUR_PLAN_ONLINE_TABLE = "tour_plan_online_table";
     public static final String TP_MONTH = "tp_month";
     public static final String TP_DATA = "tp_data";
+    public static final String TP_MONTH_STATUS = "tp_month_synced";
     public static final String TP_APPROVAL_STATUS = "tp_approval_status"; // 0 - Planning, 1 - Pending, 2 - Rejected, 3 - Approved
     public static final String TP_REJECTION_REASON = "tp_rejection_reason";
 
@@ -79,7 +78,9 @@ public class SQLite extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LOGIN_TABLE + "(" + LOGIN_DATA + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text," + SYNC_STATUS + " INTEGER" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_OFFLINE_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_MONTH_STATUS + " text,"+ TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_ONLINE_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
+
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
                 LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
                 LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
@@ -91,7 +92,7 @@ public class SQLite extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MASTER_SYNC_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + TOUR_PLAN_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TOUR_PLAN_OFFLINE_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + LINE_CHAT_DATA_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + PRESENTATION_TABLE);
 
@@ -102,7 +103,7 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + LOGIN_TABLE);
         db.execSQL("DELETE FROM " + MASTER_SYNC_TABLE);
-        db.execSQL("DELETE FROM " + TOUR_PLAN_TABLE);
+        db.execSQL("DELETE FROM " + TOUR_PLAN_OFFLINE_TABLE);
         db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
         db.execSQL("DELETE FROM " + PRESENTATION_TABLE);
 
@@ -131,6 +132,7 @@ public class SQLite extends SQLiteOpenHelper {
             data = cursor.getString(0);
         }
         cursor.close();
+        db.close();
         if (!data.equals("")){
             Type type = new TypeToken<LoginResponse>() {
             }.getType();
@@ -170,6 +172,7 @@ public class SQLite extends SQLiteOpenHelper {
             data = cursor.getString(1);
         }
         cursor.close();
+        db.close();
 
         JSONArray jsonArray = new JSONArray();
         try {
@@ -203,10 +206,13 @@ public class SQLite extends SQLiteOpenHelper {
             data = cursor.getInt(2);
         }
         cursor.close();
+        db.close();
         return data;
     }
 
     //----------------------------Tour Plan----------------------
+
+    //Offline table
     public void saveTPData(String month,String data){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -214,54 +220,56 @@ public class SQLite extends SQLiteOpenHelper {
         contentValues.put(TP_DATA, data);
 
         String[] args = new String[]{month};
-        int updated = db.update(TOUR_PLAN_TABLE,contentValues,TP_MONTH + "=?", args);
+        int updated = db.update(TOUR_PLAN_OFFLINE_TABLE, contentValues, TP_MONTH + "=?", args);
         if (updated <= 0) {
-            db.insert(TOUR_PLAN_TABLE,null,contentValues);
+            db.insert(TOUR_PLAN_OFFLINE_TABLE, null, contentValues);
         }
         db.close();
     }
 
-    public void saveMonthlyApprovalStatus(String month, String status){
+    public void saveMonthlySyncStatus (String month, String status){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TP_MONTH,month);
-        contentValues.put(TP_APPROVAL_STATUS,status);
+        contentValues.put(TP_MONTH_STATUS, status);
 
         String[] args = new String[]{month};
-        int updated = db.update(TOUR_PLAN_TABLE,contentValues,TP_MONTH + "=?", args);
+        int updated = db.update(TOUR_PLAN_OFFLINE_TABLE, contentValues, TP_MONTH + "=?", args);
         if (updated <= 0) {
-            db.insert(TOUR_PLAN_TABLE,null,contentValues);
+            db.insert(TOUR_PLAN_OFFLINE_TABLE, null, contentValues);
         }
         db.close();
     }
 
-    public JSONArray getTPData(String month) {
+    public JSONArray getTPDataOfMonth (String month) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "='" + month + "';",null);
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_OFFLINE_TABLE + " where " + TP_MONTH + "='" + month + "';", null);
         String data = "";
         if (cursor.moveToNext())
             data = cursor.getString(1);
 
         cursor.close();
+        db.close();
        JSONArray jsonArray = new JSONArray();
 
        try {
            if (!data.isEmpty())
                jsonArray = new JSONArray(data);
        } catch (JSONException e) {
-           throw new RuntimeException(e);
+           e.printStackTrace();
        }
         return jsonArray;
     }
 
-    public String getMonthlyApprovalStatus(String month){
+    public String getMonthlySyncStatus (String month){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "='" + month + "';",null);
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_OFFLINE_TABLE + " where " + TP_MONTH + "='" + month + "';", null);
         String data = "";
         if(cursor.moveToNext()){
             data = cursor.getString(2);
         }
         cursor.close();
+        db.close();
 
         if(data != null){
             return data;
@@ -272,15 +280,52 @@ public class SQLite extends SQLiteOpenHelper {
 
     public String getRejectionReasonOfMonth(String month){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_TABLE + " where " + TP_MONTH + "='" + month + "';",null);
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_OFFLINE_TABLE + " where " + TP_MONTH + "='" + month + "';", null);
         String data = "";
         if(cursor.moveToNext()){
             data = cursor.getString(3);
         }
         cursor.close();
+        db.close();
         return data;
     }
 
+    //Online table
+    public void saveTPDataOnlineTable(String month,String data,String status,String rejectionReason){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TP_MONTH, month);
+        contentValues.put(TP_DATA, data);
+        contentValues.put(TP_APPROVAL_STATUS,status);
+        contentValues.put(TP_REJECTION_REASON,rejectionReason);
+
+        String[] args = new String[]{month};
+        int updated = db.update(TOUR_PLAN_ONLINE_TABLE, contentValues, TP_MONTH + "=?", args);
+        if (updated <= 0) {
+            db.insert(TOUR_PLAN_ONLINE_TABLE, null, contentValues);
+        }
+        db.close();
+    }
+
+    public JSONArray getTPDataOnlineTable(String month) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_ONLINE_TABLE + " where " + TP_MONTH + "='" + month + "';", null);
+        String data = "";
+        if (cursor.moveToNext())
+            data = cursor.getString(1);
+
+        cursor.close();
+        db.close();
+        JSONArray jsonArray = new JSONArray();
+
+        try {
+            if (!data.isEmpty())
+                jsonArray = new JSONArray(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonArray;
+    }
 
     //--------------Presentation Table-------------------
     public void savePresentation(String oldName,String newName, String data){
@@ -315,6 +360,7 @@ public class SQLite extends SQLiteOpenHelper {
                 arrayList.add(presentations);
             }
         }
+        db.close();
         return arrayList;
     }
 

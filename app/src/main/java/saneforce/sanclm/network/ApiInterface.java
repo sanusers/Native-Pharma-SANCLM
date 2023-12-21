@@ -134,8 +134,12 @@ public interface ApiInterface {
     Call<JsonElement> getTP(@Field("data") String postObj);
 
     @FormUrlEncoded
-    @POST("?axn=savenew/tp ")
+    @POST("?axn=savenew/tp")
     Call<JsonObject> saveTP(@Field("data") String postObj);
+
+    @FormUrlEncoded
+    @POST("?axn=save/tp")
+    Call<JsonObject> saveTPStatus(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=table/additionaldcrmasterdata")

@@ -139,11 +139,11 @@ public class ReportsActivity extends AppCompatActivity {
                                         JSONArray jsonArray = new JSONArray();
                                         if(jsonElement.isJsonArray()){
                                             jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                                            navigate(jsonArray,report,date);
                                         }
-                                        navigate(jsonArray,report,date);
                                     }
                                 }catch (JSONException e){
-                                    throw new RuntimeException(e);
+                                    e.printStackTrace();
                                 }
 
                             }
@@ -155,7 +155,7 @@ public class ReportsActivity extends AppCompatActivity {
                             }
                         });
                     }catch (JSONException e){
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
 
                 }else{

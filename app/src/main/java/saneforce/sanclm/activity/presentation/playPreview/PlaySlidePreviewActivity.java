@@ -208,7 +208,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                 }.getType();
                 arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
         binding.bottomLayout.setVisibility(View.GONE);

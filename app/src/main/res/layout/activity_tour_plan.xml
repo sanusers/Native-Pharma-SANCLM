@@ -116,7 +116,7 @@
                                 android:id="@+id/monthYear"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="October 2023"
+                                android:text="Month Year"
                                 android:textSize="@dimen/_6sdp"
                                 android:textColor="@color/text_dark"
                                 android:fontFamily="@font/satoshi_medium"
@@ -140,15 +140,16 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tpStatusTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center|end"
-                            android:text="Planning..."
-                            android:textColor="#00C689"
-                            android:textSize="@dimen/_5sdp"
                             android:fontFamily="@font/satoshi_variable"
+                            android:text="Planning..."
+                            android:textColor="@color/green_2"
+                            android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
 
                     </RelativeLayout>
@@ -307,7 +308,10 @@
                             android:layout_below="@id/summary"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
-                            android:layout_margin="@dimen/_6sdp"
+                            android:layout_marginStart="@dimen/_6sdp"
+                            android:layout_marginEnd="@dimen/_6sdp"
+                            android:layout_marginTop="@dimen/_6sdp"
+                            android:layout_marginBottom="@dimen/_3sdp"
                             android:orientation="horizontal">
 
                             <View
@@ -345,7 +349,6 @@
                                     tools:ignore="SpUsage"/>
 
                             </LinearLayout>
-
 
                         </LinearLayout>
 
@@ -396,8 +399,7 @@
         app:drawerLayoutCornerSize="0dp">
 
         <include android:id="@+id/tp_navigation"
-            layout="@layout/tp_nav_drawer"
-            tools:ignore="DuplicateIncludedIds" />
+            layout="@layout/tp_nav_drawer" />
 
     </com.google.android.material.navigation.NavigationView>
 

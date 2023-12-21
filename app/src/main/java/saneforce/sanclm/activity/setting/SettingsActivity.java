@@ -236,7 +236,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 Toast.makeText(SettingsActivity.this, "Invalid license key", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                            e.printStackTrace();
                         }
                         SharedPref.Loginsite(getApplicationContext(),url);
                     }else{
@@ -260,7 +260,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception exception){
-            throw new RuntimeException(exception);
+            exception.printStackTrace();
         }
 
     }

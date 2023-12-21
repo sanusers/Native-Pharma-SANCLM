@@ -101,29 +101,21 @@
             android:gravity="end"
             android:visibility="gone">
 
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/sessionEdit"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="end">
-
-                <TextView
-                    android:id="@+id/sessionEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Edit"
-                    android:textSize="@dimen/_6sdp"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/satoshi_variable"
-                    android:background="@drawable/edittext_stroke"
-                    app:backgroundTint="@color/text_dark"
-                    android:paddingStart="@dimen/_15sdp"
-                    android:paddingEnd="@dimen/_15sdp"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:paddingBottom="@dimen/_5sdp"
-                    tools:ignore="SpUsage"/>
-
-            </LinearLayout>
+                android:text="Edit"
+                android:textSize="@dimen/_6sdp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/satoshi_variable"
+                android:background="@drawable/tp_btn_select_state"
+                app:backgroundTint="@color/text_dark"
+                android:paddingStart="@dimen/_15sdp"
+                android:paddingEnd="@dimen/_15sdp"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_5sdp"
+                tools:ignore="SpUsage"/>
 
         </LinearLayout>
 

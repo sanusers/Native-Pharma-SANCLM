@@ -17,8 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.reports.dayReport.DayReportDetailModel;
-import saneforce.sanclm.activity.reports.dayReport.DayReportModel;
+import saneforce.sanclm.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanclm.commonClasses.Constants;
 
 public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetailAdapter.MyViewHolder> implements Filterable {
@@ -55,9 +54,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.feedback.setText(dataModel.getCall_Fdback());
         holder.jointWork.setText(dataModel.getWWith());
         holder.nextVisit.setText(dataModel.getNextVstDate());
-
-//        holder.checkInTime.setText(dataModel.getCheckin());
-//        holder.checkOutTime.setText(dataModel.getCheckout());
         holder.overAllRemark.setText(dataModel.getRemarks());
 
         switch (reportOf){

@@ -1,12 +1,15 @@
 package saneforce.sanclm.activity.reports.dayReport.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,10 +23,12 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.forms.weekoff.Holiday_fragment;
+import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.reports.ReportFragContainerActivity;
 import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
 import saneforce.sanclm.activity.reports.dayReport.fragment.DayReportDetailFragment;
-import saneforce.sanclm.activity.reports.dayReport.DayReportModel;
+import saneforce.sanclm.activity.reports.dayReport.model.DayReportModel;
 
 
 public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyViewHolder> implements Filterable {
@@ -60,7 +65,6 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.checkOutAddress.setText(dayReportModel.getOutaddress());
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
-//        holder.status.setText(dayReportModel.getS());
 
         holder.drCount.setText(dayReportModel.getDrs());
         holder.chemCount.setText(dayReportModel.getChm());
@@ -68,6 +72,41 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.cipCount.setText(dayReportModel.getCip());
         holder.unDrCount.setText(dayReportModel.getUdr());
         holder.hospCount.setText(dayReportModel.getHos());
+
+        int status = dayReportModel.getTyp();
+        switch (status){
+            case 0 : {
+                holder.status.setText("Pending");
+                holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
+                break;
+            }
+            case 1 : {
+                holder.status.setText("Approved");
+                holder.status.setTextColor(context.getColor(R.color.green_2));
+                holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_priority)));
+                break;
+            }
+            case 2 : {
+                holder.status.setText("Rejected");
+                holder.status.setTextColor(context.getColor(R.color.pink));
+                holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
+                break;
+            }
+        }
+
+        holder.checkInMarker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, MapsActivity.class));
+            }
+        });
+
+        holder.checkOutMarker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         holder.arrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,18 +135,21 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView name,workType,checkInTime,checkInAddress,checkOutTime,checkOutAddress,submitDate,remarks,status;
+        TextView name,workType,checkInTime,checkInAddress,checkInMarker,checkOutTime,checkOutAddress,checkOutMarker,submitDate,remarks,status;
         TextView drCount,chemCount,stockCount,unDrCount,cipCount,hospCount;
         ConstraintLayout drIcon,cheIcon,stockIcon,cipIcon,unDrIcon,hospIcon;
-        LinearLayout arrow;
+        LinearLayout arrow,statusLayout;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             workType = itemView.findViewById(R.id.workType);
             checkInTime = itemView.findViewById(R.id.checkInTime);
             checkInAddress = itemView.findViewById(R.id.inAddress);
+            checkInMarker = itemView.findViewById(R.id.checkInMarker);
             checkOutTime = itemView.findViewById(R.id.checkOutTime);
             checkOutAddress = itemView.findViewById(R.id.outAddress);
+            checkOutMarker = itemView.findViewById(R.id.checkOutMarker);
             submitDate = itemView.findViewById(R.id.submitDate);
             remarks = itemView.findViewById(R.id.remarks);
             status = itemView.findViewById(R.id.status);
@@ -126,6 +168,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             cipCount = itemView.findViewById(R.id.cipCount);
             hospCount = itemView.findViewById(R.id.hospCount);
 
+            statusLayout = itemView.findViewById(R.id.statusLayout);
             arrow = itemView.findViewById(R.id.arrow);
 
         }

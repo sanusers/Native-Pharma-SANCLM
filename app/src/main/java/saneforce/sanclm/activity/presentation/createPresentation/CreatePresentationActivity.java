@@ -190,7 +190,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
             }
 
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         populateBrandNameAdapter(brandProductArrayList);
         populateSelectedSlideAdapter(selectedSlideArrayList);
@@ -289,7 +289,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
             sqLite.savePresentation(oldName, name, jsonObject.toString());
             startActivity(new Intent(CreatePresentationActivity.this, PresentationActivity.class));
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 

@@ -8,7 +8,6 @@ import java.lang.String;
 public class EditModelClass implements Serializable {
 
   private String Code;
-
   @SerializedName (value="name",alternate = "Name")
   private String Name;
   private String ETabs;

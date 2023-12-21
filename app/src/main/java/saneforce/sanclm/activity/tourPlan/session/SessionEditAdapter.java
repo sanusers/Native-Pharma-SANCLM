@@ -112,7 +112,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
             }
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -479,7 +479,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     Toast.makeText(context, "Select Clusters", Toast.LENGTH_SHORT).show();
                 }else {
                     if (!holder.fieldSelected) {
-                        if (holder.listedDrArray.size()==0) {
+                        if (holder.listedDrArray.size() == 0) {
                             holder.listedDrArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.DOCTOR + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         }else {
@@ -620,7 +620,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }else {
                     if (!holder.fieldSelected) {
                         if (holder.cipArray.size()==0) {
-                            holder.cipArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + holder.selectedHq));
+                            holder.cipArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CIP + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         }else {
                             setSelectedCount(holder, holder.cipArray, false, holder.cipField, holder.cipCount);
@@ -654,7 +654,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 }else {
                     if (!holder.fieldSelected) {
                         if (holder.hospArray.size()==0) {
-                            holder.hospArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + holder.selectedHq));
+                            holder.hospArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         }else {
                             setSelectedCount(holder, holder.hospArray, false, holder.hospField, holder.hospCount);
@@ -734,7 +734,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         RecyclerView itemRecView;
         boolean fieldSelected = false;
 
-        //Input data
+        //Input data from activity
         ArrayList<ModelClass.SessionList.SubClass> clusterModelArray;
         ArrayList<ModelClass.SessionList.SubClass> jcModelArray;
         ArrayList<ModelClass.SessionList.SubClass> listedDrModelArray;
@@ -758,7 +758,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public ArrayList<EditModelClass> cipArray = new ArrayList<>();
         public ArrayList<EditModelClass> hospArray = new ArrayList<>();
         public ArrayList<EditModelClass> sessionItemAdapterArray = new ArrayList<>();
-
         String hq_code = "", selectedHq = "", hqNeed = "", clusterNeed = "";
         ArrayList<String> selectedClusterCode = new ArrayList<>();
 
@@ -1038,8 +1037,9 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.chemistArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + hqCode));
         holder.stockiestArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + hqCode));
         holder.unListedDrArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + hqCode));
-        holder.cipArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + hqCode));
-        holder.hospArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + hqCode));
+        holder.cipArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CIP + hqCode));
+        holder.hospArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + hqCode));
+
 
     }
 
@@ -1133,7 +1133,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                         sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
-                                    throw new RuntimeException(e);
+                                    e.printStackTrace();
                                 }
                             }
                         }

@@ -38,8 +38,6 @@ public class Constants {
     public static final String STOCK_BALANCE = "Stock Balance";
     public static final String INPUT_BALANCE = "Input Balance";
 
-
-
     //WorkType
     public static final String WORK_TYPE = "Work Type";
     public static final String HOLIDAY = "Holiday";
@@ -48,7 +46,6 @@ public class Constants {
     //TP
     public static final String TOUR_PLAN = "Tour Plan";
     public static final String TP_SETUP = "Tour Plan Setup";
-
 
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";
@@ -83,9 +80,13 @@ public class Constants {
     //-------------------------------------------------------------
 
     //Tour Plan
-    public static final String CURRENT_MONTH = "currentMonth";
-    public static final String PREVIOUS_MONTH = "previousMonth";
-    public static final String NEXT_MONTH = "nextMonth";
+    public static final String  STATUS_0 = "planning...";
+    public static final String STATUS_1 = "Planning completed/Waiting for approval";
+    public static final String STATUS_2 = "TP rejected";
+    public static final String STATUS_3 = "TP approved";
+    public static final String STATUS_4 = "TP planned/Submission pending";
+
+
 
 
 }
