@@ -14,7 +14,9 @@
             android:id="@+id/ch_cluster"
             android:layout_width="@dimen/_10sdp"
             android:layout_height="@dimen/_10sdp"
-            android:visibility="gone"
+            android:visibility="visible"
+            android:scaleX="1"
+            android:scaleY="1"
             android:layout_alignParentStart="true"
             android:layout_marginStart="@dimen/_5sdp"
             android:gravity="center" />
@@ -25,12 +27,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_toRightOf="@id/ch_cluster"
-            android:fontFamily="@font/satoshi_regular"
+            android:fontFamily="@font/satoshi_medium"
             android:padding="@dimen/_5sdp"
             android:text="Work Type"
-            android:textColor="@color/black_45"
+            android:textColor="@color/cl_text_color"
             android:textSize="@dimen/_8sdp"
-            android:textStyle="bold" />
+             />
 
 
     </LinearLayout>

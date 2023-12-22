@@ -117,5 +117,7 @@
     <color name="cl_border_color">#e5e5e5</color>
     <color name="cl_text_color">#74737f</color>
 
+    <color name="bg_pink10">#fff6f7</color>
+
 
 </resources>

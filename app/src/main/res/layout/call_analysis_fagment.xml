@@ -656,6 +656,7 @@
             android:textSize="@dimen/_7sdp" />
 
         <include
+            android:id="@+id/in_chart"
             layout="@layout/linecharmap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

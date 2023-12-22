@@ -58,138 +58,92 @@ import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.view.CustomMarkerView;
 import saneforce.sanclm.activity.homeScreen.view.ImageLineChartRenderer;
 import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.databinding.CallAnalysisFagmentBinding;
+import saneforce.sanclm.databinding.WorkplanFragmentBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
-
-    LinearLayout doc_layout, che_layout, stokiest_layout, unlistered_layout, cip_layout, hos_layout, ll_calls_layout, rl_linrchartmap,ll_monthlayout;
-    LineChart lineChart;
+    CallAnalysisFagmentBinding binding;
     SQLite sqLite;
-    TextView doc_call_count, che_call_count, stockiest_call_count, unlisted_call_count, cip_call_count, hospital_call_count, txt_month_one, txt_month_two, txt_month_three, txt_doc_progress_value, txt_che_progress_value, txt_stockiest_progress_value, txt_Unlistered_progress_value, txt_cip_progress_value, txt_hos_progress_value;
-    ProgressBar doc_progress_bar, che_progress_bar, stock_progress_bar, unlist_progress_bar, cip_progress_bar, hos_progress_bar;
-    RelativeLayout rl_relative_layout;
-    String key;
-    ImageView doc_img_down_triangle, che_img_down_triangle, stock_img_down_triangle, unlisred_img_down_triangle, cip_img_down_triangle, hos_img_down_triangle;
 
+    String key;
     JSONArray dcrdatas;
+
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.call_analysis_fagment, container, false);
 
-        doc_layout = v.findViewById(R.id.ll_doc_child);
-        che_layout = v.findViewById(R.id.ll_che_child);
-        stokiest_layout = v.findViewById(R.id.ll_stock_child);
-        unlistered_layout = v.findViewById(R.id.ll_unli_child);
-        cip_layout = v.findViewById(R.id.ll_cip_child);
-        hos_layout = v.findViewById(R.id.ll_hos_child);
-        ll_monthlayout=v.findViewById(R.id.ll_monthlayout);
-        ll_calls_layout = v.findViewById(R.id.ll_calls_layout);
-        rl_linrchartmap = v.findViewById(R.id.rl_linrchartmap);
-        lineChart = v.findViewById(R.id.lineChart);
+        binding = CallAnalysisFagmentBinding.inflate(inflater);
+        View v = binding.getRoot();
 
-        doc_call_count = v.findViewById(R.id.txt_doc_count);
-        che_call_count = v.findViewById(R.id.txt_che_count);
-        stockiest_call_count = v.findViewById(R.id.txt_stock_count);
-        unlisted_call_count = v.findViewById(R.id.txt_unlist_count);
-        cip_call_count = v.findViewById(R.id.txt_cip__count);
-        hospital_call_count = v.findViewById(R.id.txt_hos_count);
-
-        rl_relative_layout = v.findViewById(R.id.call_analysis_layout);
-
-        doc_img_down_triangle = v.findViewById(R.id.img_down_triangle_doc);
-        che_img_down_triangle = v.findViewById(R.id.img_down_triangle_che);
-        stock_img_down_triangle = v.findViewById(R.id.img_down_triangle_stockiest);
-        unlisred_img_down_triangle = v.findViewById(R.id.img_down_triangle_unlistered);
-        cip_img_down_triangle = v.findViewById(R.id.img_down_triangle_cip_);
-        hos_img_down_triangle = v.findViewById(R.id.img_down_triangle_hos);
-
-        txt_month_one = v.findViewById(R.id.text_past2_month);
-        txt_month_two = v.findViewById(R.id.text_past_month);
-        txt_month_three = v.findViewById(R.id.text_current_month);
-        txt_doc_progress_value = v.findViewById(R.id.txt_doc_value);
-        txt_che_progress_value = v.findViewById(R.id.txt_che_value);
-        txt_stockiest_progress_value = v.findViewById(R.id.txt_stock_value);
-        txt_Unlistered_progress_value = v.findViewById(R.id.txt_unlisted_value);
-        txt_cip_progress_value = v.findViewById(R.id.txt_cip__value);
-        txt_hos_progress_value = v.findViewById(R.id.txt_hos_value);
-
-
-
-
-        doc_progress_bar = v.findViewById(R.id.doc_progress_bar);
-        che_progress_bar = v.findViewById(R.id.che_progress_bar);
-        stock_progress_bar = v.findViewById(R.id.stock_progress_bar);
-        unlist_progress_bar = v.findViewById(R.id.unlist_progress_bar);
-        cip_progress_bar = v.findViewById(R.id.cip__progress_bar);
-        hos_progress_bar = v.findViewById(R.id.hos_progress_bar);
-
-        doc_img_down_triangle.setVisibility(View.VISIBLE);
-        che_img_down_triangle.setVisibility(View.GONE);
-        stock_img_down_triangle.setVisibility(View.GONE);
-        unlisred_img_down_triangle.setVisibility(View.GONE);
-        cip_img_down_triangle.setVisibility(View.GONE);
-        hos_img_down_triangle.setVisibility(View.GONE);
         sqLite = new SQLite(requireContext());
 
-        doc_layout.setOnClickListener(this);
-        che_layout.setOnClickListener(this);
-        stokiest_layout.setOnClickListener(this);
-        unlistered_layout.setOnClickListener(this);
-        cip_layout.setOnClickListener(this);
-        hos_layout.setOnClickListener(this);
 
-        callDetails();
+        binding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+        binding.imgDownTriangleChe.setVisibility(View.GONE);
+        binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+        binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+        binding.imgDownTriangleCip.setVisibility(View.GONE);
+        binding.imgDownTriangleHos.setVisibility(View.GONE);
+
+        binding.llDocChild.setOnClickListener(this);
+        binding.llCheChild.setOnClickListener(this);
+        binding.llStockChild.setOnClickListener(this);
+        binding.llUnliChild.setOnClickListener(this);
+        binding.llHosChild.setOnClickListener(this);
+        binding.llCipChild.setOnClickListener(this);
 
 
-        ViewTreeObserver vto = rl_relative_layout.getViewTreeObserver();
+        SetcallDetailsInLineChart();
+
+        ViewTreeObserver vto = binding.callAnalysisLayout.getViewTreeObserver();
 
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
 
-                int getwidhtlayout = rl_relative_layout.getMeasuredWidth();
-                int getlayoutlayout = rl_relative_layout.getMeasuredHeight();
+                int getwidhtlayout = binding.callAnalysisLayout.getMeasuredWidth();
+                int getlayoutlayout = binding.callAnalysisLayout.getMeasuredHeight();
 
 
                 int width = (getwidhtlayout / 3 - 8);
                 LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, (int) (getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp)));
                 param.setMargins(0, 5, 10, 0);
-                doc_layout.setLayoutParams(param);
-                che_layout.setLayoutParams(param);
-                stokiest_layout.setLayoutParams(param);
-                unlistered_layout.setLayoutParams(param);
-                cip_layout.setLayoutParams(param);
-                hos_layout.setLayoutParams(param);
+                binding.llDocChild.setLayoutParams(param);
+                binding.llCheChild.setLayoutParams(param);
+                binding.llStockChild.setLayoutParams(param);
+                binding.llUnliChild.setLayoutParams(param);
+                binding.llHosChild.setLayoutParams(param);
+                binding.llCipChild.setLayoutParams(param);
 
 
             }
         });
 
 
-        ll_calls_layout.setOnTouchListener(new View.OnTouchListener() {
+        binding.llCallsLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                HomeDashBoard.viewPager1.setScrollEnabled(false);
+                HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
                 return false;
             }
         });
 
 
-        lineChart.setOnTouchListener(new View.OnTouchListener() {
+        binding.inChart.lineChart.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                HomeDashBoard.viewPager1.setScrollEnabled(true);
+                HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
                 return false;
             }
         });
 
 
-        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+        binding.inChart.lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
 
@@ -206,20 +160,18 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     }
 
 
-
-
-    private void callDetails() {
+    private void SetcallDetailsInLineChart() {
         sqLite.clearLinecharTable();
         try {
 
             JSONArray Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(requireContext()));
-            JSONArray Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST  + SharedPref.getHqCode(requireContext()));
-            JSONArray Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST  + SharedPref.getHqCode(requireContext()));
-            JSONArray unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR  + SharedPref.getHqCode(requireContext()));
-            JSONArray cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP  + SharedPref.getHqCode(requireContext()));
+            JSONArray Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(requireContext()));
+            JSONArray Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(requireContext()));
+            JSONArray unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(requireContext()));
+            JSONArray cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(requireContext()));
             JSONArray hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(requireContext()));
 
-            dcrdatas  = sqLite.getMasterSyncDataByKey(Constants.DCR);
+            dcrdatas = sqLite.getMasterSyncDataByKey(Constants.DCR);
             if (dcrdatas.length() > 0) {
                 for (int i = 0; i < dcrdatas.length(); i++) {
 
@@ -251,12 +203,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
 
 
-                doc_call_count.setText(String.valueOf(doc_current_callcount) + " / " + Doctor_list.length());
-                che_call_count.setText(String.valueOf(che_current_callcount) + " / " + Chemist_list.length());
-                stockiest_call_count.setText(String.valueOf(stockiest_current_callcount) + " / " + Stockiest_list.length());
-                unlisted_call_count.setText(String.valueOf(unlistered_current_callcount) + " / " + unlistered_list.length());
-                cip_call_count.setText(String.valueOf(cip_current_callcount) + " / " + cip_list.length());
-                hospital_call_count.setText(String.valueOf(hos_current_callcount) + " / " + hos_list.length());
+                binding.txtDocCount.setText(String.valueOf(doc_current_callcount) + " / " + Doctor_list.length());
+                binding.txtCheCount.setText(String.valueOf(che_current_callcount) + " / " + Chemist_list.length());
+                binding.txtStockCount.setText(String.valueOf(stockiest_current_callcount) + " / " + Stockiest_list.length());
+                binding.txtUnlistCount.setText(String.valueOf(unlistered_current_callcount) + " / " + unlistered_list.length());
+                binding.txtCipCount.setText(String.valueOf(cip_current_callcount) + " / " + cip_list.length());
+                binding.txtHosCount.setText(String.valueOf(hos_current_callcount) + " / " + hos_list.length());
 
 
                 int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
@@ -268,48 +220,48 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
                 hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
 
-                txt_doc_progress_value.setText(String.valueOf(doc_progress_value) + "%");
-                txt_che_progress_value.setText(String.valueOf(che_progress_value) + "%");
-                txt_stockiest_progress_value.setText(String.valueOf(stockiest_progress_value) + "%");
-                txt_Unlistered_progress_value.setText(String.valueOf(unlistered_progress_value) + "%");
-                txt_cip_progress_value.setText(String.valueOf(stockiest_progress_value) + "%");
-                txt_hos_progress_value.setText(String.valueOf(unlistered_progress_value) + "%");
+                binding.txtDocValue.setText(String.valueOf(doc_progress_value) + "%");
+                binding.txtCheValue.setText(String.valueOf(che_progress_value) + "%");
+                binding.txtStockValue.setText(String.valueOf(stockiest_progress_value) + "%");
+                binding.txtUnlistedValue.setText(String.valueOf(unlistered_progress_value) + "%");
+                binding.txtCipValue.setText(String.valueOf(stockiest_progress_value) + "%");
+                binding.txtHosValue.setText(String.valueOf(unlistered_progress_value) + "%");
 
-                doc_progress_bar.setProgress(doc_progress_value);
-                che_progress_bar.setProgress(che_progress_value);
-                stock_progress_bar.setProgress(stockiest_progress_value);
-                unlist_progress_bar.setProgress(unlistered_progress_value);
-                cip_progress_bar.setProgress(cip_progress_value);
-                hos_progress_bar.setProgress(hos_progress_value);
+                binding.docProgressBar.setProgress(doc_progress_value);
+                binding.cheProgressBar.setProgress(che_progress_value);
+                binding.stockProgressBar.setProgress(stockiest_progress_value);
+                binding.unlistProgressBar.setProgress(unlistered_progress_value);
+                binding.cipProgressBar.setProgress(cip_progress_value);
+                binding.hosProgressBar.setProgress(hos_progress_value);
 
 
-                lineChart.clear();
+                binding.inChart.lineChart.clear();
                 setLineChartData("1");
-                ll_monthlayout.setVisibility(View.VISIBLE);
+                binding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
 
-            }else {
-                ll_monthlayout.setVisibility(View.GONE);
-                doc_layout.setOnClickListener(null);
-                che_layout.setOnClickListener(null);
-                stokiest_layout.setOnClickListener(null);
-                unlistered_layout.setOnClickListener(null);
-                cip_layout.setOnClickListener(null);
-                hos_layout.setOnClickListener(null);
+            } else {
+                binding.inChart.llMonthlayout.setVisibility(View.GONE);
+                binding.llDocChild.setOnClickListener(null);
+                binding.llCheChild.setOnClickListener(null);
+                binding.llStockChild.setOnClickListener(null);
+                binding.llUnliChild.setOnClickListener(null);
+                binding.llHosChild.setOnClickListener(null);
+                binding.llCipChild.setOnClickListener(null);
 
 
-                txt_doc_progress_value.setText("0%");
-                txt_che_progress_value.setText("0%");
-                txt_stockiest_progress_value.setText("0%");
-                txt_Unlistered_progress_value.setText("0%");
-                txt_cip_progress_value.setText("0%");
-                txt_hos_progress_value.setText("0%");
+                binding.txtDocValue.setText("0%");
+                binding.txtCheValue.setText("0%");
+                binding.txtStockValue.setText("0%");
+                binding.txtUnlistedValue.setText("0%");
+                binding.txtCipValue.setText("0%");
+                binding.txtHosValue.setText("0%");
 
-                doc_call_count.setText(  "0 / " + Doctor_list.length());
-                che_call_count.setText("0 / " + Chemist_list.length());
-                stockiest_call_count.setText( " 0/ " + Stockiest_list.length());
-                unlisted_call_count.setText( " 0/ " + unlistered_list.length());
-                cip_call_count.setText("0 / " + cip_list.length());
-                hospital_call_count.setText("0 / " + hos_list.length());
+                binding.txtDocCount.setText("0 / " + Doctor_list.length());
+                binding.txtCheCount.setText("0 / " + Chemist_list.length());
+                binding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
+                binding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
+                binding.txtCipCount.setText("0 / " + cip_list.length());
+                binding.txtHosCount.setText("0 / " + hos_list.length());
 
             }
 
@@ -323,8 +275,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     public static int computePercent(int current, int total) {
         int percent = 0;
-        if (total > 0)
-            percent = current * 100 / total;
+        if (total > 0) percent = current * 100 / total;
         return percent;
     }
 
@@ -407,12 +358,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         List<Integer> listYrange = new ArrayList<>();
         if (ispast2month) {
             key = "3";
-            txt_month_one.setText(sdfs.format(calendar.getTime()));
-            txt_month_two.setText(sdfs.format(calendar1.getTime()));
-            txt_month_three.setText(sdfs.format(calendar2.getTime()));
-            txt_month_one.setVisibility(View.VISIBLE);
-            txt_month_two.setVisibility(View.VISIBLE);
-            txt_month_three.setVisibility(View.VISIBLE);
+            binding.inChart.txtMonthOne.setText(sdfs.format(calendar.getTime()));
+            binding.inChart.txtMonthTwo.setText(sdfs.format(calendar1.getTime()));
+            binding.inChart.txtMonthThree.setText(sdfs.format(calendar2.getTime()));
+            binding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
+            binding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
+            binding.inChart.txtMonthThree.setVisibility(View.VISIBLE);
 
 
             int xaxis1 = sqLite.getcalls_count_by_range(firstDateStr, fifteenthDateStr, Custype);
@@ -439,11 +390,11 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         } else if (ispast1month) {
             key = "2";
-            txt_month_one.setText(sdfs.format(calendar1.getTime()));
-            txt_month_two.setText(sdfs.format(calendar2.getTime()));
-            txt_month_three.setVisibility(View.INVISIBLE);
-            txt_month_one.setVisibility(View.VISIBLE);
-            txt_month_two.setVisibility(View.VISIBLE);
+            binding.inChart.txtMonthOne.setText(sdfs.format(calendar1.getTime()));
+            binding.inChart.txtMonthTwo.setText(sdfs.format(calendar2.getTime()));
+            binding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
+            binding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
+            binding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
 
             int xaxis3 = sqLite.getcalls_count_by_range(firstDatepastmonth, fifteenthDatepastmonth, Custype);
             int xaxis4 = sqLite.getcalls_count_by_range(firstDatepastmonth, enddatepastmonth, Custype);
@@ -463,10 +414,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         } else {
             key = "1";
-            txt_month_one.setText(sdfs.format(calendar2.getTime()));
-            txt_month_two.setVisibility(View.INVISIBLE);
-            txt_month_three.setVisibility(View.INVISIBLE);
-            txt_month_one.setVisibility(View.VISIBLE);
+            binding.inChart.txtMonthOne.setText(sdfs.format(calendar2.getTime()));
+            binding.inChart.txtMonthTwo.setVisibility(View.INVISIBLE);
+            binding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
+            binding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
 
             int xaxis5 = sqLite.getcalls_count_by_range(firstDatecurrent, fifteenthDatecurrent, Custype);
             int xaxis6 = sqLite.getcalls_count_by_range(firstDatecurrent, enddatecurrent, Custype);
@@ -493,9 +444,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         dataSet.setLineWidth(1f);
         dataSet.setDrawHighlightIndicators(false);
         dataSet.disableDashedHighlightLine();
-        lineChart.getLegend().setEnabled(false);
+        binding.inChart.lineChart.getLegend().setEnabled(false);
         LineData lineData1 = new LineData(dataSet);
-        lineChart.setData(lineData1);
+        binding.inChart.lineChart.setData(lineData1);
 
         Typeface customTypeface = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -503,7 +454,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         }
 
 
-        XAxis xAxis = lineChart.getXAxis();
+        XAxis xAxis = binding.inChart.lineChart.getXAxis();
         xAxis.setAxisMinimum(0f);
         xAxis.setAxisMaximum(7f);
         xAxis.setLabelCount(8, true);
@@ -598,10 +549,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         });
 
 
-        lineChart.getXAxis().setEnabled(true);
-        lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        binding.inChart.lineChart.getXAxis().setEnabled(true);
+        binding.inChart.lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        YAxis leftYAxis = lineChart.getAxisLeft();
+        YAxis leftYAxis = binding.inChart.lineChart.getAxisLeft();
         leftYAxis.removeAllLimitLines();
         leftYAxis.setAxisMinimum(0);
 
@@ -642,32 +593,32 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
         CustomMarkerView mv = new CustomMarkerView(requireContext(), R.layout.linechartpopup, Custype, firstDateStr, fifteenthDateStr, enddate, firstDatepastmonth, fifteenthDatepastmonth, enddatepastmonth, firstDatecurrent, fifteenthDatecurrent, enddatecurrent, key);
-        mv.setChartView(lineChart);
+        mv.setChartView(binding.inChart.lineChart);
 
-        lineChart.setMarkerView(mv);
-        YAxis rightAxis = lineChart.getAxisRight();
+        binding.inChart.lineChart.setMarkerView(mv);
+        YAxis rightAxis = binding.inChart.lineChart.getAxisRight();
 
         rightAxis.setAxisLineColor(getResources().getColor(R.color.white));
         rightAxis.setDrawAxisLine(false);
         rightAxis.setDrawLabels(false);
-        lineChart.setDrawMarkerViews(true);
+        binding.inChart.lineChart.setDrawMarkerViews(true);
 
 
-        lineChart.getAxisRight().setEnabled(false);
-        lineChart.getDescription().setEnabled(false);
-        lineChart.setPinchZoom(true);
-        lineChart.setDoubleTapToZoomEnabled(false);
-        lineChart.invalidate();
-        lineChart.setTouchEnabled(true);
-        lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(true);
-        lineChart.setOnChartValueSelectedListener(null);
-        lineChart.setHighlightPerTapEnabled(true);
-        lineChart.getLegend().setEnabled(false);
-        lineChart.setScaleMinima(0f, 0f);
-        lineChart.fitScreen();
-        lineChart.setScaleEnabled(false);
-        lineChart.setExtraBottomOffset(5f);
+        binding.inChart.lineChart.getAxisRight().setEnabled(false);
+        binding.inChart.lineChart.getDescription().setEnabled(false);
+        binding.inChart.lineChart.setPinchZoom(true);
+        binding.inChart.lineChart.setDoubleTapToZoomEnabled(false);
+        binding.inChart.lineChart.invalidate();
+        binding.inChart.lineChart.setTouchEnabled(true);
+        binding.inChart.lineChart.setDragEnabled(true);
+        binding.inChart.lineChart.setScaleEnabled(true);
+        binding.inChart.lineChart.setOnChartValueSelectedListener(null);
+        binding.inChart.lineChart.setHighlightPerTapEnabled(true);
+        binding.inChart.lineChart.getLegend().setEnabled(false);
+        binding.inChart.lineChart.setScaleMinima(0f, 0f);
+        binding.inChart.lineChart.fitScreen();
+        binding.inChart.lineChart.setScaleEnabled(false);
+        binding.inChart.lineChart.setExtraBottomOffset(5f);
 
         Bitmap starBitmap;
         if (Custype.equalsIgnoreCase("1")) {
@@ -694,7 +645,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         }
 
 
-        lineChart.setRenderer(new ImageLineChartRenderer(lineChart, lineChart.getAnimator(), lineChart.getViewPortHandler(), starBitmap));
+        binding.inChart.lineChart.setRenderer(new ImageLineChartRenderer(binding.inChart.lineChart, binding.inChart.lineChart.getAnimator(), binding.inChart.lineChart.getViewPortHandler(), starBitmap));
 
     }
 
@@ -705,78 +656,78 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.ll_doc_child:
-                doc_img_down_triangle.setVisibility(View.VISIBLE);
-                che_img_down_triangle.setVisibility(View.GONE);
-                stock_img_down_triangle.setVisibility(View.GONE);
-                unlisred_img_down_triangle.setVisibility(View.GONE);
-                cip_img_down_triangle.setVisibility(View.GONE);
-                hos_img_down_triangle.setVisibility(View.GONE);
-                lineChart.clear();
+                binding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+                binding.imgDownTriangleChe.setVisibility(View.GONE);
+                binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                binding.imgDownTriangleCip.setVisibility(View.GONE);
+                binding.imgDownTriangleHos.setVisibility(View.GONE);
+                binding.inChart.lineChart.clear();
 
                 setLineChartData("1");
 
 
                 break;
             case R.id.ll_che_child:
-                doc_img_down_triangle.setVisibility(View.GONE);
-                che_img_down_triangle.setVisibility(View.VISIBLE);
-                stock_img_down_triangle.setVisibility(View.GONE);
-                unlisred_img_down_triangle.setVisibility(View.GONE);
-                cip_img_down_triangle.setVisibility(View.GONE);
-                hos_img_down_triangle.setVisibility(View.GONE);
-                lineChart.clear();
+                binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                binding.imgDownTriangleChe.setVisibility(View.VISIBLE);
+                binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                binding.imgDownTriangleCip.setVisibility(View.GONE);
+                binding.imgDownTriangleHos.setVisibility(View.GONE);
+                binding.inChart.lineChart.clear();
 
                 setLineChartData("2");
 
 
                 break;
             case R.id.ll_stock_child:
-                doc_img_down_triangle.setVisibility(View.GONE);
-                che_img_down_triangle.setVisibility(View.GONE);
-                stock_img_down_triangle.setVisibility(View.VISIBLE);
-                unlisred_img_down_triangle.setVisibility(View.GONE);
-                cip_img_down_triangle.setVisibility(View.GONE);
-                hos_img_down_triangle.setVisibility(View.GONE);
-                lineChart.clear();
+                binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                binding.imgDownTriangleChe.setVisibility(View.GONE);
+                binding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
+                binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                binding.imgDownTriangleCip.setVisibility(View.GONE);
+                binding.imgDownTriangleHos.setVisibility(View.GONE);
+                binding.inChart.lineChart.clear();
 
                 setLineChartData("3");
 
 
                 break;
             case R.id.ll_unli_child:
-                doc_img_down_triangle.setVisibility(View.GONE);
-                che_img_down_triangle.setVisibility(View.GONE);
-                stock_img_down_triangle.setVisibility(View.GONE);
-                unlisred_img_down_triangle.setVisibility(View.VISIBLE);
-                cip_img_down_triangle.setVisibility(View.GONE);
-                hos_img_down_triangle.setVisibility(View.GONE);
-                lineChart.clear();
+                binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                binding.imgDownTriangleChe.setVisibility(View.GONE);
+                binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                binding.imgDownTriangleUnlistered.setVisibility(View.VISIBLE);
+                binding.imgDownTriangleCip.setVisibility(View.GONE);
+                binding.imgDownTriangleHos.setVisibility(View.GONE);
+                binding.inChart.lineChart.clear();
 
                 setLineChartData("4");
 
 
                 break;
             case R.id.ll_cip_child:
-                doc_img_down_triangle.setVisibility(View.GONE);
-                che_img_down_triangle.setVisibility(View.GONE);
-                stock_img_down_triangle.setVisibility(View.GONE);
-                unlisred_img_down_triangle.setVisibility(View.GONE);
-                cip_img_down_triangle.setVisibility(View.VISIBLE);
-                hos_img_down_triangle.setVisibility(View.GONE);
-                lineChart.clear();
+                binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                binding.imgDownTriangleChe.setVisibility(View.GONE);
+                binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                binding.imgDownTriangleCip.setVisibility(View.VISIBLE);
+                binding.imgDownTriangleHos.setVisibility(View.GONE);
+                binding.inChart.lineChart.clear();
 
                 setLineChartData("5");
 
 
                 break;
             case R.id.ll_hos_child:
-                doc_img_down_triangle.setVisibility(View.GONE);
-                che_img_down_triangle.setVisibility(View.GONE);
-                stock_img_down_triangle.setVisibility(View.GONE);
-                unlisred_img_down_triangle.setVisibility(View.GONE);
-                cip_img_down_triangle.setVisibility(View.GONE);
-                hos_img_down_triangle.setVisibility(View.VISIBLE);
-                lineChart.clear();
+                binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                binding.imgDownTriangleChe.setVisibility(View.GONE);
+                binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                binding.imgDownTriangleCip.setVisibility(View.GONE);
+                binding.imgDownTriangleHos.setVisibility(View.VISIBLE);
+                binding.inChart.lineChart.clear();
                 setLineChartData("6");
                 break;
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -22,19 +23,20 @@ import saneforce.sanclm.databinding.OutboxFragmentBinding;
 
 public class OutboxFragment extends Fragment {
 
+    OutboxFragmentBinding binding;
     OutBoxAdapter outBoxAdapter;
-    ExpandableListView expandableListView;
 
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.outbox_fragment, container, false);
-        expandableListView=v.findViewById(R.id.Expandapleview);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = OutboxFragmentBinding.inflate(inflater,container,false);
+        View v = binding.getRoot();
+
         List<GroupModelClass> listnew=new ArrayList<>();
         listnew.add(new GroupModelClass("September 13,1998",getData()));
         listnew.add(new GroupModelClass("September 14,1998",getData()));
         listnew.add(new GroupModelClass("September 1,1998",getData()));
         outBoxAdapter=new OutBoxAdapter(getActivity(),listnew);
-        expandableListView.setGroupIndicator(null);
-        expandableListView.setAdapter(outBoxAdapter);
+        binding.Expandapleview.setGroupIndicator(null);
+        binding.Expandapleview.setAdapter(outBoxAdapter);
 
 
         return v;

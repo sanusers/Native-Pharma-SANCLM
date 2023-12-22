@@ -138,7 +138,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 }
-
                 SharedPref.saveLoginState(getApplicationContext(), false);
                 SharedPref.saveSettingState(getApplicationContext(), false);
                 startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
@@ -148,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void uiInitialisation(){
-
         String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
         String[] splitLogoUrl = logoUrl.split("/");
         getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);

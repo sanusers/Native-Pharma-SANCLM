@@ -68,7 +68,7 @@ public class E_DetailingAnalysisFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                HomeDashBoard.viewPager1.setScrollEnabled(false);
+                HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
                 return false;
             }
         });
@@ -77,7 +77,7 @@ public class E_DetailingAnalysisFragment extends Fragment {
         ll_grap_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                HomeDashBoard.viewPager1.setScrollEnabled(true);
+                HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
                 return false;
             }
         });

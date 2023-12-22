@@ -1,67 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/_4sdp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="@dimen/_4sdp">
 
 
   <TextView
       android:id="@+id/txt_call"
-      android:layout_marginTop="@dimen/_3sdp"
-      android:layout_marginLeft="@dimen/_3sdp"
-      android:fontFamily="@font/satoshi_medium"
       android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/_3sdp"
+      android:layout_marginTop="@dimen/_3sdp"
+      android:fontFamily="@font/satoshi_medium"
       android:text="Call Count :"
-      android:textSize="@dimen/_7sdp"
-      android:layout_height="wrap_content">
+      android:textColor="@color/black_45"
+      android:textSize="@dimen/_7sdp">
 
   </TextView>
+
   <TextView
-        android:id="@+id/txt_callcount"
-        android:text="5"
-        android:textSize="@dimen/_7sdp"
-        android:fontFamily="@font/satoshi_medium"
-        android:layout_marginTop="@dimen/_3sdp"
-        android:layout_marginLeft="@dimen/_3sdp"
-        android:layout_toRightOf="@+id/txt_call"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+      android:id="@+id/txt_callcount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/_3sdp"
+      android:layout_marginTop="@dimen/_3sdp"
+      android:layout_toRightOf="@+id/txt_call"
+      android:fontFamily="@font/satoshi_medium"
+      android:text="5"
+      android:textColor="@color/black_45"
+      android:textSize="@dimen/_7sdp">
 
-    </TextView>
-
+  </TextView>
 
 
   <RelativeLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
-      android:gravity="center"
-      android:padding="@dimen/_3sdp"
+      android:layout_alignParentRight="true"
       android:background="@drawable/custom_backround_layout"
       android:backgroundTint="@color/text_sync_bg"
-      android:orientation="horizontal">
+      android:gravity="center"
+      android:orientation="horizontal"
+      android:padding="@dimen/_3sdp">
 
 
     <ImageView
         android:id="@+id/refresh"
         android:layout_width="@dimen/_6sdp"
+        android:layout_height="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_3sdp"
         android:layout_marginEnd="@dimen/_3sdp"
-        android:layout_height="@dimen/_10sdp"
         android:src="@drawable/refresh_1" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/refresh"
         android:layout_gravity="right"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:layout_toRightOf="@+id/refresh"
         android:fontFamily="@font/satoshi_regular"
         android:text="Sync"
-        android:layout_marginEnd="@dimen/_3sdp"
-        android:textStyle="bold"
+        android:textColor="@color/text_sync"
         android:textSize="@dimen/_7sdp"
-        android:textColor="@color/text_sync">
+        android:textStyle="bold">
 
     </TextView>
 
@@ -69,80 +72,44 @@
   </RelativeLayout>
 
 
-
-
-  <TextView
-      android:id="@+id/text_date"
-      android:layout_below="@+id/txt_call"
-      android:layout_marginTop="@dimen/_10sdp"
-      android:layout_marginLeft="@dimen/_3sdp"
-      android:layout_width="wrap_content"
-      android:fontFamily="@font/satoshi_medium"
-      android:textStyle="bold"
-      android:textSize="@dimen/_7sdp"
-      android:textColor="@color/black_45"
-      android:text="September 13, 2023"
-      android:layout_height="wrap_content">
-
-  </TextView>
-
-  <TextView
-      android:layout_below="@+id/txt_call"
-      android:layout_marginTop="@dimen/_10sdp"
-      android:textStyle="normal"
-      android:layout_width="wrap_content"
-      android:layout_marginRight="@dimen/_3sdp"
-      android:text="Collapse"
-      android:layout_alignParentRight="true"
-      android:textSize="@dimen/_7sdp"
-      android:fontFamily="@font/satoshi_medium"
-      android:layout_alignParentEnd="true"
-      android:layout_height="wrap_content">
-
-  </TextView>
-
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/recyelerview"
       android:layout_width="match_parent"
-      android:layout_below="@+id/text_date"
-      android:layout_marginTop="@dimen/_8sdp"
-      android:layout_above="@+id/r_layout"
-      android:layout_height="match_parent" />
+      android:layout_height="match_parent"
+      android:layout_above="@+id/view_dummy"
+      android:layout_below="@+id/txt_call"
+      android:layout_marginTop="@dimen/_8sdp" />
 
-
-
-
-
-  <RelativeLayout
-      android:id="@+id/r_layout"
+  <View
+      android:id="@+id/view_dummy"
       android:layout_width="match_parent"
-      android:layout_alignParentBottom="true"
-      android:orientation="vertical"
-      android:layout_marginTop="@dimen/_3sdp"
-      android:layout_marginBottom="@dimen/_3sdp"
-      android:layout_height="wrap_content">
+      android:layout_height="0.5dp"
+      android:layout_above="@id/linear"
+      android:layout_margin="@dimen/_2sdp"
+      android:background="#9e9ea5"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintVertical_bias="0.0" />
 
   <LinearLayout
-      android:layout_width="match_parent"
       android:id="@+id/linear"
-      android:layout_marginBottom="@dimen/_3sdp"
-      android:orientation="horizontal"
-      android:layout_height="wrap_content">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal">
     <TextView
         android:id="@+id/tv_add_call"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_23sdp"
-        android:text="Add Call"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="@dimen/_7sdp"
-        android:textAllCaps="false"
-        android:textStyle="bold"
-        android:fontFamily="@font/satoshi_medium"
         android:layout_marginRight="@dimen/_3sdp"
-        android:textColor="@color/black"
+        android:layout_weight="1"
         android:background="@drawable/background_button_border_black"
-         />
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="center"
+        android:text="Add Call"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_7sdp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
@@ -159,21 +126,8 @@
 
   </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_23sdp"
-        android:layout_below="@+id/linear"
-        android:textAllCaps="false"
-        android:fontFamily="@font/satoshi_medium"
-        android:background="@drawable/edittext_stroke"
-        android:textColor="@color/white"
-        android:text="Final Sumit"
-        android:textStyle="bold"
-        android:textSize="@dimen/_7sdp"
-        app:backgroundTint="#282A3C" />
-
-  </RelativeLayout>
 
 
 
 </RelativeLayout>
+

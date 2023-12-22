@@ -1,9 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.adapters;
 
 
-
-
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -106,11 +103,10 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 if(!list.getDateID().equalsIgnoreCase("")) {
 
 
-                    HomeDashBoard.text_date.setText(fullMonthName + " " + list.getDateID() + ", " + year);
-                    HomeDashBoard.view_calender_layout.setVisibility(View.GONE);
-                    HomeDashBoard.ll_tab_layout.setVisibility(View.VISIBLE);
-                    HomeDashBoard.viewPager.setVisibility(View.VISIBLE);
-
+                    HomeDashBoard.binding.textDate.setText(fullMonthName + " " + list.getDateID() + ", " + year);
+                    HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                    HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
                 }
             }
         });

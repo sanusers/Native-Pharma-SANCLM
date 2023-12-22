@@ -159,7 +159,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("?axn=save/dayplan")
-    Call<JsonObject> saveMydayPlan(@Field("data") String SaveDcr);
+    Call<JsonArray> saveMydayPlan(@Field("data") String SaveDcr);
 
     @FormUrlEncoded
     @POST("?axn=save/approvals")

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -73,12 +74,12 @@ public class OutBoxAdapter extends BaseExpandableListAdapter {
 
         }
 
-        TextView isexpandStatus=view.findViewById(R.id.txt_expand_status);
+        ImageView isexpandStatus=view.findViewById(R.id.txt_expand_status);
 
         if(isExpanded){
-            isexpandStatus.setText("Collapse");
-          }else {
-            isexpandStatus.setText("Expand");
+            isexpandStatus.setImageResource(R.drawable.top_vector);
+        }else {
+            isexpandStatus.setImageResource(R.drawable.down_arrow);
         }
         return view;
     }
@@ -100,16 +101,16 @@ public class OutBoxAdapter extends BaseExpandableListAdapter {
 
         DocName.setText(list.get(groupPosition).getChildItems().get(childPosition).getDocName());
         datetime.setText(list.get(groupPosition).getChildItems().get(childPosition).getCallsDateTime());
-          String value=list.get(groupPosition).getChildItems().get(childPosition).getDocNameID();
+        String value=list.get(groupPosition).getChildItems().get(childPosition).getDocNameID();
         if (value.equalsIgnoreCase("D")) {
 
-          imageView.setImageResource(R.drawable.doctor_img);
+            imageView.setImageResource(R.drawable.doctor_img);
         } else if (value.equalsIgnoreCase("C")) {
 
-           imageView.setImageResource(R.drawable.chemist_img);
+            imageView.setImageResource(R.drawable.chemist_img);
 
         } else if (value.equalsIgnoreCase("cip")) {
-           imageView.setImageResource(R.drawable.cip_img);
+            imageView.setImageResource(R.drawable.cip_img);
         }
 
 

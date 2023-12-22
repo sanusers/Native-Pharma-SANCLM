@@ -8,13 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 
-import android.app.Dialog;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.InputType;
@@ -32,12 +26,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.ListView;
 
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,13 +36,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -96,35 +84,15 @@ import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.TimeUtils;
 
 
-
-
-
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
 
-    public static ActivityHomeDashBoardBinding homeDashBoardBinding;
-    public static ViewPager2 viewPager;
-    public static CustomViewPager viewPager1;
+    public static ActivityHomeDashBoardBinding binding;
     ViewPagerAdapter viewPagerAdapter;
-    @SuppressLint("StaticFieldLeak")
-    public static ListView wk_listview;
-    public static RecyclerView wk_recycler_view;
     public static int DeviceWith;
-    public static DrawerLayout drawerLayout;
-    @SuppressLint("StaticFieldLeak")
-    public static TextView text_date, txt_wt_plan, txt_cl_done;
-    @SuppressLint("StaticFieldLeak")
-    public static EditText et_search;
-    @SuppressLint("StaticFieldLeak")
-    public static View ll_tab_layout, view_calender_layout;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
-    ImageView imageView;
-    TabLayout tabLayout;
     GPSTrack gpsTrack;
-    NavigationView navigationView;
-    LinearLayout pre_layout, slide_layout, report_layout, anLast_layout, ll_next_month, ll_bfr_month;
-    ImageView masterSync, img_account, img_notification;
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
     SQLite sqLite;
@@ -138,6 +106,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ArrayList<EventCalenderModelClass> calendarDays = new ArrayList<>();
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     private LocalDate selectedDate;
+    private static String CalenderFlag = "0";
 
     ArrayList<EventCalenderModelClass> callsatuslist = new ArrayList<>();
 
@@ -147,22 +116,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            imageView.setBackgroundResource(R.drawable.bars_sort_img);
-            drawerLayout.closeDrawer(GravityCompat.START);
+        if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+            binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         }
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
             }
-        }else {
+        } else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
         }
     }
@@ -171,83 +138,71 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_dash_board);
-        sqLite = new SQLite(HomeDashBoard.this);
-        sqLite.getWritableDatabase();
-        dialog = new Dialog(this);
-        dialog1 = new Dialog(this);
+        binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        initWidgets();
-        getCallsDataToCalender();
-        rl_date_layout.setOnClickListener(this);
-        ll_next_month.setOnClickListener(this);
-        ll_bfr_month.setOnClickListener(this);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith = displayMetrics.widthPixels;
 
-        Log.e("test", "fcm token : " + SharedPref.getFcmToken(HomeDashBoard.this));
+        sqLite = new SQLite(HomeDashBoard.this);
+        sqLite.getWritableDatabase();
 
-        DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) navigationView.getLayoutParams();
-        layoutParams.width = DeviceWith / 3;// You can replace R.dimen.navigation_drawer_width with the width you want
-        navigationView.setLayoutParams(layoutParams);
+        binding.rlDateLayoout.setOnClickListener(this);
+        binding.viewCalerderLayout.llNextMonth.setOnClickListener(this);
+        binding.viewCalerderLayout.llBfrMonth.setOnClickListener(this);
+        binding.imgAccount.setOnClickListener(this);
+        binding.llReport.setOnClickListener(this);
+        binding.imgSync.setOnClickListener(this);
+        binding.llPresentation.setOnClickListener(this);
+        binding.llNav.cancelImg.setOnClickListener(this);
 
-        Toolbar toolbar = findViewById(R.id.Toolbar);
-        setSupportActionBar(toolbar);
+        DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
+        layoutParams.width = DeviceWith / 3;
+        binding.navView.setLayoutParams(layoutParams);
+        setSupportActionBar(binding.Toolbar);
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.myDrawerLayout, R.string.nav_open, R.string.nav_close);
+        binding.myDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
         actionBarDrawerToggle.syncState();
 
-        navigationView.setNavigationItemSelectedListener(this);
-        imageView.setBackgroundResource(R.drawable.bars_sort_img);
+        binding.navView.setNavigationItemSelectedListener(this);
+        binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
 
         viewPagerAdapter = new ViewPagerAdapter(this, 1);
-        viewPager.setAdapter(viewPagerAdapter);
-        // viewPager.setOffscreenPageLimit(ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT);
+        binding.viewPager.setAdapter(viewPagerAdapter);
 
         CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
-        viewPager1.setAdapter(adapter);
-        // viewPager1.setOffscreenPageLimit(0);
+        binding.viewPager1.setAdapter(adapter);
 
-        int width = (((DeviceWith / 3) * 2) / 3) - 30;
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-        param.setMargins(0, 5, 10, 0);
+        binding.myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        binding.drMainlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        pre_layout.setLayoutParams(param);
-        slide_layout.setLayoutParams(param);
-        report_layout.setLayoutParams(param);
-        anLast_layout.setLayoutParams(param);
 
-        TabLayoutMediator mediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(""));
+        TabLayoutMediator mediator = new TabLayoutMediator(binding.tabLayout.tablelayout, binding.viewPager, (tab, position) -> tab.setText(""));
         mediator.attach();
-        setupCustomTab(tabLayout, 0, "WorkPlan", false);
-        setupCustomTab(tabLayout, 1, "Calls", false);
-        setupCustomTab(tabLayout, 2, "Outbox", true);
+        setupCustomTab(binding.tabLayout.tablelayout, 0, "WorkPlan", false);
+        setupCustomTab(binding.tabLayout.tablelayout, 1, "Calls", false);
+        setupCustomTab(binding.tabLayout.tablelayout, 2, "Outbox", true);
 
-
-        // Listener
-        ViewTreeObserver vto = rl_quick_link.getViewTreeObserver();
+        ViewTreeObserver vto = binding.rlQuickLink.getViewTreeObserver();
 
         vto.addOnGlobalLayoutListener(() -> {
-
-            int getLayout = rl_quick_link.getMeasuredWidth();
+            int getLayout = binding.rlQuickLink.getMeasuredWidth();
             int width1 = getLayout / 3 - 8;
             LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(width1, ViewGroup.LayoutParams.MATCH_PARENT);
             param1.setMargins(0, 5, 10, 0);
-            pre_layout.setLayoutParams(param1);
-            slide_layout.setLayoutParams(param1);
-            report_layout.setLayoutParams(param1);
-            anLast_layout.setLayoutParams(param1);
+            binding.llPresentation.setLayoutParams(param1);
+            binding.llSlide.setLayoutParams(param1);
+            binding.llReport.setLayoutParams(param1);
+            binding.llAnalys.setLayoutParams(param1);
 
 
         });
-
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        binding.tabLayout.tablelayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 TextView tabTitle = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tablayname);
@@ -266,20 +221,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
-
-        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+        binding.myDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
             }
 
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
-                imageView.setBackgroundResource(R.drawable.cross_img);
+                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
-                imageView.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             }
 
             @Override
@@ -287,38 +241,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
+        binding.backArrow.setOnClickListener(v -> {
 
-        imageView.setOnClickListener(v -> {
-
-            if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                imageView.setBackgroundResource(R.drawable.bars_sort_img);
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }else {
-                drawerLayout.openDrawer(GravityCompat.START);
-                imageView.setBackgroundResource(R.drawable.cross_img);
+            if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                binding.myDrawerLayout.openDrawer(GravityCompat.START);
+                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
 
             }
         });
 
-        pre_layout.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class)));
-        report_layout.setOnClickListener(view -> startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class)));
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        masterSync.setOnClickListener(v -> startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class)));
-//        drawerLayout.closeDrawer(Gravity.END);
-
-        img_account.setOnClickListener(v -> showPopup(img_account));
-
-        /// Call status
-
-        selectedDate = LocalDate.now();
-        monthYearText.setText(monthYearFromDate(selectedDate));
-        calendarDays.clear();
-        calendarDays = daysInMonthArray(selectedDate);
-
-        callstatusadapter = new Callstatusadapter(calendarDays, getApplicationContext(), selectedDate);
-        calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
-        calendarRecyclerView.setAdapter(callstatusadapter);
     }
 
     private ArrayList<EventCalenderModelClass> daysInMonthArray(LocalDate date) {
@@ -341,30 +276,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
 
 
-        for (int i = 0; i<dayOfWeek; i++) {
+        for (int i = 0; i < dayOfWeek; i++) {
             daysInMonthArray.add(new EventCalenderModelClass("", "", "", ""));
             ListID.add("");
         }
 
-        for (int i = 1; i<=daysInMonth; i++) {
+        for (int i = 1; i <= daysInMonth; i++) {
             daysInMonthArray.add(new EventCalenderModelClass(String.valueOf(i), "", "", ""));
             ListID.add(String.valueOf(i));
         }
 
         int totalCells = 6 * 7; // 6 rows x 7 columns
-        while (daysInMonthArray.size()<totalCells) {
+        while (daysInMonthArray.size() < totalCells) {
             daysInMonthArray.add(new EventCalenderModelClass("", "", "", ""));
             ListID.add("");
         }
 
 
-        if(daysInMonthArray.get(6).getDateID().equalsIgnoreCase("")) {
-            for (int i = 6; i>=0; i--) {
+        if (daysInMonthArray.get(6).getDateID().equalsIgnoreCase("")) {
+            for (int i = 6; i >= 0; i--) {
                 daysInMonthArray.remove(i);
                 ListID.remove(i);
             }
-        }else if(daysInMonthArray.get(35).getDateID().equalsIgnoreCase("")) {
-            for (int i = 41; i>=35; i--) {
+        } else if (daysInMonthArray.get(35).getDateID().equalsIgnoreCase("")) {
+            for (int i = 41; i >= 35; i--) {
                 daysInMonthArray.remove(i);
                 ListID.remove(i);
             }
@@ -454,6 +389,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
+
+        Dialog dialog = new Dialog(this);
+        Dialog dialog1 = new Dialog(this);
 
         dialog1.setContentView(R.layout.change_password);
         Window window1 = dialog1.getWindow();
@@ -564,29 +502,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             double lat = gpsTrack.getLatitude();
             double lng = gpsTrack.getLongitude();
             CommonUtilsMethods.gettingAddress(HomeDashBoard.this, Double.parseDouble(String.valueOf(lat)), Double.parseDouble(String.valueOf(lng)), true);
-            drawerLayout.closeDrawer(GravityCompat.START);
+            binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         }
+
 
         if(id == R.id.nav_leave_appln) {
             startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
             return true;
         }
 
-        if(id == R.id.nav_home) {
-            if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                imageView.setBackgroundResource(R.drawable.bars_sort_img);
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }else {
-                drawerLayout.openDrawer(GravityCompat.START);
-                imageView.setBackgroundResource(R.drawable.cross_img);
+        if (id == R.id.nav_home) {
+            if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                binding.myDrawerLayout.openDrawer(GravityCompat.START);
+                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
 
             }
         }
-        if(id == R.id.nav_tour_plan) {
+        if (id == R.id.nav_tour_plan) {
             startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
             return true;
         }
-        if(id == R.id.nav_myresource) {
+        if (id == R.id.nav_myresource) {
             startActivity(new Intent(HomeDashBoard.this, MyResource_Activity.class));
             return true;
         }
@@ -657,31 +596,37 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void onClick(View v) {
 
 
-        switch (v.getId()){
-
-
+        switch (v.getId()) {
             case R.id.rl_date_layoout:
+                if (binding.viewCalerderLayout.getRoot().getVisibility() == View.GONE) {
+                    getCallsDataToCalender();
+                    selectedDate = LocalDate.now();
+                    binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
+                    calendarDays.clear();
+                    calendarDays = daysInMonthArray(selectedDate);
+                    callstatusadapter = new Callstatusadapter(calendarDays, getApplicationContext(), selectedDate);
+                    binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
+                    binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
 
-                if(view_calender_layout.getVisibility() == View.GONE) {
-                    view_calender_layout.setVisibility(View.VISIBLE);
-                    ll_tab_layout.setVisibility(View.GONE);
-                    viewPager.setVisibility(View.GONE);
-                }else {
-                    view_calender_layout.setVisibility(View.GONE);
-                    ll_tab_layout.setVisibility(View.VISIBLE);
-                    viewPager.setVisibility(View.VISIBLE);
+                    binding.viewCalerderLayout.getRoot().setVisibility(View.VISIBLE);
+                    binding.tabLayout.getRoot().setVisibility(View.GONE);
+                    binding.viewPager.setVisibility(View.GONE);
+                } else {
+                    binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                    binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+                    binding.viewPager.setVisibility(View.VISIBLE);
                 }
-
                 break;
-            case R.id.ll_next_month:
 
+            case R.id.ll_next_month:
                 calendarDays.clear();
                 selectedDate = selectedDate.plusMonths(1);
-                monthYearText.setText(monthYearFromDate(selectedDate));
+                binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, getApplicationContext(), selectedDate);
-                calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
-                calendarRecyclerView.setAdapter(callstatusadapter);
+                callstatusadapter.notifyDataSetChanged();
+                binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
+                binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
                 callstatusadapter.notifyDataSetChanged();
 
                 break;
@@ -689,52 +634,31 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 calendarDays.clear();
                 selectedDate = selectedDate.minusMonths(1);
-                monthYearText.setText(monthYearFromDate(selectedDate));
+                binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
                 calendarDays = daysInMonthArray(selectedDate);
                 callstatusadapter = new Callstatusadapter(calendarDays, getApplicationContext(), selectedDate);
-                calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
-                calendarRecyclerView.setAdapter(callstatusadapter);
+                binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
+                binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
                 callstatusadapter.notifyDataSetChanged();
                 break;
+            case R.id.ll_presentation:
 
+                startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class));
+                break;
+
+            case R.id.ll_report:
+                startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class));
+                break;
+            case R.id.img_sync:
+                startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class));
+                break;
+            case R.id.img_account:
+                showPopup(binding.imgAccount);
+            case R.id.cancel_img:
+                binding.drMainlayout.closeDrawer(GravityCompat.END);
+                break;
 
         }
-
-    }
-
-
-    private void initWidgets() {
-
-        pre_layout = findViewById(R.id.ll_presentation);
-        slide_layout = findViewById(R.id.ll_slide);
-        report_layout = findViewById(R.id.ll_report);
-        anLast_layout = findViewById(R.id.ll_analys);
-        drawerLayout = findViewById(R.id.my_drawer_layout);
-        imageView = findViewById(R.id.back_arrow);
-        viewPager = findViewById(R.id.view_pager);
-        viewPager1 = findViewById(R.id.view_pager1);
-        tabLayout = findViewById(R.id.tablelayout);
-        navigationView = findViewById(R.id.nav_view);
-        masterSync = findViewById(R.id.img_sync);
-        img_account = findViewById(R.id.img_account);
-        img_notification = findViewById(R.id.img_notofication);
-        user_view = findViewById(R.id.user_view);
-        rl_quick_link = findViewById(R.id.rl_quick_link);
-        rl_date_layout = findViewById(R.id.rl_date_layoout);
-        view_calender_layout = findViewById(R.id.view_calerder_layout);
-        ll_tab_layout = findViewById(R.id.tab_layout);
-        calendarRecyclerView = findViewById(R.id.calendarRecyclerView);
-        monthYearText = findViewById(R.id.monthYearTV);
-
-        ll_next_month = findViewById(R.id.ll_next_month);
-        ll_bfr_month = findViewById(R.id.ll_bfr_month);
-        text_date = findViewById(R.id.text_date);
-
-        et_search = findViewById(R.id.et_search);
-        txt_wt_plan = findViewById(R.id.tv_searchheader);
-        wk_listview = findViewById(R.id.wk_list_view);
-        txt_cl_done = findViewById(R.id.txt_cl_done);
-        wk_recycler_view = findViewById(R.id.wk_recyeler_view);
 
     }
 

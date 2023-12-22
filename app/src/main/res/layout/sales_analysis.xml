@@ -66,7 +66,7 @@
             android:layout_height="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_2sdp"
             android:layout_weight="1.8"
-            android:background="@drawable/backround_lite_gray_border">
+            android:background="@drawable/backround_lite_grey_border">
 
             <TextView
                 android:id="@+id/text_month"
