@@ -3,33 +3,18 @@ package saneforce.sanclm.activity.homeScreen.fragment;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.github.mikephil.charting.charts.LineChart;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -37,7 +22,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -53,23 +37,28 @@ import java.util.Date;
 import java.util.List;
 
 import saneforce.sanclm.R;
-
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.view.CustomMarkerView;
 import saneforce.sanclm.activity.homeScreen.view.ImageLineChartRenderer;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.CallAnalysisFagmentBinding;
-import saneforce.sanclm.databinding.WorkplanFragmentBinding;
-import saneforce.sanclm.network.ApiInterface;
+import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
     CallAnalysisFagmentBinding binding;
     SQLite sqLite;
-
+    String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
     String key;
     JSONArray dcrdatas;
+    LoginResponse loginResponse;
+
+    public static int computePercent(int current, int total) {
+        int percent = 0;
+        if (total > 0) percent = current * 100 / total;
+        return percent;
+    }
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -96,50 +85,42 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         binding.llHosChild.setOnClickListener(this);
         binding.llCipChild.setOnClickListener(this);
 
-
+        getRequiredData();
+        HiddenVisibleFunctions();
         SetcallDetailsInLineChart();
 
         ViewTreeObserver vto = binding.callAnalysisLayout.getViewTreeObserver();
 
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
+        vto.addOnGlobalLayoutListener(() -> {
 
-                int getwidhtlayout = binding.callAnalysisLayout.getMeasuredWidth();
-                int getlayoutlayout = binding.callAnalysisLayout.getMeasuredHeight();
+            int getwidhtlayout = binding.callAnalysisLayout.getMeasuredWidth();
+            int getlayoutlayout = binding.callAnalysisLayout.getMeasuredHeight();
 
 
-                int width = (getwidhtlayout / 3 - 8);
-                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, (int) (getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp)));
-                param.setMargins(0, 5, 10, 0);
-                binding.llDocChild.setLayoutParams(param);
-                binding.llCheChild.setLayoutParams(param);
-                binding.llStockChild.setLayoutParams(param);
-                binding.llUnliChild.setLayoutParams(param);
-                binding.llHosChild.setLayoutParams(param);
-                binding.llCipChild.setLayoutParams(param);
+            int width = (getwidhtlayout / 3 - 8);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, (int) (getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp)));
+            param.setMargins(0, 5, 10, 0);
+            binding.llDocChild.setLayoutParams(param);
+            binding.llCheChild.setLayoutParams(param);
+            binding.llStockChild.setLayoutParams(param);
+            binding.llUnliChild.setLayoutParams(param);
+            binding.llHosChild.setLayoutParams(param);
+            binding.llCipChild.setLayoutParams(param);
 
 
-            }
         });
 
 
-        binding.llCallsLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
+        binding.llCallsLayout.setOnTouchListener((v12, event) -> {
 
-                HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
-                return false;
-            }
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
+            return false;
         });
 
 
-        binding.inChart.lineChart.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
-                return false;
-            }
+        binding.inChart.lineChart.setOnTouchListener((v1, event) -> {
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
+            return false;
         });
 
 
@@ -159,6 +140,60 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         return v;
     }
 
+    private void HiddenVisibleFunctions() {
+        if (DrNeed.equalsIgnoreCase("0")) {
+            binding.llDocHead.setVisibility(View.VISIBLE);
+            binding.txtDocName.setText(String.format("%s Calls", CapDr));
+            binding.textAverage.setText(String.format("Average %s", binding.txtDocName.getText().toString()));
+        }
+        if (ChemistNeed.equalsIgnoreCase("0")) {
+            binding.llChemHead.setVisibility(View.VISIBLE);
+            binding.txtCheName.setText(String.format("%s Calls", CapChemist));
+        }
+        if (StockistNeed.equalsIgnoreCase("0")) {
+            binding.llStockHead.setVisibility(View.VISIBLE);
+            binding.txtStockName.setText(String.format("%s Calls", CapStockist));
+        }
+        if (UnDrNeed.equalsIgnoreCase("0")) {
+            binding.llUnliHead.setVisibility(View.VISIBLE);
+            binding.txtUnliName.setText(String.format("%s Calls", CapUnDr));
+        }
+        if (CipNeed.equalsIgnoreCase("0")) {
+            binding.llCipHead.setVisibility(View.VISIBLE);
+            binding.txtCipName.setText(String.format("%s Calls", CapCip));
+        }
+        if (HospNeed.equalsIgnoreCase("0")) {
+            binding.llHosHead.setVisibility(View.VISIBLE);
+            binding.txtHosName.setText(String.format("%s Calls", CapHos));
+        }
+    }
+
+    private void getRequiredData() {
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData();
+
+        SfType = loginResponse.getSf_type();
+        SfCode = loginResponse.getSF_Code();
+        SfName = loginResponse.getSF_Name();
+        DivCode = loginResponse.getDivision_Code();
+        Designation = loginResponse.getDesig();
+        StateCode = loginResponse.getState_Code();
+        SubDivisionCode = loginResponse.getSubdivision_code();
+
+        CapDr = loginResponse.getDrCap();
+        CapChemist = loginResponse.getChmCap();
+        CapStockist = loginResponse.getStkCap();
+        CapUnDr = loginResponse.getNLCap();
+        CapCip = loginResponse.getCIP_Caption();
+        CapHos = loginResponse.getHosp_caption();
+
+        CipNeed = loginResponse.getCip_need();
+        DrNeed = loginResponse.getDrNeed();
+        ChemistNeed = loginResponse.getChmNeed();
+        StockistNeed = loginResponse.getStkNeed();
+        UnDrNeed = loginResponse.getUNLNeed();
+        HospNeed = loginResponse.getHosp_need();
+    }
 
     private void SetcallDetailsInLineChart() {
         sqLite.clearLinecharTable();
@@ -203,12 +238,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
 
 
-                binding.txtDocCount.setText(String.valueOf(doc_current_callcount) + " / " + Doctor_list.length());
-                binding.txtCheCount.setText(String.valueOf(che_current_callcount) + " / " + Chemist_list.length());
-                binding.txtStockCount.setText(String.valueOf(stockiest_current_callcount) + " / " + Stockiest_list.length());
-                binding.txtUnlistCount.setText(String.valueOf(unlistered_current_callcount) + " / " + unlistered_list.length());
-                binding.txtCipCount.setText(String.valueOf(cip_current_callcount) + " / " + cip_list.length());
-                binding.txtHosCount.setText(String.valueOf(hos_current_callcount) + " / " + hos_list.length());
+                binding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
+                binding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
+                binding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
+                binding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
+                binding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
+                binding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
 
 
                 int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
@@ -220,12 +255,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
                 hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
 
-                binding.txtDocValue.setText(String.valueOf(doc_progress_value) + "%");
-                binding.txtCheValue.setText(String.valueOf(che_progress_value) + "%");
-                binding.txtStockValue.setText(String.valueOf(stockiest_progress_value) + "%");
-                binding.txtUnlistedValue.setText(String.valueOf(unlistered_progress_value) + "%");
-                binding.txtCipValue.setText(String.valueOf(stockiest_progress_value) + "%");
-                binding.txtHosValue.setText(String.valueOf(unlistered_progress_value) + "%");
+                binding.txtDocValue.setText(doc_progress_value + "%");
+                binding.txtCheValue.setText(che_progress_value + "%");
+                binding.txtStockValue.setText(stockiest_progress_value + "%");
+                binding.txtUnlistedValue.setText(unlistered_progress_value + "%");
+                binding.txtCipValue.setText(stockiest_progress_value + "%");
+                binding.txtHosValue.setText(unlistered_progress_value + "%");
 
                 binding.docProgressBar.setProgress(doc_progress_value);
                 binding.cheProgressBar.setProgress(che_progress_value);
@@ -273,13 +308,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public static int computePercent(int current, int total) {
-        int percent = 0;
-        if (total > 0) percent = current * 100 / total;
-        return percent;
-    }
-
-
     void setLineChartData(String Custype) {
 
 
@@ -312,7 +340,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.add(calendar1.MONTH, -1);
+        calendar1.add(Calendar.MONTH, -1);
         calendar1.set(Calendar.DAY_OF_MONTH, 1);
         Date firstDate1 = calendar1.getTime();
         calendar1.set(Calendar.DAY_OF_MONTH, calendar1.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -331,7 +359,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
         Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(calendar1.DAY_OF_MONTH, 1);
+        calendar2.set(Calendar.DAY_OF_MONTH, 1);
         Date firstDate2 = calendar2.getTime();
         calendar2.set(Calendar.DAY_OF_MONTH, calendar2.getActualMaximum(Calendar.DAY_OF_MONTH));
         Date lastDate2 = calendar2.getTime();
@@ -364,6 +392,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             binding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
             binding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
             binding.inChart.txtMonthThree.setVisibility(View.VISIBLE);
+            binding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(calendar.getTime()), calendar.get(Calendar.YEAR), sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
 
 
             int xaxis1 = sqLite.getcalls_count_by_range(firstDateStr, fifteenthDateStr, Custype);
@@ -395,6 +424,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             binding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
             binding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
             binding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
+            binding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(calendar1.getTime()), calendar1.get(Calendar.YEAR), sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
+
 
             int xaxis3 = sqLite.getcalls_count_by_range(firstDatepastmonth, fifteenthDatepastmonth, Custype);
             int xaxis4 = sqLite.getcalls_count_by_range(firstDatepastmonth, enddatepastmonth, Custype);
@@ -418,6 +449,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             binding.inChart.txtMonthTwo.setVisibility(View.INVISIBLE);
             binding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
             binding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
+            binding.textDate.setText(String.format("%s %d", sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
 
             int xaxis5 = sqLite.getcalls_count_by_range(firstDatecurrent, fifteenthDatecurrent, Custype);
             int xaxis6 = sqLite.getcalls_count_by_range(firstDatecurrent, enddatecurrent, Custype);
@@ -656,6 +688,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.ll_doc_child:
+                binding.textAverage.setText(String.format("Average %s", binding.txtDocName.getText().toString()));
                 binding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
                 binding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -669,6 +702,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_che_child:
+                binding.textAverage.setText(String.format("Average %s", binding.txtCheName.getText().toString()));
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.VISIBLE);
                 binding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -682,6 +716,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_stock_child:
+                binding.textAverage.setText(String.format("Average %s", binding.txtStockName.getText().toString()));
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
                 binding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
@@ -695,6 +730,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_unli_child:
+                binding.textAverage.setText(String.format("Average %s", binding.txtUnliName.getText().toString()));
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
                 binding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -708,6 +744,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_cip_child:
+                binding.textAverage.setText(String.format("Average %s", binding.txtCipName.getText().toString()));
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
                 binding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -721,6 +758,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_hos_child:
+                binding.textAverage.setText(String.format("Average %s Calls", binding.txtHosName.getText().toString()));
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
                 binding.imgDownTriangleStockiest.setVisibility(View.GONE);
