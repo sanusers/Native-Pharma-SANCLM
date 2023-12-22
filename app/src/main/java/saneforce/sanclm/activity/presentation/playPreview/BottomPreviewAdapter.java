@@ -25,7 +25,7 @@ import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass
 public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdapter.MyViewHolder> {
 
     Context context;
-    ArrayList<BrandModelClass.Product> arrayList = new ArrayList<>();
+    ArrayList<BrandModelClass.Product> arrayList;
     ViewPager viewPager;
 
     public BottomPreviewAdapter (Context context, ArrayList<BrandModelClass.Product> arrayList, ViewPager viewPager) {

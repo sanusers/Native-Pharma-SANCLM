@@ -72,10 +72,12 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ll_doc_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:id="@+id/ll_doc_child"
@@ -169,10 +171,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_chem_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/ll_che_child"
@@ -263,10 +267,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_stock_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/ll_stock_child"
@@ -360,10 +366,12 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ll_unli_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
 
                     <LinearLayout
@@ -384,7 +392,7 @@
                             android:layout_marginStart="@dimen/_4sdp"
                             android:layout_marginTop="@dimen/_4sdp"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="Unlistered Calls"
+                            android:text="UnListed Calls"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_8sdp"
                             android:textStyle="bold"
@@ -456,10 +464,12 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ll_cip_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/ll_cip_child"
@@ -553,10 +563,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_hos_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/ll_hos_child"

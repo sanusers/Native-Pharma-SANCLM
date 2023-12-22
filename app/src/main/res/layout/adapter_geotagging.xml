@@ -7,6 +7,18 @@
     android:layout_marginVertical="@dimen/_2sdp"
     android:background="@drawable/selector_box">
 
+    <CheckBox
+        android:id="@+id/chk_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/img_cust"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/img_cust" />
+
     <ImageView
         android:id="@+id/img_cust"
         android:layout_width="@dimen/_18sdp"
@@ -15,41 +27,41 @@
         android:src="@drawable/map_dr_img"
         app:layout_constraintBottom_toTopOf="@id/view_dummy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_name"
+        app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,ImageContrastCheck" />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="start"
         android:fontFamily="@font/satoshi_bold"
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_2sdp"
-        android:text="Name"
         android:textColor="@color/pink"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/tv_name_tag"
+        app:layout_constraintBottom_toTopOf="@id/tv_cust_mode"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/img_cust"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/tv_name_tag"
+        android:id="@+id/tv_cust_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="start"
         android:fontFamily="@font/satoshi_medium"
         android:paddingHorizontal="@dimen/_3sdp"
-        android:text="Doctor"
         android:textColor="@color/light_grey_2"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/view_dummy"
         app:layout_constraintEnd_toEndOf="@id/tv_name"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/img_cust"
         app:layout_constraintStart_toStartOf="@id/tv_name"
         app:layout_constraintTop_toBottomOf="@id/tv_name" />
@@ -97,7 +109,6 @@
             android:layout_height="0dp"
             android:fontFamily="@font/satoshi_bold"
             android:paddingVertical="@dimen/_2sdp"
-            android:text="Guna Sekar"
             android:textColor="@color/cheked_txt_color"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -105,7 +116,6 @@
             app:layout_constraintStart_toStartOf="@id/tag_hq"
             app:layout_constraintTop_toBottomOf="@id/tag_hq"
             app:layout_constraintVertical_bias="0.0" />
-
 
         <TextView
             android:id="@+id/tag_cluster_geo"
@@ -139,9 +149,9 @@
             android:id="@+id/ll_tag_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:weightSum="2"
+            android:gravity="center"
             app:layout_constraintBottom_toTopOf="@id/tv_address_geo"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tag_date_time"
             app:layout_constraintStart_toEndOf="@id/tag_cluster_geo"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -149,46 +159,41 @@
                 android:id="@+id/tag_address_geo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:fontFamily="@font/satoshi_medium"
                 android:paddingVertical="@dimen/_2sdp"
                 android:text="@string/address"
                 android:textColor="@color/light_grey_2"
                 android:textSize="14sp" />
 
+            <ImageView
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/marker_geo_approval"
+                tools:ignore="ContentDescription" />
+
             <TextView
                 android:id="@+id/tag_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawablePadding="@dimen/_3sdp"
-                android:fontFamily="@font/satoshi_medium"
+                android:layout_weight="3"
+                android:fontFamily="@font/satoshi_bold"
                 android:gravity="start|center"
+                android:paddingHorizontal="@dimen/_4sdp"
                 android:paddingVertical="@dimen/_2sdp"
                 android:text="@string/view"
-                android:textColor="@color/light_grey_2"
-                android:textSize="14sp"
-                app:drawableStartCompat="@drawable/marker_geo_approval" />
+                android:textColor="@color/pink"
+                android:textSize="14sp" />
 
         </LinearLayout>
-        <!--   <TextView
-               android:id="@+id/tag_address_geo"
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:fontFamily="@font/satoshi_medium"
-               android:paddingVertical="@dimen/_2sdp"
-               android:text="@string/address"
-               android:textColor="@color/light_grey_2"
-               android:textSize="14sp"
-               app:layout_constraintBottom_toTopOf="@id/tv_address_geo"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintStart_toEndOf="@id/tag_cluster_geo"
-               app:layout_constraintTop_toTopOf="parent" />-->
+
 
         <TextView
             android:id="@+id/tv_address_geo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_3sdp"
             android:fontFamily="@font/satoshi_bold"
             android:paddingVertical="@dimen/_2sdp"
             android:singleLine="false"
@@ -200,14 +205,41 @@
             app:layout_constraintStart_toStartOf="@id/ll_tag_address"
             app:layout_constraintTop_toBottomOf="@id/ll_tag_address" />
 
+        <TextView
+            android:id="@+id/tag_date_time"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/date_time"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_date_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ll_tag_address"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tv_date_time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="@font/satoshi_bold"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text=""
+            android:textColor="@color/cheked_txt_color"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_cluster_geo"
+            app:layout_constraintEnd_toEndOf="@id/tag_date_time"
+            app:layout_constraintStart_toStartOf="@id/tag_date_time"
+            app:layout_constraintTop_toBottomOf="@id/tag_date_time" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_btns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/constraint_detail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/constraint_detail"
@@ -232,7 +264,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/constraint_detail"
-            tools:ignore="NotSibling" />
+            tools:ignore="NotSibling,TouchTargetSizeCheck" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_approved"
@@ -252,7 +284,8 @@
             app:layout_constraintBottom_toBottomOf="@id/btn_reject"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_reject"
-            app:layout_constraintTop_toTopOf="@id/btn_reject" />
+            app:layout_constraintTop_toTopOf="@id/btn_reject"
+            tools:ignore="TouchTargetSizeCheck" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

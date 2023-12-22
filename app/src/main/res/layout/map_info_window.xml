@@ -39,8 +39,8 @@
 
             <ImageView
                 android:id="@+id/img_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
                 android:layout_marginEnd="@dimen/_1sdp"
                 android:src="@drawable/view_pic"
                 app:layout_constraintBottom_toBottomOf="parent"

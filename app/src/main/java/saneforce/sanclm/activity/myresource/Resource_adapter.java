@@ -35,11 +35,13 @@ import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.TimeUtils;
 
 public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.ViewHolder> {
+    public static String listedres;
+    public static RelativeLayout list_resource;
+    public static Res_sidescreenAdapter side_adapter;
     ArrayList<Resourcemodel_class> listeduser;
     ArrayList<Resourcemodel_class> visituser;
     ArrayList<String> visit_list = new ArrayList<>();
     ArrayList<String> visitlist1 = new ArrayList<>();
-
     Context context;
     SQLite sqLite;
     HashSet<String> uniqueValues = new HashSet<>();
@@ -47,16 +49,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     ArrayList<String> count_list = new ArrayList<>();
     ArrayList<String> visitcountlist = new ArrayList<>();
     String listed;
-
-
-    public static String listedres;
     String key;
-    public static RelativeLayout list_resource;
     String Cust_name;
-
-
     ArrayList<String> list = new ArrayList<>();
-    public static Res_sidescreenAdapter side_adapter;
     String Doc, chm = "", stck = "", unlist = "";
     String po_count;
 
@@ -271,7 +266,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         }
                         break;
                     case ("9"):
-                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context));
+                        MyResource_Activity.Key = sqLite.getMasterSyncDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context);
                         JSONArray jsonculst = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(context));
                         String culst_val = "";
                         Valcount = "";

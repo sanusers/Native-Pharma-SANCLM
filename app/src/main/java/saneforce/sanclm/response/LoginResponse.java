@@ -9,44 +9,32 @@ public class LoginResponse implements Serializable {
 
     private String ChmSmpCap = "";
 
+    private String Doc_pob_caption = "";
+    private String Stk_pob_caption = "";
+    private String Chm_pob_caption = "";
+    private String Uldoc_pob_caption = "";
+    private String CIP_pob_caption = "";
+    private String Hosp_pob_caption = "";
     private String Prod_Stk_Need = "";
-
     private String Order_caption = "";
-
     private String Expenseneed = "";
-
     private String Taxname_caption = "";
-
     private String secondary_order_discount = "";
-
     private String Ul_Pob_Mandatory_Need = "";
-
     private String DrNeed = "";
-
+    private String GeoTagApprovalNeed = "";
     private String edit_holiday = "";
-
     private String Territory_VstNd = "";
-
     private String mydayplan_need = "";
-
     private String NextVst = "";
-
     private String CIPPOBMd = "";
-
     private String Chm_cluster_based = "";
-
     private String Approveneed = "";
-
     private String DrRxNd = "";
-
     private String CipEvent_Md = "";
-
     private String CustSrtNd = "";
-
     private String OtherNd = "";
-
     private String DrEvent_Md = "";
-
     private String RCPA_competitor_add = "";
     private String prdfdback = "";
     private String MRHlfDy = "";
@@ -289,6 +277,62 @@ public class LoginResponse implements Serializable {
     private String HENeed = "";
     private String TPDCR_MGRAppr = "";
     private String GeoTagNeedcip = "";
+
+    public String getDoc_pob_caption() {
+        return Doc_pob_caption;
+    }
+
+    public void setDoc_pob_caption(String doc_pob_caption) {
+        Doc_pob_caption = doc_pob_caption;
+    }
+
+    public String getStk_pob_caption() {
+        return Stk_pob_caption;
+    }
+
+    public void setStk_pob_caption(String stk_pob_caption) {
+        Stk_pob_caption = stk_pob_caption;
+    }
+
+    public String getChm_pob_caption() {
+        return Chm_pob_caption;
+    }
+
+    public void setChm_pob_caption(String chm_pob_caption) {
+        Chm_pob_caption = chm_pob_caption;
+    }
+
+    public String getUldoc_pob_caption() {
+        return Uldoc_pob_caption;
+    }
+
+    public void setUldoc_pob_caption(String uldoc_pob_caption) {
+        Uldoc_pob_caption = uldoc_pob_caption;
+    }
+
+    public String getCIP_pob_caption() {
+        return CIP_pob_caption;
+    }
+
+    public void setCIP_pob_caption(String CIP_pob_caption) {
+        this.CIP_pob_caption = CIP_pob_caption;
+    }
+
+    public String getHosp_pob_caption() {
+        return Hosp_pob_caption;
+    }
+
+    public void setHosp_pob_caption(String hosp_pob_caption) {
+        Hosp_pob_caption = hosp_pob_caption;
+    }
+
+    public String getGeoTagApprovalNeed() {
+        return GeoTagApprovalNeed;
+    }
+
+    public void setGeoTagApprovalNeed(String geoTagApprovalNeed) {
+        GeoTagApprovalNeed = geoTagApprovalNeed;
+    }
 
     public String getRCPA_competitor_add() {
         return RCPA_competitor_add;

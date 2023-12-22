@@ -32,6 +32,7 @@
     <color name="light_grey_2">#737580</color>
     <color name="bg_txt_color">#8E8C8C</color>
     <color name="bg_grey">#EEEEEE</color>
+    <color name="bg_lit_white">#F1F1F2</color>
     <color name="light_green">#4B00C689</color>
     <color name="light_cement">#B4B4BB</color>
     <color name="green_2">#00C689</color>

@@ -23,11 +23,11 @@ import saneforce.sanclm.activity.profile.DCRLastVisitDetails;
 public interface ApiInterface {
 
     @GET
-    Call<JsonArray> configuration (@Url String url);
+    Call<JsonArray> configuration(@Url String url);
 
     @FormUrlEncoded
     @POST("?axn=action/login")
-    Call<JsonObject> login (@Field("data") String userData);
+    Call<JsonObject> login(@Field("data") String userData);
 
     @FormUrlEncoded
     @POST("?axn=table/dcrmasterdata")
@@ -81,6 +81,15 @@ public interface ApiInterface {
     Call<JsonArray> getTpApprovalList(@Field("data") String GetTpList);
 
     @FormUrlEncoded
+    @POST("?axn=get/tp")
+        // Get Tp DetailedList
+    Call<JsonArray> getTpDetailedList(@Field("data") String GetTpDetailedList);
+
+    @FormUrlEncoded
+    @POST("?axn=save/tp")
+    Call<JsonObject> saveApprovedRejectTp(@Field("data") String saveApprovedRejectTp);
+
+    @FormUrlEncoded
     @POST("?axn=get/approvals")
         // Get Leave ApprovalList
     Call<JsonArray> getLeaveApprovalList(@Field("data") String GetLeaveList);
@@ -94,6 +103,17 @@ public interface ApiInterface {
     @POST("?axn=get/approvals")
         // Get DCRDetailed ApprovalList
     Call<JsonArray> getDcrDetailedList(@Field("data") String GetDcrDetailedList);
+
+    @FormUrlEncoded
+    @POST("?axn=get/approvals")
+        // Get GEOTAG ApprovalList
+    Call<JsonArray> getGeoTagList(@Field("data") String GetGeoTagList);
+
+    @FormUrlEncoded
+    @POST("?axn=save/approvals")
+        // Send GEOTAG ApprovalReject
+    Call<JsonObject> SendGeoTagApprovalReject(@Field("data") String SendGeoTagApprovalReject);
+
 
 
     @FormUrlEncoded

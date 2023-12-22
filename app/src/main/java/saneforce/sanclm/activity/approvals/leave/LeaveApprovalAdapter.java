@@ -72,7 +72,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
         holder.btn_reject.setOnClickListener(view -> {
             dialogReject = new Dialog(context);
-            dialogReject.setContentView(R.layout.popup_leave_reject);
+            dialogReject.setContentView(R.layout.popup_reject);
             Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogReject.setCancelable(false);
 

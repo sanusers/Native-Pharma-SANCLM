@@ -6,40 +6,34 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.adapter.DCRCallSelectionTabLayoutAdapter;
+import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.CIPFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ChemistFragment;
+import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.HospitalFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.StockiestFragment;
 import saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.GPSTrack;
 import saneforce.sanclm.databinding.CallDcrSelectionBinding;
-import saneforce.sanclm.response.CustomSetupResponse;
 import saneforce.sanclm.response.LoginResponse;
-import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
-    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StockiestGeoTag, UnDrGeoTag, GeoTagApproval, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, HospNeed;
+    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StockiestGeoTag, UnDrGeoTag, GeoTagApproval, DrNeed,ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
     public static double lat, lng, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
     LoginResponse loginResponse;
-    SetupResponse setupResponse;
     DCRCallSelectionTabLayoutAdapter viewPagerAdapter;
     SQLite sqLite;
     GPSTrack gpsTrack;
-    CustomSetupResponse customSetupResponse;
 
 
     @Override
@@ -54,19 +48,24 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         getRequiredData();
 
         viewPagerAdapter = new DCRCallSelectionTabLayoutAdapter(getSupportFragmentManager());
-        viewPagerAdapter.add(new ListedDoctorFragment(), CapDr);
+        if (DrNeed.equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new ListedDoctorFragment(), CapDr);
+        }
 
         if (ChemistNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new ChemistFragment(), CapChemist);
         }
         if (CipNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new ChemistFragment(), CapCip);
+            viewPagerAdapter.add(new CIPFragment(), CapCip);
         }
         if (StockistNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new StockiestFragment(), CapStockist);
         }
         if (UnDrNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUnDr);
+        }
+        if (HospNeed.equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new HospitalFragment(), CapHos);
         }
 
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
@@ -91,7 +90,30 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             SfCode = loginResponse.getSF_Code();
             SfName = loginResponse.getSF_Name();
 
-            JSONArray jsonArray;
+            GeoTagApproval = loginResponse.getGeoTagApprovalNeed();
+            TpBasedDcr = loginResponse.getTPbasedDCR();
+
+            CapDr = loginResponse.getDrCap();
+            CapChemist = loginResponse.getChmCap();
+            CapStockist = loginResponse.getStkCap();
+            CapUnDr = loginResponse.getNLCap();
+            CapCip = loginResponse.getCIP_Caption();
+            CapHos = loginResponse.getHosp_caption();
+
+            CipNeed = loginResponse.getCip_need();
+            DrNeed = loginResponse.getDrNeed();
+            ChemistNeed = loginResponse.getChmNeed();
+            StockistNeed = loginResponse.getStkNeed();
+            UnDrNeed = loginResponse.getUNLNeed();
+            HospNeed = loginResponse.getHosp_need();
+
+            DrGeoTag = loginResponse.getGEOTagNeed();
+            CheGeoTag = loginResponse.getGEOTagNeedche();
+            CipGeoTag = loginResponse.getGeoTagNeedcip();
+            StockiestGeoTag = loginResponse.getGEOTagNeedstock();
+            UnDrGeoTag = loginResponse.getGEOTagNeedunlst();
+
+        /*    JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
@@ -141,8 +163,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }.getType();
                 customSetupResponse = new Gson().fromJson(String.valueOf(CustSetupData), typeCustomSetup);
                 HospNeed = customSetupResponse.getHospNeed();
-            }
-            Log.v("fff", "-00--" + TodayPlanSfCode);
+            }*/
             if (SfType.equalsIgnoreCase("1")) {
                 TodayPlanSfCode = SfCode;
                 TodayPlanSfName = SfName;
@@ -159,7 +180,6 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }
             }
 
-
             JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + TodayPlanSfCode);
             for (int i = 0; i < jsonArray2.length(); i++) {
                 JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
@@ -169,9 +189,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }
             }
 
-
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            Log.v("required_data", "--tab-dcr-" + e);
         }
     }
 }

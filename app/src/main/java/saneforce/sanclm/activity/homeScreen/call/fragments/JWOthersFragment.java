@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.CapPob;
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
 import static saneforce.sanclm.activity.homeScreen.call.fragments.JointWorkSelectionSide.JwList;
@@ -111,6 +112,7 @@ public class JWOthersFragment extends Fragment {
     }
 
     private void HiddenVisibleFunction() {
+        jwOthersBinding.tagPob.setText(CapPob);
         if (DCRCallActivity.PobNeed.equalsIgnoreCase("0")) {
             jwOthersBinding.constraintPob.setVisibility(View.VISIBLE);
         } else {

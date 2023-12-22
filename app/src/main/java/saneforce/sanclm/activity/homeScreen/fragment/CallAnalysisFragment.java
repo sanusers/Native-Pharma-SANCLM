@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,22 +49,21 @@ import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.view.CustomMarkerView;
 import saneforce.sanclm.activity.homeScreen.view.ImageLineChartRenderer;
 import saneforce.sanclm.commonClasses.Constants;
+import saneforce.sanclm.response.LoginResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
 
-    LinearLayout doc_layout, che_layout, stockiest_layout, unListed_layout, cip_layout, hos_layout, ll_calls_layout, rl_linrchartmap, ll_monthlayout;
-
+    LinearLayout ll_doc_head, ll_chem_head, ll_stk_head, ll_ulDr_head, ll_cip_head, ll_hos_head, doc_layout, che_layout, stockiest_layout, unListed_layout, cip_layout, hos_layout, ll_calls_layout, rl_linrchartmap, ll_monthlayout;
+    String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
     LineChart lineChart;
+    TextView tvDocCap, tvChemCap, tvStkCap, tvUnDrCap, tvCipCap, tvHosCap, tvAverageTag, tvFromToMonth;
     SQLite sqLite;
-
     TextView doc_call_count, che_call_count, stockiest_call_count, unlisted_call_count, cip_call_count, hospital_call_count, txt_month_one, txt_month_two, txt_month_three, txt_doc_progress_value, txt_che_progress_value, txt_stockiest_progress_value, txt_Unlistered_progress_value, txt_cip_progress_value, txt_hos_progress_value;
-
     ProgressBar doc_progress_bar, che_progress_bar, stock_progress_bar, unlist_progress_bar, cip_progress_bar, hos_progress_bar;
-
-
     RelativeLayout rl_relative_layout;
+    LoginResponse loginResponse;
 
     String key;
     ImageView doc_img_down_triangle, che_img_down_triangle, stock_img_down_triangle, unlisred_img_down_triangle, cip_img_down_triangle, hos_img_down_triangle;
@@ -82,6 +82,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.call_analysis_fagment, container, false);
         Log.v("fragment", "callanalysis");
+
         doc_layout = v.findViewById(R.id.ll_doc_child);
         che_layout = v.findViewById(R.id.ll_che_child);
         stockiest_layout = v.findViewById(R.id.ll_stock_child);
@@ -92,6 +93,22 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         ll_calls_layout = v.findViewById(R.id.ll_calls_layout);
         rl_linrchartmap = v.findViewById(R.id.rl_linrchartmap);
         lineChart = v.findViewById(R.id.lineChart);
+
+        ll_doc_head = v.findViewById(R.id.ll_doc_head);
+        ll_chem_head = v.findViewById(R.id.ll_chem_head);
+        ll_stk_head = v.findViewById(R.id.ll_stock_head);
+        ll_ulDr_head = v.findViewById(R.id.ll_unli_head);
+        ll_cip_head = v.findViewById(R.id.ll_cip_head);
+        ll_hos_head = v.findViewById(R.id.ll_hos_head);
+
+        tvDocCap = v.findViewById(R.id.txt_doc_name);
+        tvChemCap = v.findViewById(R.id.txt_che_name);
+        tvStkCap = v.findViewById(R.id.txt_stock_name);
+        tvUnDrCap = v.findViewById(R.id.txt_unli_name);
+        tvCipCap = v.findViewById(R.id.txt_cip_name);
+        tvHosCap = v.findViewById(R.id.txt_hos_name);
+        tvAverageTag = v.findViewById(R.id.text_average_);
+        tvFromToMonth = v.findViewById(R.id.text_date);
 
         doc_call_count = v.findViewById(R.id.txt_doc_count);
         che_call_count = v.findViewById(R.id.txt_che_count);
@@ -119,7 +136,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         txt_cip_progress_value = v.findViewById(R.id.txt_cip__value);
         txt_hos_progress_value = v.findViewById(R.id.txt_hos_value);
 
-
         doc_progress_bar = v.findViewById(R.id.doc_progress_bar);
         che_progress_bar = v.findViewById(R.id.che_progress_bar);
         stock_progress_bar = v.findViewById(R.id.stock_progress_bar);
@@ -142,8 +158,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         cip_layout.setOnClickListener(this);
         hos_layout.setOnClickListener(this);
 
+        getRequiredData();
+        HiddenVisibleFunctions();
         callDetails();
-
 
         ViewTreeObserver vto = rl_relative_layout.getViewTreeObserver();
 
@@ -193,6 +210,60 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         });
 
         return v;
+    }
+
+    private void HiddenVisibleFunctions() {
+        if (DrNeed.equalsIgnoreCase("0")) {
+            tvDocCap.setText(String.format("%s Calls", CapDr));
+            tvAverageTag.setText(String.format("Average %s", tvDocCap.getText().toString()));
+        }
+        if (ChemistNeed.equalsIgnoreCase("0")) {
+            ll_chem_head.setVisibility(View.VISIBLE);
+            tvChemCap.setText(String.format("%s Calls", CapChemist));
+        }
+        if (StockistNeed.equalsIgnoreCase("0")) {
+            ll_stk_head.setVisibility(View.VISIBLE);
+            tvStkCap.setText(String.format("%s Calls", CapStockist));
+        }
+        if (UnDrNeed.equalsIgnoreCase("0")) {
+            ll_ulDr_head.setVisibility(View.VISIBLE);
+            tvUnDrCap.setText(String.format("%s Calls", CapUnDr));
+        }
+        if (CipNeed.equalsIgnoreCase("0")) {
+            ll_cip_head.setVisibility(View.VISIBLE);
+            tvCipCap.setText(String.format("%s Calls", CapCip));
+        }
+        if (HospNeed.equalsIgnoreCase("0")) {
+            ll_hos_head.setVisibility(View.VISIBLE);
+            tvHosCap.setText(String.format("%s Calls", CapHos));
+        }
+    }
+
+    private void getRequiredData() {
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData();
+
+        SfType = loginResponse.getSf_type();
+        SfCode = loginResponse.getSF_Code();
+        SfName = loginResponse.getSF_Name();
+        DivCode = loginResponse.getDivision_Code();
+        Designation = loginResponse.getDesig();
+        StateCode = loginResponse.getState_Code();
+        SubDivisionCode = loginResponse.getSubdivision_code();
+
+        CapDr = loginResponse.getDrCap();
+        CapChemist = loginResponse.getChmCap();
+        CapStockist = loginResponse.getStkCap();
+        CapUnDr = loginResponse.getNLCap();
+        CapCip = loginResponse.getCIP_Caption();
+        CapHos = loginResponse.getHosp_caption();
+
+        CipNeed = loginResponse.getCip_need();
+        DrNeed = loginResponse.getDrNeed();
+        ChemistNeed = loginResponse.getChmNeed();
+        StockistNeed = loginResponse.getStkNeed();
+        UnDrNeed = loginResponse.getUNLNeed();
+        HospNeed = loginResponse.getHosp_need();
     }
 
     @SuppressLint("SetTextI18n")
@@ -381,10 +452,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             txt_month_one.setText(sdfs.format(calendar.getTime()));
             txt_month_two.setText(sdfs.format(calendar1.getTime()));
             txt_month_three.setText(sdfs.format(calendar2.getTime()));
+
+            tvFromToMonth.setText(String.format("%s %d - %s %d", sdfs.format(calendar.getTime()), calendar.get(Calendar.YEAR), sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
+
             txt_month_one.setVisibility(View.VISIBLE);
             txt_month_two.setVisibility(View.VISIBLE);
             txt_month_three.setVisibility(View.VISIBLE);
-
 
             int xaxis1 = sqLite.getcalls_count_by_range(firstDateStr, fifteenthDateStr, Custype);
             int xaxis2 = sqLite.getcalls_count_by_range(firstDateStr, enddate, Custype);
@@ -412,6 +485,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             key = "2";
             txt_month_one.setText(sdfs.format(calendar1.getTime()));
             txt_month_two.setText(sdfs.format(calendar2.getTime()));
+
+            tvFromToMonth.setText(String.format("%s %d - %s %d", sdfs.format(calendar1.getTime()), calendar1.get(Calendar.YEAR), sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
+
             txt_month_three.setVisibility(View.INVISIBLE);
             txt_month_one.setVisibility(View.VISIBLE);
             txt_month_two.setVisibility(View.VISIBLE);
@@ -430,11 +506,12 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             entries.add(new Entry(2, xaxis4));
             entries.add(new Entry(3, xaxis5));
             entries.add(new Entry(4, xaxis6));
-
-
         } else {
             key = "1";
             txt_month_one.setText(sdfs.format(calendar2.getTime()));
+
+            tvFromToMonth.setText(String.format("%s %d", sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
+
             txt_month_two.setVisibility(View.INVISIBLE);
             txt_month_three.setVisibility(View.INVISIBLE);
             txt_month_one.setVisibility(View.VISIBLE);
@@ -445,12 +522,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             listYrange.add(xaxis5);
             listYrange.add(xaxis6);
 
-
             entries.add(new Entry(1, xaxis5));
             entries.add(new Entry(2, xaxis5));
-
         }
-
 
         LineDataSet dataSet = new LineDataSet(entries, "");
         dataSet.setDrawValues(false);
@@ -469,7 +543,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         lineChart.setData(lineData1);
 
         Typeface customTypeface = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             customTypeface = getResources().getFont(R.font.satoshi_medium);
         }
 
@@ -677,6 +751,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.ll_doc_child:
+                tvAverageTag.setText(String.format("Average %s", tvDocCap.getText().toString()));
                 doc_img_down_triangle.setVisibility(View.VISIBLE);
                 che_img_down_triangle.setVisibility(View.GONE);
                 stock_img_down_triangle.setVisibility(View.GONE);
@@ -690,6 +765,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_che_child:
+                tvAverageTag.setText(String.format("Average %s", tvChemCap.getText().toString()));
                 doc_img_down_triangle.setVisibility(View.GONE);
                 che_img_down_triangle.setVisibility(View.VISIBLE);
                 stock_img_down_triangle.setVisibility(View.GONE);
@@ -703,6 +779,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_stock_child:
+                tvAverageTag.setText(String.format("Average %s", tvStkCap.getText().toString()));
                 doc_img_down_triangle.setVisibility(View.GONE);
                 che_img_down_triangle.setVisibility(View.GONE);
                 stock_img_down_triangle.setVisibility(View.VISIBLE);
@@ -716,6 +793,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_unli_child:
+                tvAverageTag.setText(String.format("Average %s", tvUnDrCap.getText().toString()));
                 doc_img_down_triangle.setVisibility(View.GONE);
                 che_img_down_triangle.setVisibility(View.GONE);
                 stock_img_down_triangle.setVisibility(View.GONE);
@@ -729,6 +807,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_cip_child:
+                tvAverageTag.setText(String.format("Average %s", tvCipCap.getText().toString()));
                 doc_img_down_triangle.setVisibility(View.GONE);
                 che_img_down_triangle.setVisibility(View.GONE);
                 stock_img_down_triangle.setVisibility(View.GONE);
@@ -742,6 +821,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_hos_child:
+                tvAverageTag.setText(String.format("Average %s Calls", tvHosCap.getText().toString()));
                 doc_img_down_triangle.setVisibility(View.GONE);
                 che_img_down_triangle.setVisibility(View.GONE);
                 stock_img_down_triangle.setVisibility(View.GONE);

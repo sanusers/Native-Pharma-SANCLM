@@ -87,7 +87,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public static ArrayList<CustList> CallActivityCustDetails;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrcallBinding dcrCallBinding;
-    public static String PobNeed, OverallFeedbackNeed, EventCaptureNeed, JwNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd;
+    public static String PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
     public static String isClickedInput;
@@ -193,7 +193,6 @@ public class DCRCallActivity extends AppCompatActivity {
         dcrCallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
 
         dcrCallBinding.ivBack.setOnClickListener(view -> {
-            // onBackPressed();
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -867,6 +866,136 @@ public class DCRCallActivity extends AppCompatActivity {
             EventCapMandatory = loginResponse.getCipEvent_Md();
 
 
+            switch (CallActivityCustDetails.get(0).getType()) {
+                case "1": //Dr
+                    //Caption
+                    capPrd = loginResponse.getDoc_Product_caption();
+                    capInp = loginResponse.getDoc_Input_caption();
+                    CapSamQty = loginResponse.getDrSmpQCap();
+                    CapRxQty = loginResponse.getDrRxQCap();
+                    CapPob = loginResponse.getDoc_pob_caption();
+
+                    //Need
+                    RCPANeed = loginResponse.getRcpaNd();
+                    PobNeed = loginResponse.getDoc_Pob_Need();
+                    OverallFeedbackNeed = loginResponse.getDFNeed();
+                    EventCaptureNeed = loginResponse.getDENeed();
+                    JwNeed = loginResponse.getDoc_jointwork_Need();
+                    PrdSamNeed = loginResponse.getDrSampNd();
+                    PrdRxNeed = loginResponse.getDrRxNd();
+
+                    //Mandatory
+                    PrdMandatory = loginResponse.getDrPrdMd();
+                    InpMandatory = loginResponse.getDrInpMd();
+                    SamQtyMandatory = loginResponse.getDrSmpQMd();
+                    RxQtyMandatory = loginResponse.getDrRxQMd();
+                    RcpaMandatory = loginResponse.getRcpaMd();
+                    MgrRcpaMandatory = loginResponse.getRcpaMd_Mgr();
+                    EventCapMandatory = loginResponse.getDrEvent_Md();
+                    PobMandatory = loginResponse.getDoc_Pob_Mandatory_Need();
+                    FeedbackMandatory = loginResponse.getDrFeedMd();
+                    JwMandatory = loginResponse.getDoc_jointwork_Mandatory_Need();
+                    RemarkMandatory = loginResponse.getTempNd();
+                    break;
+                case "2": //Chemist
+                    //Caption
+                    capPrd = loginResponse.getChm_Product_caption();
+                    capInp = loginResponse.getChm_Input_caption();
+                    CapSamQty = loginResponse.getChmSmpCap();
+                    CapRxQty = loginResponse.getChmQCap();
+                    CapPob = loginResponse.getChm_pob_caption();
+
+                    //Need
+                    RCPANeed = loginResponse.getChm_RCPA_Need();
+                    PobNeed = loginResponse.getChm_Pob_Need();
+                    EventCaptureNeed = loginResponse.getCENeed();
+                    OverallFeedbackNeed = loginResponse.getCFNeed();
+                    JwNeed = loginResponse.getChm_jointwork_Need();
+                    PrdSamNeed = loginResponse.getChmsamQty_need();
+
+                    //Mandatory
+                    RcpaMandatory = loginResponse.getRcpaMd();
+                    PobMandatory = loginResponse.getChm_Pob_Mandatory_Need();
+                    EventCapMandatory = loginResponse.getChmEvent_Md();
+                    JwMandatory = loginResponse.getChm_jointwork_Mandatory_Need();
+                    break;
+                case "3": //Stockiest
+                    //Caption
+                    capPrd = loginResponse.getStk_Product_caption();
+                    capInp = loginResponse.getStk_Input_caption();
+                    CapSamQty = "Samples";
+                    CapRxQty = loginResponse.getStkQCap();
+                    CapPob = loginResponse.getStk_pob_caption();
+
+                    //Need
+                    OverallFeedbackNeed = loginResponse.getSFNeed();
+                    EventCaptureNeed = loginResponse.getSENeed();
+                    JwNeed = loginResponse.getStk_jointwork_Need();
+                    PrdSamNeed = "0";
+                    PrdRxNeed = loginResponse.getStk_Pob_Need();
+
+                    //Mandatory
+                    EventCapMandatory = loginResponse.getStkEvent_Md();
+                    JwMandatory = loginResponse.getStk_jointwork_Mandatory_Need();
+                    break;
+                case "4": //UNListed Dr
+                    //Caption
+                    capPrd = loginResponse.getUl_Product_caption();
+                    capInp = loginResponse.getUl_Input_caption();
+                    CapSamQty = loginResponse.getNLSmpQCap();
+                    CapRxQty = loginResponse.getNLRxQCap();
+                    CapPob = loginResponse.getUldoc_pob_caption();
+
+                    //Need
+                    OverallFeedbackNeed = loginResponse.getNFNeed();
+                    EventCaptureNeed = loginResponse.getNENeed();
+                    JwNeed = loginResponse.getUl_jointwork_Need();
+                    PrdSamNeed = "0";
+                    PrdRxNeed = loginResponse.getUl_Pob_Need();
+
+                    //Mandatory
+                    EventCapMandatory = loginResponse.getUlDrEvent_Md();
+                    JwMandatory = loginResponse.getUl_jointwork_Mandatory_Need();
+                    break;
+                case "5"://CIP
+                    //Caption
+                    CapPob = loginResponse.getCIP_pob_caption();
+
+                    //Need
+                    PobNeed = loginResponse.getCIPPOBNd();
+                    OverallFeedbackNeed = loginResponse.getCIP_FNeed();
+                    EventCaptureNeed = loginResponse.getCipEvent_Md();
+                    JwNeed = loginResponse.getCIP_jointwork_Need();
+                    PrdSamNeed = "0";
+                    PrdRxNeed = "0";
+
+                    //Mandatory
+                    EventCapMandatory = loginResponse.getCipEvent_Md();
+                    PobMandatory = loginResponse.getCIPPOBMd();
+                    break;
+                case "6"://HOSPITAL
+                    //Caption
+                    CapPob = loginResponse.getHosp_pob_caption();
+
+                    //Need
+                    PobNeed = loginResponse.getHosPOBNd();
+                    OverallFeedbackNeed = loginResponse.getHFNeed();
+                    EventCaptureNeed = loginResponse.getHospEvent_Md();
+                    JwNeed = "0";
+                    PrdSamNeed = "0";
+                    PrdRxNeed = "0";
+
+                    //Mandatory
+                    EventCapMandatory = loginResponse.getHospEvent_Md();
+                    PobMandatory = loginResponse.getCIPPOBMd();
+                    break;
+            }
+
+            SampleValidation = loginResponse.getSample_validation();
+            InputValidation = loginResponse.getInput_validation();
+            GeoChk = loginResponse.getGeoChk();
+            HosNeed = loginResponse.getHosp_need();
+
             new JSONArray();
             JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
@@ -878,7 +1007,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 setUpResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
 
                 if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) { //Dr
-                    //Caption
+              /*      //Caption
                     capPrd = setUpResponse.getCaptionDrPrd();
                     capInp = setUpResponse.getCaptionDrInp();
                     CapSamQty = setUpResponse.getCaptionDrSamQty();
@@ -905,9 +1034,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     FeedbackMandatory = setUpResponse.getDrFeedbackMandatory();
                     JwMandatory = setUpResponse.getDrJwMandatory();
                     RemarkMandatory = setUpResponse.getDrRemarksMan_Need();
-
+*/
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) { //Chemist
-                    //Caption
+ /*                   //Caption
                     capPrd = setUpResponse.getCaptionChemistPrd();
                     capInp = setUpResponse.getCaptionChemistInp();
                     CapSamQty = setUpResponse.getCaptionChemistSamQty();
@@ -920,17 +1049,23 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed = setUpResponse.getChemistFeedbackNeed();
                     JwNeed = setUpResponse.getChemistJwNeed();
                     PrdSamNeed = setUpResponse.getChemistSamNeed();
+
+                    //not available in LoginResponse
                     PrdRxNeed = setUpResponse.getChemistRxNeed();
 
                     //Mandatory
                     RcpaMandatory = setUpResponse.getRcpaMandatory();
+                    //not available in LoginResponse
                     MgrRcpaMandatory = setUpResponse.getMGRCheRcpaMandatory();
                     PobMandatory = setUpResponse.getChemistPobMandatory();
                     EventCapMandatory = setUpResponse.getChemistEveCapMandatory();
-                    JwMandatory = setUpResponse.getChemistJwMandatory();
+                    JwMandatory = setUpResponse.getChemistJwMandatory();*/
+
+                    PrdRxNeed = setUpResponse.getChemistRxNeed();
+                    MgrRcpaMandatory = setUpResponse.getMGRCheRcpaMandatory();
 
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) { //Stockist
-                    //Caption
+         /*           //Caption
                     capPrd = setUpResponse.getCaptionStokistPrd();
                     capInp = setUpResponse.getCaptionStokistInp();
                     CapSamQty = "Samples";
@@ -946,8 +1081,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     //Mandatory
                     EventCapMandatory = setUpResponse.getStockistEveCapMandatory();
                     JwMandatory = setUpResponse.getStockistJwMandatory();
+             */
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) { //UnlistedDr
-                    //Caption
+       /*             //Caption
                     capPrd = setUpResponse.getCaptionUndrPrd();
                     capInp = setUpResponse.getCaptionUndrInp();
                     CapSamQty = setUpResponse.getCaptionUndrSamQty();
@@ -963,8 +1099,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     //Mandatory
                     EventCapMandatory = setUpResponse.getUndrEveCapMandatory();
                     JwMandatory = setUpResponse.getUndrJwMandatory();
+          */
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) { //CIP
-                    //Caption
+         /*           //Caption
 
                     //Need
                     PobNeed = setUpResponse.getCipPobNeed();
@@ -976,10 +1113,11 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     //Mandatory
                     PobMandatory = setUpResponse.getCipPobMandatory();
+             */
                 }
-                SampleValidation = setUpResponse.getSampleValidation();
+               /* SampleValidation = setUpResponse.getSampleValidation();
                 InputValidation = setUpResponse.getInputValidation();
-                GeoChk = setUpResponse.getGeoCheck();
+                GeoChk = setUpResponse.getGeoCheck();*/
             }
 
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
@@ -989,7 +1127,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
                 }.getType();
                 customSetupResponse = new Gson().fromJson(String.valueOf(CusSetupData), typeCustomSetup);
-                HosNeed = customSetupResponse.getHospNeed();
+
                 if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
                     if (CusSetupData.has("Alba_Nd")) {
                         RCPAWOSample = customSetupResponse.getRCPAWOSample();

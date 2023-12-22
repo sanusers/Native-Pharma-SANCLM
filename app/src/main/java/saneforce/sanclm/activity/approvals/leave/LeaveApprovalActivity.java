@@ -1,6 +1,7 @@
 package saneforce.sanclm.activity.approvals.leave;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.ActivityLeaveBinding;
 import saneforce.sanclm.network.ApiInterface;
@@ -51,15 +53,15 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-       // progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
+        // progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
         getRequiredData();
         CallApiLeave();
 
-        leaveBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-
-
-     //   leaveBinding.ivBack.setOnClickListener(view -> startActivity(new Intent(LeaveApprovalActivity.this, ApprovalsActivity.class)));
-
+        leaveBinding.ivBack.setOnClickListener(v -> {
+            Intent intent = new Intent(LeaveApprovalActivity.this, ApprovalsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
         leaveBinding.searchLeave.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -79,7 +81,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     }
 
     private void CallApiLeave() {
-            progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
+        progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
         try {
             jsonLeave.put("tableName", "getlvlapproval");
             jsonLeave.put("sfcode", SfCode);
@@ -107,7 +109,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            leaveModelLists.add(new LeaveModelList(json.getString("LvID"),json.getString("Sf_Code"), json.getString("SFName"), json.getString("FDate"), json.getString("TDate"), json.getString("Reason"), json.getString("Address"), json.getString("LType"), json.getString("LAvail"), json.getString("No_of_Days")));
+                            leaveModelLists.add(new LeaveModelList(json.getString("LvID"), json.getString("Sf_Code"), json.getString("SFName"), json.getString("FDate"), json.getString("TDate"), json.getString("Reason"), json.getString("Address"), json.getString("LType"), json.getString("LAvail"), json.getString("No_of_Days")));
                         }
                         leaveApprovalAdapter = new LeaveApprovalAdapter(LeaveApprovalActivity.this, leaveModelLists);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());

@@ -103,7 +103,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ViewPagerAdapter viewPagerAdapter;
     NavigationView navigationView;
     LinearLayout pre_layout, slide_layout, report_layout, anLast_layout, ll_next_month, ll_bfr_month;
-    ImageView masterSync, img_account, img_notification;
+    ImageView masterSync, img_account, img_notification, img_close;
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
     SQLite sqLite;
@@ -179,6 +179,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         navigationView.setNavigationItemSelectedListener(this);
         imageView.setBackgroundResource(R.drawable.bars_sort_img);
 
+        img_close.setOnClickListener(this);
+
         viewPagerAdapter = new ViewPagerAdapter(this, 1);
         viewPager.setAdapter(viewPagerAdapter);
         // viewPager.setOffscreenPageLimit(ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT);
@@ -248,7 +250,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
-                imageView.setBackgroundResource(R.drawable.cross_img);
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    imageView.setBackgroundResource(R.drawable.cross_img);
+                }
             }
 
             @Override
@@ -617,7 +621,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 callstatusadapter.notifyDataSetChanged();
                 break;
 
-
+            case R.id.cancel_img:
+                drawerLayout.closeDrawer(GravityCompat.END);
+                break;
         }
 
     }
@@ -631,6 +637,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         anLast_layout = findViewById(R.id.ll_analys);
         drawerLayout = findViewById(R.id.my_drawer_layout);
         imageView = findViewById(R.id.back_arrow);
+        img_close = findViewById(R.id.cancel_img);
         viewPager = findViewById(R.id.view_pager);
         viewPager1 = findViewById(R.id.view_pager1);
         tabLayout = findViewById(R.id.tablelayout);

@@ -18,7 +18,7 @@ import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.call.adapter.AdapterCusSingleList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
-import saneforce.sanclm.activity.approvals.tp.TpModelList;
+import saneforce.sanclm.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanclm.databinding.ActivityDcrDetailViewBinding;
 
 public class DcrDetailViewActivity extends AppCompatActivity implements OnItemClickListenerApproval {
@@ -175,7 +175,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     }
 
     @Override
-    public void onItemClick(TpModelList tpModelLists) {
+    public void onItemClick(TpModelList tpModelLists,int pos) {
 
     }
 }

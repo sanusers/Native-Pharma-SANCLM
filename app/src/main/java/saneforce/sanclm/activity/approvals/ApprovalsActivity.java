@@ -10,14 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -25,22 +22,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
-import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityApprovalsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
-import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
     public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
+    public static String DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption,DrNeed,ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
     LoginResponse loginResponse;
-    SetupResponse setupResponse;
     SQLite sqLite;
     String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TpDevNeed = "1", GeoTagNeed = "1", TpNeed = "1", TodayPlanSfCode;
     ArrayList<AdapterModel> list_approvals = new ArrayList<>();
@@ -154,37 +149,39 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void getRequiredData() {
-
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-
-        TpNeed = loginResponse.getTp_need();
-        TpDevNeed = loginResponse.getTPDCR_MGRAppr();
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
-
         try {
-            JSONArray jsonArray;
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject setupData = jsonArray.getJSONObject(0);
+            loginResponse = new LoginResponse();
+            loginResponse = sqLite.getLoginData();
 
-                setupResponse = new SetupResponse();
-                Type typeSetup = new TypeToken<SetupResponse>() {
-                }.getType();
-                setupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+            SfType = loginResponse.getSf_type();
+            SfCode = loginResponse.getSF_Code();
+            SfName = loginResponse.getSF_Name();
+            DivCode = loginResponse.getDivision_Code();
+            SubDivisionCode = loginResponse.getSubdivision_code();
+            Designation = loginResponse.getDesig();
+            StateCode = loginResponse.getState_Code();
 
-                if (setupData.has("GeoTagApprovalNeed")) {
-                    GeoTagNeed = setupResponse.getGeoTagApprovalNeed();
-                }
-            }
+            DrCaption = loginResponse.getDrCap();
+            ChemistCaption = loginResponse.getChmCap();
+            StockistCaption = loginResponse.getStkCap();
+            UnDrCaption = loginResponse.getNLCap();
+            CIPCaption = loginResponse.getCIP_Caption();
+            HosCaption = loginResponse.getHosp_caption();
+
+            CipNeed = loginResponse.getCip_need();
+            DrNeed = loginResponse.getDrNeed();
+            ChemistNeed = loginResponse.getChmNeed();
+            StockistNeed = loginResponse.getStkNeed();
+            UnDrNeed = loginResponse.getUNLNeed();
+            HospNeed = loginResponse.getHosp_need();
+
+            TpNeed = loginResponse.getTp_need();
+            TpDevNeed = loginResponse.getTPDCR_MGRAppr();
+            GeoTagNeed = loginResponse.getGeoTagApprovalNeed();
+
+            TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
+
+
         } catch (Exception ignored) {
         }
     }
