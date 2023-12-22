@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_3sdp"
+        app:cardCornerRadius="@dimen/_2sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/_6sdp"
+            android:paddingEnd="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:background="@drawable/tp_session_highlight">
+
+            <RelativeLayout
+                    android:id="@+id/rlLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true">
+
+                    <LinearLayout
+                        android:id="@+id/session"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/sessionNo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Session 1"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_7sdp"
+                            android:paddingTop="@dimen/_6sdp"
+                            android:paddingBottom="@dimen/_6sdp"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/sessionDelete"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:paddingStart="@dimen/_8sdp"
+                            android:paddingEnd="@dimen/_2sdp">
+
+                            <ImageView
+                                android:layout_width="@dimen/_10sdp"
+                                android:layout_height="@dimen/_10sdp"
+                                android:src="@drawable/trash_icon" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/workTypeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/session">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Work Type"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/workTypeSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/workTypeField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <ImageView
+                                android:id="@+id/workTypeArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/hqLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/workTypeLayout"
+                        android:layout_marginTop="@dimen/_3sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Head Quarters"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage"
+                            android:visibility="visible"/>
+
+                        <LinearLayout
+                            android:id="@+id/hqSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/hqField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <ImageView
+                                android:id="@+id/hqArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/clusterLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/hqLayout"
+                        android:layout_marginTop="@dimen/_3sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Cluster"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage"
+                            android:visibility="visible"/>
+
+                        <LinearLayout
+                            android:id="@+id/clusterSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/clusterField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/clusterCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/clusterArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/jcLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/clusterLayout"
+                        android:layout_marginTop="@dimen/_6sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Joint Call"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/jcSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/jcField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/jcCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/jcArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/listedDrLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/jcLayout"
+                        android:layout_marginTop="@dimen/_3sdp">
+
+                        <TextView
+                            android:id="@+id/listedDrCap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Listed Doctor"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/listedDrSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/listedDrField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/listedDrCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/listedDrArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/chemistLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/listedDrLayout"
+                        android:layout_marginTop="@dimen/_6sdp">
+
+                        <TextView
+                            android:id="@+id/chemistCap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Chemist"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/chemistSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/chemistField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/chemistCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/chemistArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/stockiestLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/chemistLayout"
+                        android:layout_marginTop="@dimen/_6sdp">
+
+                        <TextView
+                            android:id="@+id/stockiestCap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Stockiest"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/stockiestSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/stockiestField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/stockiestCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/stockiestArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/unListedDrLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/stockiestLayout"
+                        android:layout_marginTop="@dimen/_6sdp">
+
+                        <TextView
+                            android:id="@+id/unListedDrCap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="UnListed Doctor"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/unListedDrSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/unListedDrField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/unListedDrCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/unListedDrArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/cipLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/unListedDrLayout"
+                        android:layout_marginTop="@dimen/_6sdp">
+
+                        <TextView
+                            android:id="@+id/cipCap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="CIP"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/cipSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/cipField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/cipCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/cipArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/hospLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/cipLayout"
+                        android:layout_marginTop="@dimen/_6sdp">
+
+                        <TextView
+                            android:id="@+id/hospCap"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Hospital"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/hospSelect"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:background="@drawable/edittext_stroke"
+                            android:orientation="horizontal"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp">
+
+                            <TextView
+                                android:id="@+id/hospField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:text="Select"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:singleLine="true"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/hospCount"
+                                android:layout_width="@dimen/_12sdp"
+                                android:layout_height="@dimen/_12sdp"
+                                android:layout_marginEnd="@dimen/_4sdp"
+                                android:fontFamily="@font/satoshi_regular"
+                                android:text="0"
+                                android:textColor="#00C689"
+                                android:textSize="@dimen/_5sdp"
+                                android:textStyle="bold"
+                                android:background="@drawable/edittext_stroke"
+                                android:backgroundTint="@color/bg_priority"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                tools:ignore="SpUsage"/>
+
+                            <ImageView
+                                android:id="@+id/hospArrow"
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/arrow_down"
+                                android:layout_marginStart="@dimen/_3sdp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/remarkLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/hospLayout"
+                        android:layout_marginTop="@dimen/_6sdp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="start"
+                            android:text="Remarks"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+
+                            <EditText
+                                android:id="@+id/remarkET"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:hint="Enter Remarks here"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_6sdp"
+                                android:inputType="textMultiLine"
+                                android:gravity="start"
+                                android:lines="3"
+                                android:background="@drawable/edittext_stroke"
+                                android:padding="@dimen/_5sdp"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:overScrollMode="always"
+                                android:scrollbarStyle="insideInset"
+                                android:scrollbars="vertical"
+                                android:isScrollContainer="true"
+                                android:imeOptions="actionDone"
+                                tools:ignore="SpUsage" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/listCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_2sdp"
+                app:contentPadding="@dimen/_6sdp"
+                android:layout_below="@id/rlLayout"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/edittext_stroke">
+
+                        <ImageView
+                            android:layout_width="@dimen/_6sdp"
+                            android:layout_height="@dimen/_6sdp"
+                            android:src="@drawable/search_icon_gray"
+                            android:layout_gravity="center"
+                            android:scaleType="centerInside"
+                            android:layout_marginStart="@dimen/_5sdp"/>
+
+                        <EditText
+                            android:layout_weight="1"
+                            android:id="@+id/searchET"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:hint="Search"
+                            android:textColorHint="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
+                            android:textColor="@color/text_dark_65"
+                            android:singleLine="true"
+                            android:background="@null"
+                            android:gravity="start|center"
+                            android:padding="@dimen/_5sdp"
+                            tools:ignore="SpUsage"/>
+
+                        <LinearLayout
+                            android:id="@+id/searchClearIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:padding="@dimen/_5sdp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="@dimen/_8sdp"
+                                android:src="@drawable/img_close"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:layout_gravity="center"
+                                android:scaleType="centerInside" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/sessionItemRecView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

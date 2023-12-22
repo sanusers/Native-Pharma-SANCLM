@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_3sdp"
+    android:layout_marginVertical="@dimen/_2sdp"
+    android:elevation="@dimen/_2sdp"
+    app:cardCornerRadius="@dimen/_2sdp">
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:background="@drawable/view_pink_border"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/_2sdp">
+
+        <TextView
+            android:id="@+id/txt_cust_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="start"
+            android:paddingHorizontal="2dp"
+            android:paddingVertical="4dp"
+            android:singleLine="true"
+            android:textColor="@color/dark_purple"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/txt_cat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_cat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="1dp"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:paddingHorizontal="2dp"
+            android:paddingVertical="3dp"
+            android:text="@string/category"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/txt_specialist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_cust_name" />
+
+        <TextView
+            android:id="@+id/txt_specialist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="1dp"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:paddingHorizontal="2dp"
+            android:paddingVertical="3dp"
+            android:text="@string/specialist"
+            android:textColor="@color/light_grey_2"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/txt_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_cat" />
+
+        <TextView
+            android:id="@+id/txt_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_3sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:background="@drawable/bg_light_pink"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="@string/cluster"
+            android:textColor="@color/dark_purple"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_specialist"
+            app:layout_goneMarginStart="@dimen/_2sdp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

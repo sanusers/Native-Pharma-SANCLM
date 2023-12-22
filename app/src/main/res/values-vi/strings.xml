@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_app_name">SAN CLM</string>
+    <string name="preference_name">saneforce.sanclm.preferencefile</string>
+    <string name="txt_tagging">Gắn thẻ</string>
+    <string name="txt_doctor">Bác sĩ</string>
+    <string name="txt_chemist">nhà hóa học</string>
+    <string name="txt_stockist">Chắc chắn nhất</string>
+    <string name="txt_undr">Bác sĩ chưa niêm yết</string>
+    <string name="txt_add_tag">Thêm thẻ</string>
+    <string name="search">Vietnam</string>
+
+</resources>

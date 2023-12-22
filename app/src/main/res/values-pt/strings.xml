@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_app_name">SAN CLM</string>
+    <string name="preference_name">saneforce.sanclm.preferencefile</string>
+    <string name="txt_tagging">Marcação</string>
+    <string name="txt_doctor">Doutor</string>
+    <string name="txt_chemist">Químico</string>
+    <string name="txt_stockist">Mais atarracado</string>
+    <string name="txt_undr">Médico não listado</string>
+    <string name="txt_add_tag">Adicionar etiqueta</string>
+    <string name="search">Portugal</string>
+
+</resources>

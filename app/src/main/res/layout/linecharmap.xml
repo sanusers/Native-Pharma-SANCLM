@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/rl_linrchartmap"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_height="match_parent">
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ll_monthlayout"
+        android:layout_marginStart="@dimen/_7sdp"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/ll_monthlayout"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@color/white"
+        android:layout_weight="4"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_weight="1"
+            android:backgroundTint="#dfdfe2"
+            android:background="@drawable/custom_backround_layout"
+            android:fontFamily="@font/satoshi_regular"
+            android:gravity="center"
+            android:text=""
+            android:layout_marginStart="@dimen/_10sdp"
+            android:id="@+id/txt_month_one"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_5sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_weight="1"
+            android:backgroundTint="#dfdfe2"
+            android:background="@drawable/custom_backround_layout"
+            android:fontFamily="@font/satoshi_regular"
+            android:gravity="center"
+            android:text=""
+            android:id="@+id/txt_month_two"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:textAllCaps="false"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_5sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_weight="1"
+            android:backgroundTint="#dfdfe2"
+            android:background="@drawable/custom_backround_layout"
+            android:fontFamily="@font/satoshi_regular"
+            android:gravity="center"
+            android:text=""
+            android:id="@+id/txt_month_three"
+
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_5sdp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

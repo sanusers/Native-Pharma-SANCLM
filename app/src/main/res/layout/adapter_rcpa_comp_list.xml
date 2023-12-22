@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:windowSoftInputMode="adjustPan"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_list_comp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_1sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/tv_comp_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="@string/comp_prd"
+            android:textColor="@color/dark_purple"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_comp_brand"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_brand_code"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_regular"
+            android:text="@string/comp_brand"
+            android:textColor="@color/dark_purple"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_qty_comp"
+            app:layout_constraintStart_toEndOf="@id/tv_comp_cmpy"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_comp_cmpy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="@string/comp_prd"
+            android:textColor="@color/dark_purple"
+            android:textSize="14sp"
+            android:singleLine="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_comp_brand"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_comp_brand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_regular"
+            android:text="@string/comp_brand"
+            android:textColor="@color/dark_purple"
+            android:textSize="14sp"
+            android:singleLine="true"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_qty_comp"
+            app:layout_constraintStart_toEndOf="@id/tv_comp_cmpy"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <saneforce.sanclm.commonClasses.ListenerEditText
+            android:id="@+id/tv_qty_comp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_light_grey_border"
+            android:fontFamily="@font/satoshi_medium"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textSize="14sp"
+            android:singleLine="true"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_rate_comp"
+            app:layout_constraintStart_toEndOf="@id/tv_comp_brand"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_rate_comp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="@string/rate"
+            android:textColor="@color/dark_purple"
+            android:textSize="14sp"
+            android:singleLine="true"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_value_comp"
+            app:layout_constraintStart_toEndOf="@id/tv_qty_comp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_value_comp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="@string/value"
+            android:textColor="@color/dark_purple"
+            android:textSize="14sp"
+            android:singleLine="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_remarks"
+            app:layout_constraintStart_toEndOf="@id/tv_rate_comp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/img_remarks"
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:layout_marginHorizontal="@dimen/_2sdp"
+            android:layout_marginVertical="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:src="@drawable/img_remarks_1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/img_del"
+            app:layout_constraintStart_toEndOf="@id/tv_value_comp"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/img_del"
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginVertical="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:src="@drawable/iv_del"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/img_remarks"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:layout_editor_absoluteY="2dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

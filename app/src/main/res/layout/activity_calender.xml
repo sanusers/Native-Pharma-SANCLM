@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_180sdp"
+    android:layout_height="@dimen/_182sdp"
+    android:id="@+id/cal1"
+    android:layout_gravity="center"
+    android:layout_marginStart="@dimen/_5sdp"
+    android:layout_marginTop="@dimen/_5sdp"
+    android:layout_marginEnd="@dimen/_5sdp"
+    android:layout_marginBottom="@dimen/_5sdp"
+    android:background="@drawable/border_white"
+    tools:context=".activity.leave.CalendarActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="@dimen/_17sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        >
+
+                        <ImageView
+                            android:id="@+id/bfr_month"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:layout_weight="0.5"
+                            android:background="@null"
+                            android:onClick="previousMonthAction"
+                            android:src="@drawable/less_than_black"
+                            android:textStyle="bold"
+                            tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck,UsingOnClickInXml" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/monthYearTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Feb 2021"
+                        android:textAlignment="center"
+                        android:textColor="#282A3C"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:onClick="nextMonthAction"
+                        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck">
+
+                        <ImageView
+                            android:layout_width="@dimen/_8sdp"
+                            android:layout_height="@dimen/_8sdp"
+                            android:background="@null"
+                            android:src="@drawable/greater_than_black"
+                            android:textStyle="bold"
+                            tools:ignore="ContentDescription" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_9sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Mo"
+                        android:textAlignment="center"
+                        android:textColor="#abb2b9"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Tu"
+                        android:textAlignment="center"
+                        android:textColor="#abb2b9"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="We"
+                        android:textAlignment="center"
+                        android:textColor="#abb2b9"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Th"
+                        android:textAlignment="center"
+                        android:textColor="#abb2b9"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Fr"
+                        android:textAlignment="center"
+                        android:textColor="#abb2b9"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage,TextSizeCheck" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Sa"
+                        android:textAlignment="center"
+                        android:textColor="#abb2b9"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Su"
+                        android:textAlignment="center"
+                        android:textColor="#abb2b9"
+                        android:textSize="@dimen/_8sdp"
+                        tools:ignore="SpUsage" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/calendarRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp" />
+
+        </LinearLayout>
+
+
+</RelativeLayout>
+

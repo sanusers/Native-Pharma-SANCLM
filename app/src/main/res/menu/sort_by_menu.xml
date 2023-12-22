@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/sortByName"
+        android:title="Sort by name">
+<!--        <menu>-->
+<!--            <item android:title="Ascending"/>-->
+
+<!--            <item android:title="Descending"/>-->
+<!--        </menu>-->
+    </item>
+
+    <item android:id="@+id/sortByTime"
+        android:title="Sort by visit time"/>
+
+</menu>

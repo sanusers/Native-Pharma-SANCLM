@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/_4sdp">
+
+
+    <TextView
+        android:id="@+id/txt_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:fontFamily="@font/satoshi_medium"
+        android:text="Call Count :"
+        android:textColor="@color/black_45"
+        android:textSize="@dimen/_7sdp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/txt_callcount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_toRightOf="@+id/txt_call"
+        android:fontFamily="@font/satoshi_medium"
+        android:text="5"
+        android:textColor="@color/black_45"
+        android:textSize="@dimen/_7sdp">
+
+    </TextView>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/custom_backround_layout"
+        android:backgroundTint="@color/text_sync_bg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/_3sdp">
+
+
+        <ImageView
+            android:id="@+id/refresh"
+            android:layout_width="@dimen/_6sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:src="@drawable/refresh_1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:layout_toRightOf="@+id/refresh"
+            android:fontFamily="@font/satoshi_regular"
+            android:text="Sync"
+            android:textColor="@color/text_sync"
+            android:textSize="@dimen/_7sdp"
+            android:textStyle="bold">
+
+        </TextView>
+
+
+    </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyelerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view_dummy"
+        android:layout_below="@+id/txt_call"
+        android:layout_marginTop="@dimen/_8sdp" />
+
+    <View
+        android:id="@+id/view_dummy"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@id/linear"
+        android:layout_margin="@dimen/_2sdp"
+        android:background="#9e9ea5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_add_call"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_23sdp"
+            android:layout_marginRight="@dimen/_3sdp"
+            android:layout_weight="1"
+            android:background="@drawable/background_button_border_black"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:text="Add Call"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_7sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_23sdp"
+            android:layout_weight="1"
+            android:background="@drawable/background_button_border_black"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:text="Add Activity"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_7sdp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>
+
+

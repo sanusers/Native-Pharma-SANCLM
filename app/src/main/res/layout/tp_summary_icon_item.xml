@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/_14sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:src="@drawable/tp_cluster_location_ic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/countTxtView"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:background="@drawable/tp_badge_circle"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/_5sdp"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/_minus4sdp"
+            android:layout_marginStart="@dimen/_minus7sdp"
+            app:layout_constraintBottom_toTopOf="@id/icon"
+            app:layout_constraintStart_toEndOf="@id/icon"
+            tools:ignore="SpUsage"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

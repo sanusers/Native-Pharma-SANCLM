@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent1">#17000000</color>
+
+    <color name="text_dark">#282A3C</color>
+    <color name="text_dark_65">#A6282A3C</color>
+    <color name="text_dark_15">#26282A3C</color>
+    <color name="pink">#F1536E</color>
+    <color name="background">#EEEEEE</color>
+    <color name="text_dark_25">#40282A3C</color>
+    <color name="text_dark_10">#12FD0B0B</color>
+    <color name="mildRed">#D8807D</color>
+    <color name="btn_disable_gray">#59282A3C</color>
+
+
+    <color name="dark_purple">#282A3C</color>
+    <color name="light_grey_3">#BFBFC5</color>
+    <color name="light_purple">#3e3f50</color>
+    <color name="light_grey">#D3D3D3</color>
+    <color name="light_grey_1">#DFDFE2</color>
+    <color name="light_grey_2">#737580</color>
+    <color name="bg_txt_color">#8E8C8C</color>
+    <color name="bg_grey">#EEEEEE</color>
+    <color name="light_green">#4B00C689</color>
+    <color name="light_cement">#B4B4BB</color>
+    <color name="green_2">#00C689</color>
+    <color name="ash_pecalltext">#b8b8b8</color>
+    <color name="gold_yellow">#FFD700</color>
+    <color name="bg_grey_2">#C9CACE</color>
+    <color name="bg_grey_dark">#6C6C6C</color>
+    <color name="bg_light_cement">#E9EAEB</color>
+    <color name="text_qty_prd">#60626F</color>
+    <color name="text_grey">#6C6D79</color>
+    <color name="bg_lite_blue">#E2F1FD</color>
+    <color name="bg_blue">#3DA5F4</color>
+    <color name="cheked_txt_color">#282A3C</color>
+    <color name="bg_sale">#E2F1FD</color>
+    <color name="txt_sale_sample">#282A3C</color>
+    <color name="txt_sale">#3DA5F4</color>
+    <color name="txt_sample">#F1536E</color>
+    <color name="bg_sample">#FDE5E9</color>
+    <color name="bg_priority">#D9F6ED</color>
+    <color name="bg_hospital">#E9E5EA</color>
+    <color name="txt_priority">#00C689</color>
+    <color name="bg_lit_cement">#F4F4F5</color>
+    <color name="dark_pink">#F1536E</color>
+    <color name="maroon">#6D5471</color>
+    <color name="pink_15">#26F1536E</color>
+    <color name="backround_graey">#EEEEEE</color>
+    <color name="txt_lite_black">#5b5a67</color>
+
+    <color name="Green_45">#00c689</color>
+    <color name="blue_45">#41a1ef</color>
+    <color name="pink_45">#fd4f6e</color>
+    <color name="black_45">#2a293b</color>
+    <color name="black_text_30">#373647</color>
+    <color name="green_15">#c6eae1</color>
+    <color name="blue_15">#d3e4ef</color>
+    <color name="rpink_15">#f2d7db</color>
+    <color name="tab_gray">#dedee0</color>
+    <color name="text_3">#dddddd</color>
+
+    <color name="text_sync_bg">#ffe5e9</color>
+    <color name="text_sync">#fd4f6e</color>
+
+    <color name="yellow_45">#ffbc40</color>
+    <color name="charline_color">#dddde0</color>
+
+    <color name="Trendy_Pink_45">#72526f</color>
+    <color name="gray_45">#8c8c94</color>
+
+    2a293b
+<!--    EventColors-->
+
+
+    <color name="yellow_60">#fecf68</color>
+    <color name="yellow_10">#fef6df</color>
+
+    <color name="green_60">#00c98e</color>
+    <color name="green_10">#d4f8ef</color>
+
+    <color name="blue_60">#4aa5f0</color>
+    <color name="blue_10">#e1f2fd</color>
+
+    <color name="lustylavender_60">#915daf</color>
+    <color name="lustylavender_10">#eee5f2</color>
+
+    <color name="Hilo_bay_60">#768a9e</color>
+    <color name="Hilo_bay_10">#ebeef1</color>
+
+    <color name="pink_60">#d42a92</color>
+    <color name="pink_10">#fbe0ee</color>
+
+    <color name="red_60">#fd4f6e</color>
+    <color name="red_10">#ffe5e9</color>
+
+    <color name="dark_green_60">#006247</color>
+    <color name="dark_green_10">#d8e8e3</color>
+
+    <color name="Evening_Blue_60">#2a293b</color>
+    <color name="Evening_Blue_10">#dfdfe2</color>
+
+
+    <color name="GlassSea_60">#0a5875</color>
+    <color name="GlassSea_10">#dbe6eb</color>
+    <color name="cl_border_color">#e5e5e5</color>
+    <color name="cl_text_color">#74737f</color>
+
+    <color name="bg_pink10">#fff6f7</color>
+
+
+</resources>
