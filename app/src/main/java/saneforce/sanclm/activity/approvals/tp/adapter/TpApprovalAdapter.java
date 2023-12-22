@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.approvals.tp;
+package saneforce.sanclm.activity.approvals.tp.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
+import saneforce.sanclm.activity.approvals.tp.TpApprovalActivity;
+import saneforce.sanclm.activity.approvals.tp.pojo.TpModelList;
 
 public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.ViewHolder> {
     Context context;
@@ -55,7 +57,7 @@ public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.Vi
         }
 
         holder.constraint_main.setOnClickListener(view -> {
-            mListener.onItemClick(new TpModelList(tpModelLists.get(position).getCode(),tpModelLists.get(position).getName(),tpModelLists.get(position).getMonth(),tpModelLists.get(position).getYear(),tpModelLists.get(position).getMn()));
+            mListener.onItemClick(new TpModelList(tpModelLists.get(position).getCode(),tpModelLists.get(position).getName(),tpModelLists.get(position).getMonth(),tpModelLists.get(position).getYear(),tpModelLists.get(position).getMn()),holder.getBindingAdapterPosition());
             notifyDataSetChanged();
         });
     }
@@ -69,6 +71,12 @@ public class TpApprovalAdapter extends RecyclerView.Adapter<TpApprovalAdapter.Vi
     public void filterList(ArrayList<TpModelList> filteredNames) {
         this.tpModelLists = filteredNames;
         notifyDataSetChanged();
+    }
+
+    public void removeAt(int position) {
+        tpModelLists.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, tpModelLists.size());
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

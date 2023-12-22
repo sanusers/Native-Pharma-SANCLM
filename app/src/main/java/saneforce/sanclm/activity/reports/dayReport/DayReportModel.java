@@ -1,9 +1,6 @@
 package saneforce.sanclm.activity.reports.dayReport;
 
 import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.Object;
-import java.lang.String;
 
 public class DayReportModel implements Serializable {
   private String Udr="";

@@ -1,9 +1,6 @@
 package saneforce.sanclm.activity.presentation.createPresentation.selectedSlide;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 

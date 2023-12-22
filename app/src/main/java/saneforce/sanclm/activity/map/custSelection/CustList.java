@@ -56,6 +56,14 @@ public class CustList {
         this.dummy = dummy;
     }
 
+    public CustList(String name, String lat,String lon,String address,String dummy) {
+        this.name = name;
+        this.latitude = lat;
+        this.longitude = lon;
+        this.address = address;
+        this.dummy = dummy;
+    }
+
     public CustList(String code) {
         this.code = code;
     }

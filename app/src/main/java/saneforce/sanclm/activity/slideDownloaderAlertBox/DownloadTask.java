@@ -1,19 +1,15 @@
 package saneforce.sanclm.activity.slideDownloaderAlertBox;
 
 import static android.content.Context.MODE_PRIVATE;
-
 import static saneforce.sanclm.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.downloading_count;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 

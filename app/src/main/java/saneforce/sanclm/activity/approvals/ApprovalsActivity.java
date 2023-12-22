@@ -30,13 +30,14 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
-    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0;
+    public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
+    public static String DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption,DrNeed,ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
     LoginResponse loginResponse;
     SQLite sqLite;
-    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode;
+    String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TpDevNeed = "1", GeoTagNeed = "1", TpNeed = "1", TodayPlanSfCode;
     ArrayList<AdapterModel> list_approvals = new ArrayList<>();
     AdapterApprovals adapterApprovals;
     ProgressDialog progressDialog = null;
@@ -81,6 +82,10 @@ public class ApprovalsActivity extends AppCompatActivity {
             jsonGetCount.put("Designation", Designation);
             jsonGetCount.put("state_code", StateCode);
             jsonGetCount.put("subdivision_code", SubDivisionCode);
+            jsonGetCount.put("Tp_need", TpNeed);
+            jsonGetCount.put("geotag_need", GeoTagNeed);
+            jsonGetCount.put("TPdev_need", TpDevNeed);
+
             Log.v("json_get_full_dcr_list", jsonGetCount.toString());
 
         } catch (Exception ignored) {
@@ -102,14 +107,19 @@ public class ApprovalsActivity extends AppCompatActivity {
                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
                         JSONArray jsonArray = jsonObject1.getJSONArray("apprCount");
 
-                        JSONObject jsonDcr = jsonArray.getJSONObject(0);
-                        DcrCount = jsonDcr.getInt("dcrappr_count");
-                        JSONObject jsonTp = jsonArray.getJSONObject(1);
-                        TpCount = jsonTp.getInt("tpappr_count");
-                        JSONObject jsonLeave = jsonArray.getJSONObject(2);
-                        LeaveCount = jsonLeave.getInt("leaveappr_count");
-                        JSONObject jsonDeviation = jsonArray.getJSONObject(3);
-                        DeviationCount = jsonDeviation.getInt("devappr_count");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonCounts = jsonArray.getJSONObject(i);
+                            if (jsonCounts.has("dcrappr_count"))
+                                DcrCount = jsonCounts.getInt("dcrappr_count");
+                            if (jsonCounts.has("tpappr_count"))
+                                TpCount = jsonCounts.getInt("tpappr_count");
+                            if (jsonCounts.has("leaveappr_count"))
+                                LeaveCount = jsonCounts.getInt("leaveappr_count");
+                            if (jsonCounts.has("devappr_count"))
+                                DeviationCount = jsonCounts.getInt("devappr_count");
+                            if (jsonCounts.has("geotag_count"))
+                                GeoTagCount = jsonCounts.getInt("geotag_count");
+                        }
                         AssignCountValues();
                     } catch (Exception e) {
                         Log.v("counts", "-error-" + e);
@@ -125,12 +135,12 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void AssignCountValues() {
-        Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount);
+        Log.v("counts", "---" + DcrCount + "---" + TpCount + "---" + LeaveCount + "---" + DeviationCount + "---" + GeoTagCount);
         list_approvals.add(new AdapterModel(getResources().getString(R.string.leave_approvals), String.valueOf(LeaveCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_approvals), String.valueOf(TpCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.dcr_approvals), String.valueOf(DcrCount)));
         list_approvals.add(new AdapterModel(getResources().getString(R.string.tp_deviation), String.valueOf(DeviationCount)));
-        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), "0"));
+        list_approvals.add(new AdapterModel(getResources().getString(R.string.geo_tagging), String.valueOf(GeoTagCount)));
 
         adapterApprovals = new AdapterApprovals(ApprovalsActivity.this, list_approvals);
         approvalsBinding.rvApprovalList.setItemAnimator(new DefaultItemAnimator());
@@ -139,17 +149,40 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void getRequiredData() {
+        try {
+            loginResponse = new LoginResponse();
+            loginResponse = sqLite.getLoginData();
 
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+            SfType = loginResponse.getSf_type();
+            SfCode = loginResponse.getSF_Code();
+            SfName = loginResponse.getSF_Name();
+            DivCode = loginResponse.getDivision_Code();
+            SubDivisionCode = loginResponse.getSubdivision_code();
+            Designation = loginResponse.getDesig();
+            StateCode = loginResponse.getState_Code();
 
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
+            DrCaption = loginResponse.getDrCap();
+            ChemistCaption = loginResponse.getChmCap();
+            StockistCaption = loginResponse.getStkCap();
+            UnDrCaption = loginResponse.getNLCap();
+            CIPCaption = loginResponse.getCIP_Caption();
+            HosCaption = loginResponse.getHosp_caption();
+
+            CipNeed = loginResponse.getCip_need();
+            DrNeed = loginResponse.getDrNeed();
+            ChemistNeed = loginResponse.getChmNeed();
+            StockistNeed = loginResponse.getStkNeed();
+            UnDrNeed = loginResponse.getUNLNeed();
+            HospNeed = loginResponse.getHosp_need();
+
+            TpNeed = loginResponse.getTp_need();
+            TpDevNeed = loginResponse.getTPDCR_MGRAppr();
+            GeoTagNeed = loginResponse.getGeoTagApprovalNeed();
+
+            TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(ApprovalsActivity.this);
+
+
+        } catch (Exception ignored) {
+        }
     }
 }

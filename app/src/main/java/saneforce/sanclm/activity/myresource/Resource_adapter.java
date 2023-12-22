@@ -8,36 +8,24 @@ import static saneforce.sanclm.activity.myresource.MyResource_Activity.search_li
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
@@ -47,11 +35,13 @@ import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.TimeUtils;
 
 public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.ViewHolder> {
+    public static String listedres;
+    public static RelativeLayout list_resource;
+    public static Res_sidescreenAdapter side_adapter;
     ArrayList<Resourcemodel_class> listeduser;
     ArrayList<Resourcemodel_class> visituser;
     ArrayList<String> visit_list = new ArrayList<>();
     ArrayList<String> visitlist1 = new ArrayList<>();
-
     Context context;
     SQLite sqLite;
     HashSet<String> uniqueValues = new HashSet<>();
@@ -59,16 +49,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     ArrayList<String> count_list = new ArrayList<>();
     ArrayList<String> visitcountlist = new ArrayList<>();
     String listed;
-
-
-    public static String listedres;
     String key;
-    public static RelativeLayout list_resource;
     String Cust_name;
-
-
     ArrayList<String> list = new ArrayList<>();
-    public static Res_sidescreenAdapter side_adapter;
     String Doc, chm = "", stck = "", unlist = "";
     String po_count;
 
@@ -283,7 +266,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         }
                         break;
                     case ("9"):
-                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context));
+                        MyResource_Activity.Key = sqLite.getMasterSyncDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context);
                         JSONArray jsonculst = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(context));
                         String culst_val = "";
                         Valcount = "";

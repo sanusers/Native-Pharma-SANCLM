@@ -3,10 +3,7 @@ package saneforce.sanclm.activity.presentation.playPreview;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.List;
 
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.presentation.SupportClass;
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.sanclm.activity.presentation.createPresentation.slide.SlideImageAdapter;
 
 public class PlaySlidePagerAdapter extends PagerAdapter {
 

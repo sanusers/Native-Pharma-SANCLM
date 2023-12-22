@@ -3,6 +3,7 @@ package saneforce.sanclm.activity.map;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
+import static saneforce.sanclm.activity.approvals.geotagging.GeoTaggingAdapter.geoTagViewList;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -56,18 +57,15 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,9 +90,7 @@ import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.ActivityMapsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
-import saneforce.sanclm.response.CustomSetupResponse;
 import saneforce.sanclm.response.LoginResponse;
-import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SQLiteHandler;
 import saneforce.sanclm.storage.SharedPref;
@@ -123,8 +119,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     SQLiteHandler sqLiteHandler;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     LoginResponse loginResponse;
-    SetupResponse setUpResponse;
-    CustomSetupResponse customSetupResponse;
     String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double lat, lng, limitKm = 0.5;
     Dialog dialogTagCust;
@@ -137,7 +131,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String finalPath = "/storage/emulated/0";
                     // try {
                     filePath = outputFileUri.getPath();
-                    filePath = filePath.substring(1);
+                    filePath = Objects.requireNonNull(filePath).substring(1);
                     filePath = finalPath + filePath.substring(filePath.indexOf("/"));
                     //     String result = String.valueOf(resultCode);
                     //  if (result.equalsIgnoreCase("-1")) {
@@ -185,7 +179,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }*//*
     }*/
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint({"UseCompatLoadingForDrawables", "PotentialBehaviorOverride"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,9 +191,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         sqLite = new SQLite(getApplicationContext());
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -211,11 +202,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             cust_address = extra.getString("cus_add");
         }
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
+
+        if (from_tagging.equalsIgnoreCase("view_tag_approval")) {
+            mapFragment.getMapAsync(googleMap -> {
+                mMap = googleMap;
+                mMap.setOnMarkerClickListener(this);
+                mapsBinding.btnTag.setVisibility(View.GONE);
+                mapsBinding.constraintTaggedView.setVisibility(View.VISIBLE);
+                mapsBinding.tvMeters.setVisibility(View.GONE);
+                mapsBinding.constraintMid.setVisibility(View.INVISIBLE);
+                mapsBinding.imgRvRight.setVisibility(View.GONE);
+                mapsBinding.imgRefreshMap.setVisibility(View.GONE);
+                mapsBinding.imgCurLoc.setVisibility(View.GONE);
+                mapsBinding.rvList.setVisibility(View.GONE);
+                mapsBinding.tvCustName.setText(geoTagViewList.get(0).getName());
+                mapsBinding.tagSelection.setText(getResources().getString(R.string.geo_tagging));
+
+                LatLng latLng = new LatLng(parseDouble(geoTagViewList.get(0).getLatitude()), parseDouble(geoTagViewList.get(0).getLongitude()));
+                mMap.addMarker(new MarkerOptions().position(latLng).snippet(geoTagViewList.get(0).getAddress()).title(geoTagViewList.get(0).getName()).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(parseDouble(geoTagViewList.get(0).getLatitude()), parseDouble(geoTagViewList.get(0).getLongitude())), 15.2f));
+                mapsBinding.tvTaggedAddress.setText(geoTagViewList.get(0).getAddress());
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setScrollGesturesEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(false);
+                mMap.getUiSettings().setZoomGesturesEnabled(true);
+                mMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
+                mMap.getUiSettings().setCompassEnabled(false);
+                mMap.getUiSettings().setRotateGesturesEnabled(true);
+            });
+        } else {
+            mapsBinding.imgRefreshMap.setVisibility(View.VISIBLE);
+            mapsBinding.imgCurLoc.setVisibility(View.VISIBLE);
+            getRequiredData();
+            mapFragment.getMapAsync(this);
+        }
+
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         isTagged = false;
-        //  SharedPref.setTaggedSuccessfully(MapsActivity.this, "false");
-
-        getRequiredData();
 
         Log.v("map_selected_tab", SelectedTab + "--" + from_tagging + "---" + SfType + "---" + SelectedHqCode);
 
@@ -226,7 +262,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 SelectedHqCode = "";
                 SelectedHqName = "";
                 getOnBackPressedDispatcher().onBackPressed();
-                // startActivity(new Intent(MapsActivity.this, HomeDashBoard.class));
             } else {
                 TagCustSelectionList.SelectedCustPos = "";
                 finish();
@@ -236,7 +271,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding.btnTag.setOnClickListener(view -> {
             if (from_tagging.equalsIgnoreCase("tagging")) {
                 mapsBinding.imgRefreshMap.setVisibility(View.GONE);
-                if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty()) {
+                if (!mapsBinding.tvTaggedAddress.getText().toString().isEmpty() || !mapsBinding.tvTaggedAddress.getText().toString().equalsIgnoreCase("No Address Found")) {
                     if (GeoTagImageNeed.equalsIgnoreCase("0")) {
                         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.CAMERA}, 5);
@@ -250,6 +285,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "Not able to find Address! Kindly Try Again", Toast.LENGTH_SHORT).show();
+                    Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
+                    startActivity(intent1);
                 }
             } else {
                 Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
@@ -330,6 +367,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
 
+        if (loginResponse.getDrNeed().equalsIgnoreCase("0")) {
+            mapsBinding.tagTvDoctor.setVisibility(View.VISIBLE);
+            mapsBinding.tagTvChemist.setText(loginResponse.getDrCap());
+        }
+
+        if (loginResponse.getChmNeed().equalsIgnoreCase("0")) {
+            mapsBinding.tagTvChemist.setVisibility(View.VISIBLE);
+            mapsBinding.tagTvChemist.setText(loginResponse.getChmCap());
+        }
+
+        if (loginResponse.getStkNeed().equalsIgnoreCase("0")) {
+            mapsBinding.tagTvStockist.setVisibility(View.VISIBLE);
+            mapsBinding.tagTvStockist.setText(loginResponse.getStkCap());
+        }
+
+        if (loginResponse.getUNLNeed().equalsIgnoreCase("0")) {
+            mapsBinding.tagTvUndr.setVisibility(View.VISIBLE);
+            mapsBinding.tagTvUndr.setText(loginResponse.getNLCap());
+        }
+
+        if (loginResponse.getCip_need().equalsIgnoreCase("0")) {
+            mapsBinding.tagTvCip.setVisibility(View.VISIBLE);
+            mapsBinding.tagTvCip.setText(loginResponse.getCIP_Caption());
+        }
+
+        if (loginResponse.getHosp_need().equalsIgnoreCase("0")) {
+            mapsBinding.tagTvHospital.setVisibility(View.VISIBLE);
+            mapsBinding.tagTvHospital.setText(loginResponse.getHosp_caption());
+        }
+
+        GeoTagImageNeed = loginResponse.getGeoTagImg();
+        GeoTagApprovalNeed = loginResponse.getGeoTagApprovalNeed();
+        limitKm = loginResponse.getDisRad();
         img_url = SharedPref.getTagImageUrl(MapsActivity.this);
 
         if (SelectedHqCode.isEmpty()) {
@@ -345,7 +415,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-        try {
+       /* try {
             JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -379,12 +449,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
 
-                GeoTagImageNeed = setUpResponse.getGeoTagImageNeed();
                 if (setupData.has("GeoTagApprovalNeed")) {
                     GeoTagApprovalNeed = setUpResponse.getGeoTagApprovalNeed();
                 } else {
                     GeoTagApprovalNeed = "0";
                 }
+
                 if (!setUpResponse.getMapGeoFenceCircleRad().equalsIgnoreCase("0")) {
                     limitKm = parseDouble(setUpResponse.getMapGeoFenceCircleRad());
                 }
@@ -405,7 +475,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
     }
 
@@ -418,7 +488,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
-        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(getExternalCacheDir().getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
+        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(getExternalCacheDir()).getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
         imageName = SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
         taggedTime = CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime();
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
@@ -511,7 +581,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialogTagCust = new Dialog(this);
         dialogTagCust.setContentView(R.layout.dialog_confirmtag_alert);
         dialogTagCust.setCancelable(false);
-        dialogTagCust.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(dialogTagCust.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogTagCust.show();
         Button btn_confirm = dialogTagCust.findViewById(R.id.btn_confirm);
         Button btn_cancel = dialogTagCust.findViewById(R.id.btn_cancel);
@@ -1172,7 +1242,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
-        if (from_tagging.equalsIgnoreCase("view_tagged")) {
+        if (from_tagging.equalsIgnoreCase("view_tagged") || from_tagging.equalsIgnoreCase("view_tag_approval")) {
             Log.v("position", String.valueOf(marker.getPosition()));
             double getDistance = getDistanceMeters(lat, lng, marker.getPosition().latitude, marker.getPosition().longitude);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude), 18.0f));

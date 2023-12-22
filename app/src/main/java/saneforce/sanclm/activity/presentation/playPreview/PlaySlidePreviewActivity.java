@@ -1,22 +1,17 @@
 package saneforce.sanclm.activity.presentation.playPreview;
 
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.viewpager.widget.ViewPager;
-
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.MediaController;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.gson.Gson;
@@ -26,7 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -35,7 +29,6 @@ import java.util.TimerTask;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.presentation.SupportClass;
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.sanclm.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanclm.databinding.ActivityPlaySlidePreviewBinding;
 
 public class PlaySlidePreviewActivity extends AppCompatActivity {

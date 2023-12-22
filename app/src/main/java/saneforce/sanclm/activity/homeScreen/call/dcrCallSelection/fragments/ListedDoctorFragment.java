@@ -6,6 +6,7 @@ import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCall
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.Designation;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.DivCode;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.DrGeoTag;
+import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.DrNeed;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.GeoTagApproval;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.HospNeed;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
@@ -354,8 +355,11 @@ public class ListedDoctorFragment extends Fragment {
 
     public void prepareMasterToSync(String hqCode) {
         masterSyncArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
-        masterSyncArray.add(doctorModel);
+
+        if (DrNeed.equalsIgnoreCase("0")) {
+            MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
+            masterSyncArray.add(doctorModel);
+        }
 
         if (ChemistNeed.equalsIgnoreCase("0")) {
             MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
@@ -475,17 +479,17 @@ public class ListedDoctorFragment extends Fragment {
                 Toast.makeText(getContext(), Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
             }
 
-            Log.v("call", "-dr_full_length-" + jsonArray.length());
+            Log.v("DrCall", "-dr_full_length-" + jsonArray.length());
+            Log.v("DrCall", "--dr-" + GeoTagApproval + "--" + DrGeoTag + "----" + TpBasedDcr);
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 try {
                     if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                        Log.v("CheckSelCall", "--dr-" + GeoTagApproval + "--" + DrGeoTag + "----" + TpBasedDcr);
                         if (DrGeoTag.equalsIgnoreCase("1")) {
                             if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
                                 if (GeoTagApproval.equalsIgnoreCase("0")) {
-                                    Log.v("CheckSelCall", "111");
+                                    Log.v("DrCall", "111");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
                                     if (distance[0] < limitKm * 1000.0) {
@@ -498,7 +502,7 @@ public class ListedDoctorFragment extends Fragment {
                                         }
                                     }
                                 } else {
-                                    Log.v("CheckSelCall", "222");
+                                    Log.v("DrCall", "222");
                                     float[] distance = new float[2];
                                     Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), lat, lng, distance);
                                     if (distance[0] < limitKm * 1000.0) {
@@ -511,9 +515,9 @@ public class ListedDoctorFragment extends Fragment {
                                 }
                             }
                         } else {
-                            Log.v("CheckSelCall", "333");
+                            Log.v("DrCall", "333");
                             if (TpBasedDcr.equalsIgnoreCase("0")) {
-                                Log.v("CheckSelCall", "444");
+                                Log.v("DrCall", "444");
                                 if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                                     if (jsonObject.has("Product_Code")) {
                                         custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));
@@ -522,7 +526,7 @@ public class ListedDoctorFragment extends Fragment {
                                     }
                                 }
                             } else {
-                                Log.v("CheckSelCall", "555");
+                                Log.v("DrCall", "555");
                                 if (jsonObject.has("Product_Code")) {
                                     custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "1", jsonObject.getString("Category"), jsonObject.getString("CategoryCode"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("Lat"), jsonObject.getString("Long"), jsonObject.getString("Addrs"), jsonObject.getString("DOB"), jsonObject.getString("DOW"), jsonObject.getString("DrEmail"), jsonObject.getString("Mobile"), jsonObject.getString("Phone"), jsonObject.getString("DrDesig"), jsonObject.getString("Product_Code")));
                                 } else {
@@ -532,7 +536,7 @@ public class ListedDoctorFragment extends Fragment {
                         }
                     }
                 } catch (Exception e) {
-                    Log.v("call", "dr--error--" + e);
+                    Log.v("DrCall", "dr--error-1-" + e);
                 }
                /* switch (RequiredFiltered) {
                     case "Speciality":
@@ -569,7 +573,7 @@ public class ListedDoctorFragment extends Fragment {
                 }
             }
         } catch (Exception e) {
-            Log.v("call", "-dr--error--" + e);
+            Log.v("DrCall", "-dr--error-2-" + e);
         }
 
         Log.v("call", "-dr--size--" + custListArrayList.size());

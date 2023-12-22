@@ -1,12 +1,25 @@
 package saneforce.sanclm.activity.approvals.dcr;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.CIPCaption;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.ChemistCaption;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.ChemistNeed;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.CipNeed;
 import static saneforce.sanclm.activity.approvals.ApprovalsActivity.DcrCount;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.DrCaption;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.DrNeed;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.HosCaption;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.HospNeed;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.StockistCaption;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.StockistNeed;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.UnDrCaption;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.UnDrNeed;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -25,15 +38,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -42,22 +52,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.approvals.AdapterModel;
+import saneforce.sanclm.activity.approvals.ApprovalsActivity;
 import saneforce.sanclm.activity.approvals.OnItemClickListenerApproval;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterCusMainList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterDcrApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.adapter.AdapterSelectionList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.sanclm.activity.approvals.dcr.pojo.DcrDetailModelList;
-import saneforce.sanclm.activity.approvals.tp.TpModelList;
+import saneforce.sanclm.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.product.SaveCallProductList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
-import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityDcrCallApprovalBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.response.LoginResponse;
-import saneforce.sanclm.response.SetupResponse;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
@@ -74,14 +83,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     public static ArrayList<AdapterModel> adapterModels = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static AdapterSelectionList adapterSelectionList;
-    public static String DrCaption, ChemistCaption, CipCaption, StockistCaption, UnDrCaption;
     static int countAll = 0, countDr = 0, countChem = 0, countStk = 0, countUnDr = 0;
     static StringBuilder ClusterNames = new StringBuilder();
     public JSONObject jsonDcrContentList = new JSONObject();
     public ProgressDialog progressDialog = null;
     public ApiInterface api_interface;
     LoginResponse loginResponse;
-    SetupResponse setUpResponse;
     SQLite sqLite;
     JSONObject jsonDcrList = new JSONObject();
     JSONObject jsonAccept = new JSONObject();
@@ -92,12 +99,16 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     private static void SetupAdapter(Context context) {
         adapterModels.add(new AdapterModel("All", String.valueOf(countAll)));
-        adapterModels.add(new AdapterModel(DrCaption, String.valueOf(countDr)));
-        adapterModels.add(new AdapterModel(ChemistCaption, String.valueOf(countChem)));
-        adapterModels.add(new AdapterModel(StockistCaption, String.valueOf(countStk)));
-        adapterModels.add(new AdapterModel(UnDrCaption, String.valueOf(countUnDr)));
-        //  adapterModels.add(new AdapterModel("CIP", "0"));
-        adapterModels.add(new AdapterModel("Hospital", "0"));
+        if (DrNeed.equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(DrCaption, String.valueOf(countDr)));
+        if (ChemistNeed.equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(ChemistCaption, String.valueOf(countChem)));
+        if (StockistNeed.equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(StockistCaption, String.valueOf(countStk)));
+        if (UnDrNeed.equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(UnDrCaption, String.valueOf(countUnDr)));
+        if (CipNeed.equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(CIPCaption, "0"));
+        if (HospNeed.equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(HosCaption, "0"));
 
         adapterCusMainList = new AdapterCusMainList(context, dcrDetailedList, SaveProductList, saveInputList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
@@ -280,15 +291,16 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         dcrCallApprovalBinding.ivBack.setOnClickListener(view -> {
             SelectedSfCode = "";
             SelectedActivityDate = "";
-             getOnBackPressedDispatcher().onBackPressed();
-          //  startActivity(new Intent(DcrApprovalActivity.this, ApprovalsActivity.class));
+            Intent intent = new Intent(DcrApprovalActivity.this, ApprovalsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         });
 
         dcrCallApprovalBinding.btnApproved.setOnClickListener(view -> CallApprovalApi());
 
         dcrCallApprovalBinding.btnReject.setOnClickListener(view -> {
             dialogReject = new Dialog(DcrApprovalActivity.this);
-            dialogReject.setContentView(R.layout.popup_leave_reject);
+            dialogReject.setContentView(R.layout.popup_reject);
             Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogReject.setCancelable(false);
 
@@ -320,7 +332,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
     private void rejectApproval(String toString) {
-            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
+        progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         try {
             jsonReject.put("tableName", "dcrreject");
             jsonReject.put("date", SelectedActivityDate);
@@ -388,8 +400,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
     private void CallApprovalApi() {
-        Log.v("pos", "---" + SelectedPosition);
-            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
+        progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         try {
             jsonAccept.put("tableName", "dcrapproval");
             jsonAccept.put("date", SelectedActivityDate);
@@ -455,7 +466,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
     private void CallDcrListApi() {
-            progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
+        progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         try {
             jsonDcrList.put("tableName", "getvwdcr");
             jsonDcrList.put("sfcode", SfCode);
@@ -520,7 +531,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             Designation = loginResponse.getDesig();
             StateCode = loginResponse.getState_Code();
             TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(DcrApprovalActivity.this);
-            JSONArray jsonArray;
+          /*  JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
@@ -536,7 +547,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 if (setupData.has("cip_need")) {
                     CipCaption = setUpResponse.getCaptionCip();
                 }
-            }
+            }*/
         } catch (Exception ignored) {
 
         }
@@ -564,7 +575,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     }
 
     @Override
-    public void onItemClick(TpModelList tpModelLists) {
+    public void onItemClick(TpModelList tpModelLists, int pos) {
 
     }
 }

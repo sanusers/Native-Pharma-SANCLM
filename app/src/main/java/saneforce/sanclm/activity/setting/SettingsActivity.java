@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Patterns;
@@ -23,12 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonArray;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
@@ -36,15 +33,15 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.R;
+import saneforce.sanclm.activity.login.LoginActivity;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
+import saneforce.sanclm.databinding.ActivitySettingsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
 import saneforce.sanclm.storage.SharedPref;
 import saneforce.sanclm.utility.DownloaderClass;
-import saneforce.sanclm.R;
-import saneforce.sanclm.activity.login.LoginActivity;
-import saneforce.sanclm.databinding.ActivitySettingsBinding;
 import saneforce.sanclm.utility.ImageStorage;
 
 public class SettingsActivity extends AppCompatActivity {

@@ -151,7 +151,7 @@
     <string name="tour_plan_approvals">Tour Plan Approvals</string>
     <string name="tp_planed_for">Tour Planned for</string>
     <string name="total_planed_days">Total Planned days</string>
-    <string name="week_off_days">Week Off days</string>
+    <string name="week_off_days_holidays">Week Off days / Holidays</string>
     <string name="total">Total</string>
     <string name="view_actual_plan">View Actual Plan</string>
     <string name="worktype">WorkType</string>
@@ -195,5 +195,6 @@
     <string name="near_me">Near Me</string>
     <string name="survey">Survey</string>
     <string name="forms">Forms</string>
+    <string name="date_time"><![CDATA[Date & Time]]></string>
 
 </resources>

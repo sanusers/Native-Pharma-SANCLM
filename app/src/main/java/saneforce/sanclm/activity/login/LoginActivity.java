@@ -29,7 +29,6 @@ import java.io.File;
 import java.util.Objects;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.masterSync.MasterSyncActivity;
 import saneforce.sanclm.activity.setting.AsyncInterface;
 import saneforce.sanclm.activity.setting.SettingsActivity;

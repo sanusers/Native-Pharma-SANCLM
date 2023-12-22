@@ -1,18 +1,12 @@
 package saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.fragments;
 
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.CipGeoTag;
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.GeoTagApproval;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfName;
 import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TpBasedDcr;
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.lat;
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.limitKm;
-import static saneforce.sanclm.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.lng;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -48,7 +42,7 @@ import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
-public class CIPFragment extends Fragment {
+public class HospitalFragment extends Fragment {
     RecyclerView rv_list;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     AdapterDCRCallSelection adapterDCRCallSelection;
@@ -64,8 +58,8 @@ public class CIPFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.v("fragment","---"+ "cip");
-        View v = inflater.inflate(R.layout.fragment_cip, container, false);
+        Log.v("fragment", "---" + "hospital");
+        View v = inflater.inflate(R.layout.fragment_hos, container, false);
         rv_list = v.findViewById(R.id.rv_cust_list_selection);
         ed_search = v.findViewById(R.id.search_cust);
         iv_filter = v.findViewById(R.id.iv_filter);
@@ -118,8 +112,8 @@ public class CIPFragment extends Fragment {
     private void SetupAdapter() {
         custListArrayList.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CIP + DcrCallTabLayoutActivity.TodayPlanSfCode);
-            Log.v("call", "-cip_full_length-" + jsonArray.length());
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + DcrCallTabLayoutActivity.TodayPlanSfCode);
+            Log.v("call", "-hos_full_length-" + jsonArray.length());
            /* if (jsonArray.length() == 0) {
                 if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
                    // Toast.makeText(getActivity(), "Kindly Select Again!", Toast.LENGTH_SHORT).show();
@@ -132,7 +126,7 @@ public class CIPFragment extends Fragment {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                    if (CipGeoTag.equalsIgnoreCase("1")) {
+                /*    if (CipGeoTag.equalsIgnoreCase("1")) {
                         if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
                             if (GeoTagApproval.equalsIgnoreCase("0")) {
                                 Log.v("Cip", "--11-");
@@ -152,18 +146,18 @@ public class CIPFragment extends Fragment {
                                 }
                             }
                         }
-                    } else {
-                        if (TpBasedDcr.equalsIgnoreCase("0")) {
-                            Log.v("Cip", "--33-");
-                            if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
-                                custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "5", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
-                            }
-                        } else {
-                            Log.v("Cip", "--44-");
-                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "5", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
+                    } else {*/
+                    if (TpBasedDcr.equalsIgnoreCase("0")) {
+                        Log.v("Hos", "--33-");
+                        if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "6", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
                         }
+                    } else {
+                        Log.v("Hos", "--44-");
+                        custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "6", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
                     }
                 }
+                // }
             }
 
             int count = custListArrayList.size();
@@ -180,10 +174,10 @@ public class CIPFragment extends Fragment {
             }
 
         } catch (Exception e) {
-            Log.v("call", "-cip--error--" + e);
+            Log.v("call", "-hos--error--" + e);
         }
 
-        Log.v("call", "-cip--size--" + custListArrayList.size());
+        Log.v("call", "-hos--size--" + custListArrayList.size());
         adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList);
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));

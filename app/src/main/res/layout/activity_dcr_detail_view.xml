@@ -909,22 +909,17 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
+                        <ImageView
                             android:id="@+id/tag_view_rcpa"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_width="@dimen/_8sdp"
+                            android:src="@drawable/arrow_down"
+                            android:layout_height="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginEnd="@dimen/_8sdp"
-                            android:background="@drawable/bg_border_with_pink"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:paddingHorizontal="@dimen/_6sdp"
-                            android:paddingVertical="@dimen/_4sdp"
-                            android:text="@string/view"
-                            android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_rcpa"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:ignore="ContentDescription" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/constraint_tag_rcpa"
@@ -989,22 +984,17 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
+                        <ImageView
                             android:id="@+id/tag_view_ic"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_width="@dimen/_8sdp"
+                            android:src="@drawable/arrow_down"
+                            android:layout_height="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginEnd="@dimen/_8sdp"
-                            android:background="@drawable/bg_border_with_pink"
-                            android:fontFamily="@font/satoshi_medium"
-                            android:paddingHorizontal="@dimen/_6sdp"
-                            android:paddingVertical="@dimen/_4sdp"
-                            android:text="@string/view"
-                            android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_ic"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:ignore="ContentDescription" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/constraint_tag_ic"

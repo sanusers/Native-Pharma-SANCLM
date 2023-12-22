@@ -2,18 +2,13 @@ package saneforce.sanclm.activity.presentation.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
-import saneforce.sanclm.activity.MainActivity;
-import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.sanclm.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.sanclm.databinding.ActivityPresentationBinding;
@@ -39,15 +34,16 @@ public class PresentationActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
-                startActivity(new Intent(PresentationActivity.this, HomeDashBoard.class));
-                finish();
+            public void onClick(View view) {
+                getOnBackPressedDispatcher().onBackPressed();
+                //startActivity(new Intent(PresentationActivity.this, HomeDashBoard.class));
+                // finish();
             }
         });
 
         binding.createPresentationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class));
             }
         });
@@ -55,11 +51,9 @@ public class PresentationActivity extends AppCompatActivity {
 
     }
 
-    public void populateAdapter(){
+    public void populateAdapter() {
         presentationAdapter = new PresentationAdapter(this, savedPresentation);
         binding.presentationRecView.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
         binding.presentationRecView.setAdapter(presentationAdapter);
     }
-
-
 }

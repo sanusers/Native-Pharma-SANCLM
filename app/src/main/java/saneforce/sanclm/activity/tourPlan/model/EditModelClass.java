@@ -3,7 +3,6 @@ package saneforce.sanclm.activity.tourPlan.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.lang.String;
 
 public class EditModelClass implements Serializable {
 

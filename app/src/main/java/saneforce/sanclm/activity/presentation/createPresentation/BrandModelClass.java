@@ -1,7 +1,5 @@
 package saneforce.sanclm.activity.presentation.createPresentation;
 
-import android.widget.ArrayAdapter;
-
 import java.util.ArrayList;
 
 public class BrandModelClass {

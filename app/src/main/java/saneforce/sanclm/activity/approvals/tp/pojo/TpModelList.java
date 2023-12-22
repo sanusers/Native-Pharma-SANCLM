@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.approvals.tp;
+package saneforce.sanclm.activity.approvals.tp.pojo;
 
 public class TpModelList {
     String code,name,month,year,mn;

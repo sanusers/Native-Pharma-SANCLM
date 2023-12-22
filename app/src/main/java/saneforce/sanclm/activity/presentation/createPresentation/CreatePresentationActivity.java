@@ -12,9 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -25,17 +22,16 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
-import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameInterFace;
+import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemDragListener;
 import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemTouchHelperCallBack;
 import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.SelectedSlidesAdapter;
-import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemDragListener;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.ImageSelectionInterface;
 import saneforce.sanclm.activity.presentation.createPresentation.slide.SlideImageAdapter;
 import saneforce.sanclm.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityCreatePresentationBinding;
 import saneforce.sanclm.storage.SQLite;

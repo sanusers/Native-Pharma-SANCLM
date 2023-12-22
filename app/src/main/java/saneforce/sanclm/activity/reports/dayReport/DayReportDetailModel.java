@@ -1,8 +1,6 @@
 package saneforce.sanclm.activity.reports.dayReport;
 
 import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.String;
 
 public class DayReportDetailModel implements Serializable {
   private String Territory="";
