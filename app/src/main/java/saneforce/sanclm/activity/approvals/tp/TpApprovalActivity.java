@@ -412,7 +412,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                                 }
                             }
                             tpApprovalBinding.tvTotalPlannedDays.setText(String.valueOf(totalPlannedDays));
-                            tpApprovalBinding.tvWeekOffDays.setText(totalWeekOffDays + "/" + totalHolidays);
+                            tpApprovalBinding.tvWeekOffDays.setText(totalWeekOffDays + " / " + totalHolidays);
                             tpApprovalDetailedAdapter = new TpApprovalDetailedAdapter(TpApprovalActivity.this, tpDetailedModelsList);
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                             tpApprovalBinding.rvTpContentList.setLayoutManager(mLayoutManager);

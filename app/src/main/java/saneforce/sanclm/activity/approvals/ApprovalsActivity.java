@@ -31,7 +31,7 @@ import saneforce.sanclm.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
     public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
-    public static String DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption,DrNeed,ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
+    public static String JwCaption,ClusterCaption,DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption,DrNeed,ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
@@ -161,6 +161,7 @@ public class ApprovalsActivity extends AppCompatActivity {
             Designation = loginResponse.getDesig();
             StateCode = loginResponse.getState_Code();
 
+            ClusterCaption = loginResponse.getCluster_cap();
             DrCaption = loginResponse.getDrCap();
             ChemistCaption = loginResponse.getChmCap();
             StockistCaption = loginResponse.getStkCap();

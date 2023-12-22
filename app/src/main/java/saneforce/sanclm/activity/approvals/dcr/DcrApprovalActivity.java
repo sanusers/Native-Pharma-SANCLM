@@ -5,6 +5,7 @@ import static saneforce.sanclm.activity.approvals.ApprovalsActivity.CIPCaption;
 import static saneforce.sanclm.activity.approvals.ApprovalsActivity.ChemistCaption;
 import static saneforce.sanclm.activity.approvals.ApprovalsActivity.ChemistNeed;
 import static saneforce.sanclm.activity.approvals.ApprovalsActivity.CipNeed;
+import static saneforce.sanclm.activity.approvals.ApprovalsActivity.ClusterCaption;
 import static saneforce.sanclm.activity.approvals.ApprovalsActivity.DcrCount;
 import static saneforce.sanclm.activity.approvals.ApprovalsActivity.DrCaption;
 import static saneforce.sanclm.activity.approvals.ApprovalsActivity.DrNeed;
@@ -531,6 +532,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             Designation = loginResponse.getDesig();
             StateCode = loginResponse.getState_Code();
             TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(DcrApprovalActivity.this);
+
+            dcrCallApprovalBinding.tagCluster1.setText(ClusterCaption);
+            
           /*  JSONArray jsonArray;
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {

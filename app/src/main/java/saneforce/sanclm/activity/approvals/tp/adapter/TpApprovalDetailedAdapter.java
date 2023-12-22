@@ -80,10 +80,10 @@ public class TpApprovalDetailedAdapter extends RecyclerView.Adapter<TpApprovalDe
         wtName = tpDetailedList.get(position).getWtName();
 
         if (!tpDetailedList.get(position).getWtName2().isEmpty())
-            wtName = wtName + "," + tpDetailedList.get(position).getWtName2();
+            wtName = wtName + " / " + tpDetailedList.get(position).getWtName2();
 
         if (!tpDetailedList.get(position).getWtName3().isEmpty())
-            wtName = wtName + "," + tpDetailedList.get(position).getWtName3();
+            wtName = wtName + " / " + tpDetailedList.get(position).getWtName3();
         /*if (tpDetailedList.get(position).getWtName2().isEmpty()) {
             holder..setText(tpDetailedList.get(position).getWtName());
         } else if (tpDetailedList.get(position).getWtName3().isEmpty()) {
