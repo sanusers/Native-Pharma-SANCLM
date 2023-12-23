@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -104,7 +105,6 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
 
         holder.ed_qty.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                Log.v("ggf", "1111");
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(holder.ed_qty.getWindowToken(), 0);
                 updateTotalValues();
@@ -185,6 +185,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
             EditText ed_remark = dialogRemarks.findViewById(R.id.ed_remark);
             Button btn_clear = dialogRemarks.findViewById(R.id.btn_clear);
             Button btn_save = dialogRemarks.findViewById(R.id.btn_save);
+            ed_remark.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_remark)});
 
             if (!CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks().isEmpty()) {
                 ed_remark.setText(CompetitorList.get(holder.getBindingAdapterPosition()).getRemarks());

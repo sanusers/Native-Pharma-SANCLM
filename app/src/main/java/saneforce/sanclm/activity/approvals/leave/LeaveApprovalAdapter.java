@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,6 +82,8 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
             Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
 
+            ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
+
             btn_cancel.setOnClickListener(view1 -> {
                 ed_reason.setText("");
                 dialogReject.dismiss();
@@ -102,10 +105,12 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         });
 
         holder.btn_accept.setOnClickListener(view -> ApprovedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition()));
+
+
     }
 
     private void RejectedLeave(String leave_id, int Position, String reason) {
-            progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);
@@ -159,7 +164,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
 
     private void ApprovedLeave(String leave_id, int Position) {
-            progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
         try {
             jsonLeave.put("tableName", "leaveapproverej");
             jsonLeave.put("LvID", leave_id);

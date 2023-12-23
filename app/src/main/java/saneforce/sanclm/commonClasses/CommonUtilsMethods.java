@@ -5,23 +5,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Parcelable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.os.Build;
-import android.os.Parcelable;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -114,6 +109,41 @@ public class CommonUtilsMethods {
             e.printStackTrace();
         }
         return address;
+    }
+
+
+    public static InputFilter FilterSpaceEditText(EditText editText) {
+        InputFilter filter = new InputFilter() {
+            boolean canEnterSpace = false;
+
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+
+                if(editText.getText().toString().equals(""))
+                {
+                    canEnterSpace = false;
+                }
+
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = start; i < end; i++) {
+                    char currentChar = source.charAt(i);
+
+                    if (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+                        builder.append(currentChar);
+                        canEnterSpace = true;
+                    }
+
+                    if(Character.isWhitespace(currentChar) && canEnterSpace) {
+                        builder.append(currentChar);
+                    }
+
+
+                }
+                return builder.toString();
+            }
+        };
+        return filter;
     }
 
     public static void RequestGPSPermission(Activity activity) {

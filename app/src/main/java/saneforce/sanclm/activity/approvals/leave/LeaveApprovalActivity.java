@@ -53,7 +53,6 @@ public class LeaveApprovalActivity extends AppCompatActivity {
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-        // progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
         getRequiredData();
         CallApiLeave();
 
@@ -89,7 +88,8 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             jsonLeave.put("Rsf", SfCode);
             jsonLeave.put("sf_type", SfType);
             jsonLeave.put("Designation", Designation);
-            jsonLeave.put("state_code", SubDivisionCode);
+            jsonLeave.put("state_code", StateCode);
+            jsonLeave.put("subdivision_code", SubDivisionCode);
             Log.v("json_get_lvl_list", jsonLeave.toString());
         } catch (Exception ignored) {
 

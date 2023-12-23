@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -53,6 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -129,7 +131,7 @@ public class Leave_Application extends AppCompatActivity {
 
         dailog_list.setVisibility(View.VISIBLE);
         l_sideview.closeDrawer(Gravity.END);
-
+        ed_Reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_Reason)});
         sqLite = new SQLite(this);
         back_btn.setOnClickListener(v -> {
           //  onBackPressed();

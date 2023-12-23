@@ -1,50 +1,23 @@
 package saneforce.sanclm.activity.approvals.tpdeviation;
 
 public class TpDeviationModelList {
-    String wtName;
-    String Cluster;
-    String Hq;
-    String Remarks;
-    String DeviationRemarks;
+    String HqName;
+    String Date;
 
-    public TpDeviationModelList(String wtName, String cluster, String hq, String remarks, String deviationRemarks) {
-        this.wtName = wtName;
-        Cluster = cluster;
-        Hq = hq;
-        Remarks = remarks;
-        DeviationRemarks = deviationRemarks;
+    public String getHqName() {
+        return HqName;
     }
 
-    public String getWtName() {
-        return wtName;
+    public void setHqName(String hqName) {
+        HqName = hqName;
     }
 
-    public void setWtName(String wtName) {
-        this.wtName = wtName;
+    public String getDate() {
+        return Date;
     }
 
-    public String getCluster() {
-        return Cluster;
-    }
-
-    public void setCluster(String cluster) {
-        Cluster = cluster;
-    }
-
-    public String getHq() {
-        return Hq;
-    }
-
-    public void setHq(String hq) {
-        Hq = hq;
-    }
-
-    public String getRemarks() {
-        return Remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        Remarks = remarks;
+    public void setDate(String date) {
+        Date = date;
     }
 
     public String getDeviationRemarks() {
@@ -54,4 +27,14 @@ public class TpDeviationModelList {
     public void setDeviationRemarks(String deviationRemarks) {
         DeviationRemarks = deviationRemarks;
     }
+
+    public TpDeviationModelList(String hqName, String date, String deviationRemarks) {
+        HqName = hqName;
+        Date = date;
+        DeviationRemarks = deviationRemarks;
+    }
+
+    String DeviationRemarks;
+
+
 }

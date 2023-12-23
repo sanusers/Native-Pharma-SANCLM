@@ -12,7 +12,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +33,7 @@ import saneforce.sanclm.activity.homeScreen.call.fragments.AdditionalCallDetaile
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.InputFilterMinMax;
 
 public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInputAdditionalCall.ViewHolder> {
     public static ArrayList<AddInputAdditionalCall> addedInpList;
@@ -171,31 +171,6 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
             tv_stock = itemView.findViewById(R.id.tv_stock);
             img_del_input = itemView.findViewById(R.id.img_del_input);
             edt_inp_qty = itemView.findViewById(R.id.ed_input_qty);
-        }
-    }
-
-    public static class InputFilterMinMax implements InputFilter {
-
-        private final int min;
-        private final int max;
-
-        public InputFilterMinMax(String min, String max) {
-            this.min = Integer.parseInt(min);
-            this.max = Integer.parseInt(max);
-        }
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dStart, int dEnd) {
-            try {
-                int input = Integer.parseInt(dest.toString() + source.toString());
-                if (isInRange(min, max, input)) return null;
-            } catch (NumberFormatException ignored) {
-            }
-            return "";
-        }
-
-        private boolean isInRange(int a, int b, int c) {
-            return b > a ? c >= a && c <= b : c >= b && c <= a;
         }
     }
 }

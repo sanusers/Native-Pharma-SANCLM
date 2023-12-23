@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -174,7 +175,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
         Button btn_cancel = dialogReject.findViewById(R.id.btn_cancel);
         Button btn_reject = dialogReject.findViewById(R.id.btn_reject);
-
+        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
         btn_cancel.setOnClickListener(view1 -> {
             ed_reason.setText("");
             dialogReject.dismiss();

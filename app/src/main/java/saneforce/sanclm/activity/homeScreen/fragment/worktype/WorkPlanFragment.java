@@ -1,8 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.fragment.worktype;
 
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
@@ -11,9 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
+import android.text.InputFilter;
 import android.text.TextWatcher;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,12 +24,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -42,7 +36,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,10 +44,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.approvals.dcr.DcrApprovalActivity;
 import saneforce.sanclm.activity.homeScreen.HomeDashBoard;
 import saneforce.sanclm.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.sanclm.activity.masterSync.MasterSyncItemModel;
+import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.commonClasses.UtilityClass;
 import saneforce.sanclm.databinding.WorkplanFragmentBinding;
@@ -1084,6 +1077,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         EditText ed_reason = dialogReject.findViewById(R.id.ed_reason_reject);
         Button btn_cancel = dialogReject.findViewById(R.id.btnskip);
         Button btn_save = dialogReject.findViewById(R.id.btn_save);
+        ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
 
         btn_cancel.setOnClickListener(view1 -> {
             mSubmitflag="S2";

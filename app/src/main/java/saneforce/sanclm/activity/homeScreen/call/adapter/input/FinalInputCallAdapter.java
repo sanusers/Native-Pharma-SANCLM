@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,7 @@ import saneforce.sanclm.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.sanclm.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.sanclm.activity.homeScreen.call.pojo.input.SaveCallInputList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.InputFilterMinMax;
 
 
 public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAdapter.ViewHolder> {
@@ -193,30 +193,6 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
         saveCallInputLists.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, saveCallInputLists.size());
-    }
-
-    public static class InputFilterMinMax implements InputFilter {
-        private final int min;
-        private final int max;
-
-        public InputFilterMinMax(String min, String max) {
-            this.min = Integer.parseInt(min);
-            this.max = Integer.parseInt(max);
-        }
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dStart, int dEnd) {
-            try {
-                int input = Integer.parseInt(dest.toString() + source.toString());
-                if (isInRange(min, max, input)) return null;
-            } catch (NumberFormatException ignored) {
-            }
-            return "";
-        }
-
-        private boolean isInRange(int a, int b, int c) {
-            return b > a ? c >= a && c <= b : c >= b && c <= a;
-        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
