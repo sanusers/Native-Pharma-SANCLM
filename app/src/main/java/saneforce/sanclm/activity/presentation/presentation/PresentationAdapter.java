@@ -40,8 +40,6 @@ import saneforce.sanclm.storage.SQLite;
 public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapter.MyViewHolder> {
     Context context;
     ArrayList<BrandModelClass.Presentation> arrayList = new ArrayList<>();
-    PopupWindow mypopupWindow;
-    Menu menu;
     SQLite sqLite;
 
     public PresentationAdapter (Context context, ArrayList<BrandModelClass.Presentation> arrayList) {
@@ -105,10 +103,6 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                         return true;
                     }
                 });
-            /* setPopUpWindow(view);
-            mypopupWindow.showAsDropDown(view, -153, 0);*/
-         /*   PopupMenu popup = new PopupMenu(context, view);
-            popup.getMenuInflater().inflate(R.menu.presentation_menu, popup.getMenu());*/
                 popup.show();
             }
         });
@@ -170,12 +164,6 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         arrayList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, arrayList.size());
-    }
-
-    private void setPopUpWindow(View view) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.pop_up_presentation, null);
-        mypopupWindow = new PopupWindow(view, 200, RelativeLayout.LayoutParams.WRAP_CONTENT, true);
     }
 
 }

@@ -67,7 +67,6 @@ import saneforce.sanclm.storage.SharedPref;
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
     CallAnalysisFagmentBinding binding;
     SQLite sqLite;
-
     String key;
     JSONArray dcrdatas;
 
@@ -78,9 +77,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         binding = CallAnalysisFagmentBinding.inflate(inflater);
         View v = binding.getRoot();
-
         sqLite = new SQLite(requireContext());
-
 
         binding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
         binding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -96,18 +93,14 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         binding.llHosChild.setOnClickListener(this);
         binding.llCipChild.setOnClickListener(this);
 
-
         SetcallDetailsInLineChart();
-
         ViewTreeObserver vto = binding.callAnalysisLayout.getViewTreeObserver();
 
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-
                 int getwidhtlayout = binding.callAnalysisLayout.getMeasuredWidth();
                 int getlayoutlayout = binding.callAnalysisLayout.getMeasuredHeight();
-
 
                 int width = (getwidhtlayout / 3 - 8);
                 LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, (int) (getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp)));
@@ -118,8 +111,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.llUnliChild.setLayoutParams(param);
                 binding.llHosChild.setLayoutParams(param);
                 binding.llCipChild.setLayoutParams(param);
-
-
             }
         });
 
@@ -127,7 +118,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         binding.llCallsLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
                 return false;
             }
@@ -163,7 +153,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     private void SetcallDetailsInLineChart() {
         sqLite.clearLinecharTable();
         try {
-
             JSONArray Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(requireContext()));
             JSONArray Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(requireContext()));
             JSONArray Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(requireContext()));
@@ -174,7 +163,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             dcrdatas = sqLite.getMasterSyncDataByKey(Constants.DCR);
             if (dcrdatas.length() > 0) {
                 for (int i = 0; i < dcrdatas.length(); i++) {
-
                     JSONObject jsonObject = dcrdatas.getJSONObject(i);
                     String CustCode = jsonObject.optString("CustCode");
                     String CustType = jsonObject.optString("CustType");
@@ -191,9 +179,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     String FW_Indicator = jsonObject.optString("FW_Indicator");
                     String AMSLNo = jsonObject.optString("AMSLNo");
                     sqLite.insertLinecharData(CustCode, CustType, Dcr_dt, month_name, Mnth, Yr, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo, FW_Indicator);
-
                 }
-
 
                 int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
                 int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
@@ -202,7 +188,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
                 int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
 
-
                 binding.txtDocCount.setText(String.valueOf(doc_current_callcount) + " / " + Doctor_list.length());
                 binding.txtCheCount.setText(String.valueOf(che_current_callcount) + " / " + Chemist_list.length());
                 binding.txtStockCount.setText(String.valueOf(stockiest_current_callcount) + " / " + Stockiest_list.length());
@@ -210,9 +195,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.txtCipCount.setText(String.valueOf(cip_current_callcount) + " / " + cip_list.length());
                 binding.txtHosCount.setText(String.valueOf(hos_current_callcount) + " / " + hos_list.length());
 
-
                 int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
-
                 doc_progress_value = computePercent(doc_current_callcount, Doctor_list.length());
                 che_progress_value = computePercent(che_current_callcount, Chemist_list.length());
                 stockiest_progress_value = computePercent(stockiest_current_callcount, Stockiest_list.length());
@@ -234,7 +217,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.cipProgressBar.setProgress(cip_progress_value);
                 binding.hosProgressBar.setProgress(hos_progress_value);
 
-
                 binding.inChart.lineChart.clear();
                 setLineChartData("1");
                 binding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
@@ -247,7 +229,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.llUnliChild.setOnClickListener(null);
                 binding.llHosChild.setOnClickListener(null);
                 binding.llCipChild.setOnClickListener(null);
-
 
                 binding.txtDocValue.setText("0%");
                 binding.txtCheValue.setText("0%");
@@ -262,14 +243,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
                 binding.txtCipCount.setText("0 / " + cip_list.length());
                 binding.txtHosCount.setText("0 / " + hos_list.length());
-
             }
-
-
         } catch (Exception a) {
             a.printStackTrace();
         }
-
 
     }
 
@@ -282,9 +259,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     void setLineChartData(String Custype) {
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
-
         SimpleDateFormat sdfs = new SimpleDateFormat("MMMM");
         SimpleDateFormat sdfss = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -548,7 +523,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             }
         });
 
-
         binding.inChart.lineChart.getXAxis().setEnabled(true);
         binding.inChart.lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
@@ -574,7 +548,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             leftYAxis.setAxisMaximum(100);
         }
 
-
         leftYAxis.setLabelCount(6, true);
         leftYAxis.setDrawLimitLinesBehindData(true);
         leftYAxis.setDrawLabels(true);
@@ -591,7 +564,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         leftYAxis.setZeroLineColor(getResources().getColor(R.color.gray_45));
         leftYAxis.setZeroLineWidth(1.2f);
 
-
         CustomMarkerView mv = new CustomMarkerView(requireContext(), R.layout.linechartpopup, Custype, firstDateStr, fifteenthDateStr, enddate, firstDatepastmonth, fifteenthDatepastmonth, enddatepastmonth, firstDatecurrent, fifteenthDatecurrent, enddatecurrent, key);
         mv.setChartView(binding.inChart.lineChart);
 
@@ -602,7 +574,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         rightAxis.setDrawAxisLine(false);
         rightAxis.setDrawLabels(false);
         binding.inChart.lineChart.setDrawMarkerViews(true);
-
 
         binding.inChart.lineChart.getAxisRight().setEnabled(false);
         binding.inChart.lineChart.getDescription().setEnabled(false);
@@ -663,11 +634,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.imgDownTriangleCip.setVisibility(View.GONE);
                 binding.imgDownTriangleHos.setVisibility(View.GONE);
                 binding.inChart.lineChart.clear();
-
                 setLineChartData("1");
-
-
                 break;
+
             case R.id.ll_che_child:
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.VISIBLE);
@@ -676,11 +645,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.imgDownTriangleCip.setVisibility(View.GONE);
                 binding.imgDownTriangleHos.setVisibility(View.GONE);
                 binding.inChart.lineChart.clear();
-
                 setLineChartData("2");
-
-
                 break;
+
             case R.id.ll_stock_child:
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -689,11 +656,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.imgDownTriangleCip.setVisibility(View.GONE);
                 binding.imgDownTriangleHos.setVisibility(View.GONE);
                 binding.inChart.lineChart.clear();
-
                 setLineChartData("3");
-
-
                 break;
+
             case R.id.ll_unli_child:
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -702,11 +667,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.imgDownTriangleCip.setVisibility(View.GONE);
                 binding.imgDownTriangleHos.setVisibility(View.GONE);
                 binding.inChart.lineChart.clear();
-
                 setLineChartData("4");
-
-
                 break;
+
             case R.id.ll_cip_child:
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -715,11 +678,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.imgDownTriangleCip.setVisibility(View.VISIBLE);
                 binding.imgDownTriangleHos.setVisibility(View.GONE);
                 binding.inChart.lineChart.clear();
-
                 setLineChartData("5");
-
-
                 break;
+
             case R.id.ll_hos_child:
                 binding.imgDownTriangleDoc.setVisibility(View.GONE);
                 binding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -730,7 +691,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.inChart.lineChart.clear();
                 setLineChartData("6");
                 break;
-
         }
 
     }
@@ -743,5 +703,4 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
 }
-
 

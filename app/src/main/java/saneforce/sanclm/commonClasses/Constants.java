@@ -6,8 +6,10 @@ public class Constants {
     public static final String APP_VERSION = "V2.0.8";
     public static final String APP_MODE = "Android-Edet";
 
-    //Intent Key
-    public static final String NAVIGATE_FROM = "NavigateFrom";
+    //Intent Extra Key
+    public static final String NAVIGATE_FROM = "NavigateFrom"; //Login,MasterSync
+    public static final String REPORT_BUNDLE_KEY = "reportBundle"; //Report Activity,ReportFragContainer Activity
+
 
 
     //----------------------------------------------------
@@ -81,10 +83,10 @@ public class Constants {
 
     //Tour Plan
     public static final String  STATUS_0 = "planning...";
-    public static final String STATUS_1 = "Planning completed/Waiting for approval";
+    public static final String STATUS_1 = "Planning completed / Waiting for approval";
     public static final String STATUS_2 = "TP rejected";
     public static final String STATUS_3 = "TP approved";
-    public static final String STATUS_4 = "TP planned/Submission pending";
+    public static final String STATUS_4 = "TP planned / Submission pending";
 
 
 

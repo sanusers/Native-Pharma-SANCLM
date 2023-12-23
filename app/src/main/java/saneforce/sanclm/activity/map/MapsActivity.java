@@ -190,8 +190,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
 
         sqLite = new SQLite(getApplicationContext());
-
-
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             from_tagging = extra.getString("from");
@@ -402,18 +400,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         limitKm = loginResponse.getDisRad();
         img_url = SharedPref.getTagImageUrl(MapsActivity.this);
 
-        if (SelectedHqCode.isEmpty()) {
-            try {
-                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
-                for (int i = 0; i < 1; i++) {
-                    JSONObject jsonHQList = jsonArray.getJSONObject(0);
-                    SelectedHqCode = jsonHQList.getString("id");
-                    SelectedHqName = jsonHQList.getString("name");
-                }
-            } catch (Exception ignored) {
-
-            }
-        }
+//        if (SelectedHqCode.isEmpty()) {
+//            try {
+//                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+//                for (int i = 0; i < 1; i++) {
+//                    JSONObject jsonHQList = jsonArray.getJSONObject(0);
+//                    SelectedHqCode = jsonHQList.getString("id");
+//                    SelectedHqName = jsonHQList.getString("name");
+//                }
+//            } catch (Exception ignored) {
+//
+//            }
+//        }
 
        /* try {
             JSONArray jsonArray;

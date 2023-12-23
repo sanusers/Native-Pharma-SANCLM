@@ -5,7 +5,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.String;
 
-public class DayReportModel implements Serializable {
+public class DayReportModel implements Serializable ,Comparable<DayReportModel>{
   private String Udr="";
 
   private String intime="";
@@ -244,6 +244,11 @@ public class DayReportModel implements Serializable {
 
   public void setTyp(int typ) {
     Typ = typ;
+  }
+
+  @Override
+  public int compareTo(DayReportModel dayReportModel) {
+    return this.SF_Name.compareTo(dayReportModel.getSF_Name());
   }
 
   public static class Activity_Date implements Serializable {

@@ -57,12 +57,12 @@
 
 
         <activity
-            android:name=".activity.reports.ReportFragContainerActivity"
+            android:name=".activity.reports.activity.ReportFragContainerActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".activity.reports.ReportsActivity"
+            android:name=".activity.reports.activity.ReportsActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity

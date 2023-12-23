@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,9 +22,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.forms.weekoff.Holiday_fragment;
 import saneforce.sanclm.activity.map.MapsActivity;
-import saneforce.sanclm.activity.reports.ReportFragContainerActivity;
+import saneforce.sanclm.activity.reports.activity.ReportFragContainerActivity;
 import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
 import saneforce.sanclm.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.sanclm.activity.reports.dayReport.model.DayReportModel;

@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.reports;
+package saneforce.sanclm.activity.reports.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityReportsBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -161,7 +162,7 @@ public class ReportsActivity extends AppCompatActivity {
         bundle.putString("data",jsonArray.toString());
         bundle.putString("date",date);
         bundle.putString("fragment",report);
-        intent.putExtra("reportBundle",bundle);
+        intent.putExtra(Constants.REPORT_BUNDLE_KEY, bundle);
         startActivity(intent);
 
     }

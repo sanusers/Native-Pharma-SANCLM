@@ -3,7 +3,6 @@ package saneforce.sanclm.activity.reports.dayReport.fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import saneforce.sanclm.activity.reports.ReportFragContainerActivity;
+import saneforce.sanclm.activity.reports.activity.ReportFragContainerActivity;
 import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
 import saneforce.sanclm.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.sanclm.activity.reports.dayReport.model.DayReportModel;

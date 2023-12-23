@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.reports;
+package saneforce.sanclm.activity.reports.activity;
 
 import android.content.Context;
 import android.view.LayoutInflater;

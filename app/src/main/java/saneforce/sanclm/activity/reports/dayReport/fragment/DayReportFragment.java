@@ -1,6 +1,8 @@
 package saneforce.sanclm.activity.reports.dayReport.fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,10 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,13 +40,18 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
-import saneforce.sanclm.activity.reports.CalendarAdapter;
-import saneforce.sanclm.activity.reports.ReportFragContainerActivity;
+import saneforce.sanclm.activity.presentation.createPresentation.CreatePresentationActivity;
+import saneforce.sanclm.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.sanclm.activity.presentation.presentation.PresentationActivity;
+import saneforce.sanclm.activity.reports.activity.CalendarAdapter;
+import saneforce.sanclm.activity.reports.activity.ReportFragContainerActivity;
 import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
 import saneforce.sanclm.activity.reports.dayReport.model.DayReportModel;
 import saneforce.sanclm.activity.reports.dayReport.adapter.DayReportAdapter;
@@ -69,7 +80,6 @@ public class DayReportFragment extends Fragment {
     ArrayList<DayReportModel> arrayListOfReportData = new ArrayList<>();
     ArrayList<String> daysArrayList = new ArrayList<>();
     DataViewModel dataViewModel;
-
     AlertDialog.Builder alertDialog;
 
     @Override
@@ -119,6 +129,27 @@ public class DayReportFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 binding.searchET.setText("");
+            }
+        });
+
+        binding.sortIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context wrapper = new ContextThemeWrapper(requireContext(), R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, view, Gravity.END);
+                popup.inflate(R.menu.sort_by_menu);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if(menuItem.getItemId() == R.id.sortByName){
+                            Toast.makeText(wrapper, "Sort by name", Toast.LENGTH_SHORT).show();
+                        }else if(menuItem.getItemId() == R.id.sortByTime) {
+                            Toast.makeText(wrapper, "Sort by time", Toast.LENGTH_SHORT).show();
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
             }
         });
 
@@ -345,6 +376,19 @@ public class DayReportFragment extends Fragment {
         dayReportAdapter = new DayReportAdapter(arrayListOfReportData, getContext());
         binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportRecView.setAdapter(dayReportAdapter);
+    }
+
+    public void sortArrayList(String sortBy){
+       if(sortBy.equalsIgnoreCase("name")){
+           Collections.sort(arrayListOfReportData);
+       }else if(sortBy.equalsIgnoreCase("time")) {
+           Collections.sort(arrayListOfReportData, new Comparator<DayReportModel>() {
+               @Override
+               public int compare(DayReportModel dayReportModel, DayReportModel t1) {
+                   return dayReportModel.getRptdate().compareTo(t1.getRptdate());
+               }
+           });
+       }
     }
 
 }

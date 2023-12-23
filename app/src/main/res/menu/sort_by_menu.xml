@@ -3,14 +3,14 @@
 
     <item android:id="@+id/sortByName"
         android:title="Sort by name">
-<!--        <menu>-->
-<!--            <item android:title="Ascending"/>-->
+        <menu>
+            <item android:title="Ascending"/>
 
-<!--            <item android:title="Descending"/>-->
-<!--        </menu>-->
+            <item android:title="Descending"/>
+        </menu>
     </item>
 
     <item android:id="@+id/sortByTime"
-        android:title="Sort by visit time"/>
+        android:title="Sort by submitted time"/>
 
 </menu>

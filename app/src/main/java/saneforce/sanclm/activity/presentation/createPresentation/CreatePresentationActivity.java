@@ -235,7 +235,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
             }
         };
 
-
         Collections.sort(arrayList, new Comparator<BrandModelClass.Product>() {
             @Override
             public int compare(BrandModelClass.Product product, BrandModelClass.Product t1) {

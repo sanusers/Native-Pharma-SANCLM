@@ -1,4 +1,4 @@
-package saneforce.sanclm.activity.reports;
+package saneforce.sanclm.activity.reports.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import saneforce.sanclm.R;
 import saneforce.sanclm.activity.reports.dayReport.DataViewModel;
 import saneforce.sanclm.activity.reports.dayReport.fragment.DayReportFragment;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityReportFragContainerBinding;
 
 public class ReportFragContainerActivity extends AppCompatActivity {
@@ -41,7 +42,7 @@ public class ReportFragContainerActivity extends AppCompatActivity {
     public void initialization(){
         dataViewModel = new ViewModelProvider(this).get(DataViewModel.class);
         String fragmentStr = "";
-        Bundle bundle = getIntent().getBundleExtra("reportBundle");
+        Bundle bundle = getIntent().getBundleExtra(Constants.REPORT_BUNDLE_KEY);
         if(bundle != null){
             dataViewModel.saveSummaryData(bundle.getString("data"));
             dataViewModel.saveDate(bundle.getString("date"));
@@ -79,7 +80,7 @@ public class ReportFragContainerActivity extends AppCompatActivity {
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
         if(fragment instanceof DayReportFragment){
-            Intent intent = new Intent(ReportFragContainerActivity.this,ReportsActivity.class);
+            Intent intent = new Intent(ReportFragContainerActivity.this, ReportsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
