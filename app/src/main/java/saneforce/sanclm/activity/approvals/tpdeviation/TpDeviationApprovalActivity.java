@@ -3,8 +3,11 @@ package saneforce.sanclm.activity.approvals.tpdeviation;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +34,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class TpDeviationApprovalActivity extends AppCompatActivity {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode;
+    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode;
     ActivityTpDeviationApprovalBinding tpDeviationApprovalBinding;
     ArrayList<TpDeviationModelList> tpDeviationModelLists = new ArrayList<>();
     TpDeviationAdapter tpDeviationAdapter;
@@ -57,6 +60,24 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
+
+        tpDeviationApprovalBinding.searchTpDeviation.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
+
     }
 
 
@@ -71,7 +92,19 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
+        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(TpDeviationApprovalActivity.this);
     }
+
+    private void filter(String text) {
+        ArrayList<TpDeviationModelList> filteredNames = new ArrayList<>();
+        for (TpDeviationModelList s : tpDeviationModelLists) {
+            if (s.getSfName().toLowerCase().contains(text.toLowerCase()) || s.getDate().contains(text.toLowerCase())) {
+                filteredNames.add(s);
+            }
+        }
+        tpDeviationAdapter.filterList(filteredNames);
+    }
+
     private void CallTpDeviationAPI() {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpDeviationApprovalActivity.this);
         try {
@@ -100,25 +133,29 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            tpDeviationModelLists.add(new TpDeviationModelList(json.getString("sf_name"), json.getString("missed_date"),json.getString("Deviation_Reason")));
+                            tpDeviationModelLists.add(new TpDeviationModelList(json.getString("sf_name"), json.getString("sf_code"), json.getString("sl_no"), json.getString("missed_date"), json.getString("Deviation_Reason")));
                         }
+                        tpDeviationAdapter = new TpDeviationAdapter(TpDeviationApprovalActivity.this, tpDeviationModelLists);
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                        tpDeviationApprovalBinding.rvTpDeviation.setLayoutManager(mLayoutManager);
+                        tpDeviationApprovalBinding.rvTpDeviation.setAdapter(tpDeviationAdapter);
                     } catch (Exception ignored) {
 
                     }
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(TpDeviationApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(TpDeviationApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 
-    private void SetupAdapter() {
-        tpDeviationAdapter = new TpDeviationAdapter(TpDeviationApprovalActivity.this, tpDeviationModelLists);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        tpDeviationApprovalBinding.rvTpDeviation.setLayoutManager(mLayoutManager);
-        tpDeviationApprovalBinding.rvTpDeviation.setAdapter(tpDeviationAdapter);
-    }
 }

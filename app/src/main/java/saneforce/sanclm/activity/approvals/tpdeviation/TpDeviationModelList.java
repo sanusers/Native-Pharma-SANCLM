@@ -1,15 +1,42 @@
 package saneforce.sanclm.activity.approvals.tpdeviation;
 
 public class TpDeviationModelList {
-    String HqName;
+    String SfName;
+    String SfCode;
+    String slNo;
     String Date;
+    String DeviationRemarks;
 
-    public String getHqName() {
-        return HqName;
+    public TpDeviationModelList(String sfName, String sfCode, String SlNo, String date, String deviationRemarks) {
+        slNo = SlNo;
+        SfCode = sfCode;
+        SfName = sfName;
+        Date = date;
+        DeviationRemarks = deviationRemarks;
     }
 
-    public void setHqName(String hqName) {
-        HqName = hqName;
+    public String getSfCode() {
+        return SfCode;
+    }
+
+    public void setSfCode(String sfCode) {
+        SfCode = sfCode;
+    }
+
+    public String getSlNo() {
+        return slNo;
+    }
+
+    public void setSlNo(String slNo) {
+        this.slNo = slNo;
+    }
+
+    public String getSfName() {
+        return SfName;
+    }
+
+    public void setSfName(String sfName) {
+        SfName = sfName;
     }
 
     public String getDate() {
@@ -27,14 +54,6 @@ public class TpDeviationModelList {
     public void setDeviationRemarks(String deviationRemarks) {
         DeviationRemarks = deviationRemarks;
     }
-
-    public TpDeviationModelList(String hqName, String date, String deviationRemarks) {
-        HqName = hqName;
-        Date = date;
-        DeviationRemarks = deviationRemarks;
-    }
-
-    String DeviationRemarks;
 
 
 }

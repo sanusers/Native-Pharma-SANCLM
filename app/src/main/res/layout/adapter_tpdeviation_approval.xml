@@ -10,6 +10,7 @@
         android:id="@+id/constraint_top"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_1sdp"
         android:paddingVertical="@dimen/_2sdp"
         app:layout_constraintBottom_toTopOf="@id/view_dummy"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_5sdp"
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_5sdp"
             android:paddingVertical="@dimen/_2sdp"
@@ -32,7 +33,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_date"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,8 +50,8 @@
             android:textColor="@color/pink"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_view_plan"
-            app:layout_constraintStart_toEndOf="@id/tv_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -58,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:background="@drawable/bg_purple"
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_5sdp"
@@ -66,9 +67,10 @@
             android:text="@string/view_actual_plan"
             android:textColor="@color/white"
             android:textSize="16sp"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_date"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -85,145 +87,6 @@
         app:layout_constraintVertical_bias="0.0" />
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_session"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_4sdp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/tag_deviation_remarks"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_dummy">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_session_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/backround_lite_grey_border"
-            android:padding="@dimen/_3sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tag_session_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_medium"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/session_1"
-                android:textColor="@color/light_grey_2"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tv_worktype_1"
-                app:layout_constraintEnd_toStartOf="@id/tag_cluster_1"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_worktype_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_bold"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="Field Work"
-                android:textColor="@color/cheked_txt_color"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/tag_session_1"
-                app:layout_constraintStart_toStartOf="@id/tag_session_1"
-                app:layout_constraintTop_toBottomOf="@id/tag_session_1" />
-
-
-            <TextView
-                android:id="@+id/tag_cluster_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_medium"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/cluster"
-                android:textColor="@color/light_grey_2"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tv_cluster_1"
-                app:layout_constraintEnd_toStartOf="@id/tag_hq_1"
-                app:layout_constraintStart_toEndOf="@id/tag_session_1"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_cluster_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_bold"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/cluster"
-                android:textColor="@color/cheked_txt_color"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/tag_cluster_1"
-                app:layout_constraintStart_toStartOf="@id/tag_cluster_1"
-                app:layout_constraintTop_toBottomOf="@id/tag_cluster_1" />
-
-            <TextView
-                android:id="@+id/tag_hq_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_medium"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/hq"
-                android:textColor="@color/light_grey_2"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tv_hq_1"
-                app:layout_constraintEnd_toStartOf="@id/tag_remark_1"
-                app:layout_constraintStart_toEndOf="@id/tag_cluster_1"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_hq_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_bold"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/hq"
-                android:textColor="@color/cheked_txt_color"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_cluster_1"
-                app:layout_constraintEnd_toEndOf="@id/tag_hq_1"
-                app:layout_constraintStart_toStartOf="@id/tag_hq_1"
-                app:layout_constraintTop_toBottomOf="@id/tag_hq_1" />
-
-            <TextView
-                android:id="@+id/tag_remark_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_medium"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/remarks"
-                android:textColor="@color/light_grey_2"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/tv_remark_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tag_hq_1"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tv_remark_1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/satoshi_bold"
-                android:paddingVertical="@dimen/_2sdp"
-                android:text="@string/remarks"
-                android:textColor="@color/cheked_txt_color"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_hq_1"
-                app:layout_constraintEnd_toEndOf="@id/tag_remark_1"
-                app:layout_constraintStart_toStartOf="@id/tag_remark_1"
-                app:layout_constraintTop_toBottomOf="@id/tag_remark_1" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <TextView
         android:id="@+id/tag_deviation_remarks"
         android:layout_width="0dp"
@@ -238,7 +101,7 @@
         app:layout_constraintBottom_toTopOf="@id/tv_deviation_remarks"
         app:layout_constraintEnd_toStartOf="@id/btn_reject"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/constraint_session" />
+        app:layout_constraintTop_toBottomOf="@id/view_dummy" />
 
     <TextView
         android:id="@+id/tv_deviation_remarks"
@@ -274,7 +137,7 @@
         app:layout_constraintEnd_toStartOf="@id/btn_approved"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/tag_deviation_remarks"
-        app:layout_constraintTop_toBottomOf="@id/constraint_session" />
+        app:layout_constraintTop_toBottomOf="@id/view_dummy" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_approved"

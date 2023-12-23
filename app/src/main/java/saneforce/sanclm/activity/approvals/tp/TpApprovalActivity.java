@@ -45,6 +45,7 @@ import saneforce.sanclm.activity.approvals.tp.adapter.TpApprovalDetailedAdapter;
 import saneforce.sanclm.activity.approvals.tp.pojo.TpDetailedModel;
 import saneforce.sanclm.activity.approvals.tp.pojo.TpModelList;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
+import saneforce.sanclm.commonClasses.Constants;
 import saneforce.sanclm.databinding.ActivityTpApprovalBinding;
 import saneforce.sanclm.network.ApiInterface;
 import saneforce.sanclm.network.RetrofitClient;
@@ -53,7 +54,7 @@ import saneforce.sanclm.storage.SQLite;
 import saneforce.sanclm.storage.SharedPref;
 
 public class TpApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SelectedSfCode, SelectedMonthYear, SelectedMonth, SelectedYear, SelectedDay = "";
+    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SelectedSfCode, SelectedMonthYear, SelectedMonth, SelectedYear, SelectedDay = "", TpDrNeed, TpChemNeed, TpClusterNeed, TpJwNeed, TpStockistNeed, TpUnDrNeed, TpCipNeed, TpHospNeed;
     @SuppressLint("StaticFieldLeak")
     public static ActivityTpApprovalBinding tpApprovalBinding;
     public static int SelectedPosition;
@@ -346,6 +347,22 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
         TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(TpApprovalActivity.this);
+
+        try {
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP); //Tour Plan setup
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                TpClusterNeed = jsonObject.getString("ClusterNeed");
+                TpJwNeed = jsonObject.getString("JWNeed");
+                TpDrNeed = jsonObject.getString("DrNeed");
+                TpChemNeed = jsonObject.getString("ChmNeed");
+                TpStockistNeed = jsonObject.getString("StkNeed");
+                TpUnDrNeed = jsonObject.getString("UnDrNeed");
+                TpCipNeed = jsonObject.getString("Cip_Need");
+                TpHospNeed = jsonObject.getString("HospNeed");
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     @Override

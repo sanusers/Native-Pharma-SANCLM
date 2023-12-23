@@ -95,6 +95,11 @@ public interface ApiInterface {
     Call<JsonArray> getLeaveApprovalList(@Field("data") String GetLeaveList);
 
     @FormUrlEncoded
+    @POST("?axn=save/approvals")
+        // Get TpDeviation ApprovalList
+    Call<JsonObject> saveTpDeviation(@Field("data") String saveTpDeviation);
+
+    @FormUrlEncoded
     @POST("?axn=get/approvals")
         // Get TpDeviation ApprovalList
     Call<JsonArray> getTpDeviationList(@Field("data") String getTpDeviationList);
@@ -118,7 +123,6 @@ public interface ApiInterface {
     @POST("?axn=save/approvals")
         // Send GEOTAG ApprovalReject
     Call<JsonObject> SendGeoTagApprovalReject(@Field("data") String SendGeoTagApprovalReject);
-
 
 
     @FormUrlEncoded
