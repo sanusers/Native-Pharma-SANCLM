@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -295,6 +296,7 @@ public class DayReportFragment extends Fragment {
                         jsonObject.put("state_code", loginResponse.getState_Code());
                         jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
                         jsonObject.put("rptDt", date);
+                        Log.v("jsonDayReport","---" + loginResponse);
 
                         Call<JsonElement> call = apiInterface.getReports(jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
@@ -302,6 +304,7 @@ public class DayReportFragment extends Fragment {
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 binding.progressBar.setVisibility(View.GONE);
                                 try {
+                                    Log.v("jsonDayReport","--response-" + response.body());
                                     if(response.isSuccessful() && response.body() != null){
                                         JsonElement jsonElement = response.body();
                                         JSONArray jsonArray = new JSONArray();

@@ -67,6 +67,7 @@ public class TourPlanActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     SQLite sqLite;
     LoginResponse loginResponse;
+    int SyncOfflineCount, SyncStatusSuccess;
     public static LinearLayout addSaveBtnLayout, clrSaveBtnLayout;
     CalendarAdapter calendarAdapter = new CalendarAdapter();
     SummaryAdapter summaryAdapter = new SummaryAdapter();
@@ -386,7 +387,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         }
                         populateSummaryAdapter(dayWiseArrayCurrentMonth);
-                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayCurrentMonth);
+                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayCurrentMonth, false);
                     }else if(monthInAdapterFlag == 1) {
                         for (int i = 0; i<dayWiseArrayNextMonth.size(); i++) {
                             if(dayWiseArrayNextMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
@@ -396,7 +397,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         }
                         populateSummaryAdapter(dayWiseArrayNextMonth);
-                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayNextMonth);
+                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayNextMonth, false);
                     }else if(monthInAdapterFlag == -1) {
                         for (int i = 0; i<dayWiseArrayPrevMonth.size(); i++) {
                             if(dayWiseArrayPrevMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
@@ -406,7 +407,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         }
                         populateSummaryAdapter(dayWiseArrayPrevMonth);
-                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayPrevMonth);
+                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayPrevMonth, false);
                     }
                     calendarAdapter.notifyDataSetChanged();
                 }else {
@@ -424,42 +425,42 @@ public class TourPlanActivity extends AppCompatActivity {
             }
         });
 
-        binding.tpSendToApproval.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        binding.tpSendToApproval.setOnClickListener(view -> {
 
-                JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+            JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
 
-                ArrayList<ModelClass> arrayList = new ArrayList<>();
-                Type type = new TypeToken<ArrayList<ModelClass>>() {}.getType();
-                if(jsonArray.length() > 0) {
-                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                    for (ModelClass modelClass : arrayList) {
-                        if(!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                            prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList);
-                        }
-                    }
-
-                    jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                    boolean allDateSynced = false;
-                    for (ModelClass modelClass : arrayList){
-                        if(!modelClass.getDate().isEmpty()){
-                            if(modelClass.getSyncStatus().equals("0")){
-                                allDateSynced = true;
-                            }else{
-                                allDateSynced = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    if(allDateSynced){
-                        sendWholeMonthStatus(localDate);
+            ArrayList<ModelClass> arrayList;
+            Type type = new TypeToken<ArrayList<ModelClass>>() {
+            }.getType();
+            if(jsonArray.length()>0) {
+                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                for (ModelClass modelClass : arrayList) {
+                    if(!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
+                        Log.v("tpApproval", "---" + modelClass.getDayNo());
+                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
+                        break;
                     }
                 }
 
+           /*     jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                boolean allDateSynced = false;
+                for (ModelClass modelClass : arrayList) {
+                    if(!modelClass.getDate().isEmpty()) {
+                        if(modelClass.getSyncStatus().equals("0")) {
+                            allDateSynced = true;
+                        }else {
+                            allDateSynced = false;
+                            break;
+                        }
+                    }
+                }
+
+                if(allDateSynced) {
+                    sendWholeMonthStatus(localDate);
+                }*/
             }
+
         });
 
     }
@@ -550,7 +551,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<String> daysInMonthArray (LocalDate date) {
+    private ArrayList<String> daysInMonthArray(LocalDate date) {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
         YearMonth yearMonth = YearMonth.from(date);
         int daysInMonth = yearMonth.lengthOfMonth();
@@ -624,7 +625,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return daysInMonthArray;
     }
 
-    private String monthYearFromDate (LocalDate date) {
+    private String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = null;
         formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
 
@@ -645,7 +646,8 @@ public class TourPlanActivity extends AppCompatActivity {
             JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
 
             if(savedDataArray.length()>0) { //Use the saved data if Tour Plan table has data of a selected month
-                Type type = new TypeToken<ArrayList<ModelClass>>() {}.getType();
+                Type type = new TypeToken<ArrayList<ModelClass>>() {
+                }.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
             }else { //If tour plan table has no data
                 SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
@@ -691,7 +693,7 @@ public class TourPlanActivity extends AppCompatActivity {
         return modelClasses;
     }
 
-    public static ModelClass.SessionList prepareSessionListForAdapter () {
+    public static ModelClass.SessionList prepareSessionListForAdapter() {
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
 
@@ -855,7 +857,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     }
 
-    public void changeApprovalBtnState(ArrayList<ModelClass> arrayList){ // To set send to approval btn enable/disable  based on syncStatus and  workType
+    public void changeApprovalBtnState(ArrayList<ModelClass> arrayList) { // To set send to approval btn enable/disable  based on syncStatus and  workType
         boolean wholeMonthTpCompleted = false;
         for (int i = 0; i<arrayList.size(); i++) { // to enable/disable the send to approval button
             if(!arrayList.get(i).getDayNo().isEmpty()) {
@@ -870,7 +872,7 @@ public class TourPlanActivity extends AppCompatActivity {
         }
         String status = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
 
-        if(status.equals("1") || status.equals("3")){ // when waiting for approval or approved by manager
+        if(status.equals("1") || status.equals("3")) { // when waiting for approval or approved by manager
             binding.tpNavigation.sessionEdit.setEnabled(false);
         }else if(status.equals("") || status.equals("0") || status.equals("-1") || status.equals("2")) { // when planning(0),monthly status send call failed(-1)  or rejected by manager
             binding.tpNavigation.sessionEdit.setEnabled(true);
@@ -878,28 +880,28 @@ public class TourPlanActivity extends AppCompatActivity {
         binding.tpSendToApproval.setEnabled(wholeMonthTpCompleted && (status.equals("0") || status.equals("-1") || status.equals("")));
 
         switch (status){
-            case "" :
-            case "0" :{
+            case "":
+            case "0":{
                 binding.tpStatusTxt.setText(Constants.STATUS_0);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 break;
             }
-            case "-1" : {
+            case "-1":{
                 binding.tpStatusTxt.setText(Constants.STATUS_4);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 break;
             }
-            case "1" : {
+            case "1":{
                 binding.tpStatusTxt.setText(Constants.STATUS_1);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 break;
             }
-            case "2" : {
+            case "2":{
                 binding.tpStatusTxt.setText(Constants.STATUS_2);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                 break;
             }
-            case "3" : {
+            case "3":{
                 binding.tpStatusTxt.setText(Constants.STATUS_3);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                 break;
@@ -924,11 +926,11 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
 
-    public void get3MonthRemoteTPData(){
+    public void get3MonthRemoteTPData() {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
             public void isNetworkAvailable(Boolean status) {
-                if(status){
+                if(status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
                         JSONObject jsonObject = new JSONObject();
@@ -940,7 +942,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("Designation", loginResponse.getDesig());
                         jsonObject.put("state_code", loginResponse.getState_Code());
                         jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
-                        jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25,TimeUtils.FORMAT_8,LocalDate.now().getMonth().toString()));
+                        jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, LocalDate.now().getMonth().toString()));
                         jsonObject.put("tp_year", LocalDate.now().getYear());
 
                         Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
@@ -949,48 +951,49 @@ public class TourPlanActivity extends AppCompatActivity {
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 try {
                                     if(response.body() != null && !response.body().isJsonNull()) {
-                                        JSONObject jsonObject1 = new JSONObject();
-                                        if(response.body().isJsonObject()){
+                                        JSONObject jsonObject1;
+                                        if(response.body().isJsonObject()) {
                                             jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
-                                            if(jsonObject1.has("previous")){
+                                            if(jsonObject1.has("previous")) {
                                                 JSONArray previousArray = new JSONArray(jsonObject1.getJSONArray("previous").toString());
-                                                if(previousArray.length() > 0){
-                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,String.valueOf(LocalDate.now().minusMonths(1)));
+                                                if(previousArray.length()>0) {
+                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(LocalDate.now().minusMonths(1)));
                                                     String rejectionReason = previousArray.getJSONObject(0).getString("Rejection_Reason");
                                                     String status = previousArray.getJSONObject(0).getString("Change_Status");
-                                                    sqLite.saveTPDataOnlineTable(month,previousArray.toString(),status,rejectionReason);
-                                                    Type type = new TypeToken<ArrayList<ReceiveModel>>() {}.getType();
-                                                    ArrayList<ReceiveModel> arrayList = new Gson().fromJson(previousArray.toString(),type);
-                                                    for (int i=0;i<arrayList.size();i++){
+                                                    sqLite.saveTPDataOnlineTable(month, previousArray.toString(), status, rejectionReason);
+                                                    Type type = new TypeToken<ArrayList<ReceiveModel>>() {
+                                                    }.getType();
+                                                    ArrayList<ReceiveModel> arrayList = new Gson().fromJson(previousArray.toString(), type);
+                                                    for (int i = 0; i<arrayList.size(); i++) {
                                                         ReceiveModel receiveModel = arrayList.get(i);
                                                         ModelClass.SessionList sessionList = new ModelClass.SessionList();
                                                         String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-                                                        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(),receiveModel.getWTName(),terrSlFlag,receiveModel.getWTCode());
-                                                        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(),receiveModel.getHQCodes());
+                                                        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
+                                                        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
                                                     }
                                                 }
                                             }
-                                            if(jsonObject1.has("current")){
+                                            if(jsonObject1.has("current")) {
                                                 JSONArray currentArray = new JSONArray(jsonObject1.getJSONArray("current").toString());
-                                                if(currentArray.length() > 0){
-                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,String.valueOf(LocalDate.now()));
+                                                if(currentArray.length()>0) {
+                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(LocalDate.now()));
                                                     String rejectionReason = currentArray.getJSONObject(0).getString("Rejection_Reason");
                                                     String status = currentArray.getJSONObject(0).getString("Change_Status");
-                                                    sqLite.saveTPDataOnlineTable(month,currentArray.toString(),status,rejectionReason);
+                                                    sqLite.saveTPDataOnlineTable(month, currentArray.toString(), status, rejectionReason);
                                                 }
                                             }
-                                            if(jsonObject1.has("next")){
+                                            if(jsonObject1.has("next")) {
                                                 JSONArray nextArray = new JSONArray(jsonObject1.getJSONArray("next").toString());
-                                                if(nextArray.length() > 0){
-                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,String.valueOf(LocalDate.now().plusMonths(1)));
+                                                if(nextArray.length()>0) {
+                                                    String month = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(LocalDate.now().plusMonths(1)));
                                                     String rejectionReason = nextArray.getJSONObject(0).getString("Rejection_Reason");
                                                     String status = nextArray.getJSONObject(0).getString("Change_Status");
-                                                    sqLite.saveTPDataOnlineTable(month,nextArray.toString(),status,rejectionReason);
+                                                    sqLite.saveTPDataOnlineTable(month, nextArray.toString(), status, rejectionReason);
                                                 }
                                             }
                                         }
                                     }
-                                }catch (JSONException e){
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -1009,9 +1012,9 @@ public class TourPlanActivity extends AppCompatActivity {
         networkStatusTask.execute();
     }
 
-    public void get1MonthRemoteTPData(LocalDate localDate1){
+    public void get1MonthRemoteTPData(LocalDate localDate1) {
         try {
-            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this,SharedPref.getCallApiUrl(TourPlanActivity.this));
+            apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", "gettpdetail");
             jsonObject.put("sfcode", loginResponse.getSF_Code());
@@ -1021,35 +1024,35 @@ public class TourPlanActivity extends AppCompatActivity {
             jsonObject.put("Designation", loginResponse.getDesig());
             jsonObject.put("state_code", loginResponse.getState_Code());
             jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
-            jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25,TimeUtils.FORMAT_8,localDate1.getMonth().toString()));
+            jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
             jsonObject.put("Year", localDate1.getYear());
 
             Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
-                public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                    if(response.isSuccessful() && response.body() != null){
-                        if(response.body().isJsonArray()){
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if(response.isSuccessful() && response.body() != null) {
+                        if(response.body().isJsonArray()) {
                             try {
                                 JSONArray jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
-                                if(jsonArray.length() > 0){
+                                if(jsonArray.length()>0) {
                                     String status = jsonArray.getJSONObject(0).getString("Change_Status");
-                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),status);
+                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status);
 
                                     switch (status){
-                                        case "0" : {
+                                        case "0":{
                                             binding.tpStatusTxt.setText(Constants.STATUS_0);
                                             break;
                                         }
-                                        case "1" : {
+                                        case "1":{
                                             binding.tpStatusTxt.setText(Constants.STATUS_1);
                                             break;
                                         }
-                                        case "2" : {
+                                        case "2":{
                                             binding.tpStatusTxt.setText(Constants.STATUS_2);
                                             break;
                                         }
-                                        case "3" : {
+                                        case "3":{
                                             binding.tpStatusTxt.setText(Constants.STATUS_3);
                                             break;
                                         }
@@ -1066,22 +1069,22 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
                 }
             });
 
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
     }
 
-    public void sendWholeMonthStatus (LocalDate localDate1){
+    public void sendWholeMonthStatus(LocalDate localDate1) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
-            public void isNetworkAvailable (Boolean status) {
-                if(status){
+            public void isNetworkAvailable(Boolean status) {
+                if(status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
                         JSONObject jsonObject = new JSONObject();
@@ -1092,45 +1095,49 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
                         jsonObject.put("Designation", loginResponse.getDesig());
                         jsonObject.put("state_code", loginResponse.getState_Code());
-                        jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25,TimeUtils.FORMAT_8,localDate1.getMonth().toString()));
+                        jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
 
                         Call<JsonObject> call = apiInterface.saveTPStatus(jsonObject.toString());
                         call.enqueue(new Callback<JsonObject>() {
                             @Override
-                            public void onResponse (@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                               if(response.body() != null){
-                                   try {
-                                       JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
-                                       if(jsonObject1.has("success") && jsonObject1.getBoolean("success")){
-                                           sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"0"); // "0" - success
-                                           get1MonthRemoteTPData(localDate1);
-                                       }else
-                                           sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
-                                   } catch (JSONException e) {
-                                       e.printStackTrace();
-                                   }
-                               }else
-                                   sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
+                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                Log.v("tpApproval", "--ressapproval--" + response.body());
+                                if(response.body() != null) {
+                                    try {
+                                        JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
+                                        if(jsonObject1.has("success") && jsonObject1.getBoolean("success")) {
+                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0"); // "0" - success
+                                            Toast.makeText(TourPlanActivity.this, "Successfully Send Approval", Toast.LENGTH_SHORT).show();
+                                            get1MonthRemoteTPData(localDate1);
+                                        }else {
+                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+                                            Toast.makeText(TourPlanActivity.this, "Failed to send Approval", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }else
+                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                             }
 
                             @Override
-                            public void onFailure (@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                                sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
+                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                             }
                         });
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else{
-                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_23,localDate1.toString()),"-1"); // "-1" - failed
+                }else {
+                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                 }
             }
         });
         networkStatusTask.execute();
     }
 
-    public String findTerrSlFlag(String code){
+    public String findTerrSlFlag(String code) {
         try {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i<workTypeArray.length(); i++) {
@@ -1138,19 +1145,19 @@ public class TourPlanActivity extends AppCompatActivity {
                 if(code.equals(jsonObject.getString("Code")))
                     return jsonObject.getString("TerrSlFlg");
             }
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return "";
     }
 
-    public void prepareObjectToSendForApproval(String month, String dateForApproval, ArrayList<ModelClass> arrayList) {
+    public void prepareObjectToSendForApproval(String month, String dateForApproval, ArrayList<ModelClass> arrayList, boolean status) {
 
         binding.progressBar.setVisibility(View.VISIBLE);
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
             @Override
-            public void isNetworkAvailable (Boolean status) {
-                if(status){
+            public void isNetworkAvailable(Boolean status) {
+                if(status) {
                     try {
                         JSONArray jsonArray = new JSONArray();
                         for (ModelClass modelClass : arrayList) {
@@ -1314,14 +1321,14 @@ public class TourPlanActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        sendTpForApproval(jsonArray, arrayList, dateForApproval, month);
+                        sendTpForApproval(jsonArray, arrayList, dateForApproval, month, status);
                     } catch (JSONException ex) {
                         binding.progressBar.setVisibility(View.GONE);
                         ex.printStackTrace();
                     }
-                }else{
+                }else {
                     binding.progressBar.setVisibility(View.GONE);
-                    saveTpLocal(arrayList,dateForApproval,month,"1"); // Sync Failed
+                    saveTpLocal(arrayList, dateForApproval, month, "1"); // Sync Failed
                 }
             }
         });
@@ -1341,30 +1348,73 @@ public class TourPlanActivity extends AppCompatActivity {
         return stringBuilder.toString();
     }
 
-    public void sendTpForApproval(JSONArray jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month) {
+    public void sendTpForApproval(JSONArray jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month, Boolean status) {
         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
         Call<JsonObject> call = apiInterface.saveTP(jsonArray.toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 binding.progressBar.setVisibility(View.GONE);
+                Log.v("tpApproval", "--res--" + response.body());
                 try {
                     if(response.isSuccessful() && response.body() != null) {
                         JSONObject jsonObject1 = new JSONObject(response.body().toString());
-                        if(jsonObject1.getBoolean("success"))
-                            saveTpLocal(modelClassArrayList, date, month,"0"); // Sync Success
-                        else
+                        if(jsonObject1.getBoolean("success")) {
+                            saveTpLocal(modelClassArrayList, date, month, "0");// Sync Success
+                            if(status) {
+                                JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+
+                                ArrayList<ModelClass> arrayList;
+                                Type type = new TypeToken<ArrayList<ModelClass>>() {
+                                }.getType();
+                                if(jsonArray.length()>0) {
+                                    arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                                    for (ModelClass modelClass : arrayList) {
+                                        if(!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
+                                            Log.v("tpApproval", "--11--" + modelClass.getDayNo());
+                                            prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+                                boolean allDateSynced = false;
+                                for (ModelClass modelClass : arrayList) {
+                                    if(!modelClass.getDate().isEmpty()) {
+                                        if(modelClass.getSyncStatus().equals("0")) {
+                                            allDateSynced = true;
+                                        }else {
+                                            allDateSynced = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if(allDateSynced) {
+                                    Log.v("tpApproval", "--8888--");
+                                    sendWholeMonthStatus(localDate);
+                                }
+                            }
+                        }else {
                             saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
+                            Toast.makeText(TourPlanActivity.this, "Try again later!", Toast.LENGTH_SHORT).show();
+                        }
                     }else {
+                        Toast.makeText(TourPlanActivity.this, "Try again later!", Toast.LENGTH_SHORT).show();
                         saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 binding.progressBar.setVisibility(View.GONE);
+                Toast.makeText(TourPlanActivity.this, "Failure!", Toast.LENGTH_SHORT).show();
                 saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
             }
         });

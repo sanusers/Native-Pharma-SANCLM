@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.sanclm.activity.forms.weekoff.Holiday_fragment;
 import saneforce.sanclm.activity.map.MapsActivity;
 import saneforce.sanclm.activity.reports.ReportFragContainerActivity;
@@ -34,6 +35,7 @@ import saneforce.sanclm.activity.reports.dayReport.model.DayReportModel;
 public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyViewHolder> implements Filterable {
     ArrayList<DayReportModel> arrayList = new ArrayList<>();
     ArrayList<DayReportModel> supportModelArray = new ArrayList<>();
+    public static ArrayList<GeoTaggingModelList> DayReportMapList = new ArrayList<>();
 
     Context context;
     DataViewModel dataViewModel;
@@ -50,14 +52,14 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
     @NonNull
     @Override
     public DayReportAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.report_day_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.report_day_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DayReportAdapter.MyViewHolder holder, int position) {
         DayReportModel dayReportModel = arrayList.get(holder.getAbsoluteAdapterPosition());
-        holder.name.setText(dayReportModel.getTerrWrk());
+        holder.name.setText(dayReportModel.getSF_Name());
         holder.workType.setText(dayReportModel.getWtype());
         holder.checkInTime.setText(dayReportModel.getIntime());
         holder.checkInAddress.setText(dayReportModel.getInaddress());
@@ -75,18 +77,18 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
         int status = dayReportModel.getTyp();
         switch (status){
-            case 0 : {
+            case 0:{
                 holder.status.setText("Pending");
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
                 break;
             }
-            case 1 : {
+            case 1:{
                 holder.status.setText("Approved");
                 holder.status.setTextColor(context.getColor(R.color.green_2));
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_priority)));
                 break;
             }
-            case 2 : {
+            case 2:{
                 holder.status.setText("Rejected");
                 holder.status.setTextColor(context.getColor(R.color.pink));
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
@@ -94,17 +96,26 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             }
         }
 
-        holder.checkInMarker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                context.startActivity(new Intent(context, MapsActivity.class));
-            }
+        holder.checkInMarker.setOnClickListener(view -> {
+            Intent intent = new Intent(context, MapsActivity.class);
+            intent.putExtra("from", "view_tag_day_report");
+            //   DayReportMapList.clear();
+            //   DayReportMapList.add(new GeoTaggingModelList(dayReportModel.getSF_Name(), dayReportModel.getWtype(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getInaddress()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            context.startActivity(new Intent(context, MapsActivity.class));
         });
 
         holder.checkOutMarker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context, MapsActivity.class);
+                intent.putExtra("from", "view_tag_day_report");
+                //   DayReportMapList.clear();
+                //   DayReportMapList.add(new GeoTaggingModelList(dayReportModel.getSF_Name(), dayReportModel.getWtype(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getInaddress()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                context.startActivity(new Intent(context, MapsActivity.class));
             }
         });
 
@@ -127,18 +138,18 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
     @Override
     public Filter getFilter() {
-        if(valueFilter==null) {
-            valueFilter=new ValueFilter();
+        if(valueFilter == null) {
+            valueFilter = new ValueFilter();
         }
         return valueFilter;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name,workType,checkInTime,checkInAddress,checkInMarker,checkOutTime,checkOutAddress,checkOutMarker,submitDate,remarks,status;
-        TextView drCount,chemCount,stockCount,unDrCount,cipCount,hospCount;
-        ConstraintLayout drIcon,cheIcon,stockIcon,cipIcon,unDrIcon,hospIcon;
-        LinearLayout arrow,statusLayout;
+        TextView name, workType, checkInTime, checkInAddress, checkInMarker, checkOutTime, checkOutAddress, checkOutMarker, submitDate, remarks, status;
+        TextView drCount, chemCount, stockCount, unDrCount, cipCount, hospCount;
+        ConstraintLayout drIcon, cheIcon, stockIcon, cipIcon, unDrIcon, hospIcon;
+        LinearLayout arrow, statusLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -178,18 +189,18 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-            FilterResults results=new FilterResults();
+            FilterResults results = new FilterResults();
 
             ArrayList<DayReportModel> filteredModelArray = new ArrayList<>();
-            if(charSequence!=null && charSequence.length() > 0){
-                for (DayReportModel dayReportModel : supportModelArray){
+            if(charSequence != null && charSequence.length()>0) {
+                for (DayReportModel dayReportModel : supportModelArray) {
                     if(dayReportModel.getTerrWrk().toUpperCase().contains(charSequence.toString().toUpperCase()) || dayReportModel.getWtype().toUpperCase().contains(charSequence.toString().toUpperCase())) {
                         filteredModelArray.add(dayReportModel);
                     }
                 }
-                results.count=filteredModelArray.size();
-                results.values=filteredModelArray;
-            }else{
+                results.count = filteredModelArray.size();
+                results.values = filteredModelArray;
+            }else {
                 results.count = supportModelArray.size();
                 results.values = supportModelArray;
             }

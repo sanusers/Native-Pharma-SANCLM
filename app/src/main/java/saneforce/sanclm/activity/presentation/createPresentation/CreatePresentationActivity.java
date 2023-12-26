@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import saneforce.sanclm.activity.map.MapsActivity;
+import saneforce.sanclm.activity.map.custSelection.TagCustSelectionList;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.sanclm.activity.presentation.createPresentation.brand.BrandNameInterFace;
 import saneforce.sanclm.activity.presentation.createPresentation.selectedSlide.ItemDragListener;
@@ -65,7 +67,10 @@ public class CreatePresentationActivity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CreatePresentationActivity.this, PresentationActivity.class));
+                Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
             }
         });
 
