@@ -59,6 +59,7 @@ import saneforce.sanclm.storage.SharedPref;
 public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.MyViewHolder> {
 
     public static ModelClass inputDataArray = new ModelClass();
+    public static ModelClass gettingArray = new ModelClass();
     Context context;
     SQLite sqLite;
     LoginResponse loginResponse;
@@ -1662,7 +1663,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getHospital().clear();
                 inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).setHospital(subClassList);
             }
-
     }
 
 }

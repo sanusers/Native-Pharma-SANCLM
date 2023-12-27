@@ -14,7 +14,7 @@ public class ModelClass implements Serializable {
   private Boolean onEdit = false;
   private String submittedTime = "";
   private String syncStatus = ""; // 0 - Success(Data successfully sent to Remote data base), 1 - Failed(failed to send Remote data base for any reason like no internet or api called failed)
-  private ArrayList<ModelClass.SessionList> sessionList;
+  private ArrayList<SessionList> sessionList;
 
   public ModelClass () {
   }
@@ -28,6 +28,7 @@ public class ModelClass implements Serializable {
     this.onEdit = onEdit;
     this.sessionList = sessionList;
   }
+
 
 
 
@@ -46,6 +47,7 @@ public class ModelClass implements Serializable {
     }
 
   }
+
 
   public String getDayNo () {
     return dayNo;

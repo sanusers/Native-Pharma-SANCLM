@@ -288,11 +288,11 @@ public class CreatePresentationActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(new Gson().toJson(presentation));
 
             sqLite.savePresentation(oldName, name, jsonObject.toString());
-            startActivity(new Intent(CreatePresentationActivity.this, PresentationActivity.class));
+            Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-
 }

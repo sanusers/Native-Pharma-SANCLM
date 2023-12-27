@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.sanclm.R;
+import saneforce.sanclm.activity.tourPlan.TourPlanActivity;
 import saneforce.sanclm.commonClasses.CommonUtilsMethods;
 import saneforce.sanclm.databinding.ActivityApprovalsBinding;
 import saneforce.sanclm.network.ApiInterface;
@@ -122,6 +124,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         }
                         AssignCountValues();
                     } catch (Exception e) {
+                        Toast.makeText(ApprovalsActivity.this,"Something Wrong! Try Again",Toast.LENGTH_SHORT).show();
                         Log.v("counts", "-error-" + e);
                     }
                 }
@@ -129,6 +132,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                Toast.makeText(ApprovalsActivity.this,"Failed! Try Again",Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         });

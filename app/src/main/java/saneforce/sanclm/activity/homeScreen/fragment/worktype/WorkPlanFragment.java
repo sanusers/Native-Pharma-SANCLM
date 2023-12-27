@@ -742,8 +742,46 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_worktype", "");
             Log.e("VALUES",jsonObject.toString());
 
-            Call<JsonArray> saveMyDayPlan = api_interface.saveMydayPlan(jsonObject.toString());
-            saveMyDayPlan.enqueue(new Callback<JsonArray>() {
+            Call<JsonObject> saveMyDayPlan = api_interface.saveMydayPlan(jsonObject.toString());
+
+            saveMyDayPlan.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    Log.d("todayCallList:Code", response.code() + " - " + response);
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
+                            if (json.getString("success").equalsIgnoreCase("true")) {
+                                Toast.makeText(getActivity(), json.getString("Msg"), Toast.LENGTH_SHORT).show();
+
+                                if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
+                                    SharedPref.saveHq(requireContext(), mHQName, mHQCode);
+                                    syncMyDayPlan();
+                                    SharedPref.setTodayDayPlanSfCode(requireContext(), mHQCode);
+                                    SharedPref.setTodayDayPlanSfName(requireContext(), mHQName);
+                                } else {
+                                    SharedPref.setTodayDayPlanSfCode(requireContext(), loginResponse.getSF_Code());
+                                    SharedPref.setTodayDayPlanSfName(requireContext(), loginResponse.getSF_Name());
+                                }
+                                SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode);
+                            } else {
+                                Toast.makeText(getActivity(), json.getString("Msg"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception ignored) {
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.e("VALUES",""+t);
+//                    binding.progressSumit.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "MyDayPlan  failure", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+          /*  saveMyDayPlan.enqueue(new Callback<JsonArray>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                     Log.d("todayCallList:Code", response.code() + " - " + response);
@@ -781,7 +819,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getActivity(), "MyDayPlan  failure", Toast.LENGTH_SHORT).show();
                 }
             });
-
+*/
 
         } catch (JSONException a) {
             throw new RuntimeException();
