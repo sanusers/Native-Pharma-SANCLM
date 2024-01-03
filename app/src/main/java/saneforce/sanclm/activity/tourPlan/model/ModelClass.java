@@ -122,6 +122,8 @@ public class ModelClass implements Serializable {
   }
 
 
+
+
   public static class SessionList implements Serializable {
     private String layoutVisible = "";
 
