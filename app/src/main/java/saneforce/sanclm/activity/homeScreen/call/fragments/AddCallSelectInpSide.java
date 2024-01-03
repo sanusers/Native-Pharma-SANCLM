@@ -1,5 +1,6 @@
 package saneforce.sanclm.activity.homeScreen.call.fragments;
 
+import static android.app.PendingIntent.getActivity;
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.StockInput;
 import static saneforce.sanclm.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.sanclm.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall.addedInpList;
@@ -13,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,14 +40,26 @@ public class AddCallSelectInpSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentAcSelectInputSideBinding selectInputSideBinding;
     SelectACInputAdapter selectACInputAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectInputSideBinding = FragmentAcSelectInputSideBinding.inflate(inflater);
         View v = selectInputSideBinding.getRoot();
-
+commonUtilsMethods = new CommonUtilsMethods(requireContext());
         selectInputSideBinding.tvDummy.setOnClickListener(view -> {
+        });
+
+        selectInputSideBinding.btnOk.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onClick(View view) {
+                commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
+                callDetailsSideBinding.rvAddInputsAdditional.setAdapter(AdditionalCallDetailedSide.adapterInputAdditionalCall);
+                AdditionalCallDetailedSide.adapterInputAdditionalCall.notifyDataSetChanged();
+                dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.GONE);
+            }
         });
 
         selectACInputAdapter = new SelectACInputAdapter(requireContext(), callInputList);
@@ -102,7 +116,7 @@ public class AddCallSelectInpSide extends Fragment {
         @NonNull
         @Override
         public SelectACInputAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.single_item, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.adapter_checked_data, parent, false);
             return new ViewHolder(view);
         }
 
@@ -111,7 +125,28 @@ public class AddCallSelectInpSide extends Fragment {
         public void onBindViewHolder(@NonNull SelectACInputAdapter.ViewHolder holder, int position) {
             commonUtilsMethods = new CommonUtilsMethods(context);
             holder.tv_name.setText(callInputList.get(position).getName());
-            holder.tv_name.setOnClickListener(view -> {
+
+            holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
+                if (holder.checkBox.isPressed()) {
+                    if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
+                        for (int i = 0; i < StockInput.size(); i++) {
+                            if (StockInput.get(i).getStockCode().equalsIgnoreCase(callInputList.get(position).getCode())) {
+                                callInputList.set(position, new CallCommonCheckedList(callInputList.get(position).getName(), callInputList.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
+                            }
+                        }
+                        if (Integer.parseInt(callInputList.get(position).getStock_balance()) > 0) {
+                            SelectContent(holder.getBindingAdapterPosition());
+                        } else {
+                            Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        SelectContent(holder.getBindingAdapterPosition());
+                    }
+                }
+            });
+
+
+          /*  holder.tv_name.setOnClickListener(view -> {
                 if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                     for (int i = 0; i < StockInput.size(); i++) {
                         if (StockInput.get(i).getStockCode().equalsIgnoreCase(callInputList.get(position).getCode())) {
@@ -126,12 +161,24 @@ public class AddCallSelectInpSide extends Fragment {
                 } else {
                     SelectContent(holder.getBindingAdapterPosition());
                 }
-            });
+            });*/
         }
 
         @SuppressLint("NotifyDataSetChanged")
         private void SelectContent(int adapterPosition) {
-            for (int i = 0; i < addedInpList.size(); i++) {
+            if (addedInpList.size() > 0) {
+                for (int i = 0; i < addedInpList.size(); i++) {
+                    if (!callInputList.get(adapterPosition).getCode().equalsIgnoreCase(addedInpList.get(i).getInput_code())) {
+                        addedInpList.remove(i);
+                    } else {
+                        addedInpList.add(i+1, new AddInputAdditionalCall(addedInpList.get(pos).getCust_name(), addedInpList.get(pos).getCust_code(), callInputList.get(adapterPosition).getName(), callInputList.get(adapterPosition).getCode(), callInputList.get(adapterPosition).getStock_balance(), callInputList.get(adapterPosition).getStock_balance(), addedInpList.get(pos).getInp_qty()));
+                        break;
+                    }
+                }
+            } else {
+                addedInpList.set(0, new AddInputAdditionalCall(addedInpList.get(pos).getCust_name(), addedInpList.get(pos).getCust_code(), callInputList.get(adapterPosition).getName(), callInputList.get(adapterPosition).getCode(), callInputList.get(adapterPosition).getStock_balance(), callInputList.get(adapterPosition).getStock_balance(), addedInpList.get(pos).getInp_qty()));
+            }
+          /*  for (int i = 0; i < addedInpList.size(); i++) {
                 if (!callInputList.get(adapterPosition).getCode().equalsIgnoreCase(addedInpList.get(i).getInput_code())) {
                     isAvailable = false;
                 } else {
@@ -149,7 +196,7 @@ public class AddCallSelectInpSide extends Fragment {
             } else {
                 Toast.makeText(context, "You Already Select this Input", Toast.LENGTH_SHORT).show();
             }
-
+*/
         }
 
         @Override
@@ -165,10 +212,12 @@ public class AddCallSelectInpSide extends Fragment {
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
             TextView tv_name;
+            CheckBox checkBox;
 
             public ViewHolder(View view) {
                 super(view);
-                tv_name = itemView.findViewById(R.id.tv_name);
+                tv_name = itemView.findViewById(R.id.tv_data_name);
+                checkBox = itemView.findViewById(R.id.chk_box);
             }
         }
     }
