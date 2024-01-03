@@ -1007,7 +1007,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             jsonObject.put("Designation", designation);
             jsonObject.put("state_code", state_code);
             jsonObject.put("subdivision_code", subdivision_code);
-
+Log.v("123",jsonObject.toString());
             switch (remoteTableName){
                 case "getholiday":
                 case "getweeklyoff":{
