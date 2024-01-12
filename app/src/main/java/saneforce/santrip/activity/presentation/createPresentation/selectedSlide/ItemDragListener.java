@@ -1,0 +1,9 @@
+package saneforce.santrip.activity.presentation.createPresentation.selectedSlide;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+public interface ItemDragListener {
+
+    void requestDrag(RecyclerView.ViewHolder viewHolder);
+
+}

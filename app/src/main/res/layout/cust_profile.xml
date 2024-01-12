@@ -114,26 +114,26 @@
         app:layout_constraintTop_toBottomOf="@id/view_pager"
         app:layout_constraintVertical_bias="1.0" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_start_det"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/_5sdp"
-        android:layout_marginStart="@dimen/_3sdp"
-        android:layout_marginEnd="@dimen/_6sdp"
-        android:layout_toEndOf="@id/btn_skip"
-        android:background="@drawable/bg_purple"
-        android:fontFamily="@font/satoshi_bold"
-        android:singleLine="true"
-        android:text="@string/start_detaling"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_pager"
-        app:layout_constraintVertical_bias="1.0" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_start_det"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_toEndOf="@id/btn_skip"
+            android:background="@drawable/bg_purple"
+            android:fontFamily="@font/satoshi_bold"
+            android:singleLine="true"
+            android:text="@string/start_detaling"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_pager"
+            app:layout_constraintVertical_bias="1.0" />
 
 
     <!--  <RelativeLayout

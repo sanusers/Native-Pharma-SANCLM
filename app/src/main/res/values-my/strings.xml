@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="str_app_name">SAN CLM</string>
-    <string name="preference_name">saneforce.sanclm.preferencefile</string>
+    <string name="str_app_name">SAN TRIP</string>
+    <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">တဂ်ခြင်း။</string>
     <string name="txt_doctor">ဆရာဝန်</string>
     <string name="txt_chemist">ဓာတုဗေဒပညာရှင်</string>

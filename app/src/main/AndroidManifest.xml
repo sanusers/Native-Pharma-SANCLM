@@ -41,7 +41,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:hardwareAccelerated="true"
+        android:hardwareAccelerated="false"
         android:icon="@drawable/san_clm_logo"
         android:label="@string/str_app_name"
         android:largeHeap="true"
@@ -55,18 +55,28 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <activity
+            android:name=".activity.previewPresentation.PreviewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".activity.reports.ReportFragContainerActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.reports.ReportsActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.presentation.playPreview.PlaySlidePreviewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".activity.homeScreen.call.adapter.detailing.PlaySlideDetailing"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
@@ -197,7 +207,7 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -218,13 +228,14 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="saneforce.sanclm.fileprovider"
+            android:authorities="${applicationId}.saneforce.santrip.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
     </application>
 
 </manifest>

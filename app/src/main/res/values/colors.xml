@@ -45,6 +45,7 @@
     <color name="text_grey">#6C6D79</color>
     <color name="bg_lite_blue">#E2F1FD</color>
     <color name="bg_blue">#3DA5F4</color>
+    <color name="bg_orange">#FEB91A</color>
     <color name="cheked_txt_color">#282A3C</color>
     <color name="bg_sale">#E2F1FD</color>
     <color name="txt_sale_sample">#282A3C</color>

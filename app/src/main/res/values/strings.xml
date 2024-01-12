@@ -1,6 +1,6 @@
 <resources>
-    <string name="str_app_name">SAN CLM</string>
-    <string name="preference_name">saneforce.sanclm.preferencefile</string>
+    <string name="str_app_name">SAN TRIP</string>
+    <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
     <string name="txt_doctor">Doctor</string>
     <string name="txt_chemist">Chemist</string>
@@ -196,5 +196,13 @@
     <string name="survey">Survey</string>
     <string name="forms">Forms</string>
     <string name="date_time"><![CDATA[Date & Time]]></string>
+    <string name="sync">Sync</string>
+    <string name="select_hq">Select HeadQuarter</string>
+    <string name="no_input_available">No Input Available</string>
+    <string name="finish_detailing">Finish Detailing</string>
+    <string name="add_feedback">Add Feedback</string>
+    <string name="type_your_feedback_here">Type your Feedback here</string>
+    <string name="scribble">Scribble</string>
+    <string name="stop">Stop</string>
 
 </resources>

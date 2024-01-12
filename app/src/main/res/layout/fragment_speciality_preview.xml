@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/tv_select_doctor"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_2sdp"
+        android:background="@drawable/border_shape_spinner"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="start|center"
+        android:hint="Listed Doctor"
+        android:paddingHorizontal="@dimen/_6sdp"
+        android:paddingVertical="@dimen/_5sdp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:drawableEndCompat="@drawable/spin_down_arrow"
+        app:layout_constraintBottom_toTopOf="@id/rv_brand_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_brand_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/_1sdp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_white_without_border"
+        android:windowSoftInputMode="adjustResize|adjustPan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_select_doctor" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

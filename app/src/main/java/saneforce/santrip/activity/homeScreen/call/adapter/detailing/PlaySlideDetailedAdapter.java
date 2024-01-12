@@ -1,0 +1,946 @@
+package saneforce.santrip.activity.homeScreen.call.adapter.detailing;
+
+import static android.Manifest.permission.READ_MEDIA_AUDIO;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+import static android.Manifest.permission.READ_MEDIA_VIDEO;
+import static androidx.core.content.ContextCompat.startActivity;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.arrayStore;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.Designation;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.DivCode;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.SfCode;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.SfType;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.StateCode;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.SubDivisionCode;
+import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
+import static saneforce.santrip.activity.homeScreen.call.fragments.DetailedFragment.callDetailingLists;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.viewpager.widget.PagerAdapter;
+
+import com.bumptech.glide.Glide;
+import com.github.barteksc.pdfviewer.BuildConfig;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
+import saneforce.santrip.activity.homeScreen.call.pojo.detailing.LoadBitmap;
+import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
+import saneforce.santrip.activity.presentation.SupportClass;
+import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.santrip.commonClasses.CommonSharedPreference;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.storage.SharedPref;
+
+public class PlaySlideDetailedAdapter extends PagerAdapter {
+
+    private final Context context;
+    private final ArrayList<BrandModelClass.Product> productArrayList;
+    ArrayList<StoreImageTypeUrl> slideDescribe = new ArrayList<>();
+    ArrayList<StoreImageTypeUrl> slideScribble = new ArrayList<>();
+    public static ArrayList<LoadBitmap> storingSlide = new ArrayList<>();
+    public static int presentSlidePos;
+    Object objsd;
+    ImageView imageView;
+    String startT, endT;
+    PlaySlideDetailing act;
+    public static boolean preVal = false;
+    String slideUrl1 = null;
+    Dialog dialogPopUp;
+    ApiInterface apiService;
+    CommonSharedPreference mCommonSharedPreference;
+    String finalPrdNam;
+    ArrayList<StoreImageTypeUrl> dummyarr = new ArrayList<>();
+    int val = 0;
+    String defaultTime = "00:00:00";
+    int scribblePos;
+
+
+    public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
+        this.context = context;
+        this.productArrayList = productArrayList;
+        slideDescribe.clear();
+        act = context;
+        mCommonSharedPreference = new CommonSharedPreference(context);
+        for (int i = 0; i < productArrayList.size(); i++) {
+            File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(i).getSlideName());
+            if (file.exists()) {
+                String fileFormat = SupportClass.getFileExtension(productArrayList.get(i).getSlideName());
+                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), fileFormat, file.toString(), "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode()));
+            } else {
+                slideDescribe.add(new StoreImageTypeUrl("", productArrayList.get(i).getSlideName(), "", "", "", productArrayList.get(i).getSlideId(), productArrayList.get(i).getBrandName(), productArrayList.get(i).getBrandCode()));
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View sliderLayout = inflater.inflate(R.layout.presentation_preview_item, null);
+
+        imageView = sliderLayout.findViewById(R.id.imageView);
+        RelativeLayout rl_rightView = sliderLayout.findViewById(R.id.rightArrow);
+        rl_rightView.setVisibility(View.VISIBLE);
+
+        getFromFilePath(productArrayList.get(position).getSlideName(), imageView);
+        container.addView(sliderLayout);
+
+
+        rl_rightView.setOnClickListener(v -> {
+            File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(position).getSlideName());
+            String fileFormat = SupportClass.getFileExtension(productArrayList.get(position).getSlideName());
+            popupScribbling(productArrayList.get(position).getSlideName(), productArrayList.get(position).getSlideId(), file.toString(), fileFormat);
+        });
+
+        return sliderLayout;
+    }
+
+    public void popupPaint(String slideName, final String path) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.popup_scribble);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Display display = act.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        RelativeLayout rlay = dialog.findViewById(R.id.r_lay);
+        final RelativeLayout canvas_lay = dialog.findViewById(R.id.canvas_lay);
+        final ImageView erase = dialog.findViewById(R.id.erase);
+        final ImageView pen_black = dialog.findViewById(R.id.pen_black);
+        final ImageView pen_red = dialog.findViewById(R.id.pen_red);
+        final ImageView pen_green = dialog.findViewById(R.id.pen_green);
+        final ImageView sq = dialog.findViewById(R.id.sq);
+        final ImageView cir = dialog.findViewById(R.id.cir);
+        final ImageView canva_img = dialog.findViewById(R.id.canva_img);
+        final ImageView img_close = dialog.findViewById(R.id.img_close);
+        final PaintView paintviews = dialog.findViewById(R.id.paintviews);
+        Button submit = dialog.findViewById(R.id.submit);
+        ViewGroup.LayoutParams layoutParams = rlay.getLayoutParams();
+        layoutParams.width = width - 80;
+        rlay.setLayoutParams(layoutParams);
+
+        img_close.setOnClickListener(view -> dialog.dismiss());
+
+        erase.setOnClickListener(view -> {
+            paintviews.erase();
+        });
+
+        submit.setOnClickListener(view -> captureCanvasScreen(slideName, canvas_lay, dialog, path));
+        sq.setOnClickListener(view -> paintviews.addRectangle());
+        cir.setOnClickListener(view -> paintviews.addCircle());
+
+        pen_black.setOnClickListener(view -> {
+            paintviews.changePaintColor(1);
+        });
+
+        pen_red.setOnClickListener(view -> {
+            paintviews.changePaintColor(2);
+        });
+
+        pen_green.setOnClickListener(view -> {
+            paintviews.changePaintColor(3);
+        });
+
+        Drawable d = Drawable.createFromPath(path);
+        canva_img.setBackground(d);
+    }
+
+    public void captureCanvasScreen(String slideName, View layBg, Dialog dialog, String imgpath) {
+        layBg.setDrawingCacheEnabled(true);
+        layBg.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = layBg.getDrawingCache();
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
+        File file = new File(path, "EDetails/Pictures");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        String file_path = file + "/" + "paint_" + System.currentTimeMillis() + ".png";
+        String ScribbleFileName = "paint_" + System.currentTimeMillis() + ".png";
+        FileOutputStream ostream;
+        try {
+            ostream = new FileOutputStream(file_path);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
+            ostream.flush();
+            ostream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        MultipartBody.Part imgg = convertImg("ScribbleImg", file_path);
+        sendScribbleImg(imgg, dialog, imgpath, ScribbleFileName, slideName);
+    }
+
+    public MultipartBody.Part convertImg(String tag, String path) {
+        MultipartBody.Part yy = null;
+        if (!TextUtils.isEmpty(path)) {
+            File file = new File(path);
+            RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
+            yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+        }
+        return yy;
+    }
+
+    public HashMap<String, RequestBody> field(String val) {
+        HashMap<String, RequestBody> xx = new HashMap<String, RequestBody>();
+        xx.put("data", createFromString(val));
+        return xx;
+    }
+
+    private RequestBody createFromString(String txt) {
+        return RequestBody.create(MultipartBody.FORM, txt);
+    }
+
+    public void sendScribbleImg(MultipartBody.Part img, final Dialog dialog, String path, String scribbleFileName, String SlideName) {
+        dialog.dismiss();
+        JSONObject jsonImage = new JSONObject();
+        try {
+            jsonImage.put("tableName", "uploadscribble");
+            jsonImage.put("sfcode", SfCode);
+            jsonImage.put("division_code", DivCode);
+            jsonImage.put("Rsf", TodayPlanSfCode);
+            jsonImage.put("sf_type", SfType);
+            jsonImage.put("Designation", Designation);
+            jsonImage.put("state_code", StateCode);
+            jsonImage.put("subdivision_code", SubDivisionCode);
+            Log.v("scribbleUpload", jsonImage.toString());
+        } catch (Exception ignored) {
+        }
+
+        Toast.makeText(context, "Processing", Toast.LENGTH_LONG).show();
+        apiService = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+
+        Call<JsonObject> callImageScrub;
+        HashMap<String, RequestBody> values = field(jsonImage.toString());
+        callImageScrub = apiService.uploadScrub(values, img);
+
+        callImageScrub.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                assert response.body() != null;
+                Log.v("scribbleUpload", "---res---" + response.body().toString());
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonImgRes;
+                        jsonImgRes = new JSONObject(response.body().toString());
+                        if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
+                            Toast.makeText(context, "Scribble Upload Successfully", Toast.LENGTH_SHORT).show();
+                            slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), slideScribble.get(scribblePos).getSlideComments(), scribbleFileName));
+                            dialog.dismiss();
+                        }
+                    } catch (Exception e) {
+                        dialog.dismiss();
+                    }
+                } else {
+                    dialog.dismiss();
+                    Toast.makeText(context, "Something went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+    }
+
+
+    private void shareImage(File path, String fileFormat) {
+        Uri contentUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", path);
+        if (contentUri != null) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareIntent.setDataAndType(contentUri, context.getContentResolver().getType(contentUri));
+            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            switch (fileFormat) {
+                case "jpg":
+                case "png":
+                case "gif":
+                case "jpeg": {
+                    shareIntent.setType("image/png");
+                    return;
+                }
+                case "mp4": {
+                    shareIntent.setType("video/mp4");
+                    return;
+                }
+                case "pdf": {
+                    shareIntent.setType("application/pdf");
+                    return;
+                }
+                case "zip": {
+                    shareIntent.setType("application/zip");
+                    return;
+                }
+            }
+            context.startActivity(Intent.createChooser(shareIntent, "Choose an app"));
+        }
+    }
+
+    public void commentsPopup() {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.detailing_pop_feed);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        final EditText edt_feed = dialog.findViewById(R.id.ed_remark);
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        Button btnClear = dialog.findViewById(R.id.btn_clear);
+        Button btnSave = dialog.findViewById(R.id.btn_save);
+
+        btnSave.setOnClickListener(v -> {
+            slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), edt_feed.getText().toString(), slideScribble.get(scribblePos).getScribble()));
+            dialog.dismiss();
+        });
+
+
+        btnClear.setOnClickListener(v -> {
+            edt_feed.setText("");
+            edt_feed.setHint(context.getResources().getString(R.string.type_your_feedback_here));
+        });
+
+        img_close.setOnClickListener(view -> {
+            edt_feed.setText("");
+            edt_feed.setHint(context.getResources().getString(R.string.type_your_feedback_here));
+            dialog.dismiss();
+        });
+    }
+
+    public void popupScribbling(String slideName, String slideId, String path, String fileFormat) {
+        act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        dialogPopUp = new Dialog(context);
+        dialogPopUp.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(dialogPopUp.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogPopUp.setContentView(R.layout.detailing_right_popup);
+        dialogPopUp.setCanceledOnTouchOutside(true);
+        Window window = dialogPopUp.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        RelativeLayout rl_like = dialogPopUp.findViewById(R.id.rl_hand_up);
+        RelativeLayout rl_dislike = dialogPopUp.findViewById(R.id.rl_hand_down);
+        RelativeLayout rl_comments = dialogPopUp.findViewById(R.id.rl_comments);
+        RelativeLayout rl_share = dialogPopUp.findViewById(R.id.rl_share);
+        RelativeLayout rl_paint = dialogPopUp.findViewById(R.id.rl_paint);
+        RelativeLayout rl_stop = dialogPopUp.findViewById(R.id.rl_stop);
+
+        boolean isAvailable = false;
+        if (slideScribble.size() > 0) {
+            for (int i = 0; i < slideScribble.size(); i++) {
+                if (slideScribble.get(i).getSlideNam().equalsIgnoreCase(slideName)) {
+                    scribblePos = i;
+                    isAvailable = true;
+                    break;
+                } else {
+                    scribblePos = slideScribble.size();
+                }
+            }
+        } else {
+            scribblePos = 0;
+        }
+
+        if (isAvailable) {
+            slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, false, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
+        } else {
+            slideScribble.add(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, false, "", ""));
+        }
+
+
+        rl_paint.setOnClickListener(view -> popupPaint(slideName, path));
+
+        rl_like.setOnClickListener(v -> {
+            if (Objects.equals(rl_like.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_green)).getConstantState())) {
+                rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.green_full));
+                rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
+                slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, true, false, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
+            } else {
+                rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
+            }
+        });
+
+        rl_dislike.setOnClickListener(v -> {
+            if (Objects.equals(rl_dislike.getBackground().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.outline_pink)).getConstantState())) {
+                rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.pink_full));
+                rl_like.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_green));
+                slideScribble.set(scribblePos, new StoreImageTypeUrl(slideName, slideId, false, true, slideScribble.get(scribblePos).getSlideComments(), slideScribble.get(scribblePos).getScribble()));
+            } else {
+                rl_dislike.setBackground(ContextCompat.getDrawable(context, R.drawable.outline_pink));
+            }
+        });
+
+        rl_comments.setOnClickListener(v -> commentsPopup());
+
+        rl_share.setOnClickListener(v -> {
+            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            final File photoFile = new File(String.valueOf(path));
+            switch (fileFormat) {
+                case "jpg":
+                case "png":
+                case "gif":
+                case "jpeg": {
+                    try {
+                        shareIntent.setType("image/jpg");
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
+                        context.startActivity(Intent.createChooser(shareIntent, "Share image using"));
+                    } catch (Exception e) {
+                        shareImage(photoFile, fileFormat);
+                    }
+                    return;
+                }
+                case "mp4": {
+                    try {
+                        ContentValues content = new ContentValues(4);
+                        content.put(MediaStore.Video.VideoColumns.DATE_ADDED,
+                                System.currentTimeMillis() / 1000);
+                        content.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+                        content.put(MediaStore.Video.Media.DATA, path);
+
+                        ContentResolver resolver = context.getContentResolver();
+                        Uri uri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, content);
+
+                        shareIntent.setType("video/*");
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                        context.startActivity(Intent.createChooser(shareIntent, "Share Video"));
+                    } catch (Exception e) {
+                        shareImage(photoFile, fileFormat);
+                    }
+                    return;
+                }
+                case "pdf": {
+                    try {
+                        shareIntent.setType("application/pdf");
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
+                        context.startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
+                    } catch (Exception e) {
+                        shareImage(photoFile, fileFormat);
+                    }
+                    return;
+                }
+                case "zip": {
+                    try {
+                        shareIntent.setType("application/zip");
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
+                        context.startActivity(shareIntent);
+                    } catch (Exception e) {
+                        shareImage(photoFile, fileFormat);
+                    }
+                    return;
+                }
+            }
+        });
+
+        rl_stop.setOnClickListener(v -> {
+            callDetailingLists = new ArrayList<>();
+            arrayStore.clear();
+
+            act.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            if (PlaySlideDetailedAdapter.preVal) {
+                int timecount = 0;
+
+                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                    int ll = 0;
+                    if (i != 0) {
+                        ll = i - 1;
+                        if (PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                            PlaySlideDetailedAdapter.storingSlide.remove(ll);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                    Log.v("total_printing", PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName() + "size" + PlaySlideDetailedAdapter.storingSlide.size() + "slide" + PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal());
+                }
+
+                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                    int ll = 0;
+                    if (i != 0)
+                        ll = i - 1;
+                    if (i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                        mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getTiming());
+                        mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
+                        mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
+                        mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
+                        mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
+                    }
+                }
+
+                val = mCommonSharedPreference.getValueFromPreferenceFeed("timeCount", 0);
+                Log.v("slideData", String.valueOf(val));
+                for (int i = 0; i < val; i++) {
+                    String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
+                    String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
+                    String prdScribble = mCommonSharedPreference.getValueFromPreferenceFeed("slide_scribble" + i);
+                    String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
+                    String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
+                    String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
+                    String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
+                    // Log.v("slideData", BrandName + " time_val " + SlideName + "----" + prdScribble);
+                    String eTime;
+                    if (arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
+                        eTime = findingEndTime(i);
+                        int index = checkForProduct(SlideName);
+                        StoreImageTypeUrl mmm = arrayStore.get(index);
+
+                        try {
+                            JSONArray jj = new JSONArray(mmm.getRemTime());
+                            JSONArray jk = new JSONArray();
+                            JSONObject js = null;
+                            for (int k = 0; k < jj.length(); k++) {
+                                js = jj.getJSONObject(k);
+                                jk.put(js);
+                            }
+                            js = new JSONObject();
+                            js.put("sT", timevalue);
+                            js.put("eT", eTime);
+                            jk.put(js);
+                            //     Log.v("slideData", "---000----" + "----" + BrandName + "----" + SlideName);
+                            mmm.setRemTime(jk.toString());
+                        } catch (Exception ignored) {
+                        }
+                    } else if (!SlideName.isEmpty()) {
+                        eTime = findingEndTime(i);
+                        JSONObject jsonObject = new JSONObject();
+                        JSONArray jsonArray = new JSONArray();
+                        try {
+                            jsonObject.put("sT", timevalue);
+                            jsonObject.put("eT", eTime);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        jsonArray.put(jsonObject);
+                        Log.v("slideData", "----" + BrandName + "----" + SlideName);
+                        boolean isAvailableScrib = false;
+                        scribblePos = 0;
+                        for (int j = 0; j < slideScribble.size(); j++) {
+                            if (slideScribble.get(j).getSlideNam().equalsIgnoreCase(SlideName)) {
+                                isAvailableScrib = true;
+                                scribblePos = j;
+                                break;
+                            }
+                        }
+                        if (isAvailableScrib) {
+                            arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
+                        } else {
+                            arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
+                        }
+                    }
+                }
+                Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
+
+                for (int j = 0; j < arrayStore.size(); j++) {
+                    if (j == 0) {
+
+                        gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j);
+                        finalPrdNam = arrayStore.get(j).getBrdName();
+                    } else if (finalPrdNam.equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
+                    } else {
+                        String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
+                        Log.v("printing_all_time", time);
+                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, 0, "", CommonUtilsMethods.getCurrentDate()));
+                        finalPrdNam = arrayStore.get(j).getBrdName();
+                    }
+                }
+
+                if (arrayStore.size() > 0) {
+                    String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
+                    callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, 0, "", CommonUtilsMethods.getCurrentDate()));
+                }
+            }
+            act.getOnBackPressedDispatcher().onBackPressed();
+        });
+
+        //  dislike.setImageResource(R.drawable.dislike_off);
+        //  like.setImageResource(R.drawable.like_off);
+      /*  dbh.open();
+        Cursor mCursor = dbh.select_scribbleSearchByPath(path);
+        if (mCursor != null && mCursor.getCount() > 0)
+        {
+            while (mCursor.moveToNext())
+            {
+                if (mCursor.getString(2).equalsIgnoreCase("true"))
+                {
+                    like.setImageResource(R.drawable.like_on);
+                    likes = "true";
+                }
+                if (mCursor.getString(3).equalsIgnoreCase("true"))
+                {
+                    dislike.setImageResource(R.drawable.dislike_on);
+                    dislikes = "true";
+                }
+            }
+        }
+        else
+        {
+            dbh.insertScrible(path, "false", "false", "", "");
+            likes = "false";
+            dislikes = "false";
+        }
+        dbh.close();*/
+
+     /*   like.setOnClickListener(view -> {
+            if (likes.equalsIgnoreCase("true"))
+            {
+                like.setImageResource(R.drawable.like_off);
+                likes = "false";
+            }
+            else
+            {
+                like.setImageResource(R.drawable.like_on);
+                dislike.setImageResource(R.drawable.dislike_off);
+                likes = "true";
+                dislikes = "false";
+            }
+            dbh.open();
+            dbh.updatePathScribBoth(path, likes, dislikes);
+            dbh.close();
+        });*/
+
+      /*  dislike.setOnClickListener(view -> {
+            if (dislikes.equalsIgnoreCase("true"))
+            {
+                dislike.setImageResource(R.drawable.dislike_off);
+                dislikes = "false";
+            }
+            else
+            {
+                dislike.setImageResource(R.drawable.dislike_on);
+                like.setImageResource(R.drawable.like_off);
+                dislikes = "true";
+                likes = "false";
+            }
+            dbh.open();
+            dbh.updatePathScribBoth(path, likes, dislikes);
+            dbh.close();
+        });*/
+
+        // paint.setOnClickListener(view -> popupPaint(slideName, path));
+        // feedback.setOnClickListener(view -> feedBackPopup());
+      /*  share.setOnClickListener(view -> {
+            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            final File photoFile = new File(path);
+            if (x == 1) {
+                try {
+                    shareIntent.setType("image/jpg");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
+                    context.startActivity(Intent.createChooser(shareIntent, "Share image using"));
+                } catch (Exception e) {
+                    shareImage(photoFile, 1);
+                }
+            } else if (x == 2) {
+                try {
+                    shareIntent.setType("application/pdf");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
+                    // share.setPackage("com.whatsapp");
+                    context.startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
+                } catch (Exception e) {
+                    shareImage(photoFile, 2);
+                }
+            } else if (x == 3) {
+                try {
+                    File videoFile = new File(path);
+                    Uri videoURI = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? FileProvider.getUriForFile(context, context.getPackageName(), videoFile) : Uri.fromFile(videoFile);
+                    ShareCompat.IntentBuilder.from(act).setStream(videoURI).setType("video/mp4").setChooserTitle("Share video...").startChooser();
+                } catch (Exception e) {
+                    shareImage(photoFile, 3);
+                }
+            } else {
+                Log.v("wehview_sharess", path);
+                try {
+                    File webfile = new File(path);
+                    Log.v("webview_path_arre", webfile.getAbsolutePath());
+                    Uri webUri = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? FileProvider.getUriForFile(context, context.getPackageName(), webfile) : Uri.fromFile(webfile);
+                    ShareCompat.IntentBuilder.from(act).setStream(webUri).setType("application/zip").setChooserTitle("Share video...").startChooser();
+                } catch (Exception e) {
+                    shareImage(photoFile, 4);
+                }
+            }
+        });*/
+
+        params.setMargins(0, 0, 0, 0);
+        wlp.gravity = Gravity.CENTER | Gravity.END;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+        dialogPopUp.show();
+        act.getWindow().
+
+                getDecorView().
+
+                setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+
+    public int checkForProduct(String slidename) {
+        for (int i = 0; i < arrayStore.size(); i++) {
+            if (arrayStore.get(i).getSlideNam().equals(slidename)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    public String gettingProductTiming(String BrandName) {
+        String maxTime = null;
+        String minTime = null;
+        dummyarr.clear();
+        try {
+            for (int i = 0; i < arrayStore.size(); i++) {
+                if (arrayStore.get(i).getBrdName().equalsIgnoreCase(BrandName)) {
+                    dummyarr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming()));
+                }
+            }
+            ArrayList<String> timesMax = new ArrayList<>();
+            ArrayList<String> timesMin = new ArrayList<>();
+            for (int i1 = 0; i1 < dummyarr.size(); i1++) {
+                StoreImageTypeUrl mm1 = dummyarr.get(i1);
+                JSONArray jj = new JSONArray(mm1.getTiming());
+
+                if (jj.length() > 0) {
+                    JSONObject jsr = jj.getJSONObject(jj.length() - 1);
+                    timesMax.add(jsr.getString("eT"));
+                    timesMin.add(jsr.getString("sT"));
+                }
+            }
+            String timesMaxnew = timesMax.toString().replace("[", "").replace("]", "");
+            String timesMinnew = timesMin.toString().replace("[", "").replace("]", "");
+
+            String[] allTimesMax = timesMaxnew.replaceAll(" ", "").split(",");
+            String[] allTimesMin = timesMinnew.replaceAll(" ", "").split(",");
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                maxTime = Stream.of(allTimesMax).max(String::compareTo).get();
+                minTime = Stream.of(allTimesMin).min(String::compareTo).get();
+            }
+
+            return maxTime;
+        } catch (Exception ignored) {
+        }
+        return maxTime;
+    }
+
+    public String gettingProductStartEndTime1(String jsonvalue, int i) {
+        String finalTime = null;
+        StoreImageTypeUrl mm, mm1, mm2;
+        try {
+            JSONArray json = new JSONArray(jsonvalue);
+            JSONArray json2 = new JSONArray(jsonvalue);
+            mm = arrayStore.get(i);
+            json = new JSONArray(mm.getRemTime());
+            JSONObject jjj = json.getJSONObject(0);
+            Log.v("last_value_time", jjj.getString("sT"));
+            startT = jjj.getString("sT");
+            //  finalTime = startT + " " + jjj.getString("eT");
+            finalTime = startT;
+            if (i == arrayStore.size() - 1) {
+                mm1 = arrayStore.get(arrayStore.size() - 1);
+                json = new JSONArray(mm1.getRemTime());
+                JSONObject jj = json.getJSONObject(0);
+                endT = jj.getString("eT");
+                for (int j = 0; j < i; j++) {
+                    if (arrayStore.get(j).getBrdName().equals(mm1.getBrdName())) {
+                        mm2 = arrayStore.get(j);
+                        json2 = new JSONArray(mm2.getRemTime());
+                        JSONObject jj2 = json2.getJSONObject(0);
+                        Log.v("first_value_time", jj2.getString("sT"));
+                        startT = jj2.getString("sT");
+                        break;
+                    }
+                }
+                //finalTime = startT + " " + endT;
+                finalTime = startT;
+            }
+            // }
+            Log.v("last_finall", "----" + finalTime);
+            return finalTime;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return finalTime;
+    }
+
+    public String gettingProductStartEndTime(String jsonvalue, int i) {
+        String finalTime = null;
+        StoreImageTypeUrl mm, mm1;
+        try {
+            JSONArray json;
+            if (i != 0) {
+
+                mm1 = arrayStore.get(i - 1);
+                json = new JSONArray(mm1.getRemTime());
+                JSONObject jj = json.getJSONObject(0);
+                endT = jj.getString("eT");
+            }
+            finalTime = startT;
+            mm = arrayStore.get(i);
+            json = new JSONArray(mm.getRemTime());
+            JSONObject jj = json.getJSONObject(0);
+            Log.v("last_value_timemid", jj.getString("sT"));
+            startT = jj.getString("sT");
+            if (arrayStore.size() == 1) {
+                mm = arrayStore.get(i);
+                json = new JSONArray(mm.getRemTime());
+                JSONObject jjj = json.getJSONObject(0);
+                Log.v("last_value_time", jjj.getString("sT"));
+                startT = jjj.getString("sT");
+                finalTime = startT;
+            }
+            return finalTime;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return finalTime;
+    }
+
+    public String findingEndTime(int k) {
+        if (checkForLastSlide(k)) {
+            return defaultTime;
+        } else {
+            int j = k + 1;
+            return mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + j);
+        }
+    }
+
+    public boolean checkForLastSlide(int k) {
+        return k == val - 1;
+    }
+
+    private Uri getImageToShare(Bitmap bitmap) {
+        File imagefolder = new File(context.getCacheDir(), "images");
+        Uri uri = null;
+        try {
+            imagefolder.mkdirs();
+            File file = new File(imagefolder, "shared_image.png");
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            uri = FileProvider.getUriForFile(context, "saneforce.santrip.fileprovider", file);
+        } catch (Exception e) {
+            Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        return uri;
+    }
+
+    @Override
+    public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.setPrimaryItem(container, position, object);
+        StoreImageTypeUrl mm = slideDescribe.get(position);
+        presentSlidePos = position;
+        objsd = object;
+        preVal = true;
+        storingSlide.add(new LoadBitmap(mm.getScribble(), CommonUtilsMethods.getCurrentTime(), position, CommonUtilsMethods.getCurrentDate(), mm.getSlideNam(), mm.getSlideTyp(), mm.getSlideUrl(), mm.getBrdName(), mm.getBrdCode()));
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        container.removeView((View) object);
+    }
+
+    @Override
+    public int getCount() {
+        return productArrayList.size();
+    }
+
+    @Override
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+        return view == object;
+    }
+
+    public void getFromFilePath(String fileName, ImageView imageView) {
+
+        File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
+        if (file.exists()) {
+            String fileFormat = SupportClass.getFileExtension(fileName);
+            Bitmap bitmap = null;
+            switch (fileFormat) {
+                case "jpg":
+                case "png":
+                case "jpeg":
+                case "mp4": {
+                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(imageView);
+                    return;
+                }
+                case "pdf": {
+                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
+                    Glide.with(context).asBitmap().load(bitmap).into(imageView);
+                    slideUrl1 = file.toString();
+                    return;
+                }
+                case "zip": {
+                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(), "image"));
+                    if (bitmap != null)
+                        Glide.with(context).asBitmap().load(bitmap).into(imageView);
+                    return;
+                }
+                case "gif": {
+                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(imageView);
+                    return;
+                }
+            }
+        }
+    }
+}

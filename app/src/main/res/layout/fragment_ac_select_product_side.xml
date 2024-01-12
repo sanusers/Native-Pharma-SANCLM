@@ -100,10 +100,33 @@
             android:divider="#808080"
             android:visibility="visible"
             android:dividerHeight="0.2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintBottom_toTopOf="@id/btn_ok"
             app:layout_constraintEnd_toEndOf="@id/search_list"
             app:layout_constraintStart_toStartOf="@id/search_list"
             app:layout_constraintTop_toBottomOf="@id/search_list"
             app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/_6sdp"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginVertical="@dimen/_5sdp"
+            android:background="@drawable/bg_purple"
+            android:fontFamily="@font/satoshi_bold"
+            android:text="@string/ok"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/select_list_view"
+            app:layout_constraintVertical_bias="1.0" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

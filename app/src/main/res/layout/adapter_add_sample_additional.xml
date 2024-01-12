@@ -24,7 +24,6 @@
         android:textColorHint="@color/black"
         android:textSize="14sp"
         android:textStyle="normal"
-        app:drawableEndCompat="@drawable/drop_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_sample_stock"
         app:layout_constraintHorizontal_bias="0.5"

@@ -7,11 +7,11 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 
 android {
-    namespace 'saneforce.sanclm'
+    namespace 'saneforce.santrip'
     compileSdk 34
 
     defaultConfig {
-        applicationId "saneforce.sanclm"
+        applicationId "saneforce.santrip"
         minSdk 23
         targetSdk 34
         versionCode 1

@@ -92,7 +92,7 @@
             app:layout_constraintStart_toEndOf="@id/tv_comp_cmpy"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <saneforce.sanclm.commonClasses.ListenerEditText
+        <saneforce.santrip.commonClasses.ListenerEditText
             android:id="@+id/tv_qty_comp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
