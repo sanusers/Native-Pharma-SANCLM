@@ -21,7 +21,7 @@
                 android:gravity="center"
                 android:textSize="@dimen/_7sdp"
                 android:textColor="@color/black_45"
-                android:text="September 13, 2023"
+                android:text=""
                 android:layout_height="wrap_content">
 
             </TextView>

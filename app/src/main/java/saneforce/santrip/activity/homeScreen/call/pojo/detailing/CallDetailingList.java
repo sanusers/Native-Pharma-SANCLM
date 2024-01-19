@@ -1,9 +1,15 @@
 package saneforce.santrip.activity.homeScreen.call.pojo.detailing;
 
+import static android.text.format.DateUtils.formatDateTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
-public class CallDetailingList {
+public class CallDetailingList implements Comparable<CallDetailingList> {
     String brandName;
     String brandCode;
 
@@ -44,6 +50,15 @@ public class CallDetailingList {
     String stk_name;
     String error;
     String slideType;
+    String startTime;
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
 
     public String getSlideType() {
         return slideType;
@@ -57,38 +72,42 @@ public class CallDetailingList {
         return prodFb;
     }
 
-    public CallDetailingList(String brandName, String brandCode, String slideName,String slideType,String slideUrl, String timing, int rating, String feedback, String currentDate) {
+    public CallDetailingList(String brandName, String brandCode, String slideName, String slideType, String slideUrl, String timing, String startTime, int rating, String feedback, String currentDate) {
         this.brandName = brandName;
         this.brandCode = brandCode;
         this.slideName = slideName;
         this.slideType = slideType;
         this.slideUrl = slideUrl;
         this.st_end_time = timing;
+        this.startTime = startTime;
         this.rating = rating;
         this.feedback = feedback;
         this.date = currentDate;
     }
 
-    public CallDetailingList(String brandName, String slideName,String slideType,String slideUrl, String timing, int rating, String feedback, String currentDate) {
-        this.brandName = brandName;
-        this.slideName = slideName;
-        this.slideType = slideType;
-        this.slideUrl = slideUrl;
-        this.st_end_time = timing;
-        this.rating = rating;
-        this.feedback = feedback;
-        this.date = currentDate;
+    @Override
+    public int compareTo(CallDetailingList o) {
+        Date newDate = null;
+        Date inputDate = null;
+        newDate = formatDateTime(o.getStartTime(), "HH:mm:ss", "EE MMM dd HH:mm:ss z yyyy");
+        inputDate = formatDateTime(getStartTime(), "HH:mm:ss", "EE MMM dd HH:mm:ss z yyyy");
+        // inputDate = formatDateTime(getStartTime(), "HH:mm:ss", "YYYY-MM-DD HH:mm:ss");
+        return inputDate.compareTo(newDate);
     }
 
-    public static class StoreImageComparator implements Comparator<CallDetailingList>
-    {
-        public int compare(CallDetailingList left, CallDetailingList right)
-        {
-            return left.brandName.compareTo(right.brandName);
+    public Date formatDateTime(String date, String fromFormat, String toFormat) {
+        Date d = null;
+        try {
+            d = new SimpleDateFormat(fromFormat, Locale.US).parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            return new SimpleDateFormat(toFormat, Locale.US).parse(String.valueOf(d));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
-
-
 
     public String getPrdfdbck() {
         return prdfdbck;
@@ -148,57 +167,6 @@ public class CallDetailingList {
 
     public void setRemTiming(String remTiming) {
         this.remTiming = remTiming;
-    }
-
-    public CallDetailingList(String brandName, String st_end_time, int rating, String feedback, String date, String sample, String remTiming, String rxQty, ArrayList<PopFeed> prodFb, String stk_name, String stkcode) {
-        this.brandName = brandName;
-        this.st_end_time = st_end_time;
-        this.rating = rating;
-        this.feedback = feedback;
-        this.date = date;
-        this.sample = sample;
-        this.remTiming = remTiming;
-        this.rxQty = rxQty;
-        this.prodFb = prodFb;
-        this.stk_name = stk_name;
-        this.stk_code = stkcode;
-    }
-
-    public CallDetailingList(String brandName, String ProductCode, String st_end_time, int rating, String feedback, String date, String sample, String remTiming, String rxQty, ArrayList<PopFeed> prodFb, String stk_name, String stkcode) {
-        this.brandName = brandName;
-        this.productCode = ProductCode;
-        this.st_end_time = st_end_time;
-        this.rating = rating;
-        this.feedback = feedback;
-        this.date = date;
-        this.sample = sample;
-        this.remTiming = remTiming;
-        this.rxQty = rxQty;
-        this.prodFb = prodFb;
-        this.stk_name = stk_name;
-        this.stk_code = stkcode;
-    }
-
-    public CallDetailingList(String brandName, String rxQty, String productCode, String bool) {
-        this.brandName = brandName;
-        this.rxQty = rxQty;
-        this.productCode = productCode;
-    }
-
-    public CallDetailingList(String sample, String feedback, int rating) {
-        this.sample = sample;
-        this.feedback = feedback;
-        this.rating = rating;
-    }
-
-  /*  public FeedbackProductDetail(String prdNAme, String st_end_time,String slideName) {
-        this.prdNAme = prdNAme;
-        this.st_end_time = st_end_time;
-        this.slideName=slideName;
-    }*/
-
-    public CallDetailingList(String brandName) {
-        this.brandName = brandName;
     }
 
     @Override

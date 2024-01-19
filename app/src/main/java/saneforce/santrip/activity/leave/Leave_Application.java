@@ -674,6 +674,4 @@ public class Leave_Application extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) Leave_Application.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
-
-
 }

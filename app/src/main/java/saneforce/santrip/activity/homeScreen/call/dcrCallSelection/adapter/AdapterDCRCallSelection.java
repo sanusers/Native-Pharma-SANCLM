@@ -78,7 +78,6 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
         holder.constraint_main.setOnClickListener(view -> {
             DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-            Log.v("gfddf",cusListArrayList.get(position).getMappedBrands() + "----"+ cusListArrayList.get(position).getMappedSlides() + "----" + cusListArrayList.get(position).getSpecialistCode());
             DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(),
                     cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(),
                     cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(),

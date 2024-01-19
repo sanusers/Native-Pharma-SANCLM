@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -47,7 +48,7 @@ public class BottomPreviewDetailedAdapter extends RecyclerView.Adapter<BottomPre
 
     @Override
     public void onBindViewHolder(@NonNull BottomPreviewDetailedAdapter.MyViewHolder holder, int position) {
-        getFromFilePath(arrayList.get(holder.getAbsoluteAdapterPosition()).getSlideName(), holder.imageView);
+            getFromFilePath(arrayList.get(holder.getAbsoluteAdapterPosition()).getSlideName(), holder.imageView);
 
         holder.itemView.setSelected(viewPager.getCurrentItem() == holder.getAbsoluteAdapterPosition());
 
@@ -101,6 +102,4 @@ public class BottomPreviewDetailedAdapter extends RecyclerView.Adapter<BottomPre
             }
         }
     }
-
-
 }

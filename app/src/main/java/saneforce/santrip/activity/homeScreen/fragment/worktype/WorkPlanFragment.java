@@ -106,7 +106,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             binding.rlheadquates1.setVisibility(View.GONE);
             binding.rlheadquates2.setVisibility(View.GONE);
-
         }
 
 
@@ -746,7 +745,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             saveMyDayPlan.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                     Log.d("todayCallList:Code", response.code() + " - " + response);
                     if (response.isSuccessful()) {
                         try {
@@ -774,7 +773,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
 
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                     Log.e("VALUES",""+t);
 //                    binding.progressSumit.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "MyDayPlan  failure", Toast.LENGTH_SHORT).show();

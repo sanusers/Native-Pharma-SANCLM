@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.presentation.presentation;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +17,8 @@ import saneforce.santrip.storage.SQLite;
 
 
 public class PresentationActivity extends AppCompatActivity {
-    ActivityPresentationBinding binding;
+    @SuppressLint("StaticFieldLeak")
+    public static ActivityPresentationBinding binding;
     PresentationAdapter presentationAdapter;
     SQLite sqLite;
     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
@@ -32,26 +34,21 @@ public class PresentationActivity extends AppCompatActivity {
         savedPresentation = sqLite.getPresentationData();
         populateAdapter();
 
-        binding.backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
-        });
+        binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
-        binding.createPresentationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class));
-            }
-        });
-
-
+        binding.createPresentationBtn.setOnClickListener(view -> startActivity(new Intent(PresentationActivity.this, CreatePresentationActivity.class)));
     }
 
     public void populateAdapter() {
-        presentationAdapter = new PresentationAdapter(this, savedPresentation, "presentation");
-        binding.presentationRecView.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
-        binding.presentationRecView.setAdapter(presentationAdapter);
+        if (savedPresentation.size() > 0) {
+            binding.constraintNoData.setVisibility(View.GONE);
+            binding.presentationRecView.setVisibility(View.VISIBLE);
+            presentationAdapter = new PresentationAdapter(this, savedPresentation, "presentation");
+            binding.presentationRecView.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
+            binding.presentationRecView.setAdapter(presentationAdapter);
+        } else {
+            binding.constraintNoData.setVisibility(View.VISIBLE);
+            binding.presentationRecView.setVisibility(View.GONE);
+        }
     }
 }

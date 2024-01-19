@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.previewPresentation.adapter;
 
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.BottomLayoutHeadAdapter.SelectedPosPlay;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.from_where;
 
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -60,7 +62,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
         else holder.count.setText(products.size() + " Assert");
 
 
-        holder.playButton.setOnClickListener(view -> {
+        holder.cardView.setOnClickListener(view -> {
             int SelectedPos = 0;
 
             int count = products.size();
@@ -136,6 +138,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, count;
         ImageView imageView, playButton;
+        CardView cardView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -143,6 +146,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
             name = itemView.findViewById(R.id.presentationName);
             imageView = itemView.findViewById(R.id.imageView);
             playButton = itemView.findViewById(R.id.play_button);
+            cardView = itemView.findViewById(R.id.card_view_top);
         }
     }
 }

@@ -490,9 +490,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         });
 
         rl_stop.setOnClickListener(v -> {
-            callDetailingLists = new ArrayList<>();
-            arrayStore.clear();
-
             act.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             if (PlaySlideDetailedAdapter.preVal) {
@@ -533,12 +530,11 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 for (int i = 0; i < val; i++) {
                     String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
                     String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
-                    String prdScribble = mCommonSharedPreference.getValueFromPreferenceFeed("slide_scribble" + i);
                     String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
                     String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
                     String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
                     String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
-                    // Log.v("slideData", BrandName + " time_val " + SlideName + "----" + prdScribble);
+
                     String eTime;
                     if (arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
                         eTime = findingEndTime(i);
@@ -557,7 +553,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                             js.put("sT", timevalue);
                             js.put("eT", eTime);
                             jk.put(js);
-                            //     Log.v("slideData", "---000----" + "----" + BrandName + "----" + SlideName);
                             mmm.setRemTime(jk.toString());
                         } catch (Exception ignored) {
                         }
@@ -589,7 +584,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         }
                     }
                 }
-                Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
+               /* Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
 
                 for (int j = 0; j < arrayStore.size(); j++) {
                     if (j == 0) {
@@ -599,138 +594,27 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     } else if (finalPrdNam.equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
                     } else {
                         String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
-                        Log.v("printing_all_time", time);
-                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, 0, "", CommonUtilsMethods.getCurrentDate()));
+                        Log.v("printing_all_time", time + "----" + time.substring(0, 9));
+                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 9), 0, "", CommonUtilsMethods.getCurrentDate()));
                         finalPrdNam = arrayStore.get(j).getBrdName();
                     }
                 }
 
                 if (arrayStore.size() > 0) {
                     String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
-                    callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, 0, "", CommonUtilsMethods.getCurrentDate()));
-                }
+                    callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 9), 0, "", CommonUtilsMethods.getCurrentDate()));
+                }*/
             }
             act.getOnBackPressedDispatcher().onBackPressed();
         });
 
-        //  dislike.setImageResource(R.drawable.dislike_off);
-        //  like.setImageResource(R.drawable.like_off);
-      /*  dbh.open();
-        Cursor mCursor = dbh.select_scribbleSearchByPath(path);
-        if (mCursor != null && mCursor.getCount() > 0)
-        {
-            while (mCursor.moveToNext())
-            {
-                if (mCursor.getString(2).equalsIgnoreCase("true"))
-                {
-                    like.setImageResource(R.drawable.like_on);
-                    likes = "true";
-                }
-                if (mCursor.getString(3).equalsIgnoreCase("true"))
-                {
-                    dislike.setImageResource(R.drawable.dislike_on);
-                    dislikes = "true";
-                }
-            }
-        }
-        else
-        {
-            dbh.insertScrible(path, "false", "false", "", "");
-            likes = "false";
-            dislikes = "false";
-        }
-        dbh.close();*/
-
-     /*   like.setOnClickListener(view -> {
-            if (likes.equalsIgnoreCase("true"))
-            {
-                like.setImageResource(R.drawable.like_off);
-                likes = "false";
-            }
-            else
-            {
-                like.setImageResource(R.drawable.like_on);
-                dislike.setImageResource(R.drawable.dislike_off);
-                likes = "true";
-                dislikes = "false";
-            }
-            dbh.open();
-            dbh.updatePathScribBoth(path, likes, dislikes);
-            dbh.close();
-        });*/
-
-      /*  dislike.setOnClickListener(view -> {
-            if (dislikes.equalsIgnoreCase("true"))
-            {
-                dislike.setImageResource(R.drawable.dislike_off);
-                dislikes = "false";
-            }
-            else
-            {
-                dislike.setImageResource(R.drawable.dislike_on);
-                like.setImageResource(R.drawable.like_off);
-                dislikes = "true";
-                likes = "false";
-            }
-            dbh.open();
-            dbh.updatePathScribBoth(path, likes, dislikes);
-            dbh.close();
-        });*/
-
-        // paint.setOnClickListener(view -> popupPaint(slideName, path));
-        // feedback.setOnClickListener(view -> feedBackPopup());
-      /*  share.setOnClickListener(view -> {
-            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            final File photoFile = new File(path);
-            if (x == 1) {
-                try {
-                    shareIntent.setType("image/jpg");
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
-                    context.startActivity(Intent.createChooser(shareIntent, "Share image using"));
-                } catch (Exception e) {
-                    shareImage(photoFile, 1);
-                }
-            } else if (x == 2) {
-                try {
-                    shareIntent.setType("application/pdf");
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(photoFile));
-                    // share.setPackage("com.whatsapp");
-                    context.startActivity(Intent.createChooser(shareIntent, "Share pdf using"));
-                } catch (Exception e) {
-                    shareImage(photoFile, 2);
-                }
-            } else if (x == 3) {
-                try {
-                    File videoFile = new File(path);
-                    Uri videoURI = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? FileProvider.getUriForFile(context, context.getPackageName(), videoFile) : Uri.fromFile(videoFile);
-                    ShareCompat.IntentBuilder.from(act).setStream(videoURI).setType("video/mp4").setChooserTitle("Share video...").startChooser();
-                } catch (Exception e) {
-                    shareImage(photoFile, 3);
-                }
-            } else {
-                Log.v("wehview_sharess", path);
-                try {
-                    File webfile = new File(path);
-                    Log.v("webview_path_arre", webfile.getAbsolutePath());
-                    Uri webUri = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? FileProvider.getUriForFile(context, context.getPackageName(), webfile) : Uri.fromFile(webfile);
-                    ShareCompat.IntentBuilder.from(act).setStream(webUri).setType("application/zip").setChooserTitle("Share video...").startChooser();
-                } catch (Exception e) {
-                    shareImage(photoFile, 4);
-                }
-            }
-        });*/
 
         params.setMargins(0, 0, 0, 0);
         wlp.gravity = Gravity.CENTER | Gravity.END;
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
         dialogPopUp.show();
-        act.getWindow().
-
-                getDecorView().
-
-                setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        act.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     public int checkForProduct(String slidename) {
@@ -742,118 +626,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         return -1;
     }
 
-
-    public String gettingProductTiming(String BrandName) {
-        String maxTime = null;
-        String minTime = null;
-        dummyarr.clear();
-        try {
-            for (int i = 0; i < arrayStore.size(); i++) {
-                if (arrayStore.get(i).getBrdName().equalsIgnoreCase(BrandName)) {
-                    dummyarr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming()));
-                }
-            }
-            ArrayList<String> timesMax = new ArrayList<>();
-            ArrayList<String> timesMin = new ArrayList<>();
-            for (int i1 = 0; i1 < dummyarr.size(); i1++) {
-                StoreImageTypeUrl mm1 = dummyarr.get(i1);
-                JSONArray jj = new JSONArray(mm1.getTiming());
-
-                if (jj.length() > 0) {
-                    JSONObject jsr = jj.getJSONObject(jj.length() - 1);
-                    timesMax.add(jsr.getString("eT"));
-                    timesMin.add(jsr.getString("sT"));
-                }
-            }
-            String timesMaxnew = timesMax.toString().replace("[", "").replace("]", "");
-            String timesMinnew = timesMin.toString().replace("[", "").replace("]", "");
-
-            String[] allTimesMax = timesMaxnew.replaceAll(" ", "").split(",");
-            String[] allTimesMin = timesMinnew.replaceAll(" ", "").split(",");
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                maxTime = Stream.of(allTimesMax).max(String::compareTo).get();
-                minTime = Stream.of(allTimesMin).min(String::compareTo).get();
-            }
-
-            return maxTime;
-        } catch (Exception ignored) {
-        }
-        return maxTime;
-    }
-
-    public String gettingProductStartEndTime1(String jsonvalue, int i) {
-        String finalTime = null;
-        StoreImageTypeUrl mm, mm1, mm2;
-        try {
-            JSONArray json = new JSONArray(jsonvalue);
-            JSONArray json2 = new JSONArray(jsonvalue);
-            mm = arrayStore.get(i);
-            json = new JSONArray(mm.getRemTime());
-            JSONObject jjj = json.getJSONObject(0);
-            Log.v("last_value_time", jjj.getString("sT"));
-            startT = jjj.getString("sT");
-            //  finalTime = startT + " " + jjj.getString("eT");
-            finalTime = startT;
-            if (i == arrayStore.size() - 1) {
-                mm1 = arrayStore.get(arrayStore.size() - 1);
-                json = new JSONArray(mm1.getRemTime());
-                JSONObject jj = json.getJSONObject(0);
-                endT = jj.getString("eT");
-                for (int j = 0; j < i; j++) {
-                    if (arrayStore.get(j).getBrdName().equals(mm1.getBrdName())) {
-                        mm2 = arrayStore.get(j);
-                        json2 = new JSONArray(mm2.getRemTime());
-                        JSONObject jj2 = json2.getJSONObject(0);
-                        Log.v("first_value_time", jj2.getString("sT"));
-                        startT = jj2.getString("sT");
-                        break;
-                    }
-                }
-                //finalTime = startT + " " + endT;
-                finalTime = startT;
-            }
-            // }
-            Log.v("last_finall", "----" + finalTime);
-            return finalTime;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return finalTime;
-    }
-
-    public String gettingProductStartEndTime(String jsonvalue, int i) {
-        String finalTime = null;
-        StoreImageTypeUrl mm, mm1;
-        try {
-            JSONArray json;
-            if (i != 0) {
-
-                mm1 = arrayStore.get(i - 1);
-                json = new JSONArray(mm1.getRemTime());
-                JSONObject jj = json.getJSONObject(0);
-                endT = jj.getString("eT");
-            }
-            finalTime = startT;
-            mm = arrayStore.get(i);
-            json = new JSONArray(mm.getRemTime());
-            JSONObject jj = json.getJSONObject(0);
-            Log.v("last_value_timemid", jj.getString("sT"));
-            startT = jj.getString("sT");
-            if (arrayStore.size() == 1) {
-                mm = arrayStore.get(i);
-                json = new JSONArray(mm.getRemTime());
-                JSONObject jjj = json.getJSONObject(0);
-                Log.v("last_value_time", jjj.getString("sT"));
-                startT = jjj.getString("sT");
-                finalTime = startT;
-            }
-            return finalTime;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return finalTime;
-    }
 
     public String findingEndTime(int k) {
         if (checkForLastSlide(k)) {

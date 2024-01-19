@@ -11,6 +11,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -145,6 +146,21 @@ public interface ApiInterface {
     @POST("?axn=save/approvals")
         //Send DCR Reject
     Call<JsonObject> sendDCRReject(@Field("data") String SendDcrReject);
+
+    @FormUrlEncoded
+    @POST("?axn=table/additionaldcrmasterdata")
+    //TodayCalls
+    Call<JsonArray> getTodayCalls(@Field("data") String GetTodayCalls);
+
+    @FormUrlEncoded
+    @POST("?axn=edit/dcr")
+        //EditCalls
+    Call<JsonObject> getEditCallDetails(@Field("data") String GetEditCallDetails);
+
+    @FormUrlEncoded
+    @POST("?axn=delete/dcr")
+        //DeleteCalls
+    Call<ResponseBody> DeleteCall(@Field("data") String DeleteCall);
 
     @FormUrlEncoded
     @POST("?axn=home")

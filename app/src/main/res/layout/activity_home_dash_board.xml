@@ -456,6 +456,23 @@
 
 
         <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view_mr"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/background_navicationview"
+            android:foregroundGravity="center"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            app:itemBackground="@drawable/drawer_item_bg"
+            app:itemIconSize="@dimen/_10sdp"
+            android:visibility="gone"
+            app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
+            app:itemTextColor="@color/black_45"
+            app:menu="@menu/activity_navigation_drawer_mr" />
+
+
+        <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -464,6 +481,7 @@
             android:foregroundGravity="center"
             android:paddingStart="@dimen/_8sdp"
             android:paddingEnd="@dimen/_8sdp"
+            android:visibility="gone"
             app:itemBackground="@drawable/drawer_item_bg"
             app:itemIconSize="@dimen/_10sdp"
             app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"

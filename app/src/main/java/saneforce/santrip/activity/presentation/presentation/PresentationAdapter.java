@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.presentation.presentation;
 
+import static saneforce.santrip.activity.presentation.presentation.PresentationActivity.binding;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.from_where;
 
 import android.annotation.SuppressLint;
@@ -94,7 +95,7 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                 if (from_where.equalsIgnoreCase("call")) {
                     for (int i = 0; i < arrayList.size(); i++) {
                         for (int j = 0; j < arrayList.get(i).getProducts().size(); j++) {
-                            productsList.add(new BrandModelClass.Product(arrayList.get(i).getPresentationName(),arrayList.get(i).getProducts().get(j).getBrandName(),arrayList.get(i).getProducts().get(j).getBrandCode(), arrayList.get(i).getProducts().get(j).getSlideId()
+                            productsList.add(new BrandModelClass.Product(arrayList.get(i).getPresentationName(), arrayList.get(i).getProducts().get(j).getBrandName(), arrayList.get(i).getProducts().get(j).getBrandCode(), arrayList.get(i).getProducts().get(j).getSlideId()
                                     , arrayList.get(i).getProducts().get(j).getSlideName(), arrayList.get(i).getProducts().get(j).getPriority(), arrayList.get(i).getProducts().get(j).isImageSelected()));
                         }
                     }
@@ -147,6 +148,15 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     removeAt(position);
                     sqLite.presentationDelete(presentation.getPresentationName());
+                    ArrayList<BrandModelClass.Presentation> savedPresentation;
+                    savedPresentation = sqLite.getPresentationData();
+                    if (savedPresentation.size() > 0) {
+                        binding.constraintNoData.setVisibility(View.GONE);
+                        binding.presentationRecView.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.constraintNoData.setVisibility(View.VISIBLE);
+                        binding.presentationRecView.setVisibility(View.GONE);
+                    }
                 }
                 return true;
             });

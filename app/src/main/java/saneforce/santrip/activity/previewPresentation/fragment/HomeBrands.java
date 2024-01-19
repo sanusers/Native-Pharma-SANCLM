@@ -25,7 +25,7 @@ import saneforce.santrip.storage.SQLite;
 public class HomeBrands extends Fragment {
     FragmentHomePreviewBinding homePreviewBinding;
     SQLite sqLite;
-    ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
+    public static ArrayList<BrandModelClass> SlideHomeBrandList = new ArrayList<>();
     ArrayList<String> brandCodeList = new ArrayList<>();
     PreviewAdapter previewAdapter;
 
@@ -42,12 +42,14 @@ public class HomeBrands extends Fragment {
 
     private void getRequiredData() {
         try {
+            SlideHomeBrandList.clear();
+            brandCodeList.clear();
             JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
             JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
 
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
-                String brandName = "";
+                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
 
@@ -56,10 +58,10 @@ public class HomeBrands extends Fragment {
                     JSONObject productObject = prodSlide.getJSONObject(j);
                     if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
                         brandName = productObject.getString("Name");
-                        String code = productObject.getString("Code");
-                        String slideId = productObject.getString("SlideId");
-                        String fileName = productObject.getString("FilePath");
-                        String slidePriority = productObject.getString("Priority");
+                        code = productObject.getString("Code");
+                        slideId = productObject.getString("SlideId");
+                        fileName = productObject.getString("FilePath");
+                        slidePriority = productObject.getString("Priority");
                         BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
                         productArrayList.add(product);
                     }
@@ -67,16 +69,21 @@ public class HomeBrands extends Fragment {
                 boolean brandSelected = i == 0;
                 if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) {  //To avoid repeated of same brand
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
-                    brandProductArrayList.add(brandModelClass);
+                    SlideHomeBrandList.add(brandModelClass);
                     brandCodeList.add(brandCode);
                 }
             }
 
-
-            previewAdapter = new PreviewAdapter(requireContext(), brandProductArrayList);
-            homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-            homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
-
+            if (SlideHomeBrandList.size() > 0) {
+                homePreviewBinding.constraintNoData.setVisibility(View.GONE);
+                homePreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
+                previewAdapter = new PreviewAdapter(requireContext(), SlideHomeBrandList);
+                homePreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+                homePreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            } else {
+                homePreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
+                homePreviewBinding.rvBrandList.setVisibility(View.GONE);
+            }
 
         } catch (Exception ignored) {
 

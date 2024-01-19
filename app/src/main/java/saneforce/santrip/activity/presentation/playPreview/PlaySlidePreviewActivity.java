@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.widget.MediaController;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -88,22 +89,31 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
             }
         });
 
-        binding.upArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.upArrow.setVisibility(View.GONE);
+        binding.upArrow.setOnClickListener(view -> {
+            if (binding.bottomLayout.getVisibility() == View.VISIBLE) {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.arrow_up_white));
+                binding.upArrow.setVisibility(View.VISIBLE);
+                binding.bottomLayout.setVisibility(View.GONE);
+                binding.closeBtn.setVisibility(View.GONE);
+            } else {
+                binding.imgUpDown.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.arrow_down_white));
+                binding.upArrow.setVisibility(View.VISIBLE);
                 binding.bottomLayout.setVisibility(View.VISIBLE);
-                bottomPreviewAdapter.notifyDataSetChanged();
+                binding.closeBtn.setVisibility(View.GONE);
             }
+            bottomPreviewAdapter.notifyDataSetChanged();
         });
 
-        binding.closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getOnBackPressedDispatcher().onBackPressed();
-               /* binding.bottomLayout.setVisibility(View.GONE);
-                binding.upArrow.setVisibility(View.VISIBLE);*/
-            }
+        binding.upArrow.setOnClickListener(view -> {
+            binding.upArrow.setVisibility(View.GONE);
+            binding.bottomLayout.setVisibility(View.VISIBLE);
+            bottomPreviewAdapter.notifyDataSetChanged();
+        });
+
+        binding.closeBtn.setOnClickListener(view -> {
+            getOnBackPressedDispatcher().onBackPressed();
+           /* binding.bottomLayout.setVisibility(View.GONE);
+            binding.upArrow.setVisibility(View.VISIBLE);*/
         });
 
         binding.exitBtn.setOnClickListener(new View.OnClickListener() {

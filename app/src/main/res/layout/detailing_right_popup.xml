@@ -141,18 +141,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/_2sdp"
             android:fontFamily="@font/satoshi_medium"
             android:text="@string/stop"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
-            android:src="@drawable/stop"
-            android:visibility="gone" />
+            android:layout_marginTop="@dimen/_3sdp"
+            android:src="@mipmap/stop_img"
+            android:visibility="visible" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,6 +61,8 @@
                     android:layout_width="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingHorizontal="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_3sdp"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/_10sdp"

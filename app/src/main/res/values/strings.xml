@@ -158,6 +158,7 @@
     <string name="other_wt">Other WorkType</string>
     <string name="toast_enter_reason_for_reject">Enter reason for Reject</string>
     <string name="toast_enter_remarks">Enter Remarks</string>
+    <string name="toast_enter_feedback">Enter Feedback</string>
 
     <string name="app_version" translatable="false">1.0.0</string>
     <string name="apply">Apply</string>
@@ -204,5 +205,13 @@
     <string name="type_your_feedback_here">Type your Feedback here</string>
     <string name="scribble">Scribble</string>
     <string name="stop">Stop</string>
+    <string name="brand_matrix">Brand Matrix</string>
+    <string name="custom_presentation">Custom Presentation</string>
+    <string name="select_listed_doctor_to_view_content">Select listed doctor to view content</string>
+    <string name="no_customized_presentation_found">No customized presentation found</string>
+    <string name="no_slides_found">No slides found</string>
+    <string name="no_presentation_found">No presentation found!</string>
+    <string name="type_your_feedback">Type your feedback</string>
+    <string name="no_slides_available">No slides Available!</string>
 
 </resources>

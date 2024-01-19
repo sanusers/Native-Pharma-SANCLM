@@ -9,13 +9,14 @@ import static saneforce.santrip.activity.previewPresentation.PreviewActivity.pre
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -23,7 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import saneforce.santrip.R;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.santrip.commonClasses.Constants;
@@ -34,7 +38,7 @@ public class Speciality extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSpecialityPreviewBinding specialityPreviewBinding;
     SQLite sqLite;
-    public static ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
+    public static ArrayList<BrandModelClass> SlideSpecialityList = new ArrayList<>();
     public static ArrayList<String> brandCodeList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static PreviewAdapter previewAdapter;
@@ -50,13 +54,16 @@ public class Speciality extends Fragment {
         if (from_where.equalsIgnoreCase("call")) {
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.GONE);
             if (CusType.equalsIgnoreCase("1")) {
-                Log.v("gfddf",SpecialityCode);
                 getSelectedSpec(requireContext(), sqLite, SpecialityCode);
             } else {
                 getRequiredData();
             }
         } else {
+            specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
+            specialityPreviewBinding.rvBrandList.setVisibility(View.GONE);
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.VISIBLE);
+            specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
+            specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
         }
 
         specialityPreviewBinding.tvSelectDoctor.setOnClickListener(v1 -> {
@@ -64,17 +71,42 @@ public class Speciality extends Fragment {
             previewBinding.fragmentSelectDrSide.setVisibility(View.VISIBLE);
         });
 
+        specialityPreviewBinding.tvAz.setOnClickListener(v13 -> {
+            specialityPreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_left_radius));
+            specialityPreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            specialityPreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_right));
+            specialityPreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+            specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
+        });
+
+        specialityPreviewBinding.tvZa.setOnClickListener(v12 -> {
+            specialityPreviewBinding.tvZa.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_purple_right_radius));
+            specialityPreviewBinding.tvZa.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            specialityPreviewBinding.tvAz.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.bg_white_left));
+            specialityPreviewBinding.tvAz.setTextColor(ContextCompat.getColor(requireContext(), R.color.dark_purple));
+            previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+            specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            Collections.sort(SlideSpecialityList, Collections.reverseOrder(new BrandMatrix.SortByName()));
+        });
+
         return v;
     }
 
+
     private void getRequiredData() {
         try {
+            SlideSpecialityList.clear();
+            brandCodeList.clear();
             JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
             JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
 
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
-                String brandName = "";
+                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
                 String brandCode = brandObject.getString("Product_Brd_Code");
                 String priority = brandObject.getString("Priority");
 
@@ -83,10 +115,10 @@ public class Speciality extends Fragment {
                     JSONObject productObject = prodSlide.getJSONObject(j);
                     if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
                         brandName = productObject.getString("Name");
-                        String code = productObject.getString("Code");
-                        String slideId = productObject.getString("SlideId");
-                        String fileName = productObject.getString("FilePath");
-                        String slidePriority = productObject.getString("Priority");
+                        code = productObject.getString("Code");
+                        slideId = productObject.getString("SlideId");
+                        fileName = productObject.getString("FilePath");
+                        slidePriority = productObject.getString("Priority");
                         BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
                         productArrayList.add(product);
                     }
@@ -94,15 +126,28 @@ public class Speciality extends Fragment {
                 boolean brandSelected = i == 0;
                 if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) {  //To avoid repeated of same brand
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
-                    brandProductArrayList.add(brandModelClass);
+                    SlideSpecialityList.add(brandModelClass);
                     brandCodeList.add(brandCode);
                 }
             }
 
-
-            previewAdapter = new PreviewAdapter(requireContext(), brandProductArrayList);
-            specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-            specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
+            if (SlideSpecialityList.size() > 0) {
+                specialityPreviewBinding.constraintNoData.setVisibility(View.GONE);
+                specialityPreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
+                specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
+                specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
+                specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
+                previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
+                specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+                specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
+                Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
+            } else {
+                specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
+                specialityPreviewBinding.constraintSortFilter.setVisibility(View.GONE);
+                specialityPreviewBinding.rvBrandList.setVisibility(View.GONE);
+                specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
+                specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
+            }
 
         } catch (Exception ignored) {
 
@@ -111,7 +156,7 @@ public class Speciality extends Fragment {
 
     public static void getSelectedSpec(Context context, SQLite sqLite, String selectedSpecialityCode) {
         try {
-            brandProductArrayList.clear();
+            SlideSpecialityList.clear();
             brandCodeList.clear();
             JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
             JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
@@ -123,6 +168,7 @@ public class Speciality extends Fragment {
                 String priority = brandObject.getString("Priority");
 
                 ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
+                ArrayList<BrandModelClass.Product> productArrayListAll = new ArrayList<>();
                 for (int j = 0; j < prodSlide.length(); j++) {
                     JSONObject productObject = prodSlide.getJSONObject(j);
                     if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
@@ -141,16 +187,32 @@ public class Speciality extends Fragment {
                 boolean brandSelected = i == 0;
                 if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) { //To avoid repeated of same brand
                     BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
-                    brandProductArrayList.add(brandModelClass);
+                    SlideSpecialityList.add(brandModelClass);
                     brandCodeList.add(brandCode);
                 }
             }
 
-
-            previewAdapter = new PreviewAdapter(context, brandProductArrayList);
-            specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
-            specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
-
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(specialityPreviewBinding.rvBrandList.getWindowToken(), 0);
+            if (SlideSpecialityList.size() > 0) {
+                specialityPreviewBinding.constraintNoData.setVisibility(View.GONE);
+                specialityPreviewBinding.constraintSortFilter.setVisibility(View.VISIBLE);
+                specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
+                if (from_where.equalsIgnoreCase("call")) {
+                    specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
+                    specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
+                }
+                previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
+                specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
+                specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
+                Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
+            } else {
+                specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
+                specialityPreviewBinding.constraintSortFilter.setVisibility(View.GONE);
+                specialityPreviewBinding.rvBrandList.setVisibility(View.GONE);
+                specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
+                specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
+            }
 
         } catch (Exception ignored) {
 

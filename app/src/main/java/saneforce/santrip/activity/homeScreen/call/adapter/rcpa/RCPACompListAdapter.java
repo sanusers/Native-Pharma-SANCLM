@@ -214,6 +214,8 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                     }
                     dialogRemarks.dismiss();
                     holder.img_remarks.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.img_remarks_0));
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
                 } else {
                     Toast.makeText(context, context.getResources().getText(R.string.toast_enter_remarks), Toast.LENGTH_SHORT).show();
                 }

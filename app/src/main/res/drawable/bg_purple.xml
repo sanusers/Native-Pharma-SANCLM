@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <corners
-        android:radius="5dp" />
-    <solid
-        android:color="@color/dark_purple"/>
+    <corners android:radius="5dp" />
+    <solid android:color="@color/dark_purple" />
 </shape>
-<!--
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item>
-        <shape android:shape="rectangle">
-            <corners
-             android:radius="@dimen/_6sdp"/>
-        </shape>
-    </item>
-   &lt;!&ndash; <item android:drawable="@drawable/right_arrow" />&ndash;&gt;
-</layer-list>-->
+

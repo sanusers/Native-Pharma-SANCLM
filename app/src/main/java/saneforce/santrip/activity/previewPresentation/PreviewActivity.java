@@ -1,8 +1,14 @@
 package saneforce.santrip.activity.previewPresentation;
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.arrayStore;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.BottomLayoutHeadAdapter.SelectedPosPlay;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.headingData;
+import static saneforce.santrip.activity.homeScreen.call.fragments.DetailedFragment.callDetailingLists;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.OnBackPressedDispatcher;
@@ -10,13 +16,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Stream;
 
+import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
+import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix;
@@ -24,6 +38,7 @@ import saneforce.santrip.activity.previewPresentation.fragment.Customized;
 import saneforce.santrip.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.santrip.activity.previewPresentation.fragment.Speciality;
 import saneforce.santrip.activity.profile.CustomerProfile;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.storage.SQLite;
 
@@ -32,6 +47,10 @@ public class PreviewActivity extends AppCompatActivity {
     public static saneforce.santrip.databinding.ActivityPreviewBinding previewBinding;
     PreviewTabAdapter viewPagerAdapter;
     SQLite sqLite;
+    String finalPrdNam;
+    ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
+    String startT, endT;
+    public static ArrayList<String> PresentationHeads = new ArrayList<>();
 
     public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "", BrandCode = "", SlideCode = "", CusType = "";
 
@@ -47,6 +66,8 @@ public class PreviewActivity extends AppCompatActivity {
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         sqLite = new SQLite(getApplicationContext());
+        callDetailingLists = new ArrayList<>();
+        arrayStore = new ArrayList<>();
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -63,31 +84,55 @@ public class PreviewActivity extends AppCompatActivity {
             }
         }
 
-        getRequiredData();
-
         viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
 
         if (from_where.equalsIgnoreCase("call")) {
+            headingData.clear();
             if (CusType.equalsIgnoreCase("1")) {
-                viewPagerAdapter.add(new HomeBrands(), "Home");
-                viewPagerAdapter.add(new BrandMatrix(), "Brand Matrix");
-                viewPagerAdapter.add(new Speciality(), "Speciality");
-                viewPagerAdapter.add(new Customized(), "Custom Presentation");
+                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.specialist));
+                viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                headingData.add("A");
+                headingData.add("B");
+                headingData.add("C");
+                headingData.add("D");
             } else {
-                viewPagerAdapter.add(new HomeBrands(), "Home");
-                viewPagerAdapter.add(new Speciality(), "Speciality");
-                viewPagerAdapter.add(new Customized(), "Custom Presentation");
+                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                headingData.add("A");
+                headingData.add("C");
+                headingData.add("D");
             }
         } else {
-            viewPagerAdapter.add(new HomeBrands(), "Home");
-            viewPagerAdapter.add(new BrandMatrix(), "Brand Matrix");
-            viewPagerAdapter.add(new Speciality(), "Speciality");
-            viewPagerAdapter.add(new Customized(), "Custom Presentation");
+            viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+            viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.specialist));
+            viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
         }
 
         previewBinding.viewPager.setAdapter(viewPagerAdapter);
         previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
         previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+        //  previewBinding.viewPager.setOffscreenPageLimit(0);
+
+        previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                SelectedPosPlay = tab.getPosition();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         previewBinding.ivBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -101,19 +146,146 @@ public class PreviewActivity extends AppCompatActivity {
             }
         });
 
-        previewBinding.btnFinishDet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
-                intent1.putExtra("isDetailedRequired", "true");
-                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent1);
+        previewBinding.btnFinishDet.setOnClickListener(v -> {
+            Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
+            for (int j = 0; j < arrayStore.size(); j++) {
+                if (j == 0) {
+                    gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j);
+                    finalPrdNam = arrayStore.get(j).getBrdName();
+                } else if (finalPrdNam.equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
+                } else {
+                    String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
+                    if (time.contains("00:00:00")) {
+                      /* int finalTime = Integer.parseInt(time.substring(8,8)) + 1;
+                       Log.v("printing_all_time", "----" + finalTime);*/
+                        time = time.replace("00:00:00", time.substring(0, 8));
+                        Log.v("printing_all_time", "----" + time);
+                    }
+                    Log.v("printing_all_time", time);
+                    callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentDate()));
+                    finalPrdNam = arrayStore.get(j).getBrdName();
+                }
             }
+
+            if (arrayStore.size() > 0) {
+                String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
+                callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentDate()));
+            }
+            Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
+            intent1.putExtra("isDetailedRequired", "true");
+            intent1.putExtra("from_activity", "new");
+            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent1);
         });
-
     }
 
-    private void getRequiredData() {
 
+    public String gettingProductTiming(String BrandName) {
+        String maxTime = null;
+        String minTime = null;
+        dummyArr.clear();
+        try {
+            for (int i = 0; i < arrayStore.size(); i++) {
+                if (arrayStore.get(i).getBrdName().equalsIgnoreCase(BrandName)) {
+                    dummyArr.add(new StoreImageTypeUrl(arrayStore.get(i).getScribble(), arrayStore.get(i).getSlideNam(), arrayStore.get(i).getSlideTyp(), arrayStore.get(i).getSlideUrl(), arrayStore.get(i).getRemTime(), arrayStore.get(i).getSlideComments(), arrayStore.get(i).getTiming()));
+                }
+            }
+            ArrayList<String> timesMax = new ArrayList<>();
+            ArrayList<String> timesMin = new ArrayList<>();
+            for (int i1 = 0; i1 < dummyArr.size(); i1++) {
+                StoreImageTypeUrl mm1 = dummyArr.get(i1);
+                JSONArray jj = new JSONArray(mm1.getTiming());
+
+                if (jj.length() > 0) {
+                    JSONObject jsr = jj.getJSONObject(jj.length() - 1);
+                    timesMax.add(jsr.getString("eT"));
+                    timesMin.add(jsr.getString("sT"));
+                }
+            }
+            String timesMaxnew = timesMax.toString().replace("[", "").replace("]", "");
+            String timesMinnew = timesMin.toString().replace("[", "").replace("]", "");
+
+            String[] allTimesMax = timesMaxnew.replaceAll(" ", "").split(",");
+            String[] allTimesMin = timesMinnew.replaceAll(" ", "").split(",");
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                maxTime = Stream.of(allTimesMax).max(String::compareTo).get();
+                minTime = Stream.of(allTimesMin).min(String::compareTo).get();
+            }
+
+            return maxTime;
+        } catch (Exception ignored) {
+        }
+        return maxTime;
     }
+
+    public String gettingProductStartEndTime1(String jsonvalue, int i) {
+        String finalTime = null;
+        StoreImageTypeUrl mm, mm1, mm2;
+        try {
+            JSONArray json = new JSONArray(jsonvalue);
+            JSONArray json2 = new JSONArray(jsonvalue);
+            mm = arrayStore.get(i);
+            json = new JSONArray(mm.getRemTime());
+            JSONObject jjj = json.getJSONObject(0);
+            Log.v("last_value_time", jjj.getString("sT"));
+            startT = jjj.getString("sT");
+            //  finalTime = startT + " " + jjj.getString("eT");
+            finalTime = startT;
+            if (i == arrayStore.size() - 1) {
+                mm1 = arrayStore.get(arrayStore.size() - 1);
+                json = new JSONArray(mm1.getRemTime());
+                JSONObject jj = json.getJSONObject(0);
+                endT = jj.getString("eT");
+                for (int j = 0; j < i; j++) {
+                    if (arrayStore.get(j).getBrdName().equals(mm1.getBrdName())) {
+                        mm2 = arrayStore.get(j);
+                        json2 = new JSONArray(mm2.getRemTime());
+                        JSONObject jj2 = json2.getJSONObject(0);
+                        startT = jj2.getString("sT");
+                        break;
+                    }
+                }
+                finalTime = startT;
+            }
+            return finalTime;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return finalTime;
+    }
+
+    public String gettingProductStartEndTime(String jsonvalue, int i) {
+        String finalTime = null;
+        StoreImageTypeUrl mm, mm1;
+        try {
+            JSONArray json;
+            if (i != 0) {
+
+                mm1 = arrayStore.get(i - 1);
+                json = new JSONArray(mm1.getRemTime());
+                JSONObject jj = json.getJSONObject(0);
+                endT = jj.getString("eT");
+            }
+            finalTime = startT;
+            mm = arrayStore.get(i);
+            json = new JSONArray(mm.getRemTime());
+            JSONObject jj = json.getJSONObject(0);
+            Log.v("last_value_timemid", jj.getString("sT"));
+            startT = jj.getString("sT");
+            if (arrayStore.size() == 1) {
+                mm = arrayStore.get(i);
+                json = new JSONArray(mm.getRemTime());
+                JSONObject jjj = json.getJSONObject(0);
+                Log.v("last_value_time", jjj.getString("sT"));
+                startT = jjj.getString("sT");
+                finalTime = startT;
+            }
+            return finalTime;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return finalTime;
+    }
+
 }

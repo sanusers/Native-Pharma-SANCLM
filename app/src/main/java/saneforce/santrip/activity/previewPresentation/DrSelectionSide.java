@@ -9,6 +9,7 @@ import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCal
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.StateCode;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SubDivisionCode;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SelectedTab;
+import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SpecialityCode;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.brandMatrixBinding;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.getSelectedMatrix;
@@ -18,11 +19,14 @@ import static saneforce.santrip.activity.previewPresentation.fragment.Speciality
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +51,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.Constants;
@@ -84,16 +90,42 @@ public class DrSelectionSide extends Fragment {
         drSelectionSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
-        drSelectionSideBinding.imgClose.setOnClickListener(new View.OnClickListener() {
+        drSelectionSideBinding.imgClose.setOnClickListener(v1 -> {
+            drSelectionSideBinding.searchList.setText("");
+            drSelectionSideBinding.selectListView.scrollToPosition(0);
+            previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
+        });
+
+
+        drSelectionSideBinding.searchList.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                drSelectionSideBinding.searchList.setText("");
-                drSelectionSideBinding.selectListView.scrollToPosition(0);
-                previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
             }
         });
 
         return v;
+    }
+
+
+    private void filter(String text) {
+        ArrayList<CustList> filteredNames = new ArrayList<>();
+        for (CustList s : callDrList) {
+            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
+                filteredNames.add(s);
+            }
+        }
+        selectDoctorAdapter.filterList(filteredNames);
     }
 
     private void SetDrAdapter() {
@@ -126,6 +158,7 @@ public class DrSelectionSide extends Fragment {
                 }
             }
 
+
             selectDoctorAdapter = new SelectDoctorAdapter(requireContext(), callDrList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             drSelectionSideBinding.selectListView.setLayoutManager(mLayoutManager);
@@ -153,41 +186,6 @@ public class DrSelectionSide extends Fragment {
         subString = ss1.toString();
         return subString;
     }
-
-
-  /*  public String extractValues(String s, String data) {
-        if (TextUtils.isEmpty(s)) return "";
-
-        String[] clstarrrayqty = s.split("#");
-// Log.v("DcrDetail_extract", "products--000--" + clstarrray1[0] + "----" + clstarrray1[1]);
-        StringBuilder ss1 = new StringBuilder();
-
-        for (String value : clstarrrayqty) {
-            Log.v("DcrDetail_extract", "product_inputs_qty--111--" + value);
-            if (data.equalsIgnoreCase("sample")) {
-                ss1.append(value.substring(value.indexOf("~") + 1));
-                ss1 = new StringBuilder(ss1.toString().replace("$0^0", "") + ",");
-                int index = ss1.indexOf("$");
-                ss1 = new StringBuilder(ss1.substring(0, index) + ",");
-            } else if (data.equalsIgnoreCase("Rx")) {
-                ss1.append(value.substring(value.indexOf("$") + 1));
-                ss1 = new StringBuilder(ss1.toString().replace("$0^0", "") + ",");
-            } else if (data.equalsIgnoreCase("input")) {
-                ss1.append(value.substring(value.indexOf("~") + 1)).append(",");
-            } else if (data.equalsIgnoreCase("names") || data.equalsIgnoreCase("codes")) {
-                ss1.append(value.substring(0, value.indexOf("~"))).append(",");
-            } else if (data.equalsIgnoreCase("stockistname")) {
-                ss1.append(value.substring(0, value.indexOf("^")).substring(value.lastIndexOf("~") + 1)).append(",");
-            } else if (data.equalsIgnoreCase("stockistcode")) {
-                ss1.append(value.substring(value.indexOf("^") + 1)).append(",");
-            }
-            Log.v("DcrDetail_extract", "product_inputs_qty--222--" + ss1);
-        }
-        String finalValue = "";
-        finalValue = ss1.substring(0, ss1.length() - 1);
-        Log.v("DcrDetail_extract", "product_inputs_qty--333--" + finalValue);
-        return finalValue;
-    }*/
 
     public void prepareMasterToSync(String hqCode) {
         masterSyncArray.clear();
@@ -317,6 +315,12 @@ public class DrSelectionSide extends Fragment {
         @Override
         public int getItemCount() {
             return callDrList.size();
+        }
+
+        @SuppressLint("NotifyDataSetChanged")
+        public void filterList(ArrayList<CustList> filteredNames) {
+            this.callDrList = filteredNames;
+            notifyDataSetChanged();
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {

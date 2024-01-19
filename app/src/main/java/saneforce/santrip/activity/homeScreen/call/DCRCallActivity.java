@@ -85,14 +85,14 @@ import saneforce.santrip.storage.SharedPref;
 public class DCRCallActivity extends AppCompatActivity {
 
     public static ArrayList<CustList> CallActivityCustDetails;
-    public static ArrayList<StoreImageTypeUrl> arrayStore = new ArrayList<>();
+    public static ArrayList<StoreImageTypeUrl> arrayStore;
     ArrayList<StoreImageTypeUrl> arr = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrcallBinding dcrCallBinding;
     public static String PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
-    public static String isClickedInput;
+    public static String isFromActivity;
     String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode;
     DCRCallTabLayoutAdapter viewPagerAdapter;
     CommonUtilsMethods commonUtilsMethods;
@@ -106,6 +106,7 @@ public class DCRCallActivity extends AppCompatActivity {
     String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, PrdMandatory, InpMandatory, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, RCPAWOSample;
     double lat, lng;
     ApiInterface api_interface;
+    boolean isCreateJsonSuccess;
     public static String isDetailingRequired;
 
 
@@ -127,6 +128,7 @@ public class DCRCallActivity extends AppCompatActivity {
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             isDetailingRequired = extra.getString("isDetailedRequired");
+            isFromActivity = extra.getString("from_activity");
         }
 
         getRequiredData();
@@ -173,11 +175,6 @@ public class DCRCallActivity extends AppCompatActivity {
         dcrCallBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (Objects.requireNonNull(tab.getText()).toString().equalsIgnoreCase(capInp)) {
-                    isClickedInput = "Input";
-                } else if (tab.getText().toString().equalsIgnoreCase("Additional Calls")) {
-                    isClickedInput = "Additional Call";
-                }
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(dcrCallBinding.tabLayout.getWindowToken(), 0);
             }
@@ -202,9 +199,13 @@ public class DCRCallActivity extends AppCompatActivity {
         dcrCallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
 
         dcrCallBinding.ivBack.setOnClickListener(view -> {
-            Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            if (isFromActivity.equalsIgnoreCase("new")) {
+                Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } else {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
@@ -214,14 +215,63 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
-            //  progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
+            isCreateJsonSuccess = true;
+            progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
             if (CheckRequiredFunctions() && CheckCurrentLoc()) {
+                CallUploadImage();
                 CreateJsonFileCall();
-                // CallSaveDcrAPI(jsonSaveDcr.toString());
+                if (isCreateJsonSuccess) {
+                    sqLite.saveOfflineCall(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString());
+                    CallSaveDcrAPI(jsonSaveDcr.toString());
+                }
             } else {
                 progressDialog.dismiss();
             }
         });
+    }
+
+    private void CallUploadImage() {
+        JSONObject jsonImage = new JSONObject();
+        try {
+            jsonImage.put("tableName", "uploadphoto");
+            jsonImage.put("sfcode", SfCode);
+            jsonImage.put("division_code", DivCode);
+            jsonImage.put("Rsf", TodayPlanSfCode);
+            jsonImage.put("sf_type", SfType);
+            jsonImage.put("Designation", Designation);
+            jsonImage.put("state_code", StateCode);
+            jsonImage.put("subdivision_code", SubDivisionCode);
+        } catch (Exception ignored) {
+
+        }
+        if (callCaptureImageLists.size() > 0) {
+            for (int i = 0; i < callCaptureImageLists.size(); i++) {
+                Log.v("ImgUpload", callCaptureImageLists.get(i).getFilePath());
+                MultipartBody.Part img = convertImg("EventImg", callCaptureImageLists.get(i).getFilePath());
+                HashMap<String, RequestBody> values = field(jsonImage.toString());
+                Call<JsonObject> saveImgDcr = api_interface.saveImgDcr(values, img);
+                saveImgDcr.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            try {
+                                assert response.body() != null;
+                                JSONObject json = new JSONObject(response.body().toString());
+                                Log.v("ImgUpload", json.toString());
+                                json.getString("success");// Toast.makeText(DCRCallActivity.this, "Picture Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                            } catch (Exception ignored) {
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+
+                    }
+                });
+            }
+        }
     }
 
     public boolean CheckRequiredFunctions() {
@@ -453,50 +503,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void CallSaveDcrAPI(String jsonSaveDcr) {
-        // progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
         Log.v("callSave", "---" + jsonSaveDcr);
-        JSONObject jsonImage = new JSONObject();
-        try {
-            jsonImage.put("tableName", "uploadphoto");
-            jsonImage.put("sfcode", SfCode);
-            jsonImage.put("division_code", DivCode);
-            jsonImage.put("Rsf", TodayPlanSfCode);
-            jsonImage.put("sf_type", SfType);
-            jsonImage.put("Designation", Designation);
-            jsonImage.put("state_code", StateCode);
-            jsonImage.put("subdivision_code", SubDivisionCode);
-        } catch (Exception ignored) {
-
-        }
-        if (callCaptureImageLists.size() > 0) {
-            for (int i = 0; i < callCaptureImageLists.size(); i++) {
-                Log.v("ImgUpload", callCaptureImageLists.get(i).getFilePath());
-                MultipartBody.Part img = convertImg("EventImg", callCaptureImageLists.get(i).getFilePath());
-                HashMap<String, RequestBody> values = field(jsonImage.toString());
-                Call<JsonObject> saveImgDcr = api_interface.saveImgDcr(values, img);
-                saveImgDcr.enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                        if (response.isSuccessful()) {
-                            try {
-                                assert response.body() != null;
-                                JSONObject json = new JSONObject(response.body().toString());
-                                Log.v("ImgUpload", json.toString());
-                                json.getString("success");// Toast.makeText(DCRCallActivity.this, "Picture Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                            } catch (Exception ignored) {
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-
-                    }
-                });
-            }
-        }
-
         Call<JsonObject> callSaveDcr;
         callSaveDcr = api_interface.saveDcr(jsonSaveDcr);
         callSaveDcr.enqueue(new Callback<JsonObject>() {
@@ -659,8 +666,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 json_product.put("Code", DetailedFragment.callDetailingLists.get(i).getBrandCode());
                 json_product.put("Name", DetailedFragment.callDetailingLists.get(i).getBrandName());
                 json_product.put("Group", "1");
-                json_product.put("ProdFeedbk", "");
-                json_product.put("Rating", "");
+                json_product.put("ProdFeedbk", DetailedFragment.callDetailingLists.get(i).getFeedback());
+                json_product.put("Rating", DetailedFragment.callDetailingLists.get(i).getRating());
                 JSONObject json_date1 = new JSONObject();
                 json_date1.put("sTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + DetailedFragment.callDetailingLists.get(i).getSt_end_time().substring(0, (DetailedFragment.callDetailingLists.get(i).getSt_end_time().indexOf(" "))));
                 json_date1.put("eTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + DetailedFragment.callDetailingLists.get(i).getSt_end_time().substring((DetailedFragment.callDetailingLists.get(i).getSt_end_time().indexOf(" ")) + 1));
@@ -676,7 +683,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 for (int j = 0; j < arrayStore.size(); j++) {
                     if (DetailedFragment.callDetailingLists.get(i).getBrandName().equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
-                        Log.v("fdsdfsd","----" + arrayStore.get(j).getScribble() + "---" + arrayStore.get(j).getSlideNam());
+                        Log.v("fdsdfsd", "----" + arrayStore.get(j).getScribble() + "---" + arrayStore.get(j).getSlideNam());
                         if (!arrayStore.get(j).getScribble().isEmpty()) {
                             arr.add(new StoreImageTypeUrl(arrayStore.get(j).getScribble(), arrayStore.get(j).getSlideNam(), arrayStore.get(j).getSlideTyp(), arrayStore.get(j).getSlideUrl(), arrayStore.get(j).getRemTime(), arrayStore.get(j).getSlideComments(), arrayStore.get(j).getTiming()));
                         } else {
@@ -919,6 +926,7 @@ public class DCRCallActivity extends AppCompatActivity {
         } catch (
                 Exception e) {
             Log.v("final_value_call", "---error----" + e);
+            isCreateJsonSuccess = false;
         }
 
     }

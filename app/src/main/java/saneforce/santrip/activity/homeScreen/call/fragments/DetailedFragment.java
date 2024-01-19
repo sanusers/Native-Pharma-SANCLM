@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.adapter.detailing.DetailedFinalCallAdapter;
@@ -37,11 +38,13 @@ public class DetailedFragment extends Fragment {
     }
 
     private void dummyAdapter() {
+        Log.v("sdfsdf", "dummyAdapter: " + callDetailingLists.size() + "---" + callDetailingLists.toString());
         detailedFinalCallAdapter = new DetailedFinalCallAdapter(getActivity(), getContext(), callDetailingLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         rv_detailing_list.setLayoutManager(mLayoutManager);
         rv_detailing_list.setItemAnimator(new DefaultItemAnimator());
         rv_detailing_list.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         rv_detailing_list.setAdapter(detailedFinalCallAdapter);
+        Collections.sort(callDetailingLists);
     }
 }

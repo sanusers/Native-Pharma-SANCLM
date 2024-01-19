@@ -62,6 +62,42 @@ public class CustList {
 
     String MappedBrands;
     String MappedSlides;
+    String TransNo;
+    String jsonArray;
+
+    public String getJsonArray() {
+        return jsonArray;
+    }
+
+    public void setJsonArray(String jsonArray) {
+        this.jsonArray = jsonArray;
+    }
+
+    public String getTransNo() {
+        return TransNo;
+    }
+
+    public void setTransNo(String transNo) {
+        TransNo = transNo;
+    }
+
+    public String getADetSlNo() {
+        return ADetSlNo;
+    }
+
+    public void setADetSlNo(String ADetSlNo) {
+        this.ADetSlNo = ADetSlNo;
+    }
+
+    public boolean isExtra() {
+        return IsExtra;
+    }
+
+    public void setExtra(boolean extra) {
+        IsExtra = extra;
+    }
+
+    String ADetSlNo;
     boolean IsExtra;
 
     public String getTotalrcpa() {
@@ -85,6 +121,15 @@ public class CustList {
     public CustList(String name, String code) {
         this.name = name;
         this.code = code;
+    }
+
+    public CustList(String name, String code,String type,String Trans_Slno,String ADetSLNo,String jsonArray) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.TransNo = Trans_Slno;
+        this.ADetSlNo = ADetSLNo;
+        this.jsonArray = jsonArray;
     }
 
     public CustList(String name, String SpecialityCode,String mappedBrands,String mappedSlides,boolean isExtra) {

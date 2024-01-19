@@ -21,6 +21,7 @@ import com.google.android.material.tabs.TabLayout;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.santrip.activity.presentation.presentation.PresentationActivity;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -99,6 +100,7 @@ public class CustomerProfile extends AppCompatActivity {
         btn_skip.setOnClickListener(view -> {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
             intent1.putExtra("isDetailedRequired","false");
+            intent1.putExtra("from_activity", "new");
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent1);
         });
@@ -107,6 +109,9 @@ public class CustomerProfile extends AppCompatActivity {
             Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
             intent.putExtra("from", "call");
             intent.putExtra("cus_name", DCRCallActivity.CallActivityCustDetails.get(0).getName());
+            PlaySlideDetailing.SpecialityCodePlay = DCRCallActivity.CallActivityCustDetails.get(0).getSpecialistCode();
+            PlaySlideDetailing.MappedBrandsPlay = DCRCallActivity.CallActivityCustDetails.get(0).getMappedBrands();
+            PlaySlideDetailing.MappedSlidesPlay = DCRCallActivity.CallActivityCustDetails.get(0).getMappedSlides();
             intent.putExtra("SpecialityCode", DCRCallActivity.CallActivityCustDetails.get(0).getSpecialistCode());
             intent.putExtra("MappedProdCode", DCRCallActivity.CallActivityCustDetails.get(0).getMappedBrands());
             intent.putExtra("MappedSlideCode", DCRCallActivity.CallActivityCustDetails.get(0).getMappedSlides());

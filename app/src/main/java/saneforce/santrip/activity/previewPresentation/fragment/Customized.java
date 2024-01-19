@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.presentation.presentation.PresentationAdapter;
-import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.santrip.databinding.FragmentHomePreviewBinding;
 import saneforce.santrip.storage.SQLite;
 
@@ -23,7 +22,7 @@ public class Customized extends Fragment {
     SQLite sqLite;
     PresentationAdapter presentationAdapter;
 
-    ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
+    public static ArrayList<BrandModelClass.Presentation> SlideCustomizedList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -31,15 +30,22 @@ public class Customized extends Fragment {
         customizedBinding = FragmentHomePreviewBinding.inflate(inflater);
         View v = customizedBinding.getRoot();
         sqLite = new SQLite(requireContext());
-        savedPresentation = sqLite.getPresentationData();
+        SlideCustomizedList = sqLite.getPresentationData();
         populateAdapter();
 
         return v;
     }
 
     public void populateAdapter() {
-        presentationAdapter = new PresentationAdapter(requireContext(), savedPresentation, "customized");
-        customizedBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
-        customizedBinding.rvBrandList.setAdapter(presentationAdapter);
+        if (SlideCustomizedList.size() > 0) {
+            customizedBinding.constraintNoData.setVisibility(View.GONE);
+            customizedBinding.rvBrandList.setVisibility(View.VISIBLE);
+            presentationAdapter = new PresentationAdapter(requireContext(), SlideCustomizedList, "customized");
+            customizedBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+            customizedBinding.rvBrandList.setAdapter(presentationAdapter);
+        } else {
+            customizedBinding.constraintNoData.setVisibility(View.VISIBLE);
+            customizedBinding.rvBrandList.setVisibility(View.GONE);
+        }
     }
 }

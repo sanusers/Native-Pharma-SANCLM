@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_300sdp"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_2sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="center"
+            android:padding="@dimen/_4sdp"
+            android:text="@string/feedback"
+            android:textColor="@color/dark_purple"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/view_dummy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_3sdp"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/img_close"
+            app:layout_constraintBottom_toBottomOf="@id/tv_head"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/tv_head"
+            app:layout_constraintTop_toTopOf="@id/tv_head"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:id="@+id/view_dummy"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:background="@color/light_grey_3"
+            app:layout_constraintBottom_toTopOf="@id/ed_remark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_head"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/ed_remark"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:background="@drawable/bg_light_cement"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start|top"
+            android:hint="@string/type_your_feedback"
+            android:padding="@dimen/_4sdp"
+            android:imeOptions="actionDone"
+            android:paddingVertical="@dimen/_3sdp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/rl_btns"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_dummy" />
+
+
+        <RelativeLayout
+            android:id="@+id/rl_btns"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginVertical="@dimen/_3sdp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ed_remark"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="@drawable/bg_border_with_pink"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:text="@string/clear"
+                android:textAllCaps="false"
+                android:textColor="@color/dark_purple"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:layout_toEndOf="@id/btn_skip"
+                android:background="@drawable/bg_purple"
+                android:fontFamily="@font/satoshi_bold"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:singleLine="true"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="NotSibling,RelativeOverlap" />
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
