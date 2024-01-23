@@ -3,7 +3,6 @@ package saneforce.santrip.activity.homeScreen.modelClass;
 public class CallsModalClass {
 
 
-
     public CallsModalClass(String docName, String callsDateTime, String docNameID) {
         DocName = docName;
         CallsDateTime = callsDateTime;

@@ -6,82 +6,25 @@
     android:padding="@dimen/_4sdp">
 
 
-    <TextView
-        android:id="@+id/txt_call"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_3sdp"
-        android:layout_marginTop="@dimen/_3sdp"
-        android:fontFamily="@font/satoshi_medium"
-        android:text="Call Count :"
-        android:textColor="@color/black_45"
-        android:textSize="@dimen/_7sdp">
-
-    </TextView>
-
-    <TextView
-        android:id="@+id/txt_callcount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_3sdp"
-        android:layout_marginTop="@dimen/_3sdp"
-        android:layout_toRightOf="@+id/txt_call"
-        android:fontFamily="@font/satoshi_medium"
-        android:text="06"
-        android:textColor="@color/black_45"
-        android:textSize="@dimen/_7sdp">
-
-    </TextView>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/custom_backround_layout"
-        android:backgroundTint="@color/text_sync_bg"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="@dimen/_3sdp">
-
-
-        <ImageView
-            android:id="@+id/refresh"
-            android:layout_width="@dimen/_6sdp"
-            android:layout_height="@dimen/_10sdp"
-            android:layout_marginStart="@dimen/_3sdp"
-            android:layout_marginEnd="@dimen/_3sdp"
-            android:src="@drawable/refresh_1" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginEnd="@dimen/_3sdp"
-            android:layout_toRightOf="@+id/refresh"
-            android:fontFamily="@font/satoshi_regular"
-            android:text="Sync"
-            android:textColor="@color/text_sync"
-            android:textSize="@dimen/_7sdp"
-            android:textStyle="bold">
-
-        </TextView>
-
-
-    </RelativeLayout>
-
-
     <ExpandableListView
         android:id="@+id/Expandapleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/r_layout"
-        android:layout_below="@+id/txt_call"
-        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:divider="#B774737F"
-
+        android:visibility="gone"
         android:dividerHeight="0.5dp" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOutBoxHead"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/r_layout"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:divider="#B774737F"
+        android:visibility="visible"
+        android:dividerHeight="0.5dp" />
 
     <RelativeLayout
         android:id="@+id/r_layout"
@@ -92,6 +35,7 @@
 
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/clear_calls"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_23sdp"
             android:layout_marginTop="@dimen/_4sdp"

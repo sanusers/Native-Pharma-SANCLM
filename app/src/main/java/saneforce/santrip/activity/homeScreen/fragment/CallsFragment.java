@@ -28,8 +28,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
+import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PaintView;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
+import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.CallsFragmentBinding;
@@ -46,20 +49,28 @@ public class CallsFragment extends Fragment {
     public static CallsFragmentBinding binding;
     Call_adapter adapter;
     ApiInterface apiInterface;
-    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode,SampleValidation,InputValidation;
+    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SampleValidation, InputValidation;
     LoginResponse loginResponse;
     List<CallsModalClass> TodayCallList = new ArrayList<>();
     SQLite sqLite;
+    CommonSharedPreference commonSharedPreference;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
         sqLite = new SQLite(requireContext());
+        commonSharedPreference = new CommonSharedPreference(requireContext());
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getRequiredData();
         CallTodayCallsAPI();
 
-        binding.rlSyncCall.setOnClickListener(v1 -> CallTodayCallsAPI());
+        binding.rlSyncCall.setOnClickListener(v12 -> {
+            if (UtilityClass.isNetworkAvailable(context)) {
+                CallTodayCallsAPI();
+            } else {
+                Toast.makeText(requireContext(), "No Network Available!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         binding.tvAddCall.setOnClickListener(view -> startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class)));
 
@@ -95,11 +106,13 @@ public class CallsFragment extends Fragment {
                                 JSONArray jsonArray = new JSONArray(response.body().toString());
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject json = jsonArray.getJSONObject(i);
-                                    TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"),json.getString("CustName"),json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                                    TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
                                 }
 
                                 binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-                                adapter = new Call_adapter(requireContext(), TodayCallList,apiInterface);
+                                commonSharedPreference.setValueToPreference("todayCall", response.body().toString());
+
+                                adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
                                 LinearLayoutManager manager = new LinearLayoutManager(requireContext());
                                 binding.recyelerview.setNestedScrollingEnabled(false);
                                 binding.recyelerview.setHasFixedSize(true);
@@ -121,6 +134,24 @@ public class CallsFragment extends Fragment {
                 });
             } catch (Exception e) {
                 Log.v("TodayCalls", "--error--2--" + e);
+            }
+        } else {
+            try {
+                JSONArray jsonArray = new JSONArray(commonSharedPreference.getValueFromPreference("todayCall"));
+                TodayCallList.clear();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject json = jsonArray.getJSONObject(i);
+                    TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                }
+                binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+                adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
+                LinearLayoutManager manager = new LinearLayoutManager(requireContext());
+                binding.recyelerview.setNestedScrollingEnabled(false);
+                binding.recyelerview.setHasFixedSize(true);
+                binding.recyelerview.setLayoutManager(manager);
+                binding.recyelerview.setAdapter(adapter);
+            } catch (Exception e) {
+
             }
         }
     }

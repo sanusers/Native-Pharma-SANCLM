@@ -30,6 +30,8 @@ public class SharedPref {
     public static final String LOGO_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
     public static final String LOGI_SITE="log_site";
+    public static final String SAVE_URL_SETTING="save_url_setting";
+    public static final String SAVE_LICENSE_SETTING="save_url_license";
 
 
     //Login
@@ -241,6 +243,26 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(MASTER_LAST_SYNC,date).apply();
+    }
+
+    public static void setSaveUrlSetting(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SAVE_URL_SETTING, token).apply();
+    }
+
+    public static String getSaveUrlSetting(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SAVE_URL_SETTING, "");
+    }
+
+    public static void setSaveLicenseSetting(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SAVE_LICENSE_SETTING, token).apply();
+    }
+
+    public static String getSaveLicenseSetting(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SAVE_LICENSE_SETTING, "");
     }
 
     public static void setCallApiUrl(Context context, String token) {

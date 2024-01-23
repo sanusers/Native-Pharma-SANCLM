@@ -51,7 +51,7 @@ import saneforce.santrip.storage.SQLite;
 
 
 public class JWOthersFragment extends Fragment {
-    public static ArrayList<CallCaptureImageList> callCaptureImageLists;
+    public static ArrayList<CallCaptureImageList>   callCaptureImageLists;
     @SuppressLint("StaticFieldLeak")
     public static FragmentJwothersBinding jwOthersBinding;
     public static String filePath = "", imageName = "";

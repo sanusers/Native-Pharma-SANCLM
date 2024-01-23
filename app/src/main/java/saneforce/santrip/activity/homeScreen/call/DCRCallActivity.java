@@ -1,6 +1,8 @@
 package saneforce.santrip.activity.homeScreen.call;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
+import static saneforce.santrip.activity.homeScreen.call.fragments.DetailedFragment.callDetailingLists;
 import static saneforce.santrip.activity.homeScreen.call.fragments.JWOthersFragment.callAddedJointList;
 import static saneforce.santrip.activity.homeScreen.call.fragments.JWOthersFragment.callCaptureImageLists;
 import static saneforce.santrip.activity.homeScreen.call.fragments.JWOthersFragment.jwOthersBinding;
@@ -10,6 +12,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -46,7 +49,11 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.activity.homeScreen.call.pojo.additionalCalls.SaveAdditionalCall;
+import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
+import saneforce.santrip.activity.homeScreen.call.pojo.input.SaveCallInputList;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityDcrcallBinding;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.call.adapter.DCRCallTabLayoutAdapter;
@@ -81,6 +88,7 @@ import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.response.SetupResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkStatusTask;
 
 public class DCRCallActivity extends AppCompatActivity {
 
@@ -102,13 +110,12 @@ public class DCRCallActivity extends AppCompatActivity {
     CustomSetupResponse customSetupResponse;
     GPSTrack gpsTrack;
     LoginResponse loginResponse;
-    JSONObject jsonSaveDcr;
+    JSONObject jsonSaveDcr, jsonImage;
     String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, PrdMandatory, InpMandatory, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, RCPAWOSample;
     double lat, lng;
     ApiInterface api_interface;
     boolean isCreateJsonSuccess;
     public static String isDetailingRequired;
-
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -137,6 +144,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
         if (isDetailingRequired.equalsIgnoreCase("true")) {
             viewPagerAdapter.add(new DetailedFragment(), "Detailed");
+        } else {
+            callDetailingLists = new ArrayList<>();
         }
 
         if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
@@ -216,34 +225,53 @@ public class DCRCallActivity extends AppCompatActivity {
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
             isCreateJsonSuccess = true;
-            progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
             if (CheckRequiredFunctions() && CheckCurrentLoc()) {
-                CallUploadImage();
                 CreateJsonFileCall();
                 if (isCreateJsonSuccess) {
-                    sqLite.saveOfflineCall(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString());
-                    CallSaveDcrAPI(jsonSaveDcr.toString());
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        progressDialog = CommonUtilsMethods.createProgressDialog(this);
+                        CallUploadImage();
+                        CallSaveDcrAPI(jsonSaveDcr.toString());
+                    } else {
+                        Toast.makeText(DCRCallActivity.this, "No Network Available, Call Saved Locally", Toast.LENGTH_SHORT).show();
+
+                        if (callCaptureImageLists.size() > 0) {
+                            for (int i = 0; i < callCaptureImageLists.size(); i++) {
+                                sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentDate(), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString());
+                            }
+                        }
+
+                        sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Waiting for Sync");
+                        UpdateInputStock();
+                        UpdateSampleStock();
+                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                        startActivity(intent);
+                    }
                 }
             } else {
                 progressDialog.dismiss();
             }
         });
+
+        assert isFromActivity != null;
+        if (isFromActivity.equalsIgnoreCase("edit_local")) {
+            jsonExtractLocal(CallActivityCustDetails.get(0).getJsonArray());
+        } else if (isFromActivity.equalsIgnoreCase("edit_online")) {
+            jsonExtractOnline(CallActivityCustDetails.get(0).getJsonArray());
+        }
+
     }
 
-    private void CallUploadImage() {
-        JSONObject jsonImage = new JSONObject();
-        try {
-            jsonImage.put("tableName", "uploadphoto");
-            jsonImage.put("sfcode", SfCode);
-            jsonImage.put("division_code", DivCode);
-            jsonImage.put("Rsf", TodayPlanSfCode);
-            jsonImage.put("sf_type", SfType);
-            jsonImage.put("Designation", Designation);
-            jsonImage.put("state_code", StateCode);
-            jsonImage.put("subdivision_code", SubDivisionCode);
-        } catch (Exception ignored) {
+    private void jsonExtractOnline(String jsonArray) {
+    }
 
-        }
+    public boolean funStringValidation(String val) {
+        return !TextUtils.isEmpty(val);
+    }
+
+
+    private void CallUploadImage() {
+
         if (callCaptureImageLists.size() > 0) {
             for (int i = 0; i < callCaptureImageLists.size(); i++) {
                 Log.v("ImgUpload", callCaptureImageLists.get(i).getFilePath());
@@ -540,9 +568,11 @@ public class DCRCallActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 Log.v("callSave", "---" + t);
                 progressDialog.dismiss();
+                sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Call Failed");
                 Toast.makeText(DCRCallActivity.this, "Call Failed! Try again", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                 startActivity(intent);
+                UpdateSampleStock();
                 UpdateInputStock();
             }
         });
@@ -624,6 +654,257 @@ public class DCRCallActivity extends AppCompatActivity {
         return yy;
     }
 
+
+    private void jsonExtractLocal(String jsonArray) {
+        try {
+            Log.v("jsonExtractLocal", "----" + jsonArray);
+            JSONObject json = new JSONObject(jsonArray);
+
+            /*if (funStringValidation(json.getString("Remarks")))
+                edt_report.setText(json.getString("Remarks"));
+
+            if (json.has("hos_code")) {
+                mCommonSharedPreference.setValueToPreference("hos_code", json.getString("hos_code"));
+                mCommonSharedPreference.setValueToPreference("hos_name", json.getString("hos_name"));
+            }
+
+            if (json.has("EventCapture")) {
+                EventCapture = json.getString("EventCapture");
+            }*/
+
+            //POB
+            if (json.has("DCSUPOB")) {
+                jwOthersBinding.edPob.setText(json.getString("DCSUPOB"));
+            }
+
+            //FeedBack
+            if (json.has("Drcallfeedbackcode")) {
+                FeedbackSelectionSide.feedbackName = json.getString("Drcallfeedbackname");
+                FeedbackSelectionSide.feedbackName = json.getString("Drcallfeedbackcode");
+                jwOthersBinding.tvFeedback.setText(FeedbackSelectionSide.feedbackName);
+            }
+
+            JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
+            for (int i = 0; i < jsonPrdArray.length(); i++) {
+                JSONObject js = jsonPrdArray.getJSONObject(i);
+
+                if (js.getString("Group").equalsIgnoreCase("0")) {
+                    CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(js.getString("Name"), js.getString("Code"), "", "", "", js.getString("SmpQty"), js.getString("RxQty"), "", "", false));
+                } else if (js.getString("Group").equalsIgnoreCase("1")) {
+                    DetailedFragment.callDetailingLists.add(new CallDetailingList(js.getString("Name"), js.getString("Code"), "", "", "", js.getString("Timesline"), js.getString("Timesline").substring(0, 8), Integer.parseInt(js.getString("Rating")), js.getString("ProdFeedbk"), ""));
+                }
+            }
+
+            //JointWork
+            JSONArray jsonJoint = json.getJSONArray("JointWork");
+            for (int w = 0; w < jsonJoint.length(); w++) {
+                JSONObject jsJoint = jsonJoint.getJSONObject(w);
+                String nam = "", code = "";
+                if (funStringValidation(jsJoint.getString("Name"))) nam = jsJoint.getString("Name");
+                if (funStringValidation(jsJoint.getString("Code")))
+                    code = jsJoint.getString("Code");
+                if (!nam.equalsIgnoreCase("")) {
+                    JWOthersFragment.callAddedJointList.add(new CallCommonCheckedList(nam.trim(), code));
+                }
+            }
+
+
+            //Input
+            JSONArray jsonInput = json.getJSONArray("Inputs");
+            Log.v("input_wrk", String.valueOf(jsonInput));
+            String nam = "", inp_code = "", iqty = "";
+            for (int ip = 0; ip < jsonInput.length(); ip++) {
+                JSONObject jsIp = jsonInput.getJSONObject(ip);
+                if (funStringValidation(jsIp.getString("Name"))) nam = jsIp.getString("Name");
+                if (funStringValidation(jsIp.getString("Code"))) inp_code = jsIp.getString("Code");
+                if (funStringValidation(jsIp.getString("IQty"))) iqty = jsIp.getString("IQty");
+                CheckInputListAdapter.saveCallInputListArrayList.add(new SaveCallInputList(nam, inp_code, iqty));
+            }
+
+            JSONArray jsonAdditional = json.getJSONArray("AdCuss");
+            String code = "", townCode = "", townName = "";
+            for (int aw = 0; aw < jsonAdditional.length(); aw++) {
+                JSONObject jsAw = jsonAdditional.getJSONObject(aw);
+                if (funStringValidation(jsAw.getString("Name"))) nam = jsAw.getString("Name");
+                if (funStringValidation(jsAw.getString("Code"))) code = jsAw.getString("Code");
+                if (funStringValidation(jsAw.getString("Code"))) code = jsAw.getString("town_code");
+                if (funStringValidation(jsAw.getString("Code"))) code = jsAw.getString("town_name");
+                AdditionalCusListAdapter.saveAdditionalCallArrayList.add(new SaveAdditionalCall(nam, code, townName, townCode, false));
+            }
+
+               /* if (!(listFeedPrd.contains(new FeedbackProductDetail(js.getString("Name"))))) {
+                    if (js.length() != 0 && !js.getString("Name").isEmpty()) {
+                        Log.v("json_name", js.getString("Name") + " val_pb " + val_pob + " people " + peopleType);
+                        if (funStringValidation(js.getString("Name"))) namee = js.getString("Name");
+                        String rat = "", feed = "", STm = "", ETm = "", dt = "", pob = "", prd_stk = "", prd_stkcode = "";
+                        if (funStringValidation(js.getString("Rating")))
+                            rat = js.getString("Rating");
+                        if (funStringValidation(js.getString("ProdFeedbk")))
+                            feed = js.getString("ProdFeedbk");
+                        if (funStringValidation(js.getString("SmpQty"))) {
+                            if (js.getString("SmpQty").equalsIgnoreCase("$")) qty = "";
+                            else qty = js.getString("SmpQty");
+                        }
+
+                        if ((js.has("Stockist"))) {
+                            if (funStringValidation(js.getString("Stockist")))
+                                prd_stk = js.getString("Stockist");
+                        }
+                        if ((js.has("StockistCode"))) {
+                            if (funStringValidation(js.getString("StockistCode")))
+                                prd_stkcode = js.getString("StockistCode");
+                        }
+                        if (val_pob.contains(peopleType)) {
+                            if ((js.has("RxQty")) || (js.has("rx_pob"))) {
+                                if (mCommonSharedPreference.getValueFromPreference("missed").equalsIgnoreCase("true")) {
+                                    if (funStringValidation(js.getString("RxQty")))
+                                        pob = js.getString("RxQty");
+                                } else if (mCommonSharedPreference.getValueFromPreference("Draft").equalsIgnoreCase("true")) {
+                                    if (funStringValidation(js.getString("RxQty")))
+                                        pob = js.getString("RxQty");
+                                } else {
+                                    if (funStringValidation(js.getString("rx_pob")))
+                                        pob = js.getString("rx_pob");
+                                }
+                            }
+                        }
+                        sampleValue.add(new FeedbackProductDetail(qty, feed, rat));
+                        JSONObject jsonTim = js.getJSONObject("Timesline");
+                        Log.v("json_time", jsonTim.getString("sTm"));
+                        if (funStringValidation(jsonTim.getString("sTm")))
+                            dt = jsonTim.getString("sTm").substring(0, 11);
+                        if (funStringValidation(jsonTim.getString("sTm")))
+                            STm = jsonTim.getString("sTm").substring((jsonTim.getString("sTm").indexOf(" ")) + 1);
+                        if (funStringValidation(jsonTim.getString("eTm")))
+                            ETm = jsonTim.getString("eTm").substring((jsonTim.getString("eTm").indexOf(" ")) + 1);
+                        Log.v("name_js_js", namee + " smqty " + js.getString("SmpQty"));
+                        if (mCommonSharedPreference.getValueFromPreference("sample_validation").equalsIgnoreCase("1")) {
+                            insert_DB_Stock(js.getString("Name"), js.getString("Code"), code, qty);
+                        }
+                        if (js.has("prdfeed")) {
+                            listFeedPrd.add(new FeedbackProductDetail(js.getString("Name"), js.getString("Code"), STm.trim() + " " + ETm.trim(), rat, feed, dt, qty, "", pob, gettingProductFB(js.getString("prdfeed")), prd_stk, prd_stkcode));
+                        } else {
+                            listFeedPrd.add(new FeedbackProductDetail(js.getString("Name"), js.getString("Code"), STm.trim() + " " + ETm.trim(), rat, feed, dt, qty, "", pob, gettingProductFB(""), prd_stk, prd_stkcode));
+                        }
+                        //Log.v("Product_extract22", namee);
+                        JSONArray jsonArray = js.getJSONArray("Slides");
+                        Log.v("slide_length_prinnt", jsonArray.length() + "");
+                        for (int j = 0; j < jsonArray.length(); j++) {
+                            String sT = "", sR = "", ss = "", sP = "", sRate = "0", SlideScr = "";
+                            JSONObject jsonSlide = jsonArray.getJSONObject(j);
+                            Log.v("json_array_len", jsonArray.length() + "slidepath " + jsonSlide.getString("SlidePath"));
+
+                            if (funStringValidation(jsonSlide.getString("SlideType")))
+                                sT = jsonSlide.getString("SlideType");
+                            if (funStringValidation(jsonSlide.getString("Scribbles")))
+                                SlideScr = jsonSlide.getString("Scribbles");
+                            if (funStringValidation(jsonSlide.getString("SlideRemarks")))
+                                sR = jsonSlide.getString("SlideRemarks");
+                            if (funStringValidation(jsonSlide.getString("Slide")))
+                                ss = jsonSlide.getString("Slide");
+                            if (funStringValidation(jsonSlide.getString("SlideRating")))
+                                sRate = jsonSlide.getString("SlideRating");
+                            if (funStringValidation(jsonSlide.getString("SlidePath")))
+                                sP = jsonSlide.getString("SlidePath");
+                            if (TextUtils.isEmpty(sP)) {
+                                if (!TextUtils.isEmpty(sT)) {
+                                    if (sT.equalsIgnoreCase("I")) {
+                                        sP = "/data/user/0/saneforce.sanclm/cache/images/" + ss;
+                                    } else
+                                        sP = "/storage/emulated/0/Products" + SFCode + dateToStr.trim() + "/" + ss;
+                                    //sP = "/storage/emulated/0/Products/" + ss;
+                                }
+                            }
+                            String date = "", sTm = "", eTm = "";
+                            JSONArray remArray = new JSONArray();
+                            JSONObject remObj = new JSONObject();
+                            JSONArray jsonTime = jsonSlide.getJSONArray("Times");
+                            dbh.open();
+                            Cursor cur = dbh.select_tbl_feed(ss);
+                            if (cur.getCount() != 0) {
+                                while (cur.moveToNext()) {
+                                    JSONArray jA = new JSONArray(cur.getString(5));
+                                    for (int k = 0; k < jA.length(); k++) {
+                                        remObj = new JSONObject();
+                                        JSONObject jss = jA.getJSONObject(k);
+                                        Log.v("jsonArrayTiming", jss.toString());
+                                        remObj.put("sT", jss.getString("sT"));
+                                        remObj.put("eT", jss.getString("eT"));
+                                        remArray.put(remObj);
+                                    }
+                                }
+                            }
+                            cur.close();
+                            for (int k = 0; k < jsonTime.length(); k++) {
+                                remObj = new JSONObject();
+                                JSONObject jsomtime = jsonTime.getJSONObject(k);
+                                if (funStringValidation(jsomtime.getString("sTm")))
+                                    date = jsomtime.getString("sTm").substring(0, 11);
+                                if (funStringValidation(jsomtime.getString("sTm")))
+                                    sTm = jsomtime.getString("sTm").substring(11);
+                                if (funStringValidation(jsomtime.getString("eTm")))
+                                    eTm = jsomtime.getString("eTm").substring(11);
+                                Log.v("STart_date", String.valueOf(jsomtime));
+                                remObj.put("sT", sTm);
+                                remObj.put("eT", eTm);
+                                Log.v("rem_obj_print", remObj.toString());
+                                remArray.put(remObj);
+                            }
+                            Log.v("feed_data", "name--" + ss);
+                            Cursor cur1 = dbh.select_tbl_feed(ss);
+                            Log.v("feed_data", "count---" + cur1.getCount());
+                            if (cur1.getCount() == 0) {
+                                Log.v("feed_data", "00");
+                                dbh.insertFeed(namee, ss, sT, sP, sRate, remArray.toString(), sR, SlideScr);
+                            } else {  // productanme,slidename,slidetype,slidepath,slideratnigs,slideremarks
+                                while (cur1.moveToNext()) {
+                                    Log.v("feed_data", remArray + " ");
+                                    dbh.updateSlideTime(cur1.getInt(0), remArray.toString());
+                                }
+                            }
+                            mCommonSharedPreference.setValueToPreferenceFeed("timeCount", 0);
+
+                        }
+                        if (jsonArray.length() == 0) {
+                            mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + count, "00:00:00");
+                            mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + count, namee);
+                            mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + count, "");
+                            mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + count, "");
+                            mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + count, "");
+                            mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + count, dt);
+                            mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++count);
+                        }
+                    }
+                }*/
+
+
+
+
+
+          /*  feedCallJoinAdapter = new FeedCallJoinAdapter(FeedbackActivity.this, joint_array);
+            listView_feed_join.setAdapter(feedCallJoinAdapter);
+            feedCallJoinAdapter.notifyDataSetChanged();
+
+            feedCallJoinAdapter = new FeedCallJoinAdapter(FeedbackActivity.this, call_array);
+            listView_feed_call.setAdapter(feedCallJoinAdapter);
+            feedCallJoinAdapter.notifyDataSetChanged();
+
+            feedInputAdapter = new FeedInputAdapter(FeedbackActivity.this, input_array);
+            listView_feed_input.setAdapter(feedInputAdapter);
+            feedInputAdapter.notifyDataSetChanged();
+
+            if (json.has("RCPAEntry")) {
+                JSONArray jsonBrnd = json.getJSONArray("RCPAEntry");
+                Log.v("jsonBrnd_val", String.valueOf(jsonBrnd));
+                jsonBrandValue = String.valueOf(jsonBrnd);
+                mCommonSharedPreference.setValueToPreference("jsonarray", jsonBrnd.toString());
+            }*/
+
+
+        } catch (Exception e) {
+            Log.v("jsonExtractLocal", "----" + e);
+        }
+    }
 
     private void CreateJsonFileCall() {
         try {
@@ -893,6 +1174,19 @@ public class DCRCallActivity extends AppCompatActivity {
             //EventCapture
             jsonArray = new JSONArray();
             if (callCaptureImageLists.size() > 0) {
+                jsonImage = new JSONObject();
+                try {
+                    jsonImage.put("tableName", "uploadphoto");
+                    jsonImage.put("sfcode", SfCode);
+                    jsonImage.put("division_code", DivCode);
+                    jsonImage.put("Rsf", TodayPlanSfCode);
+                    jsonImage.put("sf_type", SfType);
+                    jsonImage.put("Designation", Designation);
+                    jsonImage.put("state_code", StateCode);
+                    jsonImage.put("subdivision_code", SubDivisionCode);
+                } catch (Exception ignored) {
+
+                }
                 for (int i = 0; i < callCaptureImageLists.size(); i++) {
                     JSONObject json_Eve_cap = new JSONObject();
                     json_Eve_cap.put("EventCapture", "True");
@@ -923,8 +1217,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
 
             Log.v("final_value_call", String.valueOf(jsonSaveDcr));
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             Log.v("final_value_call", "---error----" + e);
             isCreateJsonSuccess = false;
         }

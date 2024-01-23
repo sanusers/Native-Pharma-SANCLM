@@ -83,29 +83,27 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         holder.imageView.setImageDrawable(drawable);
 
 
-
         // set SqureBox for background
         if (position == 0) {
             holder.linearLayout.setBackgroundResource(R.drawable.calender_background_a);
         } else if (position <= 6) {
             holder.linearLayout.setBackgroundResource(R.drawable.calender_background_b);
 
-        }else if(position==7 || position==14||position==21||position==28||position==35){
+        } else if (position == 7 || position == 14 || position == 21 || position == 28 || position == 35) {
             holder.linearLayout.setBackgroundResource(R.drawable.calender_background_c);
 
-        }else {
+        } else {
             holder.linearLayout.setBackgroundResource(R.drawable.calender_background_d);
         }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!list.getDateID().equalsIgnoreCase("")) {
-
-
+                if (!list.getDateID().equalsIgnoreCase("")) {
                     HomeDashBoard.binding.textDate.setText(fullMonthName + " " + list.getDateID() + ", " + year);
                     HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                    HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+                    //  HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
                 }
             }
@@ -129,7 +127,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             super(itemView);
             dayTextView = itemView.findViewById(R.id.cellDayText);
             imageView = itemView.findViewById(R.id.img_event_point);
-            linearLayout=itemView.findViewById(R.id.day_bgd);
+            linearLayout = itemView.findViewById(R.id.day_bgd);
         }
     }
 

@@ -52,11 +52,11 @@ public class SettingsActivity extends AppCompatActivity {
     AsyncInterface asyncInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
-    String deviceId = "", url = "", licenseKey ="",divisionCode = "",baseWebUrl="", phpPathUrl ="",reportsUrl="", slidesUrl ="",logoUrl="";
+    String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logoUrl = "";
     int hitCount = 0;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -66,7 +66,12 @@ public class SettingsActivity extends AppCompatActivity {
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
 
-        String[] languages = {"BURMESE","ENGLISH", "FRENCH","MANDARIN", "PORTUGUESE", "SPANISH", "VIETNAMESE" };
+        if (!SharedPref.getSaveUrlSetting(getApplicationContext()).equalsIgnoreCase("")) {
+            binding.etWebUrl.setText(SharedPref.getSaveUrlSetting(getApplicationContext()));
+            binding.etLicenseKey.setText(SharedPref.getSaveLicenseSetting(getApplicationContext()));
+        }
+
+        String[] languages = {"BURMESE", "ENGLISH", "FRENCH", "MANDARIN", "PORTUGUESE", "SPANISH", "VIETNAMESE"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drop_down_spinner_layout, languages);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinnerLanguage.setAdapter(adapter);
@@ -74,89 +79,86 @@ public class SettingsActivity extends AppCompatActivity {
 
         binding.spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected (AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView textView = (TextView) view;
-                Log.e("test",textView.getText().toString());
+                Log.e("test", textView.getText().toString());
                 String selectedLanguage = "";
                 switch (textView.getText().toString().toUpperCase()) {
-                    case "ENGLISH" : {
+                    case "ENGLISH": {
                         selectedLanguage = "en";
                         break;
                     }
-                    case "BURMESE" : {
+                    case "BURMESE": {
                         selectedLanguage = "my";
                         break;
                     }
-                    case "FRENCH" : {
+                    case "FRENCH": {
                         selectedLanguage = "fr";
                         break;
                     }
-                    case "MANDARIN" : {
+                    case "MANDARIN": {
                         selectedLanguage = "zh";
                         break;
                     }
-                    case "PORTUGUESE" : {
+                    case "PORTUGUESE": {
                         selectedLanguage = "pt";
                         break;
                     }
-                    case "SPANISH" : {
+                    case "SPANISH": {
                         selectedLanguage = "es";
                         break;
                     }
-                    case "VIETNAMESE" : {
+                    case "VIETNAMESE": {
                         selectedLanguage = "vi";
                         break;
                     }
 
                 }
-                SharedPref.saveSelectedLanguage(SettingsActivity.this,selectedLanguage);
+                SharedPref.saveSelectedLanguage(SettingsActivity.this, selectedLanguage);
             }
 
             @Override
-            public void onNothingSelected (AdapterView<?> adapterView) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-        binding.btnSaveSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                UtilityClass.hideKeyboard(SettingsActivity.this);
-                url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s","");
-                licenseKey = binding.etLicenseKey.getText().toString().trim();
-                deviceId = binding.tvDeviceId.getText().toString();
+        binding.btnSaveSettings.setOnClickListener(view -> {
+            UtilityClass.hideKeyboard(SettingsActivity.this);
+            url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
+            licenseKey = binding.etLicenseKey.getText().toString().trim();
+            deviceId = binding.tvDeviceId.getText().toString();
 
-                if (url.isEmpty()){
-                    binding.etWebUrl.requestFocus();
-                    Toast.makeText(SettingsActivity.this, "Enter URL", Toast.LENGTH_SHORT).show();
-                } else if (licenseKey.isEmpty()) {
-                    binding.etLicenseKey.requestFocus();
-                    Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
-                } else{
+            if (url.isEmpty()) {
+                binding.etWebUrl.requestFocus();
+                Toast.makeText(SettingsActivity.this, "Enter URL", Toast.LENGTH_SHORT).show();
+            } else if (licenseKey.isEmpty()) {
+                binding.etLicenseKey.requestFocus();
+                Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
+            } else {
 
-                      SharedPref.Loginsite(getApplicationContext(),url);
-                    if (UtilityClass.isNetworkAvailable(getApplicationContext())){
-                        if (checkURL(url)){
-                            configuration("https://" + url + "/apps/");
-                        }else{
-                            Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
-                        }
-                    }else{
-                        Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
+                SharedPref.Loginsite(getApplicationContext(), url);
+                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                    if (checkURL(url)) {
+                        configuration("https://" + url + "/apps/");
+                    } else {
+                        Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 
-    public void selectLanguage(){
+    public void selectLanguage() {
 
         final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH"};
         ArrayList<String> langList = new ArrayList<>();
         Collections.addAll(langList, Language);
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(SettingsActivity.this);
-        LayoutInflater inflater =this.getLayoutInflater();
+        LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_listview, null);
         alertDialog.setView(dialogView);
         TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
@@ -169,9 +171,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick (AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String selectedLang = listView.getItemAtPosition(position).toString();
-                Log.e("test","selected language : " + selectedLang);
+                Log.e("test", "selected language : " + selectedLang);
                 dialog.dismiss();
             }
         });
@@ -193,7 +195,7 @@ public class SettingsActivity extends AppCompatActivity {
         return validUrl;
     }
 
-    public void configuration(String enteredUrl){
+    public void configuration(String enteredUrl) {
         binding.configurationPB.setVisibility(View.VISIBLE);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
 
@@ -201,10 +203,10 @@ public class SettingsActivity extends AppCompatActivity {
             Call<JsonArray> call = apiInterface.configuration("ConfigiOS.json");
             call.enqueue(new Callback<JsonArray>() {
                 @Override
-                public void onResponse (@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
                     binding.configurationPB.setVisibility(View.GONE);
-                    if (response.isSuccessful()){
-                        Log.e("test","success : "+ response.body().toString());
+                    if (response.isSuccessful()) {
+                        Log.e("test", "success : " + response.body().toString());
                         JSONArray jsonArray = null;
                         try {
                             jsonArray = new JSONArray(response.body().toString());
@@ -223,46 +225,48 @@ public class SettingsActivity extends AppCompatActivity {
                                     String[] splitUrl = logoUrl.split("/");
                                     SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
                                     SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
-                                    downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length -1], enteredUrl);
+                                    downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
                                     licenseKeyValid = true;
+                                    SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
+                                    SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
                                     break;
                                 }
                             }
 
-                            if (!licenseKeyValid){
+                            if (!licenseKeyValid) {
                                 Toast.makeText(SettingsActivity.this, "Invalid license key", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        SharedPref.Loginsite(getApplicationContext(),url);
-                    }else{
+                        SharedPref.Loginsite(getApplicationContext(), url);
+                    } else {
                         Toast.makeText(SettingsActivity.this, "Invalid web url", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onFailure (@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                    Log.e("test","failed : " + t.toString());
+                public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                    Log.e("test", "failed : " + t.toString());
                     hitCount++;
-                    if (hitCount < 2){
+                    if (hitCount < 2) {
                         configuration("http://" + url + "/apps/");
-                    }else{
+                    } else {
                         binding.configurationPB.setVisibility(View.GONE);
                         Toast.makeText(SettingsActivity.this, "Try again later", Toast.LENGTH_SHORT).show();
-                        Log.e("test","hit count is : " + hitCount);
-                        hitCount =0;
+                        Log.e("test", "hit count is : " + hitCount);
+                        hitCount = 0;
                     }
 
                 }
             });
-        } catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
 
     }
 
-    public void downloadImage(String url,String imageName,String enteredUrl){
+    public void downloadImage(String url, String imageName, String enteredUrl) {
         packageManager = this.getPackageManager();
         String packageName = this.getPackageName();
         try {
@@ -271,27 +275,27 @@ public class SettingsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String fileDirectory = packageInfo.applicationInfo.dataDir;
-        Log.e("test","filepath name : " + fileDirectory + "/" + imageName);
+        Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
 
         asyncInterface = new AsyncInterface() {
             @Override
-            public void taskCompleted (boolean status) {
+            public void taskCompleted(boolean status) {
                 downloaderClass.cancel(true);
                 navigate();
             }
         };
 
-        if(!ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
-            Log.e("test","image not exists");
+        if (!ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
+            Log.e("test", "image not exists");
             downloaderClass = (DownloaderClass) new DownloaderClass(url, fileDirectory, imageName, asyncInterface).execute();
-        }else{
-            Log.e("test","image exists");
+        } else {
+            Log.e("test", "image exists");
             navigate();
         }
 
     }
 
-    public void navigate(){
+    public void navigate() {
         runOnUiThread(new Runnable() {
             public void run() {
                 Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();

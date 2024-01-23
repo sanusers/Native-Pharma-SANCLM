@@ -81,7 +81,6 @@
                                 tools:ignore="SpUsage" />
 
                             <EditText
-                                android:text="sanffa.info"
                                 android:id="@+id/et_web_url"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -118,7 +117,6 @@
                                 tools:ignore="SpUsage" />
 
                             <EditText
-                                android:text="demo"
                                 android:id="@+id/et_license_key"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

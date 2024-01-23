@@ -9,11 +9,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DCRCallSelectionTabLayoutAdapter extends FragmentPagerAdapter {
+public class TabLayoutAdapter extends FragmentPagerAdapter {
     private final List<Fragment> fragments = new ArrayList<>();
     private final List<String> fragmentTitle = new ArrayList<>();
 
-    public DCRCallSelectionTabLayoutAdapter(@NonNull FragmentManager fm) {
+    public TabLayoutAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
 

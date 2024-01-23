@@ -16,6 +16,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -49,10 +50,12 @@ import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.santrip.activity.map.custSelection.CustList;
+import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkStatusTask;
 
 
 public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataViewholider> {
@@ -66,14 +69,13 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         this.context = context;
         this.list = list;
         this.apiInterface = apiInterface;
-
     }
 
     @NonNull
     @Override
     public listDataViewholider onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.calls_item_view, parent, false);
-        return new listDataViewholider(view);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.calls_item_view, parent, false);
+            return new listDataViewholider(view);
     }
 
     @Override
@@ -104,13 +106,35 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
             popup.inflate(R.menu.call_menu);
             popup.setOnMenuItemClickListener(menuItem -> {
+                NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                    if (status) {
+                        try {
+                            if (menuItem.getItemId() == R.id.menuEdit) {
+                                CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
+                            } else if (menuItem.getItemId() == R.id.menuDelete) {
+                                progressBar = CommonUtilsMethods.createProgressDialog(context);
+                                new CountDownTimer(200, 200) {
+                                    public void onTick(long millisUntilFinished) {
 
-                if (menuItem.getItemId() == R.id.menuEdit) {
-                    CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
-                } else if (menuItem.getItemId() == R.id.menuDelete) {
-                    CallDeleteAPI(position, callslist.getADetSLNo(), callslist.getDocNameID());
-                    removeAt(position);
-                }
+                                    }
+
+                                    public void onFinish() {
+                                        progressBar.dismiss();
+                                        removeAt(holder.getAbsoluteAdapterPosition());
+                                    }
+                                }.start();
+                                CallDeleteAPI(holder.getAbsoluteAdapterPosition(), callslist.getADetSLNo(), callslist.getDocNameID());
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    } else {
+                        Toast.makeText(context, "No Network Available!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                networkStatusTask.execute();
+
+
                 return true;
             });
             popup.show();
@@ -118,7 +142,6 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     }
 
     private void CallDeleteAPI(int position, String aDetSLNo, String type) {
-        progressBar = CommonUtilsMethods.createProgressDialog(context);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("sfcode", SfCode);
@@ -147,26 +170,21 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
-                        progressBar.dismiss();
                         assert response.body() != null;
                         // JSONObject jsonObject = new JSONObject(response.body().toString());
                         Log.v("delCall", response.toString());
-                        removeAt(position);
                         Toast.makeText(context, "Call Deleted Successfully", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
-                        progressBar.dismiss();
                         Log.v("delCall", e.toString());
                     }
                 } else {
-                    progressBar.dismiss();
-                    Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Response Failed! Please Sync Again to retrieve Data", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                progressBar.dismiss();
-                Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Response Failed! Please Sync Again to retrieve Data", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -210,7 +228,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         CallActivityCustDetails = new ArrayList<>();
                         CallActivityCustDetails.add(0, new CustList(docName, docCode, type, transSlno, aDetSLNo, jsonObject.toString()));
                         intent.putExtra("isDetailedRequired", "false");
-                        intent.putExtra("from_activity", "edit");
+                        intent.putExtra("from_activity", "edit_online");
                         context.startActivity(intent);
                     } catch (Exception e) {
                         progressBar.dismiss();

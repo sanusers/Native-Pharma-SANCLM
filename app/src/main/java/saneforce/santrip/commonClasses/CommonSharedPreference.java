@@ -3,7 +3,10 @@ package saneforce.santrip.commonClasses;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
 
 
 public class CommonSharedPreference {
@@ -20,6 +23,7 @@ public class CommonSharedPreference {
         editor.putString(mTAG, mValue);
         editor.apply();
     }
+
 
     public void setValueToPreference(String mTAG, int mValue) {
         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -62,6 +66,9 @@ public class CommonSharedPreference {
         }
         return mResult;
     }
+
+
+
 
     public int getValueFromPreference(String mTAG, int vv) {
         int mResult = 0;

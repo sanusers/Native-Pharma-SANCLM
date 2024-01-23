@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.DCRCallSelectionTabLayoutAdapter;
+import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.CIPFragment;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.ChemistFragment;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.HospitalFragment;
@@ -31,7 +31,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
     LoginResponse loginResponse;
-    DCRCallSelectionTabLayoutAdapter viewPagerAdapter;
+    TabLayoutAdapter viewPagerAdapter;
     SQLite sqLite;
     GPSTrack gpsTrack;
 
@@ -47,7 +47,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
 
         getRequiredData();
 
-        viewPagerAdapter = new DCRCallSelectionTabLayoutAdapter(getSupportFragmentManager());
+        viewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
         if (DrNeed.equalsIgnoreCase("0")) {
             viewPagerAdapter.add(new ListedDoctorFragment(), CapDr);
         }

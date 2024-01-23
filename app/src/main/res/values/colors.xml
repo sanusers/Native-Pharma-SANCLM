@@ -121,6 +121,8 @@
     <color name="cl_text_color">#74737f</color>
 
     <color name="bg_pink10">#fff6f7</color>
+    <color name="bg_grey_70">#EED7DB</color>
+
 
 
 </resources>

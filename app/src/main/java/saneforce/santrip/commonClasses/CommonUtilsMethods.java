@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -120,8 +121,7 @@ public class CommonUtilsMethods {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
 
-                if(editText.getText().toString().equals(""))
-                {
+                if (editText.getText().toString().equals("")) {
                     canEnterSpace = false;
                 }
 
@@ -135,7 +135,7 @@ public class CommonUtilsMethods {
                         canEnterSpace = true;
                     }
 
-                    if(Character.isWhitespace(currentChar) && canEnterSpace) {
+                    if (Character.isWhitespace(currentChar) && canEnterSpace) {
                         builder.append(currentChar);
                     }
 
@@ -181,13 +181,19 @@ public class CommonUtilsMethods {
         return sdf.format(currentTime);
     }
 
-    public static String getCurrentDate()
-    {
+    public static String getCurrentDate() {
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String val = sdf.format(currentTime);
         return val;
     }
+
+    public static String getCurrentTimeAMPM() {
+        Calendar c = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+        return sdf.format(c.getTimeInMillis());
+    }
+
 
     public static String getCurrentInstance() {
         Calendar c = Calendar.getInstance();
@@ -228,6 +234,15 @@ public class CommonUtilsMethods {
             Parcelable recyclerViewState;
             recyclerViewState = Objects.requireNonNull(rv_test.getLayoutManager()).onSaveInstanceState();
             rv_test.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public void ExpandableView(ExpandableListView rv_test) {
+        try {
+            Parcelable recyclerViewState;
+            recyclerViewState = Objects.requireNonNull(rv_test).onSaveInstanceState();
+            rv_test.onRestoreInstanceState(recyclerViewState);
         } catch (Exception ignored) {
         }
     }

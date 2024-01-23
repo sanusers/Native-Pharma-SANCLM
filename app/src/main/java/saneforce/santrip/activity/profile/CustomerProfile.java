@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.profile;
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.BrandCode;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SlideCode;
 
@@ -26,6 +27,7 @@ import saneforce.santrip.activity.presentation.presentation.PresentationActivity
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.UtilityClass;
+import saneforce.santrip.storage.SQLite;
 
 
 public class CustomerProfile extends AppCompatActivity {
@@ -38,6 +40,7 @@ public class CustomerProfile extends AppCompatActivity {
     ImageView img_back;
     CommonUtilsMethods commonUtilsMethods;
     CustTabLayoutAdapter viewPagerAdapter;
+    SQLite sqLite;
 
     @Override
     public void onBackPressed() {
@@ -55,7 +58,7 @@ public class CustomerProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cust_profile);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+sqLite = new SQLite(this);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         btn_skip = findViewById(R.id.btn_skip);
@@ -102,20 +105,21 @@ public class CustomerProfile extends AppCompatActivity {
             intent1.putExtra("isDetailedRequired","false");
             intent1.putExtra("from_activity", "new");
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(),CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
 
         btn_start.setOnClickListener(view -> {
             Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
             intent.putExtra("from", "call");
-            intent.putExtra("cus_name", DCRCallActivity.CallActivityCustDetails.get(0).getName());
-            PlaySlideDetailing.SpecialityCodePlay = DCRCallActivity.CallActivityCustDetails.get(0).getSpecialistCode();
-            PlaySlideDetailing.MappedBrandsPlay = DCRCallActivity.CallActivityCustDetails.get(0).getMappedBrands();
-            PlaySlideDetailing.MappedSlidesPlay = DCRCallActivity.CallActivityCustDetails.get(0).getMappedSlides();
-            intent.putExtra("SpecialityCode", DCRCallActivity.CallActivityCustDetails.get(0).getSpecialistCode());
-            intent.putExtra("MappedProdCode", DCRCallActivity.CallActivityCustDetails.get(0).getMappedBrands());
-            intent.putExtra("MappedSlideCode", DCRCallActivity.CallActivityCustDetails.get(0).getMappedSlides());
-            intent.putExtra("CusType", DCRCallActivity.CallActivityCustDetails.get(0).getType());
+            intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
+            PlaySlideDetailing.SpecialityCodePlay = CallActivityCustDetails.get(0).getSpecialistCode();
+            PlaySlideDetailing.MappedBrandsPlay = CallActivityCustDetails.get(0).getMappedBrands();
+            PlaySlideDetailing.MappedSlidesPlay = CallActivityCustDetails.get(0).getMappedSlides();
+            intent.putExtra("SpecialityCode", CallActivityCustDetails.get(0).getSpecialistCode());
+            intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
+            intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
+            intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());
             startActivity(intent);
         });
 
