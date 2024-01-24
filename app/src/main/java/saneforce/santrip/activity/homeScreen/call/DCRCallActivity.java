@@ -122,6 +122,21 @@ public class DCRCallActivity extends AppCompatActivity {
     public void onBackPressed() {
     }
 
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            dcrCallBinding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,6 +224,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
         dcrCallBinding.ivBack.setOnClickListener(view -> {
             if (isFromActivity.equalsIgnoreCase("new")) {
+                sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentDate());
                 Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -218,6 +234,7 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
+            sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentDate());
             Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -271,7 +288,6 @@ public class DCRCallActivity extends AppCompatActivity {
 
 
     private void CallUploadImage() {
-
         if (callCaptureImageLists.size() > 0) {
             for (int i = 0; i < callCaptureImageLists.size(); i++) {
                 Log.v("ImgUpload", callCaptureImageLists.get(i).getFilePath());

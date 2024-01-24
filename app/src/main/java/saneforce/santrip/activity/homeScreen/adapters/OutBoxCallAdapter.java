@@ -33,12 +33,14 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
     ArrayList<OutBoxCallList> outBoxCallLists;
     SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     public OutBoxCallAdapter(Context context, ArrayList<OutBoxCallList> outBoxCallLists) {
         this.context = context;
         this.outBoxCallLists = outBoxCallLists;
         sqLite = new SQLite(context);
+        commonUtilsMethods = new CommonUtilsMethods(context);
 
     }
 
@@ -109,16 +111,10 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         outBoxCallLists.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, outBoxCallLists.size());
-       /* ChildListModelClass childListModelClass = OutboxFragment.OutBoxContentAdapter.childListModelClasses.get(position);
-        OutboxFragment.OutBoxContentAdapter.childListModelClasses.set(0,new ChildListModelClass(childListModelClass.getChildName(),childListModelClass.getChildId(),childListModelClass.getCounts(),childListModelClass.isExpanded(),childListModelClass.isAvailableList(),childListModelClass.getOutBoxCallLists()));
-
-        listDates = sqLite.getOutBoxDate();*/
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(context, listDates);
-        CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         outBoxHeaderAdapter.notifyDataSetChanged();
-
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

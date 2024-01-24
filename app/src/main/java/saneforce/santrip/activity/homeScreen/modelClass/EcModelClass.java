@@ -1,7 +1,18 @@
 package saneforce.santrip.activity.homeScreen.modelClass;
 
+import android.graphics.Bitmap;
+
 public class EcModelClass {
     private String dates;
+    private Bitmap photo;
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
 
     public String getDates() {
         return dates;

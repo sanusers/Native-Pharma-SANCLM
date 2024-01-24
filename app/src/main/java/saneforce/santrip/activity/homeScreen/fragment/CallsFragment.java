@@ -53,13 +53,12 @@ public class CallsFragment extends Fragment {
     LoginResponse loginResponse;
     List<CallsModalClass> TodayCallList = new ArrayList<>();
     SQLite sqLite;
-    CommonSharedPreference commonSharedPreference;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
         sqLite = new SQLite(requireContext());
-        commonSharedPreference = new CommonSharedPreference(requireContext());
+
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getRequiredData();
         CallTodayCallsAPI();
@@ -110,7 +109,7 @@ public class CallsFragment extends Fragment {
                                 }
 
                                 binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-                                commonSharedPreference.setValueToPreference("todayCall", response.body().toString());
+                                SharedPref.setTodayCallList(requireContext(), response.body().toString());
 
                                 adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
                                 LinearLayoutManager manager = new LinearLayoutManager(requireContext());
@@ -137,7 +136,7 @@ public class CallsFragment extends Fragment {
             }
         } else {
             try {
-                JSONArray jsonArray = new JSONArray(commonSharedPreference.getValueFromPreference("todayCall"));
+                JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(requireContext()));
                 TodayCallList.clear();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject json = jsonArray.getJSONObject(i);

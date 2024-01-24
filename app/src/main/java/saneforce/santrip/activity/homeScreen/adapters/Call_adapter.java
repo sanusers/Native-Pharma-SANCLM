@@ -12,10 +12,12 @@ import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SubDi
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.TodayPlanSfCode;
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.binding;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -23,6 +25,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +42,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.ResponseBody;
@@ -74,8 +78,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     @NonNull
     @Override
     public listDataViewholider onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.calls_item_view, parent, false);
-            return new listDataViewholider(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.calls_item_view, parent, false);
+        return new listDataViewholider(view);
     }
 
     @Override
@@ -112,14 +116,20 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             if (menuItem.getItemId() == R.id.menuEdit) {
                                 CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
                             } else if (menuItem.getItemId() == R.id.menuDelete) {
-                                progressBar = CommonUtilsMethods.createProgressDialog(context);
-                                new CountDownTimer(200, 200) {
+                                Dialog dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
+                                View view = LayoutInflater.from(context).inflate(
+                                        R.layout.loading_progress, null);
+                                dialogTransparent.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                Objects.requireNonNull(dialogTransparent.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                dialogTransparent.setContentView(view);
+                                dialogTransparent.show();
+                                new CountDownTimer(500, 500) {
                                     public void onTick(long millisUntilFinished) {
 
                                     }
 
                                     public void onFinish() {
-                                        progressBar.dismiss();
+                                        dialogTransparent.dismiss();
                                         removeAt(holder.getAbsoluteAdapterPosition());
                                     }
                                 }.start();
@@ -173,7 +183,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         assert response.body() != null;
                         // JSONObject jsonObject = new JSONObject(response.body().toString());
                         Log.v("delCall", response.toString());
-                        Toast.makeText(context, "Call Deleted Successfully", Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(context, "Call Deleted Successfully", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
                         Log.v("delCall", e.toString());
                     }

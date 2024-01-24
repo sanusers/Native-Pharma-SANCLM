@@ -63,7 +63,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             }
         }
 
-       holder. rl_title_layout.setOnClickListener(new View.OnClickListener() {
+       holder.rl_title_layout.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
 

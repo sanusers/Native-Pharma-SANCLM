@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.homeScreen.adapters;
 
+import static android.renderscript.Allocation.createFromString;
+import static saneforce.santrip.activity.homeScreen.call.fragments.JWOthersFragment.callCaptureImageLists;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
@@ -25,15 +27,21 @@ import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
+import id.zelory.compressor.Compressor;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 
 import saneforce.santrip.activity.homeScreen.modelClass.ChildListModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -177,6 +185,14 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
             }
 
+            if (contentList.getChildId() == 3) {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    CallAPIListImage(position, holder.rv_outbox_list);
+                } else {
+                    Toast.makeText(context, "No Network Available", Toast.LENGTH_SHORT).show();
+                }
+            }
+
         });
 
         holder.expandContentView.setOnClickListener(v -> {
@@ -186,23 +202,106 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    private void CallAPIListImage(int position, RecyclerView rvOutboxList) {
+        Log.v("SendOutboxCall", "----" + childListModelClasses.get(position).getEcModelClasses().size());
+        if (childListModelClasses.get(position).getEcModelClasses().size() > 0) {
+            for (int i = 0; i < childListModelClasses.get(position).getEcModelClasses().size(); i++) {
+                EcModelClass ecModelClass = childListModelClasses.get(position).getEcModelClasses().get(i);
+                Log.v("SendOutboxCall", "----" + ecModelClass.getDates() + "---" + ecModelClass.getName());
+                CallSendAPIImage(rvOutboxList, position, i, ecModelClass.getJson_values(), ecModelClass.getFilePath());
+                break;
+            }
+        } else {
+            RefreshAdapter();
+
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void RefreshAdapter() {
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(context, listDates);
+        CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
+        commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
+        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+        outBoxHeaderAdapter.notifyDataSetChanged();
+    }
+
+    private void CallSendAPIImage(RecyclerView rvOutboxList, int position, int i, String jsonValues, String filePath) {
+        MultipartBody.Part img = convertImg("EventImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues.toString());
+        Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
+
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        Log.v("ImgUpload", json.toString());
+                        childListModelClasses.get(position).getEcModelClasses().remove(i);
+                        CallAPIListImage(position, rvOutboxList);
+                    } catch (Exception ignored) {
+                        RefreshAdapter();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                RefreshAdapter();
+            }
+        });
+    }
+
+
+    public HashMap<String, RequestBody> field(String val) {
+        HashMap<String, RequestBody> xx = new HashMap<>();
+        xx.put("data", createFromString(val));
+        return xx;
+    }
+
+    private RequestBody createFromString(String txt) {
+        return RequestBody.create(txt, MultipartBody.FORM);
+    }
+
+
+    public MultipartBody.Part convertImg(String tag, String path) {
+        Log.d("path", tag + "-" + path);
+        MultipartBody.Part yy = null;
+        try {
+            File file;
+            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+                file = new Compressor(context).compressToFile(new File(path));
+                Log.d("path", tag + "-" + path);
+            } else {
+                file = new File(path);
+            }
+            RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
+            yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+
+            Log.d("path", String.valueOf(yy));
+        } catch (Exception ignored) {
+        }
+        return yy;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     private void CallAPIList(int position, RecyclerView rv_outbox_list) {
-        Log.v("SendOutboxCall", "----" + childListModelClasses.get(position).getOutBoxCallLists().size());
         if (childListModelClasses.get(position).getOutBoxCallLists().size() > 0) {
             for (int i = 0; i < childListModelClasses.get(position).getOutBoxCallLists().size(); i++) {
                 OutBoxCallList outBoxCallList = childListModelClasses.get(position).getOutBoxCallLists().get(i);
-                Log.v("SendOutboxCall", "----" + outBoxCallList.getCusName() + "---" + outBoxCallList.getSyncCount());
-                if (outBoxCallList.getSyncCount() <= 4) {
-                    CallSendAPI(rv_outbox_list, position, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
-                    break;
+                if (outBoxCallList.getStatus().equalsIgnoreCase("Waiting for Sync") || outBoxCallList.getStatus().equalsIgnoreCase("Call Failed")) {
+                    if (outBoxCallList.getSyncCount() <= 4) {
+                        CallSendAPI(rv_outbox_list, position, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
+                        break;
+                    } else {
+                        CallAPIList(position, rv_outbox_list);
+                    }
                 }
             }
         } else {
-            outBoxHeaderAdapter = new OutBoxHeaderAdapter(context, listDates);
-            CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
-            commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
-            outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
-            outBoxHeaderAdapter.notifyDataSetChanged();
+            RefreshAdapter();
         }
     }
 
@@ -215,7 +314,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         JSONObject jsonSaveDcr;
         try {
             jsonSaveDcr = new JSONObject(jsonData);
-            //  Log.v("SendOutboxCall", "----" + jsonSaveDcr);
             Call<JsonObject> callSaveDcr;
             callSaveDcr = apiInterface.saveDcr(jsonSaveDcr.toString());
 
@@ -225,16 +323,16 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     if (response.isSuccessful()) {
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
-
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
                                 childListModelClasses.get(position).getOutBoxCallLists().remove(outBoxList);
+                                sqLite.deleteOfflineCalls(cusCode, cusName, date);
                                 CallAPIList(position, rvOutBoxList);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
                                 sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(5), "Duplicate Call");
                                 CallAPIList(position, rvOutBoxList);
                             }
-
                         } catch (Exception e) {
+                            RefreshAdapter();
                             Log.v("SendOutboxCall", "---" + e);
                         }
                     }
@@ -244,11 +342,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                     sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(SyncCount + 1), "Call Failed");
-                    outBoxHeaderAdapter = new OutBoxHeaderAdapter(context, listDates);
-                    CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
-                    commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
-                    outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
-                    outBoxHeaderAdapter.notifyDataSetChanged();
+                    CallAPIList(position, rvOutBoxList);
                 }
             });
 

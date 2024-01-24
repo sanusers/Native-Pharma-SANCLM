@@ -17,6 +17,7 @@ public class SharedPref {
     public static SharedPreferences.Editor editor;
 
     public static final String SP_NAME = "e_detail";
+    public static final String SP_NAME_NOT_DELETE = "e_detail_not_delete";
 
     //Setting
     public static final String SELECTED_LANGUAGE = "language";
@@ -58,6 +59,9 @@ public class SharedPref {
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
+
+    //TodayCalls
+    public static final String TODAY_CALL_LIST = "today_call_list";
 
     //Approval
     public static final String APPROVAL_COUNT = "approval_count";
@@ -246,23 +250,33 @@ public class SharedPref {
     }
 
     public static void setSaveUrlSetting(Context context, String token) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SAVE_URL_SETTING, token).apply();
     }
 
     public static String getSaveUrlSetting(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SAVE_URL_SETTING, "");
+        return context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE).getString(SAVE_URL_SETTING, "");
     }
 
     public static void setSaveLicenseSetting(Context context, String token) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SAVE_LICENSE_SETTING, token).apply();
     }
 
     public static String getSaveLicenseSetting(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SAVE_LICENSE_SETTING, "");
+        return context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE).getString(SAVE_LICENSE_SETTING, "");
+    }
+
+    public static void setTodayCallList(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TODAY_CALL_LIST, token).apply();
+    }
+
+    public static String getTodayCallList(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TODAY_CALL_LIST, "");
     }
 
     public static void setCallApiUrl(Context context, String token) {

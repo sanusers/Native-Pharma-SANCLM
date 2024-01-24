@@ -73,7 +73,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     ArrayList<JSONObject> cluster = new ArrayList<>();
     JSONObject SelectedWorkType;
     JSONObject SelectedHQ;
-    JSONObject SelectedCluster;
     ApiInterface api_interface;
     LoginResponse loginResponse;
     String strClusterID = "", strClusterName = "";
@@ -1087,8 +1086,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                     }
-
-
                 }
 
                 @Override
@@ -1105,7 +1102,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     void AletboxRemarks(){
 
-        Dialog  dialogReject = new Dialog(getActivity());
+        Dialog  dialogReject = new Dialog(requireActivity());
         dialogReject.setContentView(R.layout.alertbox_dayplan_remarks);
         Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogReject.setCancelable(false);

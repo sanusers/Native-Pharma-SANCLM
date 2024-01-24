@@ -2,21 +2,29 @@ package saneforce.santrip.activity.homeScreen;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
+import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
+import static saneforce.santrip.commonClasses.Constants.CONNECTIVITY_ACTION;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,36 +48,45 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.HashMap;
 
+import id.zelory.compressor.Compressor;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.activity.forms.Forms_activity;
 import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
 import saneforce.santrip.activity.homeScreen.adapters.CustomPagerAdapter;
-import saneforce.santrip.activity.homeScreen.adapters.CustomViewPager;
+import saneforce.santrip.activity.homeScreen.adapters.OutBoxHeaderAdapter;
 import saneforce.santrip.activity.homeScreen.adapters.ViewPagerAdapter;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.TabLayoutAdapter;
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallStatusModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EventCalenderModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.activity.leave.Leave_Application;
 import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.map.MapsActivity;
@@ -84,9 +101,13 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
+import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkChangeReceiver;
+import saneforce.santrip.utility.NetworkCheckInterface;
 import saneforce.santrip.utility.TimeUtils;
 
 
@@ -94,6 +115,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public static ActivityHomeDashBoardBinding binding;
     ViewPagerAdapter viewPagerAdapter;
+
+    static NetworkCheckInterface mCheckNetwork;
     public static int DeviceWith;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -101,12 +124,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
     SQLite sqLite;
+    ApiInterface apiInterface;
     LoginResponse loginResponse;
+    IntentFilter intentFilter;
+    NetworkChangeReceiver receiver;
     Dialog dialog, dialog1;
     LinearLayout user_view;
     RecyclerView calendarRecyclerView;
     RelativeLayout rl_quick_link, rl_date_layout;
     TextView monthYearText;
+    boolean isFinishCall = false, isFinishEC = false;
+    OutBoxHeaderAdapter outBoxHeaderAdapter;
     Callstatusadapter callstatusadapter;
     TabLayoutAdapter leftViewPagerAdapter;
     ArrayList<EventCalenderModelClass> calendarDays = new ArrayList<>();
@@ -140,6 +168,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
         }
+        registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
     }
 
     //To Hide the bottomNavigation When popup
@@ -147,7 +182,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.rlHead.setSystemUiVisibility(
+            binding.getRoot().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -164,14 +199,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(CONNECTIVITY_ACTION);
+        receiver = new NetworkChangeReceiver();
         DisplayMetrics displayMetrics = new DisplayMetrics();
+        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith = displayMetrics.widthPixels;
 
         sqLite = new SQLite(HomeDashBoard.this);
         sqLite.getWritableDatabase();
+
 
         getRequiredData();
 
@@ -185,18 +224,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.llSlide.setOnClickListener(this);
         binding.llNav.cancelImg.setOnClickListener(this);
 
-
         if (SfType.equalsIgnoreCase("1")) {
-            binding.navViewMr.setVisibility(View.VISIBLE);
-            layoutParams = (DrawerLayout.LayoutParams) binding.navViewMr.getLayoutParams();
-            binding.navViewMr.setLayoutParams(layoutParams);
-            binding.navViewMr.setNavigationItemSelectedListener(this);
+            binding.navView.getMenu().clear();
+            binding.navView.inflateMenu(R.menu.activity_navigation_drawer_mr);
         } else {
-            binding.navView.setVisibility(View.VISIBLE);
-            layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
-            binding.navView.setLayoutParams(layoutParams);
-            binding.navView.setNavigationItemSelectedListener(this);
+            binding.navView.getMenu().clear();
+            binding.navView.inflateMenu(R.menu.activity_navigation_drawer_drawer);
         }
+
+        layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
+        binding.navView.setLayoutParams(layoutParams);
+        binding.navView.setNavigationItemSelectedListener(this);
 
         layoutParams.width = DeviceWith / 3;
         setSupportActionBar(binding.Toolbar);
@@ -297,6 +335,168 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });
+        new Handler().postDelayed(this::refreshPendingFunction, 200);
+    }
+
+    public static void NetworkConnectCallHomeDashBoard(String log) {
+        Log.v("printing_network_sta", log);
+        if (!TextUtils.isEmpty(log)) {
+            if (!log.equalsIgnoreCase("NOT_CONNECT")) {
+                Log.v("wifi_are_connec", "here");
+                if (mCheckNetwork != null)
+                    mCheckNetwork.checkNetwork();
+            } else {
+                Log.v("wifi_are_connec_not", "here");
+            }
+        }
+    }
+
+    public static void SendOfflineData(NetworkCheckInterface mCheckNetworkData) {
+        mCheckNetwork = mCheckNetworkData;
+    }
+
+    private void refreshPendingFunction() {
+        HomeDashBoard.SendOfflineData(this::sendingOfflineCalls);
+    }
+
+    private void sendingOfflineCalls() {
+        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+
+        //Call Data
+        ArrayList<OutBoxCallList> outBoxCallLists = sqLite.getOutBoxCallsFullList("Call Failed", "Waiting for Sync");
+        if (outBoxCallLists.size() > 0) {
+            for (int i = 0; i < outBoxCallLists.size(); i++) {
+                OutBoxCallList outBoxCallList = outBoxCallLists.get(i);
+                Log.v("SendOutboxCall", "----" + outBoxCallList.getCusName() + "---" + outBoxCallList.getSyncCount());
+                if (outBoxCallList.getSyncCount() <= 4) {
+                    CallSendAPI(outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
+                    break;
+                } else {
+                    sendingOfflineCalls();
+                }
+            }
+        } else {
+            //Call Event Capture
+            CallApiLocalEC();
+        }
+    }
+
+    private void CallApiLocalEC() {
+        ArrayList<EcModelClass> ecModelClasses = sqLite.getEcListFull();
+        if (ecModelClasses.size() > 0) {
+            for (int i = 0; i < ecModelClasses.size(); i++) {
+                EcModelClass ecModelClass = ecModelClasses.get(i);
+                Log.v("SendOutboxCall", "----" + ecModelClass.getDates() + "---" + ecModelClass.getName());
+                CallSendAPIImage(ecModelClass.getJson_values(), ecModelClass.getFilePath());
+                break;
+            }
+        } else {
+            RefreshOutBoxAdapter();
+        }
+    }
+
+
+    public HashMap<String, RequestBody> field(String val) {
+        HashMap<String, RequestBody> xx = new HashMap<>();
+        xx.put("data", createFromString(val));
+        return xx;
+    }
+
+    private RequestBody createFromString(String txt) {
+        return RequestBody.create(txt, MultipartBody.FORM);
+    }
+
+
+    public MultipartBody.Part convertImg(String tag, String path) {
+        Log.d("path", tag + "-" + path);
+        MultipartBody.Part yy = null;
+        try {
+            File file;
+            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+                file = new Compressor(context).compressToFile(new File(path));
+                Log.d("path", tag + "-" + path);
+            } else {
+                file = new File(path);
+            }
+            RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
+            yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+
+            Log.d("path", String.valueOf(yy));
+        } catch (Exception ignored) {
+        }
+        return yy;
+    }
+
+    private void CallSendAPIImage(String jsonValues, String filePath) {
+        MultipartBody.Part img = convertImg("EventImg", filePath);
+        HashMap<String, RequestBody> values = field(jsonValues.toString());
+        Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
+
+        saveImgDcr.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject json = new JSONObject(response.body().toString());
+                        Log.v("ImgUpload", json.toString());
+                        CallApiLocalEC();
+                    } catch (Exception ignored) {
+                        RefreshOutBoxAdapter();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                RefreshOutBoxAdapter();
+            }
+        });
+    }
+
+    private void RefreshOutBoxAdapter() {
+        listDates = sqLite.getOutBoxDate();
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(this, listDates);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
+        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+    }
+
+    private void CallSendAPI(String dates, String cusName, String cusCode, String jsonData, int syncCount) {
+        JSONObject jsonSaveDcr;
+        try {
+            jsonSaveDcr = new JSONObject(jsonData);
+            Call<JsonObject> callSaveDcr;
+            callSaveDcr = apiInterface.saveDcr(jsonSaveDcr.toString());
+            callSaveDcr.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
+                                sqLite.deleteOfflineCalls(cusCode, cusName, dates);
+                            } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
+                                sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(5), "Duplicate Call");
+                                sendingOfflineCalls();
+                            }
+                        } catch (Exception e) {
+                            Log.v("SendOutboxCall", "---" + e);
+                        }
+                    }
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                    sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(syncCount + 1), "Call Failed");
+                    sendingOfflineCalls();
+                }
+            });
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void getRequiredData() {

@@ -82,65 +82,55 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        binding.eyeImage.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void onClick (View view) {
-                if (passwordNotVisible == 1) {
-                    binding.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    binding.eyeImage.setImageDrawable(getResources().getDrawable(R.drawable.eye_hide));
-                    passwordNotVisible = 0;
-                } else {
-                    binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    binding.eyeImage.setImageDrawable(getResources().getDrawable(R.drawable.eye_visible));
-                    passwordNotVisible = 1;
-                }
-
-                binding.password.setSelection(binding.password.length());
+        binding.eyeImage.setOnClickListener(view -> {
+            if (passwordNotVisible == 1) {
+                binding.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                binding.eyeImage.setImageDrawable(getResources().getDrawable(R.drawable.eye_hide));
+                passwordNotVisible = 0;
+            } else {
+                binding.password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                binding.eyeImage.setImageDrawable(getResources().getDrawable(R.drawable.eye_visible));
+                passwordNotVisible = 1;
             }
+
+            binding.password.setSelection(binding.password.length());
         });
 
-        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                UtilityClass.hideKeyboard(LoginActivity.this);
-                userId = binding.userId.getText().toString().trim().replaceAll("\\s","");
-                String password = binding.password.getText().toString().trim().replaceAll("\\s","");
+        binding.loginBtn.setOnClickListener(view -> {
+            UtilityClass.hideKeyboard(LoginActivity.this);
+            userId = binding.userId.getText().toString().trim().replaceAll("\\s","");
+            String password = binding.password.getText().toString().trim().replaceAll("\\s","");
 
-                if (userId.isEmpty()){
-                    binding.userId.requestFocus();
-                    Toast.makeText(LoginActivity.this, "Enter userId", Toast.LENGTH_SHORT).show();
-                } else if (password.isEmpty()) {
-                    binding.password.requestFocus();
-                    Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
+            if (userId.isEmpty()){
+                binding.userId.requestFocus();
+                Toast.makeText(LoginActivity.this, "Enter userId", Toast.LENGTH_SHORT).show();
+            } else if (password.isEmpty()) {
+                binding.password.requestFocus();
+                Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
+            }else{
+                if (UtilityClass.isNetworkAvailable(LoginActivity.this)){
+                    login(userId,password);
                 }else{
-                    if (UtilityClass.isNetworkAvailable(LoginActivity.this)){
-                        login(userId,password);
-                    }else{
-                        Toast.makeText(LoginActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(LoginActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        binding.clearData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                sqLite.deleteAllTable();
-                SharedPref.clearSP(LoginActivity.this);
-                File apkStorage = new File(LoginActivity.this.getExternalFilesDir(null) + "/Slides/");
-                if (apkStorage.exists() && apkStorage.isDirectory()) {
-                    File[] files = apkStorage.listFiles();
-                    if (files != null) {
-                        for (File file : files) {
-                            file.delete();
-                        }
+        binding.clearData.setOnClickListener(view -> {
+            sqLite.deleteAllTable();
+            SharedPref.clearSP(LoginActivity.this);
+            File apkStorage = new File(LoginActivity.this.getExternalFilesDir(null) + "/Slides/");
+            if (apkStorage.exists() && apkStorage.isDirectory()) {
+                File[] files = apkStorage.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        file.delete();
                     }
                 }
-                SharedPref.saveLoginState(getApplicationContext(), false);
-                SharedPref.saveSettingState(getApplicationContext(), false);
-                startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
             }
+            SharedPref.saveLoginState(getApplicationContext(), false);
+            SharedPref.saveSettingState(getApplicationContext(), false);
+            startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
         });
 
     }

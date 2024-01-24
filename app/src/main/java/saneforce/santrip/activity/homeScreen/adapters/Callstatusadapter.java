@@ -96,16 +96,13 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             holder.linearLayout.setBackgroundResource(R.drawable.calender_background_d);
         }
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!list.getDateID().equalsIgnoreCase("")) {
-                    HomeDashBoard.binding.textDate.setText(fullMonthName + " " + list.getDateID() + ", " + year);
-                    HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                    //  HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
-                    HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
-                    HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
-                }
+        holder.linearLayout.setOnClickListener(v -> {
+            if (!list.getDateID().equalsIgnoreCase("")) {
+                HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
+                HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                //  HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+                HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
+                HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
             }
         });
 
