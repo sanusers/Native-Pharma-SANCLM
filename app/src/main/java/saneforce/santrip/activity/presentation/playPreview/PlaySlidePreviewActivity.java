@@ -111,17 +111,11 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
         });
 
         binding.closeBtn.setOnClickListener(view -> {
-            getOnBackPressedDispatcher().onBackPressed();
-           /* binding.bottomLayout.setVisibility(View.GONE);
-            binding.upArrow.setVisibility(View.VISIBLE);*/
+            binding.bottomLayout.setVisibility(View.GONE);
+            binding.upArrow.setVisibility(View.VISIBLE);
         });
 
-        binding.exitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        binding.exitBtn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
         binding.playBtn.setOnClickListener(new View.OnClickListener() {
             @Override

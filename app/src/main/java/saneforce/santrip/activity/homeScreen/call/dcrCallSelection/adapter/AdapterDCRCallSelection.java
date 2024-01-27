@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.profile.CustomerProfile;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -54,7 +55,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
         holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, cusListArrayList.get(position).getName()));
 
-    /*    for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
+        for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
             if (cusListArrayList.get(position).getType().equalsIgnoreCase("3")) {
                 if (cusListArrayList.get(position).getTown_name().contains(DcrCallTabLayoutActivity.TodayPlanClusterList.get(i))) {
                     holder.view_top.setVisibility(View.VISIBLE);
@@ -74,7 +75,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     holder.tv_area.setTextColor(context.getResources().getColor(R.color.dark_purple));
                 }
             }
-        }*/
+        }
 
         holder.constraint_main.setOnClickListener(view -> {
             DCRCallActivity.CallActivityCustDetails = new ArrayList<>();

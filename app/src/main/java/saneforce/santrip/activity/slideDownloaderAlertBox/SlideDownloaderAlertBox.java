@@ -47,7 +47,6 @@ public  class SlideDownloaderAlertBox {
             downloading_count = 0;
             dialogdismisscount = 0;
             totalcount=0;
-
         }
 
         if(Slide_list.size()>0){

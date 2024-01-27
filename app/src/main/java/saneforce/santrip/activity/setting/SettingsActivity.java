@@ -130,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (url.isEmpty()) {
                 binding.etWebUrl.requestFocus();
-                Toast.makeText(SettingsActivity.this, "Enter URL", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, "Enter "+getResources().getString(R.string.str_web_url), Toast.LENGTH_SHORT).show();
             } else if (licenseKey.isEmpty()) {
                 binding.etLicenseKey.requestFocus();
                 Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
@@ -141,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (checkURL(url)) {
                         configuration("https://" + url + "/apps/");
                     } else {
-                        Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingsActivity.this, "Check Your Configuration", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
@@ -253,7 +253,7 @@ public class SettingsActivity extends AppCompatActivity {
                         configuration("http://" + url + "/apps/");
                     } else {
                         binding.configurationPB.setVisibility(View.GONE);
-                        Toast.makeText(SettingsActivity.this, "Try again later", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SettingsActivity.this, "Check Your Configuration", Toast.LENGTH_SHORT).show();
                         Log.e("test", "hit count is : " + hitCount);
                         hitCount = 0;
                     }
@@ -306,6 +306,18 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.rlHead.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
 }

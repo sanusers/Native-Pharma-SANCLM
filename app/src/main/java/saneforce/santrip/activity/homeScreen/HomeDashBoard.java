@@ -102,11 +102,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     LocationManager locationManager;
     SQLite sqLite;
     LoginResponse loginResponse;
-    Dialog dialog, dialog1;
-    LinearLayout user_view;
-    RecyclerView calendarRecyclerView;
-    RelativeLayout rl_quick_link, rl_date_layout;
-    TextView monthYearText;
+
     Callstatusadapter callstatusadapter;
     TabLayoutAdapter leftViewPagerAdapter;
     ArrayList<EventCalenderModelClass> calendarDays = new ArrayList<>();
@@ -121,12 +117,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        Log.v("AAAAAA","PostCreate");
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        Log.v("AAAAAA","PostCreate");
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
@@ -174,6 +173,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         sqLite.getWritableDatabase();
 
         getRequiredData();
+        Log.v("AAAAAA","onCreate");
 
         binding.rlDateLayoout.setOnClickListener(this);
         binding.viewCalerderLayout.llNextMonth.setOnClickListener(this);
@@ -185,20 +185,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.llSlide.setOnClickListener(this);
         binding.llNav.cancelImg.setOnClickListener(this);
 
+        binding.viewDummy.setVisibility(View.VISIBLE);
 
-        if (SfType.equalsIgnoreCase("1")) {
-            binding.navViewMr.setVisibility(View.VISIBLE);
-            layoutParams = (DrawerLayout.LayoutParams) binding.navViewMr.getLayoutParams();
-            binding.navViewMr.setLayoutParams(layoutParams);
-            binding.navViewMr.setNavigationItemSelectedListener(this);
-        } else {
-            binding.navView.setVisibility(View.VISIBLE);
-            layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
-            binding.navView.setLayoutParams(layoutParams);
-            binding.navView.setNavigationItemSelectedListener(this);
-        }
-
+        layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
         layoutParams.width = DeviceWith / 3;
+        binding.navView.setLayoutParams(layoutParams);
+        if (SfType.equalsIgnoreCase("1")) {
+            binding.navView.getMenu().clear();
+            binding.navView.inflateMenu(R.menu.activity_navigation_drawer_mr);
+        } else {
+            binding.navView.getMenu().clear();
+            binding.navView.inflateMenu(R.menu.activity_navigation_drawer_drawer);
+        }
+        binding.navView.setNavigationItemSelectedListener(this);
         setSupportActionBar(binding.Toolbar);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.myDrawerLayout, R.string.nav_open, R.string.nav_close);
@@ -266,23 +265,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             }
         });*/
-        binding.myDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+     binding.myDrawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
-            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-            }
-
-            @Override
-            public void onDrawerOpened(@NonNull View drawerView) {
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                binding.myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
-
             @Override
-            public void onDrawerClosed(@NonNull View drawerView) {
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             }
+        });
 
+        binding.drMainlayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
-            public void onDrawerStateChanged(int newState) {
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                binding.drMainlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
 
             }
         });
@@ -291,7 +297,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
                 binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
+            }else {
                 binding.myDrawerLayout.openDrawer(GravityCompat.START);
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
 
@@ -655,6 +661,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         switch (v.getId()) {
             case R.id.rl_date_layoout:
                 if (binding.viewCalerderLayout.getRoot().getVisibility() == View.GONE) {
+                    binding.viewDummy.setVisibility(View.GONE);
+
                     getCallsDataToCalender();
                     selectedDate = LocalDate.now();
                     binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
@@ -668,11 +676,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     //   binding.tabLayout.getRoot().setVisibility(View.GONE);
                     binding.tabLayout.setVisibility(View.GONE);
                     binding.viewPager.setVisibility(View.GONE);
+                    binding.imgDoubleVecer.setImageDrawable(getDrawable(R.drawable.double_vec));
                 } else {
+                    binding.viewDummy.setVisibility(View.VISIBLE);
                     binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
                     //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
                     binding.tabLayout.setVisibility(View.VISIBLE);
                     binding.viewPager.setVisibility(View.VISIBLE);
+                    binding.imgDoubleVecer.setImageDrawable(getDrawable(R.drawable.arrow_bot_top_img));
                 }
                 break;
 
@@ -714,6 +725,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 break;
             case R.id.img_sync:
                 startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class));
+                finish();
                 break;
             case R.id.img_account:
                 showPopup(binding.imgAccount);
@@ -754,37 +766,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         }
     }
-
-
-    private ArrayList<CallStatusModelClass> getCallsDataToCalender1(ArrayList<String> dateList, ArrayList<CallStatusModelClass> workTypeList, String month, String year) {
-
-        ArrayList<CallStatusModelClass> nCallList = new ArrayList<>();
-        ArrayList<CallStatusModelClass> mCallList = new ArrayList<>();
-
-        for (CallStatusModelClass list : workTypeList) {
-            if (list.getMonth().equalsIgnoreCase(month) && list.getYear().equalsIgnoreCase(year)) {
-                mCallList.add(new CallStatusModelClass(list.getMonth(), list.getYear(), list.getDate(), list.getWorktype()));
-            }
-        }
-
-        for (String list1 : dateList) {
-            if (list1.length() > 0) {
-
-                for (CallStatusModelClass workTypeList123 : mCallList) {
-                    if (list1.equalsIgnoreCase(workTypeList123.getDate())) {
-                        nCallList.add(new CallStatusModelClass("", "", list1, workTypeList123.getWorktype()));
-                    } else {
-                        nCallList.add(new CallStatusModelClass("", "", list1, ""));
-                    }
-                }
-            } else {
-                nCallList.add(new CallStatusModelClass("", "", list1, ""));
-            }
-        }
-
-        return nCallList;
-    }
-
 
 }
 

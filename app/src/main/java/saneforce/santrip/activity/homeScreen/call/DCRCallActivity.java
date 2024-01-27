@@ -224,15 +224,16 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
+            progressDialog = CommonUtilsMethods.createProgressDialog(this);
             isCreateJsonSuccess = true;
             if (CheckRequiredFunctions() && CheckCurrentLoc()) {
                 CreateJsonFileCall();
                 if (isCreateJsonSuccess) {
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        progressDialog = CommonUtilsMethods.createProgressDialog(this);
                         CallUploadImage();
                         CallSaveDcrAPI(jsonSaveDcr.toString());
                     } else {
+                        progressDialog.dismiss();
                         Toast.makeText(DCRCallActivity.this, "No Network Available, Call Saved Locally", Toast.LENGTH_SHORT).show();
 
                         if (callCaptureImageLists.size() > 0) {
@@ -240,18 +241,20 @@ public class DCRCallActivity extends AppCompatActivity {
                                 sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentDate(), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString());
                             }
                         }
-
                         sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Waiting for Sync");
                         UpdateInputStock();
                         UpdateSampleStock();
                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);
                     }
+                } else {
+                    progressDialog.dismiss();
                 }
             } else {
                 progressDialog.dismiss();
             }
         });
+
 
         assert isFromActivity != null;
         if (isFromActivity.equalsIgnoreCase("edit_local")) {

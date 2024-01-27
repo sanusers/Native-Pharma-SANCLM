@@ -143,28 +143,28 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     private void HiddenVisibleFunctions() {
         if (DrNeed.equalsIgnoreCase("0")) {
             binding.llDocHead.setVisibility(View.VISIBLE);
-            binding.txtDocName.setText(String.format("%s Calls", CapDr));
+            binding.txtDocName.setText(CapDr);
             binding.textAverage.setText(String.format("Average %s", binding.txtDocName.getText().toString()));
         }
         if (ChemistNeed.equalsIgnoreCase("0")) {
             binding.llChemHead.setVisibility(View.VISIBLE);
-            binding.txtCheName.setText(String.format("%s Calls", CapChemist));
+            binding.txtCheName.setText( CapChemist);
         }
         if (StockistNeed.equalsIgnoreCase("0")) {
             binding.llStockHead.setVisibility(View.VISIBLE);
-            binding.txtStockName.setText(String.format("%s Calls", CapStockist));
+            binding.txtStockName.setText(CapStockist);
         }
         if (UnDrNeed.equalsIgnoreCase("0")) {
             binding.llUnliHead.setVisibility(View.VISIBLE);
-            binding.txtUnliName.setText(String.format("%s Calls", CapUnDr));
+            binding.txtUnliName.setText(CapUnDr);
         }
         if (CipNeed.equalsIgnoreCase("0")) {
             binding.llCipHead.setVisibility(View.VISIBLE);
-            binding.txtCipName.setText(String.format("%s Calls", CapCip));
+            binding.txtCipName.setText(CapCip);
         }
         if (HospNeed.equalsIgnoreCase("0")) {
             binding.llHosHead.setVisibility(View.VISIBLE);
-            binding.txtHosName.setText(String.format("%s Calls", CapHos));
+            binding.txtHosName.setText(CapHos);
         }
     }
 
@@ -205,7 +205,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             JSONArray unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(requireContext()));
             JSONArray cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(requireContext()));
             JSONArray hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(requireContext()));
-
             dcrdatas = sqLite.getMasterSyncDataByKey(Constants.DCR);
             if (dcrdatas.length() > 0) {
                 for (int i = 0; i < dcrdatas.length(); i++) {
@@ -238,42 +237,127 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
 
 
-                binding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
-                binding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
-                binding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
-                binding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
-                binding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
-                binding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
+                if (!Designation.equalsIgnoreCase("MR")) {
 
+                    binding.txtDocCount.setText(String.valueOf(doc_current_callcount));
+                    binding.txtCheCount.setText(String.valueOf(che_current_callcount));
+                    binding.txtStockCount.setText(String.valueOf(stockiest_current_callcount));
+                    binding.txtUnlistCount.setText(String.valueOf(unlistered_current_callcount));
+                    binding.txtCipCount.setText(String.valueOf(cip_current_callcount));
+                    binding.txtHosCount.setText(String.valueOf(hos_current_callcount));
 
-                int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
+                    binding.imgDoc.setVisibility(View.VISIBLE);
+                    binding.imgChe.setVisibility(View.VISIBLE);
+                    binding.imgStock.setVisibility(View.VISIBLE);
+                    binding.imgUnlist.setVisibility(View.VISIBLE);
+                    binding.imgCip.setVisibility(View.VISIBLE);
+                    binding.imgHos.setVisibility(View.VISIBLE);
 
-                doc_progress_value = computePercent(doc_current_callcount, Doctor_list.length());
-                che_progress_value = computePercent(che_current_callcount, Chemist_list.length());
-                stockiest_progress_value = computePercent(stockiest_current_callcount, Stockiest_list.length());
-                unlistered_progress_value = computePercent(unlistered_current_callcount, unlistered_list.length());
-                cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
-                hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
+                    binding.FlDocProgress.setVisibility(View.GONE);
+                    binding.FlCheProgress.setVisibility(View.GONE);
+                    binding.FlStockProgress.setVisibility(View.GONE);
+                    binding.FlUnistProgress.setVisibility(View.GONE);
+                    binding.FlCipProgress.setVisibility(View.GONE);
+                    binding.FlHosProgress.setVisibility(View.GONE);
 
-                binding.txtDocValue.setText(doc_progress_value + "%");
-                binding.txtCheValue.setText(che_progress_value + "%");
-                binding.txtStockValue.setText(stockiest_progress_value + "%");
-                binding.txtUnlistedValue.setText(unlistered_progress_value + "%");
-                binding.txtCipValue.setText(stockiest_progress_value + "%");
-                binding.txtHosValue.setText(unlistered_progress_value + "%");
+                } else {
+                    binding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
+                    binding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
+                    binding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
+                    binding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
+                    binding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
+                    binding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
 
-                binding.docProgressBar.setProgress(doc_progress_value);
-                binding.cheProgressBar.setProgress(che_progress_value);
-                binding.stockProgressBar.setProgress(stockiest_progress_value);
-                binding.unlistProgressBar.setProgress(unlistered_progress_value);
-                binding.cipProgressBar.setProgress(cip_progress_value);
-                binding.hosProgressBar.setProgress(hos_progress_value);
+                    int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
 
+                    doc_progress_value = computePercent(doc_current_callcount, Doctor_list.length());
+                    che_progress_value = computePercent(che_current_callcount, Chemist_list.length());
+                    stockiest_progress_value = computePercent(stockiest_current_callcount, Stockiest_list.length());
+                    unlistered_progress_value = computePercent(unlistered_current_callcount, unlistered_list.length());
+                    cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
+                    hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
 
+                    binding.txtDocValue.setText(doc_progress_value + "%");
+                    binding.txtCheValue.setText(che_progress_value + "%");
+                    binding.txtStockValue.setText(stockiest_progress_value + "%");
+                    binding.txtUnlistedValue.setText(unlistered_progress_value + "%");
+                    binding.txtCipValue.setText(cip_progress_value + "%");
+                    binding.txtHosValue.setText(hos_progress_value + "%");
+
+                    binding.docProgressBar.setProgress(doc_progress_value);
+                    binding.cheProgressBar.setProgress(che_progress_value);
+                    binding.stockProgressBar.setProgress(stockiest_progress_value);
+                    binding.unlistProgressBar.setProgress(unlistered_progress_value);
+                    binding.cipProgressBar.setProgress(cip_progress_value);
+                    binding.hosProgressBar.setProgress(hos_progress_value);
+
+                    binding.FlDocProgress.setVisibility(View.VISIBLE);
+                    binding.FlCheProgress.setVisibility(View.VISIBLE);
+                    binding.FlStockProgress.setVisibility(View.VISIBLE);
+                    binding.FlUnistProgress.setVisibility(View.VISIBLE);
+                    binding.FlCipProgress.setVisibility(View.VISIBLE);
+                    binding.FlHosProgress.setVisibility(View.VISIBLE);
+
+                    binding.imgDoc.setVisibility(View.GONE);
+                    binding.imgChe.setVisibility(View.GONE);
+                    binding.imgStock.setVisibility(View.GONE);
+                    binding.imgUnlist.setVisibility(View.GONE);
+                    binding.imgCip.setVisibility(View.GONE);
+                    binding.imgHos.setVisibility(View.GONE);
+
+                }
                 binding.inChart.lineChart.clear();
-                setLineChartData("1");
                 binding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
 
+                if (DrNeed.equalsIgnoreCase("0")) {
+                    binding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+                    binding.imgDownTriangleChe.setVisibility(View.GONE);
+                    binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    binding.imgDownTriangleCip.setVisibility(View.GONE);
+                    binding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("1");
+                } else if (ChemistNeed.equalsIgnoreCase("0")) {
+                    binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    binding.imgDownTriangleChe.setVisibility(View.VISIBLE);
+                    binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    binding.imgDownTriangleCip.setVisibility(View.GONE);
+                    binding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("2");
+                } else if (StockistNeed.equalsIgnoreCase("0")) {
+                    binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    binding.imgDownTriangleChe.setVisibility(View.GONE);
+                    binding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
+                    binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    binding.imgDownTriangleCip.setVisibility(View.GONE);
+                    binding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("3");
+                } else if (UnDrNeed.equalsIgnoreCase("0")) {
+                    binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    binding.imgDownTriangleChe.setVisibility(View.GONE);
+                    binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    binding.imgDownTriangleUnlistered.setVisibility(View.VISIBLE);
+                    binding.imgDownTriangleCip.setVisibility(View.GONE);
+                    binding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("4");
+                } else if (CipNeed.equalsIgnoreCase("0")) {
+                    binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    binding.imgDownTriangleChe.setVisibility(View.GONE);
+                    binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    binding.imgDownTriangleCip.setVisibility(View.VISIBLE);
+                    binding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("5");
+                } else if (HospNeed.equalsIgnoreCase("0")) {
+                    binding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    binding.imgDownTriangleChe.setVisibility(View.GONE);
+                    binding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    binding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    binding.imgDownTriangleCip.setVisibility(View.GONE);
+                    binding.imgDownTriangleHos.setVisibility(View.VISIBLE);
+                    setLineChartData("6");
+                }
             } else {
                 binding.inChart.llMonthlayout.setVisibility(View.GONE);
                 binding.llDocChild.setOnClickListener(null);
@@ -284,28 +368,32 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 binding.llCipChild.setOnClickListener(null);
 
 
-                binding.txtDocValue.setText("0%");
-                binding.txtCheValue.setText("0%");
-                binding.txtStockValue.setText("0%");
-                binding.txtUnlistedValue.setText("0%");
-                binding.txtCipValue.setText("0%");
-                binding.txtHosValue.setText("0%");
+                if (!Designation.equalsIgnoreCase("MR")) {
+                    binding.txtDocCount.setText("0");
+                    binding.txtCheCount.setText("0");
+                    binding.txtStockCount.setText("0");
+                    binding.txtUnlistCount.setText("0");
+                    binding.txtCipCount.setText("0");
+                    binding.txtHosCount.setText("0");
+                } else {
+                    binding.txtDocCount.setText("0 / " + Doctor_list.length());
+                    binding.txtCheCount.setText("0 / " + Chemist_list.length());
+                    binding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
+                    binding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
+                    binding.txtCipCount.setText("0 / " + cip_list.length());
+                    binding.txtHosCount.setText("0 / " + hos_list.length());
 
-                binding.txtDocCount.setText("0 / " + Doctor_list.length());
-                binding.txtCheCount.setText("0 / " + Chemist_list.length());
-                binding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
-                binding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
-                binding.txtCipCount.setText("0 / " + cip_list.length());
-                binding.txtHosCount.setText("0 / " + hos_list.length());
-
+                    binding.txtDocValue.setText("0%");
+                    binding.txtCheValue.setText("0%");
+                    binding.txtStockValue.setText("0%");
+                    binding.txtUnlistedValue.setText("0%");
+                    binding.txtCipValue.setText("0%");
+                    binding.txtHosValue.setText("0%");
+                }
             }
-
-
         } catch (Exception a) {
             a.printStackTrace();
         }
-
-
     }
 
     void setLineChartData(String Custype) {

@@ -105,6 +105,9 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     //  HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
+
                 }
             }
         });
@@ -118,9 +121,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
     public class CalendarViewHolder extends RecyclerView.ViewHolder {
         TextView dayTextView;
-
         ImageView imageView;
-
         LinearLayout linearLayout;
 
         public CalendarViewHolder(View itemView) {

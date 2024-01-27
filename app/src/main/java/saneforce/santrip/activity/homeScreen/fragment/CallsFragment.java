@@ -27,6 +27,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PaintView;
@@ -72,7 +73,14 @@ public class CallsFragment extends Fragment {
             }
         });
 
-        binding.tvAddCall.setOnClickListener(view -> startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class)));
+        binding.tvAddCall.setOnClickListener(view -> {
+            if (!SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty() && !SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null")) {
+                startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+            } else {
+                Toast.makeText(requireContext(),"Cannot submit the Call in Non-Field Worktype. Change MyDay Plan ",Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         return v;
     }

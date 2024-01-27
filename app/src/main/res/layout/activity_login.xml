@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/rlHead"
     android:background="@color/background"
     tools:context=".activity.login.LoginActivity">
 
@@ -152,9 +153,11 @@
                             android:layout_height="wrap_content"
                             android:hint="Enter Password"
                             android:textSize="@dimen/_6sdp"
+                            android:focusable="true"
                             android:textColorHint="@color/text_dark_65"
                             android:textColor="@color/text_dark"
                             android:inputType="textPassword"
+                            android:cursorVisible="true"
                             android:fontFamily="@font/satoshi_medium"
                             android:maxLines="1"
                             android:singleLine="true"
@@ -232,13 +235,13 @@
                             android:id="@+id/versionNoTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Version 1.2"
-                            android:textColor="@color/text_dark_65"
-                            android:textSize="@dimen/_6sdp"
-                            android:fontFamily="@font/satoshi_medium"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Version 1.2"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_6sdp"
                             tools:ignore="SpUsage" />
                     </RelativeLayout>
 

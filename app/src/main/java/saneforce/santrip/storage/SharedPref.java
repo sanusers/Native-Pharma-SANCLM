@@ -68,6 +68,9 @@ public class SharedPref {
 
     public static final String SLIDEDOWNCOUNT = "slidedowncount";
 
+    public static final String SYNC_STATUS = "SP_MAS_DETAILS";
+
+
     public static void clearSP(Context context){
         sharedPreferences = context.getSharedPreferences(SP_NAME,MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -339,5 +342,15 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanSfName, "");
     }
 
+    public static void putAutomassync(Context context, boolean mas_sync) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SYNC_STATUS, mas_sync).apply();
+    }
 
+
+
+    public static boolean getAutomassyncFromSP(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(SYNC_STATUS, false);
+    }
 }

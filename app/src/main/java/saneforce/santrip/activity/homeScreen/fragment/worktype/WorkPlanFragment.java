@@ -36,8 +36,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -46,6 +49,7 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.modelClass.Multicheckclass_clust;
+import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
@@ -120,8 +124,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlheadquates2.setOnClickListener(this);
         binding.llDelete.setOnClickListener(this);
 
-        //setUpMyDayplan();
-
+        setUpMyDayplan();
         getLocalData();
 
         return view;
@@ -143,9 +146,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
             SelectedWorkType = WT_ListAdapter.getlisted().get(position);
 
-
-            try {
-                mTxtWorktype.setText(SelectedWorkType.getString("Name"));
+   try {
+       mTxtWorktype.setText(SelectedWorkType.getString("Name"));
                 if (worktypeflag.equalsIgnoreCase("1")) {
 
                     mFwFlg1 = SelectedWorkType.getString("FWFlg");
@@ -194,7 +196,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
 
 
-            } catch (JSONException e) {
+   } catch (JSONException e) {
                 e.printStackTrace();
             }
         });
@@ -305,17 +307,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 
                 String searchString = s.toString();
                 multiClusterAdapter.getFilter().filter(searchString);
-
-
             }
-
             @Override
             public void afterTextChanged(Editable s) {
 
@@ -389,7 +387,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mHQName2 = SelectedHQ.getString("name");
                     getData(SelectedHQ.getString("id"));
                 }
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -544,7 +541,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.txtSave:
 
-                if (worktypeflag.equalsIgnoreCase("1")) {
+                if (UtilityClass.isNetworkAvailable(getActivity())) {
+                    if (worktypeflag.equalsIgnoreCase("1")) {
                     if (binding.txtWorktype1.getText().toString().startsWith("Field")) {
                         if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
                             Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
@@ -569,6 +567,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                             binding.txtSave.setEnabled(false);
                             mSubmitflag="S1";
+                            MyDayPlanSubmit();
+
                         }
                     } else if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
@@ -590,6 +590,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                         binding.txtSave.setEnabled(false);
                         mSubmitflag="S1";
+                        MyDayPlanSubmit();
                     }
                 } else {
                     if (binding.txtWorktype2.getText().toString().startsWith("Field")) {
@@ -620,6 +621,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtSave.setEnabled(false);
                             mSubmitflag="S1";
                             binding.llDelete.setVisibility(View.GONE);
+                            MyDayPlanSubmit();
                         }
                     } else if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
@@ -642,7 +644,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtSave.setEnabled(false);
                         mSubmitflag="S1";
                         binding.llDelete.setVisibility(View.GONE);
+                        MyDayPlanSubmit();
                     }
+                }
+
+
+                } else {
+                    Toast.makeText(getActivity(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -658,13 +666,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btnsumit:
-                if (mSubmitflag.equalsIgnoreCase("S1")) {
-                    AletboxRemarks();
-                } else if (mSubmitflag.equalsIgnoreCase("S2")) {
-                    MyDayPlanSubmit();
-                } else {
-                    Toast.makeText(getActivity(), "Save Workday Plan", Toast.LENGTH_SHORT).show();
-                }
+//                if (mSubmitflag.equalsIgnoreCase("S1")) {
+//                    AletboxRemarks();
+//                } else if (mSubmitflag.equalsIgnoreCase("S2")) {
+//                    MyDayPlanSubmit();
+//                } else {
+//                    Toast.makeText(getActivity(), "Save Workday Plan", Toast.LENGTH_SHORT).show();
+//                }
                 break;
 
 
@@ -685,11 +693,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             mHQCode = mHQCode1;
             mTowncode = mTowncode1;
             mHQName = mHQName1;
+            mFwFlg = mFwFlg1;
         } else {
             if (IsFeildWorkFlag.equalsIgnoreCase("F1")) {
                 mHQCode = mHQCode1;
                 mTowncode = mTowncode1;
                 mHQName = mHQName1;
+
             } else if (IsFeildWorkFlag.equalsIgnoreCase("F2")) {
                 mHQCode = mHQCode2;
                 mTowncode = mTowncode2;
@@ -701,7 +711,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-//        binding.progressSumit.setVisibility(View.VISIBLE);
+        binding.progressSumit.setVisibility(View.VISIBLE);
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", "dayplan");
@@ -748,6 +758,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                     Log.d("todayCallList:Code", response.code() + " - " + response);
                     if (response.isSuccessful()) {
+                        binding.progressSumit.setVisibility(View.GONE);
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
@@ -775,8 +786,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                     Log.e("VALUES",""+t);
-//                    binding.progressSumit.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "MyDayPlan  failure", Toast.LENGTH_SHORT).show();
+                    binding.progressSumit.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -919,7 +930,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
 
-
                         }
                     });
                 }
@@ -950,90 +960,183 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-//    public void setUpMyDayplan() {
+    public void setUpMyDayplan() {
+
+        try {
+            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
+
+            if (workTypeArray.length() > 0) {
+
+                JSONObject jsonObject = workTypeArray.getJSONObject(0);
+
+                String TPDt = jsonObject.getString("TPDt");
+                JSONObject jsonObject1 = new JSONObject(TPDt);
+                String dayPlan_Date = jsonObject1.getString("date");
+                String CurrentDate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_15);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date date1 = sdf.parse(dayPlan_Date);
+                Date date2 = sdf.parse(CurrentDate);
+                if (Objects.requireNonNull(date1).equals(date2)) {
+
+
+                    mTowncode1 = jsonObject.getString("Pl");
+                    mTownname1 = jsonObject.getString("PlNm");
+                    mWTCode1 = jsonObject.getString("WT");
+                    mWTName1= jsonObject.getString("WTNm");
+                    mFwFlg1 = jsonObject.getString("FWFlg");
+                    mHQCode1 = jsonObject.getString("SFMem");
+                    mHQName1 = jsonObject.getString("HQNm");
+                    mRemarks1 = jsonObject.getString("Rem");
+                    chk_cluster =  jsonObject.getString("Pl");
+
+//                    mTowncode2 = jsonObject.getString("Pl2");
+//                    mTownname2 = jsonObject.getString("PlNm2");
+//                    mWTCode2 = jsonObject.getString("WT2");
+//                    mWTName2= jsonObject.getString("WTNm2");
+//                    mFwFlg2 = jsonObject.getString("FWFlg2");
+//                    mHQCode2 = jsonObject.getString("SFMem2");
+//                    mHQName2 = jsonObject.getString("HQNm2");
+//                    mRemarks1 = jsonObject.getString("Rem2");
+
+
+                    if (!mFwFlg1.equalsIgnoreCase("F")) {
+                        binding.rlheadquates1.setVisibility(View.GONE);
+                        binding.rlcluster1.setVisibility(View.GONE);
+                        binding.txtWorktype1.setText(mWTName1);
+                        binding.txtCluster1.setText("");
+                        binding.txtheadquaters1.setText("");
+                        SharedPref.setTodayDayPlanSfCode(requireContext(), "");
+                        SharedPref.setTodayDayPlanSfName(requireContext(), "");
+                        SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                    } else {
+                        if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
+                            binding.rlheadquates1.setVisibility(View.VISIBLE);
+                            SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
+                            SharedPref.setTodayDayPlanSfCode(requireContext(), mHQCode1);
+                            SharedPref.setTodayDayPlanSfName(requireContext(), mHQName1);
+                        } else {
+                            binding.rlheadquates1.setVisibility(View.GONE);
+                            SharedPref.setTodayDayPlanSfCode(requireContext(), loginResponse.getSF_Code());
+                            SharedPref.setTodayDayPlanSfName(requireContext(), loginResponse.getSF_Name());
+                        }
+
+                        binding.rlcluster1.setVisibility(View.VISIBLE);
+                        binding.txtWorktype1.setText(mWTName1);
+                        binding.txtCluster1.setText(mTownname1);
+                        binding.txtheadquaters1.setText(mHQName1);
+                        SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
+
+                    }
+
+                    binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
+                    binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+                    binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+                    if (mFwFlg1.equalsIgnoreCase("F")) {
+                        binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
+                    } else {
+                        binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+                    }
+                    binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
+                    binding.rlworktype1.setEnabled(false);
+                    binding.rlcluster1.setEnabled(false);
+                    binding.rlheadquates1.setEnabled(false);
+                    binding.txtAddPlan.setEnabled(true);
+                    binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
+                    binding.txtSave.setEnabled(false);
+                    mSubmitflag = "S1";
+
+
+                    // seccond session
 //
-//        try {
-//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
+//                    if(!mFwFlg2.equalsIgnoreCase("")){
+//                        binding.cardPlan2.setVisibility(View.VISIBLE);
 //
-//            if (workTypeArray.length() > 0) {
+//                        if (!mFwFlg2.equalsIgnoreCase("F")) {
+//                            binding.rlheadquates2.setVisibility(View.GONE);
+//                            binding.rlcluster2.setVisibility(View.GONE);
+//                            binding.txtWorktype2.setText(mWTName1);
+//                            binding.txtCluster2.setText("");
+//                            binding.txtheadquaters2.setText("");
+//                        SharedPref.setTodayDayPlanSfCode(requireContext(), "");
+//                        SharedPref.setTodayDayPlanSfName(requireContext(), "");
+//                        SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
 //
-//                JSONObject jsonObject = workTypeArray.getJSONObject(0);
-//
-//                String TPDt = jsonObject.getString("TPDt");
-//                JSONObject jsonObject1 = new JSONObject(TPDt);
-//                String dayPlan_Date = jsonObject1.getString("date");
-//                String CurrentDate = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_15);
-//
-//                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-//                Date date1 = sdf.parse(dayPlan_Date);
-//                Date date2 = sdf.parse(CurrentDate);
-//                if (Objects.requireNonNull(date1).equals(date2)) {
-//                    mTowncode = jsonObject.getString("Pl");
-//                    mTownname = jsonObject.getString("PlNm");
-//                    mWTCode = jsonObject.getString("WT");
-//                    mWTName = jsonObject.getString("WTNm");
-//                    mFwFlg = jsonObject.getString("FWFlg");
-//                    mHQCode = jsonObject.getString("SFMem");
-//                    mHQName = jsonObject.getString("HQNm");
-//                    mRemarks = jsonObject.getString("Rem");
-//                    chk_cluster = jsonObject.getString("Pl");
-//                    Log.v("clusterNames", "---" + mTowncode);
-//                    if (!mFwFlg.equalsIgnoreCase("F")) {
-//                        binding.rlheadquates.setVisibility(View.GONE);
-//                        binding.rlcluster.setVisibility(View.GONE);
-//                        binding.txtWorktype.setText(mWTName);
-//                        binding.txtCluster.setText("");
-//
-//                        binding.txtheadquaters.setText("");
-//                        binding.txtdayremark.setText(mRemarks);
-//
-//                    } else {
-//
-//                        if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
-//                            binding.rlheadquates.setVisibility(View.VISIBLE);
 //                        } else {
-//                            binding.rlheadquates.setVisibility(View.GONE);
+//                            if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
+//                                binding.rlheadquates2.setVisibility(View.VISIBLE);
+//                    SharedPref.saveHq(requireContext(), mHQName1, mHQCode2);
+//                    SharedPref.setTodayDayPlanSfCode(requireContext(), mHQCode2);
+//                    SharedPref.setTodayDayPlanSfName(requireContext(), mHQName2);
+//                            } else {
+//                                binding.rlheadquates2.setVisibility(View.GONE);
+//                    SharedPref.setTodayDayPlanSfCode(requireContext(), loginResponse.getSF_Code());
+//                    SharedPref.setTodayDayPlanSfName(requireContext(), loginResponse.getSF_Name());
+//                            }
+//
+//                            binding.rlcluster2.setVisibility(View.VISIBLE);
+//                            binding.txtWorktype2.setText(mWTName1);
+//                            binding.txtCluster2.setText(mTownname1);
+//                            binding.txtheadquaters2.setText(mHQName1);
 //                        }
 //
-//                        binding.rlcluster.setVisibility(View.VISIBLE);
-//
-//
-//                        binding.txtWorktype.setText(mWTName);
-//                        binding.txtCluster.setText(mTownname);
-//                        binding.txtheadquaters.setText(mHQName);
-//                        binding.txtdayremark.setText(mRemarks);
-//
+//                        binding.cardPlan2.setCardBackgroundColor(getResources().getColor(R.color.gray_45));
+//                        binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
+//                        binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+//                        binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+//                        if(mFwFlg2.equalsIgnoreCase("F")){
+//                            binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
+//                        }else {
+//                            binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
+//                        }
+//                    }else {
+//                        binding.cardPlan2.setVisibility(View.GONE);
 //                    }
-//
-//
-//                    String dateOnlyString = sdf.format(date1);
-//                    String selectedDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, dateOnlyString);
-//                    HomeDashBoard.text_date.setText(selectedDate);
-//                } else {
-//                    sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
-//                    binding.txtWorktype.setText("");
-//                    binding.txtCluster.setText("");
-//                    binding.txtheadquaters.setText("");
-//                    binding.txtdayremark.setText("");
-//                    HomeDashBoard.text_date.setText("");
-//                }
-//
-//            } else {
-//                binding.txtWorktype.setText("");
-//                binding.txtCluster.setText("");
-//                binding.txtheadquaters.setText("");
-//
-//            }
-//
-//        } catch (Exception a) {
-//            throw new RuntimeException(a);
-//        }
-//    }
+
+
+                    String dateOnlyString = sdf.format(date1);
+                    String selectedDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_27, dateOnlyString);
+                    HomeDashBoard.binding.textDate.setText(selectedDate);
+
+                  } else {
+
+                    binding.cardPlan2.setVisibility(View.GONE);
+                    sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
+                    binding.txtWorktype1.setText("");
+                    binding.txtCluster1.setText("");
+                    binding.txtheadquaters1.setText("");
+                    HomeDashBoard.binding.textDate.setText("");
+                    binding.txtWorktype2.setText("");
+                    binding.txtCluster2.setText("");
+                    binding.txtheadquaters2.setText("");
+                    HomeDashBoard.binding.textDate.setText("");
+                    SharedPref.setTodayDayPlanSfCode(requireContext(), "");
+                    SharedPref.setTodayDayPlanSfName(requireContext(), "");
+                    SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+
+                }
+
+            } else {
+                binding.cardPlan2.setVisibility(View.GONE);
+                HomeDashBoard.binding.textDate.setText("");
+                SharedPref.setTodayDayPlanSfCode(requireContext(), "");
+                SharedPref.setTodayDayPlanSfName(requireContext(), "");
+                SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                binding.txtWorktype1.setText("");
+                binding.txtCluster1.setText("");
+                binding.txtheadquaters1.setText("");
+
+            }
+
+        } catch (Exception a) {
+            a.printStackTrace();
+        }
+    }
 
 
     public void syncMyDayPlan() {
 
-        try {
+    try {
             String baseUrl = SharedPref.getBaseWebUrl(requireContext());
             String pathUrl = SharedPref.getPhpPathUrl(requireContext());
             String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
@@ -1133,8 +1236,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             dialogReject.dismiss();
         });
         dialogReject.show();
-
-
 
     }
 }

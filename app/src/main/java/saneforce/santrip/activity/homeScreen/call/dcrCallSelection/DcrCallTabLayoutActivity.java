@@ -113,69 +113,10 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             StockiestGeoTag = loginResponse.getGEOTagNeedstock();
             UnDrGeoTag = loginResponse.getGEOTagNeedunlst();
 
-        /*    JSONArray jsonArray;
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject setupData = jsonArray.getJSONObject(0);
-
-                setupResponse = new SetupResponse();
-                Type typeSetup = new TypeToken<SetupResponse>() {
-                }.getType();
-                setupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-                limitKm = Double.parseDouble(setupResponse.getMapGeoFenceCircleRad());
-                if (setupData.has("GeoTagApprovalNeed")) {
-                    GeoTagApproval = setupResponse.getGeoTagApprovalNeed();
-                } else {
-                    GeoTagApproval = "1";
-                }
-
-                TpBasedDcr = setupResponse.getTpBasedDcr();
-
-                DrGeoTag = setupResponse.getDrGeoTagNeed();
-                CheGeoTag = setupResponse.getChemistGeoTagNeed();
-                CipGeoTag = setupResponse.getCipGeoTagNeed();
-                StockiestGeoTag = setupResponse.getStockistGeoTagNeed();
-                UnDrGeoTag = setupResponse.getUndrGeoTagNeed();
-
-                CapDr = setupResponse.getCaptionDr();
-                ChemistNeed = setupResponse.getChemistNeed();
-                CapChemist = setupResponse.getCaptionChemist();
-
-                if (setupData.has("cip_need")) {
-                    CipNeed = setupResponse.getCIPNeed();
-                    CapCip = setupResponse.getCaptionCip();
-                } else {
-                    CipNeed = "1";
-                }
-                StockistNeed = setupResponse.getStockistNeed();
-                CapStockist = setupResponse.getCaptionStockist();
-                UnDrNeed = setupResponse.getUnDrNeed();
-                CapUnDr = setupResponse.getCaptionUndr();
-            }
-
-
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject CustSetupData = jsonArray.getJSONObject(0);
-
-                customSetupResponse = new CustomSetupResponse();
-                Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
-                }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(CustSetupData), typeCustomSetup);
-                HospNeed = customSetupResponse.getHospNeed();
-            }*/
             if (SfType.equalsIgnoreCase("1")) {
                 TodayPlanSfCode = SfCode;
                 TodayPlanSfName = SfName;
             } else {
-
-              /*  JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
-                for (int i = 0; i < 1; i++) {
-                    JSONObject jsonHQList = jsonArray1.getJSONObject(0);
-                    TodayPlanSfCode = jsonHQList.getString("id");
-                    TodayPlanSfName = jsonHQList.getString("name");
-                }*/
-
                 TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
                 TodayPlanSfName = SharedPref.getTodayDayPlanSfName(this);
                 if (TodayPlanSfCode.equalsIgnoreCase("null") || TodayPlanSfCode.isEmpty()) {
@@ -188,6 +129,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 }
             }
 
+            TodayPlanClusterList.clear();
             JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + TodayPlanSfCode);
             for (int i = 0; i < jsonArray2.length(); i++) {
                 JSONObject jsonClusterList = jsonArray2.getJSONObject(i);

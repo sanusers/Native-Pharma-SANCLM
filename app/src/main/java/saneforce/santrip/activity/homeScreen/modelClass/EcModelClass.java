@@ -1,7 +1,18 @@
 package saneforce.santrip.activity.homeScreen.modelClass;
 
+import android.graphics.Bitmap;
+
 public class EcModelClass {
     private String dates;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getDates() {
         return dates;
@@ -15,7 +26,8 @@ public class EcModelClass {
     private String filePath;
     private String json_values;
 
-    public EcModelClass(String dates,String name, String filePath, String json_values) {
+    public EcModelClass(String id, String dates, String name, String filePath, String json_values) {
+        this.id = id;
         this.dates = dates;
         this.name = name;
         this.filePath = filePath;
