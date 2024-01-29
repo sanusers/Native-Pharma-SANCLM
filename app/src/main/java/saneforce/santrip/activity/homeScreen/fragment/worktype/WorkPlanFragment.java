@@ -63,7 +63,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     public static String chk_cluster = "";
     public static ArrayList<Multicheckclass_clust> listSelectedCluster = new ArrayList<>();
-    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode="",mTowncode="",mTownname="",mWTCode="",mWTName="",mFwFlg="",mHQName="";
+    public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "";
     WorkplanFragmentBinding binding;
     SQLite sqLite;
 
@@ -77,10 +77,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     LoginResponse loginResponse;
     String strClusterID = "", strClusterName = "";
 
-    String worktypeflag = "1",IsFeildWorkFlag="F0";
-    
-    String mSubmitflag="S0";
-    
+    String worktypeflag = "1", IsFeildWorkFlag = "F0";
+
+    String mSubmitflag = "S0";
 
 
     @SuppressLint("ObsoleteSdkInt")
@@ -152,7 +151,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mWTName1 = SelectedWorkType.getString("Name");
 
                     if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
-                        IsFeildWorkFlag="F1";
+                        IsFeildWorkFlag = "F1";
                         rlculster.setVisibility(View.VISIBLE);
                         if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
                             rlHQ.setVisibility(View.VISIBLE);
@@ -175,7 +174,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mWTName2 = SelectedWorkType.getString("Name");
 
                     if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
-                        IsFeildWorkFlag="F2";
+                        IsFeildWorkFlag = "F2";
                         rlculster.setVisibility(View.VISIBLE);
                         if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
                             rlHQ.setVisibility(View.VISIBLE);
@@ -425,12 +424,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
-                if(worktypeflag.equalsIgnoreCase("1")){
-                    if(!(mWTCode2).equalsIgnoreCase(jsonObject.getString("Code"))){
+                if (worktypeflag.equalsIgnoreCase("1")) {
+                    if (!(mWTCode2).equalsIgnoreCase(jsonObject.getString("Code"))) {
                         workType_list1.add(jsonObject);
                     }
-                }else {
-                    if(!(mWTCode1).equalsIgnoreCase(jsonObject.getString("Code"))){
+                } else {
+                    if (!(mWTCode1).equalsIgnoreCase(jsonObject.getString("Code"))) {
                         workType_list1.add(jsonObject);
                     }
                 }
@@ -547,18 +546,21 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     if (binding.txtWorktype1.getText().toString().startsWith("Field")) {
                         if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
                             Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
-
                         } else if (binding.txtCluster1.getText().toString().equalsIgnoreCase("")) {
                             Toast.makeText(getActivity(), "Select Cluster", Toast.LENGTH_SHORT).show();
                         } else {
                             binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
                             binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                             binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                            if(mFwFlg1.equalsIgnoreCase("F")){
+                            if (mFwFlg1.equalsIgnoreCase("F")) {
                                 binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                            }else {
+                            } else {
                                 binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                             }
+
+                            SharedPref.setTodayDayPlanSfCode(requireContext(), mHQCode1);
+                            SharedPref.setTodayDayPlanSfName(requireContext(), mHQName1);
+                            SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
 
                             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
                             binding.rlworktype1.setEnabled(false);
@@ -567,7 +569,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.txtAddPlan.setEnabled(true);
                             binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                             binding.txtSave.setEnabled(false);
-                            mSubmitflag="S1";
+                            mSubmitflag = "S1";
                         }
                     } else if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
                         Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
@@ -575,11 +577,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
                         binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                         binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                        if(mFwFlg1.equalsIgnoreCase("F")){
+                        if (mFwFlg1.equalsIgnoreCase("F")) {
                             binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                        }else {
+                        } else {
                             binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                         }
+
+                        SharedPref.setTodayDayPlanSfCode(requireContext(), mHQCode1);
+                        SharedPref.setTodayDayPlanSfName(requireContext(), mHQName1);
 
                         binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
                         binding.rlworktype1.setEnabled(false);
@@ -588,7 +593,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtAddPlan.setEnabled(true);
                         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                         binding.txtSave.setEnabled(false);
-                        mSubmitflag="S1";
+                        mSubmitflag = "S1";
                     }
                 } else {
                     if (binding.txtWorktype2.getText().toString().startsWith("Field")) {
@@ -603,12 +608,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
                             binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                             binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                            if(mFwFlg2.equalsIgnoreCase("F")){
+                            if (mFwFlg2.equalsIgnoreCase("F")) {
                                 binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                            }else {
+                            } else {
                                 binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                             }
 
+                            SharedPref.setTodayDayPlanSfCode(requireContext(), mHQCode2);
+                            SharedPref.setTodayDayPlanSfName(requireContext(), mHQName2);
+                            SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode2);
 
                             binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
                             binding.txtAddPlan.setEnabled(false);
@@ -617,7 +625,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.rlheadquates2.setEnabled(false);
                             binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                             binding.txtSave.setEnabled(false);
-                            mSubmitflag="S1";
+                            mSubmitflag = "S1";
                             binding.llDelete.setVisibility(View.GONE);
                         }
                     } else if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
@@ -627,9 +635,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
                         binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                         binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
-                        if(mFwFlg2.equalsIgnoreCase("F")){
+                        if (mFwFlg2.equalsIgnoreCase("F")) {
                             binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
-                        }else {
+                        } else {
                             binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                         }
                         binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -639,14 +647,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.rlheadquates2.setEnabled(false);
                         binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                         binding.txtSave.setEnabled(false);
-                        mSubmitflag="S1";
+                        mSubmitflag = "S1";
                         binding.llDelete.setVisibility(View.GONE);
                     }
                 }
                 break;
 
             case R.id.txtAddPlan:
-                mSubmitflag="S0";
+                mSubmitflag = "S0";
                 worktypeflag = "2";
                 binding.llDelete.setVisibility(View.VISIBLE);
                 binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
@@ -672,7 +680,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                 binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
                 worktypeflag = "1";
-                mSubmitflag="S1";
+                mSubmitflag = "S1";
                 binding.cardPlan2.setVisibility(View.GONE);
                 break;
         }
@@ -734,11 +742,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("InsMode", "0");
             jsonObject.put("Appver", getResources().getString(R.string.app_version));
             jsonObject.put("Mod", "");
-            jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15,HomeDashBoard.binding.textDate.getText().toString()));
+            jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
             jsonObject.put("TpVwFlg", "");
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");
-            Log.e("VALUES",jsonObject.toString());
+            Log.e("VALUES", jsonObject.toString());
 
             Call<JsonObject> saveMyDayPlan = api_interface.saveMydayPlan(jsonObject.toString());
 
@@ -773,7 +781,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    Log.e("VALUES",""+t);
+                    Log.e("VALUES", "" + t);
 //                    binding.progressSumit.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "MyDayPlan  failure", Toast.LENGTH_SHORT).show();
                 }
@@ -1100,9 +1108,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    void AletboxRemarks(){
+    void AletboxRemarks() {
 
-        Dialog  dialogReject = new Dialog(requireActivity());
+        Dialog dialogReject = new Dialog(requireActivity());
         dialogReject.setContentView(R.layout.alertbox_dayplan_remarks);
         Objects.requireNonNull(dialogReject.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogReject.setCancelable(false);
@@ -1114,23 +1122,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         ed_reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_reason)});
 
         btn_cancel.setOnClickListener(view1 -> {
-            mSubmitflag="S2";
+            mSubmitflag = "S2";
             ed_reason.setText("");
             dialogReject.dismiss();
         });
 
         iv_close.setOnClickListener(view12 -> {
-            mSubmitflag="S1";
+            mSubmitflag = "S1";
             ed_reason.setText("");
             dialogReject.dismiss();
         });
         btn_save.setOnClickListener(view12 -> {
-            mSubmitflag="S2";
-            mRemarks1=ed_reason.getText().toString();
+            mSubmitflag = "S2";
+            mRemarks1 = ed_reason.getText().toString();
             dialogReject.dismiss();
         });
         dialogReject.show();
-
 
 
     }

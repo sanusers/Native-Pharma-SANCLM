@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -116,6 +117,7 @@ public class DCRCallActivity extends AppCompatActivity {
     ApiInterface api_interface;
     boolean isCreateJsonSuccess;
     public static String isDetailingRequired;
+    String FwFlag;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -241,15 +243,17 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
+            progressDialog = CommonUtilsMethods.createProgressDialog(this);
             isCreateJsonSuccess = true;
             if (CheckRequiredFunctions() && CheckCurrentLoc()) {
                 CreateJsonFileCall();
                 if (isCreateJsonSuccess) {
+                    InsertVisitControl();
                     if (UtilityClass.isNetworkAvailable(context)) {
-                        progressDialog = CommonUtilsMethods.createProgressDialog(this);
                         CallUploadImage();
                         CallSaveDcrAPI(jsonSaveDcr.toString());
                     } else {
+                        progressDialog.dismiss();
                         Toast.makeText(DCRCallActivity.this, "No Network Available, Call Saved Locally", Toast.LENGTH_SHORT).show();
 
                         if (callCaptureImageLists.size() > 0) {
@@ -257,13 +261,14 @@ public class DCRCallActivity extends AppCompatActivity {
                                 sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentDate(), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString());
                             }
                         }
-
                         sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Waiting for Sync");
                         UpdateInputStock();
                         UpdateSampleStock();
                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);
                     }
+                } else {
+                    progressDialog.dismiss();
                 }
             } else {
                 progressDialog.dismiss();
@@ -277,6 +282,31 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonExtractOnline(CallActivityCustDetails.get(0).getJsonArray());
         }
 
+    }
+
+    private void InsertVisitControl() {
+        JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("CustCode", CallActivityCustDetails.get(0).getCode());
+            jsonObject.put("CustType", CallActivityCustDetails.get(0).getType());
+            jsonObject.put("Dcr_dt", CommonUtilsMethods.getCurrentDate());
+            jsonObject.put("month_name", CommonUtilsMethods.getCurrentMonthName());
+            jsonObject.put("Mnth", CommonUtilsMethods.getCurrentMonthNumber());
+            jsonObject.put("Yr", CommonUtilsMethods.getCurrentYear());
+            jsonObject.put("CustName", CallActivityCustDetails.get(0).getName());
+            jsonObject.put("town_code", CallActivityCustDetails.get(0).getTown_code());
+            jsonObject.put("town_name", CallActivityCustDetails.get(0).getTown_name());
+            jsonObject.put("Dcr_flag", "");
+            jsonObject.put("SF_Code", SfCode);
+            jsonObject.put("Trans_SlNo", "");
+            jsonObject.put("FW_Indicator", FwFlag);
+            jsonObject.put("AMSLNo", "");
+            jsonArray.put(jsonObject);
+            sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+        } catch (Exception e) {
+
+        }
     }
 
     private void jsonExtractOnline(String jsonArray) {
@@ -1169,6 +1199,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonSaveDcr.put("WT_code", workTypeData.getString("Code"));
                     jsonSaveDcr.put("WTName", workTypeData.getString("Name"));
                     jsonSaveDcr.put("FWFlg", workTypeData.getString("FWFlg"));
+                    FwFlag = workTypeData.getString("FWFlg");
                 }
             }
             jsonSaveDcr.put("town_code", CallActivityCustDetails.get(0).getTown_code());

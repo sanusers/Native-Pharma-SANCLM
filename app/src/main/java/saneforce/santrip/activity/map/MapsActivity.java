@@ -129,14 +129,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             try {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     String finalPath = "/storage/emulated/0";
-                    // try {
                     filePath = outputFileUri.getPath();
                     filePath = Objects.requireNonNull(filePath).substring(1);
                     filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-                    //     String result = String.valueOf(resultCode);
-                    //  if (result.equalsIgnoreCase("-1")) {
                     DisplayDialog();
-                    //  }
                 }
             } catch (Exception ignored) {
 
@@ -487,19 +483,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
         outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(getExternalCacheDir()).getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
         imageName = SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
         taggedTime = CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime();
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         someActivityResultLauncher.launch(intent);
-        //  startActivityForResult(intent, 15);
     }
 
     private void TabSelected(String CustSelected, String sfCode) {
         SelectedTab = CustSelected;
-        //   AddTaggedDetails(CustSelected, sfCode);
         runOnUiThread(() -> AddTaggedDetails(CustSelected, sfCode));
 
         if (CustSelected.equalsIgnoreCase("D")) {

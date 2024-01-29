@@ -19,10 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,17 +31,21 @@ import java.util.Objects;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.storage.SQLite;
 
 public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHolder> {
     Context context;
     ArrayList<EcModelClass> ecModelClasses;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    SQLite sqLite;
 
     public OutBoxECAdapter(Context context, ArrayList<EcModelClass> ecModelClasses) {
         this.context = context;
         this.ecModelClasses = ecModelClasses;
         commonUtilsMethods = new CommonUtilsMethods(context);
+        sqLite = new SQLite(context);
     }
 
     @NonNull
@@ -68,7 +72,18 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             showImage(myBitmap);
         });
 
-        holder.imgDel.setOnClickListener(v -> removeAt(position));
+        holder.imgDel.setOnClickListener(v -> {
+            File fileDelete = new File(ecModelClasses.get(position).getFilePath());
+            if (fileDelete.exists()) {
+                if (fileDelete.delete()) {
+                    System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
+                } else {
+                    System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+                }
+            }
+            sqLite.deleteOfflineEC(ecModelClasses.get(position).getId());
+            removeAt(position);
+        });
     }
 
     @Override

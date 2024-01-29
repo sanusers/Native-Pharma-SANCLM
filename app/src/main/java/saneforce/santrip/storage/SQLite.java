@@ -38,6 +38,8 @@ public class SQLite extends SQLiteOpenHelper {
 
     public static final String DATA_BASE_NAME = "san_clm.db";
 
+    public static final String COLUMN_ID = "Column_id";
+
     //Login Table
     public static final String LOGIN_TABLE = "login_table";
     public static final String LOGIN_DATA = "login_data";
@@ -111,7 +113,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_ONLINE_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_TABLE + "(" + CALL_DATE + " text," + CALL_TIME + " text," + CALL_IN_TIME + " text," + CALL_OUT_TIME + " text," + CALL_CUS_NAME + " text," + CALL_CUS_TYPE + " text,"
                 + CALL_CUS_CODE + " text," + CALL_JSON_VALUES + " text," + CALL_SYNC_STATUS + " text," + CALL_SYNC_COUNT + " INTEGER" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_EC_TABLE + "(" + CALL_DATE_EC + " text," + CALL_IMAGE_NAME + " text," + CALL_FILE_PATH + " text," + CALL_JSON_VALUES_EC + " text" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_EC_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CALL_DATE_EC + " text," + CALL_IMAGE_NAME + " text," + CALL_FILE_PATH + " text," + CALL_JSON_VALUES_EC + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
                 LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
                 LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
@@ -263,15 +265,16 @@ public class SQLite extends SQLiteOpenHelper {
     public ArrayList<EcModelClass> getEcList(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_EC_TABLE + " where " + CALL_DATE_EC + "='" + date + "';", null);
-        String dates = "", jsonData = "", name = "", file = "";
+        String dates = "", jsonData = "", name = "", file = "",id = "";
         ArrayList<EcModelClass> list = new ArrayList<>();
         while (cursor.moveToNext()) {
-            dates = cursor.getString(0);
-            name = cursor.getString(1);
-            file = cursor.getString(2);
-            jsonData = cursor.getString(3);
+            id = cursor.getString(0);
+            dates = cursor.getString(1);
+            name = cursor.getString(2);
+            file = cursor.getString(3);
+            jsonData = cursor.getString(4);
             if (dates != null) {
-                list.add(new EcModelClass(dates, name, file, jsonData));
+                list.add(new EcModelClass(id,dates, name, file, jsonData));
             }
         }
         db.close();
@@ -281,19 +284,26 @@ public class SQLite extends SQLiteOpenHelper {
     public ArrayList<EcModelClass> getEcListFull() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_EC_TABLE, null);
-        String dates = "", jsonData = "", name = "", file = "";
+        String dates = "", jsonData = "", name = "", file = "",id = "";
         ArrayList<EcModelClass> list = new ArrayList<>();
         while (cursor.moveToNext()) {
-            dates = cursor.getString(0);
-            name = cursor.getString(1);
-            file = cursor.getString(2);
-            jsonData = cursor.getString(3);
+            id = cursor.getString(0);
+            dates = cursor.getString(1);
+            name = cursor.getString(2);
+            file = cursor.getString(3);
+            jsonData = cursor.getString(4);
             if (dates != null) {
-                list.add(new EcModelClass(dates, name, file, jsonData));
+                list.add(new EcModelClass(id,dates, name, file, jsonData));
             }
         }
         db.close();
         return list;
+    }
+
+    public void deleteOfflineEC(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + CALL_OFFLINE_EC_TABLE + " WHERE " + COLUMN_ID + " = '" + id + "';");
+        db.close();
     }
 
     //Offline table
@@ -402,7 +412,7 @@ public class SQLite extends SQLiteOpenHelper {
         Cursor cursorEC = db.rawQuery("select * from " + CALL_OFFLINE_EC_TABLE, null);
         if (cursorEC.getCount() > 0) {
             while (cursorEC.moveToNext()) {
-                date = cursorEC.getString(0);
+                date = cursorEC.getString(1);
                 if (date != null) {
                     if (list.size() > 0) {
                         for (int i = 0; i < list.size(); i++) {
@@ -478,9 +488,9 @@ public class SQLite extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<OutBoxCallList> getOutBoxCallsFullList(String status,String status2) {
+    public ArrayList<OutBoxCallList> getOutBoxCallsFullList() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE+ " WHERE " + CALL_SYNC_STATUS + " IN " + "('" + status + "'" + ",'" + status2 + "')", null);
+        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE, null);
         String dates = "", time = "", inTime = "", outTime = "", cusName = "", cusType = "", cusCode = "", jsonData = "", syncStatus = "";
         int syncCount = 0;
         ArrayList<OutBoxCallList> list = new ArrayList<>();
@@ -503,6 +513,38 @@ public class SQLite extends SQLiteOpenHelper {
 
             if (dates != null && !syncStatus.isEmpty()) {
                 list.add(new OutBoxCallList(cusName, cusCode, dates, inTime, outTime, jsonData, cusType, syncStatus, syncCount));
+            }
+        }
+
+        db.close();
+        return list;
+    }
+
+    public ArrayList<OutBoxCallList> getOutBoxCallsFullList(String status, String status2) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE + " WHERE " + CALL_SYNC_STATUS + " IN " + "('" + status + "'" + ",'" + status2 + "')", null);
+        String dates = "", time = "", inTime = "", outTime = "", cusName = "", cusType = "", cusCode = "", jsonData = "", syncStatus = "";
+        int syncCount = 0;
+        ArrayList<OutBoxCallList> list = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            dates = cursor.getString(0);
+            time = cursor.getString(1);
+            inTime = cursor.getString(2);
+            outTime = cursor.getString(3);
+            cusName = cursor.getString(4);
+            cusType = cursor.getString(5);
+            cusCode = cursor.getString(6);
+            jsonData = cursor.getString(7);
+            syncStatus = cursor.getString(8);
+            if (!cursor.getString(9).isEmpty() && !cursor.getString(9).equalsIgnoreCase("null"))
+                syncCount = Integer.parseInt(cursor.getString(9));
+
+            if (syncStatus.isEmpty()) {
+                deleteOfflineCalls(cusCode, cusName, dates);
+            }
+
+            if (dates != null && !syncStatus.isEmpty()) {
+                list.add(new OutBoxCallList(cusName,cusCode,dates, jsonData,syncStatus, syncCount));
             }
         }
 
@@ -715,8 +757,13 @@ public class SQLite extends SQLiteOpenHelper {
         values.put(LINECHAR_TRANS_SLNO, transSlNo);
         values.put(LINECHAR_FM_INDICATOR, fw_indicater);
         values.put(LINECHAR_AMSLNO, amslNo);
-
         db.insert(LINE_CHAT_DATA_TABLE, null, values);
+        db.close();
+    }
+
+    public void deleteLineChart(String cusCode, String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_CUSTCODE + " = '" + cusCode + "' " + " AND " + LINECHAR_DCR_DT + "='" + date + "';");
         db.close();
     }
 
@@ -744,6 +791,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
         return count;
     }
+
 
 
     public int getcalls_count_by_range(String startDate, String endDate, String custType) {

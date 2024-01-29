@@ -8,6 +8,8 @@
     android:background="@color/backround_graey"
     tools:context=".activity.homeScreen.HomeDashBoard">
 
+
+
     <RelativeLayout
         android:id="@+id/rl_head"
         android:layout_width="match_parent"
@@ -532,6 +534,8 @@
             tools:ignore="DuplicateIncludedIds" />
 
     </com.google.android.material.navigation.NavigationView>
+
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

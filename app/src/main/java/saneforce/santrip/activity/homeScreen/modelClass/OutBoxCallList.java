@@ -74,6 +74,15 @@ public class OutBoxCallList {
         this.SyncCount = syncCount;
     }
 
+    public OutBoxCallList(String cusName, String cusCode,String date, String jsonData,String status,int syncCount) {
+        CusName = cusName;
+        CusCode = cusCode;
+        this.dates = date;
+        this.jsonData = jsonData;
+        this.status = status;
+        this.SyncCount = syncCount;
+    }
+
     public String getCusName() {
         return CusName;
     }

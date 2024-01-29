@@ -1,7 +1,6 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import saneforce.santrip.R;
 
 
-public class SalesAnalysisFragment extends Fragment {
+public class SalesAnalysisFragment extends Fragment  {
 
     TextView txt_month,txt_quaterly, txt_yearly;
 
@@ -25,58 +24,44 @@ public class SalesAnalysisFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.sales_analysis, container, false);
-
+        Log.v("fragment", "SalesAnalysis");
         txt_month=v.findViewById(R.id.text_month);
         txt_yearly=v.findViewById(R.id.text_yearly);
         txt_quaterly=v.findViewById(R.id.text_Quaterly);
 
-        txt_yearly.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
+        txt_yearly.setOnClickListener(v13 -> {
 
-                txt_month.setTextColor(Color.parseColor("#4e4e5c"));
-                txt_yearly.setTextColor(Color.WHITE);
-                txt_quaterly.setTextColor(Color.parseColor("#4e4e5c"));
+            txt_month.setTextColor(Color.parseColor("#4e4e5c"));
+            txt_yearly.setTextColor(Color.WHITE);
+            txt_quaterly.setTextColor(Color.parseColor("#4e4e5c"));
 
 
-                txt_month.setBackgroundResource(R.drawable.cutom_backround_grey);
-                txt_yearly.setBackgroundResource(R.drawable.custom_background_black);
-                txt_quaterly.setBackgroundResource(R.drawable.cutom_backround_grey);
-            }
+            txt_month.setBackgroundResource(R.drawable.cutom_backround_grey);
+            txt_yearly.setBackgroundResource(R.drawable.custom_background_black);
+            txt_quaterly.setBackgroundResource(R.drawable.cutom_backround_grey);
         });
-        txt_month.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
-                txt_month.setTextColor(Color.WHITE);
-                txt_yearly.setTextColor(Color.parseColor("#4e4e5c"));
-                txt_quaterly.setTextColor(Color.parseColor("#4e4e5c"));
+        txt_month.setOnClickListener(v12 -> {
+            txt_month.setTextColor(Color.WHITE);
+            txt_yearly.setTextColor(Color.parseColor("#4e4e5c"));
+            txt_quaterly.setTextColor(Color.parseColor("#4e4e5c"));
 
-                txt_month.setBackgroundResource(R.drawable.custom_background_black);
-                txt_yearly.setBackgroundResource(R.drawable.cutom_backround_grey);
-                txt_quaterly.setBackgroundResource(R.drawable.cutom_backround_grey);
-            }
+            txt_month.setBackgroundResource(R.drawable.custom_background_black);
+            txt_yearly.setBackgroundResource(R.drawable.cutom_backround_grey);
+            txt_quaterly.setBackgroundResource(R.drawable.cutom_backround_grey);
         });
-        txt_quaterly.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
-                txt_month.setTextColor(Color.parseColor("#4e4e5c"));
-                txt_yearly.setTextColor(Color.parseColor("#4e4e5c"));
-                txt_quaterly.setTextColor(Color.WHITE);
+        txt_quaterly.setOnClickListener(v1 -> {
+            txt_month.setTextColor(Color.parseColor("#4e4e5c"));
+            txt_yearly.setTextColor(Color.parseColor("#4e4e5c"));
+            txt_quaterly.setTextColor(Color.WHITE);
 
-                txt_quaterly.setBackgroundResource(R.drawable.custom_background_black);
-                txt_yearly.setBackgroundResource(R.drawable.cutom_backround_grey);
-                txt_month.setBackgroundResource(R.drawable.cutom_backround_grey);
-            }
+            txt_quaterly.setBackgroundResource(R.drawable.custom_background_black);
+            txt_yearly.setBackgroundResource(R.drawable.cutom_backround_grey);
+            txt_month.setBackgroundResource(R.drawable.cutom_backround_grey);
         });
-
-
-
-
         return v;
     }
+
+
     public void onDestroyView() {
 
         super.onDestroyView();

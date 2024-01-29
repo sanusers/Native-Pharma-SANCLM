@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.previewPresentation;
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.arrayStore;
 import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.BottomLayoutHeadAdapter.SelectedPosPlay;
 import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.headingData;
@@ -40,6 +41,7 @@ import saneforce.santrip.activity.previewPresentation.fragment.Speciality;
 import saneforce.santrip.activity.profile.CustomerProfile;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.storage.SQLite;
 
 public class PreviewActivity extends AppCompatActivity {
@@ -190,6 +192,9 @@ public class PreviewActivity extends AppCompatActivity {
             intent1.putExtra("isDetailedRequired", "true");
             intent1.putExtra("from_activity", "new");
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            if (!UtilityClass.isNetworkAvailable(this)) {
+                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+            }
             startActivity(intent1);
         });
     }

@@ -18,7 +18,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, int key) {
         super(fragmentActivity);
         this.key=key;
-
     }
     @NonNull
     @Override

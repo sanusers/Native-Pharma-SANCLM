@@ -73,7 +73,7 @@ public class CustomerProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cust_profile);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-sqLite = new SQLite(this);
+        sqLite = new SQLite(this);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         btn_skip = findViewById(R.id.btn_skip);
@@ -117,10 +117,12 @@ sqLite = new SQLite(this);
 
         btn_skip.setOnClickListener(view -> {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
-            intent1.putExtra("isDetailedRequired","false");
+            intent1.putExtra("isDetailedRequired", "false");
             intent1.putExtra("from_activity", "new");
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(),CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+            if (!UtilityClass.isNetworkAvailable(this)) {
+                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+            }
             startActivity(intent1);
         });
 

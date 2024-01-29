@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -195,6 +196,30 @@ public class CommonUtilsMethods {
     }
 
 
+    public static String getCurrentMonthNumber() {
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("M");
+        String val = sdf.format(currentTime);
+        return val;
+    }
+
+    public static String getCurrentMonthName() {
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
+        String val = sdf.format(currentTime);
+        return val;
+    }
+
+    public static String getCurrentYear() {
+        Date currentTime = Calendar.getInstance().getTime();
+        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
+        Log.v("Printing_current_time", String.valueOf(currentTime));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        String val = sdf.format(currentTime);
+        Log.v("Printing_current_date", String.valueOf(val));
+        return val;
+    }
+
     public static String getCurrentInstance() {
         Calendar c = Calendar.getInstance();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -221,6 +246,7 @@ public class CommonUtilsMethods {
         dialog.setContentView(R.layout.loading_progress);
         return dialog;
     }
+
 
 
     public void recycleTestWithoutDivider(RecyclerView rv_test) {

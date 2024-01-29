@@ -4,14 +4,14 @@ import android.graphics.Bitmap;
 
 public class EcModelClass {
     private String dates;
-    private Bitmap photo;
+    private String id;
 
-    public Bitmap getPhoto() {
-        return photo;
+    public String getId() {
+        return id;
     }
 
-    public void setPhoto(Bitmap photo) {
-        this.photo = photo;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDates() {
@@ -26,7 +26,8 @@ public class EcModelClass {
     private String filePath;
     private String json_values;
 
-    public EcModelClass(String dates,String name, String filePath, String json_values) {
+    public EcModelClass(String id, String dates, String name, String filePath, String json_values) {
+        this.id = id;
         this.dates = dates;
         this.name = name;
         this.filePath = filePath;

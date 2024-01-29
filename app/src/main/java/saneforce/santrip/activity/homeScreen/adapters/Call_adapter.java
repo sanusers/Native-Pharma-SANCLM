@@ -2,6 +2,14 @@ package saneforce.santrip.activity.homeScreen.adapters;
 
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SampleValidation;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.isFromActivity;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.callAnalysisBinding;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.cip_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.hos_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.unlistered_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.Designation;
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.DivCode;
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.InputValidation;
@@ -12,12 +20,15 @@ import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SubDi
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.TodayPlanSfCode;
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.binding;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -32,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
@@ -50,29 +62,43 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
+import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
 
 
 public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataViewholider> {
-    Resources resources;
     Context context;
-    List<CallsModalClass> list = new ArrayList<>();
+    ArrayList<CallsModalClass> list = new ArrayList<>();
     ApiInterface apiInterface;
     ProgressDialog progressBar;
+    SQLite sqLite;
+    Dialog dialogTransparent;
 
-    public Call_adapter(Context context, List<CallsModalClass> list, ApiInterface apiInterface) {
+    public Call_adapter(Context context, ArrayList<CallsModalClass> list, ApiInterface apiInterface) {
         this.context = context;
         this.list = list;
         this.apiInterface = apiInterface;
+        sqLite = new SQLite(context);
+        dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.remove_border_progress, null);
+        dialogTransparent.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(dialogTransparent.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogTransparent.setContentView(view);
     }
 
     @NonNull
@@ -110,48 +136,80 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
             popup.inflate(R.menu.call_menu);
             popup.setOnMenuItemClickListener(menuItem -> {
-                NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
-                    if (status) {
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    if (menuItem.getItemId() == R.id.menuEdit) {
+                        CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
                         try {
-                            if (menuItem.getItemId() == R.id.menuEdit) {
-                                CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
-                            } else if (menuItem.getItemId() == R.id.menuDelete) {
-                                Dialog dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
-                                View view = LayoutInflater.from(context).inflate(
-                                        R.layout.loading_progress, null);
-                                dialogTransparent.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                Objects.requireNonNull(dialogTransparent.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                                dialogTransparent.setContentView(view);
-                                dialogTransparent.show();
-                                new CountDownTimer(500, 500) {
-                                    public void onTick(long millisUntilFinished) {
+                            dialogTransparent.show();
+                            CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
 
-                                    }
-
-                                    public void onFinish() {
-                                        dialogTransparent.dismiss();
-                                        removeAt(holder.getAbsoluteAdapterPosition());
-                                    }
-                                }.start();
-                                CallDeleteAPI(holder.getAbsoluteAdapterPosition(), callslist.getADetSLNo(), callslist.getDocNameID());
+                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                    jsonArray.remove(i);
+                                    break;
+                                }
                             }
+
+                            sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+                            sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
+
+                            switch (callslist.getDocNameID()) {
+                                case "1":
+                                    int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
+                                    callAnalysisBinding.txtDocCount.setText(String.format("%d / %d", doc_current_callcount, Doctor_list.length()));
+                                    break;
+                                case "2":
+                                    int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
+                                    callAnalysisBinding.txtCheCount.setText(String.format("%d / %d", che_current_callcount, Chemist_list.length()));
+                                    break;
+                                case "3":
+                                    int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
+                                    callAnalysisBinding.txtStockCount.setText(String.format("%d / %d", stockiest_current_callcount, Stockiest_list.length()));
+                                    break;
+                                case "4":
+                                    int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
+                                    callAnalysisBinding.txtUnlistCount.setText(String.format("%d / %d", unlistered_current_callcount, unlistered_list.length()));
+                                    break;
+                                case "5":
+                                    int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
+                                    callAnalysisBinding.txtCipCount.setText(String.format("%d / %d", cip_current_callcount, cip_list.length()));
+                                    break;
+                                case "6":
+                                    int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
+                                    callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
+                                    break;
+                            }
+
+
+                            // CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
+                            new CountDownTimer(300, 300) {
+                                public void onTick(long millisUntilFinished) {
+                                }
+
+                                public void onFinish() {
+                                    removeAt(holder.getAbsoluteAdapterPosition());
+                                    dialogTransparent.dismiss();
+                                }
+                            }.start();
+
                         } catch (Exception e) {
-
+                            Log.v("sdsd", e.toString());
+                            dialogTransparent.dismiss();
                         }
-                    } else {
-                        Toast.makeText(context, "No Network Available!", Toast.LENGTH_SHORT).show();
                     }
-                });
-                networkStatusTask.execute();
-
-
+                } else {
+                    Toast.makeText(context, "No Network Available!", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             });
             popup.show();
         });
     }
 
-    private void CallDeleteAPI(int position, String aDetSLNo, String type) {
+    private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("sfcode", SfCode);
@@ -183,6 +241,27 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         assert response.body() != null;
                         // JSONObject jsonObject = new JSONObject(response.body().toString());
                         Log.v("delCall", response.toString());
+                        JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject json = jsonArray.getJSONObject(i);
+                            if (json.getString("Trans_SlNo").equalsIgnoreCase(TranslNo) && json.getString("ADetSLNo").equalsIgnoreCase(aDetSLNo)) {
+                                Log.v("delCall", json.getString("CustName"));
+                                jsonArray.remove(i);
+                            }
+                        }
+                        SharedPref.setTodayCallList(context, jsonArray.toString());
+
+
+                     /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(docCode)) {
+                                jsonArray.remove(i);
+                                break;
+                            }
+                        }
+                        sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+                        CallAnalysisFragment.SetcallDetailsInLineChart(sqLite,context);*/
                         //   Toast.makeText(context, "Call Deleted Successfully", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
                         Log.v("delCall", e.toString());
@@ -269,6 +348,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, list.size());
         binding.txtCallcount.setText(String.valueOf(list.size()));
+
     }
 
     public static class listDataViewholider extends RecyclerView.ViewHolder {
