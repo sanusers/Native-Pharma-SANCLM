@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Objects;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.setting.AsyncInterface;
 import saneforce.santrip.activity.setting.SettingsActivity;
@@ -75,15 +76,13 @@ public class LoginActivity extends AppCompatActivity {
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
         uiInitialisation();
+        binding.versionNoTxt.setText("Version "+getResources().getString(R.string.app_version));
 
         if (fcmToken.isEmpty()) {
-            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, new OnSuccessListener<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    fcmToken = s;
-                    Log.d("test", "new FCM token in login : " + fcmToken);
-                    SharedPref.saveFcmToken(getApplicationContext(), s);
-                }
+            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, s -> {
+                fcmToken = s;
+                Log.d("test", "new FCM token in login : " + fcmToken);
+                SharedPref.saveFcmToken(getApplicationContext(), s);
             });
         }
 
@@ -144,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
         String logoUrl = SharedPref.getLogoUrl(LoginActivity.this);
         String[] splitLogoUrl = logoUrl.split("/");
         getAndSetLogoImage(splitLogoUrl[splitLogoUrl.length - 1]);
-
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
@@ -178,15 +176,12 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             String url = SharedPref.getCallApiUrl(getApplicationContext());
             if (!url.equals("")){
-                new DownloaderClass(url, fileDirectory, imageName, new AsyncInterface() {
-                    @Override
-                    public void taskCompleted (boolean status) {
-                        if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
-                            File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
-                            String path = Objects.requireNonNull(file).getAbsolutePath();
-                            Bitmap b = BitmapFactory.decodeFile(path);
-                            binding.logoImg.setImageBitmap(b);
-                        }
+                new DownloaderClass(url, fileDirectory, imageName, status -> {
+                    if(ImageStorage.checkIfImageExists(fileDirectory, imageName )) {
+                        File file = ImageStorage.getImage(fileDirectory + "/images/", imageName );
+                        String path = Objects.requireNonNull(file).getAbsolutePath();
+                        Bitmap b = BitmapFactory.decodeFile(path);
+                        binding.logoImg.setImageBitmap(b);
                     }
                 }).execute();
             }
@@ -250,10 +245,14 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
-
-            Intent intent = new Intent(LoginActivity.this, MasterSyncActivity.class);
-            intent.putExtra(Constants.NAVIGATE_FROM, "Login");
-            startActivity(intent);
+            if(SharedPref.getAutomassyncFromSP(LoginActivity.this)){
+                Intent intent = new Intent(LoginActivity.this, HomeDashBoard.class);
+                startActivity(intent);
+            }else {
+                Intent intent = new Intent(LoginActivity.this, MasterSyncActivity.class);
+                intent.putExtra(Constants.NAVIGATE_FROM, "Login");
+                startActivity(intent);
+            }
         }catch (Exception exception){
             exception.printStackTrace();
         }
@@ -263,4 +262,20 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume () {
         super.onResume();
     }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.rlHead.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
 }

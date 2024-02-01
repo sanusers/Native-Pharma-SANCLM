@@ -1,13 +1,11 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -146,14 +143,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         return v;
     }
 
-
-    public void recreate() {
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.detach(this);
-        ft.attach(this);
-        ft.commit();
-    }
-
     private void HiddenVisibleFunctions() {
         if (DrNeed.equalsIgnoreCase("0")) {
             callAnalysisBinding.llDocHead.setVisibility(View.VISIBLE);
@@ -239,6 +228,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     String FW_Indicator = jsonObject.optString("FW_Indicator");
                     String AMSLNo = jsonObject.optString("AMSLNo");
                     sqLite.insertLinecharData(CustCode, CustType, Dcr_dt, month_name, Mnth, Yr, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo, FW_Indicator);
+
                 }
 
 
@@ -250,12 +240,36 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
 
 
-                callAnalysisBinding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
-                callAnalysisBinding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
-                callAnalysisBinding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
-                callAnalysisBinding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
-                callAnalysisBinding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
-                callAnalysisBinding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
+                if (!Designation.equalsIgnoreCase("MR")) {
+
+                    binding.txtDocCount.setText(String.valueOf(doc_current_callcount));
+                    binding.txtCheCount.setText(String.valueOf(che_current_callcount));
+                    binding.txtStockCount.setText(String.valueOf(stockiest_current_callcount));
+                    binding.txtUnlistCount.setText(String.valueOf(unlistered_current_callcount));
+                    binding.txtCipCount.setText(String.valueOf(cip_current_callcount));
+                    binding.txtHosCount.setText(String.valueOf(hos_current_callcount));
+
+                    binding.imgDoc.setVisibility(View.VISIBLE);
+                    binding.imgChe.setVisibility(View.VISIBLE);
+                    binding.imgStock.setVisibility(View.VISIBLE);
+                    binding.imgUnlist.setVisibility(View.VISIBLE);
+                    binding.imgCip.setVisibility(View.VISIBLE);
+                    binding.imgHos.setVisibility(View.VISIBLE);
+
+                    binding.FlDocProgress.setVisibility(View.GONE);
+                    binding.FlCheProgress.setVisibility(View.GONE);
+                    binding.FlStockProgress.setVisibility(View.GONE);
+                    binding.FlUnistProgress.setVisibility(View.GONE);
+                    binding.FlCipProgress.setVisibility(View.GONE);
+                    binding.FlHosProgress.setVisibility(View.GONE);
+
+                } else {
+                    binding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
+                    binding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
+                    binding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
+                    binding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
+                    binding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
+                    binding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
 
 
                 int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
@@ -282,9 +296,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.hosProgressBar.setProgress(hos_progress_value);
 
 
-                callAnalysisBinding.inChart.lineChart.clear();
-                setLineChartData("1", sqLite, context);
-                callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
+                binding.inChart.lineChart.clear();
+                setLineChartData("1");
+                binding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
 
             } else {
                 callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.GONE);
@@ -296,6 +310,20 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.llCipChild.setOnClickListener(null);
 
 
+                if (!Designation.equalsIgnoreCase("MR")) {
+                    binding.txtDocCount.setText("0");
+                    binding.txtCheCount.setText("0");
+                    binding.txtStockCount.setText("0");
+                    binding.txtUnlistCount.setText("0");
+                    binding.txtCipCount.setText("0");
+                    binding.txtHosCount.setText("0");
+                } else {
+                    binding.txtDocCount.setText("0 / " + Doctor_list.length());
+                    binding.txtCheCount.setText("0 / " + Chemist_list.length());
+                    binding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
+                    binding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
+                    binding.txtCipCount.setText("0 / " + cip_list.length());
+                    binding.txtHosCount.setText("0 / " + hos_list.length());
                 callAnalysisBinding.txtDocValue.setText("0%");
                 callAnalysisBinding.txtCheValue.setText("0%");
                 callAnalysisBinding.txtStockValue.setText("0%");
@@ -310,6 +338,13 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.txtCipCount.setText("0 / " + cip_list.length());
                 callAnalysisBinding.txtHosCount.setText("0 / " + hos_list.length());
 
+                    binding.txtDocValue.setText("0%");
+                    binding.txtCheValue.setText("0%");
+                    binding.txtStockValue.setText("0%");
+                    binding.txtUnlistedValue.setText("0%");
+                    binding.txtCipValue.setText("0%");
+                    binding.txtHosValue.setText("0%");
+                }
             }
 
 

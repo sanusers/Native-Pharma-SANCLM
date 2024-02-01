@@ -8,8 +8,6 @@
     android:background="@color/backround_graey"
     tools:context=".activity.homeScreen.HomeDashBoard">
 
-
-
     <RelativeLayout
         android:id="@+id/rl_head"
         android:layout_width="match_parent"
@@ -164,6 +162,7 @@
                             tools:ignore="RelativeOverlap,SpUsage,TextSizeCheck" />
 
                         <ImageView
+                            android:id="@+id/img_double_vecer"
                             android:layout_width="@dimen/_9sdp"
                             android:layout_height="@dimen/_9sdp"
                             android:layout_alignParentEnd="true"
@@ -495,6 +494,7 @@
 
             </LinearLayout>
 
+
             <com.google.android.material.navigation.NavigationView
                 android:id="@+id/nav_view"
                 android:layout_width="wrap_content"
@@ -504,11 +504,12 @@
                 android:foregroundGravity="center"
                 android:paddingStart="@dimen/_8sdp"
                 android:paddingEnd="@dimen/_8sdp"
+                android:visibility="visible"
                 app:itemBackground="@drawable/drawer_item_bg"
                 app:itemIconSize="@dimen/_10sdp"
                 app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
                 app:itemTextColor="@color/black_45"
-                />
+                app:menu="@menu/activity_navigation_drawer_drawer" />
 
 
         </androidx.drawerlayout.widget.DrawerLayout>
@@ -534,8 +535,6 @@
             tools:ignore="DuplicateIncludedIds" />
 
     </com.google.android.material.navigation.NavigationView>
-
-
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

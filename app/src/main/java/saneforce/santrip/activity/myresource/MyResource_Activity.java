@@ -108,14 +108,12 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString("Origin");
         }
-
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
 
 
         backArrow.setOnClickListener(v -> {
-            Intent l = new Intent(MyResource_Activity.this, HomeDashBoard.class);
-            startActivity(l);
+           getOnBackPressedDispatcher().onBackPressed();
         });
 
         if (loginResponse.getDesig_Code().equals("MR")) {

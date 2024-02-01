@@ -311,6 +311,60 @@ public class CustList {
         this.geoTagStatus = geoTagStatus;
     }
 
+
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,boolean isClusterAvailable) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.categoryCode = categoryCode;
+        this.specialist = specialist;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.dob = dob;
+        this.wedding_date = wed_date;
+        this.email = email;
+        this.mobile = mobile;
+        this.phone = phone;
+        this.qualification = qualification;
+        this.PriorityPrdCode = priorityPrdCode;
+        this.isClusterAvailable = isClusterAvailable;
+    }
+
+ public CustList(String name, String code, String type, String category, String categoryCode, String specialist,String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,String MappedBrandCode,String MappedSlideCode,boolean isClusterAvailable) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.categoryCode = categoryCode;
+        this.specialist = specialist;
+        this.specialistCode = specialistCode;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.dob = dob;
+        this.wedding_date = wed_date;
+        this.email = email;
+        this.mobile = mobile;
+        this.phone = phone;
+        this.qualification = qualification;
+        this.PriorityPrdCode = priorityPrdCode;
+        this.MappedBrands = MappedBrandCode;
+        this.MappedSlides = MappedSlideCode;
+        this.isClusterAvailable = isClusterAvailable;
+    }
+
     public String getCategoryCode() {
         return categoryCode;
     }

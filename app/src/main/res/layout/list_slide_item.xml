@@ -3,73 +3,90 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/_5sdp">
-
-    <RelativeLayout
-        android:id="@+id/rl_title_layout"
+    >
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        >
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:id="@+id/rl_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            >
+
+            <TextView
+                android:id="@+id/txt_imagename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="left"
+                android:text="Slide downloader"
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/text_retry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="@dimen/_3sdp"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:background="@drawable/background_button_border_black"
+                android:drawableLeft="@drawable/background_drawable_icon"
+                android:fontFamily="@font/satoshi_medium"
+                android:gravity="center"
+                android:padding="@dimen/_3sdp"
+                android:text=" Retry "
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+
+        <ProgressBar
+            android:id="@+id/img_download_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:progressTint="@color/Green_45"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            />
+
 
         <TextView
-            android:id="@+id/txt_imagename"
+            android:id="@+id/txt_download_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/satoshi_medium"
-            android:gravity="left"
-            android:text="Slide downloader"
-            android:textColor="@color/black_45"
-            android:textSize="@dimen/_8sdp"
-            android:textStyle="bold" />
-
-
-        <TextView
-            android:id="@+id/text_retry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="@dimen/_3sdp"
-            android:visibility="gone"
-            android:layout_weight="1"
-            android:background="@drawable/background_button_border_black"
-            android:drawableLeft="@drawable/background_drawable_icon"
+            android:layout_marginTop="@dimen/_3sdp"
             android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
-            android:padding="@dimen/_3sdp"
-            android:text=" Retry "
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_8sdp"
+            android:textColor="@color/gray_45"
+            android:textSize="@dimen/_6sdp"
             android:textStyle="bold" />
+    </LinearLayout>
 
-    </RelativeLayout>
-
-
-    <ProgressBar
-        android:id="@+id/img_download_progress"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:progressTint="@color/Green_45"
+    <View
+        android:id="@+id/view_dummy"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_3sdp"
-        android:layout_marginTop="@dimen/_3sdp"
-     />
+        android:layout_height="0.5dp"
+        android:layout_above="@id/btnsumit"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:background="#9e9ea5"
+        />
 
-
-    <TextView
-        android:id="@+id/txt_download_size"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/_3sdp"
-        android:fontFamily="@font/satoshi_medium"
-        android:gravity="center"
-        android:textColor="@color/gray_45"
-        android:textSize="@dimen/_6sdp"
-        android:textStyle="bold" />
 </LinearLayout>

@@ -231,6 +231,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.llSlide.setOnClickListener(this);
         binding.llNav.cancelImg.setOnClickListener(this);
 
+        binding.viewDummy.setVisibility(View.VISIBLE);
+
+        layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
+        layoutParams.width = DeviceWith / 3;
+        binding.navView.setLayoutParams(layoutParams);
         if (SfType.equalsIgnoreCase("1")) {
             binding.navView.getMenu().clear();
             binding.navView.inflateMenu(R.menu.activity_navigation_drawer_mr);
@@ -275,7 +280,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         mediator.attach();
         setupCustomTab(binding.tabLayout.tablelayout, 0, "WorkPlan", false);
         setupCustomTab(binding.tabLayout.tablelayout, 1, "Calls", false);
-        setupCustomTab(binding.tabLayout.tablelayout, 2, "Outbox", true);*/
+        setupCustomTab(binding.tabLayout.tablelayout, 2, "Outbox", false);*/
+
 
         ViewTreeObserver vto = binding.rlQuickLink.getViewTreeObserver();
 
@@ -324,16 +330,25 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             }
 
+        binding.drMainlayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
-            public void onDrawerStateChanged(int newState) {
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                binding.drMainlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
 
             }
         });
         binding.backArrow.setOnClickListener(v -> {
+
             if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
                 binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
+            }else {
                 binding.myDrawerLayout.openDrawer(GravityCompat.START);
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
@@ -575,75 +590,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                   }
               }
 
-              @Override
-              public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                  DeleteCacheFile(ecModelClasses, filePath, id, position);
-              }
-          });
-      }
-
-      private void DeleteCacheFile(ArrayList<EcModelClass> ecModelClasses, String filePath, String id, int position) {
-          File fileDelete = new File(filePath);
-          if (fileDelete.exists()) {
-              if (fileDelete.delete()) {
-                  System.out.println("file Deleted :" + filePath);
-              } else {
-                  System.out.println("file not Deleted :" + filePath);
-              }
-          }
-          sqLite.deleteOfflineEC(id);
-          ecModelClasses.remove(position);
-          CallApiLocalEC(ecModelClasses);
-      }
-
-
-      private void CallSendAPI(ArrayList<OutBoxCallList> outBoxCallList, int position, String dates, String cusName, String cusCode, String jsonData, int syncCount) {
-          JSONObject jsonSaveDcr;
-          try {
-              jsonSaveDcr = new JSONObject(jsonData);
-              Call<JsonObject> callSaveDcr;
-              callSaveDcr = apiInterface.saveDcr(jsonSaveDcr.toString());
-              callSaveDcr.enqueue(new Callback<JsonObject>() {
-                  @Override
-                  public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                      if (response.isSuccessful()) {
-                          try {
-                              JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
-                              if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                  sqLite.deleteOfflineCalls(cusCode, cusName, dates);
-                                  outBoxCallList.remove(position);
-                              } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                  sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(5), "Duplicate Call");
-                                  outBoxCallList.set(position, new OutBoxCallList(cusName, cusCode, dates, jsonData, "Duplicate Call", 5));
-                                  JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
-                                  for (int i = 0; i < jsonArray.length(); i++) {
-                                      JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                      if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(dates) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
-                                          jsonArray.remove(i);
-                                          break;
-                                      }
-                                  }
-
-                                  sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
-                              }
-
-                              CallApiList(outBoxCallList);
-                          } catch (Exception e) {
-                              outBoxCallList.remove(position);
-                              CallApiList(outBoxCallList);
-                              Log.v("SendOutboxCall", "---" + e);
-                          }
-                      }
-                  }
-
-                  @SuppressLint("NotifyDataSetChanged")
-                  @Override
-                  public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                      sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(syncCount + 1), "Call Failed");
-                      outBoxCallList.set(position, new OutBoxCallList(cusName, cusCode, dates, jsonData, "Call Failed", syncCount + 1));
-                      CallApiList(outBoxCallList);
-                  }
-              });
+            }
+        });
+    }
 
           } catch (JSONException e) {
               throw new RuntimeException(e);

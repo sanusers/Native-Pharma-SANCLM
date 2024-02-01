@@ -761,6 +761,7 @@ public class SQLite extends SQLiteOpenHelper {
         values.put(LINECHAR_TRANS_SLNO, transSlNo);
         values.put(LINECHAR_FM_INDICATOR, fw_indicater);
         values.put(LINECHAR_AMSLNO, amslNo);
+
         db.insert(LINE_CHAT_DATA_TABLE, null, values);
         db.close();
     }

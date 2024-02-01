@@ -150,14 +150,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
             }
 
-            if (contentList.getChildId() == 3) {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
-                    CallAPIListImage(position);
-                } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
-                }
-            }
         });
 
         holder.expandContentView.setOnClickListener(v -> {
@@ -308,6 +300,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         JSONObject jsonSaveDcr;
         try {
             jsonSaveDcr = new JSONObject(jsonData);
+            //  Log.v("SendOutboxCall", "----" + jsonSaveDcr);
             Call<JsonObject> callSaveDcr;
             callSaveDcr = apiInterface.saveDcr(jsonSaveDcr.toString());
 

@@ -167,6 +167,7 @@ public class DownloadTask {
                 if (SlideDownloaderAlertBox.dialogdismisscount ==  SlideDownloaderAlertBox.adapter.getItemCount()) {
                     SlideDownloaderAlertBox.dialog.dismiss();
                     if (moveflog.equalsIgnoreCase("1")) {
+                        SharedPref.putAutomassync(context,true);
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
@@ -174,7 +175,6 @@ public class DownloadTask {
                     }
                     SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count),SlideDownloaderAlertBox.adapter.getList());
                 }
-
             } else {
                 Slidevalue.setProgressValue(String.valueOf(processvalue));
                 SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(downloading_count) + "/" + String.valueOf( SlideDownloaderAlertBox.adapter.getItemCount()));
@@ -187,6 +187,7 @@ public class DownloadTask {
                     SlideDownloaderAlertBox. dialog.dismiss();
                     if (moveflog.equalsIgnoreCase("1")) {
                         if (moveflog.equalsIgnoreCase("1")) {
+                            SharedPref.putAutomassync(context,true);
                             Intent intent = new Intent(context, HomeDashBoard.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);

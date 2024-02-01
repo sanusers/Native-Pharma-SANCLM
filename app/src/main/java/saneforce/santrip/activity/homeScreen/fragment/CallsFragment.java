@@ -1,6 +1,6 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
-import static androidx.core.content.ContextCompat.registerReceiver;
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -24,14 +24,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
+import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PaintView;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
+import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -58,7 +62,6 @@ public class CallsFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.v("fragment", "TodayCalls");
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
         sqLite = new SQLite(requireContext());
@@ -83,6 +86,8 @@ public class CallsFragment extends Fragment {
                 commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan),100);
             }
         });
+
+        binding.tvAddCall.setOnClickListener(view -> startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class)));
 
         return v;
     }

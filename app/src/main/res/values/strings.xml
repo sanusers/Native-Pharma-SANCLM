@@ -163,7 +163,7 @@
     <string name="toast_enter_remarks">Enter Remarks</string>
     <string name="toast_enter_feedback">Enter Feedback</string>
 
-    <string name="app_version" translatable="false">1.0.0</string>
+    <string name="app_version" translatable="false">M1</string>
     <string name="apply">Apply</string>
     <string name="headquarter">Headquarter</string>
     <string name="my_resource">My Resource</string>
