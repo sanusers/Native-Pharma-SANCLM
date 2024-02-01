@@ -113,13 +113,13 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
                 context.startActivity(intent);
             } else {
-                Toast.makeText(context, "Exceed the Tag limitation !!", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.exceed_tag_limit),100);
             }
         });
 
         holder.tv_view.setOnClickListener(view -> {
             if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
-                Toast.makeText(context, "First Tag & View", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "First Tag & View", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(context, MapsActivity.class);
                 getCustListNew.clear();

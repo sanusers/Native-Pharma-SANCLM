@@ -33,7 +33,7 @@ import saneforce.santrip.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
     public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
-    public static String JwCaption,ClusterCaption,DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption,DrNeed,ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
+    public static String JwCaption, ClusterCaption, DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
@@ -43,6 +43,7 @@ public class ApprovalsActivity extends AppCompatActivity {
     ArrayList<AdapterModel> list_approvals = new ArrayList<>();
     AdapterApprovals adapterApprovals;
     ProgressDialog progressDialog = null;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     protected void onResume() {
@@ -73,6 +74,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         getRequiredData();
@@ -139,7 +141,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         }
                         AssignCountValues();
                     } catch (Exception e) {
-                        Toast.makeText(ApprovalsActivity.this,"Something Wrong! Try Again",Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.something_wrong), 100);
                         Log.v("counts", "-error-" + e);
                     }
                 }
@@ -147,7 +149,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                Toast.makeText(ApprovalsActivity.this,"Failed! Try Again",Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.toast_response_failed), 100);
                 progressDialog.dismiss();
             }
         });

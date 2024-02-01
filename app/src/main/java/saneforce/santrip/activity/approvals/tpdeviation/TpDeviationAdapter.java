@@ -36,10 +36,11 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
     JSONObject jsonTpDeviation = new JSONObject();
     ApiInterface api_interface;
     ProgressDialog progressDialog = null;
-
+CommonUtilsMethods commonUtilsMethods;
     public TpDeviationAdapter(Context context, ArrayList<TpDeviationModelList> tpDeviationModelLists) {
         this.context = context;
         this.tpDeviationModelLists = tpDeviationModelLists;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -92,9 +93,9 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             if (status.equalsIgnoreCase("4")) {
-                                Toast.makeText(context, "Approved Successfully", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(context, context.getString(R.string.approved_successfully), 100);
                             } else {
-                                Toast.makeText(context, "Rejected Successfully", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(context, context.getString(R.string.rejected_successfully), 100);
                             }
                             removeAt(position);
                             ApprovalsActivity.DeviationCount--;
@@ -103,13 +104,14 @@ public class TpDeviationAdapter extends RecyclerView.Adapter<TpDeviationAdapter.
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-
+                progressDialog.dismiss();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
         });
     }

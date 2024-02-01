@@ -141,8 +141,9 @@ public class CustList {
         this.jsonArray = jsonArray;
     }
 
-    public CustList(String name, String SpecialityCode,String mappedBrands,String mappedSlides,boolean isExtra) {
+    public CustList(String name, String SpecialityName,String SpecialityCode,String mappedBrands,String mappedSlides,boolean isExtra) {
         this.name = name;
+        this.specialist = SpecialityName;
         this.specialistCode = SpecialityCode;
         this.MappedBrands = mappedBrands;
         this.MappedSlides = mappedSlides;

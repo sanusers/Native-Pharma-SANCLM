@@ -82,17 +82,19 @@ import saneforce.santrip.utility.NetworkStatusTask;
 
 public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataViewholider> {
     Context context;
-    ArrayList<CallsModalClass> list = new ArrayList<>();
+    ArrayList<CallsModalClass> list;
     ApiInterface apiInterface;
     ProgressDialog progressBar;
     SQLite sqLite;
     Dialog dialogTransparent;
+    CommonUtilsMethods commonUtilsMethods;
 
     public Call_adapter(Context context, ArrayList<CallsModalClass> list, ApiInterface apiInterface) {
         this.context = context;
         this.list = list;
         this.apiInterface = apiInterface;
         sqLite = new SQLite(context);
+        commonUtilsMethods = new CommonUtilsMethods(context);
         dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
         View view = LayoutInflater.from(context).inflate(
                 R.layout.remove_border_progress, null);
@@ -201,7 +203,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         }
                     }
                 } else {
-                    Toast.makeText(context, "No Network Available!", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
                 }
                 return true;
             });
@@ -267,13 +269,13 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("delCall", e.toString());
                     }
                 } else {
-                    Toast.makeText(context, "Response Failed! Please Sync Again to retrieve Data", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Toast.makeText(context, "Response Failed! Please Sync Again to retrieve Data", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.response_failed_please_sync), 100);
             }
         });
     }
@@ -325,14 +327,15 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     }
                 } else {
                     progressBar.dismiss();
-                    Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressBar.dismiss();
-                Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
         });
     }

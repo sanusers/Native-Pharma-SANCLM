@@ -35,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -69,12 +71,14 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     OutBoxECAdapter outBoxECAdapter;
     ProgressDialog progressDialog;
     boolean isCallAvailable;
+    CommonUtilsMethods commonUtilsMethods;
 
     public OutBoxContentAdapter(Context context, ArrayList<ChildListModelClass> groupModelClasses) {
         this.context = context;
         this.childListModelClasses = groupModelClasses;
         sqLite = new SQLite(context);
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -89,7 +93,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     public void onBindViewHolder(@NonNull OutBoxContentAdapter.listDataViewholider holder, int position) {
         ChildListModelClass contentList = childListModelClasses.get(position);
         Log.v("outBox", "---" + contentList.getChildName() + "--count--" + childListModelClasses.size() + "----" + contentList.isAvailableList() + "---" + contentList.getCounts());
-        holder.tvContentList.setText(contentList.getChildName());
+     holder.tvContentList.setText(contentList.getChildName());
+
         if (contentList.isAvailableList()) {
             holder.expandContentView.setEnabled(true);
             holder.img_expand_child.setVisibility(View.VISIBLE);
@@ -141,7 +146,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     progressDialog = CommonUtilsMethods.createProgressDialog(context);
                     CallAPIList(position);
                 } else {
-                    Toast.makeText(context, "No Network Available", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
                 }
             }
 
@@ -150,7 +155,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     progressDialog = CommonUtilsMethods.createProgressDialog(context);
                     CallAPIListImage(position);
                 } else {
-                    Toast.makeText(context, "No Network Available", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
                 }
             }
         });
@@ -288,7 +293,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         }
 
         if (!isCallAvailable) {
-            CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite,false);
+            CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
             progressDialog.dismiss();
             RefreshAdapter();
         }

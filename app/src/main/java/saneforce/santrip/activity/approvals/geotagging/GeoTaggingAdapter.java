@@ -49,10 +49,12 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
     ApiInterface api_interface;
     ProgressDialog progressDialog = null;
     JSONObject jsonGeoTag = new JSONObject();
+    CommonUtilsMethods commonUtilsMethods;
 
     public GeoTaggingAdapter(Context context, ArrayList<GeoTaggingModelList> geoTaggingModelLists) {
         this.context = context;
         this.geoTaggingModelLists = geoTaggingModelLists;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -206,9 +208,9 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             if (Status.equalsIgnoreCase("0")) {
-                                Toast.makeText(context, "Approved Successfully", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(context,context.getString(R.string.approved_successfully),100);
                             } else {
-                                Toast.makeText(context, "Rejected Successfully", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(context,context.getString(R.string.rejected_successfully),100);
                             }
                             removeAt(Position);
                             ApprovalsActivity.GeoTagCount--;
@@ -217,14 +219,14 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
             }
         });
     }

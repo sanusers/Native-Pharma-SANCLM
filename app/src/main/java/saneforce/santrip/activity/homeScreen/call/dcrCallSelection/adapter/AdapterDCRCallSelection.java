@@ -1,12 +1,20 @@
 package saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter;
 
+import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfType;
+import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.VisitControlNeed;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
@@ -34,6 +43,10 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
     SQLite sqLite;
+    Dialog dialogCheckIn;
+    Button btnCheckIN;
+    ImageView img_Close;
+    TextView tv_cusName, tv_dateTime;
 
 
     public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList) {
@@ -41,6 +54,14 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         this.context = context;
         this.cusListArrayList = cusListArrayList;
         sqLite = new SQLite(context);
+        dialogCheckIn = new Dialog(context);
+        dialogCheckIn.setContentView(R.layout.dialog_cus_checkin);
+        dialogCheckIn.setCancelable(false);
+        Objects.requireNonNull(dialogCheckIn.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        btnCheckIN = dialogCheckIn.findViewById(R.id.btn_checkIn);
+        img_Close = dialogCheckIn.findViewById(R.id.img_close);
+        tv_cusName = dialogCheckIn.findViewById(R.id.txt_cus_name);
+        tv_dateTime = dialogCheckIn.findViewById(R.id.txt_date_time);
     }
 
     @NonNull
@@ -83,8 +104,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         }
 
         holder.constraint_main.setOnClickListener(view -> {
-            goNextActivity(position);
-          /*  try {
+            try {
                 boolean isVisitedToday = false;
                 JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -96,7 +116,9 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 }
 
                 if (!isVisitedToday) {
-                    if (cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
+                    if (VisitControlNeed.equalsIgnoreCase("0") &&
+                            SfType.equalsIgnoreCase("1") &&
+                            cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
                         int count = 0;
                         JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.DCR);
                         for (int i = 0; i < jsonVisit.length(); i++) {
@@ -108,36 +130,46 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                         if (count < Integer.parseInt(cusListArrayList.get(position).getTotalVisitCount())) {
                             goNextActivity(position);
                         } else {
-                            Toast.makeText(context, "No of Visit Exceeded", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_of_visit), 100);
                         }
                     } else {
                         goNextActivity(position);
                     }
                 } else {
-                    Toast.makeText(context, "Already Visited Today", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.already_visited), 100);
                 }
             } catch (Exception ignored) {
 
-            }*/
+            }
 
         });
     }
 
     private void goNextActivity(int position) {
-        DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-        DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(),
-                cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(),
-                cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(),
-                cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(),
-                cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(),
-                cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(),
-                cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(),
-                cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(),
-                cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(),
-                cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(),
-                cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
-        Intent intent = new Intent(context, CustomerProfile.class);
-        context.startActivity(intent);
+        tv_cusName.setText(cusListArrayList.get(position).getName());
+        tv_dateTime.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+        dialogCheckIn.show();
+
+        img_Close.setOnClickListener(v -> dialogCheckIn.dismiss());
+
+        btnCheckIN.setOnClickListener(v -> {
+            DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
+            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(),
+                    cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(),
+                    cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(),
+                    cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(),
+                    cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(),
+                    cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(),
+                    cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(),
+                    cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(),
+                    cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(),
+                    cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(),
+                    cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
+            Intent intent = new Intent(context, CustomerProfile.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+           // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        });
     }
 
     @Override

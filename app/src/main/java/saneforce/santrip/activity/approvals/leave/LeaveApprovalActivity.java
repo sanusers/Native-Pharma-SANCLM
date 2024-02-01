@@ -7,7 +7,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityLeaveBinding;
@@ -43,6 +43,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     LoginResponse loginResponse;
     SQLite sqLite;
     ProgressDialog progressDialog = null;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     //To Hide the bottomNavigation When popup
@@ -66,7 +67,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         leaveBinding = ActivityLeaveBinding.inflate(getLayoutInflater());
         setContentView(leaveBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+commonUtilsMethods = new CommonUtilsMethods(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
         getRequiredData();
@@ -136,14 +137,14 @@ public class LeaveApprovalActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(LeaveApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(),getApplicationContext().getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(LeaveApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(),getApplicationContext().getString(R.string.toast_response_failed),100);
             }
         });
     }

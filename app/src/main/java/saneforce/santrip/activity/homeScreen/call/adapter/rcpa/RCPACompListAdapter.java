@@ -217,7 +217,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
                     InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
                 } else {
-                    Toast.makeText(context, context.getResources().getText(R.string.toast_enter_remarks), Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_enter_remarks), 100);
                 }
             });
             dialogRemarks.show();

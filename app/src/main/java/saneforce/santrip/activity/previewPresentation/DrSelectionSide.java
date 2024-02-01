@@ -56,6 +56,7 @@ import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLay
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.FragmentDrSelectionSideBinding;
@@ -78,6 +79,7 @@ public class DrSelectionSide extends Fragment {
     LoginResponse loginResponse;
     String TodayPlanSfCode;
     String brands;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -85,6 +87,7 @@ public class DrSelectionSide extends Fragment {
         drSelectionSideBinding = FragmentDrSelectionSideBinding.inflate(inflater);
         View v = drSelectionSideBinding.getRoot();
         sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
         SetDrAdapter();
 
         drSelectionSideBinding.tvDummy.setOnClickListener(view -> {
@@ -145,16 +148,16 @@ public class DrSelectionSide extends Fragment {
                 jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
             }
             if (jsonArray.length() == 0) {
-                Toast.makeText(getContext(), Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
             }
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
 
                 if (!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-")) {
                     brands = getBrands(jsonObject.getString("MappProds"));
-                    callDrList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
+                    callDrList.add(new CustList(jsonObject.getString("Name"),  jsonObject.getString("Specialty"),jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
                 } else {
-                    callDrList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("MappProds"), jsonObject.getString("MProd"), true));
+                    callDrList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("MappProds"), jsonObject.getString("MProd"), true));
                 }
             }
 
@@ -271,7 +274,7 @@ public class DrSelectionSide extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
         }
     }
 
@@ -301,7 +304,7 @@ public class DrSelectionSide extends Fragment {
             holder.tvName.setOnClickListener(v -> {
                 if (SelectedTab.equalsIgnoreCase("Spec")) {
                     specialityPreviewBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
-                    getSelectedSpec(context, sqLite, callDrList.get(position).getSpecialistCode());
+                    getSelectedSpec(context, sqLite, callDrList.get(position).getSpecialistCode(),callDrList.get(position).getSpecialist());
                 } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
                     brandMatrixBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
                     getSelectedMatrix(context, sqLite, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides());

@@ -123,6 +123,20 @@
 
 
     <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_select_specialist_side"
+        android:name="saneforce.santrip.activity.previewPresentation.fragment.SpecialitySelectionSide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout="@layout/fragment_select_fb_side"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_select_fb_side" />
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_dr_side"
         android:name="saneforce.santrip.activity.previewPresentation.DrSelectionSide"
         android:layout_width="match_parent"

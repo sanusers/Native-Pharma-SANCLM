@@ -40,6 +40,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.jwOthers.AdapterCallCaptureImage;
 import saneforce.santrip.activity.homeScreen.call.adapter.jwOthers.AdapterCallJointWorkList;
@@ -100,7 +101,7 @@ public class JWOthersFragment extends Fragment {
                    // } else captureFileLower();
                 }
             } else {
-                Toast.makeText(getContext(), "Not able to Add more Images", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.no_add_more_images),100);
             }
         });
         return v;

@@ -26,7 +26,7 @@ import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
-    public static String TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StockiestGeoTag, UnDrGeoTag, GeoTagApproval, DrNeed,ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
+    public static String VisitControlNeed, TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StockiestGeoTag, UnDrGeoTag, GeoTagApproval, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
     public static double lat, lng, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
@@ -112,6 +112,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             CipGeoTag = loginResponse.getGeoTagNeedcip();
             StockiestGeoTag = loginResponse.getGEOTagNeedstock();
             UnDrGeoTag = loginResponse.getGEOTagNeedunlst();
+
+            VisitControlNeed = loginResponse.getVstNd();
 
             if (SfType.equalsIgnoreCase("1")) {
                 TodayPlanSfCode = SfCode;

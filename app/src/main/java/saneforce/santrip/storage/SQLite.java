@@ -397,6 +397,8 @@ public class SQLite extends SQLiteOpenHelper {
                             if (list.get(i).getGroupName().equalsIgnoreCase(date)) {
                                 isAvailable = true;
                                 break;
+                            } else {
+                                isAvailable = false;
                             }
                         }
                     } else {
@@ -419,6 +421,8 @@ public class SQLite extends SQLiteOpenHelper {
                             if (list.get(i).getGroupName().equalsIgnoreCase(date)) {
                                 isAvailable = true;
                                 break;
+                            } else {
+                                isAvailable = false;
                             }
                         }
                     } else {

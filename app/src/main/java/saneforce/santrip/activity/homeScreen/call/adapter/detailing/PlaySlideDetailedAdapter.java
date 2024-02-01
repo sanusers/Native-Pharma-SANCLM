@@ -107,7 +107,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     int val = 0;
     String defaultTime = "00:00:00";
     int scribblePos;
-
+CommonUtilsMethods commonUtilsMethods;
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
         this.context = context;
@@ -115,6 +115,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         slideDescribe.clear();
         act = context;
         mCommonSharedPreference = new CommonSharedPreference(context);
+        commonUtilsMethods = new CommonUtilsMethods(context);
         for (int i = 0; i < productArrayList.size(); i++) {
             File file = new File(context.getExternalFilesDir(null) + "/Slides/", productArrayList.get(i).getSlideName());
             if (file.exists()) {
@@ -263,7 +264,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         } catch (Exception ignored) {
         }
 
-        Toast.makeText(context, "Processing", Toast.LENGTH_LONG).show();
+
+        commonUtilsMethods.ShowToast(context, context.getString(R.string.processing), 100);
         apiService = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
         Call<JsonObject> callImageScrub;
@@ -280,7 +282,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         JSONObject jsonImgRes;
                         jsonImgRes = new JSONObject(response.body().toString());
                         if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-                            Toast.makeText(context, "Scribble Upload Successfully", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.scribble_upload), 100);
                             slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), slideScribble.get(scribblePos).getSlideComments(), scribbleFileName));
                             dialog.dismiss();
                         }
@@ -289,13 +291,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                 } else {
                     dialog.dismiss();
-                    Toast.makeText(context, "Something went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.something_wrong), 100);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 dialog.dismiss();
             }
         });
@@ -651,8 +653,8 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             outputStream.flush();
             outputStream.close();
             uri = FileProvider.getUriForFile(context, "saneforce.santrip.fileprovider", file);
-        } catch (Exception e) {
-            Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (Exception ignored) {
+
         }
         return uri;
     }

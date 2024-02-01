@@ -9,10 +9,13 @@ import static saneforce.santrip.activity.homeScreen.call.fragments.JWOthersFragm
 import static saneforce.santrip.activity.homeScreen.call.fragments.RCPASelectCompSide.rcpa_comp_list;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,6 +23,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,6 +55,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.pojo.additionalCalls.SaveAdditionalCall;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
@@ -112,12 +118,17 @@ public class DCRCallActivity extends AppCompatActivity {
     GPSTrack gpsTrack;
     LoginResponse loginResponse;
     JSONObject jsonSaveDcr, jsonImage;
-    String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, PrdMandatory, InpMandatory, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory, RCPAWOSample;
+    String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, PrdMandatory, InpMandatory, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory;
     double lat, lng;
     ApiInterface api_interface;
     boolean isCreateJsonSuccess;
     public static String isDetailingRequired;
     String FwFlag;
+    Dialog dialogCheckOut;
+    Button btnCheckOut;
+    TextView tv_address, tv_dateTime;
+    String address;
+
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -129,13 +140,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            dcrCallBinding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            dcrCallBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -156,6 +161,7 @@ public class DCRCallActivity extends AppCompatActivity {
         }
 
         getRequiredData();
+        DialogCheckOut();
 
         viewPagerAdapter = new DCRCallTabLayoutAdapter(getSupportFragmentManager());
 
@@ -243,35 +249,45 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
-            progressDialog = CommonUtilsMethods.createProgressDialog(this);
+            //  progressDialog = CommonUtilsMethods.createProgressDialog(this);
             isCreateJsonSuccess = true;
+            gpsTrack = new GPSTrack(DCRCallActivity.this);
+            double lat = gpsTrack.getLatitude();
+            double lng = gpsTrack.getLongitude();
+            address = CommonUtilsMethods.gettingAddress(this, lat, lng, false);
+            tv_address.setText(address);
+            tv_dateTime.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+
             if (CheckRequiredFunctions() && CheckCurrentLoc()) {
                 CreateJsonFileCall();
                 if (isCreateJsonSuccess) {
                     InsertVisitControl();
-                    if (UtilityClass.isNetworkAvailable(context)) {
+                    sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Waiting for Sync");
+                    dialogCheckOut.show();
+                    if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
                         CallUploadImage();
                         CallSaveDcrAPI(jsonSaveDcr.toString());
                     } else {
+                        tv_address.setText(context.getString(R.string.no_network));
                         progressDialog.dismiss();
-                        Toast.makeText(DCRCallActivity.this, "No Network Available, Call Saved Locally", Toast.LENGTH_SHORT).show();
-
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.call_saved_locally), 100);
                         if (callCaptureImageLists.size() > 0) {
                             for (int i = 0; i < callCaptureImageLists.size(); i++) {
                                 sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentDate(), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString());
                             }
                         }
-                        sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Waiting for Sync");
                         UpdateInputStock();
                         UpdateSampleStock();
-                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                        startActivity(intent);
+                     /*   Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                        startActivity(intent);*/
+                        dialogCheckOut.show();
                     }
+
                 } else {
-                    progressDialog.dismiss();
+                    //  progressDialog.dismiss();
                 }
             } else {
-                progressDialog.dismiss();
+                // progressDialog.dismiss();
             }
         });
 
@@ -282,6 +298,25 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonExtractOnline(CallActivityCustDetails.get(0).getJsonArray());
         }
 
+    }
+
+    private void DialogCheckOut() {
+        dialogCheckOut = new Dialog(this);
+        dialogCheckOut.setContentView(R.layout.dialog_cus_checkout);
+        dialogCheckOut.setCancelable(false);
+        Objects.requireNonNull(dialogCheckOut.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        btnCheckOut = dialogCheckOut.findViewById(R.id.btn_checkOut);
+        tv_address = dialogCheckOut.findViewById(R.id.txt_address);
+        tv_dateTime = dialogCheckOut.findViewById(R.id.txt_date_time);
+
+        btnCheckOut.setOnClickListener(v -> {
+            dialogCheckOut.dismiss();
+            getOnBackPressedDispatcher().onBackPressed();
+            HomeDashBoard.isFinishCall = true;
+         /*   Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+            startActivity(intent);*/
+        });
     }
 
     private void InsertVisitControl() {
@@ -323,7 +358,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 Log.v("ImgUpload", callCaptureImageLists.get(i).getFilePath());
                 MultipartBody.Part img = convertImg("EventImg", callCaptureImageLists.get(i).getFilePath());
                 HashMap<String, RequestBody> values = field(jsonImage.toString());
-                Call<JsonObject> saveImgDcr = api_interface.saveImgDcr(values, img);
+                ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
+                Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
                 saveImgDcr.enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
@@ -332,7 +368,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                 assert response.body() != null;
                                 JSONObject json = new JSONObject(response.body().toString());
                                 Log.v("ImgUpload", json.toString());
-                                json.getString("success");// Toast.makeText(DCRCallActivity.this, "Picture Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                                json.getString("success");
                             } catch (Exception ignored) {
 
                             }
@@ -354,19 +390,19 @@ public class DCRCallActivity extends AppCompatActivity {
                 if (SfType.equalsIgnoreCase("1")) {
                     if (PrdMandatory.equalsIgnoreCase("1")) {
                         if (CheckProductListAdapter.saveCallProductListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Enter the " + capPrd, Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_the) + capPrd, 100);
                             return false;
                         }
                     }
 
                     if (PrdSamNeed.equalsIgnoreCase("1") && SamQtyMandatory.equalsIgnoreCase("1")) {
                         if (CheckProductListAdapter.saveCallProductListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Enter the " + capPrd, Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_the) + capPrd, 100);
                             return false;
                         } else {
                             for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                                 if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty() || CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().equalsIgnoreCase("0")) {
-                                    Toast.makeText(getApplicationContext(), "Enter the " + CapSamQty + " Values", Toast.LENGTH_LONG).show();
+                                    commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_the) + CapSamQty + getApplicationContext().getString(R.string.value), 100);
                                     return false;
                                 }
                             }
@@ -375,12 +411,12 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     if (PrdRxNeed.equalsIgnoreCase("1") && RxQtyMandatory.equalsIgnoreCase("1")) {
                         if (CheckProductListAdapter.saveCallProductListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Enter the " + capPrd, Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_the) + capPrd, 100);
                             return false;
                         } else {
                             for (int i = 0; i < CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
                                 if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty() || CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().equalsIgnoreCase("0")) {
-                                    Toast.makeText(getApplicationContext(), "Enter the " + CapRxQty + " Values", Toast.LENGTH_LONG).show();
+                                    commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_the) + CapRxQty + getApplicationContext().getString(R.string.value), 100);
                                     return false;
                                 }
                             }
@@ -389,14 +425,14 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     if (InpMandatory.equalsIgnoreCase("1")) {
                         if (CheckInputListAdapter.saveCallInputListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Select the " + capInp, Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.select_the) + capInp, 100);
                             return false;
                         }
                     }
 
                     if (RCPANeed.equalsIgnoreCase("0") && RcpaMandatory.equalsIgnoreCase("0")) {
                         if (RCPASelectCompSide.rcpaAddedProdListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Add RCPA Values", Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_rcpa_values), 100);
                             return false;
                         }
                     }
@@ -404,7 +440,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 } else {
                     if (MgrRcpaMandatory.equalsIgnoreCase("0")) {
                         if (RCPASelectCompSide.rcpaAddedProdListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Add RCPA Values", Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_rcpa_values), 100);
                             return false;
                         }
                     }
@@ -412,35 +448,35 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (JwMandatory.equalsIgnoreCase("0")) {
                     if (callAddedJointList.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "JointWork Needed", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.jointwork_need), 100);
                         return false;
                     }
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
                     if (Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString().isEmpty() || jwOthersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
-                        Toast.makeText(getApplicationContext(), "Add Pob values", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_pob_values), 100);
                         return false;
                     }
                 }
 
                 if (FeedbackMandatory.equalsIgnoreCase("1")) {
                     if (jwOthersBinding.tvFeedback.getText().toString().isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "Add Feedback", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_feedback), 100);
                         return false;
                     }
                 }
 
                 if (RemarkMandatory.equalsIgnoreCase("0")) {
                     if (Objects.requireNonNull(jwOthersBinding.edRemarks.getText()).toString().isEmpty() || jwOthersBinding.edRemarks.getText().toString().equalsIgnoreCase("")) {
-                        Toast.makeText(getApplicationContext(), "Add Remarks", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_remark), 100);
                         return false;
                     }
                 }
 
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "Event Capture Needed", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.event_capture_needed), 100);
                         return false;
                     }
                 }
@@ -455,14 +491,14 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
 
                     if (dummyChk.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "Need Competitor for Products", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.need_competitors_for_prd), 100);
                         return false;
                     }
                 }
 
                 for (int i = 0; i < rcpa_comp_list.size(); i++) {
                     if (rcpa_comp_list.get(i).getQty().equalsIgnoreCase("0") || rcpa_comp_list.get(i).getQty().isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "RCPA Competitor Need Qty", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.rcpa_need_qty), 100);
                         return false;
                     }
                 }
@@ -472,14 +508,14 @@ public class DCRCallActivity extends AppCompatActivity {
                 if (SfType.equalsIgnoreCase("1")) {
                     if (RCPANeed.equalsIgnoreCase("1") && RcpaMandatory.equalsIgnoreCase("0")) {
                         if (RCPASelectCompSide.rcpaAddedProdListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Add RCPA Values", Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_rcpa_values), 100);
                             return false;
                         }
                     }
                 } else {
                     if (MgrRcpaMandatory.equalsIgnoreCase("0")) {
                         if (RCPASelectCompSide.rcpaAddedProdListArrayList.size() == 0) {
-                            Toast.makeText(getApplicationContext(), "Add RCPA Values", Toast.LENGTH_LONG).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_rcpa_values), 100);
                             return false;
                         }
                     }
@@ -487,21 +523,21 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 if (JwMandatory.equalsIgnoreCase("0")) {
                     if (callAddedJointList.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "JointWork Needed", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.jointwork_need), 100);
                         return false;
                     }
                 }
 
                 if (PobNeed.equalsIgnoreCase("0") && PobMandatory.equalsIgnoreCase("0")) {
                     if (Objects.requireNonNull(jwOthersBinding.edPob.getText()).toString().isEmpty() || jwOthersBinding.edPob.getText().toString().equalsIgnoreCase("")) {
-                        Toast.makeText(getApplicationContext(), "Add Pob Values", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.add_pob_values), 100);
                         return false;
                     }
                 }
 
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "Event Capture Needed", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.event_capture_needed), 100);
                         return false;
                     }
                 }
@@ -515,14 +551,14 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
 
                     if (dummyChk.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "Need Competitor for Products", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.need_competitors_for_prd), 100);
                         return false;
                     }
                 }
 
                 for (int i = 0; i < rcpa_comp_list.size(); i++) {
                     if (rcpa_comp_list.get(i).getQty().equalsIgnoreCase("0") || rcpa_comp_list.get(i).getQty().isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "RCPA Competitor Need Qty", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.rcpa_need_qty), 100);
                         return false;
                     }
                 }
@@ -532,13 +568,13 @@ public class DCRCallActivity extends AppCompatActivity {
             case "4":
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "Event Capture Needed", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.event_capture_needed), 100);
                         return false;
                     }
                 }
                 if (JwMandatory.equalsIgnoreCase("0")) {
                     if (callAddedJointList.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "JointWork Needed", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.jointwork_need), 100);
                         return false;
                     }
                 }
@@ -546,7 +582,7 @@ public class DCRCallActivity extends AppCompatActivity {
             case "5":
                 if (EventCaptureNeed.equalsIgnoreCase("0") && EventCapMandatory.equalsIgnoreCase("0")) {
                     if (callCaptureImageLists.size() == 0) {
-                        Toast.makeText(getApplicationContext(), "Event Capture Needed", Toast.LENGTH_LONG).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.event_capture_needed), 100);
                         return false;
                     }
                 }
@@ -588,23 +624,26 @@ public class DCRCallActivity extends AppCompatActivity {
                         JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                         Log.v("callSave", "---" + jsonSaveRes);
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                            Toast.makeText(DCRCallActivity.this, "Call Successfully Saved", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.call_saved_successfully), 100);
                             UpdateInputStock();
                             UpdateSampleStock();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                            Toast.makeText(DCRCallActivity.this, "Call Already Exist", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.call_already_exist), 100);
                         } else {
-                            Toast.makeText(DCRCallActivity.this, "Call Failed! Try again", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.call_failed), 100);
                         }
-                        progressDialog.dismiss();
-                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                        startActivity(intent);
+                        // progressDialog.dismiss();
+                        sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentDate());
+                        dialogCheckOut.show();
+                    /*    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                        startActivity(intent);*/
 
                     } catch (Exception e) {
-                        progressDialog.dismiss();
-                        Toast.makeText(DCRCallActivity.this, "Call Saved! Something Wrong", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                        startActivity(intent);
+                        // progressDialog.dismiss();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.call_saved_something_wrong), 100);
+                        dialogCheckOut.show();
+                       /* Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                        startActivity(intent);*/
                         Log.v("callSave", "---" + e);
                     }
                 }
@@ -613,11 +652,11 @@ public class DCRCallActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 Log.v("callSave", "---" + t);
-                progressDialog.dismiss();
-                sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTime(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Call Failed");
-                Toast.makeText(DCRCallActivity.this, "Call Failed! Try again", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                startActivity(intent);
+                //progressDialog.dismiss();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.call_failed_saved_locally), 100);
+                dialogCheckOut.show();
+            /*    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                startActivity(intent);*/
                 UpdateSampleStock();
                 UpdateInputStock();
             }
@@ -1349,6 +1388,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     CapPob = loginResponse.getStk_pob_caption();
 
                     //Need
+                    PobNeed = loginResponse.getStk_Pob_Need();
                     OverallFeedbackNeed = loginResponse.getSFNeed();
                     EventCaptureNeed = loginResponse.getSENeed();
                     JwNeed = loginResponse.getStk_jointwork_Need();
@@ -1368,6 +1408,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     CapPob = loginResponse.getUldoc_pob_caption();
 
                     //Need
+                    PobNeed = loginResponse.getUl_Pob_Need();
                     OverallFeedbackNeed = loginResponse.getNFNeed();
                     EventCaptureNeed = loginResponse.getNENeed();
                     JwNeed = loginResponse.getUl_jointwork_Need();
@@ -1428,145 +1469,17 @@ public class DCRCallActivity extends AppCompatActivity {
                 setUpResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
 
                 if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) { //Dr
-              /*      //Caption
-                    capPrd = setUpResponse.getCaptionDrPrd();
-                    capInp = setUpResponse.getCaptionDrInp();
-                    CapSamQty = setUpResponse.getCaptionDrSamQty();
-                    CapRxQty = setUpResponse.getCaptionDrRxQty();
 
-                    //Need
-                    RCPANeed = setUpResponse.getDrRcpaNeed();
-                    PobNeed = setUpResponse.getDrPobNeed();
-                    OverallFeedbackNeed = setUpResponse.getDrFeedbackNeed();
-                    EventCaptureNeed = setUpResponse.getDrEveCapNeed();
-                    JwNeed = setUpResponse.getDrJwNeed();
-                    PrdSamNeed = setUpResponse.getDrSamNeed();
-                    PrdRxNeed = setUpResponse.getDrRxNeed();
-
-                    //Mandatory
-                    PrdMandatory = setUpResponse.getDrPrdMandatory();
-                    InpMandatory = setUpResponse.getDrInpMandatory();
-                    SamQtyMandatory = setUpResponse.getDrSamQtyMandatory();
-                    RxQtyMandatory = setUpResponse.getDrRxQtyMandatory();
-                    RcpaMandatory = setUpResponse.getRcpaMandatory();
-                    MgrRcpaMandatory = setUpResponse.getMGRDrRcpaMandatory();
-                    EventCapMandatory = setUpResponse.getDrEveCapMandatory();
-                    PobMandatory = setUpResponse.getDrPobMandatory();
-                    FeedbackMandatory = setUpResponse.getDrFeedbackMandatory();
-                    JwMandatory = setUpResponse.getDrJwMandatory();
-                    RemarkMandatory = setUpResponse.getDrRemarksMan_Need();
-*/
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) { //Chemist
- /*                   //Caption
-                    capPrd = setUpResponse.getCaptionChemistPrd();
-                    capInp = setUpResponse.getCaptionChemistInp();
-                    CapSamQty = setUpResponse.getCaptionChemistSamQty();
-                    CapRxQty = setUpResponse.getCaptionChemistRxQty();
-
-                    //Need
-                    RCPANeed = setUpResponse.getChemistRcpaNeed();
-                    PobNeed = setUpResponse.getChemistPobNeed();
-                    EventCaptureNeed = setUpResponse.getChemistEveCapNeed();
-                    OverallFeedbackNeed = setUpResponse.getChemistFeedbackNeed();
-                    JwNeed = setUpResponse.getChemistJwNeed();
-                    PrdSamNeed = setUpResponse.getChemistSamNeed();
-
-                    //not available in LoginResponse
-                    PrdRxNeed = setUpResponse.getChemistRxNeed();
-
-                    //Mandatory
-                    RcpaMandatory = setUpResponse.getRcpaMandatory();
-                    //not available in LoginResponse
-                    MgrRcpaMandatory = setUpResponse.getMGRCheRcpaMandatory();
-                    PobMandatory = setUpResponse.getChemistPobMandatory();
-                    EventCapMandatory = setUpResponse.getChemistEveCapMandatory();
-                    JwMandatory = setUpResponse.getChemistJwMandatory();*/
 
                     PrdRxNeed = setUpResponse.getChemistRxNeed();
                     MgrRcpaMandatory = setUpResponse.getMGRCheRcpaMandatory();
 
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) { //Stockist
-         /*           //Caption
-                    capPrd = setUpResponse.getCaptionStokistPrd();
-                    capInp = setUpResponse.getCaptionStokistInp();
-                    CapSamQty = "Samples";
-                    CapRxQty = setUpResponse.getCaptionStkRxQty();
 
-                    //Need
-                    OverallFeedbackNeed = setUpResponse.getStockistFeedbackNeed();
-                    EventCaptureNeed = setUpResponse.getStockistEveCapNeed();
-                    JwNeed = setUpResponse.getStockistJwNeed();
-                    PrdSamNeed = "0";
-                    PrdRxNeed = setUpResponse.getStockistRxNeed();
-
-                    //Mandatory
-                    EventCapMandatory = setUpResponse.getStockistEveCapMandatory();
-                    JwMandatory = setUpResponse.getStockistJwMandatory();
-             */
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) { //UnlistedDr
-       /*             //Caption
-                    capPrd = setUpResponse.getCaptionUndrPrd();
-                    capInp = setUpResponse.getCaptionUndrInp();
-                    CapSamQty = setUpResponse.getCaptionUndrSamQty();
-                    CapRxQty = setUpResponse.getCaptionUndrRxQty();
 
-                    //Need
-                    OverallFeedbackNeed = setUpResponse.getUndrFeedbackNeed();
-                    EventCaptureNeed = setUpResponse.getUndrEveCapNeed();
-                    JwNeed = setUpResponse.getUndrJwNeed();
-                    PrdSamNeed = "0";
-                    PrdRxNeed = setUpResponse.getUndrRxNeed();
-
-                    //Mandatory
-                    EventCapMandatory = setUpResponse.getUndrEveCapMandatory();
-                    JwMandatory = setUpResponse.getUndrJwMandatory();
-          */
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) { //CIP
-         /*           //Caption
-
-                    //Need
-                    PobNeed = setUpResponse.getCipPobNeed();
-                    OverallFeedbackNeed = setUpResponse.getCipFeedbackNeed();
-                    EventCaptureNeed = "0";
-                    JwNeed = "0";
-                    PrdSamNeed = "0";
-                    PrdRxNeed = "0";
-
-                    //Mandatory
-                    PobMandatory = setUpResponse.getCipPobMandatory();
-             */
-                }
-               /* SampleValidation = setUpResponse.getSampleValidation();
-                InputValidation = setUpResponse.getInputValidation();
-                GeoChk = setUpResponse.getGeoCheck();*/
-            }
-
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject CusSetupData = jsonArray.getJSONObject(0);
-                customSetupResponse = new CustomSetupResponse();
-                Type typeCustomSetup = new TypeToken<CustomSetupResponse>() {
-                }.getType();
-                customSetupResponse = new Gson().fromJson(String.valueOf(CusSetupData), typeCustomSetup);
-
-                if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
-                    if (CusSetupData.has("Alba_Nd")) {
-                        RCPAWOSample = customSetupResponse.getRCPAWOSample();
-                    } else {
-                        RCPAWOSample = "1";
-                    }
-                } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
-                    if (CusSetupData.has("Alba_Nd")) {
-                        RCPAWOSample = customSetupResponse.getRCPAWOSample();
-                    } else {
-                        RCPAWOSample = "1";
-                    }
-                } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-                    PobNeed = customSetupResponse.getStockistPobNeed();
-                    RCPAWOSample = "1";
-                } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
-                    PobNeed = customSetupResponse.getUndrPobNeed();
-                    RCPAWOSample = "1";
                 }
             }
 
@@ -1709,11 +1622,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                 if (!jsonObject.getString("Code").equalsIgnoreCase("-1")) {
-                    if (RCPAWOSample.equalsIgnoreCase("0")) {
-                        if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sample")) {
-                            RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
-                        }
-                    } else {
+                    if (!jsonObject.getString("Product_Mode").equalsIgnoreCase("Sample")) {
                         RCPASelectPrdSide.PrdFullList.add(new SaveCallProductList(jsonObject.getString("Name"), jsonObject.getString("Code"), jsonObject.getString("DRate")));
                     }
 

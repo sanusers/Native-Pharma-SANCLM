@@ -3,12 +3,14 @@ package saneforce.santrip.activity.previewPresentation.fragment;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.CusType;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SelectedTab;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SpecialityCode;
+import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SpecialityName;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.from_where;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.previewBinding;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,21 +52,28 @@ public class Speciality extends Fragment {
         View v = specialityPreviewBinding.getRoot();
         sqLite = new SQLite(requireContext());
 
-
         if (from_where.equalsIgnoreCase("call")) {
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.GONE);
+            specialityPreviewBinding.tvSelectSpeciality.setVisibility(View.VISIBLE);
             if (CusType.equalsIgnoreCase("1")) {
-                getSelectedSpec(requireContext(), sqLite, SpecialityCode);
+                getSelectedSpec(requireContext(), sqLite, SpecialityCode, SpecialityName);
             } else {
-                getRequiredData();
+                getRequiredData(requireContext(), sqLite);
             }
         } else {
             specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
+            specialityPreviewBinding.tvSelectSpeciality.setVisibility(View.GONE);
             specialityPreviewBinding.rvBrandList.setVisibility(View.GONE);
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.VISIBLE);
             specialityPreviewBinding.tvInfo.setVisibility(View.GONE);
             specialityPreviewBinding.viewDummy2.setVisibility(View.GONE);
         }
+
+        specialityPreviewBinding.tvSelectSpeciality.setOnClickListener(v15 -> {
+            previewBinding.btnFinishDet.setVisibility(View.GONE);
+            previewBinding.fragmentSelectSpecialistSide.setVisibility(View.VISIBLE);
+        });
+
 
         specialityPreviewBinding.tvSelectDoctor.setOnClickListener(v1 -> {
             SelectedTab = "Spec";
@@ -97,7 +106,7 @@ public class Speciality extends Fragment {
     }
 
 
-    private void getRequiredData() {
+    public static void getRequiredData(Context context, SQLite sqLite) {
         try {
             SlideSpecialityList.clear();
             brandCodeList.clear();
@@ -137,8 +146,8 @@ public class Speciality extends Fragment {
                 specialityPreviewBinding.rvBrandList.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.tvInfo.setVisibility(View.VISIBLE);
                 specialityPreviewBinding.viewDummy2.setVisibility(View.VISIBLE);
-                previewAdapter = new PreviewAdapter(requireContext(), SlideSpecialityList);
-                specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false));
+                previewAdapter = new PreviewAdapter(context, SlideSpecialityList);
+                specialityPreviewBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
                 specialityPreviewBinding.rvBrandList.setAdapter(previewAdapter);
                 Collections.sort(SlideSpecialityList, Comparator.comparing(BrandModelClass::getBrandName));
             } else {
@@ -154,8 +163,9 @@ public class Speciality extends Fragment {
         }
     }
 
-    public static void getSelectedSpec(Context context, SQLite sqLite, String selectedSpecialityCode) {
+    public static void getSelectedSpec(Context context, SQLite sqLite, String selectedSpecialityCode, String SpecialityName) {
         try {
+            specialityPreviewBinding.tvSelectSpeciality.setText(SpecialityName);
             SlideSpecialityList.clear();
             brandCodeList.clear();
             JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);

@@ -50,6 +50,7 @@ public class BrandMatrix extends Fragment {
         View v = brandMatrixBinding.getRoot();
         sqLite = new SQLite(requireContext());
 
+        brandMatrixBinding.tvSelectSpeciality.setVisibility(View.GONE);
         if (from_where.equalsIgnoreCase("call")) {
             brandMatrixBinding.tvSelectDoctor.setVisibility(View.GONE);
             getSelectedMatrix(requireContext(), sqLite, BrandCode, SlideCode);

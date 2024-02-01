@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityTpDeviationApprovalBinding;
@@ -43,6 +44,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
     LoginResponse loginResponse;
     SQLite sqLite;
     ProgressDialog progressDialog = null;
+    CommonUtilsMethods commonUtilsMethods;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -67,6 +69,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
+       commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         getRequiredData();
         CallTpDeviationAPI();
 
@@ -159,14 +162,14 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(TpDeviationApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.toast_response_failed), 100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(TpDeviationApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.toast_response_failed), 100);
             }
         });
 

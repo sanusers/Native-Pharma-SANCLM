@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
@@ -54,22 +55,24 @@ public class CallsFragment extends Fragment {
     SQLite sqLite;
     public static boolean isNeedtoAdd;
     public static ProgressDialog progressDialog;
+    CommonUtilsMethods commonUtilsMethods;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.v("fragment", "TodayCalls");
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
         sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getRequiredData();
-        CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
+        CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
 
         binding.rlSyncCall.setOnClickListener(v12 -> {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
             } else {
-                Toast.makeText(requireContext(), "No Network Available!", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network),100);
             }
         });
 
@@ -77,7 +80,7 @@ public class CallsFragment extends Fragment {
             if (!SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty() && !SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null")) {
                 startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
             } else {
-                Toast.makeText(requireContext(), "Kindly submit myDayPlan", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan),100);
             }
         });
 
@@ -86,6 +89,7 @@ public class CallsFragment extends Fragment {
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, SQLite sqLite, boolean isProgressNeed) {
         TodayCallList.clear();
+        CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             SharedPref.setTodayCallList(context, "");
             if (isProgressNeed)
@@ -191,7 +195,7 @@ public class CallsFragment extends Fragment {
                         } else {
                             if (isProgressNeed)
                                 progressDialog.dismiss();
-                            Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed),100);
                         }
                     }
 
@@ -199,7 +203,7 @@ public class CallsFragment extends Fragment {
                     public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                         if (isProgressNeed)
                             progressDialog.dismiss();
-                        Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed),100);
                     }
                 });
             } catch (Exception e) {

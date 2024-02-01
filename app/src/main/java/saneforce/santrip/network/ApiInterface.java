@@ -163,6 +163,17 @@ public interface ApiInterface {
     Call<ResponseBody> DeleteCall(@Field("data") String DeleteCall);
 
     @FormUrlEncoded
+    @POST("?axn=save/activity")
+    //CheckInOut
+    Call<JsonArray> saveCheckInOut(@Field("data") String CheckInOut);
+
+
+    @FormUrlEncoded
+    @POST("?axn=save/masterdata")
+    //ChangePassword
+    Call<JsonObject> ChangePwd(@Field("data") String ChangePwd);
+
+    @FormUrlEncoded
     @POST("?axn=home")
     Call<JsonArray> getcalldetails(@Field("data") String postObj);
 

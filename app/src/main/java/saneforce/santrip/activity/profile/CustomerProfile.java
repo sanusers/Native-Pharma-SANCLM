@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.profile;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.BrandCode;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SlideCode;
@@ -98,7 +99,7 @@ public class CustomerProfile extends AppCompatActivity {
                         progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
                         PreCallAnalysisFragment.CallPreCallAPI(CustomerProfile.this);
                     } else {
-                        Toast.makeText(CustomerProfile.this, "No Internet Connectivity", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
                     }
                 }
             }
@@ -119,7 +120,8 @@ public class CustomerProfile extends AppCompatActivity {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
             intent1.putExtra("isDetailedRequired", "false");
             intent1.putExtra("from_activity", "new");
-            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+           // intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
                 sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             }
@@ -134,6 +136,7 @@ public class CustomerProfile extends AppCompatActivity {
             PlaySlideDetailing.MappedBrandsPlay = CallActivityCustDetails.get(0).getMappedBrands();
             PlaySlideDetailing.MappedSlidesPlay = CallActivityCustDetails.get(0).getMappedSlides();
             intent.putExtra("SpecialityCode", CallActivityCustDetails.get(0).getSpecialistCode());
+            intent.putExtra("SpecialityName", CallActivityCustDetails.get(0).getSpecialist());
             intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
             intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
             intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());

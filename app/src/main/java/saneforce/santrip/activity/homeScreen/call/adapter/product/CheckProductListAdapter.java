@@ -127,7 +127,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         } else {
                             holder.checkBox.setChecked(false);
-                            Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_qty_prd), 100);
                         }
                     }
                 } else {

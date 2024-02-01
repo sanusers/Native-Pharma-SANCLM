@@ -1,6 +1,15 @@
 package saneforce.santrip.activity.homeScreen.fragment.worktype;
 
 
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.DivCode;
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.EmpId;
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.SfCode;
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.SfEmpId;
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.SfName;
+import static saneforce.santrip.commonClasses.Constants.APP_MODE;
+import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
@@ -49,6 +58,7 @@ import saneforce.santrip.activity.homeScreen.modelClass.Multicheckclass_clust;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.WorkplanFragmentBinding;
 import saneforce.santrip.network.ApiInterface;
@@ -66,6 +76,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "";
     WorkplanFragmentBinding binding;
     SQLite sqLite;
+    String CheckInOutStatus;
 
     ArrayList<JSONObject> workType_list1 = new ArrayList<>();
     ArrayList<Multicheckclass_clust> multiple_cluster_list = new ArrayList<>();
@@ -80,7 +91,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     String worktypeflag = "1", IsFeildWorkFlag = "F0";
 
     String mSubmitflag = "S0";
-
+    CommonUtilsMethods commonUtilsMethods;
+    double latitude, longitude;
+    GPSTrack gpsTrack;
+    Dialog dialogAfterCheckOut;
+    TextView tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading;
+    Button btnClose;
+    String address;
 
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,6 +107,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         sqLite = new SQLite(getActivity());
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+
+
+        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
+        } else {
+            binding.btnsumit.setText(requireContext().getString(R.string.final_submit));
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding.progressHq1.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
@@ -475,7 +500,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             case R.id.rlworktype1:
                 if (HomeDashBoard.binding.textDate.getText().toString().equalsIgnoreCase("")) {
-                    Toast.makeText(getActivity(), "Select Date", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_date), 100);
                 } else {
                     ShowWorkTypeAlert(binding.txtWorktype1, binding.rlcluster1, binding.rlheadquates1);
                 }
@@ -485,11 +510,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             case R.id.rlcluster1:
 
                 if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
-                    Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
-
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_hq), 100);
                 } else if (loginResponse.getDesig().equalsIgnoreCase("MR")) {
                     if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
-                        Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_worktype), 100);
                     } else {
                         showMultiClusterAlter();
                     }
@@ -509,11 +533,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             case R.id.rlcluster2:
 
                 if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
-                    Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
-
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_hq), 100);
                 } else if (loginResponse.getDesig().equalsIgnoreCase("MR")) {
                     if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
-                        Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_worktype), 100);
                     } else {
                         showMultiClusterAlter();
                     }
@@ -525,7 +548,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             case R.id.rlheadquates1:
                 if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
-                    Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_worktype), 100);
                 } else {
                     showHQ(binding.txtheadquaters1, binding.txtCluster1);
                 }
@@ -534,7 +557,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             case R.id.rlheadquates2:
 
                 if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
-                    Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_worktype), 100);
                 } else {
                     showHQ(binding.txtheadquaters2, binding.txtCluster2);
                 }
@@ -545,9 +568,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (worktypeflag.equalsIgnoreCase("1")) {
                     if (binding.txtWorktype1.getText().toString().startsWith("Field")) {
                         if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
-                            Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_hq), 100);
                         } else if (binding.txtCluster1.getText().toString().equalsIgnoreCase("")) {
-                            Toast.makeText(getActivity(), "Select Cluster", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_cluster), 100);
                         } else {
                             binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
                             binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
@@ -572,7 +595,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             mSubmitflag = "S1";
                         }
                     } else if (binding.txtWorktype1.getText().toString().equalsIgnoreCase("")) {
-                        Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_worktype), 100);
                     } else {
                         binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
                         binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
@@ -598,11 +621,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else {
                     if (binding.txtWorktype2.getText().toString().startsWith("Field")) {
                         if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
-                            Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
-
-
+                            commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_hq), 100);
                         } else if (binding.txtCluster2.getText().toString().equalsIgnoreCase("")) {
-                            Toast.makeText(getActivity(), "Select Cluster", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_cluster), 100);
                         } else {
                             binding.cardPlan2.setCardBackgroundColor(getResources().getColor(R.color.gray_45));
                             binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
@@ -629,7 +650,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             binding.llDelete.setVisibility(View.GONE);
                         }
                     } else if (binding.txtWorktype2.getText().toString().equalsIgnoreCase("")) {
-                        Toast.makeText(getActivity(), "Select WorkType", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.select_worktype), 100);
                     } else {
                         binding.cardPlan2.setCardBackgroundColor(getResources().getColor(R.color.gray_45));
                         binding.llPlan2.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));
@@ -670,7 +691,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 } else if (mSubmitflag.equalsIgnoreCase("S2")) {
                     MyDayPlanSubmit();
                 } else {
-                    Toast.makeText(getActivity(), "Save Workday Plan", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.save_todaywork_plan), 100);
+                }
+                if (CheckInOutNeed.equalsIgnoreCase("0")) {
+                    CallCheckOutAPI();
                 }
                 break;
 
@@ -684,6 +708,91 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.cardPlan2.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    private void CallCheckOutAPI() {
+        gpsTrack = new GPSTrack(requireContext());
+        latitude = gpsTrack.getLatitude();
+        longitude = gpsTrack.getLongitude();
+        address = CommonUtilsMethods.gettingAddress(requireActivity(), latitude, longitude, false);
+        JSONObject js = new JSONObject();
+        try {
+            js.put("tableName", "savetp_attendance");
+            js.put("sfcode", SfCode);
+            js.put("division_code", DivCode);
+            js.put("lat", latitude);
+            js.put("long", longitude);
+            js.put("address", address);
+            js.put("update", "1");
+            js.put("Appver", APP_VERSION);
+            js.put("Mod", APP_MODE);
+            js.put("sf_emp_id", SfEmpId);
+            js.put("sfname", SfName);
+            js.put("Employee_Id", EmpId);
+            js.put("DateTime", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
+            Log.v("CheckInOut", "--json--" + js);
+        } catch (JSONException ignored) {
+        }
+
+        Call<JsonArray> callCheckInOut;
+        callCheckInOut = api_interface.saveCheckInOut(js.toString());
+        callCheckInOut.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                assert response.body() != null;
+                Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
+                if (response.isSuccessful()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            CheckInOutStatus = obj.getString("msg");
+                        }
+
+                        if (CheckInOutStatus.equalsIgnoreCase("1")) {
+                            CallDialogAfterCheckOut();
+                        } else {
+                            commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_leave_posted), 100);
+                        }
+
+                    } catch (Exception ignored) {
+
+                    }
+                } else {
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.contact_admin), 100);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_response_failed), 100);
+            }
+        });
+    }
+
+    private void CallDialogAfterCheckOut() {
+        dialogAfterCheckOut = new Dialog(requireContext());
+        dialogAfterCheckOut.setContentView(R.layout.dialog_checkindata);
+        dialogAfterCheckOut.setCancelable(false);
+        Objects.requireNonNull(dialogAfterCheckOut.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        btnClose = dialogAfterCheckOut.findViewById(R.id.btn_close);
+        tvHeading = dialogAfterCheckOut.findViewById(R.id.txt_heading);
+        tvDateTimeAfter = dialogAfterCheckOut.findViewById(R.id.txt_date_time);
+        tvAddress = dialogAfterCheckOut.findViewById(R.id.txt_address);
+        tvLat = dialogAfterCheckOut.findViewById(R.id.txt_lat);
+        tvLong = dialogAfterCheckOut.findViewById(R.id.txt_long);
+
+        tvHeading.setText(getResources().getString(R.string.check_out));
+
+        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+        tvLat.setText(String.valueOf(latitude));
+        tvLong.setText(String.valueOf(longitude));
+        tvAddress.setText(address);
+
+        btnClose.setOnClickListener(v -> dialogAfterCheckOut.dismiss());
+
+        dialogAfterCheckOut.show();
     }
 
 
@@ -758,7 +867,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         try {
                             JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
                             if (json.getString("success").equalsIgnoreCase("true")) {
-                                Toast.makeText(getActivity(), json.getString("Msg"), Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(requireContext(), json.getString("Msg"), 100);
 
                                 if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
                                     SharedPref.saveHq(requireContext(), mHQName, mHQCode);
@@ -771,7 +880,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 }
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode);
                             } else {
-                                Toast.makeText(getActivity(), json.getString("Msg"), Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(requireContext(), json.getString("Msg"), 100);
                             }
                         } catch (Exception ignored) {
 
@@ -783,7 +892,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                     Log.e("VALUES", "" + t);
 //                    binding.progressSumit.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "MyDayPlan  failure", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_response_failed), 100);
                 }
             });
 
@@ -934,7 +1043,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getActivity(), "No internet connectivity", Toast.LENGTH_SHORT).show();
+            commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network), 100);
+
         }
     }
 

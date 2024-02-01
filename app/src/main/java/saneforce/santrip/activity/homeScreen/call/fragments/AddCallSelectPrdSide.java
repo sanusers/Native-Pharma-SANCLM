@@ -177,7 +177,7 @@ public class AddCallSelectPrdSide extends Fragment {
                                 SelectContent(callSampleList.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
                             } else {
                                 holder.checkBox.setChecked(false);
-                                Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(context,context.getString(R.string.no_qty_prd),100);
                             }
                         }
                     } else {
@@ -185,29 +185,6 @@ public class AddCallSelectPrdSide extends Fragment {
                     }
                 }
             });
-
-
-          /*  holder.tv_name.setOnClickListener(view -> {
-                if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
-                    for (int i = 0; i < StockSample.size(); i++) {
-                        if (StockSample.get(i).getStockCode().equalsIgnoreCase(callSampleList.get(position).getCode())) {
-                            callSampleList.set(position, new CallCommonCheckedList(callSampleList.get(position).getName(), callSampleList.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callSampleList.get(position).getCategory(), callSampleList.get(position).getCategoryExtra()));
-                        }
-                    }
-                    if (callSampleList.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {
-                        SelectContent(holder.getBindingAdapterPosition());
-                    } else if (callSampleList.get(position).getCategoryExtra().equalsIgnoreCase("Sample")) {
-                        if (Integer.parseInt(callSampleList.get(position).getStock_balance()) > 0) {
-                            SelectContent(holder.getBindingAdapterPosition());
-                        } else {
-                            Toast.makeText(context, "No Qty Available in this Product", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                } else {
-                    SelectContent(holder.getBindingAdapterPosition());
-                }
-            });*/
-
         }
 
         @SuppressLint("NotifyDataSetChanged")
@@ -224,7 +201,7 @@ public class AddCallSelectPrdSide extends Fragment {
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                             callSampleList.get(adapterPos).setCheckedItem(false);
                             checkBox.setChecked(false);
-                            Toast.makeText(context, "Already this product Selected", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.already_available),100);
                             break;
                         }
                     }
@@ -238,26 +215,6 @@ public class AddCallSelectPrdSide extends Fragment {
                 checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                 callSampleList.get(adapterPos).setCheckedItem(false);
             }
-
-
-          /*  for (int i = 0; i < addedProductList.size(); i++) {
-                if (!callSampleList.get(adapterPos).getCode().equalsIgnoreCase(addedProductList.get(i).getPrd_code())) {
-                    isAvailable = false;
-                } else {
-                    isAvailable = true;
-                    break;
-                }
-            }
-
-            if (!isAvailable) {
-                addedProductList.set(pos, new AddSampleAdditionalCall(addedProductList.get(pos).getCust_name(), addedProductList.get(pos).getCust_code(), callSampleList.get(adapterPos).getName(), callSampleList.get(adapterPos).getCode(), callSampleList.get(adapterPos).getStock_balance(), callSampleList.get(adapterPos).getStock_balance(), addedProductList.get(pos).getSample_qty(), callSampleList.get(adapterPos).getCategory()));
-                commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddSampleAdditional);
-                callDetailsSideBinding.rvAddSampleAdditional.setAdapter(AdditionalCallDetailedSide.adapterSampleAdditionalCall);
-                AdditionalCallDetailedSide.adapterSampleAdditionalCall.notifyDataSetChanged();
-                dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.GONE);
-            } else {
-                Toast.makeText(context, "You Already Select this Product", Toast.LENGTH_SHORT).show();
-            }*/
         }
 
         @Override

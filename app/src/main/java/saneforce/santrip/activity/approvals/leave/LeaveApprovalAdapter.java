@@ -45,11 +45,13 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     JSONObject jsonLeave = new JSONObject();
     ApiInterface api_interface;
     ProgressDialog progressDialog = null;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     public LeaveApprovalAdapter(Context context, ArrayList<LeaveModelList> leaveModelLists) {
         this.context = context;
         this.leaveModelLists = leaveModelLists;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -98,7 +100,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     RejectedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition(), ed_reason.getText().toString());
                 } else {
-                    Toast.makeText(context, context.getResources().getText(R.string.toast_enter_reason_for_reject), Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_enter_reason_for_reject),100);
                 }
             });
             dialogReject.show();
@@ -138,7 +140,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            Toast.makeText(context, "Rejected Successfully", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.rejected_successfully),100);
                             dialogReject.dismiss();
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
@@ -149,14 +151,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                    Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 dialogReject.dismiss();
             }
         });
@@ -193,7 +195,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            Toast.makeText(context, "Approved Successfully", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.approved_successfully),100);
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
                         }
@@ -201,14 +203,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(context, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
             }
         });
     }

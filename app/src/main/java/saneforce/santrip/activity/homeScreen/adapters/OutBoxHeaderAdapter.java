@@ -27,7 +27,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -81,8 +86,29 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     public void onBindViewHolder(@NonNull OutBoxHeaderAdapter.listDataViewholider holder, int position) {
 
         GroupModelClass groupModelClass = groupModelClasses.get(position);
-        holder.tvDate.setText(groupModelClass.getGroupName());
+       // holder.tvDate.setText(groupModelClass.getGroupName());
         Log.v("gfddsfdf", "2222-----" + groupModelClasses.get(position).isExpanded() + "----" + groupModelClass.isExpanded());
+
+
+      /*  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dateTime = LocalDateTime.parse(groupModelClass.getGroupName(), formatter);
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd MMM yyyy");
+        holder.tvDate.setText(dateTime.format(formatter2));*/
+
+        SimpleDateFormat spf=new SimpleDateFormat("yyyy-MM-dd");
+        Date newDate= null;
+        try {
+            newDate = spf.parse(groupModelClass.getGroupName());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        spf= new SimpleDateFormat("dd MMM yyyy");
+       String dates = spf.format(newDate);
+        holder.tvDate.setText(dates);
+
+        Log.v("outBox", "---" + groupModelClass.getGroupName() + "--data--" +dates);
+
+
         if (groupModelClass.isExpanded()) {
             Log.v("gfddsfdf", "3333");
             holder.constraintContent.setVisibility(View.VISIBLE);

@@ -64,11 +64,11 @@ public class RCPAFragment extends Fragment {
 
         rcpaBinding.btnAddRcpa.setOnClickListener(view -> {
             if (rcpaBinding.tvSelectChemist.getText().toString().isEmpty() || rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select")) {
-                Toast.makeText(requireContext(), "Select Chemist", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.select_chemist),100);
             } else if (rcpaBinding.tvSelectProduct.getText().toString().isEmpty() || rcpaBinding.tvSelectProduct.getText().toString().equalsIgnoreCase("Select")) {
-                Toast.makeText(requireContext(), "Select Product", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.select_prd),100);
             } else if (Objects.requireNonNull(rcpaBinding.edQty.getText()).toString().equalsIgnoreCase("0")) {
-                Toast.makeText(requireContext(), "Enter Qty", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.enter_qty),100);
             } else {
                 rcpaBinding.llNoRcpa.setVisibility(View.GONE);
                 rcpaBinding.rvRcpaChemistList.setVisibility(View.VISIBLE);
@@ -172,7 +172,7 @@ public class RCPAFragment extends Fragment {
                 }
 
             } else {
-                Toast.makeText(requireContext(), "Select Chemist", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.select_chemist),100);
             }
 
         });

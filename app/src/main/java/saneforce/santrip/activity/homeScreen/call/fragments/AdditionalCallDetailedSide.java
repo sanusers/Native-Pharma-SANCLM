@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
@@ -131,10 +132,10 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addInputAdditionalCallArrayList.get(lastPos).getInput_name().equalsIgnoreCase("Select") && !addInputAdditionalCallArrayList.get(lastPos).getInput_name().isEmpty()) {
                         AddNewInputData();
                     } else {
-                        Toast.makeText(requireContext(), "Select the Input before add new Input", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(getContext(), requireContext().getString(R.string.sel_input_before_add_new),100);
                     }
                 } else {
-                    Toast.makeText(requireContext(), "There is no Extra Input Available to add", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.no_extra_input),100);
                 }
             } else {
                 AddNewInputData();
@@ -149,10 +150,10 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addProductAdditionalCallArrayList.get(lastPos).getPrd_name().equalsIgnoreCase("Select") && !addProductAdditionalCallArrayList.get(lastPos).getPrd_name().isEmpty()) {
                         AddNewSampleData();
                     } else {
-                        Toast.makeText(requireContext(), "Select the Product before add new Product", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.sel_prd_before_add_new),100);
                     }
                 } else {
-                    Toast.makeText(requireContext(), "There is no Extra Product Available to add", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.no_extra_prd),100);
                 }
             } else {
                 AddNewSampleData();

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.pojo.product.SaveCallProductList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectProductSideBinding;
 import saneforce.santrip.storage.SQLite;
@@ -104,10 +105,12 @@ public class RCPASelectPrdSide extends Fragment {
         SQLite sqLite;
         JSONObject jsonObject;
         boolean isAvailableCompetitor;
+        CommonUtilsMethods commonUtilsMethods;
 
         public ProductAdapter(Context context, ArrayList<SaveCallProductList> prdList) {
             this.context = context;
             this.prdList = prdList;
+            commonUtilsMethods = new CommonUtilsMethods(context);
         }
 
         @NonNull
@@ -143,7 +146,7 @@ public class RCPASelectPrdSide extends Fragment {
                             rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                            Toast.makeText(context, "Already this Product Selected!", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
                         }
                     } catch (Exception ignored) {
                     }
@@ -179,10 +182,10 @@ public class RCPASelectPrdSide extends Fragment {
                             rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                            Toast.makeText(context, "Already this Product Selected!", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
                         }
                     } else {
-                        Toast.makeText(context, "No Competitor Available for this Product!", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context,context.getString(R.string.no_comp_available),100);
                     }
 
                 } catch (Exception e) {

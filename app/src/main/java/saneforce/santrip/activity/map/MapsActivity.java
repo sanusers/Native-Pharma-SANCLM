@@ -47,6 +47,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.api.Api;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -122,6 +123,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double lat, lng, limitKm = 0.5;
     Dialog dialogTagCust;
+    CommonUtilsMethods commonUtilsMethods;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
         @Override
@@ -184,7 +186,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         sqLite = new SQLite(getApplicationContext());
 
 
@@ -280,7 +282,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         DisplayDialog();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Not able to find Address! Kindly Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.not_able_to_find_address), 100);
                     Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
                     startActivity(intent1);
                 }
@@ -562,9 +564,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 val = true;
             }
         } catch (Exception e) {
-            Toast toast = Toast.makeText(MapsActivity.this, getResources().getString(R.string.loc_not_detect), Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            commonUtilsMethods.ShowToast(context, context.getString(R.string.loc_not_detect), 100);
         }
         return val;
     }
@@ -712,7 +712,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
-                            Toast.makeText(MapsActivity.this, "Tagged Successfully", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.tagged_successfully), 100);
                             dialogTagCust.dismiss();
                             CallAPIList(SelectedTab);
                             isTagged = true;
@@ -722,10 +722,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             //SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
                             finish();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("Msg").equalsIgnoreCase("You have reached the maximum tags...")) {
-                            Toast.makeText(MapsActivity.this, jsonSaveRes.getString("Msg"), Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, jsonSaveRes.getString("Msg"), 100);
                             dialogTagCust.dismiss();
                         } else {
-                            Toast.makeText(MapsActivity.this, "Something went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.something_wrong), 100);
                             dialogTagCust.dismiss();
                         }
                     } catch (Exception e) {
@@ -734,7 +734,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(MapsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                     dialogTagCust.dismiss();
                 }
             }
@@ -742,7 +742,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(MapsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 dialogTagCust.dismiss();
             }
         });
@@ -846,7 +846,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
         }
     }
 
@@ -875,10 +875,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void CallImageAPI(String jsonImage, String jsonTag) {
         try {
+            ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
             Call<JsonObject> callImage;
             HashMap<String, RequestBody> values = field(jsonImage);
             MultipartBody.Part img = convertImg("UploadImg", filePath);
-            callImage = api_interface.imgUploadMap(values, img);
+            callImage = apiInterface.imgUploadMap(values, img);
 
             callImage.enqueue(new Callback<JsonObject>() {
                 @Override
@@ -895,7 +896,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 CallAPIGeo(jsonTag);
                             } else {
                                 dialogTagCust.dismiss();
-                                Toast.makeText(MapsActivity.this, "Tag Failed! Try Again", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(context, context.getString(R.string.tag_failed), 100);
                             }
                         } catch (Exception e) {
                             Log.v("img_tag", e.toString());
@@ -903,13 +904,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     } else {
                         dialogTagCust.dismiss();
-                        Toast.makeText(MapsActivity.this, "Something went Wrong! Please Try Again", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.something_wrong), 100);
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    Toast.makeText(MapsActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                     dialogTagCust.dismiss();
                 }
             });
@@ -1003,7 +1004,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));
                 }
             } else {
-                Toast.makeText(MapsActivity.this, "No Data Available", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found), 100);
             }
 
             mMap.setMyLocationEnabled(true);
@@ -1165,10 +1166,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ImageView imageView = dialog.findViewById(R.id.img_dr_content);
 
                     if (Objects.requireNonNull(marker.getSnippet()).substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
-                        Toast.makeText(MapsActivity.this, getResources().getString(R.string.toast_no_img_found), Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_no_img_found), 100);
                     } else {
                         if (img_url.equalsIgnoreCase("null") || img_url.isEmpty()) {
-                            Toast.makeText(MapsActivity.this, "Kindly Save Settings in Configuration Screen", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.save_settings_con_screen), 100);
                         } else {
                             Glide.with(getApplicationContext()).load(img_url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1)).centerCrop().into(imageView);
                             dialog.show();

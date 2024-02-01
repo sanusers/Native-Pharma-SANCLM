@@ -2,25 +2,24 @@ package saneforce.santrip.activity.homeScreen;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
-import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
-import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
+import static saneforce.santrip.commonClasses.Constants.APP_MODE;
+import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
 import static saneforce.santrip.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,11 +31,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,29 +48,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 
-import id.zelory.compressor.Compressor;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,16 +77,12 @@ import saneforce.santrip.activity.forms.Forms_activity;
 import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
 import saneforce.santrip.activity.homeScreen.adapters.CustomPagerAdapter;
 import saneforce.santrip.activity.homeScreen.adapters.OutBoxHeaderAdapter;
-import saneforce.santrip.activity.homeScreen.adapters.ViewPagerAdapter;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.TabLayoutAdapter;
-import saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallStatusModelClass;
-import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EventCalenderModelClass;
-import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.activity.leave.Leave_Application;
 import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.map.MapsActivity;
@@ -133,15 +125,22 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     NetworkChangeReceiver receiver;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     Callstatusadapter callstatusadapter;
+    Dialog dialogCheckInOut, dialogAfterCheckIn;
     TabLayoutAdapter leftViewPagerAdapter;
     ArrayList<EventCalenderModelClass> calendarDays = new ArrayList<>();
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     private LocalDate selectedDate;
-    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SampleValidation, InputValidation;
+    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, InputValidation, CheckInOutNeed;
     private static String CalenderFlag = "0";
     DrawerLayout.LayoutParams layoutParams;
+    TextView tvDateTime, tvName, tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading;
+    Button btnCheckIn, btnClose;
+    double latitude, longitude;
+    String CheckInOutStatus, address;
+    Dialog dialogPwdChange;
 
     ArrayList<EventCalenderModelClass> callsatuslist = new ArrayList<>();
+    public static boolean isFinishCall;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -153,10 +152,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         super.onResume();
+        if (isFinishCall) {
+            isFinishCall = false;
+            finish();
+            startActivity(getIntent());
+        }
+
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         }
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -166,7 +172,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
         }
-         registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -210,6 +216,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         sqLite.getWritableDatabase();
 
         getRequiredData();
+
+        if (CheckInOutNeed.equalsIgnoreCase("0") && !SharedPref.getCheckTodayDate(this).equalsIgnoreCase(new SimpleDateFormat("yyyy/MM/dd", Locale.US).format(new Date()))) {
+            CheckInOutDate();
+        }
 
         binding.rlDateLayoout.setOnClickListener(this);
         binding.viewCalerderLayout.llNextMonth.setOnClickListener(this);
@@ -328,204 +338,318 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
             }
         });
-     //   new Handler().postDelayed(this::refreshPendingFunction, 200);
+        //   new Handler().postDelayed(this::refreshPendingFunction, 200);
     }
 
-  /*  public static void NetworkConnectCallHomeDashBoard(String log) {
-        if (!TextUtils.isEmpty(log)) {
-            if (!log.equalsIgnoreCase("NOT_CONNECT")) {
-                if (mCheckNetwork != null)
-                    mCheckNetwork.checkNetwork();
-            }
-        }
-    }
-
-    public static void SendOfflineData(NetworkCheckInterface mCheckNetworkData) {
-        mCheckNetwork = mCheckNetworkData;
-    }
-
-    private void refreshPendingFunction() {
-        HomeDashBoard.SendOfflineData(this::sendingOfflineCalls);
-    }
-
-    private void sendingOfflineCalls() {
-        Log.v("SendOutboxCall","connected");
-        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-
-        //Call Data
-        ArrayList<OutBoxCallList> outBoxCallLists = sqLite.getOutBoxCallsFullList("Call Failed", "Waiting for Sync");
-        CallApiList(outBoxCallLists);
-    }
-
-    private void CallApiList(ArrayList<OutBoxCallList> outBoxCallLists) {
-        if (outBoxCallLists.size() > 0) {
-            isCallAvailable = false;
-            for (int i = 0; i < outBoxCallLists.size(); i++) {
-                OutBoxCallList outBoxCallList = outBoxCallLists.get(i);
-                if (outBoxCallList.getSyncCount() <= 4) {
-                    isCallAvailable = true;
-                    Log.v("SendOutboxCall", "----" + outBoxCallList.getCusName());
-                    CallSendAPI(outBoxCallLists, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
-                    break;
-                }
-            }
-        } else {
-            isCallAvailable = false;
-        }
-
-        if (!isCallAvailable) {
-            //Call Event Capture
-            CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite,false);
-            ArrayList<EcModelClass> ecModelClasses = sqLite.getEcListFull();
-            CallApiLocalEC(ecModelClasses);
-        }
-
-    }
-
-    private void CallApiLocalEC(ArrayList<EcModelClass> ecModelClasses) {
-        if (ecModelClasses.size() > 0) {
-            for (int i = 0; i < ecModelClasses.size(); i++) {
-                EcModelClass ecModelClass = ecModelClasses.get(i);
-                Log.v("SendOutboxCall", "----" + ecModelClass.getDates() + "---" + ecModelClass.getName());
-                CallSendAPIImage(ecModelClasses, i, ecModelClass.getId(), ecModelClass.getJson_values(), ecModelClass.getFilePath());
-                break;
-            }
-        } else {
-            CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
-        }
-    }
+    private void CheckInOutDate() {
+        dialogCheckInOut = new Dialog(this);
+        dialogCheckInOut.setContentView(R.layout.dialog_daycheckin);
+        dialogCheckInOut.setCancelable(false);
+        Objects.requireNonNull(dialogCheckInOut.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
-    public HashMap<String, RequestBody> field(String val) {
-        HashMap<String, RequestBody> xx = new HashMap<>();
-        xx.put("data", createFromString(val));
-        return xx;
-    }
+        tvName = dialogCheckInOut.findViewById(R.id.txt_cus_name);
+        tvName.setText(String.format("%s%s", getResources().getString(R.string.hi), SfName));
 
-    private RequestBody createFromString(String txt) {
-        return RequestBody.create(txt, MultipartBody.FORM);
-    }
+        tvDateTime = dialogCheckInOut.findViewById(R.id.txt_date_time);
+        tvDateTime.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
 
+        btnCheckIn = dialogCheckInOut.findViewById(R.id.btn_checkin);
 
-    public MultipartBody.Part convertImg(String tag, String path) {
-        Log.d("path", tag + "-" + path);
-        MultipartBody.Part yy = null;
-        try {
-            File file;
-            if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
-                file = new Compressor(context).compressToFile(new File(path));
-                Log.d("path", tag + "-" + path);
+        btnCheckIn.setOnClickListener(v -> {
+            gpsTrack = new GPSTrack(this);
+            latitude = gpsTrack.getLatitude();
+            longitude = gpsTrack.getLongitude();
+            address = CommonUtilsMethods.gettingAddress(this, latitude, longitude, false);
+            if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                CallCheckInAPI();
             } else {
-                file = new File(path);
             }
-            RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
-            yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+        });
 
-            Log.d("path", String.valueOf(yy));
-        } catch (Exception ignored) {
-        }
-        return yy;
+        dialogAfterCheckIn.show();
     }
 
-    private void CallSendAPIImage(ArrayList<EcModelClass> ecModelClasses, int position, String id, String jsonValues, String filePath) {
-        MultipartBody.Part img = convertImg("EventImg", filePath);
-        HashMap<String, RequestBody> values = field(jsonValues.toString());
-        Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
+    private void CallCheckInAPI() {
+        JSONObject js = new JSONObject();
+        try {
+            js.put("tableName", "savetp_attendance");
+            js.put("sfcode", SfCode);
+            js.put("division_code", DivCode);
+            js.put("lat", latitude);
+            js.put("long", longitude);
+            js.put("address", address);
+            js.put("update", "0");
+            js.put("Appver", APP_VERSION);
+            js.put("Mod", APP_MODE);
+            js.put("sf_emp_id", SfEmpId);
+            js.put("sfname", SfName);
+            js.put("Employee_Id", EmpId);
+            js.put("DateTime", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
+            Log.v("CheckInOut", "--json--" + js.toString());
+        } catch (JSONException ignored) {
+        }
 
-        saveImgDcr.enqueue(new Callback<JsonObject>() {
+        Call<JsonArray> callCheckInOut;
+        callCheckInOut = apiInterface.saveCheckInOut(js.toString());
+        callCheckInOut.enqueue(new Callback<JsonArray>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                assert response.body() != null;
+                Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
                 if (response.isSuccessful()) {
                     try {
-                        assert response.body() != null;
-                        JSONObject json = new JSONObject(response.body().toString());
-                        Log.v("ImgUpload", json.toString());
-                        if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-                            DeleteCacheFile(ecModelClasses, filePath, id, position);
-                        } else {
-                            DeleteCacheFile(ecModelClasses, filePath, id, position);
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            CheckInOutStatus = obj.getString("msg");
                         }
+
+                        if (CheckInOutStatus.equalsIgnoreCase("1")) {
+                            SharedPref.setCheckTodayDate(getApplicationContext(), CommonUtilsMethods.getCurrentDate());
+                            CallDialogAfterCheckIn();
+                        } else {
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.toast_leave_posted), 100);
+                        }
+
+
                     } catch (Exception ignored) {
-                        DeleteCacheFile(ecModelClasses, filePath, id, position);
+
                     }
+                } else {
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.contact_admin), 100);
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                DeleteCacheFile(ecModelClasses, filePath, id, position);
+            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.toast_response_failed), 100);
             }
         });
     }
 
-    private void DeleteCacheFile(ArrayList<EcModelClass> ecModelClasses, String filePath, String id, int position) {
-        File fileDelete = new File(filePath);
-        if (fileDelete.exists()) {
-            if (fileDelete.delete()) {
-                System.out.println("file Deleted :" + filePath);
-            } else {
-                System.out.println("file not Deleted :" + filePath);
-            }
-        }
-        sqLite.deleteOfflineEC(id);
-        ecModelClasses.remove(position);
-        CallApiLocalEC(ecModelClasses);
+    private void CallDialogAfterCheckIn() {
+        dialogAfterCheckIn.dismiss();
+        dialogAfterCheckIn = new Dialog(this);
+        dialogAfterCheckIn.setContentView(R.layout.dialog_checkindata);
+        dialogAfterCheckIn.setCancelable(false);
+        Objects.requireNonNull(dialogAfterCheckIn.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        btnClose = dialogAfterCheckIn.findViewById(R.id.btn_close);
+        tvHeading = dialogAfterCheckIn.findViewById(R.id.txt_heading);
+        tvDateTimeAfter = dialogAfterCheckIn.findViewById(R.id.txt_date_time);
+        tvAddress = dialogAfterCheckIn.findViewById(R.id.txt_address);
+        tvLat = dialogAfterCheckIn.findViewById(R.id.txt_lat);
+        tvLong = dialogAfterCheckIn.findViewById(R.id.txt_long);
+
+        tvHeading.setText(getResources().getString(R.string.check_in));
+
+        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+        tvLat.setText(String.valueOf(latitude));
+        tvLong.setText(String.valueOf(longitude));
+        tvAddress.setText(address);
+
+        btnClose.setOnClickListener(v -> dialogAfterCheckIn.dismiss());
+
+        dialogAfterCheckIn.show();
+
     }
 
+    /*  public static void NetworkConnectCallHomeDashBoard(String log) {
+          if (!TextUtils.isEmpty(log)) {
+              if (!log.equalsIgnoreCase("NOT_CONNECT")) {
+                  if (mCheckNetwork != null)
+                      mCheckNetwork.checkNetwork();
+              }
+          }
+      }
 
-    private void CallSendAPI(ArrayList<OutBoxCallList> outBoxCallList, int position, String dates, String cusName, String cusCode, String jsonData, int syncCount) {
-        JSONObject jsonSaveDcr;
-        try {
-            jsonSaveDcr = new JSONObject(jsonData);
-            Call<JsonObject> callSaveDcr;
-            callSaveDcr = apiInterface.saveDcr(jsonSaveDcr.toString());
-            callSaveDcr.enqueue(new Callback<JsonObject>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                    if (response.isSuccessful()) {
-                        try {
-                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
-                            if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                sqLite.deleteOfflineCalls(cusCode, cusName, dates);
-                                outBoxCallList.remove(position);
-                            } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(5), "Duplicate Call");
-                                outBoxCallList.set(position, new OutBoxCallList(cusName, cusCode, dates, jsonData, "Duplicate Call", 5));
-                                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(dates) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
-                                        jsonArray.remove(i);
-                                        break;
-                                    }
-                                }
+      public static void SendOfflineData(NetworkCheckInterface mCheckNetworkData) {
+          mCheckNetwork = mCheckNetworkData;
+      }
 
-                                sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
-                            }
+      private void refreshPendingFunction() {
+          HomeDashBoard.SendOfflineData(this::sendingOfflineCalls);
+      }
 
-                            CallApiList(outBoxCallList);
-                        } catch (Exception e) {
-                            outBoxCallList.remove(position);
-                            CallApiList(outBoxCallList);
-                            Log.v("SendOutboxCall", "---" + e);
-                        }
-                    }
-                }
+      private void sendingOfflineCalls() {
+          Log.v("SendOutboxCall","connected");
+          apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(syncCount + 1), "Call Failed");
-                    outBoxCallList.set(position, new OutBoxCallList(cusName, cusCode, dates, jsonData, "Call Failed", syncCount + 1));
-                    CallApiList(outBoxCallList);
-                }
-            });
+          //Call Data
+          ArrayList<OutBoxCallList> outBoxCallLists = sqLite.getOutBoxCallsFullList("Call Failed", "Waiting for Sync");
+          CallApiList(outBoxCallLists);
+      }
 
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-*/
+      private void CallApiList(ArrayList<OutBoxCallList> outBoxCallLists) {
+          if (outBoxCallLists.size() > 0) {
+              isCallAvailable = false;
+              for (int i = 0; i < outBoxCallLists.size(); i++) {
+                  OutBoxCallList outBoxCallList = outBoxCallLists.get(i);
+                  if (outBoxCallList.getSyncCount() <= 4) {
+                      isCallAvailable = true;
+                      Log.v("SendOutboxCall", "----" + outBoxCallList.getCusName());
+                      CallSendAPI(outBoxCallLists, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
+                      break;
+                  }
+              }
+          } else {
+              isCallAvailable = false;
+          }
+
+          if (!isCallAvailable) {
+              //Call Event Capture
+              CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite,false);
+              ArrayList<EcModelClass> ecModelClasses = sqLite.getEcListFull();
+              CallApiLocalEC(ecModelClasses);
+          }
+
+      }
+
+      private void CallApiLocalEC(ArrayList<EcModelClass> ecModelClasses) {
+          if (ecModelClasses.size() > 0) {
+              for (int i = 0; i < ecModelClasses.size(); i++) {
+                  EcModelClass ecModelClass = ecModelClasses.get(i);
+                  Log.v("SendOutboxCall", "----" + ecModelClass.getDates() + "---" + ecModelClass.getName());
+                  CallSendAPIImage(ecModelClasses, i, ecModelClass.getId(), ecModelClass.getJson_values(), ecModelClass.getFilePath());
+                  break;
+              }
+          } else {
+              CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
+          }
+      }
+
+
+      public HashMap<String, RequestBody> field(String val) {
+          HashMap<String, RequestBody> xx = new HashMap<>();
+          xx.put("data", createFromString(val));
+          return xx;
+      }
+
+      private RequestBody createFromString(String txt) {
+          return RequestBody.create(txt, MultipartBody.FORM);
+      }
+
+
+      public MultipartBody.Part convertImg(String tag, String path) {
+          Log.d("path", tag + "-" + path);
+          MultipartBody.Part yy = null;
+          try {
+              File file;
+              if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
+                  file = new Compressor(context).compressToFile(new File(path));
+                  Log.d("path", tag + "-" + path);
+              } else {
+                  file = new File(path);
+              }
+              RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
+              yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
+
+              Log.d("path", String.valueOf(yy));
+          } catch (Exception ignored) {
+          }
+          return yy;
+      }
+
+      private void CallSendAPIImage(ArrayList<EcModelClass> ecModelClasses, int position, String id, String jsonValues, String filePath) {
+          MultipartBody.Part img = convertImg("EventImg", filePath);
+          HashMap<String, RequestBody> values = field(jsonValues.toString());
+          Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
+
+          saveImgDcr.enqueue(new Callback<JsonObject>() {
+              @Override
+              public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                  if (response.isSuccessful()) {
+                      try {
+                          assert response.body() != null;
+                          JSONObject json = new JSONObject(response.body().toString());
+                          Log.v("ImgUpload", json.toString());
+                          if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                              DeleteCacheFile(ecModelClasses, filePath, id, position);
+                          } else {
+                              DeleteCacheFile(ecModelClasses, filePath, id, position);
+                          }
+                      } catch (Exception ignored) {
+                          DeleteCacheFile(ecModelClasses, filePath, id, position);
+                      }
+                  }
+              }
+
+              @Override
+              public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                  DeleteCacheFile(ecModelClasses, filePath, id, position);
+              }
+          });
+      }
+
+      private void DeleteCacheFile(ArrayList<EcModelClass> ecModelClasses, String filePath, String id, int position) {
+          File fileDelete = new File(filePath);
+          if (fileDelete.exists()) {
+              if (fileDelete.delete()) {
+                  System.out.println("file Deleted :" + filePath);
+              } else {
+                  System.out.println("file not Deleted :" + filePath);
+              }
+          }
+          sqLite.deleteOfflineEC(id);
+          ecModelClasses.remove(position);
+          CallApiLocalEC(ecModelClasses);
+      }
+
+
+      private void CallSendAPI(ArrayList<OutBoxCallList> outBoxCallList, int position, String dates, String cusName, String cusCode, String jsonData, int syncCount) {
+          JSONObject jsonSaveDcr;
+          try {
+              jsonSaveDcr = new JSONObject(jsonData);
+              Call<JsonObject> callSaveDcr;
+              callSaveDcr = apiInterface.saveDcr(jsonSaveDcr.toString());
+              callSaveDcr.enqueue(new Callback<JsonObject>() {
+                  @Override
+                  public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                      if (response.isSuccessful()) {
+                          try {
+                              JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                              if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
+                                  sqLite.deleteOfflineCalls(cusCode, cusName, dates);
+                                  outBoxCallList.remove(position);
+                              } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
+                                  sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(5), "Duplicate Call");
+                                  outBoxCallList.set(position, new OutBoxCallList(cusName, cusCode, dates, jsonData, "Duplicate Call", 5));
+                                  JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                                  for (int i = 0; i < jsonArray.length(); i++) {
+                                      JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                      if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(dates) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                                          jsonArray.remove(i);
+                                          break;
+                                      }
+                                  }
+
+                                  sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+                              }
+
+                              CallApiList(outBoxCallList);
+                          } catch (Exception e) {
+                              outBoxCallList.remove(position);
+                              CallApiList(outBoxCallList);
+                              Log.v("SendOutboxCall", "---" + e);
+                          }
+                      }
+                  }
+
+                  @SuppressLint("NotifyDataSetChanged")
+                  @Override
+                  public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                      sqLite.saveOfflineUpdateStatus(dates, cusCode, String.valueOf(syncCount + 1), "Call Failed");
+                      outBoxCallList.set(position, new OutBoxCallList(cusName, cusCode, dates, jsonData, "Call Failed", syncCount + 1));
+                      CallApiList(outBoxCallList);
+                  }
+              });
+
+          } catch (JSONException e) {
+              throw new RuntimeException(e);
+          }
+      }
+  */
     private void getRequiredData() {
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
@@ -537,8 +661,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         SubDivisionCode = loginResponse.getSubdivision_code();
         Designation = loginResponse.getDesig();
         StateCode = loginResponse.getState_Code();
+        SfEmpId = loginResponse.getSf_emp_id();
+        EmpId = loginResponse.getEmployee_Id();
+
+        CheckInOutNeed = loginResponse.getSrtNd();
         SampleValidation = loginResponse.getSample_validation();
         InputValidation = loginResponse.getInput_validation();
+
+        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
     }
 
     private ArrayList<EventCalenderModelClass> daysInMonthArray(LocalDate date) {
@@ -674,11 +804,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
 
-        Dialog dialog = new Dialog(this);
-        Dialog dialog1 = new Dialog(this);
+        dialogPwdChange = new Dialog(this);
 
-        dialog1.setContentView(R.layout.change_password);
-        Window window1 = dialog1.getWindow();
+        dialogPwdChange.setContentView(R.layout.change_password);
+        Window window1 = dialogPwdChange.getWindow();
 
         if (window1 != null) {
             WindowManager.LayoutParams layoutParams = window1.getAttributes();
@@ -688,13 +817,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
 
-        EditText old_password = dialog1.findViewById(R.id.old_pass);
-        ImageView old_view = dialog1.findViewById(R.id.oldpas_icon);
-        ImageView newPass_view = dialog1.findViewById(R.id.noepass_icon);
-        EditText new_password = dialog1.findViewById(R.id.newpasswrd);
-        EditText remain_password = dialog1.findViewById(R.id.repeatpass);
-        LinearLayout update = dialog1.findViewById(R.id.update);
-        ImageView cls_but = dialog1.findViewById(R.id.close);
+        EditText old_password = dialogPwdChange.findViewById(R.id.old_pass);
+        ImageView old_view = dialogPwdChange.findViewById(R.id.oldpas_icon);
+        ImageView newPass_view = dialogPwdChange.findViewById(R.id.noepass_icon);
+        EditText new_password = dialogPwdChange.findViewById(R.id.newpasswrd);
+        EditText remain_password = dialogPwdChange.findViewById(R.id.repeatpass);
+        LinearLayout update = dialogPwdChange.findViewById(R.id.update);
+        ImageView cls_but = dialogPwdChange.findViewById(R.id.close);
 
         String password = loginResponse.getSF_Password();
         old_view.setOnClickListener(v -> {
@@ -736,37 +865,83 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         update.setOnClickListener(v -> {
 
             if (old_password.getText().toString().equals("")) {
-                Toast.makeText(HomeDashBoard.this, "Please submit old password", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_old_pwd), 100);
             } else if (new_password.getText().toString().equals("")) {
-                Toast.makeText(HomeDashBoard.this, "Please submit new password", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_new_pwd), 100);
             } else if (remain_password.getText().toString().equals("")) {
-                Toast.makeText(HomeDashBoard.this, "Please submit repeat password", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.enter_repeat_pwd), 100);
+                ;
             } else {
                 if (!password.equals(old_password.getText().toString())) {
-                    Toast.makeText(HomeDashBoard.this, "Please Check Old Password", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.chk_old_pwd), 100);
                 } else if (!new_password.getText().toString().equals(remain_password.getText().toString())) {
-                    Toast.makeText(HomeDashBoard.this, "Please Check not match Password", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.pwd_not_match), 100);
                 } else {
                     try {
-                        JSONObject jsonObj = new JSONObject();
-                        jsonObj.put("Oldpassword", old_password.getText().toString());
-                        jsonObj.put("Newpassword", new_password.getText().toString());
-                        Log.d("PassWord_Change", String.valueOf(jsonObj));
+                        CallChangePasswordAPI(old_password.getText().toString(), new_password.getText().toString(), remain_password.getText().toString());
                     } catch (Exception ignored) {
 
                     }
 
-                    Toast.makeText(HomeDashBoard.this, "Password changed", Toast.LENGTH_SHORT).show();
-                    dialog1.dismiss();
                 }
             }
 
         });
 
 
-        cls_but.setOnClickListener(v -> dialog1.dismiss());
+        cls_but.setOnClickListener(v -> dialogPwdChange.dismiss());
 
-        dialog1.show();
+        dialogPwdChange.show();
+
+    }
+
+    private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd) {
+        JSONObject jj = new JSONObject();
+        try {
+            jj.put("tableName", "savechpwd");
+            jj.put("sfcode", SfCode);
+            jj.put("division_code", DivCode);
+            jj.put("Rsf", TodayPlanSfCode);
+            jj.put("sf_type", SfType);
+            jj.put("Designation", Designation);
+            jj.put("state_code", StateCode);
+            jj.put("subdivision_code", SubDivisionCode);
+            jj.put("txOPW", oldPwd);
+            jj.put("txNPW", newPwd);
+            jj.put("txCPW", confirmPwd);
+            Log.d("PassWord_Change", String.valueOf(jj));
+        } catch (Exception ignored) {
+
+        }
+
+        Call<JsonObject> changePassword = null;
+        changePassword = apiInterface.ChangePwd(jj.toString());
+
+        changePassword.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        JSONObject js = new JSONObject(response.body().toString());
+                        if (js.getString("success").equalsIgnoreCase("true")) {
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.pwd_changed_successfully), 100);
+                            dialogPwdChange.dismiss();
+                        } else {
+                            commonUtilsMethods.ShowToast(getApplicationContext(), js.getString("msg"), 100);
+                        }
+
+                    } catch (Exception e) {
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.something_wrong), 100);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.toast_response_failed), 100);
+            }
+        });
 
     }
 
@@ -838,7 +1013,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (id == R.id.nav_nearme) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
                 if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).isEmpty()) {
-                    Toast.makeText(HomeDashBoard.this, "Kindly Submit MyDayPlan", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.submit_mydayplan), 100);
                     //   MapsActivity.SelectedHqCode = "";
                     //   MapsActivity.SelectedHqName = "";
                 } else {
@@ -851,14 +1026,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
                 return true;
             } else {
-                Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getApplicationContext().getString(R.string.no_network), 100);
             }
         }
 
         return true;
     }
 
-    private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText, boolean isTabTitleInvisible) {
+    private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText,
+                                boolean isTabTitleInvisible) {
         TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
         if (tab != null) {
             @SuppressLint("InflateParams") View customView = LayoutInflater.from(this).inflate(R.layout.customtab_item, null);
@@ -984,7 +1160,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-    private ArrayList<CallStatusModelClass> getCallsDataToCalender1(ArrayList<String> dateList, ArrayList<CallStatusModelClass> workTypeList, String month, String year) {
+    private ArrayList<CallStatusModelClass> getCallsDataToCalender1
+            (ArrayList<String> dateList, ArrayList<CallStatusModelClass> workTypeList, String
+                    month, String year) {
 
         ArrayList<CallStatusModelClass> nCallList = new ArrayList<>();
         ArrayList<CallStatusModelClass> mCallList = new ArrayList<>();

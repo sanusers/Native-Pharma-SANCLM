@@ -43,6 +43,7 @@ public class SharedPref {
     public static final String SF_CODE = "sf_code";
     public static final String SF_TYPE = "sf_type";
     public static final String TAG_IMAGE_URL = "tag_image_url";
+    public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
 
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
@@ -55,10 +56,14 @@ public class SharedPref {
     public static final String CUSTOMER_POSITION = "cust_pos";
 
     //HomeDashboard
+    //CheckInAndOut
+    public static final String CHECK_TODAY_DATE = "check_today_date";
+
     //MyDayPlan
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
+
 
     //TodayCalls
     public static final String TODAY_CALL_LIST = "today_call_list";
@@ -299,6 +304,16 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAG_IMAGE_URL, "");
     }
 
+    public static void setTagApiImageUrl(Context context, String token) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(TAG_API_IMAGE_URL, token).apply();
+    }
+
+    public static String getTagApiImageUrl(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAG_API_IMAGE_URL, "");
+    }
+
     public static void saveHq (Context context, String name, String code){
         sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -331,6 +346,16 @@ public class SharedPref {
 
     public static String getTodayDayPlanClusterCode(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterCode, "");
+    }
+
+    public static void setCheckTodayDate(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHECK_TODAY_DATE, status).apply();
+    }
+
+    public static String getCheckTodayDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_TODAY_DATE, "");
     }
 
     public static void setTodayDayPlanSfCode(Context context, String status) {

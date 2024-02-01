@@ -82,28 +82,6 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
             holder.tv_sample_stock.setVisibility(View.GONE);
         }
 
-        holder.tv_select_sample.setOnClickListener(view -> {
-          /*  boolean isEditedAvailable = false;
-            if (New_Edit.equalsIgnoreCase("Edit")) {
-                if (editedPrdList.size() > 0) {
-                    for (int j = 0; j < editedPrdList.size(); j++) {
-                        if (editedPrdList.get(j).getPrd_code().equalsIgnoreCase(addedProductList.get(position).getPrd_code())) {
-                            isEditedAvailable = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!isEditedAvailable) {
-                AddCallSelectPrdSide.selectProductSideBinding.searchList.setText("");
-                AddCallSelectPrdSide.selectProductSideBinding.searchList.setHint(context.getResources().getString(R.string.search));
-                AddCallSelectPrdSide.selectProductSideBinding.selectListView.scrollToPosition(0);
-                dcrCallBinding.fragmentAcSelectProductSide.setVisibility(View.VISIBLE);
-            } else {
-                Toast.makeText(context, "Can't edit data that already stored! Just Delete & Add new one", Toast.LENGTH_SHORT).show();
-            }*/
-        });
 
 
         holder.edt_sam_qty.addTextChangedListener(new TextWatcher() {

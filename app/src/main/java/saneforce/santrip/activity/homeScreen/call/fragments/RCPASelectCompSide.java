@@ -181,7 +181,7 @@ public class RCPASelectCompSide extends Fragment {
 
                 dcrCallBinding.fragmentAddRcpaSide.setVisibility(View.GONE);
             } else {
-                Toast.makeText(requireContext(), "Add AtLeast One Competitor to Save", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.add_one_competitor),100);
             }
         });
 
@@ -200,9 +200,9 @@ public class RCPASelectCompSide extends Fragment {
         rcpaSideBinding.btnAdd.setOnClickListener(view -> {
             boolean isMatched = false;
             if (Objects.requireNonNull(rcpaSideBinding.edCompPrd.getText()).toString().isEmpty()) {
-                Toast.makeText(requireContext(), "Enter Product", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.enter_prd),100);
             } else if (Objects.requireNonNull(rcpaSideBinding.edCompCompany.getText()).toString().isEmpty()) {
-                Toast.makeText(requireContext(), "Enter Company", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.enter_company),100);
             } else {
                 try {
                     if (sqLite.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
@@ -231,7 +231,7 @@ public class RCPASelectCompSide extends Fragment {
 
                             addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), String.valueOf(finalCount), rcpaSideBinding.edCompPrd.getText().toString(), String.valueOf(finalCount), addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
 
-                            Toast.makeText(requireContext(), "Competitor Added Successfully", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.competitor_added),100);
 
                             rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                             rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
@@ -248,7 +248,7 @@ public class RCPASelectCompSide extends Fragment {
                             rcpaSideBinding.rvCompPrdList.setAdapter(adapterCompetitorPrd);
                             adapterCompetitorPrd.notifyDataSetChanged();
                         } else {
-                            Toast.makeText(requireContext(), "This Product & Company Already Available!", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.prd_comp_available),100);
                         }
                     } else {
                         jsonArray = new JSONArray();
@@ -261,7 +261,7 @@ public class RCPASelectCompSide extends Fragment {
 
                         addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), "-1", rcpaSideBinding.edCompPrd.getText().toString(), "-1", addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
 
-                        Toast.makeText(requireContext(), "Competitor Added Successfully", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.competitor_added),100);
 
                         rcpaSideBinding.constraintPreviewCompList.setVisibility(View.VISIBLE);
                         rcpaSideBinding.constraintAddCompList.setVisibility(View.GONE);
@@ -333,10 +333,12 @@ public class RCPASelectCompSide extends Fragment {
     public static class AdapterCompetitorPrd extends RecyclerView.Adapter<AdapterCompetitorPrd.ViewHolder> {
         public static ArrayList<RCPAAddedCompList> CompetitorList;
         final Context context;
+        CommonUtilsMethods commonUtilsMethods;
 
         public AdapterCompetitorPrd(Context context, ArrayList<RCPAAddedCompList> competitorList) {
             this.context = context;
             CompetitorList = competitorList;
+            commonUtilsMethods = new CommonUtilsMethods(context);
         }
 
         @NonNull
@@ -377,7 +379,7 @@ public class RCPASelectCompSide extends Fragment {
                             holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                             CompetitorList.get(position).setSelected(true);
                         } else {
-                            Toast.makeText(context, "Already Selected this Product", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
                             holder.checkBox.setChecked(false);
                         }
 

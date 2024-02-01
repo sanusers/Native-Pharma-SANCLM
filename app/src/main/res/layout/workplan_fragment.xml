@@ -610,7 +610,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
             android:padding="@dimen/_4sdp"
-            android:text="Final Submit"
+            android:text="@string/final_submit"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/_8sdp"

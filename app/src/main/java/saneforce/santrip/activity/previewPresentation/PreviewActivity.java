@@ -54,7 +54,7 @@ public class PreviewActivity extends AppCompatActivity {
     String startT, endT;
     public static ArrayList<String> PresentationHeads = new ArrayList<>();
 
-    public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "", BrandCode = "", SlideCode = "", CusType = "";
+    public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "",SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -93,6 +93,7 @@ public class PreviewActivity extends AppCompatActivity {
             if (from_where.equalsIgnoreCase("call")) {
                 cus_name = extra.getString("cus_name");
                 SpecialityCode = extra.getString("SpecialityCode");
+                SpecialityName = extra.getString("SpecialityName");
                 BrandCode = extra.getString("MappedProdCode");
                 SlideCode = extra.getString("MappedSlideCode");
                 CusType = extra.getString("CusType");

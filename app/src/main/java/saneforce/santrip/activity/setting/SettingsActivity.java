@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.setting;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -35,6 +37,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.login.LoginActivity;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivitySettingsBinding;
@@ -54,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
     PackageInfo packageInfo;
     String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logoUrl = "";
     int hitCount = 0;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         deviceId = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
@@ -130,10 +134,10 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (url.isEmpty()) {
                 binding.etWebUrl.requestFocus();
-                Toast.makeText(SettingsActivity.this, "Enter URL", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_url), 100);
             } else if (licenseKey.isEmpty()) {
                 binding.etLicenseKey.requestFocus();
-                Toast.makeText(SettingsActivity.this, "Enter License Key", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_licence), 100);
             } else {
 
                 SharedPref.Loginsite(getApplicationContext(), url);
@@ -141,10 +145,10 @@ public class SettingsActivity extends AppCompatActivity {
                     if (checkURL(url)) {
                         configuration("https://" + url + "/apps/");
                     } else {
-                        Toast.makeText(SettingsActivity.this, "Invalid Url", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
                 }
             }
         });
@@ -221,7 +225,15 @@ public class SettingsActivity extends AppCompatActivity {
                                     reportsUrl = config.getString("reportUrl");
                                     slidesUrl = config.getString("slideurl");
                                     logoUrl = config.getString("logoimg");
-                                    SharedPref.setTagImageUrl(getApplicationContext(), "http://" + binding.etWebUrl.getText().toString().trim() + "/");
+
+                                    String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
+                                    String urlData = web_url_getText + phpPathUrl;
+                                    String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
+
+                                    SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
+                                    SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
+
+
                                     String[] splitUrl = logoUrl.split("/");
                                     SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
                                     SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
@@ -233,15 +245,14 @@ public class SettingsActivity extends AppCompatActivity {
                                 }
                             }
 
-                            if (!licenseKeyValid) {
-                                Toast.makeText(SettingsActivity.this, "Invalid license key", Toast.LENGTH_SHORT).show();
-                            }
+                            if (!licenseKeyValid)
+                                commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         SharedPref.Loginsite(getApplicationContext(), url);
                     } else {
-                        Toast.makeText(SettingsActivity.this, "Invalid web url", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
                     }
                 }
 
@@ -253,17 +264,15 @@ public class SettingsActivity extends AppCompatActivity {
                         configuration("http://" + url + "/apps/");
                     } else {
                         binding.configurationPB.setVisibility(View.GONE);
-                        Toast.makeText(SettingsActivity.this, "Try again later", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                         Log.e("test", "hit count is : " + hitCount);
                         hitCount = 0;
                     }
-
                 }
             });
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-
     }
 
     public void downloadImage(String url, String imageName, String enteredUrl) {
@@ -277,12 +286,9 @@ public class SettingsActivity extends AppCompatActivity {
         String fileDirectory = packageInfo.applicationInfo.dataDir;
         Log.e("test", "filepath name : " + fileDirectory + "/" + imageName);
 
-        asyncInterface = new AsyncInterface() {
-            @Override
-            public void taskCompleted(boolean status) {
-                downloaderClass.cancel(true);
-                navigate();
-            }
+        asyncInterface = status -> {
+            downloaderClass.cancel(true);
+            navigate();
         };
 
         if (!ImageStorage.checkIfImageExists(fileDirectory, imageName)) {
@@ -296,16 +302,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void navigate() {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(SettingsActivity.this, "Configured Successfully", Toast.LENGTH_SHORT).show();
-            }
-        });
+        runOnUiThread(() -> commonUtilsMethods.ShowToast(context, context.getString(R.string.configure_success), 100));
         Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
         intent.putExtra(Constants.NAVIGATE_FROM, "Setting");
         startActivity(intent);
         finish();
     }
-
-
 }

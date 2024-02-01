@@ -68,30 +68,6 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
             holder.edt_inp_qty.setHint("0");
         }
 
-        holder.tv_select_input.setOnClickListener(view -> {
-          /*  boolean isEditedAvailable = false;
-            if (New_Edit.equalsIgnoreCase("Edit")) {
-                if (editedInpList.size() > 0) {
-                    for (int j = 0; j < editedInpList.size(); j++) {
-                        if (editedInpList.get(j).getInput_code().equalsIgnoreCase(addedInpList.get(position).getInput_code())) {
-                            isEditedAvailable = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!isEditedAvailable) {
-                AddCallSelectInpSide.SelectedCusName = addedInpList.get(position).getCust_name();
-                AddCallSelectInpSide.SelectedCusCode = addedInpList.get(position).getCust_code();
-                AddCallSelectInpSide.selectInputSideBinding.searchList.setText("");
-                AddCallSelectInpSide.selectInputSideBinding.searchList.setHint(context.getResources().getString(R.string.search));
-                AddCallSelectInpSide.selectInputSideBinding.selectListView.scrollToPosition(0);
-                dcrCallBinding.fragmentAcSelectInputSide.setVisibility(View.VISIBLE);
-            } else {
-                Toast.makeText(context, "Can't edit data that already stored! Just Delete & Add new one", Toast.LENGTH_SHORT).show();
-            }*/
-        });
         holder.edt_inp_qty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

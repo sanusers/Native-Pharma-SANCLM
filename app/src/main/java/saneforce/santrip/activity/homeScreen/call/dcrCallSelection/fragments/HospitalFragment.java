@@ -114,14 +114,7 @@ public class HospitalFragment extends Fragment {
         try {
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + DcrCallTabLayoutActivity.TodayPlanSfCode);
             Log.v("call", "-hos_full_length-" + jsonArray.length());
-           /* if (jsonArray.length() == 0) {
-                if (!jsonArray.toString().equalsIgnoreCase(Constants.NO_DATA_AVAILABLE)) {
-                   // Toast.makeText(getActivity(), "Kindly Select Again!", Toast.LENGTH_SHORT).show();
-                    //  MasterSyncActivity.callList(sqLite, apiInterface, getApplicationContext(), "Doctor", "getdoctors", SfCode, SharedPref.getDivisionCode(TagCustSelectionList.this), selectedHqCode, SfType, SharedPref.getDesignationName(TagCustSelectionList.this), SharedPref.getStateCode(TagCustSelectionList.this), SharedPref.getSubdivCode(TagCustSelectionList.this));
-                } else {
-                    Toast.makeText(getActivity(), Constants.NO_DATA_AVAILABLE, Toast.LENGTH_SHORT).show();
-                }
-            }*/
+
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);

@@ -43,7 +43,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -70,7 +69,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.FilterDataList;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
@@ -102,7 +100,6 @@ public class ListedDoctorFragment extends Fragment {
     JSONArray jsonArray;
     CommonUtilsMethods commonUtilsMethods;
     ArrayList<String> filterSelectionList = new ArrayList<>();
-    ArrayList<FilterDataList> filteredDataList = new ArrayList<>();
     ArrayList<String> listOfItems = new ArrayList<>();
     TextView tvSpec, tvCate, tvTerritory, tvClass;
     JSONObject jsonObject;
@@ -232,7 +229,6 @@ public class ListedDoctorFragment extends Fragment {
             btn_apply.setOnClickListener(view1 -> {
                 dialogFilter.dismiss();
                 custListArrayList.clear();
-                filteredDataList.clear();
                 listOfItems.clear();
                 count = 0;
                 if (!tvSpec.getText().toString().equalsIgnoreCase("Speciality") && !tvSpec.getText().toString().isEmpty()) {
@@ -464,7 +460,7 @@ public class ListedDoctorFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
+            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
         }
     }
 
@@ -476,7 +472,7 @@ public class ListedDoctorFragment extends Fragment {
                 jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
             }
             if (jsonArray.length() == 0) {
-                Toast.makeText(getContext(), Constants.NO_DATA_AVAILABLE + "  Kindly Do MasterSync", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) , 100);
             }
 
             Log.v("DrCall", "-dr_full_length-" + jsonArray.length());

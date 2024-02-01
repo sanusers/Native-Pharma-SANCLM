@@ -33,7 +33,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -98,6 +97,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     ArrayList<DCRApprovalList> dcrApprovalLists = new ArrayList<>();
     AdapterDcrApprovalList adapterDcrApprovalList;
     Dialog dialogReject;
+    CommonUtilsMethods commonUtilsMethods;
 
     private static void SetupAdapter(Context context) {
         adapterModels.add(new AdapterModel("All", String.valueOf(countAll)));
@@ -246,7 +246,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(context, context.getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                     SetupAdapter(context);
                 }
             }
@@ -255,7 +255,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                Toast.makeText(context, context.getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 SetupAdapter(context);
             }
         });
@@ -284,7 +284,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+commonUtilsMethods = new CommonUtilsMethods(context);
         getRequiredData();
         CallDcrListApi();
 
@@ -342,7 +342,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     rejectApproval(ed_reason.getText().toString());
                 } else {
-                    Toast.makeText(DcrApprovalActivity.this, context.getResources().getText(R.string.toast_enter_reason_for_reject), Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_enter_reason_for_reject),100);
                 }
             });
             dialogReject.show();
@@ -381,7 +381,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            Toast.makeText(DcrApprovalActivity.this, "Rejected Successfully", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.rejected_successfully),100);
                             dialogReject.dismiss();
                             removeSelectedData();
                             DcrCount--;
@@ -391,14 +391,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(DcrApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
             }
         });
     }
@@ -447,7 +447,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            Toast.makeText(DcrApprovalActivity.this, "Approved Successfully", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(context,context.getString(R.string.approved_successfully),100);
                             removeSelectedData();
                             DcrCount--;
                         }
@@ -456,15 +456,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(DcrApprovalActivity.this, getResources().getText(R.string.toast_response_failed), Toast.LENGTH_SHORT).show();
-
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
             }
         });
     }
@@ -524,15 +523,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
-                }
+                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);                }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(DcrApprovalActivity.this, "Response Failed! Please Try Again", Toast.LENGTH_SHORT).show();
-            }
+                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);            }
         });
     }
 

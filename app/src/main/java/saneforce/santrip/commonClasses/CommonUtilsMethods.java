@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -98,6 +99,7 @@ public class CommonUtilsMethods {
             }
 
             if (toastMsg) {
+
                 Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
                 toast.show();
@@ -183,10 +185,9 @@ public class CommonUtilsMethods {
     }
 
     public static String getCurrentDate() {
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String val = sdf.format(currentTime);
-        return val;
+        Calendar c = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(c.getTimeInMillis());
     }
 
     public static String getCurrentTimeAMPM() {
@@ -195,6 +196,12 @@ public class CommonUtilsMethods {
         return sdf.format(c.getTimeInMillis());
     }
 
+
+    public static String getCurrentDateWithMonthName() {
+        Calendar c = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm aa");
+        return sdf.format(c.getTimeInMillis());
+    }
 
     public static String getCurrentMonthNumber() {
         Date currentTime = Calendar.getInstance().getTime();
@@ -247,7 +254,20 @@ public class CommonUtilsMethods {
         return dialog;
     }
 
+    public void ShowToast(Context context, String message, int duration) {
+        Toast toast = Toast.makeText(context, message, duration);
+        View view = toast.getView();
 
+//Gets the actual oval background of the Toast then sets the colour filter
+        assert view != null;
+        view.getBackground().setColorFilter(context.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+
+//Gets the TextView from the Toast so it can be editted
+        TextView text = view.findViewById(android.R.id.message);
+        text.setTextColor(context.getColor(R.color.white));
+
+        toast.show();
+    }
 
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
         try {

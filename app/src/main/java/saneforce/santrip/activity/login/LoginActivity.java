@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.login;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -32,6 +34,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.setting.AsyncInterface;
 import saneforce.santrip.activity.setting.SettingsActivity;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityLoginBinding;
@@ -55,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     String userId = "";
     LoginViewModel loginViewModel = new LoginViewModel();
     private int passwordNotVisible = 1;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         sqLite = new SQLite(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         sqLite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
@@ -103,15 +108,15 @@ public class LoginActivity extends AppCompatActivity {
 
             if (userId.isEmpty()){
                 binding.userId.requestFocus();
-                Toast.makeText(LoginActivity.this, "Enter userId", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_username), 100);
             } else if (password.isEmpty()) {
                 binding.password.requestFocus();
-                Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_password), 100);
             }else{
                 if (UtilityClass.isNetworkAvailable(LoginActivity.this)){
                     login(userId,password);
                 }else{
-                    Toast.makeText(LoginActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
                 }
             }
         });
@@ -223,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                             process(responseObject);
                         }else{
                             if (responseObject.has("msg")){
-                                Toast.makeText(LoginActivity.this,responseObject.getString("msg") , Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(context, responseObject.getString("msg") , 100);
                             }
                         }
                     } catch (JSONException e) {
