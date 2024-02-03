@@ -100,7 +100,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     RejectedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition(), ed_reason.getText().toString());
                 } else {
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_enter_reason_for_reject),100);
+                     commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_enter_reason_for_reject),100);
                 }
             });
             dialogReject.show();
@@ -140,7 +140,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(context,context.getString(R.string.rejected_successfully),100);
+                             commonUtilsMethods.ShowToast(context,context.getString(R.string.rejected_successfully),100);
                             dialogReject.dismiss();
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
@@ -151,14 +151,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                     commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                 commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 dialogReject.dismiss();
             }
         });
@@ -195,7 +195,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(context,context.getString(R.string.approved_successfully),100);
+                             commonUtilsMethods.ShowToast(context,context.getString(R.string.approved_successfully),100);
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
                         }
@@ -203,14 +203,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                     commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                 commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
             }
         });
     }

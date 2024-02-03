@@ -10,5 +10,7 @@
     <string name="txt_add_tag">Tag ထည့်ပါ။</string>
     <string name="txt_visit">သွားလည်ပါ။</string>
     <string name="search">Burmese</string>
+    <string name="str_save_settings">ဆက်တင်များကို သိမ်းဆည်းပါ။</string>
+    <string name="user_id">သုံးစွဲသူအိုင်ဒီ</string>
 
 </resources>

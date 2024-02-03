@@ -39,7 +39,7 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
         this.context = context;
         this.arrayList = arrayList;
         this.imageSelectionInterface = imageSelectionInterface;
-        this.itemDragListener = itemDragListener;
+        this.itemDragListener = itemDragListener;;
     }
 
 
@@ -62,34 +62,22 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
 
         arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(holder.getAbsoluteAdapterPosition() + 1);
 
-        holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(false);
-                imageSelectionInterface.imageSelection(arrayList,holder.getAbsoluteAdapterPosition());
-            }
+        holder.deleteIcon.setOnClickListener(view -> {
+            arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(false);
+            imageSelectionInterface.imageSelection(arrayList,holder.getAbsoluteAdapterPosition());
         });
 
-        holder.dragIcon.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch (View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    itemDragListener.requestDrag(holder);
-                }
-                return false;
-            }
-        });
-
-        holder.dragIcon.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick (View view) {
+        holder.dragIcon.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 itemDragListener.requestDrag(holder);
-                return false;
             }
+            return false;
         });
 
-
-
+        holder.dragIcon.setOnLongClickListener(view -> {
+            itemDragListener.requestDrag(holder);
+            return false;
+        });
     }
 
     @Override

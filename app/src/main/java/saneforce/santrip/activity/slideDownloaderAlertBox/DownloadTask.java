@@ -3,6 +3,7 @@ package saneforce.santrip.activity.slideDownloaderAlertBox;
 import static android.content.Context.MODE_PRIVATE;
 import static saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.downloading_count;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -53,11 +54,10 @@ public class DownloadTask {
         this.moveflog = moveflog;
         this.context = activity.getApplicationContext();
         processvalue=0;
-
-
         new DownloadingTask().execute();
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class DownloadingTask extends AsyncTask<Void, Integer, Boolean> {
         File apkStorage = null;
         File outputFile = null;

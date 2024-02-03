@@ -73,7 +73,8 @@ public class JWOthersFragment extends Fragment {
         jwOthersBinding = FragmentJwothersBinding.inflate(inflater);
         View v = jwOthersBinding.getRoot();
         sqLite = new SQLite(requireContext());
-        commonUtilsMethods = new CommonUtilsMethods(getActivity());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         HiddenVisibleFunction();
         SetupAdapter();

@@ -97,6 +97,22 @@ public class Leave_Application extends AppCompatActivity {
     String l_address = "", l_reason = "";
     Piechart_adapter piechart_adapter;
     CardView mtcard;
+    CommonUtilsMethods commonUtilsMethods;
+
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            chart_layout.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @SuppressLint({"WrongConstant", "SetTextI18n"})
     @Override
@@ -104,7 +120,8 @@ public class Leave_Application extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_leave_application);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         Fromdate = findViewById(R.id.et_from_date);
         Todate = findViewById(R.id.et_to_date);
@@ -134,7 +151,7 @@ public class Leave_Application extends AppCompatActivity {
         ed_Reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_Reason)});
         sqLite = new SQLite(this);
         back_btn.setOnClickListener(v -> {
-          //  onBackPressed();
+            //  onBackPressed();
             getOnBackPressedDispatcher().onBackPressed();
           /*  Intent l = new Intent(Leave_Application.this, HomeDashBoard.class);
             startActivity(l);*/
@@ -172,7 +189,7 @@ public class Leave_Application extends AppCompatActivity {
                 tp.putExtra("selectefromdDate", "2");
                 startActivity(tp);
             } else {
-                Toast.makeText(Leave_Application.this, "Select From Date", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_from_date), 100);
             }
         });
 

@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.approvals.dcr.call;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,6 +21,7 @@ import saneforce.santrip.activity.approvals.dcr.call.adapter.AdapterCusSingleLis
 import saneforce.santrip.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.santrip.activity.approvals.tp.pojo.TpModelList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityDcrDetailViewBinding;
 
 public class DcrDetailViewActivity extends AppCompatActivity implements OnItemClickListenerApproval {
@@ -28,6 +31,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     public static ActivityDcrDetailViewBinding dcrDetailViewBinding;
     AdapterCusSingleList adapterCusSingleList;
     String hq_name, Cus_pob, Cus_jw, Cus_type, Cus_cluster, Cus_remark, Cus_feedback, Cus_modTime, Cus_visitTime;
+    CommonUtilsMethods commonUtilsMethods;
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -36,7 +40,8 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         dcrDetailViewBinding = ActivityDcrDetailViewBinding.inflate(getLayoutInflater());
         setContentView(dcrDetailViewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             hq_name = extra.getString("hq_name");

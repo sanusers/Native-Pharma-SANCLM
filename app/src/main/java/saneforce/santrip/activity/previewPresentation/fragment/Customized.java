@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.presentation.presentation.PresentationAdapter;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentHomePreviewBinding;
 import saneforce.santrip.storage.SQLite;
 
@@ -23,6 +24,7 @@ public class Customized extends Fragment {
     PresentationAdapter presentationAdapter;
 
     public static ArrayList<BrandModelClass.Presentation> SlideCustomizedList = new ArrayList<>();
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -30,7 +32,10 @@ public class Customized extends Fragment {
         customizedBinding = FragmentHomePreviewBinding.inflate(inflater);
         View v = customizedBinding.getRoot();
         sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         SlideCustomizedList = sqLite.getPresentationData();
+
         populateAdapter();
 
         return v;

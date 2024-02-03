@@ -30,6 +30,7 @@ import java.util.Comparator;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSpecialityPreviewBinding;
 import saneforce.santrip.storage.SQLite;
@@ -42,6 +43,7 @@ public class BrandMatrix extends Fragment {
     public static ArrayList<String> brandCodeList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static PreviewAdapter previewAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -49,7 +51,8 @@ public class BrandMatrix extends Fragment {
         brandMatrixBinding = FragmentSpecialityPreviewBinding.inflate(inflater);
         View v = brandMatrixBinding.getRoot();
         sqLite = new SQLite(requireContext());
-
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         brandMatrixBinding.tvSelectSpeciality.setVisibility(View.GONE);
         if (from_where.equalsIgnoreCase("call")) {
             brandMatrixBinding.tvSelectDoctor.setVisibility(View.GONE);

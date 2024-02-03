@@ -9,5 +9,7 @@
     <string name="txt_undr">Bác sĩ chưa niêm yết</string>
     <string name="txt_add_tag">Thêm thẻ</string>
     <string name="search">Vietnam</string>
+    <string name="str_save_settings">Lưu các thiết lập</string>
+    <string name="user_id">Tên người dùng</string>
 
 </resources>

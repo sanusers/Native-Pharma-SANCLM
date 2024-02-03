@@ -73,6 +73,21 @@ public class TagCustSelectionList extends AppCompatActivity {
     String SelectedTab, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SelectedHqCode, SelectedHqName, DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption, TpBasedDcr;
 
 
+
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -113,8 +128,8 @@ public class TagCustSelectionList extends AppCompatActivity {
         binding = MapDcrSelectionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        commonUtilsMethods = new CommonUtilsMethods(this);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
         sqLiteHandler = new SQLiteHandler(this);
@@ -377,7 +392,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(getApplicationContext(),getApplicationContext().getString(R.string.no_network),100);;
+            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network), 100);
         }
     }
 
@@ -397,7 +412,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context,context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync),100);;
+                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -425,7 +441,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context,context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync),100);;
+                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -450,7 +467,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context,context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync),100);;
+                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -475,7 +493,8 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context,context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync),100);;
+                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);

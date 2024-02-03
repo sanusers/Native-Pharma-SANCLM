@@ -88,6 +88,7 @@ public class DrSelectionSide extends Fragment {
         View v = drSelectionSideBinding.getRoot();
         sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         SetDrAdapter();
 
         drSelectionSideBinding.tvDummy.setOnClickListener(view -> {
@@ -147,9 +148,9 @@ public class DrSelectionSide extends Fragment {
             } else {
                 jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
             }
-            if (jsonArray.length() == 0) {
+            /*if (jsonArray.length() == 0) {
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
-            }
+            }*/
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
 

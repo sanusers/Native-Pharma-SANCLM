@@ -22,6 +22,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.AdditionalCusListAdapter;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.WrapContentLinearLayoutManager;
 
 public class AdditionalCallFragment extends Fragment {
@@ -30,6 +31,7 @@ public class AdditionalCallFragment extends Fragment {
     AdditionalCusListAdapter additionalCusListAdapter;
     EditText editTextSearch;
     FinalAdditionalCallAdapter finalAdditionalCallAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -38,6 +40,8 @@ public class AdditionalCallFragment extends Fragment {
         rv_list_data = v.findViewById(R.id.rv_check_data_list);
         rv_add_call_list = v.findViewById(R.id.rv_list_additional);
         editTextSearch = v.findViewById(R.id.search_add_call);
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         dummyAdapter();
 
         editTextSearch.addTextChangedListener(new TextWatcher() {

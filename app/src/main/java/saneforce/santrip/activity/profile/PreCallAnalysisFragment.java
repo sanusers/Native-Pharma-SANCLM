@@ -21,6 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentPrecallAnalysisBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
@@ -36,6 +37,7 @@ public class PreCallAnalysisFragment extends Fragment {
     public static String SfName, SfType, SfCode, RSFCode, DivCode, Designation, StateCode, SubDivisionCode, prdDetails;
 
     LoginResponse loginResponse;
+    CommonUtilsMethods commonUtilsMethods;
     SQLite sqLite;
 
     public static void CallPreCallAPI(Activity activity) {
@@ -133,6 +135,8 @@ public class PreCallAnalysisFragment extends Fragment {
         View v = preCallAnalysisBinding.getRoot();
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         getRequiredData();
         // CallPreCallAPI();
         return v;

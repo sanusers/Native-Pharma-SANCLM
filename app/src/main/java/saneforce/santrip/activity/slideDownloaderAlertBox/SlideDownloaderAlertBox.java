@@ -1,33 +1,23 @@
 package saneforce.santrip.activity.slideDownloaderAlertBox;
 
-import static android.content.Context.MODE_PRIVATE;
-
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.storage.SharedPref;
 
 public  class SlideDownloaderAlertBox {
@@ -42,7 +32,9 @@ public  class SlideDownloaderAlertBox {
     public  static   Dialog dialog ;
 
 
+
     public static void openCustomDialog(Activity activity,String MoveingFlog ,ArrayList<SlideModelClass> Slide_list) {
+        CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(activity);
         if(MoveingFlog.equalsIgnoreCase("1")) {
             downloading_count = 0;
             dialogdismisscount = 0;
@@ -55,7 +47,7 @@ public  class SlideDownloaderAlertBox {
 
             downloading_count=0;
             totalcount=0;
-            Toast.makeText(activity, "No Slides", Toast.LENGTH_SHORT).show();
+            commonUtilsMethods.ShowToast(activity ,activity.getString(R.string.no_slides),100);
             if(MoveingFlog.equalsIgnoreCase("1")) {
                 activity.startActivity(new Intent(activity, HomeDashBoard.class));}
         }
@@ -97,17 +89,9 @@ public  class SlideDownloaderAlertBox {
 
         adapter.notifyDataSetChanged();
 
-
-
-        cancel_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count),Slide_list);
-                dialog.dismiss();
-            }
+        cancel_img.setOnClickListener(v -> {
+            SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count),Slide_list);
+            dialog.dismiss();
         });
-
-
     }
 }

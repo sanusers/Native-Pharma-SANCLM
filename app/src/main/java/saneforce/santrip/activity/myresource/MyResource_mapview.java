@@ -30,7 +30,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -58,6 +57,7 @@ import java.util.List;
 import java.util.Locale;
 
 import saneforce.santrip.R;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.storage.SQLite;
@@ -88,6 +88,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
     Location gps_loc, network_loc, final_loc;
     public Criteria criteria;
     public String bestProvider;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     @SuppressLint({"MissingInflatedId", "MissingPermission"})
@@ -95,6 +96,8 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_resource_mapview);
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         mapbackArrow = findViewById(R.id.mapbackArrow);
         custname = findViewById(R.id.custname);
         town_name = findViewById(R.id.town_name);
@@ -179,9 +182,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
                 val = true;
             }
         } catch (Exception e) {
-            Toast toast = Toast.makeText(MyResource_mapview.this, getResources().getString(R.string.loc_not_detect), Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.loc_not_detect),100);
             val = false;
         }
         return val;
@@ -402,7 +403,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
         });
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
             if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                Toast.makeText(MyResource_mapview.this, "Settings,Enable the loaction and procced...!", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.loc_setting),100);
                 showSettingsAlert(manager);
             } else {
                 dialog.cancel();

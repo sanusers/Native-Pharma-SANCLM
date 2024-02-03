@@ -2,18 +2,14 @@ package saneforce.santrip.activity.profile;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
-import static saneforce.santrip.activity.previewPresentation.PreviewActivity.BrandCode;
-import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SlideCode;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -21,10 +17,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing;
-import saneforce.santrip.activity.presentation.presentation.PresentationActivity;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -32,7 +26,6 @@ import saneforce.santrip.storage.SQLite;
 
 
 public class CustomerProfile extends AppCompatActivity {
-
     public static boolean isPreAnalysisCalled = false;
     public static ProgressDialog progressDialog = null;
     TabLayout tabLayout;
@@ -81,7 +74,8 @@ public class CustomerProfile extends AppCompatActivity {
         btn_start = findViewById(R.id.btn_start_det);
         img_back = findViewById(R.id.iv_back);
         isPreAnalysisCalled = false;
-        commonUtilsMethods = new CommonUtilsMethods(this);
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
         viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
@@ -120,11 +114,9 @@ public class CustomerProfile extends AppCompatActivity {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
             intent1.putExtra("isDetailedRequired", "false");
             intent1.putExtra("from_activity", "new");
-            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-           // intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            if (!UtilityClass.isNetworkAvailable(this)) {
-                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
-            }
+            //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
 

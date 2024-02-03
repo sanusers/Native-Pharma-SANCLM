@@ -10,7 +10,6 @@ import static saneforce.santrip.activity.previewPresentation.PreviewActivity.pre
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import java.util.Comparator;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSpecialityPreviewBinding;
 import saneforce.santrip.storage.SQLite;
@@ -44,6 +44,7 @@ public class Speciality extends Fragment {
     public static ArrayList<String> brandCodeList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static PreviewAdapter previewAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -51,6 +52,8 @@ public class Speciality extends Fragment {
         specialityPreviewBinding = FragmentSpecialityPreviewBinding.inflate(inflater);
         View v = specialityPreviewBinding.getRoot();
         sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         if (from_where.equalsIgnoreCase("call")) {
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.GONE);
@@ -58,7 +61,7 @@ public class Speciality extends Fragment {
             if (CusType.equalsIgnoreCase("1")) {
                 getSelectedSpec(requireContext(), sqLite, SpecialityCode, SpecialityName);
             } else {
-                getRequiredData(requireContext(), sqLite);
+                getRequiredData(requireContext(), sqLite,SpecialityName);
             }
         } else {
             specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
@@ -106,8 +109,9 @@ public class Speciality extends Fragment {
     }
 
 
-    public static void getRequiredData(Context context, SQLite sqLite) {
+    public static void getRequiredData(Context context, SQLite sqLite, String specialityName) {
         try {
+            specialityPreviewBinding.tvSelectSpeciality.setText(specialityName);
             SlideSpecialityList.clear();
             brandCodeList.clear();
             JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);

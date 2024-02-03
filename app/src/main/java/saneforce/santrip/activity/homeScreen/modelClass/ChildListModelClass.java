@@ -21,6 +21,15 @@ public class ChildListModelClass {
     private boolean isAvailableList;
     private boolean isExpanded;
     private int Counts;
+    private String otherContents;
+
+    public String getOtherContents() {
+        return otherContents;
+    }
+
+    public void setOtherContents(String otherContents) {
+        this.otherContents = otherContents;
+    }
 
     public int getCounts() {
         return Counts;
@@ -62,7 +71,7 @@ public class ChildListModelClass {
         this.outBoxCallLists = outBoxCallLists;
     }
 
-    public ChildListModelClass(String childName, int childId,boolean isExpanded,boolean isAvailableList,ArrayList<OutBoxCallList> outBoxCallLists,String dummy) {
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<OutBoxCallList> outBoxCallLists, String dummy) {
         this.childName = childName;
         this.childId = childId;
         this.isExpanded = isExpanded;
@@ -70,7 +79,7 @@ public class ChildListModelClass {
         this.outBoxCallLists = outBoxCallLists;
     }
 
-    public ChildListModelClass(String childName, int childId,boolean isExpanded,boolean isAvailableList,ArrayList<EcModelClass> ecModelClasses) {
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<EcModelClass> ecModelClasses) {
         this.childName = childName;
         this.childId = childId;
         this.isExpanded = isExpanded;
@@ -78,11 +87,11 @@ public class ChildListModelClass {
         this.ecModelClasses = ecModelClasses;
     }
 
-    public ChildListModelClass(String childName, int childId, boolean isAvailableList) {
+    public ChildListModelClass(String childName, int childId, boolean isAvailableList, String otherContents) {
         this.childName = childName;
         this.childId = childId;
         this.isAvailableList = isAvailableList;
-
+        this.otherContents = otherContents;
     }
 
     public String getChildName() {

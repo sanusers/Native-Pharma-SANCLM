@@ -75,7 +75,8 @@ public class AdditionalCallDetailedSide extends Fragment {
         View v = callDetailsSideBinding.getRoot();
 
         sqLite = new SQLite(requireContext());
-        commonUtilsMethods = new CommonUtilsMethods(getActivity());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         callDetailsSideBinding.tabLayout.addTab(callDetailsSideBinding.tabLayout.newTab().setText("Product"));
         callDetailsSideBinding.tabLayout.addTab(callDetailsSideBinding.tabLayout.newTab().setText("Input"));

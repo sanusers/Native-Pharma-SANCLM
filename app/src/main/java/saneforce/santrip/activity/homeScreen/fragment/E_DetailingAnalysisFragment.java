@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 public class E_DetailingAnalysisFragment extends Fragment {
 
@@ -25,6 +28,7 @@ public class E_DetailingAnalysisFragment extends Fragment {
     LinearLayout doc_layout, che_layout, stokiest_layout, unlistered_layout,ll_analyis_layout,ll_grap_layout;
 
     RelativeLayout e_detailing_layout;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     @SuppressLint("MissingInflatedId")
@@ -40,7 +44,8 @@ public class E_DetailingAnalysisFragment extends Fragment {
         ll_analyis_layout = v.findViewById(R.id.ll_analyis_layout);
         ll_grap_layout = v.findViewById(R.id.ll_grap_layout);
         e_detailing_layout = v.findViewById(R.id.e_detailing_layout);
-
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         ViewTreeObserver vto = e_detailing_layout.getViewTreeObserver();
 

@@ -44,6 +44,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.santrip.activity.map.custSelection.CustList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -61,6 +62,7 @@ public class StockiestFragment extends Fragment {
     SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class StockiestFragment extends Fragment {
         tv_hqName.setText(TodayPlanSfName);
 
         sqLite = new SQLite(getContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(ed_search.getWindowToken(), 0);

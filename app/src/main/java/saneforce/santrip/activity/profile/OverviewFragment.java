@@ -10,11 +10,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentOverviewBinding;
 
 
 public class OverviewFragment extends Fragment {
     FragmentOverviewBinding overviewBinding;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     @Nullable
@@ -22,6 +24,8 @@ public class OverviewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         overviewBinding = FragmentOverviewBinding.inflate(inflater);
         View view = overviewBinding.getRoot();
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         SetProfileData();
         return view;
     }

@@ -18,6 +18,7 @@ import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.Hos
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.StockiestFragment;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments.UnlistedDoctorFragment;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.databinding.CallDcrSelectionBinding;
@@ -34,7 +35,22 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     TabLayoutAdapter viewPagerAdapter;
     SQLite sqLite;
     GPSTrack gpsTrack;
+    CommonUtilsMethods commonUtilsMethods;
 
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            dcrSelectionBinding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +58,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         dcrSelectionBinding = CallDcrSelectionBinding.inflate(getLayoutInflater());
         setContentView(dcrSelectionBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         sqLite = new SQLite(this);
 
         getRequiredData();

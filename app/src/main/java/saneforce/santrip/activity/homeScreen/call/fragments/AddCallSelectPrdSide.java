@@ -53,6 +53,7 @@ public class AddCallSelectPrdSide extends Fragment {
         selectProductSideBinding = FragmentAcSelectProductSideBinding.inflate(inflater);
         View v = selectProductSideBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         selectProductSideBinding.tvDummy.setOnClickListener(view -> {
         });
 
@@ -177,7 +178,7 @@ public class AddCallSelectPrdSide extends Fragment {
                                 SelectContent(callSampleList.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
                             } else {
                                 holder.checkBox.setChecked(false);
-                                commonUtilsMethods.ShowToast(context,context.getString(R.string.no_qty_prd),100);
+                                 commonUtilsMethods.ShowToast(context,context.getString(R.string.no_qty_prd),100);
                             }
                         }
                     } else {
@@ -201,7 +202,7 @@ public class AddCallSelectPrdSide extends Fragment {
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                             callSampleList.get(adapterPos).setCheckedItem(false);
                             checkBox.setChecked(false);
-                            commonUtilsMethods.ShowToast(context,context.getString(R.string.already_available),100);
+                             commonUtilsMethods.ShowToast(context,context.getString(R.string.already_available),100);
                             break;
                         }
                     }

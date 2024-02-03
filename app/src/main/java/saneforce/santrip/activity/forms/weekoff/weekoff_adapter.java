@@ -50,9 +50,8 @@ public class weekoff_adapter extends RecyclerView.Adapter<weekoff_adapter.ViewHo
         return resList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView days_name;
-
         ImageView imgscr;
         LinearLayout weekoffl,weekoff_backgrd;
         public ViewHolder(@NonNull View itemView) {

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.presentation.createPresentation.CreatePresentationActivity;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityPresentationBinding;
 import saneforce.santrip.storage.SQLite;
 
@@ -22,6 +23,22 @@ public class PresentationActivity extends AppCompatActivity {
     PresentationAdapter presentationAdapter;
     SQLite sqLite;
     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
+    CommonUtilsMethods commonUtilsMethods;
+
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +46,8 @@ public class PresentationActivity extends AppCompatActivity {
         binding = ActivityPresentationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         sqLite = new SQLite(this);
         savedPresentation = sqLite.getPresentationData();
         populateAdapter();

@@ -2,6 +2,8 @@ package saneforce.santrip.activity.homeScreen.fragment;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.skipCheckIn;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,6 +32,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.forms.weekoff.Holiday_fragment;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PaintView;
@@ -66,6 +70,7 @@ public class CallsFragment extends Fragment {
         View v = binding.getRoot();
         sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getRequiredData();
@@ -75,19 +80,23 @@ public class CallsFragment extends Fragment {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
             } else {
-                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network),100);
+                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network), 100);
             }
         });
 
         binding.tvAddCall.setOnClickListener(view -> {
-            if (!SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty() && !SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null")) {
-                startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+          //  startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+            if (!skipCheckIn) {
+                if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan), 100);
+                } else {
+                    startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                }
             } else {
-                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan),100);
+                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_checkin), 100);
+                HomeDashBoard.dialogCheckInOut.show();
             }
         });
-
-        binding.tvAddCall.setOnClickListener(view -> startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class)));
 
         return v;
     }
@@ -200,7 +209,7 @@ public class CallsFragment extends Fragment {
                         } else {
                             if (isProgressNeed)
                                 progressDialog.dismiss();
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed),100);
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                         }
                     }
 
@@ -208,7 +217,7 @@ public class CallsFragment extends Fragment {
                     public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                         if (isProgressNeed)
                             progressDialog.dismiss();
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed),100);
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                     }
                 });
             } catch (Exception e) {

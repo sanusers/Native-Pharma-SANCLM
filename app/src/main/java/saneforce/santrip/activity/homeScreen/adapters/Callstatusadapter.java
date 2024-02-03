@@ -3,52 +3,56 @@ package saneforce.santrip.activity.homeScreen.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import java.util.Locale;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 
+import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.EventCalenderModelClass;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 
 public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.CalendarViewHolder> {
     private ArrayList<EventCalenderModelClass> days;
     private Context context;
     LocalDate selectedMonth;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     public Callstatusadapter(ArrayList<EventCalenderModelClass> days, Context context, LocalDate selectedMonth) {
         this.days = days;
         this.context = context;
         this.selectedMonth = selectedMonth;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
+    @NonNull
     @Override
     public CalendarViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_calderdate_layout, parent, false);
         return new CalendarViewHolder(view);
     }
 
-    @SuppressLint({"Range"})
+    @SuppressLint({"Range", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
         EventCalenderModelClass list = days.get(position);
@@ -96,11 +100,29 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             holder.linearLayout.setBackgroundResource(R.drawable.calender_background_d);
         }
 
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.linearLayout.setOnClickListener(v -> {
+            if (!list.getDateID().equalsIgnoreCase("")) {
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy");
+                Date strDate = null;
+                try {
+                    strDate = sdf.parse(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+               if (new Date().after(strDate)) {
+                    HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
+                    HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                    HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
+                    HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
+                } else {
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.not_chose_after_date), 100);
+                }
+            }
+           /* if (list.getDateID().equalsIgnoreCase(CommonUtilsMethods.getCurrentDateDashBoard()) || list.getDateID() > CommonUtilsMethods.getCurrentDateDashBoard()) {
                 if (!list.getDateID().equalsIgnoreCase("")) {
-                    HomeDashBoard.binding.textDate.setText(fullMonthName + " " + list.getDateID() + ", " + year);
+                    HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
                     HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
                     //  HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
@@ -109,17 +131,12 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
 
                 }
-        holder.linearLayout.setOnClickListener(v -> {
-            if (!list.getDateID().equalsIgnoreCase("")) {
-                HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
-                HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                //  HomeDashBoard.binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
-                HomeDashBoard.binding.tabLayout.setVisibility(View.VISIBLE);
-                HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
-            }
+            } else {
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.submit_checkin), 100);
+            }*/
         });
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -140,8 +157,4 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             linearLayout = itemView.findViewById(R.id.day_bgd);
         }
     }
-
-
 }
-
-

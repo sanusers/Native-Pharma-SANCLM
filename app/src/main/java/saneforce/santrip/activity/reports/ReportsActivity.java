@@ -3,7 +3,6 @@ package saneforce.santrip.activity.reports;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +20,8 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.R;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityReportsBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
@@ -36,7 +37,23 @@ public class ReportsActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     SQLite sqLite;
     LoginResponse loginResponse;
+    CommonUtilsMethods commonUtilsMethods;
 
+
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +62,8 @@ public class ReportsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         sqLite = new SQLite(ReportsActivity.this);
         loginResponse = sqLite.getLoginData();
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         populateAdapter();
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +167,7 @@ public class ReportsActivity extends AppCompatActivity {
 
                 }else{
                     binding.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network),100);
                 }
             }
         });

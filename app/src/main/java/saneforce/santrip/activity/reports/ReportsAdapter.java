@@ -17,7 +17,7 @@ import saneforce.santrip.utility.TimeUtils;
 
 public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHolder> {
 
-    ArrayList<String> arrayList = new ArrayList<>();
+    ArrayList<String> arrayList;
     Context context;
 
     public ReportsAdapter(ArrayList<String> arrayList, Context context) {

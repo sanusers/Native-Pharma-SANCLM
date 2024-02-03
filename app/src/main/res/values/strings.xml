@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_version" translatable="false">1.0</string>
     <string name="str_app_name">SAN TRIP</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -21,7 +22,7 @@
     <string name="rcpa">RCPA</string>
     <string name="cancel">Cancel</string>
     <string name="final_submit">Final Submit</string>
-    <string name="final_submit_check_out">Final Submit/Check OUT</string>
+    <string name="final_submit_check_out">Final Submit / Check OUT</string>
     <string name="input_name">Input Name</string>
     <string name="qty">Qty</string>
     <string name="name">Name</string>
@@ -35,7 +36,12 @@
     <string name="add">Add</string>
     <string name="capture">Capture</string>
     <string name="joint_work">Joint Work</string>
-    <string name="select">Select</string>
+    <string name="select">Select </string>
+    <string name="reached_session_limit">Reached Session limit</string>
+    <string name="you_have_select">You have selected the </string>
+    <string name="select_any_masters">Select any masters in session </string>
+    <string name="more_than_limit"> more than limits </string>
+    <string name="in_session"> in session </string>
     <string name="rx_qty">RX Qty</string>
     <string name="add_product_input">Add Product/Input</string>
     <string name="add_sample_input">Add Sample/Input</string>
@@ -81,11 +87,14 @@
     <string name="start_detaling">Start Detailing</string>
     <string name="filter_by">Filter by</string>
     <string name="loc_not_detect"> Location cannot detected </string>
+    <string name="loc_setting">Kindly enable the location</string>
     <string name="tagged_successfully"> Tagged Successfully</string>
     <string name="toast_no_img_found">No Image Found</string>
     <string name="hq_sel">HeadQuater Selection</string>
     <string name="presentation">Presentation</string>
+    <string name="presentation_saved_already">Already a Presentation has saved in the same name..Change name and try again! </string>
     <string name="create_presentation">Create Presentation</string>
+    <string name="enter_presentation_name">Enter the Presentation name</string>
     <string name="title_activity_create_presentation">CreatePresentation</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -139,6 +148,8 @@
     <string name="no_remarks">No Remarks</string>
     <string name="no_feedback">No Feedback</string>
     <string name="no_cluster">No Cluster</string>
+    <string name="no_select_date">Not Select Date</string>
+    <string name="select_from_date">Not Select Date</string>
     <string name="toast_response_failed">Response Failed! Please Try Again</string>
     <string name="tag_failed">Tag Failed! Try Again</string>
     <string name="no_jw">No JointWork</string>
@@ -163,7 +174,7 @@
     <string name="toast_enter_remarks">Enter Remarks</string>
     <string name="toast_enter_feedback">Enter Feedback</string>
 
-    <string name="app_version" translatable="false">M1</string>
+
     <string name="apply">Apply</string>
     <string name="headquarter">Headquarter</string>
     <string name="my_resource">My Resource</string>
@@ -180,6 +191,11 @@
     <string name="select_chemist_name">Select Chemist Name</string>
     <string name="select_chemist">Select Chemist</string>
     <string name="select_worktype">Select WorkType</string>
+    <string name="wt_already_selected">Work Type already been selected for session</string>
+    <string name="hq_already_selected">HQ already been selected for the same work type for session</string>
+    <string name="complete_session">Complete Session </string>
+    <string name="select_hq_in_session">Select Head Quarters in session </string>
+    <string name="select_clusters_in_session">Select Clusters in session </string>
     <string name="select_cluster">Select Cluster</string>
     <string name="select_prd_name">Select Product Name</string>
     <string name="enter_prd">Enter Product</string>
@@ -227,11 +243,14 @@
     <string name="already_visited">Already Visited Today</string>
     <string name="rejected_successfully">Rejected Successfully</string>
     <string name="approved_successfully">Approved Successfully</string>
+    <string name="send_approved_successfully">Successfully Send Approval</string>
+    <string name="failed_to_send_approval">Failed to send Approval</string>
     <string name="no_data_found">No Data Found</string>
     <string name="do_master_sync">Kindly do MasterSync</string>
     <string name="something_wrong">Something Wrong! Try Again</string>
     <string name="response_failed_please_sync">Response Failed! Please Sync Again to retrieve Data</string>
     <string name="no_network">No Network Available!</string>
+    <string name="no_slides">No slides!</string>
     <string name="processing">Processing</string>
     <string name="scribble_upload">Scribble Upload Successfully</string>
     <string name="no_qty_prd">No Qty Available in this Product</string>
@@ -263,6 +282,7 @@
     <string name="call_saved_something_wrong">Call Saved! Something Wrong</string>
     <string name="save_todaywork_plan">Save TodayWorkPlan</string>
     <string name="submit_mydayplan">Kindly submit My DayPlan</string>
+    <string name="submit_checkin">Kindly CheckIn</string>
     <string name="enter_old_pwd">Enter your old password</string>
     <string name="enter_new_pwd">Enter your new password</string>
     <string name="enter_repeat_pwd">Enter your repeat password</string>
@@ -275,7 +295,7 @@
     <string name="enter_username">Enter your username</string>
     <string name="enter_password">Enter your password</string>
     <string name="enter_url">Enter the URL</string>
-    <string name="enter_licence">Enter the Licence Key</string>
+    <string name="enter_license">Enter the License Key</string>
     <string name="invalid_url">Invalid Url! Try again</string>
     <string name="configure_success">Configured Successfully</string>
     <string name="day_check_in">Day Check In</string>
@@ -292,6 +312,27 @@
     <string name="latitude_longitude"><![CDATA[Latitude & Longitude]]></string>
     <string name="speciality_selection">Speciality Selection</string>
     <string name="change_password">Change Password</string>
-
-
+    <string name="listed_doctor">Listed Doctor</string>
+    <string name="info">Info</string>
+    <string name="select_speciality">Select Speciality</string>
+    <string name="az">AZ</string>
+    <string name="za">ZA</string>
+    <string name="san_media_pvt_ltd">SAN Media Pvt Ltd</string>
+    <string name="not_chose_after_date">you don\'t have permission to choose this date</string>
+    <string name="old_password">Old Password</string>
+    <string name="enter_old_password">Enter Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="enter_new_password">Enter New Password</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="enter_repeat_password">Enter Repeat Password</string>
+    <string name="version">"Version "</string>
+    <string name="select_a_language">Select a language</string>
+    <string name="user_id">User ID</string>
+    <string name="enter_user_id">Enter User ID</string>
+    <string name="password">Password</string>
+    <string name="enterpassword">Enter Password</string>
+    <string name="english">English</string>
+    <string name="login">Login</string>
+    <string name="clear_data">Clear data</string>
+    <string name="logout">Logout</string>
 </resources>

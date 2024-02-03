@@ -22,6 +22,7 @@ import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.product.CheckProductListAdapter;
 import saneforce.santrip.activity.homeScreen.call.adapter.product.FinalProductCallAdapter;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.santrip.databinding.FragmentProductsBinding;
 import saneforce.santrip.storage.SQLite;
@@ -33,6 +34,7 @@ public class ProductFragment extends Fragment {
     CheckProductListAdapter checkProductListAdapter;
   FinalProductCallAdapter finalProductCallAdapter;
     SQLite sqLite;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -40,7 +42,8 @@ public class ProductFragment extends Fragment {
         productsBinding = FragmentProductsBinding.inflate(inflater);
         View v = productsBinding.getRoot();
         sqLite = new SQLite(getContext());
-
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
             productsBinding.tagStock.setVisibility(View.VISIBLE);
         } else {

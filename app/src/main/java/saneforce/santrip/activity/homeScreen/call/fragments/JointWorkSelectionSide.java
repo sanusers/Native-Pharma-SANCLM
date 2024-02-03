@@ -53,7 +53,8 @@ public class JointWorkSelectionSide extends Fragment {
         selectJwSideBinding = FragmentSelectJwSideBinding.inflate(inflater);
         View v = selectJwSideBinding.getRoot();
         sqLite = new SQLite(getContext());
-        commonUtilsMethods = new CommonUtilsMethods(getActivity());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         SetupAdapter();
 

@@ -246,7 +246,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                     SetupAdapter(context);
                 }
             }
@@ -255,7 +255,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 SetupAdapter(context);
             }
         });
@@ -284,7 +284,8 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-commonUtilsMethods = new CommonUtilsMethods(context);
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         getRequiredData();
         CallDcrListApi();
 
@@ -342,7 +343,7 @@ commonUtilsMethods = new CommonUtilsMethods(context);
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     rejectApproval(ed_reason.getText().toString());
                 } else {
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_enter_reason_for_reject),100);
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_enter_reason_for_reject), 100);
                 }
             });
             dialogReject.show();
@@ -381,7 +382,7 @@ commonUtilsMethods = new CommonUtilsMethods(context);
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(context,context.getString(R.string.rejected_successfully),100);
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.rejected_successfully), 100);
                             dialogReject.dismiss();
                             removeSelectedData();
                             DcrCount--;
@@ -391,14 +392,14 @@ commonUtilsMethods = new CommonUtilsMethods(context);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
         });
     }
@@ -447,7 +448,7 @@ commonUtilsMethods = new CommonUtilsMethods(context);
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(context,context.getString(R.string.approved_successfully),100);
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.approved_successfully), 100);
                             removeSelectedData();
                             DcrCount--;
                         }
@@ -456,14 +457,14 @@ commonUtilsMethods = new CommonUtilsMethods(context);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
         });
     }
@@ -523,13 +524,15 @@ commonUtilsMethods = new CommonUtilsMethods(context);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);                }
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);            }
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+            }
         });
     }
 

@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.storage.SQLite;
 
@@ -27,6 +28,7 @@ public class weekoff_fragment extends Fragment {
     SQLite sqLite;
     ArrayList<fromsmodelclass> listvalue = new ArrayList<>();
     weekoff_adapter weekoffadapter;
+    CommonUtilsMethods commonUtilsMethods;
     String[] backcolr={"#EAFAF1","#E8F5FC","#FCE8EC","#FCF8E8","#FCF6E8","#E8F9FC","#FCEDFB","#FAFAED","#EEE3F7","#FEF8F8","#F2ECF9","#F5F9E9","#FBFBE7"};
 
 
@@ -37,7 +39,8 @@ public class weekoff_fragment extends Fragment {
         View v = inflater.inflate(R.layout.activity_weekoff_fragment, container, false);
         weekofflist = v.findViewById(R.id.weekooflist);
         sqLite = new SQLite(getActivity());
-
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         leave_avalabledetails();
         return v;
     }

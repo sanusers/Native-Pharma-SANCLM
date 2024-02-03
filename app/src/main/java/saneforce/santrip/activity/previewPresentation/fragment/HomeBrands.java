@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentHomePreviewBinding;
 import saneforce.santrip.storage.SQLite;
@@ -28,12 +29,15 @@ public class HomeBrands extends Fragment {
     public static ArrayList<BrandModelClass> SlideHomeBrandList = new ArrayList<>();
     ArrayList<String> brandCodeList = new ArrayList<>();
     PreviewAdapter previewAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homePreviewBinding = FragmentHomePreviewBinding.inflate(inflater);
         View v = homePreviewBinding.getRoot();
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         sqLite = new SQLite(requireContext());
         getRequiredData();
 

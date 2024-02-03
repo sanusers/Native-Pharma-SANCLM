@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -47,6 +46,7 @@ import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
 import saneforce.santrip.activity.reports.dayReport.adapter.DayReportAdapter;
 import saneforce.santrip.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentDayReportBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
@@ -72,10 +72,13 @@ public class DayReportFragment extends Fragment {
     DataViewModel dataViewModel;
 
     AlertDialog.Builder alertDialog;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentDayReportBinding.inflate(inflater,container,false);
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
         dataViewModel.getDate().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -331,7 +334,7 @@ public class DayReportFragment extends Fragment {
                     }
                 }else{
                     binding.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(requireContext(),getString(R.string.no_network),100);
                 }
             }
         });

@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -45,6 +44,7 @@ import saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBo
 import saneforce.santrip.activity.slideDownloaderAlertBox.SlideModelClass;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMasterSyncBinding;
@@ -118,6 +118,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
     String holidayMode = "", weeklyOffCaption = "";
     boolean isDataAvailable;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +128,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         sqLite = new SQLite(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         sqLite.getWritableDatabase();
         sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
@@ -147,20 +150,20 @@ public class MasterSyncActivity extends AppCompatActivity {
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                     sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
                 } else {
-                    Toast.makeText(MasterSyncActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network),100);
                 }
             } else {
                 masterSyncAll(false);
             }
 //            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        }else {
+        } else {
             binding.backArrow.setVisibility(View.VISIBLE);
         }
 //        else {
 //            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //        }
 
-        binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this,HomeDashBoard.class)));
+        binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
 //        binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
         binding.hq.setOnClickListener(view -> {
@@ -457,8 +460,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
                         }
                     } else {
-                        Toast.makeText(MasterSyncActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
-                    }
+                        commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network),100);                    }
                 }
             });
             networkStatusTask.execute();
@@ -821,8 +823,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                             }
                         } else {
-                            Toast.makeText(MasterSyncActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
-                        }
+                            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network),100);                        }
                     }
                 });
                 networkStatusTask.execute();
@@ -919,8 +920,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                     Log.e("test", "count : " + itemCount);
                 } else {
-                    Toast.makeText(MasterSyncActivity.this, "No Internet connectivity!", Toast.LENGTH_SHORT).show();
-                }
+                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network),100);                }
 
             }
         });
@@ -931,10 +931,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
 
         try {
-            String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
-            String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", remoteTableName);
@@ -946,76 +943,76 @@ public class MasterSyncActivity extends AppCompatActivity {
             jsonObject.put("state_code", state_code);
             jsonObject.put("subdivision_code", subdivision_code);
 
-            switch (remoteTableName){
+            switch (remoteTableName) {
                 case "getholiday":
-                case "getweeklyoff":{
+                case "getweeklyoff": {
                     jsonObject.put("year", Year.now().getValue());
                     break;
                 }
-                case "gettodaytpnew":{
+                case "gettodaytpnew": {
                     jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                     break;
                 }
-                case "gettpdetail":{
+                case "gettpdetail": {
                     jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     jsonObject.put("Year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
             }
 
-            Log.e("API Object","master sync obj : " + jsonObject);
+            Log.e("API Object", "master sync obj : " + jsonObject);
             Call<JsonElement> call = null;
-            if(masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
+            if (masterOf.equalsIgnoreCase(Constants.DOCTOR)) {
                 call = apiInterface.getDrMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE)) {
                 call = apiInterface.getSubordinateMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.PRODUCT)) {
                 call = apiInterface.getProductMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("Leave")) {
+            } else if (masterOf.equalsIgnoreCase("Leave")) {
                 call = apiInterface.getLeaveMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("Home")) {
+            } else if (masterOf.equalsIgnoreCase("Home")) {
                 call = apiInterface.getDCRMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("MissedDate")) {
+            } else if (masterOf.equalsIgnoreCase("MissedDate")) {
                 call = apiInterface.getMissedDCRMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("AdditionalDcr")) {
+            } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
                 call = apiInterface.getAdditionalMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase("Slide")) {
+            } else if (masterOf.equalsIgnoreCase("Slide")) {
                 call = apiInterface.getSlideMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.SETUP)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.SETUP)) {
                 call = apiInterface.getSetupMaster(jsonObject.toString());
-            }else if(masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
+            } else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN)) {
                 call = apiInterface.getTP(jsonObject.toString());
             }
 
-            if(call != null) {
+            if (call != null) {
                 call.enqueue(new Callback<JsonElement>() {
                     @Override
-                    public void onResponse (@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         ++apiSuccessCount;
 
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
-                        if(response.isSuccessful()) {
+                        if (response.isSuccessful()) {
                             Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
                             try {
                                 JsonElement jsonElement = response.body();
-                                if(!jsonElement.isJsonNull()) {
-                                    if(jsonElement.isJsonArray()) {
+                                if (!jsonElement.isJsonNull()) {
+                                    if (jsonElement.isJsonArray()) {
                                         jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                         success = true;
-                                    }else if(jsonElement.isJsonObject()) {
+                                    } else if (jsonElement.isJsonObject()) {
                                         JSONObject jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
-                                        if(!jsonObject2.has("success")) { // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
+                                        if (!jsonObject2.has("success")) { // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
                                             jsonArray.put(jsonObject2);
                                             success = true;
-                                        }else if(jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
+                                        } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
                                             sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
                                             masterSyncItemModels.get(position).setSyncSuccess(1);
                                         }
                                     }
 
-                                    if(success) {
+                                    if (success) {
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(0);
 
@@ -1025,26 +1022,26 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0);
                                         sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, "[]", 0);
 
-                                        if(masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
-                                            if(jsonArray.length()>0) {
+                                        if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
+                                            if (jsonArray.length() > 0) {
                                                 JSONObject jsonObject1 = jsonArray.getJSONObject(0);
                                                 JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
                                                 JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
                                                 sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
                                                 sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
                                             }
-                                        }else if(masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")) {
-                                            if(mgrInitialSync) {
+                                        } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")) {
+                                            if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
                                             }
-                                        }else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
-                                            if(jsonArray.length()>0)
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
+                                            if (jsonArray.length() > 0)
                                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "0", slideListPrepared("1"));
                                         }
                                     }
 
-                                }else {
+                                } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);
                                     sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                                 }
@@ -1052,18 +1049,18 @@ public class MasterSyncActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        }else {
+                        } else {
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                         }
 
                         // when all the masters are synced and intent from Login Activity
-                        if(apiSuccessCount>=itemCount && navigateFrom.equalsIgnoreCase("Login")) {
-                            if(sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length()>0) {
+                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
+                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) {
                                 // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1", slideListPrepared("0"));
-                            }else {
-                                SharedPref.putAutomassync(getApplicationContext(),true);
+                            } else {
+                                SharedPref.putAutomassync(getApplicationContext(), true);
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -1078,7 +1075,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         Log.e("test", "failed : " + t);
                         ++apiSuccessCount;
                         Log.e("test", "success count at error : " + apiSuccessCount);
@@ -1086,11 +1083,11 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         masterSyncItemModels.get(position).setSyncSuccess(1);
                         masterSyncAdapter.notifyDataSetChanged();
-                        if(apiSuccessCount>=itemCount && navigateFrom.equalsIgnoreCase("Login")) {
-                            if(sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length()>0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                        if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
+                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1", slideListPrepared("0"));
-                            }else {
-                                SharedPref.putAutomassync(getApplicationContext(),true);
+                            } else {
+                                SharedPref.putAutomassync(getApplicationContext(), true);
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -1574,7 +1571,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     ArrayList<SlideModelClass> slideListPrepared(String nfolg) {
-
 
 
         if (nfolg.equalsIgnoreCase("0")) {

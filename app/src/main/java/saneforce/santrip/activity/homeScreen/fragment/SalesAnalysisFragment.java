@@ -1,6 +1,8 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +16,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import saneforce.santrip.R;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 
 public class SalesAnalysisFragment extends Fragment  {
 
     TextView txt_month,txt_quaterly, txt_yearly;
+    CommonUtilsMethods commonUtilsMethods;
+
 
     @Nullable
     @Override
@@ -28,6 +33,8 @@ public class SalesAnalysisFragment extends Fragment  {
         txt_month=v.findViewById(R.id.text_month);
         txt_yearly=v.findViewById(R.id.text_yearly);
         txt_quaterly=v.findViewById(R.id.text_Quaterly);
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         txt_yearly.setOnClickListener(v13 -> {
 

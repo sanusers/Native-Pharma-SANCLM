@@ -9,4 +9,6 @@
     <string name="txt_undr">Médecin non répertorié</string>
     <string name="txt_add_tag">Ajouter une étiquette</string>
     <string name="search">French</string>
+    <string name="str_save_settings">Enregistrer les paramètres</string>
+    <string name="user_id">ID de l\'utilisateur</string>
 </resources>

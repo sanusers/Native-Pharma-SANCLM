@@ -22,6 +22,7 @@ import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.input.CheckInputListAdapter;
 import saneforce.santrip.activity.homeScreen.call.adapter.input.FinalInputCallAdapter;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.santrip.databinding.FragmentInputBinding;
 
@@ -31,6 +32,7 @@ public class InputFragment extends Fragment {
     public static ArrayList<CallCommonCheckedList> checkedInputList = new ArrayList<>();
     CheckInputListAdapter checkInputListAdapter;
     FinalInputCallAdapter finalInputCallAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -38,7 +40,8 @@ public class InputFragment extends Fragment {
         fragmentInputBinding = FragmentInputBinding.inflate(inflater);
         View v = fragmentInputBinding.getRoot();
         dummyAdapter();
-
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             fragmentInputBinding.tagStock.setVisibility(View.VISIBLE);
         } else {

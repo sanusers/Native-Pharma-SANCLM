@@ -2,12 +2,15 @@ package saneforce.santrip.activity.setting;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -16,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -30,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
@@ -46,6 +49,7 @@ import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.DownloaderClass;
 import saneforce.santrip.utility.ImageStorage;
+import saneforce.santrip.utility.LocaleHelper;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -58,7 +62,10 @@ public class SettingsActivity extends AppCompatActivity {
     String deviceId = "", url = "", licenseKey = "", divisionCode = "", baseWebUrl = "", phpPathUrl = "", reportsUrl = "", slidesUrl = "", logoUrl = "";
     int hitCount = 0;
     CommonUtilsMethods commonUtilsMethods;
+    Resources resources;
+    String language;
 
+    @SuppressLint("HardwareIds")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,23 +76,89 @@ public class SettingsActivity extends AppCompatActivity {
         deviceId = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
+        SetUpLanguage();
 
         if (!SharedPref.getSaveUrlSetting(getApplicationContext()).equalsIgnoreCase("")) {
             binding.etWebUrl.setText(SharedPref.getSaveUrlSetting(getApplicationContext()));
             binding.etLicenseKey.setText(SharedPref.getSaveLicenseSetting(getApplicationContext()));
         }
 
-        String[] languages = {"BURMESE", "ENGLISH", "FRENCH", "MANDARIN", "PORTUGUESE", "SPANISH", "VIETNAMESE"};
+        binding.btnSaveSettings.setOnClickListener(view -> {
+            UtilityClass.hideKeyboard(SettingsActivity.this);
+            url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
+            licenseKey = binding.etLicenseKey.getText().toString().trim();
+            deviceId = binding.tvDeviceId.getText().toString();
+
+            if (url.isEmpty()) {
+                binding.etWebUrl.requestFocus();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_url), 100);
+            } else if (licenseKey.isEmpty()) {
+                binding.etLicenseKey.requestFocus();
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_license), 100);
+            } else {
+
+                SharedPref.Loginsite(getApplicationContext(), url);
+                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                    if (checkURL(url)) {
+                        configuration("https://" + url + "/apps/");
+                    } else {
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
+                    }
+                } else {
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                }
+            }
+        });
+
+    }
+
+    private void SetUpLanguage() {
+        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drop_down_spinner_layout, languages);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinnerLanguage.setAdapter(adapter);
-        binding.spinnerLanguage.setSelection(1);
+
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
+        language = SharedPref.getSelectedLanguage(this);
+
+        if (!language.equalsIgnoreCase("")) {
+            String languageData = SharedPref.getSelectedLanguage(getApplicationContext());
+            SelectedLanguage(languageData);
+            switch (languageData) {
+                case "pt":
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "PORTUGUESE");
+                    break;
+                case "fr":
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "FRENCH");
+                    break;
+                case "my":
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "BURMESE");
+                    break;
+                case "vi":
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "VIETNAMESE");
+                    break;
+                case "zh":
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "MANDARIN");
+                    break;
+                case "es":
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "SPANISH");
+                    break;
+                case "th":
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "THAILAND");
+                    break;
+                default:
+                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "ENGLISH");
+                    break;
+            }
+        } else {
+            SelectedLanguage("en");
+            commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "ENGLISH");
+        }
 
         binding.spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView textView = (TextView) view;
-                Log.e("test", textView.getText().toString());
                 String selectedLanguage = "";
                 switch (textView.getText().toString().toUpperCase()) {
                     case "ENGLISH": {
@@ -112,12 +185,17 @@ public class SettingsActivity extends AppCompatActivity {
                         selectedLanguage = "es";
                         break;
                     }
+                    case "THAILAND": {
+                        selectedLanguage = "th";
+                        break;
+                    }
                     case "VIETNAMESE": {
                         selectedLanguage = "vi";
                         break;
                     }
 
                 }
+                SelectedLanguage(selectedLanguage);
                 SharedPref.saveSelectedLanguage(SettingsActivity.this, selectedLanguage);
             }
 
@@ -126,37 +204,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-        binding.btnSaveSettings.setOnClickListener(view -> {
-            UtilityClass.hideKeyboard(SettingsActivity.this);
-            url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
-            licenseKey = binding.etLicenseKey.getText().toString().trim();
-            deviceId = binding.tvDeviceId.getText().toString();
-
-            if (url.isEmpty()) {
-                binding.etWebUrl.requestFocus();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_url), 100);
-            } else if (licenseKey.isEmpty()) {
-                binding.etLicenseKey.requestFocus();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_licence), 100);
-            } else {
-
-                SharedPref.Loginsite(getApplicationContext(), url);
-                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                    if (checkURL(url)) {
-                        configuration("https://" + url + "/apps/");
-                    } else {
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
-                    }
-                } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
-                }
-            }
-        });
-
     }
 
     public void selectLanguage() {
-
         final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH"};
         ArrayList<String> langList = new ArrayList<>();
         Collections.addAll(langList, Language);
@@ -168,28 +218,33 @@ public class SettingsActivity extends AppCompatActivity {
         TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
         ListView listView = dialogView.findViewById(R.id.listView);
 
-        headerTxt.setText("Select a language");
+        headerTxt.setText(R.string.select_a_language);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, langList);
         listView.setAdapter(adapter);
         AlertDialog dialog = alertDialog.create();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String selectedLang = listView.getItemAtPosition(position).toString();
-                Log.e("test", "selected language : " + selectedLang);
-                dialog.dismiss();
-            }
+        listView.setOnItemClickListener((adapterView, view, position, l) -> {
+            String selectedLang = listView.getItemAtPosition(position).toString();
+            Log.e("test", "selected language : " + selectedLang);
+            SelectedLanguage(selectedLang);
+            dialog.dismiss();
         });
 
-        alertDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
         dialog.show();
 
+    }
+
+    private void SelectedLanguage(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        context = LocaleHelper.setLocale(getApplicationContext(), lang);
+        resources = getApplicationContext().getResources();
+        binding.btnSaveSettings.setText(getString(R.string.str_save_settings));
     }
 
     private static boolean checkURL(CharSequence input) {
@@ -308,6 +363,7 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

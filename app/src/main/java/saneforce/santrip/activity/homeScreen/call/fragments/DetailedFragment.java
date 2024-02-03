@@ -20,11 +20,13 @@ import java.util.Collections;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.adapter.detailing.DetailedFinalCallAdapter;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 public class DetailedFragment extends Fragment {
     RecyclerView rv_detailing_list;
     DetailedFinalCallAdapter detailedFinalCallAdapter;
     public static ArrayList<CallDetailingList> callDetailingLists;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     @Nullable
@@ -33,6 +35,8 @@ public class DetailedFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_detailied, container, false);
         Log.v("fragment", "detailed");
         rv_detailing_list = v.findViewById(R.id.rv_detailing_list);
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         dummyAdapter();
         return v;
     }

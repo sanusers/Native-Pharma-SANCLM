@@ -93,7 +93,13 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     public void onBindViewHolder(@NonNull OutBoxContentAdapter.listDataViewholider holder, int position) {
         ChildListModelClass contentList = childListModelClasses.get(position);
         Log.v("outBox", "---" + contentList.getChildName() + "--count--" + childListModelClasses.size() + "----" + contentList.isAvailableList() + "---" + contentList.getCounts());
-     holder.tvContentList.setText(contentList.getChildName());
+
+        if (contentList.getChildId() == 0 || contentList.getChildId() == 4) {
+            holder.tvContentList.setText(String.format("%s - %s", contentList.getChildName(), contentList.getOtherContents()));
+        } else {
+            holder.tvContentList.setText(contentList.getChildName());
+        }
+
 
         if (contentList.isAvailableList()) {
             holder.expandContentView.setEnabled(true);
@@ -184,6 +190,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     }
 
     private void CallSendAPIImage(int position, int i, String jsonValues, String filePath, String id) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
         MultipartBody.Part img = convertImg("EventImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues.toString());
         Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
@@ -197,23 +204,23 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                         JSONObject json = new JSONObject(response.body().toString());
                         Log.v("SendOutboxCall", "-imageRes---" + json.toString());
                         if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-                            DeleteCacheFile(childListModelClasses.get(position).getEcModelClasses().get(i).getFilePath(), id, i, position);
+                            DeleteCacheFile(filePath, id, i, position);
                         } else {
-                            DeleteCacheFile(childListModelClasses.get(position).getEcModelClasses().get(i).getFilePath(), id, i, position);
+                            DeleteCacheFile(filePath, id, i, position);
                         }
                         if (childListModelClasses.get(position).getEcModelClasses().size() > 0) {
                             RefreshAdapter();
                         }
                     } catch (Exception e) {
                         Log.v("SendOutboxCall", "-error---" + e);
-                        DeleteCacheFile(childListModelClasses.get(position).getEcModelClasses().get(i).getFilePath(), id, i, position);
+                        DeleteCacheFile(filePath, id, i, position);
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                DeleteCacheFile(childListModelClasses.get(position).getEcModelClasses().get(i).getFilePath(), id, i, position);
+                DeleteCacheFile(filePath, id, i, position);
             }
         });
     }

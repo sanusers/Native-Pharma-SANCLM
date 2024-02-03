@@ -57,9 +57,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
-                android:text="User Name"
                 android:textColor="#282A3C"
-                android:textSize="@dimen/_7sdp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/sf_name"
@@ -68,8 +67,7 @@
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="center"
-                android:text="User Roll"
-                android:textSize="@dimen/_6sdp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/clut"
@@ -78,9 +76,8 @@
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
-                android:text="Cluster - Headquaters"
                 android:textColor="#00C689"
-                android:textSize="@dimen/_6sdp" />
+                android:textSize="14sp" />
 
 
         </LinearLayout>
@@ -99,7 +96,7 @@
                 android:layout_width="@dimen/_28sdp"
                 android:layout_height="@dimen/_12sdp"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
                 android:src="@drawable/password" />
 
@@ -108,9 +105,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/satoshi_medium"
-                android:text="Change Password"
+                android:text="@string/change_password"
                 android:textColor="#282A3C"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -138,7 +135,7 @@
                 android:layout_width="@dimen/_28sdp"
                 android:layout_height="@dimen/_12sdp"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
                 android:src="@drawable/logout" />
 
@@ -147,9 +144,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/satoshi_medium"
-                android:text="Logout"
+                android:text="@string/logout"
                 android:textColor="#282A3C"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="18sp" />
 
         </LinearLayout>
 

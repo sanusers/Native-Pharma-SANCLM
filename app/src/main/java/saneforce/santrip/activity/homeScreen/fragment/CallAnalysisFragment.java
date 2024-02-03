@@ -1,11 +1,15 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +44,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.view.CustomMarkerView;
 import saneforce.santrip.activity.homeScreen.view.ImageLineChartRenderer;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.CallAnalysisFagmentBinding;
 import saneforce.santrip.response.LoginResponse;
@@ -49,12 +54,13 @@ import saneforce.santrip.storage.SharedPref;
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
     public static CallAnalysisFagmentBinding callAnalysisBinding;
     SQLite sqLite;
-    String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
+    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
     public static String key;
     public static JSONArray dcrdatas;
     LoginResponse loginResponse;
     Context context;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
+    CommonUtilsMethods commonUtilsMethods;
 
     public static int computePercent(int current, int total) {
         int percent = 0;
@@ -62,14 +68,15 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         return percent;
     }
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.v("fragment", "callanalysis");
         callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
         View v = callAnalysisBinding.getRoot();
-
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         context = requireContext();
         sqLite = new SQLite(requireContext());
 
@@ -109,13 +116,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.llUnliChild.setLayoutParams(param);
             callAnalysisBinding.llHosChild.setLayoutParams(param);
             callAnalysisBinding.llCipChild.setLayoutParams(param);
-
-
         });
 
 
         callAnalysisBinding.llCallsLayout.setOnTouchListener((v12, event) -> {
-
             HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
             return false;
         });
@@ -242,64 +246,125 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 if (!Designation.equalsIgnoreCase("MR")) {
 
-                    binding.txtDocCount.setText(String.valueOf(doc_current_callcount));
-                    binding.txtCheCount.setText(String.valueOf(che_current_callcount));
-                    binding.txtStockCount.setText(String.valueOf(stockiest_current_callcount));
-                    binding.txtUnlistCount.setText(String.valueOf(unlistered_current_callcount));
-                    binding.txtCipCount.setText(String.valueOf(cip_current_callcount));
-                    binding.txtHosCount.setText(String.valueOf(hos_current_callcount));
+                    callAnalysisBinding.txtDocCount.setText(String.valueOf(doc_current_callcount));
+                    callAnalysisBinding.txtCheCount.setText(String.valueOf(che_current_callcount));
+                    callAnalysisBinding.txtStockCount.setText(String.valueOf(stockiest_current_callcount));
+                    callAnalysisBinding.txtUnlistCount.setText(String.valueOf(unlistered_current_callcount));
+                    callAnalysisBinding.txtCipCount.setText(String.valueOf(cip_current_callcount));
+                    callAnalysisBinding.txtHosCount.setText(String.valueOf(hos_current_callcount));
 
-                    binding.imgDoc.setVisibility(View.VISIBLE);
-                    binding.imgChe.setVisibility(View.VISIBLE);
-                    binding.imgStock.setVisibility(View.VISIBLE);
-                    binding.imgUnlist.setVisibility(View.VISIBLE);
-                    binding.imgCip.setVisibility(View.VISIBLE);
-                    binding.imgHos.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgDoc.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgChe.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgStock.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgUnlist.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgCip.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgHos.setVisibility(View.VISIBLE);
 
-                    binding.FlDocProgress.setVisibility(View.GONE);
-                    binding.FlCheProgress.setVisibility(View.GONE);
-                    binding.FlStockProgress.setVisibility(View.GONE);
-                    binding.FlUnistProgress.setVisibility(View.GONE);
-                    binding.FlCipProgress.setVisibility(View.GONE);
-                    binding.FlHosProgress.setVisibility(View.GONE);
+                    callAnalysisBinding.FlDocProgress.setVisibility(View.GONE);
+                    callAnalysisBinding.FlCheProgress.setVisibility(View.GONE);
+                    callAnalysisBinding.FlStockProgress.setVisibility(View.GONE);
+                    callAnalysisBinding.FlUnistProgress.setVisibility(View.GONE);
+                    callAnalysisBinding.FlCipProgress.setVisibility(View.GONE);
+                    callAnalysisBinding.FlHosProgress.setVisibility(View.GONE);
 
                 } else {
-                    binding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
-                    binding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
-                    binding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
-                    binding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
-                    binding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
-                    binding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
+                    callAnalysisBinding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
+                    callAnalysisBinding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
+                    callAnalysisBinding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
+                    callAnalysisBinding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
+                    callAnalysisBinding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
+                    callAnalysisBinding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
 
+                    int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
 
-                int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
+                    doc_progress_value = computePercent(doc_current_callcount, Doctor_list.length());
+                    che_progress_value = computePercent(che_current_callcount, Chemist_list.length());
+                    stockiest_progress_value = computePercent(stockiest_current_callcount, Stockiest_list.length());
+                    unlistered_progress_value = computePercent(unlistered_current_callcount, unlistered_list.length());
+                    cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
+                    hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
 
-                doc_progress_value = computePercent(doc_current_callcount, Doctor_list.length());
-                che_progress_value = computePercent(che_current_callcount, Chemist_list.length());
-                stockiest_progress_value = computePercent(stockiest_current_callcount, Stockiest_list.length());
-                unlistered_progress_value = computePercent(unlistered_current_callcount, unlistered_list.length());
-                cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
-                hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
+                    callAnalysisBinding.txtDocValue.setText(doc_progress_value + "%");
+                    callAnalysisBinding.txtCheValue.setText(che_progress_value + "%");
+                    callAnalysisBinding.txtStockValue.setText(stockiest_progress_value + "%");
+                    callAnalysisBinding.txtUnlistedValue.setText(unlistered_progress_value + "%");
+                    callAnalysisBinding.txtCipValue.setText(cip_progress_value + "%");
+                    callAnalysisBinding.txtHosValue.setText(hos_progress_value + "%");
 
-                callAnalysisBinding.txtDocValue.setText(doc_progress_value + "%");
-                callAnalysisBinding.txtCheValue.setText(che_progress_value + "%");
-                callAnalysisBinding.txtStockValue.setText(stockiest_progress_value + "%");
-                callAnalysisBinding.txtUnlistedValue.setText(unlistered_progress_value + "%");
-                callAnalysisBinding.txtCipValue.setText(stockiest_progress_value + "%");
-                callAnalysisBinding.txtHosValue.setText(unlistered_progress_value + "%");
+                    callAnalysisBinding.docProgressBar.setProgress(doc_progress_value);
+                    callAnalysisBinding.cheProgressBar.setProgress(che_progress_value);
+                    callAnalysisBinding.stockProgressBar.setProgress(stockiest_progress_value);
+                    callAnalysisBinding.unlistProgressBar.setProgress(unlistered_progress_value);
+                    callAnalysisBinding.cipProgressBar.setProgress(cip_progress_value);
+                    callAnalysisBinding.hosProgressBar.setProgress(hos_progress_value);
 
-                callAnalysisBinding.docProgressBar.setProgress(doc_progress_value);
-                callAnalysisBinding.cheProgressBar.setProgress(che_progress_value);
-                callAnalysisBinding.stockProgressBar.setProgress(stockiest_progress_value);
-                callAnalysisBinding.unlistProgressBar.setProgress(unlistered_progress_value);
-                callAnalysisBinding.cipProgressBar.setProgress(cip_progress_value);
-                callAnalysisBinding.hosProgressBar.setProgress(hos_progress_value);
+                    callAnalysisBinding.FlDocProgress.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.FlCheProgress.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.FlStockProgress.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.FlUnistProgress.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.FlCipProgress.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.FlHosProgress.setVisibility(View.VISIBLE);
 
+                    callAnalysisBinding.imgDoc.setVisibility(View.GONE);
+                    callAnalysisBinding.imgChe.setVisibility(View.GONE);
+                    callAnalysisBinding.imgStock.setVisibility(View.GONE);
+                    callAnalysisBinding.imgUnlist.setVisibility(View.GONE);
+                    callAnalysisBinding.imgCip.setVisibility(View.GONE);
+                    callAnalysisBinding.imgHos.setVisibility(View.GONE);
 
-                binding.inChart.lineChart.clear();
-                setLineChartData("1");
-                binding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
+                }
+                callAnalysisBinding.inChart.lineChart.clear();
+                callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
 
+                if (DrNeed.equalsIgnoreCase("0")) {
+                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("1", sqLite, context);
+                } else if (ChemistNeed.equalsIgnoreCase("0")) {
+                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("2", sqLite, context);
+                } else if (StockistNeed.equalsIgnoreCase("0")) {
+                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("3", sqLite, context);
+                } else if (UnDrNeed.equalsIgnoreCase("0")) {
+                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("4", sqLite, context);
+                } else if (CipNeed.equalsIgnoreCase("0")) {
+                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.VISIBLE);
+                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+                    setLineChartData("5", sqLite, context);
+                } else if (HospNeed.equalsIgnoreCase("0")) {
+                    callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+                    callAnalysisBinding.imgDownTriangleHos.setVisibility(View.VISIBLE);
+                    setLineChartData("6", sqLite, context);
+                }
             } else {
                 callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.GONE);
                 callAnalysisBinding.llDocChild.setOnClickListener(null);
@@ -311,42 +376,28 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
                 if (!Designation.equalsIgnoreCase("MR")) {
-                    binding.txtDocCount.setText("0");
-                    binding.txtCheCount.setText("0");
-                    binding.txtStockCount.setText("0");
-                    binding.txtUnlistCount.setText("0");
-                    binding.txtCipCount.setText("0");
-                    binding.txtHosCount.setText("0");
+                    callAnalysisBinding.txtDocCount.setText("0");
+                    callAnalysisBinding.txtCheCount.setText("0");
+                    callAnalysisBinding.txtStockCount.setText("0");
+                    callAnalysisBinding.txtUnlistCount.setText("0");
+                    callAnalysisBinding.txtCipCount.setText("0");
+                    callAnalysisBinding.txtHosCount.setText("0");
                 } else {
-                    binding.txtDocCount.setText("0 / " + Doctor_list.length());
-                    binding.txtCheCount.setText("0 / " + Chemist_list.length());
-                    binding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
-                    binding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
-                    binding.txtCipCount.setText("0 / " + cip_list.length());
-                    binding.txtHosCount.setText("0 / " + hos_list.length());
-                callAnalysisBinding.txtDocValue.setText("0%");
-                callAnalysisBinding.txtCheValue.setText("0%");
-                callAnalysisBinding.txtStockValue.setText("0%");
-                callAnalysisBinding.txtUnlistedValue.setText("0%");
-                callAnalysisBinding.txtCipValue.setText("0%");
-                callAnalysisBinding.txtHosValue.setText("0%");
+                    callAnalysisBinding.txtDocCount.setText("0 / " + Doctor_list.length());
+                    callAnalysisBinding.txtCheCount.setText("0 / " + Chemist_list.length());
+                    callAnalysisBinding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
+                    callAnalysisBinding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
+                    callAnalysisBinding.txtCipCount.setText("0 / " + cip_list.length());
+                    callAnalysisBinding.txtHosCount.setText("0 / " + hos_list.length());
 
-                callAnalysisBinding.txtDocCount.setText("0 / " + Doctor_list.length());
-                callAnalysisBinding.txtCheCount.setText("0 / " + Chemist_list.length());
-                callAnalysisBinding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
-                callAnalysisBinding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
-                callAnalysisBinding.txtCipCount.setText("0 / " + cip_list.length());
-                callAnalysisBinding.txtHosCount.setText("0 / " + hos_list.length());
-
-                    binding.txtDocValue.setText("0%");
-                    binding.txtCheValue.setText("0%");
-                    binding.txtStockValue.setText("0%");
-                    binding.txtUnlistedValue.setText("0%");
-                    binding.txtCipValue.setText("0%");
-                    binding.txtHosValue.setText("0%");
+                    callAnalysisBinding.txtDocValue.setText("0%");
+                    callAnalysisBinding.txtCheValue.setText("0%");
+                    callAnalysisBinding.txtStockValue.setText("0%");
+                    callAnalysisBinding.txtUnlistedValue.setText("0%");
+                    callAnalysisBinding.txtCipValue.setText("0%");
+                    callAnalysisBinding.txtHosValue.setText("0%");
                 }
             }
-
 
         } catch (Exception a) {
             a.printStackTrace();

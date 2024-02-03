@@ -312,7 +312,7 @@ public class CustList {
     }
 
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,boolean isClusterAvailable) {
+ /*   public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,boolean isClusterAvailable) {
         this.name = name;
         this.code = code;
         this.type = type;
@@ -335,7 +335,7 @@ public class CustList {
         this.qualification = qualification;
         this.PriorityPrdCode = priorityPrdCode;
         this.isClusterAvailable = isClusterAvailable;
-    }
+    }*/
 
  public CustList(String name, String code, String type, String category, String categoryCode, String specialist,String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,String MappedBrandCode,String MappedSlideCode,boolean isClusterAvailable) {
         this.name = name;

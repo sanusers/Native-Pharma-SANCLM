@@ -125,7 +125,9 @@ public class ListedDoctorFragment extends Fragment {
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
         tv_hqName.setText(TodayPlanSfName);
         sqLite = new SQLite(getContext());
-        commonUtilsMethods = new CommonUtilsMethods(getActivity());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
+
 
         custListArrayList.clear();
         SetupAdapter("", "");

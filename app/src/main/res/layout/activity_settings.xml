@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_head"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rl_head"
     android:background="@color/background"
     tools:context=".activity.setting.SettingsActivity">
 
@@ -38,10 +38,10 @@
                         android:id="@+id/tv_app_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/satoshi_bold"
                         android:text="@string/str_app_name"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_10sdp"
-                        android:fontFamily="@font/satoshi_bold"
                         tools:ignore="SpUsage" />
 
                     <TextView
@@ -50,10 +50,10 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_app_name"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_bold"
                         android:text="@string/str_app_configuration"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_8sdp"
-                        android:fontFamily="@font/satoshi_bold"
                         tools:ignore="SpUsage" />
 
                     <LinearLayout
@@ -75,10 +75,10 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_bold"
                                 android:text="@string/str_web_url"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
-                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="SpUsage" />
 
                             <EditText
@@ -110,11 +110,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_bold"
                                 android:text="@string/str_license_key"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
                                 android:textStyle="bold"
-                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="SpUsage" />
 
                             <EditText
@@ -151,15 +151,16 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="visible">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_bold"
                                 android:text="@string/str_language"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
-                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="RelativeOverlap,SpUsage" />
 
                             <RelativeLayout
@@ -190,17 +191,17 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="@dimen/_12sdp"
                             android:layout_weight="1"
+                            android:layout_marginStart="@dimen/_12sdp"
                             android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/satoshi_bold"
                                 android:text="@string/str_your_device_id"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_7sdp"
-                                android:fontFamily="@font/satoshi_bold"
                                 tools:ignore="SpUsage" />
 
                             <TextView
@@ -226,17 +227,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/ll_language_layout"
+                        android:layout_marginTop="@dimen/_12sdp"
                         android:background="@drawable/edittext_stroke"
+                        android:fontFamily="@font/satoshi_bold"
+                        android:padding="@dimen/_5sdp"
+                        android:paddingStart="@dimen/_15sdp"
+                        android:paddingEnd="@dimen/_15sdp"
                         android:text="@string/str_save_settings"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_7sdp"
                         app:backgroundTint="@color/text_dark"
-                        android:fontFamily="@font/satoshi_bold"
-                        android:padding="@dimen/_5sdp"
-                        android:layout_marginTop="@dimen/_12sdp"
-                        android:paddingStart="@dimen/_15sdp"
-                        android:paddingEnd="@dimen/_15sdp"
                         tools:ignore="SpUsage" />
 
 
@@ -251,8 +252,8 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
                         android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
                         android:layout_marginEnd="@dimen/_15sdp"
                         android:orientation="vertical">
 
@@ -270,8 +271,8 @@
                             android:id="@+id/iv_logo"
                             android:layout_width="@dimen/_90sdp"
                             android:layout_height="@dimen/_25sdp"
-                            android:src="@drawable/saneforce_img"
                             android:scaleType="fitXY"
+                            android:src="@drawable/saneforce_img"
                             tools:ignore="ContentDescription" />
 
                     </LinearLayout>

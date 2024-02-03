@@ -76,14 +76,31 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
     SQLite sqLite;
     ArrayList<JSONObject> Coustum_list = new ArrayList<>();
     TextView hq_head;
+    CommonUtilsMethods commonUtilsMethods;
     String navigateFrom = "";    //view_screen-
+
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            drawerLayout.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_resource);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         hideKeyboard(MyResource_Activity.this);
         back_btn = findViewById(R.id.back_btn);
         resource_id = findViewById(R.id.resource_id);
@@ -113,7 +130,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
 
         backArrow.setOnClickListener(v -> {
-           getOnBackPressedDispatcher().onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         });
 
         if (loginResponse.getDesig_Code().equals("MR")) {

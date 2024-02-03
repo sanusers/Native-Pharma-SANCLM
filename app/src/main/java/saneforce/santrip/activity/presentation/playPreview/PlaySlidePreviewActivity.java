@@ -31,6 +31,7 @@ import java.util.TimerTask;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.presentation.SupportClass;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityPlaySlidePreviewBinding;
 
 public class PlaySlidePreviewActivity extends AppCompatActivity {
@@ -43,6 +44,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     boolean playBtnClicked = false;
     MediaController mediaController;
     double progress = 0;
+    CommonUtilsMethods commonUtilsMethods;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -55,6 +57,8 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
         binding = ActivityPlaySlidePreviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         initialisation();
         binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

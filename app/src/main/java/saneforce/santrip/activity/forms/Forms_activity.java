@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 public class Forms_activity extends AppCompatActivity {
     ArrayList<Formsmodel_class> frmlisted_data = new ArrayList<>();
@@ -29,7 +30,23 @@ public class Forms_activity extends AppCompatActivity {
     LinearLayout backArrow;
 
     TabLayout tabLayout;
+    CommonUtilsMethods commonUtilsMethods;
 
+
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            backArrow.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +58,10 @@ public class Forms_activity extends AppCompatActivity {
 
 
         tabLayout = findViewById(R.id.tablelayout);
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-
-        backArrow.setOnClickListener(v->{
+        backArrow.setOnClickListener(v -> {
             Intent l = new Intent(Forms_activity.this, HomeDashBoard.class);
             startActivity(l);
         });

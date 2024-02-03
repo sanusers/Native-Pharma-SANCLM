@@ -57,14 +57,10 @@ public class SlideImageAdapter extends RecyclerView.Adapter<SlideImageAdapter.My
             holder.imageView.setImageAlpha(255);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View view) {
-                arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(!product.isImageSelected());
-                arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(-1);
-                imageSelectionInterface.imageSelection(arrayList,holder.getAbsoluteAdapterPosition());
-
-            }
+        holder.itemView.setOnClickListener(view -> {
+            arrayList.get(holder.getAbsoluteAdapterPosition()).setImageSelected(!product.isImageSelected());
+            arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(-1);
+            imageSelectionInterface.imageSelection(arrayList,holder.getAbsoluteAdapterPosition());
         });
 
     }

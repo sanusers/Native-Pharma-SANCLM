@@ -52,8 +52,7 @@ public class PreviewActivity extends AppCompatActivity {
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
     String startT, endT;
-    public static ArrayList<String> PresentationHeads = new ArrayList<>();
-
+    CommonUtilsMethods commonUtilsMethods;
     public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "",SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
 
     @SuppressLint("MissingSuperCall")
@@ -83,6 +82,8 @@ public class PreviewActivity extends AppCompatActivity {
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         sqLite = new SQLite(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         callDetailingLists = new ArrayList<>();
         arrayStore = new ArrayList<>();
 

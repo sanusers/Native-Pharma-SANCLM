@@ -42,6 +42,7 @@ public class RCPASelectPrdSide extends Fragment {
     public static ArrayList<SaveCallProductList> PrdFullList;
     SQLite sqLite;
     ProductAdapter PrdAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -49,6 +50,8 @@ public class RCPASelectPrdSide extends Fragment {
         selectProductSideBinding = FragmentSelectProductSideBinding.inflate(inflater);
         View v = selectProductSideBinding.getRoot();
         sqLite = new SQLite(getContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         AddProductsData();
 
         selectProductSideBinding.tvDummy.setOnClickListener(view -> {
@@ -146,7 +149,7 @@ public class RCPASelectPrdSide extends Fragment {
                             rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                            commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
+                             commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
                         }
                     } catch (Exception ignored) {
                     }
@@ -182,10 +185,10 @@ public class RCPASelectPrdSide extends Fragment {
                             rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                            commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
+                             commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
                         }
                     } else {
-                        commonUtilsMethods.ShowToast(context,context.getString(R.string.no_comp_available),100);
+                         commonUtilsMethods.ShowToast(context,context.getString(R.string.no_comp_available),100);
                     }
 
                 } catch (Exception e) {

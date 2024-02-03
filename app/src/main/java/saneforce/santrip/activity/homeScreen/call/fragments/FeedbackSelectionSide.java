@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectFbSideBinding;
 import saneforce.santrip.storage.SQLite;
@@ -38,6 +39,7 @@ public class FeedbackSelectionSide extends Fragment {
     ArrayList<String> list_name = new ArrayList<>();
     ArrayList<String> list_code = new ArrayList<>();
     ArrayAdapter<String> dataAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -45,7 +47,8 @@ public class FeedbackSelectionSide extends Fragment {
         selectFbSideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectFbSideBinding.getRoot();
         sqLite = new SQLite(getContext());
-
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
 
         selectFbSideBinding.tvDummy.setOnClickListener(view -> {

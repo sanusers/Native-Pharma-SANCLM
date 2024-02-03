@@ -44,6 +44,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.santrip.activity.map.custSelection.CustList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -61,6 +62,7 @@ public class ChemistFragment extends Fragment {
     SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName;
+    CommonUtilsMethods commonUtilsMethods;
 
 
     @Override
@@ -74,6 +76,8 @@ public class ChemistFragment extends Fragment {
         tv_hqName.setText(TodayPlanSfName);
 
         sqLite = new SQLite(getContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         SetupAdapter();
 

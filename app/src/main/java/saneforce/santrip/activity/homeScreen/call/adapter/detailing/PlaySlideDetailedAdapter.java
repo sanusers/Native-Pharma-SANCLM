@@ -107,7 +107,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     int val = 0;
     String defaultTime = "00:00:00";
     int scribblePos;
-CommonUtilsMethods commonUtilsMethods;
+    CommonUtilsMethods commonUtilsMethods;
 
     public PlaySlideDetailedAdapter(PlaySlideDetailing context, ArrayList<BrandModelClass.Product> productArrayList) {
         this.context = context;

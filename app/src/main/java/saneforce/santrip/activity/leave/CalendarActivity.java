@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.leave;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.leave.Leave_Application.List_LeaveDates;
 
 import android.annotation.SuppressLint;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.utility.TimeUtils;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarAdapter.OnItemListener {
@@ -32,6 +34,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
     private RecyclerView calendarRecyclerView;
     private LocalDate selectedDate, dateval, date1val, Afterdate, date;
     private LocalDate date1;
+    CommonUtilsMethods commonUtilsMethods;
 
     @SuppressLint({"NewApi", "AppCompatMethod"})
     @Override
@@ -39,7 +42,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_calender);
-
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         Intent intent = getIntent();
         String selectefromdDate = intent.getStringExtra("selectefromdDate");
         if (!Leave_Application.Fromdate.getText().toString().equals("")) {
@@ -224,8 +228,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
                         finish();
                     } else {
-
-                        Toast.makeText(CalendarActivity.this, "Not Select Date" + "--" + Afterdate + "--" + date1val, Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_select_date) + "--" + Afterdate + "--" + date1val, 100);
                     }
                 }
             }

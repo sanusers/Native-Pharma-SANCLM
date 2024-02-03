@@ -38,23 +38,20 @@ public class SplashScreen extends AppCompatActivity {
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run () {
-                if (SharedPref.getSettingState(getApplicationContext())){
-                    if (SharedPref.getLoginState(getApplicationContext())){
-                        startActivity(new Intent(SplashScreen.this, HomeDashBoard.class));
-                        finish();
-                    }else{
-                        startActivity(new Intent(SplashScreen.this, LoginActivity.class));
-                        finish();
-                    }
+        new Handler().postDelayed(() -> {
+            if (SharedPref.getSettingState(getApplicationContext())){
+                if (SharedPref.getLoginState(getApplicationContext())){
+                    startActivity(new Intent(SplashScreen.this, HomeDashBoard.class));
+                    finish();
                 }else{
-                    startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
+                    startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                     finish();
                 }
-
+            }else{
+                startActivity(new Intent(SplashScreen.this, SettingsActivity.class));
+                finish();
             }
+
         },2000);
     }
 

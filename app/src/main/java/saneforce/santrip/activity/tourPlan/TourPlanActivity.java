@@ -12,13 +12,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.firebase.BuildConfig;
 import com.google.gson.Gson;
@@ -54,6 +52,7 @@ import saneforce.santrip.activity.tourPlan.session.SessionInterface;
 import saneforce.santrip.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.santrip.activity.tourPlan.session.SessionViewAdapter;
 import saneforce.santrip.activity.tourPlan.summary.SummaryAdapter;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityTourPlanBinding;
@@ -87,7 +86,22 @@ public class TourPlanActivity extends AppCompatActivity {
     String drNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "";
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable;
+    CommonUtilsMethods commonUtilsMethods;
 
+    //To Hide the bottomNavigation When popup
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +110,8 @@ public class TourPlanActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         sqLite = new SQLite(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         addSaveBtnLayout = binding.tpNavigation.addSaveLayout;
         clrSaveBtnLayout = binding.tpNavigation.clrSaveBtnLayout;
 
@@ -229,18 +245,18 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (modelClass1.getWorkType().getName().isEmpty()) {
                             isEmpty = true;
                             position = i;
-                            Toast.makeText(TourPlanActivity.this, "Complete Session " + (i + 1), Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.complete_session) + (i + 1), 100);
                             break;
                         } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
                             if (modelClass1.getHQ().getName().isEmpty()) {
                                 isEmpty = true;
                                 position = i;
-                                Toast.makeText(TourPlanActivity.this, "Select Head Quarters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_hq_in_session) + (i + 1), 100);
                                 break;
                             } else if (modelClass1.getCluster().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                Toast.makeText(TourPlanActivity.this, "Select Clusters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_clusters_in_session) + (i + 1), 100);
                                 break;
                             } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                                 if (FW_meetup_mandatory.equals("0")) {
@@ -248,12 +264,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                         if (modelClass1.getListedDr().size() == 0) {
                                             isEmpty = true;
                                             position = i;
-                                            Toast.makeText(TourPlanActivity.this, "Select " + loginResponse.getDrCap() + " in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
                                             break;
                                         } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                             isEmpty = true;
                                             position = i;
-                                            Toast.makeText(TourPlanActivity.this, "You have selected the " + loginResponse.getDrCap() + " more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
+                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
                                             break;
                                         }
                                     }
@@ -262,7 +278,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
                                         break;
                                     }
                                 }
@@ -273,12 +289,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (modelClass1.getListedDr().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        Toast.makeText(TourPlanActivity.this, "Select " + loginResponse.getDrCap() + " in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
                                         break;
                                     } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
                                         position = i;
-                                        Toast.makeText(TourPlanActivity.this, "You have selected the " + loginResponse.getDrCap() + " more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
+                                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
                                         break;
                                     }
                                 }
@@ -286,12 +302,13 @@ public class TourPlanActivity extends AppCompatActivity {
                                         modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
                                     break;
                                 }
                             }
                         }
                     }
+
 
                     if (!isEmpty) {
                         sessionLists.add(prepareSessionListForAdapter());
@@ -301,133 +318,129 @@ public class TourPlanActivity extends AppCompatActivity {
                         scrollToPosition(position, true);
                     }
                 } else {
-                    Toast.makeText(TourPlanActivity.this, "Reached Session limit", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.reached_session_limit), 100);
                 }
             }
         });
 
-        binding.tpNavigation.sessionSave.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onClick(View view) {
-                UtilityClass.hideKeyboard(TourPlanActivity.this);
-                boolean isEmpty = false;
-                int position = 0;
+        binding.tpNavigation.sessionSave.setOnClickListener(view -> {
+            UtilityClass.hideKeyboard(TourPlanActivity.this);
+            boolean isEmpty = false;
+            int position = 0;
 
-                ModelClass dataModel = inputDataArray;
-                ArrayList<ModelClass.SessionList> sessionLists = dataModel.getSessionList();
-                String dayNo = dataModel.getDayNo();
-                for (int i = 0; i < sessionLists.size(); i++) {
-                    ModelClass.SessionList modelClass = sessionLists.get(i);
-                    if (modelClass.getWorkType().getName().isEmpty()) {
+            ModelClass dataModel = inputDataArray;
+            ArrayList<ModelClass.SessionList> sessionLists = dataModel.getSessionList();
+            String dayNo = dataModel.getDayNo();
+            for (int i = 0; i < sessionLists.size(); i++) {
+                ModelClass.SessionList modelClass = sessionLists.get(i);
+                if (modelClass.getWorkType().getName().isEmpty()) {
+                    isEmpty = true;
+                    position = i;
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.complete_session) + (i + 1), 100);
+                    break;
+                } else if (modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
+                    if (modelClass.getHQ().getName().isEmpty()) {
                         isEmpty = true;
                         position = i;
-                        Toast.makeText(TourPlanActivity.this, "Complete Session " + (i + 1), Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_hq_in_session) + (i + 1), 100);
                         break;
-                    } else if (modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
-                        if (modelClass.getHQ().getName().isEmpty()) {
-                            isEmpty = true;
-                            position = i;
-                            Toast.makeText(TourPlanActivity.this, "Select Head Quarters in session " + (i + 1), Toast.LENGTH_SHORT).show();
-                            break;
-                        } else if (modelClass.getCluster().size() == 0) {
-                            isEmpty = true;
-                            position = i;
-                            Toast.makeText(TourPlanActivity.this, "Select Clusters in session " + (i + 1), Toast.LENGTH_SHORT).show();
-                            break;
-                        } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
-                            if (FW_meetup_mandatory.equals("0")) {
-                                if (drNeed.equals("0")) {
-                                    if (modelClass.getListedDr().size() == 0) {
-                                        isEmpty = true;
-                                        position = i;
-                                        Toast.makeText(TourPlanActivity.this, "Select " + loginResponse.getDrCap() + " in session " + (i + 1), Toast.LENGTH_SHORT).show();
-                                        break;
-                                    } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) {
-                                        isEmpty = true;
-                                        position = i;
-                                        Toast.makeText(TourPlanActivity.this, "You have selected the " + loginResponse.getDrCap() + " more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
-                                        break;
-                                    }
-                                }
-
-                                if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
-                                        modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
-                                    isEmpty = true;
-                                    position = i;
-                                    Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
-                                    break;
-                                }
-                            }
-                        }
-                    } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
-                        if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
-                            if (drNeed.equals("0")) { // Dr meet up mandatory
+                    } else if (modelClass.getCluster().size() == 0) {
+                        isEmpty = true;
+                        position = i;
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_clusters_in_session) + (i + 1), 100);
+                        break;
+                    } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
+                        if (FW_meetup_mandatory.equals("0")) {
+                            if (drNeed.equals("0")) {
                                 if (modelClass.getListedDr().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    Toast.makeText(TourPlanActivity.this, "Select " + loginResponse.getDrCap() + " in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
                                     break;
-                                } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
+                                } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                     isEmpty = true;
                                     position = i;
-                                    Toast.makeText(TourPlanActivity.this, "You have selected the " + loginResponse.getDrCap() + " more than limits " + (i + 1), Toast.LENGTH_SHORT).show();
+                                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
                                     break;
                                 }
                             }
+
                             if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
-                                    modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) { // when Dr meetup not mandatory but FW meetup mandatory.So check any of the meetup selected
+                                    modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                Toast.makeText(TourPlanActivity.this, "Select any masters in session " + (i + 1), Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
                                 break;
                             }
                         }
                     }
-                }
-
-                if (!isEmpty) {
-                    binding.tpDrawer.closeDrawer(GravityCompat.END);
-                    dataModel.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                    if (monthInAdapterFlag == 0) {
-                        for (int i = 0; i < dayWiseArrayCurrentMonth.size(); i++) {
-                            if (dayWiseArrayCurrentMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
-                                dayWiseArrayCurrentMonth.remove(i);
-                                dayWiseArrayCurrentMonth.add(i, dataModel); // removed and replaced the object with updated session data
+                } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) { // if the selected work type is "F" means Field Work then we need to check the FW_meetup_mandatory
+                    if (FW_meetup_mandatory.equals("0")) { // "0"-- yes
+                        if (drNeed.equals("0")) { // Dr meet up mandatory
+                            if (modelClass.getListedDr().size() == 0) {
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
+                                break;
+                            } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
+                                isEmpty = true;
+                                position = i;
+                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
                                 break;
                             }
                         }
-                        populateSummaryAdapter(dayWiseArrayCurrentMonth);
-                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayCurrentMonth, false);
-                    } else if (monthInAdapterFlag == 1) {
-                        for (int i = 0; i < dayWiseArrayNextMonth.size(); i++) {
-                            if (dayWiseArrayNextMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
-                                dayWiseArrayNextMonth.remove(i);
-                                dayWiseArrayNextMonth.add(i, dataModel); // removed and replaced the object with updated session data
-                                break;
-                            }
+                        if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
+                                modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) { // when Dr meetup not mandatory but FW meetup mandatory.So check any of the meetup selected
+                            isEmpty = true;
+                            position = i;
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
+                            break;
                         }
-                        populateSummaryAdapter(dayWiseArrayNextMonth);
-                        //saveTpLocal(dayWiseArrayNextMonth, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), "1");
-                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayNextMonth, false);
-                    } else if (monthInAdapterFlag == -1) {
-                        for (int i = 0; i < dayWiseArrayPrevMonth.size(); i++) {
-                            if (dayWiseArrayPrevMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
-                                dayWiseArrayPrevMonth.remove(i);
-                                dayWiseArrayPrevMonth.add(i, dataModel); // removed and replaced the object with updated session data
-                                break;
-                            }
-                        }
-                        populateSummaryAdapter(dayWiseArrayPrevMonth);
-                        //  saveTpLocal(dayWiseArrayPrevMonth, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), "1");
-                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayPrevMonth, false);
                     }
-                    calendarAdapter.notifyDataSetChanged();
-                } else {
-                    scrollToPosition(position, true);
                 }
-
             }
+
+            if (!isEmpty) {
+                binding.tpDrawer.closeDrawer(GravityCompat.END);
+                dataModel.setSubmittedTime(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+                if (monthInAdapterFlag == 0) {
+                    for (int i = 0; i < dayWiseArrayCurrentMonth.size(); i++) {
+                        if (dayWiseArrayCurrentMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
+                            dayWiseArrayCurrentMonth.remove(i);
+                            dayWiseArrayCurrentMonth.add(i, dataModel); // removed and replaced the object with updated session data
+                            break;
+                        }
+                    }
+                    populateSummaryAdapter(dayWiseArrayCurrentMonth);
+                    prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayCurrentMonth, false);
+                } else if (monthInAdapterFlag == 1) {
+                    for (int i = 0; i < dayWiseArrayNextMonth.size(); i++) {
+                        if (dayWiseArrayNextMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
+                            dayWiseArrayNextMonth.remove(i);
+                            dayWiseArrayNextMonth.add(i, dataModel); // removed and replaced the object with updated session data
+                            break;
+                        }
+                    }
+                    populateSummaryAdapter(dayWiseArrayNextMonth);
+                    //saveTpLocal(dayWiseArrayNextMonth, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), "1");
+                    prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayNextMonth, false);
+                } else if (monthInAdapterFlag == -1) {
+                    for (int i = 0; i < dayWiseArrayPrevMonth.size(); i++) {
+                        if (dayWiseArrayPrevMonth.get(i).getDate().equalsIgnoreCase(dataModel.getDate())) {
+                            dayWiseArrayPrevMonth.remove(i);
+                            dayWiseArrayPrevMonth.add(i, dataModel); // removed and replaced the object with updated session data
+                            break;
+                        }
+                    }
+                    populateSummaryAdapter(dayWiseArrayPrevMonth);
+                    //  saveTpLocal(dayWiseArrayPrevMonth, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), "1");
+                    prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayPrevMonth, false);
+                }
+                calendarAdapter.notifyDataSetChanged();
+            } else {
+                scrollToPosition(position, true);
+            }
+
         });
 
         binding.tpNavigation.sessionEdit.setOnClickListener(view -> {
@@ -1454,7 +1467,6 @@ public class TourPlanActivity extends AppCompatActivity {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             if (status) {
                 try {
-
                     apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("tableName", "getall_tp");
@@ -2198,11 +2210,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                         JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
                                         if (jsonObject1.has("success") && jsonObject1.getBoolean("success")) {
                                             sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0"); // "0" - success
-                                            Toast.makeText(TourPlanActivity.this, "Successfully Send Approval", Toast.LENGTH_SHORT).show();
+                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.send_approved_successfully), 100);
                                             get1MonthRemoteTPData(localDate1);
                                         } else {
                                             sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
-                                            Toast.makeText(TourPlanActivity.this, "Failed to send Approval", Toast.LENGTH_SHORT).show();
+                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.failed_to_send_approval), 100);
                                         }
                                     } catch (JSONException e) {
                                         binding.progressBar.setVisibility(View.GONE);
@@ -2497,10 +2509,10 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         } else {
                             saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
-                            Toast.makeText(TourPlanActivity.this, "Try again later!", Toast.LENGTH_SHORT).show();
+                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.something_wrong), 100);
                         }
                     } else {
-                        Toast.makeText(TourPlanActivity.this, "Try again later!", Toast.LENGTH_SHORT).show();
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.something_wrong), 100);
                         saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
                     }
 
@@ -2517,7 +2529,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (statusOffline) {
                     binding.progressBar.setVisibility(View.GONE);
                 }
-                Toast.makeText(TourPlanActivity.this, "Failure!", Toast.LENGTH_SHORT).show();
+                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.toast_response_failed), 100);
                 saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
             }
         });

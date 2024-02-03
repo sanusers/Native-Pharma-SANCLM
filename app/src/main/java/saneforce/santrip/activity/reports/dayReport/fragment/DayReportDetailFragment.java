@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -31,11 +30,13 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.R;
 import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
 import saneforce.santrip.activity.reports.dayReport.adapter.DayReportDetailAdapter;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentDayReportDetailBinding;
 import saneforce.santrip.network.ApiInterface;
@@ -57,11 +58,14 @@ public class DayReportDetailFragment extends Fragment {
     SQLite sqLite;
     LoginResponse loginResponse;
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentDayReportDetailBinding.inflate(inflater, container, false);
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         initialisation();
         binding.doctor.setSelected(true);
         getData("1", Constants.DOCTOR);
@@ -252,7 +256,7 @@ public class DayReportDetailFragment extends Fragment {
                     }
                 }else {
                     binding.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(), "Internet is not available", Toast.LENGTH_SHORT).show();
+                    commonUtilsMethods.ShowToast(requireContext(),getString(R.string.no_network),100);
                 }
             }
         });

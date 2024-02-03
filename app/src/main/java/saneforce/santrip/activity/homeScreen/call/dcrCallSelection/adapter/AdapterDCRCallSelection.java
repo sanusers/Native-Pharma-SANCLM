@@ -166,8 +166,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                     cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(),
                     cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
             Intent intent = new Intent(context, CustomerProfile.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-           // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         });
     }

@@ -1,64 +1,35 @@
 package saneforce.santrip.activity.presentation.playPreview;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
+
 import android.content.Context;
-import android.content.Intent;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+
 import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.view.Display;
-import android.view.Gravity;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
+
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
+
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
-import com.github.barteksc.pdfviewer.BuildConfig;
-import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.pojo.detailing.LoadBitmap;
-import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
+
 import saneforce.santrip.activity.presentation.SupportClass;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.santrip.commonClasses.CommonUtilsMethods;
-import saneforce.santrip.network.ApiInterface;
-import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.storage.SharedPref;
 
 public class PlaySlidePagerAdapter extends PagerAdapter {
 

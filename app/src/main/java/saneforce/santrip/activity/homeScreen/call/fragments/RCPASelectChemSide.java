@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.map.custSelection.CustList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectChemistSideBinding;
 import saneforce.santrip.storage.SQLite;
@@ -41,6 +42,7 @@ public class RCPASelectChemSide extends Fragment {
     JSONArray jsonArray;
     JSONObject jsonObject;
     ChemistAdapter CheAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
     @Override
@@ -48,7 +50,10 @@ public class RCPASelectChemSide extends Fragment {
         selectChemistSideBinding = FragmentSelectChemistSideBinding.inflate(inflater);
         View v = selectChemistSideBinding.getRoot();
         sqLite = new SQLite(getContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         AddChemistData();
+
 
         selectChemistSideBinding.tvDummy.setOnClickListener(view -> {
         });

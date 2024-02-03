@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentReportsListBinding;
 
 
@@ -18,20 +19,22 @@ public class ReportsListFragment extends Fragment {
 
     FragmentReportsListBinding binding;
     ReportsAdapter reportsAdapter;
+    CommonUtilsMethods commonUtilsMethods;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentReportsListBinding.inflate(inflater,container,false);
-
+        binding = FragmentReportsListBinding.inflate(inflater, container, false);
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
         populateAdapter();
 
 
         return binding.getRoot();
     }
 
-    public void populateAdapter(){
+    public void populateAdapter() {
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Day Report");
         arrayList.add("Monthly Report");
@@ -39,8 +42,8 @@ public class ReportsListFragment extends Fragment {
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");
 
-        reportsAdapter = new ReportsAdapter(arrayList,requireContext());
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(),4);
+        reportsAdapter = new ReportsAdapter(arrayList, requireContext());
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(requireContext(), 4);
         binding.recView.setLayoutManager(layoutManager);
         binding.recView.setAdapter(reportsAdapter);
     }

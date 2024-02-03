@@ -2,7 +2,10 @@ package saneforce.santrip.activity.homeScreen.fragment;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -37,6 +40,7 @@ import saneforce.santrip.activity.homeScreen.adapters.OutBoxHeaderAdapter;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.OutboxFragmentBinding;
 import saneforce.santrip.network.ApiInterface;
@@ -51,19 +55,22 @@ public class OutboxFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static OutboxFragmentBinding outBoxBinding;
     public static ArrayList<GroupModelClass> listDates = new ArrayList<>();
-    OutBoxHeaderAdapter outBoxHeaderAdapter;
+    @SuppressLint("StaticFieldLeak")
+    public static OutBoxHeaderAdapter outBoxHeaderAdapter;
     SQLite sqLite;
     static NetworkCheckInterface mCheckNetwork;
     ApiInterface apiInterface;
     boolean isCallAvailable;
+    CommonUtilsMethods commonUtilsMethods;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.v("fragment", "OutBox");
         outBoxBinding = OutboxFragmentBinding.inflate(inflater, container, false);
         View v = outBoxBinding.getRoot();
         sqLite = new SQLite(requireContext());
-
-        SetupOutBoxAdapter();
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
+        SetupOutBoxAdapter(sqLite,requireContext());
 
         new Handler().postDelayed(this::refreshPendingFunction, 200);
 
@@ -113,7 +120,6 @@ public class OutboxFragment extends Fragment {
     }
 
     private void refreshPendingFunction() {
-
         SendOfflineData(this::sendingOfflineCalls);
     }
 
@@ -160,7 +166,7 @@ public class OutboxFragment extends Fragment {
                 break;
             }
         } else {
-            SetupOutBoxAdapter();
+            SetupOutBoxAdapter(sqLite,requireContext());
             CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
         }
     }
@@ -197,6 +203,7 @@ public class OutboxFragment extends Fragment {
     }
 
     private void CallSendAPIImage(ArrayList<EcModelClass> ecModelClasses, int position, String id, String jsonValues, String filePath) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
         MultipartBody.Part img = convertImg("EventImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues.toString());
         Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
@@ -268,7 +275,6 @@ public class OutboxFragment extends Fragment {
                                         break;
                                     }
                                 }
-
                                 sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
                             }
 
@@ -296,10 +302,15 @@ public class OutboxFragment extends Fragment {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void SetupOutBoxAdapter() {
-        listDates = sqLite.getOutBoxDate();
-        outBoxHeaderAdapter = new OutBoxHeaderAdapter(requireContext(), listDates);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(requireContext());
+    public static void SetupOutBoxAdapter(SQLite sqLite,Context context) {
+        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            listDates = sqLite.getOutBoxDate(true);
+        } else {
+            listDates = sqLite.getOutBoxDate(false);
+        }
+
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(context, listDates);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         outBoxHeaderAdapter.notifyDataSetChanged();

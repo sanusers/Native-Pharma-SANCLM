@@ -86,7 +86,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     public void onBindViewHolder(@NonNull OutBoxHeaderAdapter.listDataViewholider holder, int position) {
 
         GroupModelClass groupModelClass = groupModelClasses.get(position);
-       // holder.tvDate.setText(groupModelClass.getGroupName());
+        // holder.tvDate.setText(groupModelClass.getGroupName());
         Log.v("gfddsfdf", "2222-----" + groupModelClasses.get(position).isExpanded() + "----" + groupModelClass.isExpanded());
 
 
@@ -95,18 +95,18 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd MMM yyyy");
         holder.tvDate.setText(dateTime.format(formatter2));*/
 
-        SimpleDateFormat spf=new SimpleDateFormat("yyyy-MM-dd");
-        Date newDate= null;
+        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd");
+        Date newDate = null;
         try {
             newDate = spf.parse(groupModelClass.getGroupName());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        spf= new SimpleDateFormat("dd MMM yyyy");
-       String dates = spf.format(newDate);
+        spf = new SimpleDateFormat("dd MMM yyyy");
+        String dates = spf.format(newDate);
         holder.tvDate.setText(dates);
 
-        Log.v("outBox", "---" + groupModelClass.getGroupName() + "--data--" +dates);
+        Log.v("outBox", "---" + groupModelClass.getGroupName() + "--data--" + dates);
 
 
         if (groupModelClass.isExpanded()) {
@@ -221,6 +221,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     }
 
     private void CallSendAPIImage(GroupModelClass groupModelClass, int childPos, int i, String jsonValues, String filePath, String id) {
+        ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
         MultipartBody.Part img = convertImg("EventImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues.toString());
         Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);

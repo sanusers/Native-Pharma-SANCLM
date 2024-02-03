@@ -121,13 +121,13 @@ public class SharedPref {
     }
 
     public static void saveSelectedLanguage(Context context,String language){
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SELECTED_LANGUAGE,language).apply();
     }
 
     public static String getSelectedLanguage(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SELECTED_LANGUAGE,"");
+        return context.getSharedPreferences(SP_NAME_NOT_DELETE,MODE_PRIVATE).getString(SELECTED_LANGUAGE,"");
     }
 
 

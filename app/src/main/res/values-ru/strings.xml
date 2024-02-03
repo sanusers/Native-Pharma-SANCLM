@@ -3,4 +3,6 @@
     <string name="str_app_name">SAN TRIP</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="search">Russia</string>
+    <string name="str_save_settings">Сохранить настройки</string>
+    <string name="user_id">ID пользователя</string>
 </resources>

@@ -113,7 +113,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
                 context.startActivity(intent);
             } else {
-                commonUtilsMethods.ShowToast(context,context.getString(R.string.exceed_tag_limit),100);
+                 commonUtilsMethods.ShowToast(context,context.getString(R.string.exceed_tag_limit),100);
             }
         });
 

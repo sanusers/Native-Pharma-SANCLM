@@ -67,7 +67,8 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         leaveBinding = ActivityLeaveBinding.inflate(getLayoutInflater());
         setContentView(leaveBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-commonUtilsMethods = new CommonUtilsMethods(this);
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
         getRequiredData();
@@ -137,14 +138,14 @@ commonUtilsMethods = new CommonUtilsMethods(this);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getApplicationContext().getString(R.string.toast_response_failed),100);
+                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed),100);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(getApplicationContext(),getApplicationContext().getString(R.string.toast_response_failed),100);
+                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed),100);
             }
         });
     }

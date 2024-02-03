@@ -51,6 +51,7 @@ public class RCPAFragment extends Fragment {
         View v = rcpaBinding.getRoot();
         sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
 
         if (DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
             rcpaBinding.tvSelectChemist.setEnabled(true);
@@ -64,11 +65,11 @@ public class RCPAFragment extends Fragment {
 
         rcpaBinding.btnAddRcpa.setOnClickListener(view -> {
             if (rcpaBinding.tvSelectChemist.getText().toString().isEmpty() || rcpaBinding.tvSelectChemist.getText().toString().equalsIgnoreCase("Select")) {
-                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.select_chemist),100);
+                 commonUtilsMethods.ShowToast(requireContext(),getString(R.string.select_chemist),100);
             } else if (rcpaBinding.tvSelectProduct.getText().toString().isEmpty() || rcpaBinding.tvSelectProduct.getText().toString().equalsIgnoreCase("Select")) {
-                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.select_prd),100);
+                 commonUtilsMethods.ShowToast(requireContext(),getString(R.string.select_prd),100);
             } else if (Objects.requireNonNull(rcpaBinding.edQty.getText()).toString().equalsIgnoreCase("0")) {
-                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.enter_qty),100);
+                 commonUtilsMethods.ShowToast(requireContext(),getString(R.string.enter_qty),100);
             } else {
                 rcpaBinding.llNoRcpa.setVisibility(View.GONE);
                 rcpaBinding.rvRcpaChemistList.setVisibility(View.VISIBLE);
@@ -172,7 +173,7 @@ public class RCPAFragment extends Fragment {
                 }
 
             } else {
-                commonUtilsMethods.ShowToast(requireContext(),requireContext().getString(R.string.select_chemist),100);
+                 commonUtilsMethods.ShowToast(requireContext(),getString(R.string.select_chemist),100);
             }
 
         });

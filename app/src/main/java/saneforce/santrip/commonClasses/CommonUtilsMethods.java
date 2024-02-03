@@ -1,11 +1,12 @@
 package saneforce.santrip.commonClasses;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -13,6 +14,7 @@ import android.location.Geocoder;
 import android.os.Parcelable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -21,7 +23,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.santrip.R;
+import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.LocaleHelper;
 
 
 public class CommonUtilsMethods {
@@ -203,11 +206,32 @@ public class CommonUtilsMethods {
         return sdf.format(c.getTimeInMillis());
     }
 
+    public static String getCurrentDateDashBoard() {
+        Calendar c = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy");
+        return sdf.format(c.getTimeInMillis());
+    }
+
     public static String getCurrentMonthNumber() {
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("M");
         String val = sdf.format(currentTime);
         return val;
+    }
+
+
+    public void setUpLanguage(Context context) {
+        String language = SharedPref.getSelectedLanguage(context);
+        Resources resources = context.getResources();
+        if (language.equalsIgnoreCase("")) {
+            language = "en";
+        }
+        Locale myLocale = new Locale(language);
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration conf = resources.getConfiguration();
+        conf.locale = myLocale;
+        resources.updateConfiguration(conf, dm);
+        LocaleHelper.setLocale(context, language);
     }
 
     public static String getCurrentMonthName() {
@@ -236,6 +260,12 @@ public class CommonUtilsMethods {
     public static String getCurrentDateDMY() {
         Date currentTime = Calendar.getInstance().getTime();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        return sdf.format(currentTime);
+    }
+
+    public static String getCurrentDayNo() {
+        Date currentTime = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("d");
         return sdf.format(currentTime);
     }
 
