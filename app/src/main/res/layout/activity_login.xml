@@ -253,8 +253,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp">
 
                     <TextView
                         android:id="@+id/select_language"
@@ -294,11 +294,11 @@
                         android:id="@+id/languageListView"
                         android:layout_width="@dimen/_60sdp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
                         android:background="@drawable/recyclerview_shape"
                         android:divider="#808080"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:textAlignment="textStart"
                         android:dividerHeight="0.2dp"
+                        android:textAlignment="textStart"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/drop_down"

@@ -91,7 +91,7 @@ public class CustomerProfile extends AppCompatActivity {
                 if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
                     if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                         progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                        PreCallAnalysisFragment.CallPreCallAPI(CustomerProfile.this);
+                        PreCallAnalysisFragment.CallPreCallAPI(getApplicationContext(),CustomerProfile.this);
                     } else {
                         commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
                     }
@@ -116,7 +116,7 @@ public class CustomerProfile extends AppCompatActivity {
             intent1.putExtra("from_activity", "new");
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
 

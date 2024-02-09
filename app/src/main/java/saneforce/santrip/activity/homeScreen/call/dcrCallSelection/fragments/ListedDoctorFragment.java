@@ -62,6 +62,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -127,7 +129,6 @@ public class ListedDoctorFragment extends Fragment {
         sqLite = new SQLite(getContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-
 
         custListArrayList.clear();
         SetupAdapter("", "");
@@ -406,10 +407,13 @@ public class ListedDoctorFragment extends Fragment {
                 jsonObject.put("subdivision_code", SubDivisionCode);
 
                 Call<JsonElement> call = null;
+                Map<String, String> mapString = new HashMap<>();
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
-                    call = apiInterface.getDrMaster(jsonObject.toString());
+                    mapString.put("axn", "table/dcrmasterdata");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()),mapString,jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
-                    call = apiInterface.getSubordinateMaster(jsonObject.toString());
+                    mapString.put("axn", "table/subordinates");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()),mapString,jsonObject.toString());
                 }
 
                 if (call != null) {

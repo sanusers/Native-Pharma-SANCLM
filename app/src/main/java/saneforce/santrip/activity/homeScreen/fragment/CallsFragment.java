@@ -1,9 +1,5 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
-import static saneforce.santrip.activity.homeScreen.HomeDashBoard.skipCheckIn;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,33 +9,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.forms.weekoff.Holiday_fragment;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
-import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
-import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PaintView;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
-import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -56,64 +47,27 @@ public class CallsFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static CallsFragmentBinding binding;
     public static Call_adapter adapter;
-    ApiInterface apiInterface;
     public static String SfType, FwFlag, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SampleValidation, InputValidation;
-    LoginResponse loginResponse;
     public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
-    SQLite sqLite;
     public static boolean isNeedtoAdd;
     public static ProgressDialog progressDialog;
+    ApiInterface apiInterface;
+    LoginResponse loginResponse;
+    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
-
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = CallsFragmentBinding.inflate(inflater, container, false);
-        View v = binding.getRoot();
-        sqLite = new SQLite(requireContext());
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
-        commonUtilsMethods.setUpLanguage(requireContext());
-
-        apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-        getRequiredData();
-        CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
-
-        binding.rlSyncCall.setOnClickListener(v12 -> {
-            if (UtilityClass.isNetworkAvailable(requireContext())) {
-                CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
-            } else {
-                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network), 100);
-            }
-        });
-
-        binding.tvAddCall.setOnClickListener(view -> {
-          //  startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-            if (!skipCheckIn) {
-                if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
-                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan), 100);
-                } else {
-                    startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-                }
-            } else {
-                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_checkin), 100);
-                HomeDashBoard.dialogCheckInOut.show();
-            }
-        });
-
-        return v;
-    }
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, SQLite sqLite, boolean isProgressNeed) {
         TodayCallList.clear();
         CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             SharedPref.setTodayCallList(context, "");
-            if (isProgressNeed)
-                progressDialog = CommonUtilsMethods.createProgressDialog(context);
+            if (isProgressNeed) progressDialog = CommonUtilsMethods.createProgressDialog(context);
             try {
                 apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tableName", "gettodycalls");
                 jsonObject.put("sfcode", SfCode);
-                jsonObject.put("ReqDt", CommonUtilsMethods.getCurrentDate());
+                jsonObject.put("ReqDt", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                 jsonObject.put("division_code", DivCode);
                 jsonObject.put("Rsf", TodayPlanSfCode);
                 jsonObject.put("sf_type", SfType);
@@ -122,14 +76,15 @@ public class CallsFragment extends Fragment {
                 jsonObject.put("subdivision_code", SubDivisionCode);
                 Log.v("TodayCalls", "--json--" + jsonObject);
 
-                Call<JsonArray> getTodayCalls = null;
-                getTodayCalls = apiInterface.getTodayCalls(jsonObject.toString());
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "table/additionaldcrmasterdata");
+                Call<JsonElement> getTodayCalls = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
 
                 ApiInterface finalApiInterface = apiInterface;
-                getTodayCalls.enqueue(new Callback<JsonArray>() {
+                getTodayCalls.enqueue(new Callback<JsonElement>() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
-                    public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         if (response.isSuccessful()) {
                             try {
                                 assert response.body() != null;
@@ -199,58 +154,54 @@ public class CallsFragment extends Fragment {
                                 binding.recyelerview.setLayoutManager(manager);
                                 binding.recyelerview.setAdapter(adapter);
                                 adapter.notifyDataSetChanged();
-                                if (isProgressNeed)
-                                    progressDialog.dismiss();
+                                if (isProgressNeed) progressDialog.dismiss();
                             } catch (Exception e) {
-                                if (isProgressNeed)
-                                    progressDialog.dismiss();
+                                if (isProgressNeed) progressDialog.dismiss();
                                 Log.v("TodayCalls", "--error--" + e);
                             }
                         } else {
-                            if (isProgressNeed)
-                                progressDialog.dismiss();
+                            if (isProgressNeed) progressDialog.dismiss();
                             commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                         }
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-                        if (isProgressNeed)
-                            progressDialog.dismiss();
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                        if (isProgressNeed) progressDialog.dismiss();
                         commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                     }
                 });
             } catch (Exception e) {
-                if (isProgressNeed)
-                    progressDialog.dismiss();
+                if (isProgressNeed) progressDialog.dismiss();
                 Log.v("TodayCalls", "--error--2--" + e);
             }
         } else {
             try {
+                TodayCallList.clear();
+                String CheckDate = "";
+                boolean isDataAvailable = false;
                 if (!SharedPref.getTodayCallList(context).isEmpty()) {
                     JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
-                    TodayCallList.clear();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject json = jsonArray.getJSONObject(i);
-                        TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                    CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
+
+                    if (CheckDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
+                        isDataAvailable = true;
                     }
-                    binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-                    adapter = new Call_adapter(context, TodayCallList, apiInterface);
-                    LinearLayoutManager manager = new LinearLayoutManager(context);
-                    binding.recyelerview.setNestedScrollingEnabled(false);
-                    binding.recyelerview.setHasFixedSize(true);
-                    binding.recyelerview.setLayoutManager(manager);
-                    binding.recyelerview.setAdapter(adapter);
-                } else {
-                    TodayCallList.clear();
-                    binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-                    adapter = new Call_adapter(context, TodayCallList, apiInterface);
-                    LinearLayoutManager manager = new LinearLayoutManager(context);
-                    binding.recyelerview.setNestedScrollingEnabled(false);
-                    binding.recyelerview.setHasFixedSize(true);
-                    binding.recyelerview.setLayoutManager(manager);
-                    binding.recyelerview.setAdapter(adapter);
+
+                    if (isDataAvailable) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject json = jsonArray.getJSONObject(i);
+                            TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                        }
+                    }
                 }
+                binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+                adapter = new Call_adapter(context, TodayCallList, apiInterface);
+                LinearLayoutManager manager = new LinearLayoutManager(context);
+                binding.recyelerview.setNestedScrollingEnabled(false);
+                binding.recyelerview.setHasFixedSize(true);
+                binding.recyelerview.setLayoutManager(manager);
+                binding.recyelerview.setAdapter(adapter);
             } catch (Exception e) {
 
             }
@@ -263,9 +214,9 @@ public class CallsFragment extends Fragment {
             jsonObject.put("CustCode", todayCallListTwo.get(i).getDocCode());
             jsonObject.put("CustType", todayCallListTwo.get(i).getDocNameID());
             jsonObject.put("Dcr_dt", todayCallListTwo.get(i).getCallsDateTime().substring(0, 10));
-            jsonObject.put("month_name", CommonUtilsMethods.getCurrentMonthName());
-            jsonObject.put("Mnth", CommonUtilsMethods.getCurrentMonthNumber());
-            jsonObject.put("Yr", CommonUtilsMethods.getCurrentYear());
+            jsonObject.put("month_name", CommonUtilsMethods.getCurrentInstance("MMMM"));
+            jsonObject.put("Mnth", CommonUtilsMethods.getCurrentInstance("M"));
+            jsonObject.put("Yr", CommonUtilsMethods.getCurrentInstance("yyyy"));
             jsonObject.put("CustName", todayCallListTwo.get(i).getDocName());
             jsonObject.put("town_code", "");
             jsonObject.put("town_name", "");
@@ -278,6 +229,42 @@ public class CallsFragment extends Fragment {
         } catch (Exception ignored) {
 
         }
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = CallsFragmentBinding.inflate(inflater, container, false);
+        View v = binding.getRoot();
+        sqLite = new SQLite(requireContext());
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
+
+        apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
+        getRequiredData();
+        CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
+
+        binding.rlSyncCall.setOnClickListener(v12 -> {
+            if (UtilityClass.isNetworkAvailable(requireContext())) {
+                CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
+            } else {
+                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network), 100);
+            }
+        });
+
+        binding.tvAddCall.setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+          /*  if (!skipCheckIn) {
+                if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan), 100);
+                } else {
+                    startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                }
+            } else {
+                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_checkin), 100);
+                HomeDashBoard.dialogCheckInOut.show();
+            }*/
+        });
+
+        return v;
     }
 
     private void getRequiredData() {

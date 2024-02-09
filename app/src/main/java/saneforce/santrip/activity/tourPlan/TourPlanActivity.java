@@ -1,7 +1,14 @@
 package saneforce.santrip.activity.tourPlan;
 
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.tourPlan.session.SessionEditAdapter.inputDataArray;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,17 +19,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-
 import com.google.firebase.BuildConfig;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -37,19 +36,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 import saneforce.santrip.R;
 import saneforce.santrip.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModelNew;
-import saneforce.santrip.activity.tourPlan.session.SessionInterface;
 import saneforce.santrip.activity.tourPlan.session.SessionEditAdapter;
+import saneforce.santrip.activity.tourPlan.session.SessionInterface;
 import saneforce.santrip.activity.tourPlan.session.SessionViewAdapter;
 import saneforce.santrip.activity.tourPlan.summary.SummaryAdapter;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -65,11 +65,10 @@ import saneforce.santrip.utility.NetworkStatusTask;
 import saneforce.santrip.utility.TimeUtils;
 
 public class TourPlanActivity extends AppCompatActivity {
-    private ActivityTourPlanBinding binding;
+    public static LinearLayout addSaveBtnLayout, clrSaveBtnLayout;
     ApiInterface apiInterface;
     SQLite sqLite;
     LoginResponse loginResponse;
-    public static LinearLayout addSaveBtnLayout, clrSaveBtnLayout;
     CalendarAdapter calendarAdapter = new CalendarAdapter();
     SummaryAdapter summaryAdapter = new SummaryAdapter();
     SessionEditAdapter sessionEditAdapter = new SessionEditAdapter();
@@ -87,6 +86,31 @@ public class TourPlanActivity extends AppCompatActivity {
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable;
     CommonUtilsMethods commonUtilsMethods;
+    private ActivityTourPlanBinding binding;
+
+    public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
+        return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+    }
+
+    public static ModelClass.SessionList prepareSessionListForAdapter() {
+        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
+        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+
+        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+
+        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+    }
+
+    public static ModelClass.SessionList prepareSessionListForAdapter1(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq) {
+        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
+    }
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -477,142 +501,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     }
 
-    public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
-        return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
-    }
 
-
-    private void SaveTpLocalMonthWise(ReceiveModelNew receiveModel, ArrayList<ModelClass> modelClasses, String arrayName, String day, String monthName, String date, String dayName, String monthNo, String year) {
-        ModelClass.SessionList sessionList = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
-
-        isDataAvailable = true;
-        boolean session2 = false;
-        boolean session3 = false;
-
-        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-        String remarks = receiveModel.getDayRemarks();
-        String submittedTime = receiveModel.getSubmitted_time_dt();
-
-        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
-        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
-
-        if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-            if (!receiveModel.getClusterName().isEmpty())
-                clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
-            if (!receiveModel.getJWNames().isEmpty())
-                jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
-            if (!receiveModel.getDr_Name().isEmpty())
-                drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-            if (!receiveModel.getChem_Name().isEmpty())
-                chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-            if (!receiveModel.getStockist_Name().isEmpty())
-                stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-        }
-        sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
-
-        if (!receiveModel.getWTName2().isEmpty()) {
-            session2 = true;
-            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
-            String remarks2 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-                if (!receiveModel.getJWNames2().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-                if (!receiveModel.getDr_two_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                if (!receiveModel.getChem_Name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-                if (!receiveModel.getStockist_two_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
-            }
-            sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
-
-        }
-
-        if (!receiveModel.getWTName3().isEmpty()) {
-            session3 = true;
-            String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
-            String remarks3 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName3().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-                if (!receiveModel.getJWNames3().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-                if (!receiveModel.getDr_three_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-                if (!receiveModel.getChem_three_name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-                if (!receiveModel.getStockist_three_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-            }
-            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
-        }
-
-        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-        sessionLists.add(sessionList);
-        if (session2)
-            sessionLists.add(sessionList2);
-        if (session3)
-            sessionLists.add(sessionList3);
-        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-        modelClass.setSubmittedTime(submittedTime);
-        modelClasses.add(modelClass);
-        Log.v("getTpOneMonth", "444");
-        SaveData(arrayName, modelClasses, day, monthName, "0");
-    }
-
-    private ModelClass.SessionList prepareSessionListForAdapterEmpty() {
-        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
-        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
-
-        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
-    }
-
-
-    private void SetUpOneMonthAPI(LocalDate localDate, String arrayName) {
+   /* private void SetUpOneMonthAPI(LocalDate localDate, String arrayName) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
             if (status) {
                 try {
@@ -800,7 +690,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     });
 
 
-          /*  Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
+          *//*  Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
 
             call.enqueue(new Callback<JsonElement>() {
                 @Override
@@ -957,7 +847,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                     binding.progressBar.setVisibility(View.GONE);
                 }
-            });*/
+            });*//*
 
                 } catch (Exception e) {
                     Log.v("getTpOneMonth", "error--111-" + e);
@@ -968,6 +858,135 @@ public class TourPlanActivity extends AppCompatActivity {
             }
         });
         networkStatusTask.execute();
+    }*/
+
+    private void SaveTpLocalMonthWise(ReceiveModelNew receiveModel, ArrayList<ModelClass> modelClasses, String arrayName, String day, String monthName, String date, String dayName, String monthNo, String year) {
+        ModelClass.SessionList sessionList = new ModelClass.SessionList();
+        ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
+        ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
+
+        isDataAvailable = true;
+        boolean session2 = false;
+        boolean session3 = false;
+
+        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
+        String remarks = receiveModel.getDayRemarks();
+        String submittedTime = receiveModel.getSubmitted_time_dt();
+
+        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+
+        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
+        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
+
+        if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
+            if (!receiveModel.getClusterName().isEmpty())
+                clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
+            if (!receiveModel.getJWNames().isEmpty())
+                jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
+            if (!receiveModel.getDr_Name().isEmpty())
+                drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
+            if (!receiveModel.getChem_Name().isEmpty())
+                chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
+            if (!receiveModel.getStockist_Name().isEmpty())
+                stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
+        }
+        sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
+
+        if (!receiveModel.getWTName2().isEmpty()) {
+            session2 = true;
+            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
+            String remarks2 = receiveModel.getDayRemarks2();
+            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
+            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
+            clusterArray = new ArrayList<>();
+            jcArray = new ArrayList<>();
+            drArray = new ArrayList<>();
+            chemArray = new ArrayList<>();
+            stkArray = new ArrayList<>();
+            unListedDrArray = new ArrayList<>();
+            cipArray = new ArrayList<>();
+            hospArray = new ArrayList<>();
+
+            if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
+                if (!receiveModel.getClusterName().isEmpty())
+                    clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
+                if (!receiveModel.getJWNames2().isEmpty())
+                    jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
+                if (!receiveModel.getDr_two_name().isEmpty())
+                    drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
+                if (!receiveModel.getChem_Name().isEmpty())
+                    chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
+                if (!receiveModel.getStockist_two_name().isEmpty())
+                    stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
+            }
+            sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
+
+        }
+
+        if (!receiveModel.getWTName3().isEmpty()) {
+            session3 = true;
+            String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
+            String remarks3 = receiveModel.getDayRemarks2();
+            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
+            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
+            clusterArray = new ArrayList<>();
+            jcArray = new ArrayList<>();
+            drArray = new ArrayList<>();
+            chemArray = new ArrayList<>();
+            stkArray = new ArrayList<>();
+            unListedDrArray = new ArrayList<>();
+            cipArray = new ArrayList<>();
+            hospArray = new ArrayList<>();
+
+            if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
+                if (!receiveModel.getClusterName3().isEmpty())
+                    clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
+                if (!receiveModel.getJWNames3().isEmpty())
+                    jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
+                if (!receiveModel.getDr_three_name().isEmpty())
+                    drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
+                if (!receiveModel.getChem_three_name().isEmpty())
+                    chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
+                if (!receiveModel.getStockist_three_name().isEmpty())
+                    stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
+            }
+            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
+        }
+
+        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+        sessionLists.add(sessionList);
+        if (session2)
+            sessionLists.add(sessionList2);
+        if (session3)
+            sessionLists.add(sessionList3);
+        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+        modelClass.setSubmittedTime(submittedTime);
+        modelClasses.add(modelClass);
+        Log.v("getTpOneMonth", "444");
+        SaveData(arrayName, modelClasses, day, monthName, "0");
+    }
+
+    private ModelClass.SessionList prepareSessionListForAdapterEmpty() {
+        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
+        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
+
+        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
+        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
+
+        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     private void SaveData(String arrayName, ArrayList<ModelClass> modelClasses, String day, String monthName, String status) {
@@ -1212,27 +1231,6 @@ public class TourPlanActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return modelClasses;
-    }
-
-
-    public static ModelClass.SessionList prepareSessionListForAdapter() {
-        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
-        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
-
-        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> chemistArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> stockArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
-    }
-
-    public static ModelClass.SessionList prepareSessionListForAdapter1(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq) {
-        return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
     public void populateCalendarAdapter(ArrayList<ModelClass> arrayList) {
@@ -1481,7 +1479,9 @@ public class TourPlanActivity extends AppCompatActivity {
                     jsonObject.put("tp_year", LocalDate.now().getYear());
                     Log.v("tpGetPlan", "--json--" + jsonObject);
 
-                    Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
+                    Map<String, String> mapString = new HashMap<>();
+                    mapString.put("axn", "get/tp");
+                    Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -2128,7 +2128,10 @@ public class TourPlanActivity extends AppCompatActivity {
             jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
             jsonObject.put("Year", localDate1.getYear());
 
-            Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
+
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "get/tp");
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -2199,10 +2202,12 @@ public class TourPlanActivity extends AppCompatActivity {
                         jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
 
-                        Call<JsonObject> call = apiInterface.saveTPStatus(jsonObject.toString());
-                        call.enqueue(new Callback<JsonObject>() {
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "save/tp");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
                             @Override
-                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.v("tpApproval", "--ressapproval--" + response.body());
                                 binding.progressBar.setVisibility(View.GONE);
                                 if (response.body() != null) {
@@ -2227,7 +2232,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 binding.progressBar.setVisibility(View.GONE);
                                 sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                             }
@@ -2461,10 +2466,12 @@ public class TourPlanActivity extends AppCompatActivity {
     public void sendTpForApproval(JSONArray jsonArray, ArrayList<ModelClass> modelClassArrayList, String date, String month, Boolean statusOffline) {
         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
         Log.v("tpApproval", "--json--" + jsonArray.toString());
-        Call<JsonObject> call = apiInterface.saveTP(jsonArray.toString());
-        call.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "savenew/tp");
+        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonArray.toString());
+        call.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 Log.v("tpApproval", "--res--" + response.body());
                 try {
                     if (response.isSuccessful() && response.body() != null) {
@@ -2525,7 +2532,7 @@ public class TourPlanActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 if (statusOffline) {
                     binding.progressBar.setVisibility(View.GONE);
                 }

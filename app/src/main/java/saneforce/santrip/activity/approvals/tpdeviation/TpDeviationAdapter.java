@@ -9,16 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,12 +82,14 @@ CommonUtilsMethods commonUtilsMethods;
         } catch (Exception ignored) {
 
         }
-        Call<JsonObject> callApprovedTpDev;
-        callApprovedTpDev = api_interface.saveTpDeviation(jsonTpDeviation.toString());
 
-        callApprovedTpDev.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/approvals");
+        Call<JsonElement> callApprovedTpDev = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTpDeviation.toString());
+
+        callApprovedTpDev.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -109,7 +113,7 @@ CommonUtilsMethods commonUtilsMethods;
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }

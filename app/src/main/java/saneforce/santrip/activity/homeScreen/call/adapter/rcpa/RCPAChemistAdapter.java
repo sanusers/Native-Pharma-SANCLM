@@ -56,7 +56,7 @@ public class RCPAChemistAdapter extends RecyclerView.Adapter<RCPAChemistAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.chemist_name.setText(chemistNames.get(position).getName());
-        holder.tv_total.setText(String.format("%s  %s", context.getResources().getString(R.string.total), chemistNames.get(position).getTotalrcpa()));
+        holder.tv_total.setText(String.format("%s  %s", context.getResources().getString(R.string.total), chemistNames.get(position).getTotalRcpa()));
         rv_prd_list = holder.rv_prdList;
 
         FilterPrdList = new ArrayList<>();

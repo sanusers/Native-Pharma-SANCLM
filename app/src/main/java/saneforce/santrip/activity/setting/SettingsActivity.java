@@ -288,7 +288,6 @@ public class SettingsActivity extends AppCompatActivity {
                                     SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
                                     SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
-
                                     String[] splitUrl = logoUrl.split("/");
                                     SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
                                     SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));

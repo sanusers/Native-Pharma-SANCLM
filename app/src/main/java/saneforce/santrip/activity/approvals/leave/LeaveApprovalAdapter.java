@@ -21,11 +21,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -129,11 +132,13 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
         } catch (Exception ignored) {
 
         }
-        Call<JsonObject> callRejectedLeave;
-        callRejectedLeave = api_interface.saveLeaveApproval(jsonLeave.toString());
-        callRejectedLeave.enqueue(new Callback<JsonObject>() {
+
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/approvals");
+        Call<JsonElement> callRejectedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonLeave.toString());
+        callRejectedLeave.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -156,7 +161,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                  commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
                 dialogReject.dismiss();
@@ -183,12 +188,13 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
         }
 
-        Call<JsonObject> callApprovedLeave;
-        callApprovedLeave = api_interface.saveLeaveApproval(jsonLeave.toString());
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/approvals");
+        Call<JsonElement> callApprovedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonLeave.toString());
 
-        callApprovedLeave.enqueue(new Callback<JsonObject>() {
+        callApprovedLeave.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -208,7 +214,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                  commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
             }

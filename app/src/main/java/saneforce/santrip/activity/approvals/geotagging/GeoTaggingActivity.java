@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.approvals.geotagging;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.approvals.ApprovalsActivity.CIPCaption;
 import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistCaption;
 import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistNeed;
@@ -30,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,6 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -265,11 +269,13 @@ public class GeoTaggingActivity extends AppCompatActivity {
 
         }
 
-        Call<JsonArray> callGetGeoTagList;
-        callGetGeoTagList = api_interface.getGeoTagList(jsonGeoTagList.toString());
-        callGetGeoTagList.enqueue(new Callback<JsonArray>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/approvals");
+        Call<JsonElement> callGetGeoTagList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGeoTagList.toString());
+
+        callGetGeoTagList.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     Log.v("getGeoTag", "-response-" + response.body());
                     progressDialog.dismiss();
@@ -295,7 +301,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
             }
         });

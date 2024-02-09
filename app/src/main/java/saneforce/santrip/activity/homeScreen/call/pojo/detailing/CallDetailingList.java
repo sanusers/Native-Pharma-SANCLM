@@ -91,7 +91,6 @@ public class CallDetailingList implements Comparable<CallDetailingList> {
         Date inputDate = null;
         newDate = formatDateTime(o.getStartTime(), "HH:mm:ss", "EE MMM dd HH:mm:ss z yyyy");
         inputDate = formatDateTime(getStartTime(), "HH:mm:ss", "EE MMM dd HH:mm:ss z yyyy");
-        // inputDate = formatDateTime(getStartTime(), "HH:mm:ss", "YYYY-MM-DD HH:mm:ss");
         return inputDate.compareTo(newDate);
     }
 

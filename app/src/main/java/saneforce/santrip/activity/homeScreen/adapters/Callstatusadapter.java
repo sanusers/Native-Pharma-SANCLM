@@ -120,7 +120,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     commonUtilsMethods.ShowToast(context, context.getString(R.string.not_chose_after_date), 100);
                 }
             }
-           /* if (list.getDateID().equalsIgnoreCase(CommonUtilsMethods.getCurrentDateDashBoard()) || list.getDateID() > CommonUtilsMethods.getCurrentDateDashBoard()) {
+           /* if (list.getDateID().equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy")) || list.getDateID() > CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy")) {
                 if (!list.getDateID().equalsIgnoreCase("")) {
                     HomeDashBoard.binding.textDate.setText(String.format("%s %s, %s", fullMonthName, list.getDateID(), year));
                     HomeDashBoard.binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);

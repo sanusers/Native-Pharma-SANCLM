@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import saneforce.santrip.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.ChildListModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
-
 import saneforce.santrip.response.LoginResponse;
 
 
@@ -82,7 +82,11 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String OFFLINE_CHECKOUTTIME = "offline_checkout_time";
     public static final String OFFLINE_JSON_CHECKIN = "offline_check_in_json";
     public static final String OFFLINE_JSON_CHECKOUT = "offline_check_out_json";
-
+    public static final String OFFLINE_DATE_COUNT = "offline_date_count";
+    //Presentation Table
+    public static final String PRESENTATION_TABLE = "presentation_table";
+    public static final String PRESENTATION_NAME = "presentation_name";
+    public static final String PRESENTATION_DATA = "presentation_data";
     //Line Chat table
     private static final String LINE_CHAT_DATA_TABLE = "LINE_CHAT_DATA_TABLE";
     private static final String LINECHAR_CUSTCODE = "LINECHAR_CUSTCODE";
@@ -100,11 +104,6 @@ public class SQLite extends SQLiteOpenHelper {
     private static final String LINECHAR_AMSLNO = "LINECHAR_AMSLNO";
     private static final String LINECHAR_FM_INDICATOR = "LINECHAR_FM_INDICATOR";
 
-    //Presentation Table
-    public static final String PRESENTATION_TABLE = "presentation_table";
-    public static final String PRESENTATION_NAME = "presentation_name";
-    public static final String PRESENTATION_DATA = "presentation_data";
-
     public SQLite(@Nullable Context context) {
         super(context, DATA_BASE_NAME, null, 1);
     }
@@ -115,13 +114,10 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + MASTER_SYNC_TABLE + "(" + MASTER_KEY + " text," + MASTER_VALUE + " text," + SYNC_STATUS + " INTEGER" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_OFFLINE_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_MONTH_STATUS + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_ONLINE_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_TABLE + "(" + CALL_DATE + " text," + CALL_TIME + " text," + CALL_IN_TIME + " text," + CALL_OUT_TIME + " text," + CALL_CUS_NAME + " text," + CALL_CUS_TYPE + " text,"
-                + CALL_CUS_CODE + " text," + CALL_JSON_VALUES + " text," + CALL_SYNC_STATUS + " text," + CALL_SYNC_COUNT + " INTEGER" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_TABLE + "(" + CALL_DATE + " text," + CALL_TIME + " text," + CALL_IN_TIME + " text," + CALL_OUT_TIME + " text," + CALL_CUS_NAME + " text," + CALL_CUS_TYPE + " text," + CALL_CUS_CODE + " text," + CALL_JSON_VALUES + " text," + CALL_SYNC_STATUS + " text," + CALL_SYNC_COUNT + " INTEGER" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_EC_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CALL_DATE_EC + " text," + CALL_IMAGE_NAME + " text," + CALL_FILE_PATH + " text," + CALL_JSON_VALUES_EC + " text" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + OFFLINE_CHECKINOUT_TABLE + "(" + OFFLINE_DATE_CHECKINOUT + " text," + OFFLINE_CHECKINTIME + " text," + OFFLINE_CHECKOUTTIME + " text," + OFFLINE_JSON_CHECKIN + " text," + OFFLINE_JSON_CHECKOUT + " text" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " +
-                LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " +
-                LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + OFFLINE_CHECKINOUT_TABLE + "(" + OFFLINE_DATE_CHECKINOUT + " text," + OFFLINE_CHECKINTIME + " text," + OFFLINE_CHECKOUTTIME + " text," + OFFLINE_JSON_CHECKIN + " text," + OFFLINE_JSON_CHECKOUT + " text," + OFFLINE_DATE_COUNT + " text" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " + LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " + LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + PRESENTATION_TABLE + "(" + PRESENTATION_NAME + " TEXT PRIMARY KEY, " + PRESENTATION_DATA + " TEXT)");
     }
 
@@ -221,8 +217,7 @@ public class SQLite extends SQLiteOpenHelper {
 
         JSONArray jsonArray = new JSONArray();
         try {
-            if (data != null && !data.isEmpty())
-                return jsonArray = new JSONArray(data.toString());
+            if (data != null && !data.isEmpty()) return jsonArray = new JSONArray(data);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -259,46 +254,72 @@ public class SQLite extends SQLiteOpenHelper {
     //Check In Out table
     public void saveCheckIn(String date, String checkInTime, String jsonValues) {
         SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE + " where " + OFFLINE_DATE_CHECKINOUT + "='" + date + "';", null);
         ContentValues contentValues = new ContentValues();
         contentValues.put(OFFLINE_DATE_CHECKINOUT, date);
         contentValues.put(OFFLINE_CHECKINTIME, checkInTime);
+        contentValues.put(OFFLINE_CHECKOUTTIME, "");
+        contentValues.put(OFFLINE_JSON_CHECKOUT, "");
         contentValues.put(OFFLINE_JSON_CHECKIN, jsonValues);
-
-        String[] args = new String[]{date};
+        contentValues.put(OFFLINE_DATE_COUNT, String.valueOf(cursor.getCount()));
+        db.insert(OFFLINE_CHECKINOUT_TABLE, null, contentValues);
+        db.close();
+      /*  String[] args = new String[]{date};
         int updated = db.update(OFFLINE_CHECKINOUT_TABLE, contentValues, OFFLINE_DATE_CHECKINOUT + "=?", args);
         if (updated <= 0) {
             db.insert(OFFLINE_CHECKINOUT_TABLE, null, contentValues);
-        }
-        db.close();
+        }*/
     }
 
     public void saveCheckOut(String date, String checkOutTime, String jsonValues) {
         SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE + " where " + OFFLINE_DATE_CHECKINOUT + "='" + date + "';", null);
         ContentValues contentValues = new ContentValues();
         contentValues.put(OFFLINE_DATE_CHECKINOUT, date);
         contentValues.put(OFFLINE_CHECKOUTTIME, checkOutTime);
         contentValues.put(OFFLINE_JSON_CHECKOUT, jsonValues);
+        contentValues.put(OFFLINE_DATE_COUNT, String.valueOf(cursor.getCount()));
 
-        String[] args = new String[]{date};
-        int updated = db.update(OFFLINE_CHECKINOUT_TABLE, contentValues, OFFLINE_DATE_CHECKINOUT + "=?", args);
+        int updated = db.update(OFFLINE_CHECKINOUT_TABLE, contentValues, OFFLINE_DATE_CHECKINOUT + "=? and " + OFFLINE_DATE_COUNT + "=?", new String[]{date, String.valueOf(cursor.getCount() - 1)});
         if (updated <= 0) {
             db.insert(OFFLINE_CHECKINOUT_TABLE, null, contentValues);
         }
         db.close();
     }
 
-    public String getCheckInTime(String date, String whichTime, SQLiteDatabase db) {
+    public ArrayList<CheckInOutModelClass> getCheckInOutTime(String date, SQLiteDatabase db) {
         Cursor cursor = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE + " where " + OFFLINE_DATE_CHECKINOUT + "='" + date + "';", null);
-        String CheckTime = "";
+        String dates = "", jsonInData = "", jsonOutData = "", CheckInTime = "", CheckOutTime = "", CheckCount = "";
+        ArrayList<CheckInOutModelClass> list = new ArrayList<>();
         while (cursor.moveToNext()) {
-            if (whichTime.equalsIgnoreCase("checkIn")) {
-                CheckTime = cursor.getString(1);
-            } else {
-                CheckTime = cursor.getString(2);
+            dates = cursor.getString(0);
+            CheckInTime = cursor.getString(1);
+            CheckOutTime = cursor.getString(2);
+            jsonInData = cursor.getString(3);
+            jsonOutData = cursor.getString(4);
+            CheckCount = cursor.getString(5);
+            if (dates != null) {
+                list.add(new CheckInOutModelClass(dates, CheckInTime, CheckOutTime, jsonInData, jsonOutData, CheckCount));
             }
         }
-        return CheckTime;
+        return list;
     }
+
+    public void deleteOfflineCheckInOut(String date, String count) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + OFFLINE_CHECKINOUT_TABLE + " WHERE " + OFFLINE_DATE_COUNT + " = '" + count + "' " + " AND " + OFFLINE_DATE_CHECKINOUT + "='" + date + "';");
+        db.close();
+    }
+
+    public int getCountCheckInOut(String date) {
+        int Count;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE + " where " + OFFLINE_DATE_CHECKINOUT + "='" + date + "';", null);
+        Count = cursor.getCount();
+        db.close();
+        return Count;
+    }
+
 
     //Event Capture table
     public void saveOfflineEC(String date, String img_name, String filepath, String jsonValues) {
@@ -405,15 +426,6 @@ public class SQLite extends SQLiteOpenHelper {
             db.insert(CALL_OFFLINE_TABLE, null, contentValues);
         }
         db.close();
-    }
-
-    public int getCountOffline(String date) {
-        int Count;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE + " where " + CALL_DATE + "='" + date + "';", null);
-        Count = cursor.getCount();
-        db.close();
-        return Count;
     }
 
     public void deleteOfflineCalls() {
@@ -544,10 +556,11 @@ public class SQLite extends SQLiteOpenHelper {
                 groupNamesList = new ArrayList<>();
 
                 if (isCheckInOutNeed) {
-                    groupNamesList.add(new ChildListModelClass("Check IN", 0, false, getCheckInTime(list.get(i).getGroupName(), "checkIn", db)));
+                    ArrayList<CheckInOutModelClass> checkInOut = getCheckInOutTime(list.get(i).getGroupName(), db);
+                    groupNamesList.add(new ChildListModelClass("Checking In/Out", 0, false, true, checkInOut, "", ""));
                 }
 
-                groupNamesList.add(new ChildListModelClass("WorkPlan", 1, false, ""));
+                groupNamesList.add(new ChildListModelClass("WorkPlan", 1, false));
 
                 ArrayList<OutBoxCallList> outBoxList = getOutBoxCallsList(list.get(i).getGroupName(), db);
                 groupNamesList.add(new ChildListModelClass("Calls", 2, false, true, outBoxList, ""));
@@ -555,9 +568,12 @@ public class SQLite extends SQLiteOpenHelper {
                 ArrayList<EcModelClass> ecModelClasses = getEcList(list.get(i).getGroupName(), db);
                 groupNamesList.add(new ChildListModelClass("Event Captured", 3, false, true, ecModelClasses));
 
-                if (isCheckInOutNeed) {
-                    groupNamesList.add(new ChildListModelClass("Check OUT", 4, false, getCheckInTime(list.get(i).getGroupName(), "checkOut", db)));
-                }
+             /*   if (isCheckInOutNeed) {
+                    ArrayList<CheckInOutModelClass> checkOut = getCheckInTime(list.get(i).getGroupName(), "checkOut", db);
+                    //   if (checkOut.get(0).getTime() != null) {
+                    groupNamesList.add(new ChildListModelClass("Check OUT", 4, false, checkOut, checkOut.get(0).getTime()));
+                    //  }
+                }*/
 
                 listData.add(new GroupModelClass(list.get(i).getGroupName(), groupNamesList, false));
             }
@@ -693,8 +709,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void saveMonthlySyncStatusMaster(String month, String status, String
-            rejectionReason) {
+    public void saveMonthlySyncStatusMaster(String month, String status, String rejectionReason) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TP_MONTH, month);
@@ -713,16 +728,14 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_OFFLINE_TABLE + " where " + TP_MONTH + "='" + month + "';", null);
         String data = "";
-        if (cursor.moveToNext())
-            data = cursor.getString(1);
+        if (cursor.moveToNext()) data = cursor.getString(1);
 
         cursor.close();
         db.close();
         JSONArray jsonArray = new JSONArray();
 
         try {
-            if (!data.isEmpty())
-                jsonArray = new JSONArray(data);
+            if (!data.isEmpty()) jsonArray = new JSONArray(data);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -734,10 +747,8 @@ public class SQLite extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_OFFLINE_TABLE + " where " + TP_MONTH + "='" + month + "';", null);
         String data = "";
         if (cursor.moveToNext()) {
-            if (required.equalsIgnoreCase("status"))
-                data = cursor.getString(2);
-            if (required.equalsIgnoreCase("reason"))
-                data = cursor.getString(4);
+            if (required.equalsIgnoreCase("status")) data = cursor.getString(2);
+            if (required.equalsIgnoreCase("reason")) data = cursor.getString(4);
         }
         cursor.close();
         db.close();
@@ -762,8 +773,7 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     //Online table
-    public void saveTPDataOnlineTable(String month, String data, String status, String
-            rejectionReason) {
+    public void saveTPDataOnlineTable(String month, String data, String status, String rejectionReason) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TP_MONTH, month);
@@ -783,16 +793,14 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + TOUR_PLAN_ONLINE_TABLE + " where " + TP_MONTH + "='" + month + "';", null);
         String data = "";
-        if (cursor.moveToNext())
-            data = cursor.getString(1);
+        if (cursor.moveToNext()) data = cursor.getString(1);
 
         cursor.close();
         db.close();
         JSONArray jsonArray = new JSONArray();
 
         try {
-            if (!data.isEmpty())
-                jsonArray = new JSONArray(data);
+            if (!data.isEmpty()) jsonArray = new JSONArray(data);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -851,10 +859,7 @@ public class SQLite extends SQLiteOpenHelper {
     //---------------------------------------------
 
     // insertdata Li nechart
-    public void insertLinecharData(String custCode, String custType, String dcrDt, String
-            monthName, String mnth, String yr, String custName, String townCode,
-                                   String townName, String dcrFlag, String sfCode, String transSlNo, String
-                                           amslNo, String fw_indicater) {
+    public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode, String townName, String dcrFlag, String sfCode, String transSlNo, String amslNo, String fw_indicater) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(LINECHAR_CUSTCODE, custCode);
@@ -929,8 +934,7 @@ public class SQLite extends SQLiteOpenHelper {
         String custType = "0";
         String Fieldwork = "F";
 
-        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " +
-                " AND " + LINECHAR_FM_INDICATOR + " = '" + Fieldwork + "' " + " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
+        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " + " AND " + LINECHAR_FM_INDICATOR + " = '" + Fieldwork + "' " + " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
         Cursor cursor = db.rawQuery(query, null);
 
         int count = 0;

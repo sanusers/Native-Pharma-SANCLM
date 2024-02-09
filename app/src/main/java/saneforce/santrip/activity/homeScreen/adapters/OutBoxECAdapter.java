@@ -4,6 +4,7 @@ import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.list
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,8 +41,10 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     SQLite sqLite;
+    Activity activity;
 
-    public OutBoxECAdapter(Context context, ArrayList<EcModelClass> ecModelClasses) {
+    public OutBoxECAdapter(Activity activity,Context context, ArrayList<EcModelClass> ecModelClasses) {
+     this.activity = activity;
         this.context = context;
         this.ecModelClasses = ecModelClasses;
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -96,7 +99,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         ecModelClasses.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, ecModelClasses.size());
-        outBoxHeaderAdapter = new OutBoxHeaderAdapter(context, listDates);
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity,context, listDates);
         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         outBoxHeaderAdapter.notifyDataSetChanged();

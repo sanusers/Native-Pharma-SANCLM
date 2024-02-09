@@ -100,6 +100,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             gpsTrack = new GPSTrack(this);
             lat = gpsTrack.getLatitude();
             lng = gpsTrack.getLongitude();
+
             loginResponse = new LoginResponse();
             loginResponse = sqLite.getLoginData();
 

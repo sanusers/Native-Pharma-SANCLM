@@ -14,6 +14,7 @@ import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.list
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -52,14 +53,15 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
     SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    Activity activity;
 
 
-    public OutBoxCallAdapter(Context context, ArrayList<OutBoxCallList> outBoxCallLists) {
+    public OutBoxCallAdapter(Activity activity,Context context, ArrayList<OutBoxCallList> outBoxCallLists) {
         this.context = context;
+        this.activity = activity;
         this.outBoxCallLists = outBoxCallLists;
         sqLite = new SQLite(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
-
     }
 
     @NonNull
@@ -103,9 +105,29 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuEdit) {
                     Intent intent = new Intent(context, DCRCallActivity.class);
+
                     CallActivityCustDetails = new ArrayList<>();
-                    CallActivityCustDetails.add(0, new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", outBoxCallLists.get(position).getJsonData()));
-                    intent.putExtra("isDetailedRequired", "false");
+                    CallActivityCustDetails.add(0, new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", "", outBoxCallLists.get(position).getJsonData()));
+                    boolean isDetailingAvailable = false;
+                    try {
+                        JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
+                        JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
+                        for (int i = 0; i < jsonPrdArray.length(); i++) {
+                            JSONObject js = jsonPrdArray.getJSONObject(i);
+                            if (js.getString("Group").equalsIgnoreCase("1")) {
+                                isDetailingAvailable = true;
+                                break;
+                            }
+                        }
+                    } catch (Exception ignored) {
+
+                    }
+
+                    if (isDetailingAvailable) {
+                        intent.putExtra("isDetailedRequired", "true");
+                    } else {
+                        intent.putExtra("isDetailedRequired", "false");
+                    }
                     intent.putExtra("from_activity", "edit_local");
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
@@ -163,6 +185,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         });
 
     }
+
 
     private void UpdateInputSample(String jsonArray) {
         try {
@@ -236,7 +259,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         outBoxCallLists.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, outBoxCallLists.size());
-        outBoxHeaderAdapter = new OutBoxHeaderAdapter(context, listDates);
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity,context, listDates);
         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         outBoxHeaderAdapter.notifyDataSetChanged();

@@ -1,7 +1,17 @@
 package saneforce.santrip.activity.reports.dayReport.fragment;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -11,15 +21,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -34,6 +35,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +45,8 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.reports.CalendarAdapter;
 import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
-import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
 import saneforce.santrip.activity.reports.dayReport.adapter.DayReportAdapter;
+import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
 import saneforce.santrip.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -76,14 +79,14 @@ public class DayReportFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentDayReportBinding.inflate(inflater,container,false);
+        binding = FragmentDayReportBinding.inflate(inflater, container, false);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
         dataViewModel.getDate().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                binding.date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4,TimeUtils.FORMAT_19,s));
+                binding.date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s));
             }
         });
 
@@ -105,9 +108,9 @@ public class DayReportFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length()>0) {
-                   binding.searchClearIcon.setVisibility(View.VISIBLE);
-                }else {
+                if (charSequence.length() > 0) {
+                    binding.searchClearIcon.setVisibility(View.VISIBLE);
+                } else {
                     binding.searchClearIcon.setVisibility(View.GONE);
                 }
                 dayReportAdapter.getFilter().filter(charSequence);
@@ -129,7 +132,7 @@ public class DayReportFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public void initialisation(){
+    public void initialisation() {
         sqLite = new SQLite(getContext());
         localDate = LocalDate.now();
         loginResponse = sqLite.getLoginData();
@@ -137,7 +140,8 @@ public class DayReportFragment extends Fragment {
 
         ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
         activity.title.setText("Day Report");
-        Type type = new TypeToken<ArrayList<DayReportModel>>(){}.getType();
+        Type type = new TypeToken<ArrayList<DayReportModel>>() {
+        }.getType();
         arrayListOfReportData = new Gson().fromJson(dataViewModel.getSummaryData().getValue(), type);
 
     }
@@ -149,58 +153,58 @@ public class DayReportFragment extends Fragment {
 
         LocalDate firstOfMonth = localDate.withDayOfMonth(1);
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
-        switch (dayOfWeek){
-            case 1:{
+        switch (dayOfWeek) {
+            case 1: {
                 dayOfWeek = 2;
                 break;
             }
-            case 2:{
+            case 2: {
                 dayOfWeek = 3;
                 break;
             }
-            case 3:{
+            case 3: {
                 dayOfWeek = 4;
                 break;
             }
-            case 4:{
+            case 4: {
                 dayOfWeek = 5;
                 break;
             }
-            case 5:{
+            case 5: {
                 dayOfWeek = 6;
                 break;
             }
-            case 6:{
+            case 6: {
                 dayOfWeek = 7;
                 break;
             }
-            case 7:{
+            case 7: {
                 dayOfWeek = 1;
                 break;
             }
         }
 
-        for (int i = 1; i<=42; i++) {
-            if (i<dayOfWeek) {
+        for (int i = 1; i <= 42; i++) {
+            if (i < dayOfWeek) {
                 daysInMonthArray.add("");
-            }else {
-                if (i<daysInMonth + dayOfWeek) {
+            } else {
+                if (i < daysInMonth + dayOfWeek) {
                     daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
                 }
             }
         }
 
         //To eliminate the excess empty dates which comes with the LocalDate library
-        if (daysInMonthArray.size()>=22 && daysInMonthArray.size()<=28) {
-            for (int i = daysInMonthArray.size(); i<28; i++) {
+        if (daysInMonthArray.size() >= 22 && daysInMonthArray.size() <= 28) {
+            for (int i = daysInMonthArray.size(); i < 28; i++) {
                 daysInMonthArray.add("");
             }
-        }else if (daysInMonthArray.size()>=29 && daysInMonthArray.size()<=35) {
-            for (int i = daysInMonthArray.size(); i<35; i++) {
+        } else if (daysInMonthArray.size() >= 29 && daysInMonthArray.size() <= 35) {
+            for (int i = daysInMonthArray.size(); i < 35; i++) {
                 daysInMonthArray.add("");
             }
-        }else if (daysInMonthArray.size()>=36 && daysInMonthArray.size()<=42) {
-            for (int i = daysInMonthArray.size(); i<42; i++) {
+        } else if (daysInMonthArray.size() >= 36 && daysInMonthArray.size() <= 42) {
+            for (int i = daysInMonthArray.size(); i < 42; i++) {
                 daysInMonthArray.add("");
             }
         }
@@ -208,19 +212,19 @@ public class DayReportFragment extends Fragment {
         return daysInMonthArray;
     }
 
-    private String monthYearFromDate(LocalDate date,String requiredFormat) {
+    private String monthYearFromDate(LocalDate date, String requiredFormat) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(requiredFormat);
         return date.format(formatter);
     }
 
-    public void calendarDialog(){
+    public void calendarDialog() {
 
-        if(alertDialog != null){
+        if (alertDialog != null) {
             calendarDialog.show();
-        }else{
+        } else {
             alertDialog = new AlertDialog.Builder(getContext());
             LayoutInflater layoutInflater = this.getLayoutInflater();
-            View view = layoutInflater.inflate(R.layout.day_report_date_picker_layout,null);
+            View view = layoutInflater.inflate(R.layout.day_report_date_picker_layout, null);
             alertDialog.setView(view);
 
             RecyclerView recyclerView = view.findViewById(R.id.dayPickerRecView);
@@ -228,7 +232,7 @@ public class DayReportFragment extends Fragment {
             ImageView prevArrow = view.findViewById(R.id.calendar_prev_button);
             ImageView nextArrow = view.findViewById(R.id.calendar_next_button);
 
-            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19,TimeUtils.FORMAT_23,binding.date.getText().toString()));
+            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_23, binding.date.getText().toString()));
             localDate = LocalDate.parse(binding.date.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
             nextArrow.setEnabled(false);
             nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
@@ -238,7 +242,7 @@ public class DayReportFragment extends Fragment {
                     nextArrow.setEnabled(true);
                     nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
                     localDate = localDate.minusMonths(1);
-                    monthYear.setText(monthYearFromDate(localDate,TimeUtils.FORMAT_23));
+                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
                     daysArrayList = daysInMonthArray(localDate);
                     populateCalendarAdapter(recyclerView);
                 }
@@ -248,10 +252,10 @@ public class DayReportFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     localDate = localDate.plusMonths(1);
-                    monthYear.setText(monthYearFromDate(localDate,TimeUtils.FORMAT_23));
+                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
                     daysArrayList = daysInMonthArray(localDate);
                     populateCalendarAdapter(recyclerView);
-                    if(LocalDate.now().equals(localDate)){
+                    if (LocalDate.now().equals(localDate)) {
                         nextArrow.setEnabled(false);
                         nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                     }
@@ -265,27 +269,27 @@ public class DayReportFragment extends Fragment {
 
     }
 
-    public void populateCalendarAdapter(RecyclerView recyclerView){
+    public void populateCalendarAdapter(RecyclerView recyclerView) {
         calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), new OnDayClickInterface() {
             @Override
             public void onDayClicked(int position, String date, ModelClass modelClass) {
                 calendarDialog.cancel();
-                getData(monthYearFromDate(localDate,TimeUtils.FORMAT_24) + "-" + date);
+                getData(monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + date);
             }
         });
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),7);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(calendarAdapter);
 
     }
 
-    public void getData(String date){
+    public void getData(String date) {
 
         binding.progressBar.setVisibility(View.VISIBLE);
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), new NetworkStatusTask.NetworkStatusInterface() {
             @Override
             public void isNetworkAvailable(Boolean status) {
-                if(status){
+                if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
 
@@ -299,42 +303,46 @@ public class DayReportFragment extends Fragment {
                         jsonObject.put("state_code", loginResponse.getState_Code());
                         jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
                         jsonObject.put("rptDt", date);
-                        Log.v("jsonDayReport","---" + loginResponse);
+                        Log.v("jsonDayReport", "---" + loginResponse);
 
-                        Call<JsonElement> call = apiInterface.getReports(jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 binding.progressBar.setVisibility(View.GONE);
                                 try {
-                                    Log.v("jsonDayReport","--response-" + response.body());
-                                    if(response.isSuccessful() && response.body() != null){
+                                    Log.v("jsonDayReport", "--response-" + response.body());
+                                    if (response.isSuccessful() && response.body() != null) {
                                         JsonElement jsonElement = response.body();
                                         JSONArray jsonArray = new JSONArray();
-                                        if(jsonElement.isJsonArray()){
+                                        if (jsonElement.isJsonArray()) {
                                             jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                         }
-                                        Type type = new TypeToken<ArrayList<DayReportModel>>(){}.getType();
+                                        Type type = new TypeToken<ArrayList<DayReportModel>>() {
+                                        }.getType();
                                         arrayListOfReportData = new Gson().fromJson(jsonArray.toString(), type);
                                         dataViewModel.saveSummaryData(jsonArray.toString());
                                         dataViewModel.saveDate(date);
                                         populateAdapter();
                                     }
-                                }catch (JSONException e){
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
+
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 binding.progressBar.setVisibility(View.GONE);
                             }
                         });
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else{
+                } else {
                     binding.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.ShowToast(requireContext(),getString(R.string.no_network),100);
+                    commonUtilsMethods.ShowToast(requireContext(), getString(R.string.no_network), 100);
                 }
             }
         });
@@ -342,8 +350,8 @@ public class DayReportFragment extends Fragment {
 
     }
 
-    public void populateAdapter(){
-        if(arrayListOfReportData.size() > 0)
+    public void populateAdapter() {
+        if (arrayListOfReportData.size() > 0)
             binding.noReportFoundTxt.setVisibility(View.GONE);
         else
             binding.noReportFoundTxt.setVisibility(View.VISIBLE);

@@ -277,14 +277,11 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     public class SlideTimer extends TimerTask {
         @Override
         public void run() {
-            PlaySlidePreviewActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (binding.viewPager.getCurrentItem() < arrayList.size() - 1) {
-                        binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() + 1);
-                    } else {
-                        timer.cancel();
-                    }
+            PlaySlidePreviewActivity.this.runOnUiThread(() -> {
+                if (binding.viewPager.getCurrentItem() < arrayList.size() - 1) {
+                    binding.viewPager.setCurrentItem(binding.viewPager.getCurrentItem() + 1);
+                } else {
+                    timer.cancel();
                 }
             });
         }

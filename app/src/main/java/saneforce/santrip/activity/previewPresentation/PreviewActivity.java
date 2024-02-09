@@ -12,10 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -32,28 +29,24 @@ import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
-import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.santrip.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix;
 import saneforce.santrip.activity.previewPresentation.fragment.Customized;
 import saneforce.santrip.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.santrip.activity.previewPresentation.fragment.Speciality;
-import saneforce.santrip.activity.profile.CustomerProfile;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
-import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.storage.SQLite;
 
 public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static saneforce.santrip.databinding.ActivityPreviewBinding previewBinding;
+    public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
     PreviewTabAdapter viewPagerAdapter;
     SQLite sqLite;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
     String startT, endT;
     CommonUtilsMethods commonUtilsMethods;
-    public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "",SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -181,21 +174,21 @@ public class PreviewActivity extends AppCompatActivity {
                         Log.v("printing_all_time", "----" + time);
                     }
                     Log.v("printing_all_time", time);
-                    callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentDate()));
+                    callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
                     finalPrdNam = arrayStore.get(j).getBrdName();
                 }
             }
 
             if (arrayStore.size() > 0) {
                 String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
-                callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentDate()));
+                callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             }
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
             intent1.putExtra("isDetailedRequired", "true");
             intent1.putExtra("from_activity", "new");
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
-                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             }
             startActivity(intent1);
         });

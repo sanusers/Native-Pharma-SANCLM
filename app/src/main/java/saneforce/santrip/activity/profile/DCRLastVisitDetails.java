@@ -32,6 +32,18 @@ public class DCRLastVisitDetails {
     @Expose
     private String aMSLNo;
 
+    public DCRLastVisitDetails(String custCode, VstDate vstDate, String prodSamp, String prodDet, String inputs, String feedbkCd, String feedbk, String remks, String aMSLNo) {
+        this.custCode = custCode;
+        this.vstDate = vstDate;
+        this.prodSamp = prodSamp;
+        this.prodDet = prodDet;
+        this.inputs = inputs;
+        this.feedbkCd = feedbkCd;
+        this.feedbk = feedbk;
+        this.remks = remks;
+        this.aMSLNo = aMSLNo;
+    }
+
     public String getCustCode() {
         return custCode;
     }
@@ -104,7 +116,7 @@ public class DCRLastVisitDetails {
         this.aMSLNo = aMSLNo;
     }
 
-    public class VstDate {
+    public static class VstDate {
 
         @SerializedName("date")
         @Expose
@@ -115,6 +127,13 @@ public class DCRLastVisitDetails {
         @SerializedName("timezone")
         @Expose
         private String timezone;
+
+        public VstDate() {
+        }
+
+        public VstDate(String date) {
+            this.date = date;
+        }
 
         public String getDate() {
             return date;

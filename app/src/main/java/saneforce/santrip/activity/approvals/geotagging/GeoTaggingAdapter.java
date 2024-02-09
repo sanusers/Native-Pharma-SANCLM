@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.approvals.geotagging;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.approvals.ApprovalsActivity.CIPCaption;
 import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistCaption;
 import static saneforce.santrip.activity.approvals.ApprovalsActivity.DrCaption;
@@ -24,11 +25,14 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -195,12 +199,13 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
 
         }
 
-        Call<JsonObject> callGeoTag;
-        callGeoTag = api_interface.SendGeoTagApprovalReject(jsonGeoTag.toString());
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/approvals");
+        Call<JsonElement> callGeoTag = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGeoTag.toString());
 
-        callGeoTag.enqueue(new Callback<JsonObject>() {
+        callGeoTag.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -224,7 +229,7 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
             }

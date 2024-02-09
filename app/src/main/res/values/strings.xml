@@ -151,6 +151,8 @@
     <string name="no_select_date">Not Select Date</string>
     <string name="select_from_date">Not Select Date</string>
     <string name="toast_response_failed">Response Failed! Please Try Again</string>
+    <string name="access_denied">Access Denied! Contact Administrator</string>
+    <string name="login_successfully">Login successfully!</string>
     <string name="tag_failed">Tag Failed! Try Again</string>
     <string name="no_jw">No JointWork</string>
     <string name="back">Back</string>
@@ -219,8 +221,11 @@
     <string name="reports">Reports</string>
     <string name="activity">Activity</string>
     <string name="near_me">Near Me</string>
+    <string name="quiz">Quiz</string>
     <string name="survey">Survey</string>
     <string name="forms">Forms</string>
+    <string name="profiling">Profiling</string>
+    <string name="remainder_call">Remainder Call</string>
     <string name="date_time"><![CDATA[Date & Time]]></string>
     <string name="sync">Sync</string>
     <string name="select_hq">Select HeadQuarter</string>
@@ -335,4 +340,7 @@
     <string name="login">Login</string>
     <string name="clear_data">Clear data</string>
     <string name="logout">Logout</string>
+    <string name="remainder_call_for_doctor">Remainder Call for Doctor</string>
+    <string name="hq_selection">HQ Selection</string>
+    <string name="listed_doctor_selection">Listed Doctor Selection</string>
 </resources>

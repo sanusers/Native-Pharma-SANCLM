@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.approvals.tpdeviation;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +9,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -138,12 +142,12 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         } catch (Exception ignored) {
 
         }
-        Call<JsonArray> callGetTpDevList;
-        callGetTpDevList = api_interface.getTpDeviationList(jsonTpDeviation.toString());
-
-        callGetTpDevList.enqueue(new Callback<JsonArray>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/approvals");
+        Call<JsonElement> callGetTpDevList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTpDeviation.toString());
+        callGetTpDevList.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 if (response.isSuccessful()) {
                     try {
@@ -167,7 +171,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
             }

@@ -40,7 +40,7 @@
         android:fontFamily="@font/satoshi_bold"
         android:gravity="center"
         android:padding="@dimen/_2sdp"
-        android:text="Listed Doctor Selection"
+        android:text="@string/listed_doctor_selection"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -52,13 +52,13 @@
     <TextView
         android:id="@+id/txt_selected_hq"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/_22sdp"
         android:layout_gravity="center"
         android:layout_margin="@dimen/_6sdp"
         android:background="@drawable/border_shape_spinner"
         android:fontFamily="@font/satoshi_medium"
-        android:gravity="left|center"
-        android:hint="HQ Selection"
+        android:gravity="start|center"
+        android:hint="@string/hq_selection"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_2sdp"
         android:textColor="@color/black"
@@ -78,7 +78,7 @@
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/search_cust"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/_22sdp"
         android:layout_margin="@dimen/_6sdp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="5dp"
@@ -123,11 +123,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_cust" />
 
-    <View
+    <TextView
         android:id="@+id/dummy_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
+        android:background="#7A000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -143,7 +144,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_hq"
         app:layout_constraintVertical_bias="0.0">
 
 

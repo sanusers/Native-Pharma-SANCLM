@@ -27,7 +27,7 @@ import androidx.lifecycle.Observer;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,12 +64,11 @@ public class LoginActivity extends AppCompatActivity {
     String navigateFrom = "";
     String userId = "";
     LoginViewModel loginViewModel = new LoginViewModel();
-    private int passwordNotVisible = 1;
     CommonUtilsMethods commonUtilsMethods;
     ArrayAdapter<String> languageAdapter;
     Resources resources;
     String language;
-
+    private int passwordNotVisible = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +104,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         binding.eyeImage.setOnClickListener(view -> {
             if (passwordNotVisible == 1) {
                 binding.password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -116,7 +114,6 @@ public class LoginActivity extends AppCompatActivity {
                 binding.eyeImage.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.eye_visible));
                 passwordNotVisible = 1;
             }
-
             binding.password.setSelection(binding.password.length());
         });
 
@@ -142,13 +139,7 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.clearData.setOnClickListener(view -> {
             if (sqLite.isOutBoxDataAvailable()) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Warning!")
-                        .setIcon(getDrawable(R.drawable.icon_sync_failed))
-                        .setMessage("Outbox Data Calls will be deleted, Do you want to Continue?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles())
-                        .setNegativeButton(android.R.string.no, null).show();
+                new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
             } else {
                 DeleteAllFiles();
             }
@@ -201,10 +192,10 @@ public class LoginActivity extends AppCompatActivity {
 
         assert navigateFrom != null;
         if (navigateFrom.equalsIgnoreCase("Setting")) {
-          //  binding.userId.setEnabled(true);
+            //  binding.userId.setEnabled(true);
         } else {
             binding.userId.setText(SharedPref.getLoginId(LoginActivity.this));
-          //  binding.userId.setEnabled(false);
+            //  binding.userId.setEnabled(false);
         }
 
         SetUpLanguage();
@@ -348,15 +339,20 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("location", "0.0 : 0.0");
 
             Log.e("test", "login master obj : " + jsonObject);
-            loginViewModel.loginProcess(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()), jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonObject>() {
+            loginViewModel.loginProcess(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()), jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonElement>() {
                 @Override
-                public void onChanged(JsonObject jsonObject) {
+                public void onChanged(JsonElement jsonObject) {
                     binding.progressBar.setVisibility(View.GONE);
                     try {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
                         if (responseObject.getBoolean("success")) {
-                            Log.e("test", "login response : " + jsonObject);
-                            process(responseObject);
+                            if (responseObject.getString("Android_Detailing").equals("1")) {
+                                Log.e("test", "login response : " + jsonObject);
+                                commonUtilsMethods.ShowToast(context, getString(R.string.login_successfully), 100);
+                                process(responseObject);
+                            } else {
+                                commonUtilsMethods.ShowToast(context, getString(R.string.access_denied), 100);
+                            }
                         } else {
                             if (responseObject.has("msg")) {
                                 commonUtilsMethods.ShowToast(context, responseObject.getString("msg"), 100);
@@ -382,6 +378,7 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
             if (SharedPref.getAutomassyncFromSP(LoginActivity.this)) {
+                SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                 Intent intent = new Intent(LoginActivity.this, HomeDashBoard.class);
                 startActivity(intent);
             } else {
@@ -404,13 +401,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.rlHead.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 

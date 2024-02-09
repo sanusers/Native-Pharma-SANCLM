@@ -108,7 +108,7 @@ public class Holiday_fragment extends Fragment {
             } else {
                 weeklist.setVisibility(View.GONE);
                 constraintNoData.setVisibility(View.VISIBLE);
-                holy_year.setText(CommonUtilsMethods.getCurrentYear());
+                holy_year.setText(CommonUtilsMethods.getCurrentInstance("yyyy"));
             }
         } catch (Exception e) {
             e.printStackTrace();

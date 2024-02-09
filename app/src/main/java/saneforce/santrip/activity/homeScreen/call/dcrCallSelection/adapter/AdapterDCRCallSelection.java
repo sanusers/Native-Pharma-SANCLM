@@ -109,7 +109,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentDate()) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
+                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
                         isVisitedToday = true;
                         break;
                     }
@@ -147,7 +147,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
     private void goNextActivity(int position) {
         tv_cusName.setText(cusListArrayList.get(position).getName());
-        tv_dateTime.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+        tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
         dialogCheckIn.show();
 
         img_Close.setOnClickListener(v -> dialogCheckIn.dismiss());

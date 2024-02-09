@@ -501,8 +501,7 @@
                 app:itemBackground="@drawable/drawer_item_bg"
                 app:itemIconSize="@dimen/_10sdp"
                 app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
-                app:itemTextColor="@color/black_45"
-                app:menu="@menu/activity_navigation_drawer_drawer" />
+                app:itemTextColor="@color/black_45" />
 
 
         </androidx.drawerlayout.widget.DrawerLayout>

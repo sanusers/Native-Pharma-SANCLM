@@ -42,7 +42,6 @@ public class DetailedFragment extends Fragment {
     }
 
     private void dummyAdapter() {
-        Log.v("sdfsdf", "dummyAdapter: " + callDetailingLists.size() + "---" + callDetailingLists.toString());
         detailedFinalCallAdapter = new DetailedFinalCallAdapter(getActivity(), getContext(), callDetailingLists);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         rv_detailing_list.setLayoutManager(mLayoutManager);

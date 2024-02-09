@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.leave;
 
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.commonClasses.UtilityClass.hideKeyboard;
 
 import android.annotation.SuppressLint;
@@ -35,6 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,8 +48,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -343,11 +347,7 @@ public class Leave_Application extends AppCompatActivity {
 
     public void leave_avalabledetails() {
         try {
-            String baseUrl = SharedPref.getBaseWebUrl(getApplicationContext());
-            String pathUrl = SharedPref.getPhpPathUrl(getApplicationContext());
-            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-
-            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
             sqLite = new SQLite(getApplicationContext());
             sqLite.getWritableDatabase();
@@ -376,12 +376,14 @@ public class Leave_Application extends AppCompatActivity {
             jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
             Log.d("JSonobj", String.valueOf(jsonObject));
 
-            Call<JsonArray> call = null;
-            call = apiInterface.getLeavesetdata(jsonObject.toString());
+            Map<String, String> qry = new HashMap<>();
+            qry.put("axn", "get/leave");
+            Call<JsonElement> call = null;
+            call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()),qry, jsonObject.toString());
             if (call != null) {
-                call.enqueue(new Callback<JsonArray>() {
+                call.enqueue(new Callback<JsonElement>() {
                     @Override
-                    public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                    public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
                         if (response.isSuccessful()) {
                             Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
@@ -415,7 +417,7 @@ public class Leave_Application extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         List_LeaveDates.clear();
                         Fromdate.setText("");
                         Todate.setText("");
@@ -637,14 +639,14 @@ public class Leave_Application extends AppCompatActivity {
 
 
                 Log.d("save_obj", String.valueOf(jsonobj));
-
-                Call<JsonArray> call = null;
-                call = apiInterface.getleavesave(jsonobj.toString());
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "save/leavemodule");
+                Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonobj.toString());
 
                 if (call != null) {
-                    call.enqueue(new Callback<JsonArray>() {
+                    call.enqueue(new Callback<JsonElement>() {
                         @Override
-                        public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
 
                             if (response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
@@ -655,7 +657,7 @@ public class Leave_Application extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Toast.makeText(Leave_Application.this, "case failure1", Toast.LENGTH_SHORT).show();
                         }
                     });

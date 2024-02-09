@@ -49,23 +49,20 @@ public class E_DetailingAnalysisFragment extends Fragment {
 
         ViewTreeObserver vto = e_detailing_layout.getViewTreeObserver();
 
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
+        vto.addOnGlobalLayoutListener(() -> {
 
-                int getlayout  = e_detailing_layout.getMeasuredWidth();
+            int getlayout  = e_detailing_layout.getMeasuredWidth();
 
 
-                int width = (int) (getlayout/ 3-8);
-                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
-                param.setMargins(0, 5, 10, 0);
-                doc_layout.setLayoutParams(param);
-                che_layout.setLayoutParams(param);
-                stokiest_layout.setLayoutParams(param);
-                unlistered_layout.setLayoutParams(param);
+            int width = (int) (getlayout/ 3-8);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+            param.setMargins(0, 5, 10, 0);
+            doc_layout.setLayoutParams(param);
+            che_layout.setLayoutParams(param);
+            stokiest_layout.setLayoutParams(param);
+            unlistered_layout.setLayoutParams(param);
 
 
-            }
         });
 
 

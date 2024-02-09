@@ -9,7 +9,6 @@ import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCal
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.StateCode;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SubDivisionCode;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SelectedTab;
-import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SpecialityCode;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.brandMatrixBinding;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.getSelectedMatrix;
@@ -20,15 +19,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,14 +42,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -219,10 +215,13 @@ public class DrSelectionSide extends Fragment {
                 jsonObject.put("subdivision_code", SubDivisionCode);
 
                 Call<JsonElement> call = null;
+                Map<String, String> mapString = new HashMap<>();
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
-                    call = apiInterface.getDrMaster(jsonObject.toString());
+                    mapString.put("axn", "table/dcrmasterdata");
+                    call  = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()),mapString,jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
-                    call = apiInterface.getSubordinateMaster(jsonObject.toString());
+                    mapString.put("axn", "table/subordinates");
+                    call  = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()),mapString,jsonObject.toString());
                 }
 
                 if (call != null) {

@@ -35,6 +35,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         this.context = context;
         this.custListArrayList = custListArrayList;
         this.custListArrayListNew = custListArrayListNew;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -46,7 +47,6 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(custListArrayList.get(position).getName());
         holder.tv_category.setText(custListArrayList.get(position).getCategory());
         holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
@@ -153,7 +153,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name, tv_category, tv_specialist, tv_area, tv_count, tv_view, tv_verified;
         ConstraintLayout constraint_main;
 

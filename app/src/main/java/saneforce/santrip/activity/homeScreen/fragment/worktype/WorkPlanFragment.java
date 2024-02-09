@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.homeScreen.fragment.worktype;
 
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.DivCode;
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.EmpId;
@@ -49,8 +50,10 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -118,7 +121,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
-        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+        if (CheckInOutNeed.equalsIgnoreCase("1")) {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
         } else {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit));
@@ -151,7 +154,18 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlheadquates2.setOnClickListener(this);
         binding.llDelete.setOnClickListener(this);
 
-        setUpMyDayplan();
+        if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+            if (UtilityClass.isNetworkAvailable(requireContext())) {
+                syncMyDayPlan();
+                SharedPref.setCheckDateTodayPlan(requireContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+            } else {
+                setUpMyDayplan();
+            }
+        } else {
+            setUpMyDayplan();
+        }
+
+
         getLocalData();
         return view;
     }
@@ -651,8 +665,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             MyDayPlanSubmit();
                         }
                     }
-
-
                 } else {
                     Toast.makeText(getActivity(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                 }
@@ -670,7 +682,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btnsumit:
-                if (CheckInOutNeed.equalsIgnoreCase("0")) {
+                if (CheckInOutNeed.equalsIgnoreCase("1") && !SharedPref.getCheckInTime(requireContext()).isEmpty()) {
                     gpsTrack = new GPSTrack(requireContext());
                     latitude = gpsTrack.getLatitude();
                     longitude = gpsTrack.getLongitude();
@@ -693,17 +705,24 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         jsonCheck.put("sf_emp_id", SfEmpId);
                         jsonCheck.put("sfname", SfName);
                         jsonCheck.put("Employee_Id", EmpId);
-                        jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
+                        jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
+                        jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
+                        jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
                         Log.v("CheckInOut", "--json--" + jsonCheck);
                     } catch (JSONException ignored) {
                     }
-                    if (UtilityClass.isNetworkAvailable(requireContext())) {
+                   /* if (UtilityClass.isNetworkAvailable(requireContext())) {
                         CallCheckOutAPI();
-                    } else {
-                        sqLite.saveCheckOut(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), jsonCheck.toString());
-                        CallDialogAfterCheckOut();
-                        SetupOutBoxAdapter(sqLite, requireContext());
-                    }
+                    } else {*/
+                    sqLite.saveCheckOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                    SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                    SharedPref.setCheckInTime(requireContext(), "");
+                    SharedPref.setCheckDateTodayPlan(requireContext(), "");
+                    SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
+                    CallDialogAfterCheckOut();
+                    // }
+                } else {
+                    commonUtilsMethods.ShowToast(requireContext(), getString(R.string.submit_checkin), 100);
                 }
 
 //                if (mSubmitflag.equalsIgnoreCase("S1")) {
@@ -728,12 +747,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
     private void CallCheckOutAPI() {
-
-        Call<JsonArray> callCheckInOut;
-        callCheckInOut = api_interface.saveCheckInOut(jsonCheck.toString());
-        callCheckInOut.enqueue(new Callback<JsonArray>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/activity");
+        Call<JsonElement> callCheckInOut = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonCheck.toString());
+        callCheckInOut.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
                 if (response.isSuccessful()) {
@@ -746,6 +765,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                         if (CheckInOutStatus.equalsIgnoreCase("1")) {
                             CallDialogAfterCheckOut();
+                            SharedPref.setCheckInTime(requireContext(), "");
+                            SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                         } else {
                             commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_leave_posted), 100);
                         }
@@ -759,7 +780,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_response_failed), 100);
             }
         });
@@ -780,12 +801,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
         tvHeading.setText(getResources().getString(R.string.check_out));
 
-        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
         tvLat.setText(String.valueOf(latitude));
         tvLong.setText(String.valueOf(longitude));
         tvAddress.setText(address);
 
-        btnClose.setOnClickListener(v -> dialogAfterCheckOut.dismiss());
+        btnClose.setOnClickListener(v -> {
+            dialogAfterCheckOut.dismiss();
+            try {
+                HomeDashBoard.dialogCheckInOut.show();
+            } catch (Exception ignored) {
+
+            }
+        });
 
         dialogAfterCheckOut.show();
     }
@@ -854,11 +882,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_worktype", "");
             Log.e("VALUES", jsonObject.toString());
 
-            Call<JsonObject> saveMyDayPlan = api_interface.saveMydayPlan(jsonObject.toString());
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "edetsave/dayplan");
+            Call<JsonElement> saveMyDayPlan = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
 
-            saveMyDayPlan.enqueue(new Callback<JsonObject>() {
+            saveMyDayPlan.enqueue(new Callback<JsonElement>() {
                 @Override
-                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     Log.d("todayCallList:Code", response.code() + " - " + response);
                     if (response.isSuccessful()) {
                         binding.progressSumit.setVisibility(View.GONE);
@@ -887,8 +917,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    Log.e("VALUES", "" + t);
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    Log.e("VALUES", String.valueOf(t));
 //                    binding.progressSumit.setVisibility(View.GONE);
                     commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_response_failed), 100);
                 }
@@ -981,7 +1011,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObject.put("state_code", loginResponse.getState_Code());
                 jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
 
-                Call<JsonElement> call = api_interface.getDrMaster(jsonObject.toString());
+                Map<String, String> mapString = new HashMap<>();
+                mapString.put("axn", "table/dcrmasterdata");
+                Call<JsonElement> call = api_interface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
 
                 if (call != null) {
                     call.enqueue(new Callback<JsonElement>() {
@@ -1220,7 +1252,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             } else {
                 binding.cardPlan2.setVisibility(View.GONE);
-                HomeDashBoard.binding.textDate.setText(CommonUtilsMethods.getCurrentDateDashBoard());
+                HomeDashBoard.binding.textDate.setText(CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy"));
                 SharedPref.setTodayDayPlanSfCode(requireContext(), "");
                 SharedPref.setTodayDayPlanSfName(requireContext(), "");
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
@@ -1238,10 +1270,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public void syncMyDayPlan() {
 
         try {
-            String baseUrl = SharedPref.getBaseWebUrl(requireContext());
-            String pathUrl = SharedPref.getPhpPathUrl(requireContext());
-            String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
-            api_interface = RetrofitClient.getRetrofit(getActivity(), baseUrl + replacedUrl);
+            api_interface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(requireContext()));
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", "gettodaytpnew");
@@ -1254,7 +1283,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
             jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
 
-            Call<JsonElement> call = api_interface.getDrMaster(jsonObject.toString());
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "table/dcrmasterdata");
+            Call<JsonElement> call = api_interface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
             call.enqueue(new Callback<JsonElement>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {

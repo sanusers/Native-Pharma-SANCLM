@@ -10,18 +10,19 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class LoginViewModel extends ViewModel {
 
     private final LoginRepo loginRepo;
-    private MutableLiveData<JsonObject> mutableLiveData;
+    private MutableLiveData<JsonElement> mutableLiveData;
 
     public LoginViewModel(){
         loginRepo = new LoginRepo();
     }
 
-    public LiveData<JsonObject> loginProcess(Context context, String url, String object) {
+    public LiveData<JsonElement> loginProcess(Context context, String url, String object) {
         if(mutableLiveData==null){
             mutableLiveData = loginRepo.requestLogin(context,url,object);
         }

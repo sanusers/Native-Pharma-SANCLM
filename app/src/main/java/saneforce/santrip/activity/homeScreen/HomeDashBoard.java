@@ -1,7 +1,9 @@
 package saneforce.santrip.activity.homeScreen;
 
+import static android.Manifest.permission.READ_MEDIA_AUDIO;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 import static saneforce.santrip.commonClasses.Constants.APP_MODE;
 import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
@@ -14,8 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
@@ -26,7 +26,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +38,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,6 +45,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -53,20 +53,24 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -77,13 +81,13 @@ import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.activity.forms.Forms_activity;
 import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
 import saneforce.santrip.activity.homeScreen.adapters.CustomPagerAdapter;
-import saneforce.santrip.activity.homeScreen.adapters.OutBoxHeaderAdapter;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallStatusModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EventCalenderModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.ModelNavDrawer;
 import saneforce.santrip.activity.leave.Leave_Application;
 import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.map.MapsActivity;
@@ -91,6 +95,7 @@ import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.myresource.MyResource_Activity;
 import saneforce.santrip.activity.presentation.presentation.PresentationActivity;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
+import saneforce.santrip.activity.remainderCall.RemainderCallActivity;
 import saneforce.santrip.activity.reports.ReportsActivity;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -100,6 +105,7 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.response.CustomSetupResponse;
 import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -107,13 +113,14 @@ import saneforce.santrip.utility.NetworkChangeReceiver;
 import saneforce.santrip.utility.NetworkCheckInterface;
 import saneforce.santrip.utility.TimeUtils;
 
-
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     @SuppressLint("StaticFieldLeak")
     public static ActivityHomeDashBoardBinding binding;
-    static NetworkCheckInterface mCheckNetwork;
     public static int DeviceWith;
+    public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
+    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, PresentationNeed, NearMeNeed, QuizNeed, ProfileNeed, ActivityNeed, ReminderCallNeed, InputValidation, SurveyNeed, TpNeed, CheckInOutNeed;
+    public static boolean skipCheckIn;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
     GPSTrack gpsTrack;
@@ -122,16 +129,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     SQLite sqLite;
     ApiInterface apiInterface;
     LoginResponse loginResponse;
+    CustomSetupResponse customSetupResponse;
     IntentFilter intentFilter;
     NetworkChangeReceiver receiver;
-    OutBoxHeaderAdapter outBoxHeaderAdapter;
     Callstatusadapter callstatusadapter;
-    public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
     TabLayoutAdapter leftViewPagerAdapter;
     ArrayList<EventCalenderModelClass> calendarDays = new ArrayList<>();
-    private int passwordNotVisible = 1, passwordNotVisible1 = 1;
-    private LocalDate selectedDate;
-    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, InputValidation, CheckInOutNeed;
     DrawerLayout.LayoutParams layoutParams;
     TextView tvDateTime, tvName, tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading;
     Button btnCheckIn, btnClose;
@@ -139,15 +142,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     double latitude, longitude;
     String CheckInOutStatus, address;
     JSONObject jsonCheck;
-
     ArrayList<EventCalenderModelClass> callsatuslist = new ArrayList<>();
-    public static boolean isFinishCall, skipCheckIn;
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
     String holidayMode = "", weeklyOffCaption = "";
-    Resources resources;
-    String language;
-
+    ArrayList<ModelNavDrawer> arrayNav = new ArrayList<>();
+    private int passwordNotVisible = 1, passwordNotVisible1 = 1;
+    private LocalDate selectedDate;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -159,12 +160,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         super.onResume();
-        if (isFinishCall) {
-            isFinishCall = false;
-            finish();
-            startActivity(getIntent());
-        }
-
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -173,9 +168,24 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+                CommonUtilsMethods.RequestPermissions(this, new String[]{READ_MEDIA_IMAGES, READ_MEDIA_AUDIO, READ_MEDIA_VIDEO}, false);
+            }
+        } else {
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, false);
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 5);
+        }
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
                 CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
             }
         } else {
@@ -195,13 +205,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -226,8 +230,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         getRequiredData();
 
-        if (CheckInOutNeed.equalsIgnoreCase("0") &&
-                !SharedPref.getCheckTodayDate(this).equalsIgnoreCase(new SimpleDateFormat("yyyy/MM/dd", Locale.US).format(new Date()))) {
+        if (CheckInOutNeed.equalsIgnoreCase("1") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+            SharedPref.setCheckInTime(getApplicationContext(),"");
             CheckInOutDate();
         } else {
             skipCheckIn = false;
@@ -245,17 +249,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         binding.viewDummy.setVisibility(View.VISIBLE);
 
-
-        if (SfType.equalsIgnoreCase("1")) {
-            binding.navView.getMenu().clear();
-            binding.navView.inflateMenu(R.menu.activity_navigation_drawer_mr);
-        } else {
-            binding.navView.getMenu().clear();
-            binding.navView.inflateMenu(R.menu.activity_navigation_drawer_drawer);
-        }
-
-        //  layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
-        //binding.navView.setLayoutParams(layoutParams);
         layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
         layoutParams.width = DeviceWith / 3;
         binding.navView.setLayoutParams(layoutParams);
@@ -274,8 +267,26 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         leftViewPagerAdapter.add(new CallsFragment(), "Calls");
         leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
         binding.viewPager.setAdapter(leftViewPagerAdapter);
+        binding.viewPager.setCurrentItem(Integer.parseInt(SharedPref.getSetUpClickedTab(getApplicationContext())));
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
+
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                SharedPref.setSetUpClickedTab(getApplicationContext(), String.valueOf(tab.getPosition()));
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
       /*  viewPagerAdapter = new ViewPagerAdapter(this, 1);
         binding.viewPager.setAdapter(viewPagerAdapter);*/
@@ -373,18 +384,59 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         //   new Handler().postDelayed(this::refreshPendingFunction, 200);
     }
 
+    private void addNavItem() {
+        arrayNav.clear();
+        arrayNav.add(new ModelNavDrawer(R.drawable.refresh, getString(R.string.refresh)));
+
+        if (TpNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.calendar_clock, getString(R.string.tour_plan)));
+
+        if (PresentationNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.presentation, getString(R.string.presentation)));
+
+        arrayNav.add(new ModelNavDrawer(R.drawable.my_resource, getString(R.string.my_resource)));
+        arrayNav.add(new ModelNavDrawer(R.drawable.leave, getString(R.string.leave_application)));
+        arrayNav.add(new ModelNavDrawer(R.drawable.report, getString(R.string.reports)));
+
+        if (ActivityNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.activity, getString(R.string.activity)));
+
+        if (NearMeNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.nearme, getString(R.string.near_me)));
+
+        if (SfType.equalsIgnoreCase("2"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.leave, getString(R.string.approvals)));
+
+        if (QuizNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.quiz, getString(R.string.quiz)));
+        arrayNav.add(new ModelNavDrawer(R.drawable.survey, getString(R.string.survey)));
+        arrayNav.add(new ModelNavDrawer(R.drawable.form, getString(R.string.forms)));
+
+        if (ReminderCallNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.profiling, getString(R.string.remainder_call)));
+
+        if (ProfileNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.profiling, getString(R.string.profiling)));
+
+        Menu sideMenu = binding.navView.getMenu();
+        for (int i = 0; i < arrayNav.size(); i++) {
+            ModelNavDrawer navList = arrayNav.get(i);
+            sideMenu.add(0, i, i, navList.getText());
+            sideMenu.getItem(i).setIcon(navList.getDrawable());
+        }
+    }
+
     private void CheckInOutDate() {
         dialogCheckInOut = new Dialog(this);
         dialogCheckInOut.setContentView(R.layout.dialog_daycheckin);
         dialogCheckInOut.setCancelable(false);
         Objects.requireNonNull(dialogCheckInOut.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-
         tvName = dialogCheckInOut.findViewById(R.id.txt_cus_name);
         tvName.setText(String.format("%s%s", getResources().getString(R.string.hi), SfName));
 
         tvDateTime = dialogCheckInOut.findViewById(R.id.txt_date_time);
-        tvDateTime.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+        tvDateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
 
         btnCheckIn = dialogCheckInOut.findViewById(R.id.btn_checkin);
         imgClose = dialogCheckInOut.findViewById(R.id.img_close);
@@ -404,6 +456,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 address = "No Address Found";
             }
+            SharedPref.setCheckInTime(getApplicationContext(),CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             jsonCheck = new JSONObject();
             try {
                 jsonCheck.put("tableName", "savetp_attendance");
@@ -418,31 +471,36 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 jsonCheck.put("sf_emp_id", SfEmpId);
                 jsonCheck.put("sfname", SfName);
                 jsonCheck.put("Employee_Id", EmpId);
-                jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
+                jsonCheck.put("Check_In", CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
+                jsonCheck.put("Check_Out", "");
+                jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
                 Log.v("CheckInOut", "--json--" + jsonCheck.toString());
             } catch (JSONException ignored) {
             }
 
-            if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+          /*  if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
                 CallCheckInAPI();
-            } else {
-                skipCheckIn = true;
-                SharedPref.setCheckTodayDate(getApplicationContext(), CommonUtilsMethods.getCurrentDate());
-                sqLite.saveCheckIn(CommonUtilsMethods.getCurrentDate(), CommonUtilsMethods.getCurrentTimeAMPM(), jsonCheck.toString());
-                CallDialogAfterCheckIn();
-                SetupOutBoxAdapter(sqLite, getApplicationContext());
-            }
+            } else {*/
+            skipCheckIn = true;
+            SharedPref.setCheckTodayCheckInOut(getApplicationContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+            sqLite.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+            SetupOutBoxAdapter(this, sqLite, this);
+            CallDialogAfterCheckIn();
+            // }
         });
 
         dialogCheckInOut.show();
     }
 
     private void CallCheckInAPI() {
-        Call<JsonArray> callCheckInOut;
-        callCheckInOut = apiInterface.saveCheckInOut(jsonCheck.toString());
-        callCheckInOut.enqueue(new Callback<JsonArray>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/activity");
+        Call<JsonElement> callCheckInOut = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonCheck.toString());
+      /*  Call<JsonArray> callCheckInOut;
+        callCheckInOut = apiInterface.saveCheckInOut(jsonCheck.toString());*/
+        callCheckInOut.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
                 if (response.isSuccessful()) {
@@ -454,7 +512,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         }
 
                         if (CheckInOutStatus.equalsIgnoreCase("1")) {
-                            SharedPref.setCheckTodayDate(getApplicationContext(), CommonUtilsMethods.getCurrentDate());
+                            SharedPref.setCheckTodayCheckInOut(getApplicationContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                             skipCheckIn = false;
                             CallDialogAfterCheckIn();
                         } else {
@@ -471,14 +529,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.toast_response_failed), 100);
             }
         });
     }
 
     private void CallDialogAfterCheckIn() {
-        dialogAfterCheckIn.dismiss();
+        dialogCheckInOut.dismiss();
         dialogAfterCheckIn = new Dialog(this);
         dialogAfterCheckIn.setContentView(R.layout.dialog_checkindata);
         dialogAfterCheckIn.setCancelable(false);
@@ -493,146 +551,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         tvHeading.setText(getResources().getString(R.string.check_in));
 
-        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentDateWithMonthName());
+        tvDateTimeAfter.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
         tvLat.setText(String.valueOf(latitude));
         tvLong.setText(String.valueOf(longitude));
         tvAddress.setText(address);
 
-        btnClose.setOnClickListener(v -> dialogAfterCheckIn.dismiss());
+        btnClose.setOnClickListener(v -> {
+            dialogAfterCheckIn.dismiss();
+        });
 
         dialogAfterCheckIn.show();
-
     }
 
-    /*  public static void NetworkConnectCallHomeDashBoard(String log) {
-          if (!TextUtils.isEmpty(log)) {
-              if (!log.equalsIgnoreCase("NOT_CONNECT")) {
-                  if (mCheckNetwork != null)
-                      mCheckNetwork.checkNetwork();
-              }
-          }
-      }
-
-      public static void SendOfflineData(NetworkCheckInterface mCheckNetworkData) {
-          mCheckNetwork = mCheckNetworkData;
-      }
-
-      private void refreshPendingFunction() {
-          HomeDashBoard.SendOfflineData(this::sendingOfflineCalls);
-      }
-
-      private void sendingOfflineCalls() {
-          Log.v("SendOutboxCall","connected");
-          apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-
-          //Call Data
-          ArrayList<OutBoxCallList> outBoxCallLists = sqLite.getOutBoxCallsFullList("Call Failed", "Waiting for Sync");
-          CallApiList(outBoxCallLists);
-      }
-
-      private void CallApiList(ArrayList<OutBoxCallList> outBoxCallLists) {
-          if (outBoxCallLists.size() > 0) {
-              isCallAvailable = false;
-              for (int i = 0; i < outBoxCallLists.size(); i++) {
-                  OutBoxCallList outBoxCallList = outBoxCallLists.get(i);
-                  if (outBoxCallList.getSyncCount() <= 4) {
-                      isCallAvailable = true;
-                      Log.v("SendOutboxCall", "----" + outBoxCallList.getCusName());
-                      CallSendAPI(outBoxCallLists, i, outBoxCallList.getDates(), outBoxCallList.getCusName(), outBoxCallList.getCusCode(), outBoxCallList.getJsonData(), outBoxCallList.getSyncCount());
-                      break;
-                  }
-              }
-          } else {
-              isCallAvailable = false;
-          }
-
-          if (!isCallAvailable) {
-              //Call Event Capture
-              CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite,false);
-              ArrayList<EcModelClass> ecModelClasses = sqLite.getEcListFull();
-              CallApiLocalEC(ecModelClasses);
-          }
-
-      }
-
-      private void CallApiLocalEC(ArrayList<EcModelClass> ecModelClasses) {
-          if (ecModelClasses.size() > 0) {
-              for (int i = 0; i < ecModelClasses.size(); i++) {
-                  EcModelClass ecModelClass = ecModelClasses.get(i);
-                  Log.v("SendOutboxCall", "----" + ecModelClass.getDates() + "---" + ecModelClass.getName());
-                  CallSendAPIImage(ecModelClasses, i, ecModelClass.getId(), ecModelClass.getJson_values(), ecModelClass.getFilePath());
-                  break;
-              }
-          } else {
-              CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
-          }
-      }
-
-
-      public HashMap<String, RequestBody> field(String val) {
-          HashMap<String, RequestBody> xx = new HashMap<>();
-          xx.put("data", createFromString(val));
-          return xx;
-      }
-
-      private RequestBody createFromString(String txt) {
-          return RequestBody.create(txt, MultipartBody.FORM);
-      }
-
-
-      public MultipartBody.Part convertImg(String tag, String path) {
-          Log.d("path", tag + "-" + path);
-          MultipartBody.Part yy = null;
-          try {
-              File file;
-              if (path.contains(".png") || path.contains(".jpg") || path.contains(".jpeg")) {
-                  file = new Compressor(context).compressToFile(new File(path));
-                  Log.d("path", tag + "-" + path);
-              } else {
-                  file = new File(path);
-              }
-              RequestBody requestBody = RequestBody.create(file, MultipartBody.FORM);
-              yy = MultipartBody.Part.createFormData(tag, file.getName(), requestBody);
-
-              Log.d("path", String.valueOf(yy));
-          } catch (Exception ignored) {
-          }
-          return yy;
-      }
-
-      private void CallSendAPIImage(ArrayList<EcModelClass> ecModelClasses, int position, String id, String jsonValues, String filePath) {
-          MultipartBody.Part img = convertImg("EventImg", filePath);
-          HashMap<String, RequestBody> values = field(jsonValues.toString());
-          Call<JsonObject> saveImgDcr = apiInterface.saveImgDcr(values, img);
-
-          saveImgDcr.enqueue(new Callback<JsonObject>() {
-              @Override
-              public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                  if (response.isSuccessful()) {
-                      try {
-                          assert response.body() != null;
-                          JSONObject json = new JSONObject(response.body().toString());
-                          Log.v("ImgUpload", json.toString());
-                          if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
-                              DeleteCacheFile(ecModelClasses, filePath, id, position);
-                          } else {
-                              DeleteCacheFile(ecModelClasses, filePath, id, position);
-                          }
-                      } catch (Exception ignored) {
-                          DeleteCacheFile(ecModelClasses, filePath, id, position);
-                      }
-                  }
-              }
-
-            }
-        });
-    }
-
-          } catch (JSONException e) {
-              throw new RuntimeException(e);
-          }
-      }
-  */
     private void getRequiredData() {
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
@@ -650,10 +580,42 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         CheckInOutNeed = loginResponse.getSrtNd();
         SampleValidation = loginResponse.getSample_validation();
         InputValidation = loginResponse.getInput_validation();
+        TpNeed = loginResponse.getTp_need();
+        SurveyNeed = loginResponse.getSurveyNd();
+        NearMeNeed = loginResponse.getGeoChk();
+        ProfileNeed = loginResponse.getMCLDet();
+        QuizNeed = loginResponse.getQuiz_need();
+        ReminderCallNeed = loginResponse.getRmdrNeed();
+        ActivityNeed = loginResponse.getActivityNd();
 
         TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
 
+        try {
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject setupData = jsonArray.getJSONObject(0);
+                customSetupResponse = new CustomSetupResponse();
+                Type typeSetup = new TypeToken<CustomSetupResponse>() {
+                }.getType();
+                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+                PresentationNeed = customSetupResponse.getPresentationNeed();
+            }
+        } catch (Exception ignored) {
+        }
 
+        addNavItem();
+        SetUpHolidayWeekEndData();
+
+        if (PresentationNeed.equalsIgnoreCase("0")) {
+            binding.llPresentation.setVisibility(View.VISIBLE);
+            binding.llSlide.setVisibility(View.VISIBLE);
+        } else {
+            binding.llPresentation.setVisibility(View.GONE);
+            binding.llSlide.setVisibility(View.GONE);
+        }
+    }
+
+    private void SetUpHolidayWeekEndData() {
         try {
             holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
             JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
@@ -700,12 +662,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } catch (Exception e) {
 
         }
+
     }
 
     private ArrayList<EventCalenderModelClass> daysInMonthArray(LocalDate date) {
         callsatuslist.clear();
         try {
-            if (String.valueOf(date.getMonth()).equalsIgnoreCase(CommonUtilsMethods.getCurrentMonthName())) {
+            if (String.valueOf(date.getMonth()).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("MMMM"))) {
                 JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
                 if (workTypeArray.length() > 0) {
                     JSONObject jsonObject = workTypeArray.getJSONObject(0);
@@ -720,9 +683,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     if (Objects.requireNonNull(date1).equals(date2)) {
                         String mFwFlg1 = jsonObject.getString("FWFlg");
                         if (!mFwFlg1.equalsIgnoreCase("F")) {
-                            callsatuslist.add(new EventCalenderModelClass(CommonUtilsMethods.getCurrentDayNo(), "N", CommonUtilsMethods.getCurrentMonthNumber(), CommonUtilsMethods.getCurrentYear()));
+                            callsatuslist.add(new EventCalenderModelClass(CommonUtilsMethods.getCurrentInstance("d"), "N", CommonUtilsMethods.getCurrentInstance("M"), CommonUtilsMethods.getCurrentInstance("yyyy")));
                         } else {
-                            callsatuslist.add(new EventCalenderModelClass(CommonUtilsMethods.getCurrentDayNo(), "F", CommonUtilsMethods.getCurrentMonthNumber(), CommonUtilsMethods.getCurrentYear()));
+                            callsatuslist.add(new EventCalenderModelClass(CommonUtilsMethods.getCurrentInstance("d"), "F", CommonUtilsMethods.getCurrentInstance("M"), CommonUtilsMethods.getCurrentInstance("yyyy")));
                         }
                     }
                 }
@@ -761,7 +724,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
             }
         } catch (Exception e) {
-            Log.v("Calender", "error-----" + e.toString());
+            Log.v("Calender", "error-----" + e);
         }
 
 
@@ -962,7 +925,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.enter_new_pwd), 100);
             } else if (remain_password.getText().toString().equals("")) {
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.enter_repeat_pwd), 100);
-                ;
             } else {
                 if (!password.equals(old_password.getText().toString())) {
                     commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.chk_old_pwd), 100);
@@ -1005,13 +967,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } catch (Exception ignored) {
 
         }
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/masterdata");
+        Call<JsonElement> changePassword = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jj.toString());
 
-        Call<JsonObject> changePassword = null;
-        changePassword = apiInterface.ChangePwd(jj.toString());
-
-        changePassword.enqueue(new Callback<JsonObject>() {
+        changePassword.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     try {
                         assert response.body() != null;
@@ -1030,7 +992,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.toast_response_failed), 100);
             }
         });
@@ -1045,10 +1007,18 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.v("nav_id", "----" + item.getItemId() + "----" + item.getTitle());
+      /*  if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.home))) {
+            if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
+                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                binding.myDrawerLayout.openDrawer(GravityCompat.START);
+                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
+            }
+        }*/
 
-        int id = item.getItemId();
-
-        if (id == R.id.nav_refresh) {
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.refresh))) {
             gpsTrack = new GPSTrack(HomeDashBoard.this);
             double lat = gpsTrack.getLatitude();
             double lng = gpsTrack.getLongitude();
@@ -1056,32 +1026,27 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         }
 
-
-        if (id == R.id.nav_leave_appln) {
-            startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.presentation))) {
+            startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class));
             return true;
         }
 
-        if (id == R.id.nav_home) {
-            if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-                binding.myDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
-                binding.myDrawerLayout.openDrawer(GravityCompat.START);
-                binding.backArrow.setBackgroundResource(R.drawable.cross_img);
-
-            }
-        }
-        if (id == R.id.nav_tour_plan) {
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.tour_plan))) {
             startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
             return true;
         }
-        if (id == R.id.nav_myresource) {
+
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.my_resource))) {
             startActivity(new Intent(HomeDashBoard.this, MyResource_Activity.class));
             return true;
         }
 
-        if (id == R.id.nav_approvals) {
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.leave_application))) {
+            startActivity(new Intent(HomeDashBoard.this, Leave_Application.class));
+            return true;
+        }
+
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.approvals))) {
             if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
                 SharedPref.setApprovalsCounts(HomeDashBoard.this, "false");
                 startActivity(new Intent(HomeDashBoard.this, ApprovalsActivity.class));
@@ -1091,22 +1056,25 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
-        if (id == R.id.nav_forms) {
-            startActivity(new Intent(HomeDashBoard.this, Forms_activity.class));
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.reports))) {
+            if (UtilityClass.isNetworkAvailable(context)) {
+                startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class));
+            } else {
+                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+            }
             return true;
         }
 
-        if (id == R.id.nav_presentation) {
-            startActivity(new Intent(HomeDashBoard.this, PresentationActivity.class));
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.activity))) {
+
+        }
+
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.remainder_call))) {
+            startActivity(new Intent(HomeDashBoard.this, RemainderCallActivity.class));
             return true;
         }
 
-        if (id == R.id.nav_reports) {
-            startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class));
-            return true;
-        }
-
-        if (id == R.id.nav_nearme) {
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.near_me))) {
             if (!skipCheckIn) {
                 if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
                     if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).isEmpty()) {
@@ -1126,11 +1094,20 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.submit_checkin), 100);
             }
         }
+
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.survey))) {
+
+        }
+
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.forms))) {
+            startActivity(new Intent(HomeDashBoard.this, Forms_activity.class));
+            return true;
+        }
+
         return true;
     }
 
-    private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText,
-                                boolean isTabTitleInvisible) {
+    private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText, boolean isTabTitleInvisible) {
         TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
         if (tab != null) {
             @SuppressLint("InflateParams") View customView = LayoutInflater.from(this).inflate(R.layout.customtab_item, null);
@@ -1208,7 +1185,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 break;
 
             case R.id.ll_report:
-                startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class));
+                if (UtilityClass.isNetworkAvailable(context)) {
+                    startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class));
+                } else {
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+                }
                 break;
 
             case R.id.img_sync:
@@ -1318,37 +1299,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
             }
         }
-    }
-
-
-    private ArrayList<CallStatusModelClass> getCallsDataToCalender1
-            (ArrayList<String> dateList, ArrayList<CallStatusModelClass> workTypeList, String
-                    month, String year) {
-
-        ArrayList<CallStatusModelClass> nCallList = new ArrayList<>();
-        ArrayList<CallStatusModelClass> mCallList = new ArrayList<>();
-
-        for (CallStatusModelClass list : workTypeList) {
-            if (list.getMonth().equalsIgnoreCase(month) && list.getYear().equalsIgnoreCase(year)) {
-                mCallList.add(new CallStatusModelClass(list.getMonth(), list.getYear(), list.getDate(), list.getWorktype()));
-            }
-        }
-
-        for (String list1 : dateList) {
-            if (list1.length() > 0) {
-
-                for (CallStatusModelClass workTypeList123 : mCallList) {
-                    if (list1.equalsIgnoreCase(workTypeList123.getDate())) {
-                        nCallList.add(new CallStatusModelClass("", "", list1, workTypeList123.getWorktype()));
-                    } else {
-                        nCallList.add(new CallStatusModelClass("", "", list1, ""));
-                    }
-                }
-            } else {
-                nCallList.add(new CallStatusModelClass("", "", list1, ""));
-            }
-        }
-        return nCallList;
     }
 }
 

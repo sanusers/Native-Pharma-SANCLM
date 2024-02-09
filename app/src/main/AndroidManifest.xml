@@ -62,6 +62,12 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
+            android:name=".activity.remainderCall.RemainderCallActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
             android:name=".activity.reports.ReportFragContainerActivity"
             android:exported="false"
             android:screenOrientation="landscape"

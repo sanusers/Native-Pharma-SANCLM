@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,7 +101,7 @@ public class RCPAFragment extends Fragment {
                 for (int i = 0; i < count; i++) {
                     for (int j = i + 1; j < count; j++) {
                         if (ChemistSelectedList.get(i).getCode().equalsIgnoreCase(ChemistSelectedList.get(j).getCode())) {
-                            String value = ChemistSelectedList.get(j).getTotalrcpa();
+                            String value = ChemistSelectedList.get(j).getTotalRcpa();
                             ChemistSelectedList.remove(j--);
                             ChemistSelectedList.set(i, new CustList(cheName, CheCode, value, ""));
                             count--;

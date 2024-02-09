@@ -12,26 +12,24 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -47,9 +45,7 @@ import saneforce.santrip.databinding.MapDcrSelectionBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.LoginResponse;
-import saneforce.santrip.response.SetupResponse;
 import saneforce.santrip.storage.SQLite;
-import saneforce.santrip.storage.SQLiteHandler;
 import saneforce.santrip.storage.SharedPref;
 
 public class TagCustSelectionList extends AppCompatActivity {
@@ -64,14 +60,12 @@ public class TagCustSelectionList extends AppCompatActivity {
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     ArrayList<CustList> custListArrayNew = new ArrayList<>();
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
-    SQLiteHandler sqLiteHandler;
     ApiInterface apiInterface;
-    ArrayAdapter arrayAdapter;
+    ArrayAdapter<String> arrayAdapter;
     LoginResponse loginResponse;
     JSONArray jsonArray;
     JSONObject jsonObject;
     String SelectedTab, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SelectedHqCode, SelectedHqName, DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption, TpBasedDcr;
-
 
 
     //To Hide the bottomNavigation When popup
@@ -79,15 +73,10 @@ public class TagCustSelectionList extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -132,8 +121,6 @@ public class TagCustSelectionList extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
-        sqLiteHandler = new SQLiteHandler(this);
-        sqLiteHandler.open();
         sqLite = new SQLite(getApplicationContext());
 
         getRequiredData();
@@ -155,16 +142,13 @@ public class TagCustSelectionList extends AppCompatActivity {
         }
 
         binding.dummyView.setOnClickListener(view -> {
-            binding.constraintHqList.setVisibility(View.GONE);
-            binding.dummyView.setVisibility(View.GONE);
-            hideKeyboard();
         });
 
         binding.txtSelectedHq.setOnClickListener(view -> {
             hideKeyboard();
             if (binding.constraintHqList.getVisibility() == View.VISIBLE) {
                 binding.constraintHqList.setVisibility(View.GONE);
-                binding.dummyView.setVisibility(View.VISIBLE);
+                binding.dummyView.setVisibility(View.GONE);
             } else {
                 binding.constraintHqList.setVisibility(View.VISIBLE);
                 binding.dummyView.setVisibility(View.VISIBLE);
@@ -222,7 +206,9 @@ public class TagCustSelectionList extends AppCompatActivity {
         });
 
         binding.hqListView.setOnItemClickListener((adapterView, view, i, l) -> {
+            hideKeyboard();
             binding.constraintHqList.setVisibility(View.GONE);
+            binding.dummyView.setVisibility(View.GONE);
             SelectedHqCode = HqCodeList.get(i);
             SelectedHqName = HqNameList.get(i);
             binding.txtSelectedHq.setText(SelectedHqName);
@@ -279,7 +265,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 }
             }
 
-            arrayAdapter = new ArrayAdapter(TagCustSelectionList.this, R.layout.listview_items, HqNameList);
+            arrayAdapter = new ArrayAdapter<>(TagCustSelectionList.this, R.layout.listview_items, HqNameList);
             binding.hqListView.setAdapter(arrayAdapter);
             binding.txtSelectedHq.setText(SelectedHqName);
             if (SelectedHqCode.isEmpty()) {
@@ -335,10 +321,13 @@ public class TagCustSelectionList extends AppCompatActivity {
 
 // Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
+                Map<String, String> mapString = new HashMap<>();
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
-                    call = apiInterface.getDrMaster(jsonObject.toString());
+                    mapString.put("axn", "table/dcrmasterdata");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
-                    call = apiInterface.getSubordinateMaster(jsonObject.toString());
+                    mapString.put("axn", "table/subordinates");
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(this), mapString, jsonObject.toString());
                 }
 
                 if (call != null) {
@@ -392,7 +381,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network), 100);
+            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
         }
     }
 
@@ -413,7 +402,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
-                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -442,7 +430,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
-                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -468,7 +455,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
-                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -494,7 +480,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
-                        ;
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -543,10 +528,6 @@ public class TagCustSelectionList extends AppCompatActivity {
             String values = s.getTag() + "/" + s.getMaxTag();
             String Status = "";
             String Views = "";
-
-         /*   if (s.getGeoTagStatus().equalsIgnoreCase("0")) {
-                Status = "approved";
-            } else*/
 
             if (s.getGeoTagStatus().equalsIgnoreCase("1")) {
                 Status = "pending";

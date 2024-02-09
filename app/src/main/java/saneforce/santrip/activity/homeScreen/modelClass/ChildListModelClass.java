@@ -1,7 +1,6 @@
 package saneforce.santrip.activity.homeScreen.modelClass;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChildListModelClass {
     private String childName;
@@ -9,6 +8,54 @@ public class ChildListModelClass {
     private int childId;
     private ArrayList<OutBoxCallList> outBoxCallLists;
     private ArrayList<EcModelClass> ecModelClasses;
+    private ArrayList<CheckInOutModelClass> checkInOutModelClasses;
+    private boolean isAvailableList;
+    private boolean isExpanded;
+    private int Counts;
+    private String otherContents;
+
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<OutBoxCallList> outBoxCallLists, String dummy) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.outBoxCallLists = outBoxCallLists;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<EcModelClass> ecModelClasses) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.ecModelClasses = ecModelClasses;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isExpanded,boolean isAvailableList, ArrayList<CheckInOutModelClass> checkInOutModelClasses,String dummy,String dummmy2) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isExpanded = isExpanded;
+        this.isAvailableList = isAvailableList;
+        this.checkInOutModelClasses = checkInOutModelClasses;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isAvailableList) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isAvailableList = isAvailableList;
+    }
+
+    public ChildListModelClass(String childName, int childId) {
+        this.childName = childName;
+        this.childId = childId;
+    }
+
+    public ArrayList<CheckInOutModelClass> getCheckInOutModelClasses() {
+        return checkInOutModelClasses;
+    }
+
+    public void setCheckInOutModelClasses(ArrayList<CheckInOutModelClass> checkInOutModelClasses) {
+        this.checkInOutModelClasses = checkInOutModelClasses;
+    }
 
     public ArrayList<EcModelClass> getEcModelClasses() {
         return ecModelClasses;
@@ -17,11 +64,6 @@ public class ChildListModelClass {
     public void setEcModelClasses(ArrayList<EcModelClass> ecModelClasses) {
         this.ecModelClasses = ecModelClasses;
     }
-
-    private boolean isAvailableList;
-    private boolean isExpanded;
-    private int Counts;
-    private String otherContents;
 
     public String getOtherContents() {
         return otherContents;
@@ -71,29 +113,6 @@ public class ChildListModelClass {
         this.outBoxCallLists = outBoxCallLists;
     }
 
-    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<OutBoxCallList> outBoxCallLists, String dummy) {
-        this.childName = childName;
-        this.childId = childId;
-        this.isExpanded = isExpanded;
-        this.isAvailableList = isAvailableList;
-        this.outBoxCallLists = outBoxCallLists;
-    }
-
-    public ChildListModelClass(String childName, int childId, boolean isExpanded, boolean isAvailableList, ArrayList<EcModelClass> ecModelClasses) {
-        this.childName = childName;
-        this.childId = childId;
-        this.isExpanded = isExpanded;
-        this.isAvailableList = isAvailableList;
-        this.ecModelClasses = ecModelClasses;
-    }
-
-    public ChildListModelClass(String childName, int childId, boolean isAvailableList, String otherContents) {
-        this.childName = childName;
-        this.childId = childId;
-        this.isAvailableList = isAvailableList;
-        this.otherContents = otherContents;
-    }
-
     public String getChildName() {
         return childName;
     }
@@ -107,11 +126,6 @@ public class ChildListModelClass {
     }
 
     public void setChildId(int childId) {
-        this.childId = childId;
-    }
-
-    public ChildListModelClass(String childName, int childId) {
-        this.childName = childName;
         this.childId = childId;
     }
 }

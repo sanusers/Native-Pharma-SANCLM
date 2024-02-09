@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.approvals;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,12 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -112,12 +117,12 @@ public class ApprovalsActivity extends AppCompatActivity {
 
         }
 
-        Call<JsonObject> callGetCountApprovals;
-        callGetCountApprovals = api_interface.getListCountApprovals(jsonGetCount.toString());
-
-        callGetCountApprovals.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/approvals");
+        Call<JsonElement> callGetCountApprovals = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonGetCount.toString());
+        callGetCountApprovals.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("counts", "-0-" + response.body());
                 if (response.isSuccessful()) {
@@ -149,7 +154,7 @@ public class ApprovalsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
                 progressDialog.dismiss();
             }

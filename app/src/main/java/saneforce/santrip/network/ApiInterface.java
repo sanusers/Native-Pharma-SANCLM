@@ -5,13 +5,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -19,18 +18,28 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
-import saneforce.santrip.activity.profile.DCRLastVisitDetails;
-import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
 
 public interface ApiInterface {
 
     @GET
     Call<JsonArray> configuration(@Url String url);
+    @FormUrlEncoded
+    @POST()
+    Call<JsonElement> getJSONElement(@Url String url, @QueryMap Map<String, String> qry, @Field("data") String postObj);
 
     @FormUrlEncoded
+    @POST()
+    Call<ResponseBody> getResponseBody(@Url String url, @QueryMap Map<String, String> qry, @Field("data") String postObj);
+
+    @Multipart
+    @POST("?axn=save/image")
+    Call<JsonObject> SaveImg(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
+
+ /*   @FormUrlEncoded
     @POST("?axn=action/login")
-    Call<JsonObject> login(@Field("data") String userData);
+    Call<JsonElement> login(@Field("data") String userData);
 
     @FormUrlEncoded
     @POST("?axn=table/dcrmasterdata")
@@ -68,130 +77,41 @@ public interface ApiInterface {
     @POST("?axn=table/additionaldcrmasterdata")
     Call<JsonElement> getAdditionalMaster(@Field("data") String postObj);
 
-    @Multipart
-    @POST("?axn=save/image")
-        // Save GeoImage
-    Call<JsonObject> imgUploadMap(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
-
-    @Multipart
-    @POST("?axn=save/image")
-    Call<JsonObject> uploadScrub(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
-
     @FormUrlEncoded
     @POST("?axn=geodetails")
-        // Save GeoTag
     Call<JsonObject> saveMapGeoTag(@Field("data") String saveGeo);
 
     @FormUrlEncoded
     @POST("?axn=get/approvals")
-        // Get Tp ApprovalList
-    Call<JsonArray> getTpApprovalList(@Field("data") String GetTpList);
-
-    @FormUrlEncoded
-    @POST("?axn=get/tp")
-        // Get Tp DetailedList
-    Call<JsonArray> getTpDetailedList(@Field("data") String GetTpDetailedList);
-
-    @FormUrlEncoded
-    @POST("?axn=save/tp")
-    Call<JsonObject> saveApprovedRejectTp(@Field("data") String saveApprovedRejectTp);
-
-    @FormUrlEncoded
-    @POST("?axn=get/approvals")
-        // Get Leave ApprovalList
-    Call<JsonArray> getLeaveApprovalList(@Field("data") String GetLeaveList);
+    Call<JsonElement> getApprovalJsonArrayList(@Field("data") String GetTpList);
 
     @FormUrlEncoded
     @POST("?axn=save/approvals")
-        // Get TpDeviation ApprovalList
-    Call<JsonObject> saveTpDeviation(@Field("data") String saveTpDeviation);
-
-    @FormUrlEncoded
-    @POST("?axn=get/approvals")
-        // Get TpDeviation ApprovalList
-    Call<JsonArray> getTpDeviationList(@Field("data") String getTpDeviationList);
-
-    @FormUrlEncoded
-    @POST("?axn=get/approvals")
-        // Get DCR ApprovalList
-    Call<JsonArray> getDcrApprovalList(@Field("data") String GetDcrApprovalList);
-
-    @FormUrlEncoded
-    @POST("?axn=get/approvals")
-        // Get DCRDetailed ApprovalList
-    Call<JsonArray> getDcrDetailedList(@Field("data") String GetDcrDetailedList);
-
-    @FormUrlEncoded
-    @POST("?axn=get/approvals")
-        // Get GEOTAG ApprovalList
-    Call<JsonArray> getGeoTagList(@Field("data") String GetGeoTagList);
-
-    @FormUrlEncoded
-    @POST("?axn=save/approvals")
-        // Send GEOTAG ApprovalReject
-    Call<JsonObject> SendGeoTagApprovalReject(@Field("data") String SendGeoTagApprovalReject);
-
-
-    @FormUrlEncoded
-    @POST("?axn=get/approvals")
-        //Get ListCount of Approvals
-    Call<JsonObject> getListCountApprovals(@Field("data") String GetApprovalListCount);
-
-    @FormUrlEncoded
-    @POST("?axn=save/approvals")
-        //Send DCR Approvals
-    Call<JsonObject> sendDCRApproval(@Field("data") String SendDcrApproval);
-
-    @FormUrlEncoded
-    @POST("?axn=save/approvals")
-        //Send DCR Reject
-    Call<JsonObject> sendDCRReject(@Field("data") String SendDcrReject);
-
-    @FormUrlEncoded
-    @POST("?axn=table/additionaldcrmasterdata")
-    //TodayCalls
-    Call<JsonArray> getTodayCalls(@Field("data") String GetTodayCalls);
+    Call<JsonObject> saveApprovalList(@Field("data") String saveTpDeviation);
 
     @FormUrlEncoded
     @POST("?axn=edit/dcr")
-        //EditCalls
     Call<JsonObject> getEditCallDetails(@Field("data") String GetEditCallDetails);
 
     @FormUrlEncoded
     @POST("?axn=delete/dcr")
-        //DeleteCalls
     Call<ResponseBody> DeleteCall(@Field("data") String DeleteCall);
 
     @FormUrlEncoded
     @POST("?axn=save/activity")
-    //CheckInOut
     Call<JsonArray> saveCheckInOut(@Field("data") String CheckInOut);
-
 
     @FormUrlEncoded
     @POST("?axn=save/masterdata")
-    //ChangePassword
     Call<JsonObject> ChangePwd(@Field("data") String ChangePwd);
 
     @FormUrlEncoded
-    @POST("?axn=home")
-    Call<JsonArray> getcalldetails(@Field("data") String postObj);
-
-    @FormUrlEncoded
-    @POST("?axn=get/leave")
-    Call<JsonArray> getLeavesetdata(@Field("data") String postObj);
-
-    @FormUrlEncoded
     @POST("?axn=save/leavemodule")
-    Call<JsonArray> getleavesave(@Field("data") String postObj);
+    Call<JsonArray> getLeaveSave(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=get/tp")
     Call<JsonElement> getTP(@Field("data") String postObj);
-
-    @FormUrlEncoded
-    @POST("?axn=get/tp")
-    Call<JsonArray> getTPMonthWise(@Field("data") String postObj);
 
     @FormUrlEncoded
     @POST("?axn=savenew/tp")
@@ -202,33 +122,14 @@ public interface ApiInterface {
     Call<JsonObject> saveTPStatus(@Field("data") String postObj);
 
     @FormUrlEncoded
-    @POST("?axn=table/additionaldcrmasterdata")
-        // Get DCR LastVisit Details
-    Call<List<DCRLastVisitDetails>> LastVisitDetails(@Field("data") String GetLastVisit);
-
-    @FormUrlEncoded
     @POST("?axn=save/dcr")
-        // Save Dcr
     Call<JsonObject> saveDcr(@Field("data") String SaveDcr);
-
-    @Multipart
-    @POST("?axn=save/image")
-        // Save Dcr EventCapture
-    Call<JsonObject> saveImgDcr(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
-
 
     @FormUrlEncoded
     @POST("?axn=edetsave/dayplan")
-    Call<JsonObject> saveMydayPlan(@Field("data") String SaveDcr);
-
-    @FormUrlEncoded
-    @POST("?axn=save/approvals")
-        // Approved & Reject Leave
-    Call<JsonObject> saveLeaveApproval(@Field("data") String SaveLeaveApproval);
+    Call<JsonObject> saveMyDayPlan(@Field("data") String SaveDcr);
 
     @FormUrlEncoded
     @POST("?axn=get/reports")
-    Call<JsonElement> getReports(@Field("data") String postObj);
-
-
+    Call<JsonElement> getReports(@Field("data") String postObj);*/
 }

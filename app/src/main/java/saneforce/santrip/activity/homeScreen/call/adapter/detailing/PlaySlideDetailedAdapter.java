@@ -270,7 +270,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
         Call<JsonObject> callImageScrub;
         HashMap<String, RequestBody> values = field(jsonImage.toString());
-        callImageScrub = apiService.uploadScrub(values, img);
+        callImageScrub = apiService.SaveImg(values, img);
 
         callImageScrub.enqueue(new Callback<JsonObject>() {
             @Override
@@ -597,14 +597,14 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     } else {
                         String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
                         Log.v("printing_all_time", time + "----" + time.substring(0, 9));
-                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 9), 0, "", CommonUtilsMethods.getCurrentDate()));
+                        callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 9), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
                         finalPrdNam = arrayStore.get(j).getBrdName();
                     }
                 }
 
                 if (arrayStore.size() > 0) {
                     String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
-                    callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 9), 0, "", CommonUtilsMethods.getCurrentDate()));
+                    callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 9), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
                 }*/
             }
             act.getOnBackPressedDispatcher().onBackPressed();
@@ -666,7 +666,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         presentSlidePos = position;
         objsd = object;
         preVal = true;
-        storingSlide.add(new LoadBitmap(mm.getScribble(), CommonUtilsMethods.getCurrentTime(), position, CommonUtilsMethods.getCurrentDate(), mm.getSlideNam(), mm.getSlideTyp(), mm.getSlideUrl(), mm.getBrdName(), mm.getBrdCode()));
+        storingSlide.add(new LoadBitmap(mm.getScribble(), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), position, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mm.getSlideNam(), mm.getSlideTyp(), mm.getSlideUrl(), mm.getBrdName(), mm.getBrdCode()));
     }
 
     @Override

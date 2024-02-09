@@ -39,13 +39,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -156,12 +157,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
         }
 
-        Call<JsonArray> callGetDetailedList;
-        callGetDetailedList = api_interface.getDcrDetailedList(jsonDcrContentList.toString());
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/approvals");
+        Call<JsonElement> callGetDetailedList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonDcrContentList.toString());
 
-        callGetDetailedList.enqueue(new Callback<JsonArray>() {
+        callGetDetailedList.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     try {
@@ -252,7 +254,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
@@ -266,13 +268,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            dcrCallApprovalBinding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            dcrCallApprovalBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -368,13 +364,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         } catch (Exception ignored) {
 
         }
-        Call<JsonObject> callDcrReject;
-        callDcrReject = api_interface.sendDCRReject(jsonReject.toString());
 
-        callDcrReject.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/approvals");
+        Call<JsonElement> callDcrReject = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonReject.toString());
+        callDcrReject.enqueue(new Callback<JsonElement>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
 
                     progressDialog.dismiss();
@@ -397,7 +394,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
@@ -436,12 +433,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
         }
 
-        Call<JsonObject> callDcrApproval;
-        callDcrApproval = api_interface.sendDCRApproval(jsonAccept.toString());
-        callDcrApproval.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/approvals");
+        Call<JsonElement> callDcrApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonAccept.toString());
+        callDcrApproval.enqueue(new Callback<JsonElement>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -462,7 +460,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
@@ -500,12 +498,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
         }
 
-        Call<JsonArray> callGetDcrList;
-        callGetDcrList = api_interface.getDcrApprovalList(jsonDcrList.toString());
 
-        callGetDcrList.enqueue(new Callback<JsonArray>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/approvals");
+        Call<JsonElement> callGetDcrList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonDcrList.toString());
+        callGetDcrList.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -529,7 +528,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
@@ -538,7 +537,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     private void getRequiredData() {
         try {
-
             loginResponse = new LoginResponse();
             loginResponse = sqLite.getLoginData();
 

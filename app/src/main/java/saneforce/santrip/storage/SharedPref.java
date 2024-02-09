@@ -56,8 +56,10 @@ public class SharedPref {
     public static final String CUSTOMER_POSITION = "cust_pos";
 
     //HomeDashboard
-    //CheckInAndOut
-    public static final String CHECK_TODAY_DATE = "check_today_date";
+    public static final String CHECK_TODAY_DATE_CHECKINOUT = "check_today_date_checkinout";
+    public static final String CHECK_IN_TIME = "check_today_date_checkinout";
+    public static final String CHECK_DATE_TODAY_PLAN = "check_date_todayplan";
+    public static final String SET_UP_CLICKED_TAB = "set_up_clicked_tab";
 
     //MyDayPlan
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
@@ -351,15 +353,46 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TodayDayPlanClusterCode, "");
     }
 
-    public static void setCheckTodayDate(Context context, String status) {
+    public static void setCheckTodayCheckInOut(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(CHECK_TODAY_DATE, status).apply();
+        editor.putString(CHECK_TODAY_DATE_CHECKINOUT, status).apply();
     }
 
-    public static String getCheckTodayDate(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_TODAY_DATE, "");
+    public static String getCheckTodayCheckInOut(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_TODAY_DATE_CHECKINOUT, "");
     }
+
+    public static void setCheckInTime(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHECK_IN_TIME, status).apply();
+    }
+
+    public static String getCheckInTime(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_IN_TIME, "");
+    }
+
+    public static void setCheckDateTodayPlan(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(CHECK_DATE_TODAY_PLAN, status).apply();
+    }
+
+    public static String getCheckDateTodayPlan(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(CHECK_DATE_TODAY_PLAN, "");
+    }
+
+    public static void setSetUpClickedTab(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SET_UP_CLICKED_TAB, status).apply();
+    }
+
+    public static String getSetUpClickedTab(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SET_UP_CLICKED_TAB, "");
+    }
+
 
     public static void setTodayDayPlanSfCode(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

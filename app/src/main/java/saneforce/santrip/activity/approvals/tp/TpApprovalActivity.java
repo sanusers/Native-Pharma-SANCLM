@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.approvals.tp;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,7 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,12 +25,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -152,12 +156,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
         }
 
-        Call<JsonObject> callApproveTp;
-        callApproveTp = api_interface.saveApprovedRejectTp(jsonTp.toString());
-
-        callApproveTp.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/tp");
+        Call<JsonElement> callApproveTp = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonTp.toString());
+        callApproveTp.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -177,7 +181,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
             }
@@ -236,11 +240,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         } catch (Exception ignored) {
 
         }
-        Call<JsonObject> callRejectTp;
-        callRejectTp = api_interface.saveApprovedRejectTp(jsonTp.toString());
-        callRejectTp.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/tp");
+        Call<JsonElement> callRejectTp = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonTp.toString());
+        callRejectTp.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
@@ -263,7 +268,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
                 dialogReject.dismiss();
@@ -303,11 +308,15 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         } catch (Exception ignored) {
 
         }
-        Call<JsonArray> callGetTPApproval;
-        callGetTPApproval = api_interface.getTpApprovalList(jsonTp.toString());
-        callGetTPApproval.enqueue(new Callback<JsonArray>() {
+
+
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/approvals");
+        Call<JsonElement> callGetTPApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTp.toString());
+
+        callGetTPApproval.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("jjj", response.body() + "--" + response.isSuccessful());
                 if (response.isSuccessful()) {
@@ -336,7 +345,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
             }
@@ -422,14 +431,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         } catch (Exception ignored) {
 
         }
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/tp");
+        Call<JsonElement> callGetTPADetailedList = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTp.toString());
 
-        Call<JsonArray> callGetTPADetailedList;
-        callGetTPADetailedList = api_interface.getTpDetailedList(jsonTp.toString());
-
-        callGetTPADetailedList.enqueue(new Callback<JsonArray>() {
+        callGetTPADetailedList.enqueue(new Callback<JsonElement>() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
@@ -466,7 +475,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
             }

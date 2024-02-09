@@ -2,6 +2,7 @@ package saneforce.santrip.activity.homeScreen.call.fragments;
 
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CapPob;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.isFromActivity;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
 import static saneforce.santrip.activity.homeScreen.call.fragments.JointWorkSelectionSide.JwList;
 
@@ -19,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -52,10 +52,10 @@ import saneforce.santrip.storage.SQLite;
 
 
 public class JWOthersFragment extends Fragment {
-    public static ArrayList<CallCaptureImageList>   callCaptureImageLists;
+    public static ArrayList<CallCaptureImageList> callCaptureImageLists;
     @SuppressLint("StaticFieldLeak")
     public static FragmentJwothersBinding jwOthersBinding;
-    public static String filePath = "", imageName = "";
+    public static String filePath = "", imageName = "", editRemarks, editPob, editFeedback;
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallCaptureImage adapterCallCaptureImage;
     public static Uri outputFileUri;
@@ -97,12 +97,12 @@ public class JWOthersFragment extends Fragment {
                 if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                     ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 5);
                 } else {
-                   // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        captureFile();
-                   // } else captureFileLower();
+                    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    captureFile();
+                    // } else captureFileLower();
                 }
             } else {
-                commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.no_add_more_images),100);
+                commonUtilsMethods.ShowToast(getContext(), requireContext().getString(R.string.no_add_more_images), 100);
             }
         });
         return v;
@@ -166,17 +166,23 @@ public class JWOthersFragment extends Fragment {
         jwOthersBinding.rvJointwork.setItemAnimator(new DefaultItemAnimator());
         jwOthersBinding.rvJointwork.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         jwOthersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
+
+        if (isFromActivity.equalsIgnoreCase("edit_local")) {
+            jwOthersBinding.edRemarks.setText(editRemarks);
+            jwOthersBinding.edPob.setText(editPob);
+            jwOthersBinding.tvFeedback.setText(editFeedback);
+        }
     }
 
 
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(requireContext().getExternalCacheDir()).getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
-        imageName = "E_" + SfCode + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
+        outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(requireContext().getExternalCacheDir()).getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg"));
+        imageName = "E_" + SfCode + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         someActivityResultLauncher.launch(intent);
-       // startActivityForResult(intent, 1888);
+        // startActivityForResult(intent, 1888);
     }
 
     public void captureFileLower() {
@@ -186,35 +192,33 @@ public class JWOthersFragment extends Fragment {
         //Log.v("Printing_uri",outputFileUri.toString()+" output "+outputFileUri.getPath()+" raw_msg "+getExternalCacheDir().getPath());
         //intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      //  startActivityForResult(intent, 19);
+        //  startActivityForResult(intent, 19);
     }
 
-    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    try {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            String finalPath = "/storage/emulated/0";
-                           Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
-                            filePath = outputFileUri.getPath();
-                            filePath = Objects.requireNonNull(filePath).substring(1);
-                            filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            try {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    String finalPath = "/storage/emulated/0";
+                    Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
+                    filePath = outputFileUri.getPath();
+                    filePath = Objects.requireNonNull(filePath).substring(1);
+                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
 
-                            callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
-                            adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
-                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                            jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
-                            jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
-                            jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-                            jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
-                        }
-                    } catch (Exception ignored) {
-
-                    }
+                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
+                    adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                    jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+                    jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+                    jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+                    jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
                 }
-            });
+            } catch (Exception ignored) {
+
+            }
+        }
+    });
 
    /* @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

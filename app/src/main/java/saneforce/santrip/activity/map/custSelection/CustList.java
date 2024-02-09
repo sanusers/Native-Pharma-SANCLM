@@ -8,23 +8,6 @@ public class CustList {
     String category;
     String categoryCode;
     String specialist;
-
-    public String getSpecialistCode() {
-        return specialistCode;
-    }
-
-    public void setSpecialistCode(String specialistCode) {
-        this.specialistCode = specialistCode;
-    }
-
-    public String getDummy() {
-        return dummy;
-    }
-
-    public void setDummy(String dummy) {
-        this.dummy = dummy;
-    }
-
     String specialistCode;
     String position;
     String town_name;
@@ -44,104 +27,30 @@ public class CustList {
     String PriorityPrdCode;
     String dummy;
     String totalVisitCount;
-
-    public String getTotalVisitCount() {
-        return totalVisitCount;
-    }
-
-    public void setTotalVisitCount(String totalVisitCount) {
-        this.totalVisitCount = totalVisitCount;
-    }
-
-    public String getMappedBrands() {
-        return MappedBrands;
-    }
-
-    public void setMappedBrands(String mappedBrands) {
-        MappedBrands = mappedBrands;
-    }
-
-    public String getMappedSlides() {
-        return MappedSlides;
-    }
-
-    public void setMappedSlides(String mappedSlides) {
-        MappedSlides = mappedSlides;
-    }
-
     String MappedBrands;
     String MappedSlides;
     String TransNo;
     String jsonArray;
-
-    public String getJsonArray() {
-        return jsonArray;
-    }
-
-    public void setJsonArray(String jsonArray) {
-        this.jsonArray = jsonArray;
-    }
-
-    public String getTransNo() {
-        return TransNo;
-    }
-
-    public void setTransNo(String transNo) {
-        TransNo = transNo;
-    }
-
-    public String getADetSlNo() {
-        return ADetSlNo;
-    }
-
-    public void setADetSlNo(String ADetSlNo) {
-        this.ADetSlNo = ADetSlNo;
-    }
-
-    public boolean isExtra() {
-        return IsExtra;
-    }
-
-    public void setExtra(boolean extra) {
-        IsExtra = extra;
-    }
-
     String ADetSlNo;
     boolean IsExtra;
-
-    public String getTotalrcpa() {
-        return totalrcpa;
-    }
-
-    public void setTotalrcpa(String totalrcpa) {
-        this.totalrcpa = totalrcpa;
-    }
-
-    String totalrcpa;
-
-    public String getPriorityPrdCode() {
-        return PriorityPrdCode;
-    }
-
-    public void setPriorityPrdCode(String priorityPrdCode) {
-        PriorityPrdCode = priorityPrdCode;
-    }
+    String totalRcpa;
 
     public CustList(String name, String code) {
         this.name = name;
         this.code = code;
     }
 
-    public CustList(String name, String code,String type,String Trans_Slno,String ADetSLNo,String jsonArray) {
+    public CustList(String name, String code, String type, String Trans_Slno, String ADetSLNo, String priorityPrdCode, String jsonArray) {
         this.name = name;
         this.code = code;
         this.type = type;
         this.TransNo = Trans_Slno;
         this.ADetSlNo = ADetSLNo;
+        this.PriorityPrdCode = priorityPrdCode;
         this.jsonArray = jsonArray;
     }
 
-    public CustList(String name, String SpecialityName,String SpecialityCode,String mappedBrands,String mappedSlides,boolean isExtra) {
+    public CustList(String name, String SpecialityName, String SpecialityCode, String mappedBrands, String mappedSlides, boolean isExtra) {
         this.name = name;
         this.specialist = SpecialityName;
         this.specialistCode = SpecialityCode;
@@ -150,11 +59,10 @@ public class CustList {
         this.IsExtra = isExtra;
     }
 
-
-    public CustList(String name, String code, String totalrcpa, String dummy) {
+    public CustList(String name, String code, String totalRcpa, String dummy) {
         this.name = name;
         this.code = code;
-        this.totalrcpa = totalrcpa;
+        this.totalRcpa = totalRcpa;
         this.dummy = dummy;
     }
 
@@ -165,7 +73,6 @@ public class CustList {
         this.address = address;
         this.dummy = dummy;
     }
-
 
     public CustList(String town_name) {
         this.town_name = town_name;
@@ -213,7 +120,7 @@ public class CustList {
         this.qualification = qualification;
     }
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,boolean isClusterAvailable) {
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, boolean isClusterAvailable) {
         this.name = name;
         this.code = code;
         this.type = type;
@@ -238,7 +145,7 @@ public class CustList {
         this.isClusterAvailable = isClusterAvailable;
     }
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist,String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,String MappedBrandCode,String MappedSlideCode,String totalVisitCount,boolean isClusterAvailable) {
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, String totalVisitCount, boolean isClusterAvailable) {
         this.name = name;
         this.code = code;
         this.type = type;
@@ -267,7 +174,7 @@ public class CustList {
         this.isClusterAvailable = isClusterAvailable;
     }
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist,String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,String MappedBrandCode,String MappedSlideCode) {
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode) {
         this.name = name;
         this.code = code;
         this.type = type;
@@ -311,6 +218,118 @@ public class CustList {
         this.geoTagStatus = geoTagStatus;
     }
 
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, boolean isClusterAvailable) {
+        this.name = name;
+        this.code = code;
+        this.type = type;
+        this.category = category;
+        this.categoryCode = categoryCode;
+        this.specialist = specialist;
+        this.specialistCode = specialistCode;
+        this.town_name = town_name;
+        this.town_code = towncode;
+        this.Tag = tag;
+        this.maxTag = maxTag;
+        this.position = position;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.dob = dob;
+        this.wedding_date = wed_date;
+        this.email = email;
+        this.mobile = mobile;
+        this.phone = phone;
+        this.qualification = qualification;
+        this.PriorityPrdCode = priorityPrdCode;
+        this.MappedBrands = MappedBrandCode;
+        this.MappedSlides = MappedSlideCode;
+        this.isClusterAvailable = isClusterAvailable;
+    }
+
+    public String getSpecialistCode() {
+        return specialistCode;
+    }
+
+    public void setSpecialistCode(String specialistCode) {
+        this.specialistCode = specialistCode;
+    }
+
+    public String getDummy() {
+        return dummy;
+    }
+
+    public void setDummy(String dummy) {
+        this.dummy = dummy;
+    }
+
+    public String getTotalVisitCount() {
+        return totalVisitCount;
+    }
+
+    public void setTotalVisitCount(String totalVisitCount) {
+        this.totalVisitCount = totalVisitCount;
+    }
+
+    public String getMappedBrands() {
+        return MappedBrands;
+    }
+
+    public void setMappedBrands(String mappedBrands) {
+        MappedBrands = mappedBrands;
+    }
+
+    public String getMappedSlides() {
+        return MappedSlides;
+    }
+
+    public void setMappedSlides(String mappedSlides) {
+        MappedSlides = mappedSlides;
+    }
+
+    public String getJsonArray() {
+        return jsonArray;
+    }
+
+    public void setJsonArray(String jsonArray) {
+        this.jsonArray = jsonArray;
+    }
+
+    public String getTransNo() {
+        return TransNo;
+    }
+
+    public void setTransNo(String transNo) {
+        TransNo = transNo;
+    }
+
+    public String getADetSlNo() {
+        return ADetSlNo;
+    }
+
+    public void setADetSlNo(String ADetSlNo) {
+        this.ADetSlNo = ADetSlNo;
+    }
+
+    public boolean isExtra() {
+        return IsExtra;
+    }
+
+    public void setExtra(boolean extra) {
+        IsExtra = extra;
+    }
+
+    public String getTotalRcpa() {
+        return totalRcpa;
+    }
+
+    public void setTotalRcpa(String totalRcpa) {
+        this.totalRcpa = totalRcpa;
+    }
+
+    public String getPriorityPrdCode() {
+        return PriorityPrdCode;
+    }
+
 
  /*   public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,boolean isClusterAvailable) {
         this.name = name;
@@ -337,32 +356,8 @@ public class CustList {
         this.isClusterAvailable = isClusterAvailable;
     }*/
 
- public CustList(String name, String code, String type, String category, String categoryCode, String specialist,String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,String MappedBrandCode,String MappedSlideCode,boolean isClusterAvailable) {
-        this.name = name;
-        this.code = code;
-        this.type = type;
-        this.category = category;
-        this.categoryCode = categoryCode;
-        this.specialist = specialist;
-        this.specialistCode = specialistCode;
-        this.town_name = town_name;
-        this.town_code = towncode;
-        this.Tag = tag;
-        this.maxTag = maxTag;
-        this.position = position;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.address = address;
-        this.dob = dob;
-        this.wedding_date = wed_date;
-        this.email = email;
-        this.mobile = mobile;
-        this.phone = phone;
-        this.qualification = qualification;
-        this.PriorityPrdCode = priorityPrdCode;
-        this.MappedBrands = MappedBrandCode;
-        this.MappedSlides = MappedSlideCode;
-        this.isClusterAvailable = isClusterAvailable;
+    public void setPriorityPrdCode(String priorityPrdCode) {
+        PriorityPrdCode = priorityPrdCode;
     }
 
     public String getCategoryCode() {

@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.approvals.leave;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -114,11 +119,12 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         }
 
 
-        Call<JsonArray> callGetLeaveApproval;
-        callGetLeaveApproval = api_interface.getLeaveApprovalList(jsonLeave.toString());
-        callGetLeaveApproval.enqueue(new Callback<JsonArray>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "get/approvals");
+        Call<JsonElement> callGetLeaveApproval = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonLeave.toString());
+        callGetLeaveApproval.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("jjj", response.body() + "--" + response.isSuccessful());
                 if (response.isSuccessful()) {
@@ -143,7 +149,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed),100);
             }

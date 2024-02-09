@@ -17,7 +17,6 @@ import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -27,7 +26,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -38,6 +36,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,26 +52,6 @@ import saneforce.santrip.utility.LocaleHelper;
 public class CommonUtilsMethods {
     Context context;
     Activity activity;
-    RecyclerView.OnItemTouchListener mScrollTouchListener = new RecyclerView.OnItemTouchListener() {
-        @Override
-        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, MotionEvent e) {
-            int action = e.getAction();
-            if (action == MotionEvent.ACTION_MOVE) {
-                rv.getParent().requestDisallowInterceptTouchEvent(true);
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-
-        }
-
-        @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-        }
-    };
 
     public CommonUtilsMethods(Activity activity) {
         this.activity = activity;
@@ -82,6 +61,7 @@ public class CommonUtilsMethods {
     public CommonUtilsMethods(Context context) {
         this.context = context;
     }
+
 
     public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
         Geocoder geocoder;
@@ -121,11 +101,10 @@ public class CommonUtilsMethods {
 
 
     public static InputFilter FilterSpaceEditText(EditText editText) {
-        InputFilter filter = new InputFilter() {
+        return new InputFilter() {
             boolean canEnterSpace = false;
 
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
 
                 if (editText.getText().toString().equals("")) {
                     canEnterSpace = false;
@@ -150,7 +129,6 @@ public class CommonUtilsMethods {
                 return builder.toString();
             }
         };
-        return filter;
     }
 
     public static void RequestGPSPermission(Activity activity) {
@@ -181,11 +159,31 @@ public class CommonUtilsMethods {
         TedPermission.create().setPermissionListener(permissionlistener).setPermissions(Permissions).setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]").check();
     }
 
+    public static String getCurrentInstance(String requiredFormat) {
+        Calendar c = Calendar.getInstance();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(requiredFormat);
+        return sdf.format(c.getTimeInMillis());
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String setConvertDate(String currentFormat, String requiredFormat, String date) {
+        SimpleDateFormat spf = new SimpleDateFormat(currentFormat);
+        Date newDate = null;
+        try {
+            newDate = spf.parse(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        spf = new SimpleDateFormat(requiredFormat);
+        return spf.format(newDate);
+    }
+
     public static String getCurrentTime() {
         Date currentTime = Calendar.getInstance().getTime();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         return sdf.format(currentTime);
     }
+
 
     public static String getCurrentDate() {
         Calendar c = Calendar.getInstance();
@@ -193,12 +191,11 @@ public class CommonUtilsMethods {
         return sdf.format(c.getTimeInMillis());
     }
 
-    public static String getCurrentTimeAMPM() {
+    public static String getCurrentAMPM() {
         Calendar c = Calendar.getInstance();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
         return sdf.format(c.getTimeInMillis());
     }
-
 
     public static String getCurrentDateWithMonthName() {
         Calendar c = Calendar.getInstance();
@@ -219,21 +216,6 @@ public class CommonUtilsMethods {
         return val;
     }
 
-
-    public void setUpLanguage(Context context) {
-        String language = SharedPref.getSelectedLanguage(context);
-        Resources resources = context.getResources();
-        if (language.equalsIgnoreCase("")) {
-            language = "en";
-        }
-        Locale myLocale = new Locale(language);
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        Configuration conf = resources.getConfiguration();
-        conf.locale = myLocale;
-        resources.updateConfiguration(conf, dm);
-        LocaleHelper.setLocale(context, language);
-    }
-
     public static String getCurrentMonthName() {
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
@@ -247,15 +229,10 @@ public class CommonUtilsMethods {
         Log.v("Printing_current_time", String.valueOf(currentTime));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         String val = sdf.format(currentTime);
-        Log.v("Printing_current_date", String.valueOf(val));
+        Log.v("Printing_current_date", val);
         return val;
     }
 
-    public static String getCurrentInstance() {
-        Calendar c = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(c.getTimeInMillis());
-    }
 
     public static String getCurrentDateDMY() {
         Date currentTime = Calendar.getInstance().getTime();
@@ -282,6 +259,20 @@ public class CommonUtilsMethods {
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setContentView(R.layout.loading_progress);
         return dialog;
+    }
+
+    public void setUpLanguage(Context context) {
+        String language = SharedPref.getSelectedLanguage(context);
+        Resources resources = context.getResources();
+        if (language.equalsIgnoreCase("")) {
+            language = "en";
+        }
+        Locale myLocale = new Locale(language);
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration conf = resources.getConfiguration();
+        conf.locale = myLocale;
+        resources.updateConfiguration(conf, dm);
+        LocaleHelper.setLocale(context, language);
     }
 
     public void ShowToast(Context context, String message, int duration) {

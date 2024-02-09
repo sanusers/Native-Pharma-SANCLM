@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.reports;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +18,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,12 +70,7 @@ public class ReportsActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         populateAdapter();
-        binding.backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        binding.backArrow.setOnClickListener(view -> onBackPressed());
 
     }
 
@@ -135,7 +134,9 @@ public class ReportsActivity extends AppCompatActivity {
 //                }
                         }
 
-                        Call<JsonElement> call = apiInterface.getReports(jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {

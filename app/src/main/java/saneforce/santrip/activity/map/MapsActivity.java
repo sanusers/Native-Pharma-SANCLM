@@ -25,12 +25,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -47,7 +45,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -72,6 +69,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import id.zelory.compressor.Compressor;
@@ -501,9 +499,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(getExternalCacheDir()).getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg"));
-        imageName = SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentDateDMY().replace("-", "") + CommonUtilsMethods.getCurrentTime().replace(":", "") + ".jpeg";
-        taggedTime = CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime();
+        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(getExternalCacheDir()).getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg"));
+        imageName = SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
+        taggedTime = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         someActivityResultLauncher.launch(intent);
@@ -629,7 +627,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             jsonObject.put("cuscode", cust_code);
             jsonObject.put("divcode", DivCode.replace(",", "").trim());
             jsonObject.put("cust", SelectedTab);
-            jsonObject.put("tagged_time", CommonUtilsMethods.getCurrentInstance() + " " + CommonUtilsMethods.getCurrentTime());
+            jsonObject.put("tagged_time", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
             jsonObject.put("image_name", imageName);
             jsonObject.put("sfname", SfName);
             jsonObject.put("sfcode", SfCode);
@@ -717,11 +715,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void CallAPIGeo(String jsonTag) {
         Log.v("test", jsonTag);
-        Call<JsonObject> callSaveGeo;
-        callSaveGeo = api_interface.saveMapGeoTag(jsonTag);
-        callSaveGeo.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "geodetails");
+        Call<JsonElement> callSaveGeo = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTag);
+
+        callSaveGeo.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     try {
                         progressDialog.dismiss();
@@ -756,7 +756,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
                 dialogTagCust.dismiss();
@@ -807,7 +807,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 // Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
-                    call = api_interface.getDrMaster(jsonObject.toString());
+                    Map<String, String> mapString = new HashMap<>();
+                    mapString.put("axn", "table/dcrmasterdata");
+                    call  = api_interface.getJSONElement(SharedPref.getCallApiUrl(context),mapString,jsonObject.toString());
                 }
 
                 if (call != null) {
@@ -895,7 +897,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Call<JsonObject> callImage;
             HashMap<String, RequestBody> values = field(jsonImage);
             MultipartBody.Part img = convertImg("UploadImg", filePath);
-            callImage = apiInterface.imgUploadMap(values, img);
+            callImage = apiInterface.SaveImg(values, img);
 
             callImage.enqueue(new Callback<JsonObject>() {
                 @Override

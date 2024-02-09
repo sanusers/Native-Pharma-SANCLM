@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.reports.dayReport.fragment;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -223,8 +227,9 @@ public class DayReportDetailFragment extends Fragment {
                         jsonObject.put("Designation", loginResponse.getDesig());
                         jsonObject.put("state_code", loginResponse.getState_Code());
                         jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
-
-                        Call<JsonElement> call = apiInterface.getReports(jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {

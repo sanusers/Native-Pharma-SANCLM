@@ -47,13 +47,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -134,80 +137,80 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         }
 
         holder.menu.setOnClickListener((View.OnClickListener) v -> {
-            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-            final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-            popup.inflate(R.menu.call_menu);
-            popup.setOnMenuItemClickListener(menuItem -> {
-                if (UtilityClass.isNetworkAvailable(context)) {
-                    if (menuItem.getItemId() == R.id.menuEdit) {
-                        CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
-                    } else if (menuItem.getItemId() == R.id.menuDelete) {
-                        try {
-                            dialogTransparent.show();
-                            CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
+            if (UtilityClass.isNetworkAvailable(context)) {
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
+                popup.inflate(R.menu.call_menu);
+                popup.setOnMenuItemClickListener(menuItem -> {
+                        if (menuItem.getItemId() == R.id.menuEdit) {
+                            CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
+                        } else if (menuItem.getItemId() == R.id.menuDelete) {
+                            try {
+                                dialogTransparent.show();
+                                CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
 
-                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
-                                    jsonArray.remove(i);
-                                    break;
+                                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                        jsonArray.remove(i);
+                                        break;
+                                    }
                                 }
+
+                                sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+                                sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
+
+                                switch (callslist.getDocNameID()) {
+                                    case "1":
+                                        int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
+                                        callAnalysisBinding.txtDocCount.setText(String.format("%d / %d", doc_current_callcount, Doctor_list.length()));
+                                        break;
+                                    case "2":
+                                        int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
+                                        callAnalysisBinding.txtCheCount.setText(String.format("%d / %d", che_current_callcount, Chemist_list.length()));
+                                        break;
+                                    case "3":
+                                        int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
+                                        callAnalysisBinding.txtStockCount.setText(String.format("%d / %d", stockiest_current_callcount, Stockiest_list.length()));
+                                        break;
+                                    case "4":
+                                        int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
+                                        callAnalysisBinding.txtUnlistCount.setText(String.format("%d / %d", unlistered_current_callcount, unlistered_list.length()));
+                                        break;
+                                    case "5":
+                                        int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
+                                        callAnalysisBinding.txtCipCount.setText(String.format("%d / %d", cip_current_callcount, cip_list.length()));
+                                        break;
+                                    case "6":
+                                        int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
+                                        callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
+                                        break;
+                                }
+
+
+                                // CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
+                                new CountDownTimer(300, 300) {
+                                    public void onTick(long millisUntilFinished) {
+                                    }
+
+                                    public void onFinish() {
+                                        removeAt(holder.getAbsoluteAdapterPosition());
+                                        dialogTransparent.dismiss();
+                                    }
+                                }.start();
+
+                            } catch (Exception e) {
+                                Log.v("sdsd", e.toString());
+                                dialogTransparent.dismiss();
                             }
-
-                            sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
-                            sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
-
-                            switch (callslist.getDocNameID()) {
-                                case "1":
-                                    int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
-                                    callAnalysisBinding.txtDocCount.setText(String.format("%d / %d", doc_current_callcount, Doctor_list.length()));
-                                    break;
-                                case "2":
-                                    int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
-                                    callAnalysisBinding.txtCheCount.setText(String.format("%d / %d", che_current_callcount, Chemist_list.length()));
-                                    break;
-                                case "3":
-                                    int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
-                                    callAnalysisBinding.txtStockCount.setText(String.format("%d / %d", stockiest_current_callcount, Stockiest_list.length()));
-                                    break;
-                                case "4":
-                                    int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
-                                    callAnalysisBinding.txtUnlistCount.setText(String.format("%d / %d", unlistered_current_callcount, unlistered_list.length()));
-                                    break;
-                                case "5":
-                                    int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
-                                    callAnalysisBinding.txtCipCount.setText(String.format("%d / %d", cip_current_callcount, cip_list.length()));
-                                    break;
-                                case "6":
-                                    int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
-                                    callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
-                                    break;
-                            }
-
-
-                            // CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
-                            new CountDownTimer(300, 300) {
-                                public void onTick(long millisUntilFinished) {
-                                }
-
-                                public void onFinish() {
-                                    removeAt(holder.getAbsoluteAdapterPosition());
-                                    dialogTransparent.dismiss();
-                                }
-                            }.start();
-
-                        } catch (Exception e) {
-                            Log.v("sdsd", e.toString());
-                            dialogTransparent.dismiss();
                         }
-                    }
-                } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
-                }
-                return true;
-            });
-            popup.show();
+                    return true;
+                });
+                popup.show();
+            } else {
+                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+            }
         });
     }
 
@@ -232,9 +235,10 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
-        Call<ResponseBody> deleteCall = null;
-        deleteCall = apiInterface.DeleteCall(jsonObject.toString());
 
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "delete/dcr");
+        Call<ResponseBody> deleteCall = apiInterface.getResponseBody(SharedPref.getCallApiUrl(context), mapString,jsonObject.toString());
         deleteCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
@@ -303,12 +307,16 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         }
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
-        Call<JsonObject> getEditCallDetails = null;
-        getEditCallDetails = apiInterface.getEditCallDetails(jsonObject.toString());
 
-        getEditCallDetails.enqueue(new Callback<JsonObject>() {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "edit/dcr");
+        Call<JsonElement> getEditCallDetails = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonObject.toString());
+/*        Call<JsonObject> getEditCallDetails = null;
+        getEditCallDetails = apiInterface.getEditCallDetails(jsonObject.toString());*/
+
+        getEditCallDetails.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     try {
                         progressBar.dismiss();
@@ -317,7 +325,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         CallActivityCustDetails = new ArrayList<>();
-                        CallActivityCustDetails.add(0, new CustList(docName, docCode, type, transSlno, aDetSLNo, jsonObject.toString()));
+                        CallActivityCustDetails.add(0, new CustList(docName, docCode, type, transSlno, aDetSLNo,"", jsonObject.toString()));
                         intent.putExtra("isDetailedRequired", "false");
                         intent.putExtra("from_activity", "edit_online");
                         context.startActivity(intent);
@@ -333,7 +341,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             }
 
             @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.dismiss();
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
             }
