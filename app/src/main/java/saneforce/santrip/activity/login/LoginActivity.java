@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.login;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,7 +12,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -100,6 +104,15 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+        binding.llLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                Context wrapper = new ContextThemeWrapper(getApplicationContext(), R.style.popupMenuStyle1);
+
+                final PopupMenu popup = new PopupMenu(wrapper,binding.llLanguage, Gravity.END);
+                popup.inflate(R.menu.languagemenu);
+                popup.show();
+            }
+        });
 
 
         binding.loginBtn.setOnClickListener(view -> {

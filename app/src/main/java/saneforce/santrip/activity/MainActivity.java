@@ -1,10 +1,6 @@
 package saneforce.santrip.activity;
-
-
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import saneforce.santrip.databinding.ActivityMainBinding;
 
 
@@ -17,10 +13,6 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
     }
-
-
 
 }

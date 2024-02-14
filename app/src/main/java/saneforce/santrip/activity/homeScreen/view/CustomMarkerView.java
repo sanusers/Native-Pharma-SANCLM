@@ -116,8 +116,7 @@ public class CustomMarkerView extends MarkerView {
               avaragecalls=0;
           }
 
-
-        Avg_calls.setText(String.valueOf(avaragecalls));
+          Avg_calls.setText(String.valueOf(avaragecalls));
         Total_Call_count.setText(String.valueOf(getyvakue));
 
         if (cus.equalsIgnoreCase("1")) {

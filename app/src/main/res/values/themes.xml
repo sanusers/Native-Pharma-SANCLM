@@ -65,6 +65,15 @@
         <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
     </style>
 
+    <style name="popupMenuStyle1" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/gray_45</item>
+        <item name="fontFamily">@font/satoshi_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+    </style>
+
     <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
         <item name="android:background">#00000000</item>
     </style>

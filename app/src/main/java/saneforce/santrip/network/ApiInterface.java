@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -19,6 +20,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import saneforce.santrip.activity.profile.DCRLastVisitDetails;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
@@ -179,6 +181,10 @@ public interface ApiInterface {
     Call<JsonElement> getTP(@Field("data") String postObj);
 
     @FormUrlEncoded
+    @POST("?axn=table/additionaldcrmasterdata")
+    Call<JsonElement> getQuiz(@Field("data") String postObj);
+
+    @FormUrlEncoded
     @POST("?axn=get/tp")
     Call<JsonArray> getTPMonthWise(@Field("data") String postObj);
 
@@ -219,5 +225,14 @@ public interface ApiInterface {
     @POST("?axn=get/reports")
     Call<JsonElement> getReports(@Field("data") String postObj);
 
+
+
+    @FormUrlEncoded
+    @POST()
+    Call<Object> SyncMasterJSON(@Url String sURL, @QueryMap Map<String, String> params, @Field("data") String body);
+
+    @FormUrlEncoded
+    @POST()
+    Call<JsonObject> getDataAsJObj( @QueryMap Map<String, String> params, @Field("data") String body);
 
 }

@@ -11,10 +11,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,11 +39,57 @@ public class PreCallAnalysisFragment extends Fragment {
     public static FragmentPrecallAnalysisBinding preCallAnalysisBinding;
     public static ApiInterface apiInterface;
     public static String SfName, SfType, SfCode, RSFCode, DivCode, Designation, StateCode, SubDivisionCode, prdDetails;
-
+    PreCallAnalysisAdapter adapter;
     LoginResponse loginResponse;
     SQLite sqLite;
 
-    public static void CallPreCallAPI(Activity activity) {
+    public static String RCPANeed ;
+    ArrayList<PreCallAnalysisModelClass> ProductList=new ArrayList<>();
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        preCallAnalysisBinding = FragmentPrecallAnalysisBinding.inflate(inflater);
+        View v = preCallAnalysisBinding.getRoot();
+        apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
+        sqLite = new SQLite(requireContext());
+        getRequiredData();
+        CallPreCallAPI(getActivity());
+
+
+
+        adapter=new PreCallAnalysisAdapter(ProductList,getActivity());
+        LinearLayoutManager manager = new LinearLayoutManager(requireContext());
+        preCallAnalysisBinding.recyelerview.setNestedScrollingEnabled(false);
+        preCallAnalysisBinding.recyelerview.setHasFixedSize(true);
+        preCallAnalysisBinding.recyelerview.setLayoutManager(manager);
+        preCallAnalysisBinding.recyelerview.setAdapter(adapter);
+
+        return v;
+    }
+
+    private void getRequiredData() {
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData();
+
+        SfType = loginResponse.getSf_type();
+        SfCode = loginResponse.getSF_Code();
+        if (SfType.equalsIgnoreCase("1")) {
+            RSFCode = loginResponse.getSF_Code();
+        } else {
+            RSFCode = SharedPref.getTodayDayPlanSfCode(requireContext());
+        }
+        SfName = loginResponse.getSF_Name();
+        DivCode = loginResponse.getDivision_Code();
+        SubDivisionCode = loginResponse.getSubdivision_code();
+        Designation = loginResponse.getDesig();
+        StateCode = loginResponse.getState_Code();
+        RCPANeed = loginResponse.getChm_RCPA_Need();
+    }
+
+
+    public  void CallPreCallAPI(Activity activity) {
         JSONObject json = new JSONObject();
         try {
             json.put("tableName", "getcuslvst");
@@ -68,23 +119,62 @@ public class PreCallAnalysisFragment extends Fragment {
         dcrLastCallDetails.enqueue(new Callback<List<DCRLastVisitDetails>>() {
             @Override
             public void onResponse(@NonNull Call<List<DCRLastVisitDetails>> call, @NonNull Response<List<DCRLastVisitDetails>> response) {
+                Log.e("Reponse:Resmas",  " :" + response);
+                Log.e("Reponse",  " :" + response .body());
                 if (response.isSuccessful()) {
-
                     try {
-                        CustomerProfile.progressDialog.dismiss();
+                        //   CustomerProfile.progressDialog.dismiss();
                         activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                         CustomerProfile.isPreAnalysisCalled = true;
                         List<DCRLastVisitDetails> dcrLastVstDetails = response.body();
                         assert dcrLastVstDetails != null;
-                        if (dcrLastVstDetails.get(0).getProdSamp().isEmpty()) {
+                        if(response.body().isEmpty()){
                             preCallAnalysisBinding.tvPrdPromoted.setText(R.string.no_prds_promoted);
-                        } else {
-                            prdDetails = dcrLastVstDetails.get(0).getProdSamp().replace("#", " , ");
-                            prdDetails = prdDetails.replace("~", "-");
-                            prdDetails = prdDetails.replace("$", "-");
-                            prdDetails = prdDetails.replace("^", "-");
-                            preCallAnalysisBinding.tvPrdPromoted.setText(prdDetails);
+                            preCallAnalysisBinding.tvPrdPromoted.setVisibility(View.VISIBLE);
+                            preCallAnalysisBinding.productTableList.setVisibility(View.GONE);
+                            preCallAnalysisBinding.recyelerview.setVisibility(View.GONE);
+
+                        }else{
+                            if (dcrLastVstDetails.get(0).getProdSamp().isEmpty()) {
+                                preCallAnalysisBinding.tvPrdPromoted.setText(R.string.no_prds_promoted);
+                                preCallAnalysisBinding.tvPrdPromoted.setVisibility(View.VISIBLE);
+                                preCallAnalysisBinding.productTableList.setVisibility(View.GONE);
+                                preCallAnalysisBinding.recyelerview.setVisibility(View.GONE);
+                            } else {
+
+                                preCallAnalysisBinding.tvPrdPromoted.setVisibility(View.GONE);
+                                preCallAnalysisBinding.productTableList.setVisibility(View.VISIBLE);
+                                preCallAnalysisBinding.recyelerview.setVisibility(View.VISIBLE);
+
+                                dataSplite(dcrLastVstDetails.get(0).getProdSamp());
+
+                                if(DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0")){
+                                    preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
+                                    preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.VISIBLE);
+                                }else {
+                                    preCallAnalysisBinding.sampleCaption.setVisibility(View.GONE);
+                                    preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.GONE);
+                                }
+                                if(DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0")){
+                                    preCallAnalysisBinding.rxCaption.setVisibility(View.VISIBLE);
+                                    preCallAnalysisBinding.rxCaptionLine.setVisibility(View.VISIBLE);
+                                }else {
+                                    preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
+                                    preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
+                                }
+                                if (RCPANeed.equalsIgnoreCase("0")) {
+                                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
+                                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
+                                }else {
+                                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
+                                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
+
+                                }
+
+                            }
+
                         }
+
 
                         if (dcrLastVstDetails.get(0).getInputs().equalsIgnoreCase("( 0 ),")) {
                             preCallAnalysisBinding.tvInputs.setText(R.string.no_inputs);
@@ -112,7 +202,7 @@ public class PreCallAnalysisFragment extends Fragment {
 
 
                     } catch (Exception e) {
-                        CustomerProfile.progressDialog.dismiss();
+                        //   CustomerProfile.progressDialog.dismiss();
                         activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     }
                 }
@@ -120,39 +210,28 @@ public class PreCallAnalysisFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<DCRLastVisitDetails>> call, @NonNull Throwable t) {
-                CustomerProfile.progressDialog.dismiss();
+                //  CustomerProfile.progressDialog.dismiss();
                 activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
         });
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        preCallAnalysisBinding = FragmentPrecallAnalysisBinding.inflate(inflater);
-        View v = preCallAnalysisBinding.getRoot();
-        apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-        sqLite = new SQLite(requireContext());
-        getRequiredData();
-        // CallPreCallAPI();
-        return v;
-    }
+    public void dataSplite(String inputString) {
+        ProductList.clear();
 
-    private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+        String str = inputString.replace(")", "");
+        String[] separated = str.split(",");
 
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        if (SfType.equalsIgnoreCase("1")) {
-            RSFCode = loginResponse.getSF_Code();
-        } else {
-            RSFCode = SharedPref.getTodayDayPlanSfCode(requireContext());
+        for (String s : separated) {
+            String[] item = s.split("[(]");
+            String Rcpa = item[3];
+            if (item[3].contains("^")) {
+                String[] rcpa = item[3].replace("^", ",").split("[,]");
+                Rcpa = rcpa[1];
+            }
+            ProductList.add(new PreCallAnalysisModelClass(item[0].trim(), item[1], item[2], Rcpa, item[4]));
+            adapter.notifyDataSetChanged();
+
         }
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
     }
 }

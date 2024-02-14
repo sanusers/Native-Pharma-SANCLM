@@ -86,13 +86,59 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/ll2">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="@dimen/_12sdp">
 
+
+
+                    <LinearLayout
+                        android:id="@+id/llLanguage"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="right"
+                        android:padding="@dimen/_3sdp"
+                        android:gravity="center"
+                        android:visibility="visible"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/img_world"
+                            android:layout_gravity="center"
+                            android:src="@drawable/img_world"
+                            android:layout_width="@dimen/_7sdp"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:layout_height="@dimen/_7sdp">
+                        </ImageView>
+                        <TextView
+                            android:id="@+id/spinnerLanguage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:padding="@dimen/_3sdp"
+                            android:textSize="@dimen/_7sdp"
+                            android:text="English"
+                            android:gravity="center|start" />
+
+                        <ImageView
+                            android:layout_alignParentRight="true"
+                            android:id="@+id/img_vector"
+                            android:layout_gravity="center"
+
+                            android:layout_marginTop="@dimen/_1sdp"
+                            android:src="@drawable/img_down_vector"
+                            android:layout_width="@dimen/_5sdp"
+                            android:layout_height="@dimen/_7sdp">
+
+                        </ImageView>
+                    </LinearLayout>
+
+
+
                     <ImageView
+                        android:layout_marginTop="@dimen/_3sdp"
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_40sdp"

@@ -49,7 +49,6 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.modelClass.Multicheckclass_clust;
-import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
@@ -82,7 +81,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     LoginResponse loginResponse;
     String strClusterID = "", strClusterName = "";
 
-    String worktypeflag = "1",IsFeildWorkFlag="F0";
+    String DayPlanCount = "1",IsFeildWorkFlag="F0";
+    boolean NeedClusterFlag1=false,NeedClusterFlag2=false;
     
     String mSubmitflag="S0";
     
@@ -123,7 +123,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.rlcluster2.setOnClickListener(this);
         binding.rlheadquates2.setOnClickListener(this);
         binding.llDelete.setOnClickListener(this);
-
         setUpMyDayplan();
         getLocalData();
 
@@ -143,18 +142,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HomeDashBoard.binding.llNav.wkListView.setAdapter(WT_ListAdapter);
 
         HomeDashBoard.binding.llNav.wkListView.setOnItemClickListener((parent, view, position, id) -> {
-            HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
-            SelectedWorkType = WT_ListAdapter.getlisted().get(position);
+               HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
+             SelectedWorkType = WT_ListAdapter.getlisted().get(position);
 
    try {
-       mTxtWorktype.setText(SelectedWorkType.getString("Name"));
-                if (worktypeflag.equalsIgnoreCase("1")) {
+              mTxtWorktype.setText(SelectedWorkType.getString("Name"));
+                if (DayPlanCount.equalsIgnoreCase("1")) {
 
                     mFwFlg1 = SelectedWorkType.getString("FWFlg");
                     mWTCode1 = SelectedWorkType.getString("Code");
                     mWTName1 = SelectedWorkType.getString("Name");
 
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                        NeedClusterFlag1=true;
                         IsFeildWorkFlag="F1";
                         rlculster.setVisibility(View.VISIBLE);
                         if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
@@ -177,7 +177,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mWTCode2 = SelectedWorkType.getString("Code");
                     mWTName2 = SelectedWorkType.getString("Name");
 
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                        NeedClusterFlag2=true;
                         IsFeildWorkFlag="F2";
                         rlculster.setVisibility(View.VISIBLE);
                         if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
@@ -337,7 +338,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
 
                 }
-                if (worktypeflag.equalsIgnoreCase("1")) {
+                if (DayPlanCount.equalsIgnoreCase("1")) {
                     mTowncode1 = strClusterID;
                     mTownname1 = strClusterName;
                     binding.txtCluster1.setText(strClusterName);
@@ -377,7 +378,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             try {
                 TextCL.setText("");
                 TextHQ.setText(SelectedHQ.getString("name"));
-                if (worktypeflag.equalsIgnoreCase("1")) {
+                if (DayPlanCount.equalsIgnoreCase("1")) {
                     mHQCode1 = SelectedHQ.getString("id");
                     mHQName1 = SelectedHQ.getString("name");
                     getData(SelectedHQ.getString("id"));
@@ -399,7 +400,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchString = s.toString();
@@ -418,49 +418,61 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         workType_list1.clear();
         cluster.clear();
         multiple_cluster_list.clear();
+        HQList.clear();
 
         try {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
             for (int i = 0; i < workTypeArray.length(); i++) {
-                JSONObject jsonObject = workTypeArray.getJSONObject(i);
-                if(worktypeflag.equalsIgnoreCase("1")){
-                    if(!(mWTCode2).equalsIgnoreCase(jsonObject.getString("Code"))){
-                        workType_list1.add(jsonObject);
+                JSONObject object = workTypeArray.getJSONObject(i);
+
+                if (loginResponse.getDesig().equalsIgnoreCase("MR")) {
+
+                    if(DayPlanCount.equalsIgnoreCase("1")){
+                        if(!(mWTCode2).equalsIgnoreCase(object.getString("Code"))){
+                            workType_list1.add(object);
+                        }
+                    }else {
+                        if(!(mWTCode1).equalsIgnoreCase(object.getString("Code"))){
+                            workType_list1.add(object);
+                        }
                     }
                 }else {
-                    if(!(mWTCode1).equalsIgnoreCase(jsonObject.getString("Code"))){
-                        workType_list1.add(jsonObject);
+
+                    workType_list1.add(object);
+                }
+            }
+
+
+            JSONArray workTypeArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(requireContext()));
+            for (int i = 0; i < workTypeArray2.length(); i++) {
+                JSONObject Object1 = workTypeArray2.getJSONObject(i);
+
+
+                if (("," + chk_cluster + ",").contains("," + Object1.getString("Code") + ",")) {
+                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", true));
+                } else {
+                    multiple_cluster_list.add(new Multicheckclass_clust(Object1.getString("Code"), Object1.getString("Name"), "", false));
+
+                }
+                cluster.add(Object1);
+            }
+
+            if(!loginResponse.getDesig().equalsIgnoreCase("MR")){
+            JSONArray workTypeArray3 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+            for (int i = 0; i < workTypeArray3.length(); i++) {
+                JSONObject jsonObject = workTypeArray3.getJSONObject(i);
+
+                if (DayPlanCount.equalsIgnoreCase("1")) {
+                    if (!(mHQCode2).equalsIgnoreCase(jsonObject.getString("id"))) {
+                        HQList.add(jsonObject);
+                    }
+                } else {
+                    if (!(mHQCode1).equalsIgnoreCase(jsonObject.getString("id"))) {
+                        HQList.add(jsonObject);
                     }
                 }
 
-//                workType_list1.add(jsonObject);
-            }
-        } catch (Exception a) {
-            a.printStackTrace();
-        }
-        try {
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(requireContext()));
-            for (int i = 0; i < workTypeArray.length(); i++) {
-                JSONObject jsonObject = workTypeArray.getJSONObject(i);
-
-
-                if (("," + chk_cluster + ",").contains("," + jsonObject.getString("Code") + ",")) {
-                    multiple_cluster_list.add(new Multicheckclass_clust(jsonObject.getString("Code"), jsonObject.getString("Name"), "", true));
-                } else {
-                    multiple_cluster_list.add(new Multicheckclass_clust(jsonObject.getString("Code"), jsonObject.getString("Name"), "", false));
-
-                }
-                cluster.add(jsonObject);
-            }
-        } catch (Exception a) {
-            a.printStackTrace();
-        }
-        try {
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
-            for (int i = 0; i < workTypeArray.length(); i++) {
-                JSONObject jsonObject = workTypeArray.getJSONObject(i);
-                HQList.add(jsonObject);
-            }
+            }}
         } catch (Exception a) {
             a.printStackTrace();
         }
@@ -482,7 +494,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.rlcluster1:
-
                 if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
                     Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
 
@@ -501,7 +512,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             case R.id.rlworktype2:
                 ShowWorkTypeAlert(binding.txtWorktype2, binding.rlcluster2, binding.rlheadquates2);
-
 
                 break;
 
@@ -542,8 +552,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             case R.id.txtSave:
 
                 if (UtilityClass.isNetworkAvailable(getActivity())) {
-                    if (worktypeflag.equalsIgnoreCase("1")) {
-                    if (binding.txtWorktype1.getText().toString().startsWith("Field")) {
+                    if (DayPlanCount.equalsIgnoreCase("1")) {
+                    if (NeedClusterFlag1) {
                         if (binding.txtheadquaters1.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
                             Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
 
@@ -593,11 +603,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         MyDayPlanSubmit();
                     }
                 } else {
-                    if (binding.txtWorktype2.getText().toString().startsWith("Field")) {
+                    if (NeedClusterFlag1) {
                         if (binding.txtheadquaters2.getText().toString().equalsIgnoreCase("") && !loginResponse.getDesig().equalsIgnoreCase("MR")) {
                             Toast.makeText(getActivity(), "Select Headquarters", Toast.LENGTH_SHORT).show();
-
-
                         } else if (binding.txtCluster2.getText().toString().equalsIgnoreCase("")) {
                             Toast.makeText(getActivity(), "Select Cluster", Toast.LENGTH_SHORT).show();
                         } else {
@@ -647,8 +655,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         MyDayPlanSubmit();
                     }
                 }
-
-
                 } else {
                     Toast.makeText(getActivity(), "No Internet connectivity!", Toast.LENGTH_SHORT).show();
                 }
@@ -656,7 +662,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             case R.id.txtAddPlan:
                 mSubmitflag="S0";
-                worktypeflag = "2";
+                DayPlanCount = "2";
                 binding.llDelete.setVisibility(View.VISIBLE);
                 binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
                 binding.txtSave.setTextColor(getResources().getColor(R.color.black));
@@ -680,7 +686,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtSave.setEnabled(false);
                 binding.txtSave.setTextColor(getResources().getColor(R.color.gray_45));
                 binding.txtAddPlan.setTextColor(getResources().getColor(R.color.black));
-                worktypeflag = "1";
+                binding.txtWorktype2.setText("");
+                binding.txtCluster2.setText("");
+                binding.txtheadquaters2.setText("");
+                DayPlanCount = "1";
                 mSubmitflag="S1";
                 binding.cardPlan2.setVisibility(View.GONE);
                 break;
@@ -689,7 +698,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
     public void MyDayPlanSubmit() {
-        if (worktypeflag.equalsIgnoreCase("1")) {
+        if (DayPlanCount.equalsIgnoreCase("1")) {
             mHQCode = mHQCode1;
             mTowncode = mTowncode1;
             mHQName = mHQName1;
@@ -839,7 +848,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
     public void getData(String hqCode) {
-        if (worktypeflag.equalsIgnoreCase("1")) {
+        if (DayPlanCount.equalsIgnoreCase("1")) {
             binding.progressHq1.setVisibility(View.VISIBLE);
         } else {
             binding.progressHq2.setVisibility(View.VISIBLE);
@@ -911,7 +920,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                             sqLite.saveMasterSyncData(LocalTableKeyName, jsonArray.toString(), 0);
 
                                             if (LocalTableKeyName.startsWith(Constants.CLUSTER)) {
-                                                if (worktypeflag.equalsIgnoreCase("1")) {
+                                                if (DayPlanCount.equalsIgnoreCase("1")) {
                                                     binding.progressHq1.setVisibility(View.GONE);
                                                 } else {
                                                     binding.progressHq2.setVisibility(View.GONE);

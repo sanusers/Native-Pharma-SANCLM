@@ -147,10 +147,45 @@
                         android:orientation="horizontal"
                         android:weightSum="2">
 
+
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/str_your_device_id"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_7sdp"
+                                android:fontFamily="@font/satoshi_bold"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/tv_device_id"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_4sdp"
+                                android:background="@drawable/etxt_stroke_with_fill_color"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="center|start"
+                                android:maxLines="1"
+                                android:padding="@dimen/_7sdp"
+                                android:singleLine="true"
+                                android:textColor="@color/text_dark"
+                                android:textColorHint="@color/text_dark_65"
+                                android:textSize="@dimen/_6sdp"
+                                tools:ignore="SpUsage,TextFields" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:visibility="gone"
+                            android:layout_marginStart="@dimen/_12sdp"
+
                             android:orientation="vertical">
 
                             <TextView
@@ -187,38 +222,6 @@
 
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="@dimen/_12sdp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/str_your_device_id"
-                                android:textColor="@color/text_dark"
-                                android:textSize="@dimen/_7sdp"
-                                android:fontFamily="@font/satoshi_bold"
-                                tools:ignore="SpUsage" />
-
-                            <TextView
-                                android:id="@+id/tv_device_id"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_4sdp"
-                                android:background="@drawable/etxt_stroke_with_fill_color"
-                                android:fontFamily="@font/satoshi_medium"
-                                android:gravity="center|start"
-                                android:maxLines="1"
-                                android:padding="@dimen/_7sdp"
-                                android:singleLine="true"
-                                android:textColor="@color/text_dark"
-                                android:textColorHint="@color/text_dark_65"
-                                android:textSize="@dimen/_6sdp"
-                                tools:ignore="SpUsage,TextFields" />
-                        </LinearLayout>
                     </LinearLayout>
 
                     <Button

@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.Quiz.QuizActivity;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.activity.forms.Forms_activity;
 import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
@@ -585,6 +586,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
         if (id == R.id.nav_tour_plan) {
             startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
+            return true;
+        }
+        if (id == R.id.nav_quiz) {
+            startActivity(new Intent(HomeDashBoard.this, QuizActivity.class));
             return true;
         }
         if (id == R.id.nav_myresource) {

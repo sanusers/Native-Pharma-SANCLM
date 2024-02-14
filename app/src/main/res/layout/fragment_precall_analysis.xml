@@ -1,51 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:orientation="horizontal"
     android:layout_height="match_parent"
     android:background="@drawable/bg_white_without_border">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+
+
+
+  <LinearLayout
+      android:layout_weight="1"
+      android:layout_width="match_parent"
+      android:orientation="vertical"
+      android:layout_margin="@dimen/_5sdp"
+      android:layout_height="match_parent">
+
+      <TextView
+          android:id="@+id/tv_tag_last_visit"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:padding="@dimen/_3sdp"
+          android:layout_marginTop="@dimen/_2sdp"
+          android:fontFamily="@font/satoshi_bold"
+          android:gravity="center"
+          android:text="Last Visit date &amp; Time"
+          android:textColor="@color/black"
+          android:textSize="@dimen/_9sdp"
+          android:textStyle="bold" />
+
+      <TextView
+          android:id="@+id/tv_last_visit"
+          android:padding="@dimen/_3sdp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/satoshi_regular"
+          android:gravity="center"
+          android:text="No Last Visit Date"
+          android:textColor="@color/bg_txt_color"
+          android:textSize="@dimen/_8sdp"
+          android:textStyle="bold" />
+
+      <TextView
+          android:id="@+id/tv_tag_feedback"
+          android:layout_width="wrap_content"
+          android:layout_marginTop="@dimen/_2sdp"
+          android:padding="@dimen/_3sdp"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/satoshi_bold"
+          android:gravity="center"
+          android:text="Feedback"
+          android:textColor="@color/black"
+          android:textSize="@dimen/_9sdp"
+          android:textStyle="bold" />
+
+      <TextView
+          android:id="@+id/tv_feedback"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/satoshi_regular"
+          android:gravity="center"
+          android:padding="@dimen/_3sdp"
+          android:text="No Feedback"
+          android:textColor="@color/bg_txt_color"
+          android:textSize="@dimen/_8sdp"
+          android:textStyle="bold" />
+
+      <TextView
+          android:layout_marginTop="@dimen/_2sdp"
+          android:id="@+id/tv_tag_remarks"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/satoshi_bold"
+          android:gravity="center"
+          android:text="Remarks"
+          android:padding="@dimen/_3sdp"
+          android:textColor="@color/black"
+          android:textSize="@dimen/_9sdp"
+          android:textStyle="bold" />
+
+      <TextView
+          android:id="@+id/tv_remark"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:padding="@dimen/_3sdp"
+
+          android:fontFamily="@font/satoshi_regular"
+          android:gravity="center"
+          android:text="No Remarks"
+          android:textColor="@color/bg_txt_color"
+          android:textSize="@dimen/_8sdp"
+          android:textStyle="bold" />
+
+
+
+  </LinearLayout>
+
+
+    <ScrollView
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_6sdp">
+        android:layout_height="match_parent">
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_5sdp"
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_tag_last_visit"
+            android:id="@+id/tv_tag_prd_promoted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginVertical="@dimen/_1sdp"
             android:fontFamily="@font/satoshi_bold"
+            android:padding="@dimen/_3sdp"
             android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="Last Visit date &amp; Time"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:text="Products Promoted"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_last_visit"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="@dimen/_9sdp"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_last_visit"
-            android:layout_width="wrap_content"
+
+            <TextView
+                android:id="@+id/tv_prd_promoted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:fontFamily="@font/satoshi_regular"
+                android:gravity="start|center|top"
+                android:singleLine="false"
+                android:text="No Products Promoted"
+                android:textColor="@color/bg_txt_color"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@color/light_cement"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginVertical="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_regular"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="No Last Visit Date"
-            android:textColor="@color/bg_txt_color"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_tag_inputs"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_last_visit"
-            app:layout_constraintTop_toBottomOf="@id/tv_tag_last_visit" />
+            android:id="@+id/product_table_list"
+            android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/bg_grey_dark" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_grey_dark" />
+
+                <TextView
+                    android:id="@+id/prod_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Product"
+                    android:textSize="@dimen/_8sdp"
+                    android:padding="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_grey_dark" />
+
+                <TextView
+                    android:id="@+id/sample_caption"
+                    android:textSize="@dimen/_8sdp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Sample"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:padding="@dimen/_2sdp"
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+                <View
+                    android:id="@+id/sample_caption_line"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_grey_dark" />
+
+                <TextView
+                    android:id="@+id/rx_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="RX"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:textSize="@dimen/_8sdp"
+                    android:padding="@dimen/_2sdp"
+
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+                <View
+                    android:id="@+id/rx_caption_line"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_grey_dark" />
+
+                <TextView
+                    android:id="@+id/rcpa_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="RCPA"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:textSize="@dimen/_8sdp"
+                    android:padding="@dimen/_2sdp"
+
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+                <View
+                    android:id="@+id/rcpa_captionLine"
+
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_grey_dark" />
+
+                <TextView
+                    android:id="@+id/feedback_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:fontFamily="@font/satoshi_bold"
+                    android:text="@string/feedback"
+                    android:textSize="@dimen/_8sdp"
+                    android:textColor="@color/black"
+                    android:padding="@dimen/_2sdp"
+                    android:visibility="visible" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_grey_dark" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyelerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_regular"
+            android:gravity="start|center|top"
+            android:singleLine="false"
+            android:textColor="@color/bg_txt_color"
+            />
         <TextView
             android:id="@+id/tv_tag_inputs"
             android:layout_width="wrap_content"
@@ -58,11 +284,8 @@
             android:paddingVertical="@dimen/_2sdp"
             android:text="Inputs"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_inputs"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_last_visit"
-            app:layout_constraintTop_toBottomOf="@id/tv_last_visit" />
+            android:textSize="@dimen/_9sdp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_inputs"
@@ -76,143 +299,13 @@
             android:paddingVertical="@dimen/_2sdp"
             android:text="No Inputs"
             android:textColor="@color/bg_txt_color"
-            android:textSize="14sp"
+            android:textSize="@dimen/_8sdp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/tv_tag_feedback"
             app:layout_constraintStart_toStartOf="@id/tv_tag_last_visit"
             app:layout_constraintTop_toBottomOf="@id/tv_tag_inputs" />
 
-        <TextView
-            android:id="@+id/tv_tag_feedback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
-            android:layout_marginBottom="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="Feedback"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_feedback"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_last_visit"
-            app:layout_constraintTop_toBottomOf="@id/tv_inputs" />
+    </LinearLayout>
+    </ScrollView>
 
-        <TextView
-            android:id="@+id/tv_feedback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginVertical="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_regular"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="No Feedback"
-            android:textColor="@color/bg_txt_color"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_tag_remarks"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_last_visit"
-            app:layout_constraintTop_toBottomOf="@id/tv_tag_feedback" />
-
-        <TextView
-            android:id="@+id/tv_tag_remarks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
-            android:layout_marginBottom="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="Remarks"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_remark"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_last_visit"
-            app:layout_constraintTop_toBottomOf="@id/tv_feedback" />
-
-        <TextView
-            android:id="@+id/tv_remark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginVertical="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_regular"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="No Remarks"
-            android:textColor="@color/bg_txt_color"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_last_visit"
-            app:layout_constraintTop_toBottomOf="@id/tv_tag_remarks" />
-
-        <TextView
-            android:id="@+id/tv_tag_prd_promoted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginVertical="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_bold"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="Products Promoted"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/tv_prd_promoted"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_tag_last_visit"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <!-- <ListView
-             android:id="@+id/lv_tag_promoted_prd"
-             android:layout_width="@dimen/_120sdp"
-             android:layout_height="0dp"
-             android:layout_marginHorizontal="@dimen/_4sdp"
-             android:layout_marginVertical="@dimen/_1sdp"
-             android:fontFamily="@font/satoshi_regular"
-             android:gravity="center"
-             android:paddingHorizontal="@dimen/_4sdp"
-             android:paddingVertical="@dimen/_2sdp"
-             android:textColor="@color/bg_txt_color"
-             android:textSize="14sp"
-             android:textStyle="bold"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintStart_toStartOf="@id/tv_tag_prd_promoted"
-             app:layout_constraintTop_toBottomOf="@id/tv_tag_prd_promoted" />
- -->
-        <TextView
-            android:id="@+id/tv_prd_promoted"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="@dimen/_4sdp"
-            android:layout_marginVertical="@dimen/_1sdp"
-            android:fontFamily="@font/satoshi_regular"
-            android:gravity="start|center|top"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:singleLine="false"
-            android:text="No Products Promoted"
-            android:textColor="@color/bg_txt_color"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@id/tv_tag_prd_promoted"
-            app:layout_constraintTop_toBottomOf="@id/tv_tag_prd_promoted" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+</LinearLayout>

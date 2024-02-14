@@ -58,7 +58,7 @@ public class CustomerProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cust_profile);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-sqLite = new SQLite(this);
+        sqLite = new SQLite(this);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         btn_skip = findViewById(R.id.btn_skip);
@@ -81,7 +81,7 @@ sqLite = new SQLite(this);
                 if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
                     if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                         progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                        PreCallAnalysisFragment.CallPreCallAPI(CustomerProfile.this);
+                   //     PreCallAnalysisFragment.CallPreCallAPI(CustomerProfile.this);
                     } else {
                         Toast.makeText(CustomerProfile.this, "No Internet Connectivity", Toast.LENGTH_SHORT).show();
                     }

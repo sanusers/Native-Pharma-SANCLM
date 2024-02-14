@@ -66,11 +66,17 @@
             android:title="@string/near_me" />
 
         <item
-            android:id="@+id/nav_quiz"
+            android:id="@+id/nav_survey"
             android:fontFamily="@font/satoshi_medium"
             android:icon="@drawable/survey"
             android:textSize="@dimen/_7sdp"
             android:title="@string/survey" />
+        <item
+            android:id="@+id/nav_quiz"
+            android:fontFamily="@font/satoshi_medium"
+            android:icon="@drawable/quiz"
+            android:textSize="@dimen/_7sdp"
+            android:title="Quiz" />
 
         <item
             android:id="@+id/nav_forms"

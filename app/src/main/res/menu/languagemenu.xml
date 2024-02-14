@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/itemArabic"
+        android:fontFamily="@font/satoshi_regular"
+        android:title="Arabic" />
+    <item
+        android:id="@+id/itemEnglish"
+        android:fontFamily="@font/satoshi_regular"
+        android:title="English"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/itemFrench"
+        android:fontFamily="@font/satoshi_regular"
+        android:title="French" />
+
+    <item
+        android:id="@+id/itemSpanish"
+        android:fontFamily="@font/satoshi_regular"
+        android:title="Spanish" />
+    <item
+        android:id="@+id/itemPersian"
+        android:fontFamily="@font/satoshi_regular"
+        android:title="Persian" />
+    <item
+        android:id="@+id/itemThai"
+        android:fontFamily="@font/satoshi_regular"
+        android:title="Thai" />
+</menu>
