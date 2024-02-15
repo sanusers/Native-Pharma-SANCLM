@@ -48,6 +48,7 @@ import saneforce.santrip.databinding.CallAnalysisFagmentBinding;
 import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.TimeUtils;
 
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
@@ -376,8 +377,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             entries.add(new Entry(3, xaxis3));
             entries.add(new Entry(4, xaxis4));
             entries.add(new Entry(5, xaxis5));
-            entries.add(new Entry(6, xaxis6));
-
+            if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                entries.add(new Entry(6, xaxis6));
+            }
 
         } else if (ispast1month) {
             key = "2";
@@ -387,7 +389,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
             callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(calendar1.getTime()), calendar1.get(Calendar.YEAR), sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
-
 
             int xaxis3 = sqLite.getcalls_count_by_range(firstDatepastmonth, fifteenthDatepastmonth, Custype);
             int xaxis4 = sqLite.getcalls_count_by_range(firstDatepastmonth, enddatepastmonth, Custype);
@@ -402,8 +403,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             entries.add(new Entry(1, xaxis3));
             entries.add(new Entry(2, xaxis4));
             entries.add(new Entry(3, xaxis5));
-            entries.add(new Entry(4, xaxis6));
-
+            if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                entries.add(new Entry(4, xaxis6));
+            }
 
         } else {
             key = "1";
@@ -421,7 +423,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
             entries.add(new Entry(1, xaxis5));
-            entries.add(new Entry(2, xaxis5));
+            if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                entries.add(new Entry(2, xaxis5));
+            }
+
 
         }
 
@@ -486,8 +491,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     } else if (value == 5f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
                     } else if (value == 6f) {
-                        return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");
-                    } else {
+                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15){
+                            return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");}
+                        else {return "";}                    } else {
                         return "";
                     }
 
@@ -503,8 +509,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
 
                     } else if (value == 4f) {
-                        return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");
-                    } else {
+                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15){
+                            return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");}
+                        else {return "";}                    } else {
                         return "";
                     }
 
@@ -516,7 +523,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     } else if (value == 1f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
                     } else if (value == 2f) {
-                        return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");
+                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15){
+                            return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");}
+                        else {return "";}
                     } else {
                         return "";
                     }
@@ -561,7 +570,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         } else if (maxvalue >= 400 && maxvalue < 500) {
             leftYAxis.setAxisMaximum(400);
         } else if (maxvalue >= 500 && maxvalue < 1000) {
-            leftYAxis.setAxisMaximum(400);
+            leftYAxis.setAxisMaximum(1000);
         } else if (maxvalue >= 1000) {
             leftYAxis.setAxisMaximum(5000);
         } else {

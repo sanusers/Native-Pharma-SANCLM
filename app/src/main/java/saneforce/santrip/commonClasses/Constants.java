@@ -51,6 +51,7 @@ public class Constants {
 
     //Subordinate
     public static final String SUBORDINATE = "Subordinate";
+    public static final String QUIZ = "Quiz";
     public static final String SUBORDINATE_MGR = "Subordinate Mgr";
     public static final String JOINT_WORK = "Joint_Work_";
 

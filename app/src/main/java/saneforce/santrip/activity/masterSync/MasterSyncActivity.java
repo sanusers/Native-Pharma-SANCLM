@@ -1,6 +1,5 @@
 package saneforce.santrip.activity.masterSync;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -35,8 +35,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,7 +45,6 @@ import saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBo
 import saneforce.santrip.activity.slideDownloaderAlertBox.SlideModelClass;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
-import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMasterSyncBinding;
@@ -76,7 +73,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     int productCount = 0, proCatCount = 0, brandCount = 0, compProCount = 0, mapComPrdCount = 0;
     int workTypeCount = 0, holidayCount = 0, weeklyOfCount = 0;
     int proSlideCount = 0, proSpeSlideCount = 0, brandSlideCount = 0, therapticCount = 0;
-    int subordinateCount = 0, subMgrCount = 0, jWorkCount = 0;
+    int subordinateCount = 0, subMgrCount = 0, jWorkCount = 0,Quixcount=0;
     int setupCount = 0, customSetupCount = 0;
     // Api call status
     int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0;
@@ -85,7 +82,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     int productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0;
     int workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0;
     int proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0;
-    int subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0;
+    int subordinateStatus = 0, subMgrStatus = 0, jWorkStatus = 0,QuizStatus=0;
     int setupStatus = 0, customSetupStatus = 0;
     int apiSuccessCount = 0, itemCount = 0;
     String navigateFrom = "";
@@ -107,7 +104,11 @@ public class MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> tpModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> slideModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
+    ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
+
+    public static ArrayList<SlideModelClass> Slide_list = new ArrayList<>();
+    public static ArrayList<String> slideId = new ArrayList<>();
     SharedPreferences sharedpreferences;
     LocalDate localDate;
     ArrayList<String> weeklyOffDays = new ArrayList<>();
@@ -351,7 +352,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             if (!view.isSelected()) {
                 listItemClicked(binding.dcr);
                 binding.childSync.setText("Sync DCR");
-
                 arrayForAdapter.clear();
                 arrayForAdapter.addAll(dcrModelArray);
                 populateAdapter(arrayForAdapter);
@@ -402,6 +402,18 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
 
         });
+        binding.Other.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                listItemClicked(binding.Other);
+                binding.childSync.setText("Sync Other");
+
+                arrayForAdapter.clear();
+                arrayForAdapter.addAll(otherModelArray);
+                populateAdapter(arrayForAdapter);
+            }
+
+        });
+
 
 
         binding.setup.setOnClickListener(view -> {
@@ -452,7 +464,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                             arrayList.addAll(slideModelArray);
                         } else if (binding.subordinate.isSelected()) {
                             arrayList.addAll(subordinateModelArray);
-                        } else if (binding.setup.isSelected()) {
+                        } else if (binding.Other.isSelected()) {
+                            arrayList.addAll(otherModelArray);
+                        }else if (binding.setup.isSelected()) {
                             arrayList.addAll(setupModelArray);
                         }
 
@@ -541,6 +555,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         subordinateCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE).length();
         subMgrCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE_MGR).length();
         jWorkCount = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + rsf).length();
+        Quixcount=sqLite.getMasterSyncDataByKey(Constants.QUIZ).length();
         setupCount = sqLite.getMasterSyncDataByKey(Constants.SETUP).length();
         customSetupCount = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP).length();
 
@@ -583,6 +598,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         subordinateStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE);
         subMgrStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
         jWorkStatus = sqLite.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
+        QuizStatus = sqLite.getMasterSyncStatusByKey(Constants.QUIZ);
         setupStatus = sqLite.getMasterSyncStatusByKey(Constants.SETUP);
         customSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
@@ -727,6 +743,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
 
+        otherModelArray.clear();
+        MasterSyncItemModel Quiz = new MasterSyncItemModel("Quiz", Quixcount, Constants.QUIZ, "getquiz", Constants.QUIZ, QuizStatus, false);
+        otherModelArray.add(Quiz);
         //Setup
         setupModelArray.clear();
         MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP, setupCount, Constants.SETUP, "getsetups", Constants.SETUP, setupStatus, false);
@@ -754,6 +773,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.tourPlan.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.slide.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.subordinate.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
+        binding.Other.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
         binding.setup.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
 
         binding.listedDr.setSelected(false);
@@ -771,6 +791,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.tourPlan.setSelected(false);
         binding.slide.setSelected(false);
         binding.subordinate.setSelected(false);
+        binding.Other.setSelected(false);
         binding.setup.setSelected(false);
 
         view.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.greater_than_white, 0);
@@ -816,7 +837,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), slideModelArray, position);
                             } else if (binding.subordinate.isSelected()) {
                                 sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
-                            } else if (binding.setup.isSelected()) {
+                            } else if (binding.Other.isSelected()) {
+                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
+                            }else if (binding.setup.isSelected()) {
                                 sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                             }
                         } else {
@@ -864,6 +887,8 @@ public class MasterSyncActivity extends AppCompatActivity {
             populateAdapter(slideModelArray);
         } else if (binding.subordinate.isSelected()) {
             populateAdapter(subordinateModelArray);
+        }  else if (binding.Other.isSelected()) {
+            populateAdapter(otherModelArray);
         } else if (binding.setup.isSelected()) {
             populateAdapter(setupModelArray);
         }
@@ -1074,11 +1099,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
-
-
                             }
                         }
-
                         masterSyncAdapter.notifyDataSetChanged();
                         Log.e("test", "success count : " + apiSuccessCount);
                     }

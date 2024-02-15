@@ -419,7 +419,22 @@
                             android:layout_alignParentStart="true"
                             android:layout_below="@id/slide"
                             tools:ignore="SpUsage"/>
-
+                    <TextView
+                        android:id="@+id/Other"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Other"
+                        android:textColor="@drawable/master_sync_selector_stroke"
+                        android:textSize="@dimen/_6sdp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_7sdp"
+                        android:drawableEnd="@drawable/arrow_down"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@drawable/master_sync_selector_stroke"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@id/subordinate"
+                        tools:ignore="SpUsage"/>
                         <TextView
                             android:id="@+id/setup"
                             android:layout_width="match_parent"
@@ -434,7 +449,7 @@
                             android:layout_marginTop="@dimen/_5sdp"
                             android:background="@drawable/master_sync_selector_stroke"
                             android:layout_alignParentStart="true"
-                            android:layout_below="@id/subordinate"
+                            android:layout_below="@id/Other"
                             tools:ignore="SpUsage"/>
 
                     <LinearLayout

@@ -221,7 +221,23 @@ public class PreCallAnalysisFragment extends Fragment {
         // CallPreCallAPI();
         return v;
     }
+    public void dataSplite(String inputString) {
+        ProductList.clear();
 
+        String str = inputString.replace(")", "");
+        String[] separated = str.split(",");
+
+        for (String s : separated) {
+            String[] item = s.split("[(]");
+            String Rcpa = item[3];
+            if (item[3].contains("^")) {
+                String[] rcpa = item[3].replace("^", ",").split("[,]");
+                Rcpa = rcpa[1];
+            }
+            ProductList.add(new PreCallAnalysisModelClass(item[0].trim(), item[1], item[2], Rcpa, item[4]));
+            adapter.notifyDataSetChanged();
+        }
+    }
     private void getRequiredData() {
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();

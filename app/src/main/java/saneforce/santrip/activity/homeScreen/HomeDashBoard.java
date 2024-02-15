@@ -1,13 +1,6 @@
 package saneforce.santrip.activity.homeScreen;
 
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
-import static saneforce.santrip.commonClasses.Constants.APP_MODE;
-import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
-import static saneforce.santrip.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -80,6 +73,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.Quiz.QuizActivity;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.activity.forms.Forms_activity;
 import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
@@ -155,6 +149,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        Log.v("AAAAAA","PostCreate");
     }
 
 
@@ -164,6 +159,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onResume();
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
+        Log.v("AAAAAA","PostCreate");
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
@@ -1071,6 +1067,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.tour_plan))) {
             startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
+            return true;
+        }
+        if (id == R.id.nav_quiz) {
+            startActivity(new Intent(HomeDashBoard.this, QuizActivity.class));
             return true;
         }
 

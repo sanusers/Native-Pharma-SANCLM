@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RadioButton
+        android:id="@+id/radio_button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_medium"
+        android:gravity="left|center"
+        android:text="Option 1"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_8sdp" />
+</LinearLayout>
