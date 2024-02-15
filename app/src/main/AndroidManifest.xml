@@ -39,9 +39,10 @@
 
     <application
         android:allowBackup="true"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/san_clm_logo"
         android:label="@string/str_app_name"
         android:largeHeap="true"
@@ -232,15 +233,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-     <!--   <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.saneforce.santrip.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" />
-        </provider>-->
+        <!--   <provider
+               android:name="androidx.core.content.FileProvider"
+               android:authorities="${applicationId}.saneforce.santrip.fileprovider"
+               android:exported="false"
+               android:grantUriPermissions="true">
+               <meta-data
+                   android:name="android.support.FILE_PROVIDER_PATHS"
+                   android:resource="@xml/filepaths" />
+           </provider>-->
 
         <provider
             android:name="androidx.core.content.FileProvider"

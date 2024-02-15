@@ -103,7 +103,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public static ArrayList<StoreImageTypeUrl> arrayStore;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrcallBinding dcrCallBinding;
-    public static String PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd;
+    public static String PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
     public static String isFromActivity;
@@ -273,8 +273,13 @@ public class DCRCallActivity extends AppCompatActivity {
                 CreateJsonFileCall();
                 if (isCreateJsonSuccess) {
                     InsertVisitControl();
-                    sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), "Waiting for Sync");
-                    dialogCheckOut.show();
+                    sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+                    if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                        dialogCheckOut.show();
+                    } else {
+                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                        startActivity(intent);
+                    }
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
                         CallUploadImage();
                         CallSaveDcrAPI(jsonSaveDcr.toString());
@@ -284,14 +289,19 @@ public class DCRCallActivity extends AppCompatActivity {
                         commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.call_saved_locally), 100);
                         if (callCaptureImageLists.size() > 0) {
                             for (int i = 0; i < callCaptureImageLists.size(); i++) {
-                                sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString());
+                                sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), callCaptureImageLists.get(i).getSystemImgName(), callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                             }
                         }
                         UpdateInputStock();
                         UpdateSampleStock();
                      /*   Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);*/
-                        dialogCheckOut.show();
+                        if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                            dialogCheckOut.show();
+                        } else {
+                            Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                            startActivity(intent);
+                        }
                     }
 
                 } else {
@@ -330,7 +340,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void InsertVisitControl() {
-        JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+        JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("CustCode", CallActivityCustDetails.get(0).getCode());
@@ -348,7 +358,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.put("FW_Indicator", FwFlag);
             jsonObject.put("AMSLNo", "");
             jsonArray.put(jsonObject);
-            sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
         } catch (Exception e) {
 
         }
@@ -371,6 +381,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 HashMap<String, RequestBody> values = field(jsonImage.toString());
                 Call<JsonObject> saveImgDcr = apiInterface.SaveImg(values, img);
                 int finalI = i;
+                int finalI1 = i;
                 saveImgDcr.enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
@@ -389,7 +400,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                        sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), callCaptureImageLists.get(finalI).getSystemImgName(), callCaptureImageLists.get(finalI).getFilePath(), jsonImage.toString());
+                        sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), callCaptureImageLists.get(finalI1).getSystemImgName(), callCaptureImageLists.get(finalI1).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 1);
                     }
                 });
             }
@@ -658,14 +669,24 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
                         // progressDialog.dismiss();
                         sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                        dialogCheckOut.show();
+                        if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                            dialogCheckOut.show();
+                        } else {
+                            Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                            startActivity(intent);
+                        }
                     /*    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);*/
 
                     } catch (Exception e) {
                         // progressDialog.dismiss();
                         commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.call_saved_something_wrong), 100);
-                        dialogCheckOut.show();
+                        if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                            dialogCheckOut.show();
+                        } else {
+                            Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                            startActivity(intent);
+                        }
                        /* Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);*/
                         Log.v("callSave", "---" + e);
@@ -678,7 +699,12 @@ public class DCRCallActivity extends AppCompatActivity {
                 Log.v("callSave", "---" + t);
                 //progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.call_failed_saved_locally), 100);
-                dialogCheckOut.show();
+                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                    dialogCheckOut.show();
+                } else {
+                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                    startActivity(intent);
+                }
             /*    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                 startActivity(intent);*/
                 UpdateSampleStock();
@@ -1398,6 +1424,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = loginResponse.getDoc_jointwork_Need();
                     PrdSamNeed = loginResponse.getDrSampNd();
                     PrdRxNeed = loginResponse.getDrRxNd();
+                    CusCheckInOutNeed = loginResponse.getCustSrtNd();
 
                     //Mandatory
                     PrdMandatory = loginResponse.getDrPrdMd();
@@ -1427,12 +1454,16 @@ public class DCRCallActivity extends AppCompatActivity {
                     OverallFeedbackNeed = loginResponse.getCFNeed();
                     JwNeed = loginResponse.getChm_jointwork_Need();
                     PrdSamNeed = loginResponse.getChmsamQty_need();
+                    PrdRxNeed = loginResponse.getChmRxQty(); //1
+                    CusCheckInOutNeed = loginResponse.getChmSrtNd();
 
                     //Mandatory
                     //   RcpaMandatory = loginResponse.getRcpaMd(); //Check This one
                     PobMandatory = loginResponse.getChm_Pob_Mandatory_Need();
                     EventCapMandatory = loginResponse.getChmEvent_Md();
                     JwMandatory = loginResponse.getChm_jointwork_Mandatory_Need();
+                    RcpaMandatory = loginResponse.getChmRcpaMd();
+                    MgrRcpaMandatory = loginResponse.getChmRcpaMd_Mgr();
                     break;
                 case "3": //Stockiest
                     //Caption
@@ -1449,6 +1480,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = loginResponse.getStk_jointwork_Need();
                     PrdSamNeed = "0";
                     PrdRxNeed = loginResponse.getStk_Pob_Need();
+                    CusCheckInOutNeed = "1";
 
                     //Mandatory
                     EventCapMandatory = loginResponse.getStkEvent_Md();
@@ -1461,6 +1493,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     CapSamQty = loginResponse.getNLSmpQCap();
                     CapRxQty = loginResponse.getNLRxQCap();
                     CapPob = loginResponse.getUldoc_pob_caption();
+                    CusCheckInOutNeed = loginResponse.getUnlistSrtNd();
 
                     //Need
                     PobNeed = loginResponse.getUl_Pob_Need();
@@ -1469,6 +1502,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = loginResponse.getUl_jointwork_Need();
                     PrdSamNeed = "0";
                     PrdRxNeed = loginResponse.getUl_Pob_Need();
+                    CusCheckInOutNeed = "1";
 
                     //Mandatory
                     EventCapMandatory = loginResponse.getUlDrEvent_Md();
@@ -1485,6 +1519,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     JwNeed = loginResponse.getCIP_jointwork_Need();
                     PrdSamNeed = "0";
                     PrdRxNeed = "0";
+                    CusCheckInOutNeed = loginResponse.getCipSrtNd();
 
                     //Mandatory
                     EventCapMandatory = loginResponse.getCipEvent_Md();
@@ -1493,6 +1528,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 case "6"://HOSPITAL
                     //Caption
                     CapPob = loginResponse.getHosp_pob_caption();
+                    CusCheckInOutNeed = "1";
 
                     //Need
                     PobNeed = loginResponse.getHosPOBNd();
@@ -1527,7 +1563,6 @@ public class DCRCallActivity extends AppCompatActivity {
 
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) { //Chemist
 
-                    PrdRxNeed = setUpResponse.getChemistRxNeed();
                     MgrRcpaMandatory = setUpResponse.getMGRCheRcpaMandatory();
 
                 } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) { //Stockist

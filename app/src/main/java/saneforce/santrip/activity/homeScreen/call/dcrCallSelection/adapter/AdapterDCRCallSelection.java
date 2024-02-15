@@ -10,13 +10,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -47,21 +47,26 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     Button btnCheckIN;
     ImageView img_Close;
     TextView tv_cusName, tv_dateTime;
+    String needCheckInOut;
 
 
-    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList) {
+    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut) {
         this.activity = activity;
         this.context = context;
         this.cusListArrayList = cusListArrayList;
         sqLite = new SQLite(context);
-        dialogCheckIn = new Dialog(context);
-        dialogCheckIn.setContentView(R.layout.dialog_cus_checkin);
-        dialogCheckIn.setCancelable(false);
-        Objects.requireNonNull(dialogCheckIn.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        btnCheckIN = dialogCheckIn.findViewById(R.id.btn_checkIn);
-        img_Close = dialogCheckIn.findViewById(R.id.img_close);
-        tv_cusName = dialogCheckIn.findViewById(R.id.txt_cus_name);
-        tv_dateTime = dialogCheckIn.findViewById(R.id.txt_date_time);
+        this.needCheckInOut = needCheckInOut;
+
+        if (needCheckInOut.equalsIgnoreCase("0")) {
+            dialogCheckIn = new Dialog(context);
+            dialogCheckIn.setContentView(R.layout.dialog_cus_checkin);
+            dialogCheckIn.setCancelable(false);
+            Objects.requireNonNull(dialogCheckIn.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            btnCheckIN = dialogCheckIn.findViewById(R.id.btn_checkIn);
+            img_Close = dialogCheckIn.findViewById(R.id.img_close);
+            tv_cusName = dialogCheckIn.findViewById(R.id.txt_cus_name);
+            tv_dateTime = dialogCheckIn.findViewById(R.id.txt_date_time);
+        }
     }
 
     @NonNull
@@ -116,9 +121,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 }
 
                 if (!isVisitedToday) {
-                    if (VisitControlNeed.equalsIgnoreCase("0") &&
-                            SfType.equalsIgnoreCase("1") &&
-                            cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
+                    if (VisitControlNeed.equalsIgnoreCase("0") && SfType.equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
                         int count = 0;
                         JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.DCR);
                         for (int i = 0; i < jsonVisit.length(); i++) {
@@ -138,37 +141,34 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 } else {
                     commonUtilsMethods.ShowToast(context, context.getString(R.string.already_visited), 100);
                 }
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                Log.v("Call_Data", "---" + e);
             }
-
         });
     }
 
     private void goNextActivity(int position) {
-        tv_cusName.setText(cusListArrayList.get(position).getName());
-        tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
-        dialogCheckIn.show();
+        if (needCheckInOut.equalsIgnoreCase("0")) {
+            tv_cusName.setText(cusListArrayList.get(position).getName());
+            tv_dateTime.setText(CommonUtilsMethods.getCurrentInstance("dd MMM yyyy, hh:mm aa"));
 
-        img_Close.setOnClickListener(v -> dialogCheckIn.dismiss());
+            dialogCheckIn.show();
+            img_Close.setOnClickListener(v -> dialogCheckIn.dismiss());
 
-        btnCheckIN.setOnClickListener(v -> {
+            btnCheckIN.setOnClickListener(v -> {
+                DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
+                DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
+                Intent intent = new Intent(context, CustomerProfile.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
+            });
+        } else {
             DCRCallActivity.CallActivityCustDetails = new ArrayList<>();
-            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(),
-                    cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(),
-                    cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(),
-                    cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(),
-                    cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(),
-                    cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(),
-                    cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(),
-                    cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(),
-                    cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(),
-                    cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(),
-                    cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
+            DCRCallActivity.CallActivityCustDetails.add(0, new CustList(cusListArrayList.get(position).getName(), cusListArrayList.get(position).getCode(), cusListArrayList.get(position).getType(), cusListArrayList.get(position).getCategory(), cusListArrayList.get(position).getCategoryCode(), cusListArrayList.get(position).getSpecialist(), cusListArrayList.get(position).getSpecialistCode(), cusListArrayList.get(position).getTown_name(), cusListArrayList.get(position).getTown_code(), cusListArrayList.get(position).getMaxTag(), cusListArrayList.get(position).getTag(), cusListArrayList.get(position).getPosition(), cusListArrayList.get(position).getLatitude(), cusListArrayList.get(position).getLongitude(), cusListArrayList.get(position).getAddress(), cusListArrayList.get(position).getDob(), cusListArrayList.get(position).getWedding_date(), cusListArrayList.get(position).getEmail(), cusListArrayList.get(position).getMobile(), cusListArrayList.get(position).getPhone(), cusListArrayList.get(position).getQualification(), cusListArrayList.get(position).getPriorityPrdCode(), cusListArrayList.get(position).getMappedBrands(), cusListArrayList.get(position).getMappedSlides()));
             Intent intent = new Intent(context, CustomerProfile.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        });
+        }
     }
 
     @Override

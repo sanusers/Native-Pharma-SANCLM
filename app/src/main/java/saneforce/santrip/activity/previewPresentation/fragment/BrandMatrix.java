@@ -38,12 +38,100 @@ import saneforce.santrip.storage.SQLite;
 public class BrandMatrix extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSpecialityPreviewBinding brandMatrixBinding;
-    SQLite sqLite;
     public static ArrayList<BrandModelClass> SlideBrandMatrixList = new ArrayList<>();
     public static ArrayList<String> brandCodeList = new ArrayList<>();
+    public static ArrayList<String> slideIdList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static PreviewAdapter previewAdapter;
+    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
+
+    public static void getSelectedMatrix(Context context, SQLite sqLite, String mappedBrands, String mappedSlides) {
+        try {
+            SlideBrandMatrixList.clear();
+            brandCodeList.clear();
+            slideIdList.clear();
+            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
+
+            for (int i = 0; i < brandSlide.length(); i++) {
+                JSONObject brandObject = brandSlide.getJSONObject(i);
+                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
+                String brandCode = brandObject.getString("Product_Brd_Code");
+                String priority = brandObject.getString("Priority");
+
+                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
+                for (int j = 0; j < prodSlide.length(); j++) {
+                    JSONObject productObject = prodSlide.getJSONObject(j);
+
+                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
+                        if (mappedBrands.contains(productObject.getString("Code"))) {
+                            String[] separated1 = mappedSlides.split(",");
+                            String[] separated2 = productObject.getString("Product_Detail_Code").split(",");
+                            for (String value : separated1) {
+                                for (String s : separated2) {
+                                    if (value.equalsIgnoreCase(s)) {
+                                        if (!slideIdList.contains(productObject.getString("SlideId")) && !productObject.getString("SlideId").isEmpty()) {
+                                            brandName = productObject.getString("Name");
+                                            code = productObject.getString("Code");
+                                            slideId = productObject.getString("SlideId");
+                                            fileName = productObject.getString("FilePath");
+                                            slidePriority = productObject.getString("Priority");
+                                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                                            productArrayList.add(product);
+                                            slideIdList.add(slideId);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                 /*   if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
+                        if (mappedBrands.contains(productObject.getString("Code")) && mappedSlides.contains(productObject.getString("Product_Detail_Code"))) {
+                            brandName = productObject.getString("Name");
+                            code = productObject.getString("Code");
+                            slideId = productObject.getString("SlideId");
+                            fileName = productObject.getString("FilePath");
+                            slidePriority = productObject.getString("Priority");
+                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
+                            productArrayList.add(product);
+                        }
+                    }*/
+                }
+                boolean brandSelected = i == 0;
+                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) { //To avoid repeated of same brand
+                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
+                    SlideBrandMatrixList.add(brandModelClass);
+                    brandCodeList.add(brandCode);
+                }
+            }
+
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(brandMatrixBinding.rvBrandList.getWindowToken(), 0);
+            if (SlideBrandMatrixList.size() > 0) {
+                brandMatrixBinding.constraintNoData.setVisibility(View.GONE);
+                brandMatrixBinding.rvBrandList.setVisibility(View.VISIBLE);
+                brandMatrixBinding.constraintSortFilter.setVisibility(View.VISIBLE);
+                if (from_where.equalsIgnoreCase("call")) {
+                    brandMatrixBinding.tvInfo.setVisibility(View.VISIBLE);
+                    brandMatrixBinding.viewDummy2.setVisibility(View.VISIBLE);
+                }
+                previewAdapter = new PreviewAdapter(context, SlideBrandMatrixList);
+                brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
+                brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
+                Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
+            } else {
+                brandMatrixBinding.constraintNoData.setVisibility(View.VISIBLE);
+                brandMatrixBinding.constraintSortFilter.setVisibility(View.GONE);
+                brandMatrixBinding.rvBrandList.setVisibility(View.GONE);
+            }
+
+        } catch (Exception ignored) {
+
+        }
+    }
 
     @Nullable
     @Override
@@ -101,68 +189,6 @@ public class BrandMatrix extends Fragment {
         @Override
         public int compare(BrandModelClass a, BrandModelClass b) {
             return a.getBrandName().compareTo(b.getBrandName());
-        }
-    }
-
-    public static void getSelectedMatrix(Context context, SQLite sqLite, String mappedBrands, String mappedSlides) {
-        try {
-            SlideBrandMatrixList.clear();
-            brandCodeList.clear();
-            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
-
-            for (int i = 0; i < brandSlide.length(); i++) {
-                JSONObject brandObject = brandSlide.getJSONObject(i);
-                String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
-                String brandCode = brandObject.getString("Product_Brd_Code");
-                String priority = brandObject.getString("Priority");
-
-                ArrayList<BrandModelClass.Product> productArrayList = new ArrayList<>();
-                ArrayList<BrandModelClass.Product> productArrayListAll = new ArrayList<>();
-                for (int j = 0; j < prodSlide.length(); j++) {
-                    JSONObject productObject = prodSlide.getJSONObject(j);
-                    if (productObject.getString("Code").equalsIgnoreCase(brandCode)) {
-                        if (mappedBrands.contains(productObject.getString("Code")) && mappedSlides.contains(productObject.getString("Product_Detail_Code"))) {
-                            brandName = productObject.getString("Name");
-                            code = productObject.getString("Code");
-                            slideId = productObject.getString("SlideId");
-                            fileName = productObject.getString("FilePath");
-                            slidePriority = productObject.getString("Priority");
-                            BrandModelClass.Product product = new BrandModelClass.Product(code, brandName, slideId, fileName, slidePriority, false);
-                            productArrayList.add(product);
-                        }
-                    }
-                }
-                boolean brandSelected = i == 0;
-                if (!brandCodeList.contains(brandCode) && !brandName.isEmpty()) { //To avoid repeated of same brand
-                    BrandModelClass brandModelClass = new BrandModelClass(brandName, brandCode, priority, 0, brandSelected, productArrayList);
-                    SlideBrandMatrixList.add(brandModelClass);
-                    brandCodeList.add(brandCode);
-                }
-            }
-
-            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(brandMatrixBinding.rvBrandList.getWindowToken(), 0);
-            if (SlideBrandMatrixList.size() > 0) {
-                brandMatrixBinding.constraintNoData.setVisibility(View.GONE);
-                brandMatrixBinding.rvBrandList.setVisibility(View.VISIBLE);
-                brandMatrixBinding.constraintSortFilter.setVisibility(View.VISIBLE);
-                if (from_where.equalsIgnoreCase("call")) {
-                    brandMatrixBinding.tvInfo.setVisibility(View.VISIBLE);
-                    brandMatrixBinding.viewDummy2.setVisibility(View.VISIBLE);
-                }
-                previewAdapter = new PreviewAdapter(context, SlideBrandMatrixList);
-                brandMatrixBinding.rvBrandList.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
-                brandMatrixBinding.rvBrandList.setAdapter(previewAdapter);
-                Collections.sort(SlideBrandMatrixList, Comparator.comparing(BrandModelClass::getBrandName));
-            } else {
-                brandMatrixBinding.constraintNoData.setVisibility(View.VISIBLE);
-                brandMatrixBinding.constraintSortFilter.setVisibility(View.GONE);
-                brandMatrixBinding.rvBrandList.setVisibility(View.GONE);
-            }
-
-        } catch (Exception ignored) {
-
         }
     }
 }

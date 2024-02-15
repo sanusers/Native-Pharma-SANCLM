@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.homeScreen.adapters;
+package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
@@ -184,7 +184,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 rvOutboxList.setAdapter(outBoxCheckInOutAdapter);
                 break;
             case 2:
-                outBoxCallAdapter = new OutBoxCallAdapter(activity, context, outBoxCallLists);
+                outBoxCallAdapter = new OutBoxCallAdapter(activity, context, outBoxCallLists, apiInterface);
                 mLayoutManager = new LinearLayoutManager(context);
                 rvOutboxList.setLayoutManager(mLayoutManager);
                 rvOutboxList.setAdapter(outBoxCallAdapter);
@@ -201,27 +201,35 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
     private void CallAPICheckInOut(int position) {
         if (childListModelClasses.get(position).getCheckInOutModelClasses().size() > 0) {
+            isCallAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getCheckInOutModelClasses().size(); i++) {
                 CheckInOutModelClass checkInOutModelClass = childListModelClasses.get(position).getCheckInOutModelClasses().get(i);
-                Log.v("SendOutboxCall", "--checkinout--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "----" + checkInOutModelClass.getCheckOutTime());
-                if (checkInOutModelClass.getJsonOutValues().isEmpty()) {
-                    CallSendAPICheckInOut(position, i, checkInOutModelClass.getJsonInValues(), checkInOutModelClass.getDates(), checkInOutModelClass.getCheckCount());
-                } else {
-                    CallSendAPICheckInOut(position, i, checkInOutModelClass.getJsonOutValues(), checkInOutModelClass.getDates(), checkInOutModelClass.getCheckCount());
+                Log.v("SendOutboxCall", "--checkInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "----" + checkInOutModelClass.getCheckOutTime());
+                if (checkInOutModelClass.getCheckStatus() == 0) {
+                    isCallAvailable = true;
+                    if (checkInOutModelClass.getJsonOutValues().isEmpty()) {
+                        CallSendAPICheckInOut(position, i, checkInOutModelClass, checkInOutModelClass.getJsonInValues());
+                    } else {
+                        CallSendAPICheckInOut(position, i, checkInOutModelClass, checkInOutModelClass.getJsonOutValues());
+                    }
                 }
                 break;
             }
         } else {
+            isCallAvailable = false;
+        }
+
+        if (!isCallAvailable) {
             progressDialog.dismiss();
             RefreshAdapter();
         }
     }
 
-    private void CallSendAPICheckInOut(int position, int i, String jsonOutValues, String dates, String checkCount) {
+    private void CallSendAPICheckInOut(int position, int i, CheckInOutModelClass checkClass, String jsonValues) {
         String address = "";
         JSONObject obj = new JSONObject();
         try {
-            obj = new JSONObject(jsonOutValues);
+            obj = new JSONObject(jsonValues);
             address = CommonUtilsMethods.gettingAddress(activity, Double.parseDouble(obj.getString("lat")), Double.parseDouble(obj.getString("long")), false);
             obj.put("address", address);
         } catch (JSONException e) {
@@ -237,36 +245,60 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
+                String CheckInOutStatus = "";
                 if (response.isSuccessful()) {
-                    sqLite.deleteOfflineCheckInOut(dates, checkCount);
-                    childListModelClasses.get(position).getCheckInOutModelClasses().remove(i);
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            CheckInOutStatus = obj.getString("msg");
+                        }
+
+                        if (CheckInOutStatus.equalsIgnoreCase("1")) {
+                            sqLite.deleteOfflineCheckInOut(checkClass.getDates(), checkClass.getCheckCount());
+                            childListModelClasses.get(position).getCheckInOutModelClasses().remove(i);
+                        } else {
+                            sqLite.updateCheckInOutStatus(checkClass.getId(), 1);
+                            checkClass.setCheckStatus(1);
+                        }
+                        CallAPICheckInOut(position);
+
+                    } catch (Exception e) {
+                        sqLite.deleteOfflineCheckInOut(checkClass.getDates(), checkClass.getCheckCount());
+                        childListModelClasses.get(position).getCheckInOutModelClasses().remove(i);
+                        CallAPICheckInOut(position);
+                    }
                 } else {
-                    sqLite.deleteOfflineCheckInOut(dates, checkCount);
-                    childListModelClasses.get(position).getCheckInOutModelClasses().remove(i);
+                    checkClass.setCheckStatus(1);
+                    CallAPICheckInOut(position);
                 }
-                progressDialog.dismiss();
-                notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                sqLite.deleteOfflineCheckInOut(dates, checkCount);
-                childListModelClasses.get(position).getCheckInOutModelClasses().remove(i);
+                sqLite.updateCheckInOutStatus(checkClass.getId(), 1);
+                checkClass.setCheckStatus(1);
+                CallAPICheckInOut(position);
             }
         });
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void CallAPIListImage(int position) {
-        Log.v("SendOutboxCall", "--image--" + childListModelClasses.get(position).getEcModelClasses().size());
         if (childListModelClasses.get(position).getEcModelClasses().size() > 0) {
+            isCallAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getEcModelClasses().size(); i++) {
                 EcModelClass ecModelClass = childListModelClasses.get(position).getEcModelClasses().get(i);
-                Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getName());
-                CallSendAPIImage(position, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), ecModelClass.getId());
+                if (ecModelClass.getSynced() == 0) {
+                    Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
+                    CallSendAPIImage(position, i, ecModelClass, ecModelClass.getJson_values(), ecModelClass.getFilePath(), ecModelClass.getId());
+                }
                 break;
             }
         } else {
+            isCallAvailable = false;
+        }
+        if (!isCallAvailable) {
             progressDialog.dismiss();
             RefreshAdapter();
         }
@@ -281,7 +313,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         outBoxHeaderAdapter.notifyDataSetChanged();
     }
 
-    private void CallSendAPIImage(int position, int i, String jsonValues, String filePath, String id) {
+    private void CallSendAPIImage(int position, int i, EcModelClass ecModelClass, String jsonValues, String filePath, String id) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
         MultipartBody.Part img = convertImg("EventImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues);
@@ -298,21 +330,28 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                         if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
                             DeleteCacheFile(filePath, id, i, position);
                         } else {
-                            DeleteCacheFile(filePath, id, i, position);
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            sqLite.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallAPIListImage(position);
                         }
                         if (childListModelClasses.get(position).getEcModelClasses().size() > 0) {
                             RefreshAdapter();
                         }
                     } catch (Exception e) {
-                        Log.v("SendOutboxCall", "-error---" + e);
-                        DeleteCacheFile(filePath, id, i, position);
+                        Log.v("SendOutboxCall", "-error-ec--" + e);
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        sqLite.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                DeleteCacheFile(filePath, id, i, position);
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.CALL_FAILED);
+                sqLite.updateECStatus(id, Constants.CALL_FAILED, 1);
             }
         });
     }
@@ -370,7 +409,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             isCallAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getOutBoxCallLists().size(); i++) {
                 OutBoxCallList outBoxCallList = childListModelClasses.get(position).getOutBoxCallLists().get(i);
-                if (outBoxCallList.getStatus().equalsIgnoreCase("Waiting for Sync") || outBoxCallList.getStatus().equalsIgnoreCase("Call Failed")) {
+                if (outBoxCallList.getStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || outBoxCallList.getStatus().equalsIgnoreCase(Constants.CALL_FAILED)) {
                     if (outBoxCallList.getSyncCount() <= 4) {
                         isCallAvailable = true;
                         Log.v("SendOfflineCall", "---" + outBoxCallList.getCusName());
@@ -386,7 +425,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         if (!isCallAvailable) {
             CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
             progressDialog.dismiss();
-            RefreshAdapter();
+            notifyDataSetChanged();
         }
     }
 
@@ -399,7 +438,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         JSONObject jsonSaveDcr;
         try {
             jsonSaveDcr = new JSONObject(jsonData);
-            //  Log.v("SendOutboxCall", "----" + jsonSaveDcr);
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "save/dcr");
             Call<JsonElement> callSaveDcr = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonSaveDcr.toString());
@@ -414,18 +452,19 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                                 sqLite.deleteOfflineCalls(cusCode, cusName, date);
                                 childListModelClasses.get(position).getOutBoxCallLists().remove(outBoxList);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(5), "Duplicate Call");
-                                childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), "Duplicate Call", 5));
+                                sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
+                                childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, 5));
                                 DeleteUpdateDcrTable(date, cusCode, cusType);
-                                RefreshAdapter();
+                                UpdateEcData(date, cusCode, cusName, Constants.DUPLICATE_CALL, 1);
                             }
                             CallAPIList(position);
+                            notifyDataSetChanged();
                         } catch (Exception e) {
-                            sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(5), "Exception Error");
-                            childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), "Exception Error", 5));
-                          /*  childListModelClasses.get(position).getOutBoxCallLists().remove(outBoxList);
-                            sqLite.deleteOfflineCalls(cusCode, cusName, date);*/
+                            sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.EXCEPTION_ERROR, 0);
+                            UpdateEcData(date, cusCode, cusName, Constants.EXCEPTION_ERROR, 0);
+                            childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.EXCEPTION_ERROR, 5));
                             CallAPIList(position);
+                            notifyDataSetChanged();
                             Log.v("SendOutboxCall", "---" + e);
                         }
                     }
@@ -434,9 +473,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(SyncCount + 1), "Call Failed");
-                    childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), "Duplicate Call", SyncCount + 1));
+                    sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(SyncCount + 1), Constants.CALL_FAILED, 1);
+                    childListModelClasses.get(position).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, SyncCount + 1));
+                    UpdateEcData(date, cusCode, cusName, Constants.CALL_FAILED, 1);
                     CallAPIList(position);
+                    notifyDataSetChanged();
                 }
             });
 
@@ -445,9 +486,26 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         }
     }
 
+    private void UpdateEcData(String date, String cusCode, String cusName, String status, int synced) {
+        if (sqLite.isAvailableEc(date, cusCode)) {
+            for (int i = 0; i < listDates.size(); i++) {
+                if (listDates.get(i).getGroupName().equalsIgnoreCase(date)) {
+                    for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
+                        EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
+                        if (ecModelClass.getDates().equalsIgnoreCase(date) && ecModelClass.getCusCode().equalsIgnoreCase(cusCode) && ecModelClass.getCusName().equalsIgnoreCase(cusName)) {
+                            ecModelClass.setSync_status(status);
+                            ecModelClass.setSynced(synced);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void DeleteUpdateDcrTable(String date, String cusCode, String cusType) {
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
@@ -456,7 +514,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                 }
             }
 
-            sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
             sqLite.deleteLineChart(cusCode, date);
             switch (cusType) {
                 case "1":

@@ -14,6 +14,7 @@ import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -83,6 +84,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public static String mTowncode1 = "", mTownname1 = "", mWTCode1 = "", mWTName1 = "", mFwFlg1 = "", mHQCode1 = "", mHQName1 = "", mRemarks1 = "", mTowncode2 = "", mTownname2 = "", mWTCode2 = "", mWTName2 = "", mFwFlg2 = "", mHQCode2 = "", mHQName2 = "", mHQCode = "", mTowncode = "", mTownname = "", mWTCode = "", mWTName = "", mFwFlg = "", mHQName = "";
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
+    ProgressDialog progressDialog;
     SQLite sqLite;
     String CheckInOutStatus;
 
@@ -121,7 +123,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
-        if (CheckInOutNeed.equalsIgnoreCase("1")) {
+        if (CheckInOutNeed.equalsIgnoreCase("0")) {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit_check_out));
         } else {
             binding.btnsumit.setText(requireContext().getString(R.string.final_submit));
@@ -164,7 +166,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             setUpMyDayplan();
         }
-
 
         getLocalData();
         return view;
@@ -682,7 +683,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btnsumit:
-                if (CheckInOutNeed.equalsIgnoreCase("1") && !SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+                if (CheckInOutNeed.equalsIgnoreCase("0") && !SharedPref.getCheckInTime(requireContext()).isEmpty()) {
                     gpsTrack = new GPSTrack(requireContext());
                     latitude = gpsTrack.getLatitude();
                     longitude = gpsTrack.getLongitude();
@@ -711,16 +712,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         Log.v("CheckInOut", "--json--" + jsonCheck);
                     } catch (JSONException ignored) {
                     }
-                   /* if (UtilityClass.isNetworkAvailable(requireContext())) {
+                    if (UtilityClass.isNetworkAvailable(requireContext())) {
+                        progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
                         CallCheckOutAPI();
-                    } else {*/
-                    sqLite.saveCheckOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                    SharedPref.setCheckTodayCheckInOut(requireContext(), "");
-                    SharedPref.setCheckInTime(requireContext(), "");
-                    SharedPref.setCheckDateTodayPlan(requireContext(), "");
-                    SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
-                    CallDialogAfterCheckOut();
-                    // }
+                    } else {
+                        sqLite.saveCheckOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                        SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                        SharedPref.setCheckInTime(requireContext(), "");
+                        SharedPref.setCheckDateTodayPlan(requireContext(), "");
+                        SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
+                        CallDialogAfterCheckOut();
+                    }
                 } else {
                     commonUtilsMethods.ShowToast(requireContext(), getString(R.string.submit_checkin), 100);
                 }
@@ -764,24 +766,26 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }
 
                         if (CheckInOutStatus.equalsIgnoreCase("1")) {
-                            CallDialogAfterCheckOut();
                             SharedPref.setCheckInTime(requireContext(), "");
                             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
+                            CallDialogAfterCheckOut();
                         } else {
                             commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_leave_posted), 100);
                         }
-
+                        progressDialog.dismiss();
                     } catch (Exception ignored) {
-
+                        progressDialog.dismiss();
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.contact_admin), 100);
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.contact_admin_out), 100);
+                    progressDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_response_failed), 100);
+                progressDialog.dismiss();
             }
         });
     }

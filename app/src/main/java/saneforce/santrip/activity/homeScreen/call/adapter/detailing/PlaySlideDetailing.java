@@ -4,7 +4,7 @@ package saneforce.santrip.activity.homeScreen.call.adapter.detailing;
 import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
-
+import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SelectedPosPlay;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.SlideBrandMatrixList;
 import static saneforce.santrip.activity.previewPresentation.fragment.Customized.SlideCustomizedList;
 import static saneforce.santrip.activity.previewPresentation.fragment.HomeBrands.SlideHomeBrandList;
@@ -66,19 +66,31 @@ public class PlaySlideDetailing extends AppCompatActivity {
     public static PlaySlideDetailedAdapter itemsPagerAdapter;
     @SuppressLint("StaticFieldLeak")
     public static BottomPreviewDetailedAdapter bottomPreviewDetailedAdapter;
-    BottomLayoutHeadAdapter bottomPreviewDetailedHeadAdapter;
     public static ArrayList<BrandModelClass.Product> arrayList = new ArrayList<>();
     public static ArrayList<String> headingData = new ArrayList<>();
+    @SuppressLint("StaticFieldLeak")
+    public static Context context;
+    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SpecialityCodePlay, MappedBrandsPlay, MappedSlidesPlay;
+    BottomLayoutHeadAdapter bottomPreviewDetailedHeadAdapter;
     boolean playBtnClicked = false;
     MediaController mediaController;
     double progress = 0;
     int SelectedPos;
     LoginResponse loginResponse;
     CommonSharedPreference mCommonSharedPreference;
-    @SuppressLint("StaticFieldLeak")
-    public static Context context;
     SQLite sqLite;
-    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SpecialityCodePlay, MappedBrandsPlay, MappedSlidesPlay;
+
+    public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
+        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList);
+        binding.viewPager.setAdapter(itemsPagerAdapter);
+    }
+
+    public static void populateBottomViewAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
+        bottomPreviewDetailedAdapter = new BottomPreviewDetailedAdapter(context, productsList, binding.viewPager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        binding.recView.setLayoutManager(layoutManager);
+        binding.recView.setAdapter(bottomPreviewDetailedAdapter);
+    }
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -242,7 +254,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -259,7 +270,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
             }
         }
     }
-
 
     public void initialisation() {
         loginResponse = new LoginResponse();
@@ -329,25 +339,12 @@ public class PlaySlideDetailing extends AppCompatActivity {
         binding.viewPager.setCurrentItem(SelectedPos);
     }
 
-    public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
-        itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList);
-        binding.viewPager.setAdapter(itemsPagerAdapter);
-    }
-
     public void populateBottomViewAdapter() {
         bottomPreviewDetailedAdapter = new BottomPreviewDetailedAdapter(PlaySlideDetailing.this, arrayList, binding.viewPager);
         LinearLayoutManager layoutManager = new LinearLayoutManager(PlaySlideDetailing.this, LinearLayoutManager.HORIZONTAL, false);
         binding.recView.setLayoutManager(layoutManager);
         binding.recView.setAdapter(bottomPreviewDetailedAdapter);
     }
-
-    public static void populateBottomViewAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
-        bottomPreviewDetailedAdapter = new BottomPreviewDetailedAdapter((PlaySlideDetailing) context, productsList, binding.viewPager);
-        LinearLayoutManager layoutManager = new LinearLayoutManager((PlaySlideDetailing) context, LinearLayoutManager.HORIZONTAL, false);
-        binding.recView.setLayoutManager(layoutManager);
-        binding.recView.setAdapter(bottomPreviewDetailedAdapter);
-    }
-
 
     public void loadPdf(String fileName) {
         binding.pdfView.fromFile(new File(fileName))
@@ -369,7 +366,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
         Context context;
         List<String> arrayListHead;
         SQLite sqLite;
-        public static int SelectedPosPlay;
 
         public BottomLayoutHeadAdapter(Context context, List<String> arrayListHead, SQLite sqLite) {
             this.context = context;
@@ -414,15 +410,12 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 SelectedPosPlay = holder.getAbsoluteAdapterPosition();
                 switch (arrayListHead.get(holder.getAbsoluteAdapterPosition())) {
                     case "A":
-                        //populateRequiredData("A");
                         populateListData(SlideHomeBrandList);
                         break;
                     case "B":
-                        //populateRequiredData("B");
                         populateListData(SlideBrandMatrixList);
                         break;
                     case "C":
-                        //populateRequiredData("C");
                         populateListData(SlideSpecialityList);
                         break;
                     case "D":
@@ -454,7 +447,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
         private void populateLocalSavedData(ArrayList<BrandModelClass.Presentation> savedPresentation) {
             try {
-               // ArrayList<BrandModelClass.Presentation> savedPresentation = sqLite.getPresentationData();
+                // ArrayList<BrandModelClass.Presentation> savedPresentation = sqLite.getPresentationData();
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 for (int i = 0; i < savedPresentation.size(); i++) {
                     for (int j = 0; j < savedPresentation.get(i).getProducts().size(); j++) {

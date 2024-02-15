@@ -13,12 +13,8 @@ import saneforce.santrip.activity.slideDownloaderAlertBox.SlideModelClass;
 
 public class SharedPref {
 
-    public static SharedPreferences sharedPreferences;
-    public static SharedPreferences.Editor editor;
-
     public static final String SP_NAME = "e_detail";
     public static final String SP_NAME_NOT_DELETE = "e_detail_not_delete";
-
     //Setting
     public static final String SELECTED_LANGUAGE = "language";
     public static final String SETTING_STATE = "setting_state";
@@ -30,13 +26,12 @@ public class SharedPref {
     public static final String SLIDES_URL = "slides_url";
     public static final String LOGO_URL = "logo_url";
     public static final String CALL_API_URL = "call_api_url";
-    public static final String LOGI_SITE="log_site";
-    public static final String SAVE_URL_SETTING="save_url_setting";
-    public static final String SAVE_LICENSE_SETTING="save_url_license";
-
-
+    public static final String LOGI_SITE = "log_site";
+    public static final String SAVE_URL_SETTING = "save_url_setting";
+    public static final String SAVE_LICENSE_SETTING = "save_url_license";
     //Login
     public static final String LOGIN_USER_ID = "login_userId";
+    public static final String LOGIN_USER_PWD = "login_userPwd";
     public static final String LOGIN_STATE = "login_state";
     public static final String DEVICE_ID = "device_id";
     public static final String FCM_TOKEN = "fcm_token";
@@ -44,59 +39,50 @@ public class SharedPref {
     public static final String SF_TYPE = "sf_type";
     public static final String TAG_IMAGE_URL = "tag_image_url";
     public static final String TAG_API_IMAGE_URL = "tag_api_image_url";
-
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
     public static final String HQ_NAME = "hq_name";
     public static final String HQ_CODE = "hq_code";
-
-
     //Map Activity
     public static final String TAGGED_SUCCESSFULLY = "tagged_successfully";
     public static final String CUSTOMER_POSITION = "cust_pos";
-
     //HomeDashboard
     public static final String CHECK_TODAY_DATE_CHECKINOUT = "check_today_date_checkinout";
     public static final String CHECK_IN_TIME = "check_today_date_checkinout";
     public static final String CHECK_DATE_TODAY_PLAN = "check_date_todayplan";
     public static final String SET_UP_CLICKED_TAB = "set_up_clicked_tab";
-
+    public static final String SKIP_CHECK_IN = "skip_check_in";
+    public static final String SELECTED_DATE_CAL = "selected_date_cal";
     //MyDayPlan
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
-
-
     //TodayCalls
     public static final String TODAY_CALL_LIST = "today_call_list";
-
     //Approval
     public static final String APPROVAL_COUNT = "approval_count";
-
     // Slide
     public static final String SLIDEID = "slideid";
     public static final String SLIDELIST = "slidelist";
-
     public static final String SLIDEDOWNCOUNT = "slidedowncount";
-
     public static final String SYNC_STATUS = "SP_MAS_DETAILS";
+    public static SharedPreferences sharedPreferences;
+    public static SharedPreferences.Editor editor;
 
-
-    public static void clearSP(Context context){
-        sharedPreferences = context.getSharedPreferences(SP_NAME,MODE_PRIVATE);
+    public static void clearSP(Context context) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.clear().apply();
     }
 
-    public static void saveSlideListID(Context context, ArrayList<String> List){
+    public static void saveSlideListID(Context context, ArrayList<String> List) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SLIDEID, new Gson().toJson(List)).apply();
-
     }
 
 
-    public static void saveSlideDownloadingList(Context context, String  Downloadcount,ArrayList<SlideModelClass> List){
+    public static void saveSlideDownloadingList(Context context, String Downloadcount, ArrayList<SlideModelClass> List) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SLIDEDOWNCOUNT, String.valueOf(Downloadcount));
@@ -105,13 +91,16 @@ public class SharedPref {
     }
 
 
-    public static String GetSlideID(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDEID,"[]");
+    public static String GetSlideID(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEID, "[]");
     }
-    public static String GetSlideDownloadingcount(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDEDOWNCOUNT,"0");
-    }  public static String GetSlideList(Context context){
-        return context.getSharedPreferences(SP_NAME,MODE_PRIVATE).getString(SLIDELIST,"");
+
+    public static String GetSlideDownloadingcount(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDEDOWNCOUNT, "0");
+    }
+
+    public static String GetSlideList(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SLIDELIST, "");
     }
 
 
@@ -122,14 +111,14 @@ public class SharedPref {
         editor.apply();
     }
 
-    public static void saveSelectedLanguage(Context context,String language){
+    public static void saveSelectedLanguage(Context context, String language) {
         sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(SELECTED_LANGUAGE,language).apply();
+        editor.putString(SELECTED_LANGUAGE, language).apply();
     }
 
-    public static String getSelectedLanguage(Context context){
-        return context.getSharedPreferences(SP_NAME_NOT_DELETE,MODE_PRIVATE).getString(SELECTED_LANGUAGE,"");
+    public static String getSelectedLanguage(Context context) {
+        return context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE).getString(SELECTED_LANGUAGE, "");
     }
 
 
@@ -138,6 +127,7 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putString(LOGI_SITE, site).apply();
     }
+
     public static void saveUrls(Context context, String baseUrl, String licenseKey, String baseWebUrl, String PhpPathUrl, String reportsUrl, String SlidesUrl, String logoUrl, boolean settingState) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -156,6 +146,7 @@ public class SharedPref {
     public static String getLogInsite(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(LOGI_SITE, "");
     }
+
     public static String getBaseUrl(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(BASE_URL, "");
     }
@@ -194,10 +185,22 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SETTING_STATE, false);
     }
 
-    public static void saveLoginId(Context context, String id) {
+    public static void saveLoginId(Context context, String id, String pwd) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(LOGIN_USER_ID, id).apply();
+        editor.putString(LOGIN_USER_ID, id);
+        editor.putString(LOGIN_USER_PWD, pwd);
+        editor.apply();
+    }
+
+    public static void saveLoginPwd(Context context, String pwd) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(LOGIN_USER_PWD, pwd).apply();
+    }
+
+    public static String getLoginUserPwd(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(LOGIN_USER_PWD, "");
     }
 
     public static String getLoginId(Context context) {
@@ -253,10 +256,10 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(MASTER_LAST_SYNC, "");
     }
 
-    public static void saveMasterLastSync(Context context,String date){
-        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+    public static void saveMasterLastSync(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        editor.putString(MASTER_LAST_SYNC,date).apply();
+        editor.putString(MASTER_LAST_SYNC, date).apply();
     }
 
     public static void setSaveUrlSetting(Context context, String token) {
@@ -319,18 +322,19 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(TAG_API_IMAGE_URL, "");
     }
 
-    public static void saveHq (Context context, String name, String code){
-        sharedPreferences = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+    public static void saveHq(Context context, String name, String code) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(HQ_NAME, name);
         editor.putString(HQ_CODE, code).apply();
     }
-    public static String getHqName (Context context){
-        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(HQ_NAME, "");
+
+    public static String getHqName(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_NAME, "");
     }
 
-    public static String getHqCode (Context context){
-        return context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE).getString(HQ_CODE, "");
+    public static String getHqCode(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_CODE, "");
     }
 
     public static void setApprovalsCounts(Context context, String token) {
@@ -390,7 +394,27 @@ public class SharedPref {
     }
 
     public static String getSetUpClickedTab(Context context) {
-        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SET_UP_CLICKED_TAB, "");
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SET_UP_CLICKED_TAB, "0");
+    }
+
+    public static void setSkipCheckIn(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SKIP_CHECK_IN, status).apply();
+    }
+
+    public static boolean getSkipCheckIn(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SKIP_CHECK_IN, false);
+    }
+
+    public static void setSelectedDateCal(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SELECTED_DATE_CAL, status).apply();
+    }
+
+    public static String getSelectedDateCal(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SELECTED_DATE_CAL, "");
     }
 
 
@@ -419,7 +443,6 @@ public class SharedPref {
         editor = sharedPreferences.edit();
         editor.putBoolean(SYNC_STATUS, mas_sync).apply();
     }
-
 
 
     public static boolean getAutomassyncFromSP(Context context) {

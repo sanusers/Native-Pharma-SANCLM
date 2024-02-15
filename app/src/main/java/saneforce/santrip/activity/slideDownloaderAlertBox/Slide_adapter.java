@@ -94,7 +94,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             progressBar = itemView.findViewById(R.id.img_download_progress);
             text_download_size = itemView.findViewById(R.id.txt_download_size);
             text_retry = itemView.findViewById(R.id.text_retry);
-            rl_title_layout = itemView.findViewById(R.id.rl_title_layout);
+            rl_title_layout = itemView.findViewById(R.id.rl_calender_syn);
 
 
         }

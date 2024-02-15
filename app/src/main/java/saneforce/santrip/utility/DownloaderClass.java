@@ -34,7 +34,6 @@ public class DownloaderClass extends AsyncTask<Object,Object,Object> {
             URLConnection conn = url.openConnection();
             bitmap = BitmapFactory.decodeStream(conn.getInputStream());
         } catch (Exception ex) {
-            ex.printStackTrace();
             asyncInterface.taskCompleted(false);
         }
         return null;

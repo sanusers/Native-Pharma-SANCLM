@@ -1,7 +1,5 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -52,154 +50,21 @@ import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
+    @SuppressLint("StaticFieldLeak")
     public static CallAnalysisFagmentBinding callAnalysisBinding;
-    SQLite sqLite;
     public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
     public static String key;
     public static JSONArray dcrdatas;
+    public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
+    SQLite sqLite;
     LoginResponse loginResponse;
     Context context;
-    public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
     CommonUtilsMethods commonUtilsMethods;
 
     public static int computePercent(int current, int total) {
         int percent = 0;
         if (total > 0) percent = current * 100 / total;
         return percent;
-    }
-
-    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.v("fragment", "callanalysis");
-        callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
-        View v = callAnalysisBinding.getRoot();
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
-        commonUtilsMethods.setUpLanguage(requireContext());
-        context = requireContext();
-        sqLite = new SQLite(requireContext());
-
-
-        callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
-        callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-
-        callAnalysisBinding.llDocChild.setOnClickListener(this);
-        callAnalysisBinding.llCheChild.setOnClickListener(this);
-        callAnalysisBinding.llStockChild.setOnClickListener(this);
-        callAnalysisBinding.llUnliChild.setOnClickListener(this);
-        callAnalysisBinding.llHosChild.setOnClickListener(this);
-        callAnalysisBinding.llCipChild.setOnClickListener(this);
-
-        getRequiredData();
-        HiddenVisibleFunctions();
-        SetcallDetailsInLineChart(sqLite, context);
-
-        ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
-
-        vto.addOnGlobalLayoutListener(() -> {
-
-            int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
-            int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
-
-
-            int width = (getwidhtlayout / 3 - 8);
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, (int) (getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp)));
-            param.setMargins(0, 5, 10, 0);
-            callAnalysisBinding.llDocChild.setLayoutParams(param);
-            callAnalysisBinding.llCheChild.setLayoutParams(param);
-            callAnalysisBinding.llStockChild.setLayoutParams(param);
-            callAnalysisBinding.llUnliChild.setLayoutParams(param);
-            callAnalysisBinding.llHosChild.setLayoutParams(param);
-            callAnalysisBinding.llCipChild.setLayoutParams(param);
-        });
-
-
-        callAnalysisBinding.llCallsLayout.setOnTouchListener((v12, event) -> {
-            HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
-            return false;
-        });
-
-
-        callAnalysisBinding.inChart.lineChart.setOnTouchListener((v1, event) -> {
-            HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
-            return false;
-        });
-
-
-        callAnalysisBinding.inChart.lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-
-        });
-
-        return v;
-    }
-
-    private void HiddenVisibleFunctions() {
-        if (DrNeed.equalsIgnoreCase("0")) {
-            callAnalysisBinding.llDocHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtDocName.setText(CapDr);
-            callAnalysisBinding.textAverage.setText(String.format("Average %s", callAnalysisBinding.txtDocName.getText().toString()));
-        }
-        if (ChemistNeed.equalsIgnoreCase("0")) {
-            callAnalysisBinding.llChemHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtCheName.setText(CapChemist);
-        }
-        if (StockistNeed.equalsIgnoreCase("0")) {
-            callAnalysisBinding.llStockHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtStockName.setText(CapStockist);
-        }
-        if (UnDrNeed.equalsIgnoreCase("0")) {
-            callAnalysisBinding.llUnliHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtUnliName.setText(CapUnDr);
-        }
-        if (CipNeed.equalsIgnoreCase("0")) {
-            callAnalysisBinding.llCipHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtCipName.setText(CapCip);
-        }
-        if (HospNeed.equalsIgnoreCase("0")) {
-            callAnalysisBinding.llHosHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtHosName.setText(CapHos);
-        }
-    }
-
-    private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-
-        CapDr = loginResponse.getDrCap();
-        CapChemist = loginResponse.getChmCap();
-        CapStockist = loginResponse.getStkCap();
-        CapUnDr = loginResponse.getNLCap();
-        CapCip = loginResponse.getCIP_Caption();
-        CapHos = loginResponse.getHosp_caption();
-
-        CipNeed = loginResponse.getCip_need();
-        DrNeed = loginResponse.getDrNeed();
-        ChemistNeed = loginResponse.getChmNeed();
-        StockistNeed = loginResponse.getStkNeed();
-        UnDrNeed = loginResponse.getUNLNeed();
-        HospNeed = loginResponse.getHosp_need();
     }
 
     public static void SetcallDetailsInLineChart(SQLite sqLite, Context context) {
@@ -212,10 +77,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(context));
             hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(context));
 
-            dcrdatas = sqLite.getMasterSyncDataByKey(Constants.DCR);
+            dcrdatas = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
             if (dcrdatas.length() > 0) {
                 for (int i = 0; i < dcrdatas.length(); i++) {
-
                     JSONObject jsonObject = dcrdatas.getJSONObject(i);
                     String CustCode = jsonObject.optString("CustCode");
                     String CustType = jsonObject.optString("CustType");
@@ -232,7 +96,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     String FW_Indicator = jsonObject.optString("FW_Indicator");
                     String AMSLNo = jsonObject.optString("AMSLNo");
                     sqLite.insertLinecharData(CustCode, CustType, Dcr_dt, month_name, Mnth, Yr, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo, FW_Indicator);
-
                 }
 
 
@@ -499,6 +362,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             int xaxis4 = sqLite.getcalls_count_by_range(firstDatepastmonth, enddatepastmonth, Custype);
             int xaxis5 = sqLite.getcalls_count_by_range(firstDatecurrent, fifteenthDatecurrent, Custype);
             int xaxis6 = sqLite.getcalls_count_by_range(firstDatecurrent, enddatecurrent, Custype);
+
 
             listYrange.add(xaxis1);
             listYrange.add(xaxis2);
@@ -779,6 +643,139 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     }
 
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.v("fragment", "callanalysis");
+        callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
+        View v = callAnalysisBinding.getRoot();
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
+        context = requireContext();
+        sqLite = new SQLite(requireContext());
+
+        callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+        callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+
+        callAnalysisBinding.llDocChild.setOnClickListener(this);
+        callAnalysisBinding.llCheChild.setOnClickListener(this);
+        callAnalysisBinding.llStockChild.setOnClickListener(this);
+        callAnalysisBinding.llUnliChild.setOnClickListener(this);
+        callAnalysisBinding.llHosChild.setOnClickListener(this);
+        callAnalysisBinding.llCipChild.setOnClickListener(this);
+
+        getRequiredData();
+        HiddenVisibleFunctions();
+        SetcallDetailsInLineChart(sqLite, context);
+
+        ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
+
+        vto.addOnGlobalLayoutListener(() -> {
+
+            int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
+            int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
+
+
+            int width = (getwidhtlayout / 3 - 8);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp));
+            param.setMargins(0, 5, 10, 0);
+            callAnalysisBinding.llDocChild.setLayoutParams(param);
+            callAnalysisBinding.llCheChild.setLayoutParams(param);
+            callAnalysisBinding.llStockChild.setLayoutParams(param);
+            callAnalysisBinding.llUnliChild.setLayoutParams(param);
+            callAnalysisBinding.llHosChild.setLayoutParams(param);
+            callAnalysisBinding.llCipChild.setLayoutParams(param);
+        });
+
+
+        callAnalysisBinding.llCallsLayout.setOnTouchListener((v12, event) -> {
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
+            return false;
+        });
+
+
+        callAnalysisBinding.inChart.lineChart.setOnTouchListener((v1, event) -> {
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
+            return false;
+        });
+
+
+        callAnalysisBinding.inChart.lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+
+        });
+
+        return v;
+    }
+
+    private void HiddenVisibleFunctions() {
+        if (DrNeed.equalsIgnoreCase("0")) {
+            callAnalysisBinding.llDocHead.setVisibility(View.VISIBLE);
+            callAnalysisBinding.txtDocName.setText(CapDr);
+            callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtDocName.getText().toString(), getString(R.string.calls)));
+        }
+        if (ChemistNeed.equalsIgnoreCase("0")) {
+            callAnalysisBinding.llChemHead.setVisibility(View.VISIBLE);
+            callAnalysisBinding.txtCheName.setText(CapChemist);
+        }
+        if (StockistNeed.equalsIgnoreCase("0")) {
+            callAnalysisBinding.llStockHead.setVisibility(View.VISIBLE);
+            callAnalysisBinding.txtStockName.setText(CapStockist);
+        }
+        if (UnDrNeed.equalsIgnoreCase("0")) {
+            callAnalysisBinding.llUnliHead.setVisibility(View.VISIBLE);
+            callAnalysisBinding.txtUnliName.setText(CapUnDr);
+        }
+        if (CipNeed.equalsIgnoreCase("0")) {
+            callAnalysisBinding.llCipHead.setVisibility(View.VISIBLE);
+            callAnalysisBinding.txtCipName.setText(CapCip);
+        }
+        if (HospNeed.equalsIgnoreCase("0")) {
+            callAnalysisBinding.llHosHead.setVisibility(View.VISIBLE);
+            callAnalysisBinding.txtHosName.setText(CapHos);
+        }
+    }
+
+    private void getRequiredData() {
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData();
+
+        SfType = loginResponse.getSf_type();
+        SfCode = loginResponse.getSF_Code();
+        SfName = loginResponse.getSF_Name();
+        DivCode = loginResponse.getDivision_Code();
+        Designation = loginResponse.getDesig();
+        StateCode = loginResponse.getState_Code();
+        SubDivisionCode = loginResponse.getSubdivision_code();
+
+        CapDr = loginResponse.getDrCap();
+        CapChemist = loginResponse.getChmCap();
+        CapStockist = loginResponse.getStkCap();
+        CapUnDr = loginResponse.getNLCap();
+        CapCip = loginResponse.getCIP_Caption();
+        CapHos = loginResponse.getHosp_caption();
+
+        CipNeed = loginResponse.getCip_need();
+        DrNeed = loginResponse.getDrNeed();
+        ChemistNeed = loginResponse.getChmNeed();
+        StockistNeed = loginResponse.getStkNeed();
+        UnDrNeed = loginResponse.getUNLNeed();
+        HospNeed = loginResponse.getHosp_need();
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -786,7 +783,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
 
             case R.id.ll_doc_child:
-                callAnalysisBinding.textAverage.setText(String.format("Average %s", callAnalysisBinding.txtDocName.getText().toString()));
+                callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtDocName.getText().toString(), getString(R.string.calls)));
                 callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
                 callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -800,7 +797,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_che_child:
-                callAnalysisBinding.textAverage.setText(String.format("Average %s", callAnalysisBinding.txtCheName.getText().toString()));
+                callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtCheName.getText().toString(), getString(R.string.calls)));
                 callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleChe.setVisibility(View.VISIBLE);
                 callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -814,7 +811,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_stock_child:
-                callAnalysisBinding.textAverage.setText(String.format("Average %s", callAnalysisBinding.txtStockName.getText().toString()));
+                callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtStockName.getText().toString(), getString(R.string.calls)));
                 callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
@@ -828,7 +825,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_unli_child:
-                callAnalysisBinding.textAverage.setText(String.format("Average %s", callAnalysisBinding.txtUnliName.getText().toString()));
+                callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtUnliName.getText().toString(), getString(R.string.calls)));
                 callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -842,7 +839,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_cip_child:
-                callAnalysisBinding.textAverage.setText(String.format("Average %s", callAnalysisBinding.txtCipName.getText().toString()));
+                callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtCipName.getText().toString(), getString(R.string.calls)));
                 callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -856,7 +853,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
                 break;
             case R.id.ll_hos_child:
-                callAnalysisBinding.textAverage.setText(String.format("Average %s Calls", callAnalysisBinding.txtHosName.getText().toString()));
+                callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtHosName.getText().toString(), getString(R.string.calls)));
                 callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);

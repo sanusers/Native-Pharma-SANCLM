@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -63,7 +64,8 @@ import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class DrSelectionSide extends Fragment {
-    public static ArrayList<CustList> callDrList = new ArrayList<>();
+    public static ArrayList<CustList> callDrListBrand = new ArrayList<>();
+    public static ArrayList<CustList> callDrListSpeciality = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static FragmentDrSelectionSideBinding drSelectionSideBinding;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
@@ -91,6 +93,7 @@ public class DrSelectionSide extends Fragment {
         });
 
         drSelectionSideBinding.imgClose.setOnClickListener(v1 -> {
+            hideKeyboard();
             drSelectionSideBinding.searchList.setText("");
             drSelectionSideBinding.selectListView.scrollToPosition(0);
             previewBinding.fragmentSelectDrSide.setVisibility(View.GONE);
@@ -110,25 +113,36 @@ public class DrSelectionSide extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+                try {
+                    filter(s.toString());
+                } catch (Exception ignored) {
+
+                }
             }
         });
-
         return v;
     }
 
 
     private void filter(String text) {
         ArrayList<CustList> filteredNames = new ArrayList<>();
-        for (CustList s : callDrList) {
-            if (s.getName().toLowerCase().contains(text.toLowerCase())) {
-                filteredNames.add(s);
+        if (SelectedTab.equalsIgnoreCase("Spec")) {
+            for (CustList s : callDrListBrand) {
+                if (s.getName().toLowerCase().contains(text.toLowerCase()) || s.getSpecialist().toLowerCase().contains(text.toLowerCase())) {
+                    filteredNames.add(s);
+                }
+            }
+        } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
+            for (CustList s : callDrListBrand) {
+                if (s.getName().toLowerCase().contains(text.toLowerCase())) {
+                    filteredNames.add(s);
+                }
             }
         }
         selectDoctorAdapter.filterList(filteredNames);
     }
 
-    private void SetDrAdapter() {
+    public void SetDrAdapter() {
         try {
             loginResponse = new LoginResponse();
             loginResponse = sqLite.getLoginData();
@@ -136,7 +150,15 @@ public class DrSelectionSide extends Fragment {
             if (loginResponse.getSf_type().equalsIgnoreCase("1")) {
                 TodayPlanSfCode = loginResponse.getSF_Code();
             } else {
-                TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(requireContext());
+                if (SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
+                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                    for (int i = 0; i < 1; i++) {
+                        JSONObject jsonHQList = jsonArray.getJSONObject(0);
+                        TodayPlanSfCode = jsonHQList.getString("id");
+                    }
+                } else {
+                    TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(requireContext());
+                }
             }
 
             if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
@@ -149,17 +171,15 @@ public class DrSelectionSide extends Fragment {
             }*/
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
-
-                if (!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-")) {
+                if (!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
                     brands = getBrands(jsonObject.getString("MappProds"));
-                    callDrList.add(new CustList(jsonObject.getString("Name"),  jsonObject.getString("Specialty"),jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
+                    callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), brands, jsonObject.getString("MProd"), true));
                 } else {
-                    callDrList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), jsonObject.getString("MappProds"), jsonObject.getString("MProd"), true));
+                    callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), "", "", false));
                 }
             }
 
-
-            selectDoctorAdapter = new SelectDoctorAdapter(requireContext(), callDrList);
+            selectDoctorAdapter = new SelectDoctorAdapter(requireContext(), callDrListBrand);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             drSelectionSideBinding.selectListView.setLayoutManager(mLayoutManager);
             drSelectionSideBinding.selectListView.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
@@ -200,7 +220,6 @@ public class DrSelectionSide extends Fragment {
     }
 
     public void sync(MasterSyncItemModel masterSyncItemModel, String hqCode) {
-
         if (UtilityClass.isNetworkAvailable(context)) {
             try {
                 apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
@@ -218,10 +237,10 @@ public class DrSelectionSide extends Fragment {
                 Map<String, String> mapString = new HashMap<>();
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
                     mapString.put("axn", "table/dcrmasterdata");
-                    call  = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()),mapString,jsonObject.toString());
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
                 } else if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Subordinate")) {
                     mapString.put("axn", "table/subordinates");
-                    call  = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()),mapString,jsonObject.toString());
+                    call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(requireContext()), mapString, jsonObject.toString());
                 }
 
                 if (call != null) {
@@ -278,6 +297,11 @@ public class DrSelectionSide extends Fragment {
         }
     }
 
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(drSelectionSideBinding.getRoot().getWindowToken(), 0);
+    }
+
     public static class SelectDoctorAdapter extends RecyclerView.Adapter<SelectDoctorAdapter.ViewHolder> {
         Context context;
         ArrayList<CustList> callDrList;
@@ -288,11 +312,10 @@ public class DrSelectionSide extends Fragment {
             this.callDrList = callDrList;
         }
 
-
         @NonNull
         @Override
         public SelectDoctorAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.single_item, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.adapter_select_dr, parent, false);
             return new ViewHolder(view);
         }
 
@@ -301,10 +324,24 @@ public class DrSelectionSide extends Fragment {
             sqLite = new SQLite(context);
             holder.tvName.setText(callDrList.get(position).getName());
 
+            if (SelectedTab.equalsIgnoreCase("Spec")) {
+                holder.tvSpeciality.setVisibility(View.VISIBLE);
+                holder.tvSpeciality.setText(callDrList.get(position).getSpecialist());
+                holder.tvBrandAvailable.setVisibility(View.GONE);
+            } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
+                holder.tvSpeciality.setVisibility(View.GONE);
+                if (callDrList.get(position).isExtra()) {
+                    holder.tvBrandAvailable.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvBrandAvailable.setVisibility(View.GONE);
+                }
+            }
+
+
             holder.tvName.setOnClickListener(v -> {
                 if (SelectedTab.equalsIgnoreCase("Spec")) {
-                    specialityPreviewBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
-                    getSelectedSpec(context, sqLite, callDrList.get(position).getSpecialistCode(),callDrList.get(position).getSpecialist());
+                    specialityPreviewBinding.tvSelectDoctor.setText(String.format("%s - %s", callDrList.get(position).getName(), callDrList.get(position).getSpecialist()));
+                    getSelectedSpec(context, sqLite, callDrList.get(position).getSpecialistCode(), callDrList.get(position).getSpecialist());
                 } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
                     brandMatrixBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
                     getSelectedMatrix(context, sqLite, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides());
@@ -327,11 +364,13 @@ public class DrSelectionSide extends Fragment {
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvName;
+            TextView tvName, tvSpeciality, tvBrandAvailable;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvName = itemView.findViewById(R.id.tv_name);
+                tvSpeciality = itemView.findViewById(R.id.tv_speciality);
+                tvBrandAvailable = itemView.findViewById(R.id.tv_brandAvailable);
             }
         }
     }

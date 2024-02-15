@@ -58,8 +58,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     public Resource_adapter(Context context, ArrayList<Resourcemodel_class> listeduser) {
         this.context = context;
         this.listeduser = listeduser;
-
-
     }
 
     @NonNull
@@ -69,7 +67,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
         return new ViewHolder(view);
     }
 
-    @SuppressLint("WrongConstant")
+    @SuppressLint({"WrongConstant", "NotifyDataSetChanged"})
     @Override
     public void onBindViewHolder(@NonNull Resource_adapter.ViewHolder holder, int position) {
         final Resourcemodel_class app_adapt = listeduser.get(position);
@@ -110,7 +108,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 if (!docval.equals(jsonObject.getString("Code"))) {
                                     docval = jsonObject.getString("Code");
                                     String custom_name = (jsonObject.getString("Name"));
-
                                     String category = (jsonObject.getString("Category"));
                                     String specialty = (jsonObject.getString("Specialty"));
                                     String cluster = (jsonObject.getString("Town_Name"));
@@ -125,7 +122,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     appAdapter.notifyDataSetChanged();
                                 }
                             }
-
                         }
                         break;
                     case ("2"):

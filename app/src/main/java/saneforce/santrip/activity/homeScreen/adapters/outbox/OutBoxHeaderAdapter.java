@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.homeScreen.adapters;
+package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
@@ -43,7 +43,6 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
-import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.GroupModelClass;
@@ -65,10 +64,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     ApiInterface apiInterface;
     SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
-    String CheckInOutStatus = "";
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
-
 
     public OutBoxHeaderAdapter(Activity activity, Context context, ArrayList<GroupModelClass> groupModelClasses) {
         this.activity = activity;
@@ -91,20 +88,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     public void onBindViewHolder(@NonNull OutBoxHeaderAdapter.listDataViewholider holder, int position) {
 
         GroupModelClass groupModelClass = groupModelClasses.get(position);
-
-
         holder.tvDate.setText(CommonUtilsMethods.setConvertDate("yyyy-MM-dd", "dd MMM yyyy", groupModelClass.getGroupName()));
-        /*    SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd");
-        Date newDate = null;
-        try {
-            newDate = spf.parse(groupModelClass.getGroupName());
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        spf = new SimpleDateFormat("dd MMM yyyy");
-        String dates = spf.format(newDate);
-        holder.tvDate.setText(dates);*/
-
 
         if (groupModelClass.isExpanded()) {
             holder.constraintContent.setVisibility(View.VISIBLE);
@@ -136,22 +120,30 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
     private void CallOfflineData(GroupModelClass groupModelClass, int childPos) {
         if (groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().size() > 0) {
+            isCallAvailable = false;
             for (int i = 0; i < groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().size(); i++) {
                 CheckInOutModelClass checkInOutModelClass = groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().get(i);
-                Log.v("SendOutboxCall", "--CheckInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "---" + checkInOutModelClass.getCheckOutTime());
-                if (!checkInOutModelClass.getJsonOutValues().isEmpty()) {
-                    CallSendCheckInOut(groupModelClass, childPos, i, checkInOutModelClass.getJsonOutValues(), checkInOutModelClass.getDates(), checkInOutModelClass.getCheckCount());
-                } else {
-                    CallSendCheckInOut(groupModelClass, childPos, i, checkInOutModelClass.getJsonInValues(), checkInOutModelClass.getDates(), checkInOutModelClass.getCheckCount());
+                if (checkInOutModelClass.getCheckStatus() == 0) {
+                    isCallAvailable = true;
+                    Log.v("SendOutboxCall", "--CheckInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "---" + checkInOutModelClass.getCheckOutTime());
+                    if (!checkInOutModelClass.getJsonOutValues().isEmpty()) {
+                        CallSendCheckInOut(groupModelClass, checkInOutModelClass, childPos, i, checkInOutModelClass.getJsonOutValues());
+                    } else {
+                        CallSendCheckInOut(groupModelClass, checkInOutModelClass, childPos, i, checkInOutModelClass.getJsonInValues());
+                    }
                 }
                 break;
             }
         } else {
+            isCallAvailable = false;
+        }
+
+        if (!isCallAvailable) {
             CallAPIOfflineCalls(groupModelClass, 2);
         }
     }
 
-    private void CallSendCheckInOut(GroupModelClass groupModelClass, int childPos, int i, String jsonOutValues, String dates, String checkCount) {
+    private void CallSendCheckInOut(GroupModelClass groupModelClass, CheckInOutModelClass checkClass, int childPos, int i, String jsonOutValues) {
         String address = "";
         JSONObject obj = new JSONObject();
         try {
@@ -172,21 +164,42 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 assert response.body() != null;
                 Log.v("CheckInOut", response.body() + "--" + response.isSuccessful());
+                String CheckInOutStatus = "";
                 if (response.isSuccessful()) {
-                    sqLite.deleteOfflineCheckInOut(dates, checkCount);
-                    groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().remove(i);
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject obj = jsonArray.getJSONObject(i);
+                            CheckInOutStatus = obj.getString("msg");
+                        }
+
+                        if (CheckInOutStatus.equalsIgnoreCase("1")) {
+                            sqLite.deleteOfflineCheckInOut(checkClass.getDates(), checkClass.getCheckCount());
+                            groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().remove(i);
+                        } else {
+                            sqLite.updateCheckInOutStatus(checkClass.getId(), 1);
+                            checkClass.setCheckStatus(1);
+                        }
+                        CallOfflineData(groupModelClass, childPos);
+                        notifyDataSetChanged();
+
+                    } catch (Exception e) {
+                        sqLite.deleteOfflineCheckInOut(checkClass.getDates(), checkClass.getCheckCount());
+                        groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().remove(i);
+                        CallOfflineData(groupModelClass, childPos);
+                        notifyDataSetChanged();
+                    }
                 } else {
-                    sqLite.deleteOfflineCheckInOut(dates, checkCount);
-                    groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().remove(i);
+                    checkClass.setCheckStatus(1);
+                    CallOfflineData(groupModelClass, childPos);
+                    notifyDataSetChanged();
                 }
-                CallOfflineData(groupModelClass, childPos);
-                notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                sqLite.deleteOfflineCheckInOut(dates, checkCount);
-                groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().remove(i);
+                sqLite.updateCheckInOutStatus(checkClass.getId(), 1);
+                checkClass.setCheckStatus(1);
                 CallOfflineData(groupModelClass, childPos);
             }
         });
@@ -197,7 +210,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             isCallAvailable = false;
             for (int i = 0; i < groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().size(); i++) {
                 OutBoxCallList outBoxCallList = groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().get(i);
-                if (outBoxCallList.getStatus().equalsIgnoreCase("Waiting for Sync") || outBoxCallList.getStatus().equalsIgnoreCase("Call Failed")) {
+                if (outBoxCallList.getStatus().equalsIgnoreCase(Constants.WAITING_FOR_SYNC) || outBoxCallList.getStatus().equalsIgnoreCase(Constants.CALL_FAILED)) {
                     if (outBoxCallList.getSyncCount() <= 4) {
                         isCallAvailable = true;
                         Log.v("SendOutboxCall", "---" + outBoxCallList.getCusName());
@@ -210,7 +223,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             isCallAvailable = false;
         }
         if (!isCallAvailable) {
-            CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+            notifyDataSetChanged();
             CallAPIListImage(groupModelClass, 3);
         }
     }
@@ -218,16 +231,28 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     @SuppressLint("NotifyDataSetChanged")
     private void CallAPIListImage(GroupModelClass groupModelClass, int childPos) {
         if (groupModelClass.getChildItems().get(childPos).getEcModelClasses().size() > 0) {
+            isCallAvailable = true;
             for (int i = 0; i < groupModelClass.getChildItems().get(childPos).getEcModelClasses().size(); i++) {
                 EcModelClass ecModelClass = groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i);
-                Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getName());
-                CallSendAPIImage(groupModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), ecModelClass.getId());
-                break;
+                if (ecModelClass.getSynced() == 0) {
+                    isCallAvailable = true;
+                    Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
+                    CallSendAPIImage(groupModelClass, ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), ecModelClass.getId());
+                    break;
+                }
             }
         } else {
+            isCallAvailable = false;
+        }
+
+        if (!isCallAvailable) {
+            Log.v("SendOutboxCall", "--finallyOut--");
             progressDialog.dismiss();
+            if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
+                CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+            }
             CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
-            OutboxFragment.SetupOutBoxAdapter(activity, sqLite, context);
+            RefreshAdapter();
         }
     }
 
@@ -271,7 +296,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         return yy;
     }
 
-    private void CallSendAPIImage(GroupModelClass groupModelClass, int childPos, int i, String jsonValues, String filePath, String id) {
+    private void CallSendAPIImage(GroupModelClass groupModelClass, EcModelClass ecModelClass, int childPos, int i, String jsonValues, String filePath, String id) {
         ApiInterface apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getTagApiImageUrl(context));
         MultipartBody.Part img = convertImg("EventImg", filePath);
         HashMap<String, RequestBody> values = field(jsonValues);
@@ -284,25 +309,30 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                     try {
                         assert response.body() != null;
                         JSONObject json = new JSONObject(response.body().toString());
-                        Log.v("SendOutboxCall", "-imageRes---" + json);
                         if (json.getString("success").equalsIgnoreCase("true") && json.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
                             DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
                         } else {
-                            DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
-                        }
-                        if (groupModelClass.getChildItems().get(childPos).getEcModelClasses().size() > 0) {
-                            RefreshAdapter();
+                            ecModelClass.setSynced(1);
+                            ecModelClass.setSync_status(Constants.DUPLICATE_CALL);
+                            sqLite.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
+                            CallAPIListImage(groupModelClass, childPos);
                         }
                     } catch (Exception e) {
                         Log.v("SendOutboxCall", "-error---" + e);
-                        DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
+                        ecModelClass.setSynced(1);
+                        ecModelClass.setSync_status(Constants.EXCEPTION_ERROR);
+                        sqLite.updateECStatus(id, Constants.EXCEPTION_ERROR, 1);
+                        CallAPIListImage(groupModelClass, childPos);
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                DeleteCacheFile(groupModelClass, groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i).getFilePath(), id, i, childPos);
+                ecModelClass.setSynced(1);
+                ecModelClass.setSync_status(Constants.CALL_FAILED);
+                sqLite.updateECStatus(id, Constants.CALL_FAILED, 1);
+                CallAPIListImage(groupModelClass, childPos);
             }
         });
     }
@@ -342,9 +372,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                 sqLite.deleteOfflineCalls(cusCode, cusName, date);
                                 groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().remove(outBoxList);
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(5), "Duplicate Call");
-                                groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), "Duplicate Call", 5));
-                                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                                sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
+                                groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, 5));
+                                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
@@ -352,19 +382,18 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                         break;
                                     }
                                 }
-
-                                sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
-                                RefreshAdapter();
+                                UpdateEcData(date, cusCode, cusName, Constants.DUPLICATE_CALL, 1);
+                                sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
                             }
                             CallAPIOfflineCalls(groupModelClass, childPos);
+                            notifyDataSetChanged();
                         } catch (Exception e) {
-                            sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(5), "Exception Error");
-                            groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), "Exception Error", 5));
+                            sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.EXCEPTION_ERROR, 0);
+                            groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.EXCEPTION_ERROR, 5));
+                            UpdateEcData(date, cusCode, cusName, Constants.EXCEPTION_ERROR, 0);
                             CallAPIOfflineCalls(groupModelClass, childPos);
-                         /*   groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().remove(outBoxList);
-                            sqLite.deleteOfflineCalls(cusCode, cusName, date);
-                            CallAPIOfflineCalls(groupModelClass, childPos);*/
                             Log.v("SendOutboxCall", "---" + e);
+                            notifyDataSetChanged();
                         }
                     }
                 }
@@ -372,14 +401,33 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    sqLite.saveOfflineUpdateStatus(date, cusCode, String.valueOf(SyncCount + 1), "Call Failed");
-                    groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), "Duplicate Call", SyncCount + 1));
+                    sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(SyncCount + 1), Constants.CALL_FAILED, 1);
+                    groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, SyncCount + 1));
+                    UpdateEcData(date, cusCode, cusName, Constants.CALL_FAILED, 1);
                     CallAPIOfflineCalls(groupModelClass, childPos);
+                    notifyDataSetChanged();
                 }
             });
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void UpdateEcData(String date, String cusCode, String cusName, String status, int synced) {
+        if (sqLite.isAvailableEc(date, cusCode)) {
+            for (int i = 0; i < listDates.size(); i++) {
+                if (listDates.get(i).getGroupName().equalsIgnoreCase(date)) {
+                    for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
+                        EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
+                        if (ecModelClass.getDates().equalsIgnoreCase(date) && ecModelClass.getCusCode().equalsIgnoreCase(cusCode) && ecModelClass.getCusName().equalsIgnoreCase(cusName)) {
+                            ecModelClass.setSync_status(status);
+                            ecModelClass.setSynced(synced);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 

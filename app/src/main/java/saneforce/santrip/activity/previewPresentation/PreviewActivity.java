@@ -2,7 +2,6 @@ package saneforce.santrip.activity.previewPresentation;
 
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.arrayStore;
-import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.BottomLayoutHeadAdapter.SelectedPosPlay;
 import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.headingData;
 import static saneforce.santrip.activity.homeScreen.call.fragments.DetailedFragment.callDetailingLists;
 
@@ -41,6 +40,7 @@ public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static saneforce.santrip.databinding.ActivityPreviewBinding previewBinding;
     public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
+    public static int SelectedPosPlay;
     PreviewTabAdapter viewPagerAdapter;
     SQLite sqLite;
     String finalPrdNam;
@@ -58,13 +58,7 @@ public class PreviewActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            previewBinding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            previewBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -103,7 +97,7 @@ public class PreviewActivity extends AppCompatActivity {
             if (CusType.equalsIgnoreCase("1")) {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
                 viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.specialist));
+                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                 viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
                 headingData.add("A");
                 headingData.add("B");
@@ -120,7 +114,7 @@ public class PreviewActivity extends AppCompatActivity {
         } else {
             viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
             viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.specialist));
+            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
             viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
         }
 

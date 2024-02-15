@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.homeScreen.call.dcrCallSelection.fragments;
 
+import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.CheCheckInOutNeed;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.CheGeoTag;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.GeoTagApproval;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfName;
@@ -177,7 +178,7 @@ public class ChemistFragment extends Fragment {
         }
 
         Log.v("CheCall", "-che--size--" + cusListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), cusListArrayList);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), cusListArrayList,CheCheckInOutNeed);
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

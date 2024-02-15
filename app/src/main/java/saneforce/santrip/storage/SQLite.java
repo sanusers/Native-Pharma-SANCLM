@@ -26,6 +26,7 @@ import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
+import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.response.LoginResponse;
 
 
@@ -71,9 +72,13 @@ public class SQLite extends SQLiteOpenHelper {
     //Call Offline EventCapture
     public static final String CALL_OFFLINE_EC_TABLE = "call_offline_ec_table";
     public static final String CALL_DATE_EC = "call_date_ec";
+    public static final String CALL_CUS_CODE_EC = "call_cus_code_ec";
+    public static final String CALL_CUS_NAME_EC = "call_cus_name_ec";
     public static final String CALL_IMAGE_NAME = "call_image_name_ec";
     public static final String CALL_FILE_PATH = "call_file_path";
     public static final String CALL_JSON_VALUES_EC = "call_json_values_ec";
+    public static final String CALL_STATUS_EC = "call_status_ec";
+    public static final String CALL_SYNC_STATUS_EC = "call_sync_status_ec";
 
     //CheckInOut
     public static final String OFFLINE_CHECKINOUT_TABLE = "offline_checkinout_table";
@@ -83,6 +88,9 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String OFFLINE_JSON_CHECKIN = "offline_check_in_json";
     public static final String OFFLINE_JSON_CHECKOUT = "offline_check_out_json";
     public static final String OFFLINE_DATE_COUNT = "offline_date_count";
+    public static final String OFFLINE_SYNC_STATUS = "offline_sync_status";
+
+
     //Presentation Table
     public static final String PRESENTATION_TABLE = "presentation_table";
     public static final String PRESENTATION_NAME = "presentation_name";
@@ -115,8 +123,8 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_OFFLINE_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_MONTH_STATUS + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TOUR_PLAN_ONLINE_TABLE + "(" + TP_MONTH + " text," + TP_DATA + " text," + TP_APPROVAL_STATUS + " text," + TP_REJECTION_REASON + " text" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_TABLE + "(" + CALL_DATE + " text," + CALL_TIME + " text," + CALL_IN_TIME + " text," + CALL_OUT_TIME + " text," + CALL_CUS_NAME + " text," + CALL_CUS_TYPE + " text," + CALL_CUS_CODE + " text," + CALL_JSON_VALUES + " text," + CALL_SYNC_STATUS + " text," + CALL_SYNC_COUNT + " INTEGER" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_EC_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CALL_DATE_EC + " text," + CALL_IMAGE_NAME + " text," + CALL_FILE_PATH + " text," + CALL_JSON_VALUES_EC + " text" + ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + OFFLINE_CHECKINOUT_TABLE + "(" + OFFLINE_DATE_CHECKINOUT + " text," + OFFLINE_CHECKINTIME + " text," + OFFLINE_CHECKOUTTIME + " text," + OFFLINE_JSON_CHECKIN + " text," + OFFLINE_JSON_CHECKOUT + " text," + OFFLINE_DATE_COUNT + " text" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_EC_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CALL_DATE_EC + " text," + CALL_CUS_CODE_EC + " text," + CALL_CUS_NAME_EC + " text," + CALL_IMAGE_NAME + " text," + CALL_FILE_PATH + " text," + CALL_JSON_VALUES_EC + " text," + CALL_STATUS_EC + " text," + CALL_SYNC_STATUS_EC + " INTEGER" + ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + OFFLINE_CHECKINOUT_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + OFFLINE_DATE_CHECKINOUT + " text," + OFFLINE_CHECKINTIME + " text," + OFFLINE_CHECKOUTTIME + " text," + OFFLINE_JSON_CHECKIN + " text," + OFFLINE_JSON_CHECKOUT + " text," + OFFLINE_DATE_COUNT + " text," + OFFLINE_SYNC_STATUS + " INTEGER" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " + LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " + LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + PRESENTATION_TABLE + "(" + PRESENTATION_NAME + " TEXT PRIMARY KEY, " + PRESENTATION_DATA + " TEXT)");
     }
@@ -147,7 +155,6 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + OFFLINE_CHECKINOUT_TABLE);
         db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
         db.execSQL("DELETE FROM " + PRESENTATION_TABLE);
-
         db.close();
     }
 
@@ -218,8 +225,7 @@ public class SQLite extends SQLiteOpenHelper {
         JSONArray jsonArray = new JSONArray();
         try {
             if (data != null && !data.isEmpty()) return jsonArray = new JSONArray(data);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception ignored) {
         }
         return jsonArray;
     }
@@ -262,13 +268,9 @@ public class SQLite extends SQLiteOpenHelper {
         contentValues.put(OFFLINE_JSON_CHECKOUT, "");
         contentValues.put(OFFLINE_JSON_CHECKIN, jsonValues);
         contentValues.put(OFFLINE_DATE_COUNT, String.valueOf(cursor.getCount()));
+        contentValues.put(OFFLINE_SYNC_STATUS, 0);
         db.insert(OFFLINE_CHECKINOUT_TABLE, null, contentValues);
         db.close();
-      /*  String[] args = new String[]{date};
-        int updated = db.update(OFFLINE_CHECKINOUT_TABLE, contentValues, OFFLINE_DATE_CHECKINOUT + "=?", args);
-        if (updated <= 0) {
-            db.insert(OFFLINE_CHECKINOUT_TABLE, null, contentValues);
-        }*/
     }
 
     public void saveCheckOut(String date, String checkOutTime, String jsonValues) {
@@ -279,6 +281,7 @@ public class SQLite extends SQLiteOpenHelper {
         contentValues.put(OFFLINE_CHECKOUTTIME, checkOutTime);
         contentValues.put(OFFLINE_JSON_CHECKOUT, jsonValues);
         contentValues.put(OFFLINE_DATE_COUNT, String.valueOf(cursor.getCount()));
+        contentValues.put(OFFLINE_SYNC_STATUS, 0);
 
         int updated = db.update(OFFLINE_CHECKINOUT_TABLE, contentValues, OFFLINE_DATE_CHECKINOUT + "=? and " + OFFLINE_DATE_COUNT + "=?", new String[]{date, String.valueOf(cursor.getCount() - 1)});
         if (updated <= 0) {
@@ -287,19 +290,34 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateCheckInOutStatus(String id, int checkSynced) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(OFFLINE_SYNC_STATUS, checkSynced);
+
+        int updated = db.update(OFFLINE_CHECKINOUT_TABLE, contentValues, COLUMN_ID + "=?", new String[]{id});
+        if (updated <= 0) {
+            db.insert(OFFLINE_CHECKINOUT_TABLE, null, contentValues);
+        }
+        db.close();
+    }
+
     public ArrayList<CheckInOutModelClass> getCheckInOutTime(String date, SQLiteDatabase db) {
         Cursor cursor = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE + " where " + OFFLINE_DATE_CHECKINOUT + "='" + date + "';", null);
-        String dates = "", jsonInData = "", jsonOutData = "", CheckInTime = "", CheckOutTime = "", CheckCount = "";
+        String dates = "", jsonInData = "", jsonOutData = "", CheckInTime = "", CheckOutTime = "", CheckCount = "", id = "";
+        int checkStatus;
         ArrayList<CheckInOutModelClass> list = new ArrayList<>();
         while (cursor.moveToNext()) {
-            dates = cursor.getString(0);
-            CheckInTime = cursor.getString(1);
-            CheckOutTime = cursor.getString(2);
-            jsonInData = cursor.getString(3);
-            jsonOutData = cursor.getString(4);
-            CheckCount = cursor.getString(5);
+            id = cursor.getString(0);
+            dates = cursor.getString(1);
+            CheckInTime = cursor.getString(2);
+            CheckOutTime = cursor.getString(3);
+            jsonInData = cursor.getString(4);
+            jsonOutData = cursor.getString(5);
+            CheckCount = cursor.getString(6);
+            checkStatus = cursor.getInt(7);
             if (dates != null) {
-                list.add(new CheckInOutModelClass(dates, CheckInTime, CheckOutTime, jsonInData, jsonOutData, CheckCount));
+                list.add(new CheckInOutModelClass(id, dates, CheckInTime, CheckOutTime, jsonInData, jsonOutData, CheckCount, checkStatus));
             }
         }
         return list;
@@ -322,29 +340,54 @@ public class SQLite extends SQLiteOpenHelper {
 
 
     //Event Capture table
-    public void saveOfflineEC(String date, String img_name, String filepath, String jsonValues) {
+    public void saveOfflineEC(String date, String cusCode, String cusName, String img_name, String filepath, String jsonValues, String status, Integer sync) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CALL_DATE_EC, date);
+        contentValues.put(CALL_CUS_CODE_EC, cusCode);
+        contentValues.put(CALL_CUS_NAME_EC, cusName);
         contentValues.put(CALL_IMAGE_NAME, img_name);
         contentValues.put(CALL_FILE_PATH, filepath);
         contentValues.put(CALL_JSON_VALUES_EC, jsonValues);
+        contentValues.put(CALL_STATUS_EC, status);
+        contentValues.put(CALL_SYNC_STATUS_EC, sync);
         db.insert(CALL_OFFLINE_EC_TABLE, null, contentValues);
+        db.close();
+    }
+
+    public boolean isAvailableEc(String date, String customerCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_EC_TABLE + " WHERE " + CALL_CUS_CODE_EC + " = '" + customerCode + "' " + " AND " + CALL_DATE_EC + " = '" + date + "';", null);
+        return cursor.getCount() > 0;
+    }
+
+
+    public void updateECStatus(String id, String status, int checkSynced) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CALL_SYNC_STATUS_EC, checkSynced);
+        contentValues.put(CALL_SYNC_STATUS, status);
+        db.update(CALL_OFFLINE_EC_TABLE, contentValues, COLUMN_ID + "=?", new String[]{id});
         db.close();
     }
 
     public ArrayList<EcModelClass> getEcList(String date, SQLiteDatabase db) {
         Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_EC_TABLE + " where " + CALL_DATE_EC + "='" + date + "';", null);
-        String dates = "", jsonData = "", name = "", file = "", id = "";
+        String dates = "", jsonData = "", cusName = "", cusCode = "", imgName = "", file = "", id = "", status = "";
+        int synced;
         ArrayList<EcModelClass> list = new ArrayList<>();
         while (cursor.moveToNext()) {
             id = cursor.getString(0);
             dates = cursor.getString(1);
-            name = cursor.getString(2);
-            file = cursor.getString(3);
-            jsonData = cursor.getString(4);
+            cusCode = cursor.getString(2);
+            cusName = cursor.getString(3);
+            imgName = cursor.getString(4);
+            file = cursor.getString(5);
+            jsonData = cursor.getString(6);
+            status = cursor.getString(7);
+            synced = cursor.getInt(8);
             if (dates != null) {
-                list.add(new EcModelClass(id, dates, name, file, jsonData));
+                list.add(new EcModelClass(id, dates, cusCode, cusName, imgName, file, jsonData, status, synced));
             }
         }
         return list;
@@ -353,16 +396,21 @@ public class SQLite extends SQLiteOpenHelper {
     public ArrayList<EcModelClass> getEcListFull() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_EC_TABLE, null);
-        String dates = "", jsonData = "", name = "", file = "", id = "";
+        String dates = "", jsonData = "", cusName = "", cusCode = "", imgName = "", file = "", id = "", status = "";
+        int synced;
         ArrayList<EcModelClass> list = new ArrayList<>();
         while (cursor.moveToNext()) {
             id = cursor.getString(0);
             dates = cursor.getString(1);
-            name = cursor.getString(2);
-            file = cursor.getString(3);
-            jsonData = cursor.getString(4);
+            cusCode = cursor.getString(2);
+            cusName = cursor.getString(3);
+            imgName = cursor.getString(4);
+            file = cursor.getString(5);
+            jsonData = cursor.getString(6);
+            status = cursor.getString(7);
+            synced = cursor.getInt(8);
             if (dates != null) {
-                list.add(new EcModelClass(id, dates, name, file, jsonData));
+                list.add(new EcModelClass(id, dates, cusCode, cusName, imgName, file, jsonData, status, synced));
             }
         }
         db.close();
@@ -428,6 +476,24 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateOfflineUpdateStatusEC(String date, String custCode, String count, String status, int EcSynced) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CALL_DATE, date);
+        contentValues.put(CALL_SYNC_COUNT, count);
+        contentValues.put(CALL_SYNC_STATUS, status);
+        db.update(CALL_OFFLINE_TABLE, contentValues, CALL_DATE + "=? and " + CALL_CUS_CODE + "=?", new String[]{date, custCode});
+
+        if (isAvailableEc(date, custCode)) {
+            ContentValues contentValuesEC = new ContentValues();
+            contentValuesEC.put(CALL_DATE_EC, date);
+            contentValuesEC.put(CALL_STATUS_EC, status);
+            contentValues.put(CALL_SYNC_STATUS_EC, EcSynced);
+            db.update(CALL_OFFLINE_EC_TABLE, contentValuesEC, CALL_DATE_EC + "=? and " + CALL_CUS_CODE_EC + "=?", new String[]{date, custCode});
+        }
+        db.close();
+    }
+
     public void deleteOfflineCalls() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + CALL_OFFLINE_TABLE);
@@ -439,17 +505,25 @@ public class SQLite extends SQLiteOpenHelper {
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + CALL_OFFLINE_TABLE + " WHERE " + CALL_CUS_CODE + " = '" + cusCode + "' " + " AND " + CALL_CUS_NAME + " = '" + cusName + "'" + " AND " + CALL_DATE + "='" + date + "';");
+        db.execSQL("DELETE FROM " + CALL_OFFLINE_EC_TABLE + " WHERE " + CALL_CUS_CODE_EC + " = '" + cusCode + "' " + " AND " + CALL_CUS_NAME_EC + " = '" + cusName + "'" + " AND " + CALL_DATE_EC + "='" + date + "';");
         db.close();
     }
 
 
     public boolean isOutBoxDataAvailable() {
-        boolean isAvailableCall = false, isAvailableEC = false, returnStatus = false;
+        boolean isAvailableCall = false, isAvailableEC = false, isAvailableCheckInOut = false, returnStatus = false;
+
         SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursorCheckInOut = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE, null);
+        if (cursorCheckInOut.getCount() > 0) {
+            isAvailableCheckInOut = true;
+        }
+
         Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE, null);
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
-                if (!cursor.getString(8).equalsIgnoreCase("Duplicate Call")) {
+                if (!cursor.getString(8).equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
                     isAvailableCall = true;
                     break;
                 }
@@ -461,7 +535,7 @@ public class SQLite extends SQLiteOpenHelper {
             isAvailableEC = true;
         }
 
-        if (isAvailableCall || isAvailableEC) {
+        if (isAvailableCall || isAvailableEC || isAvailableCheckInOut) {
             returnStatus = true;
         }
 
@@ -478,7 +552,7 @@ public class SQLite extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    date = cursor.getString(0);
+                    date = cursor.getString(1);
                     if (date != null) {
                         if (list.size() > 0) {
                             for (int i = 0; i < list.size(); i++) {
@@ -575,7 +649,7 @@ public class SQLite extends SQLiteOpenHelper {
                     //  }
                 }*/
 
-                listData.add(new GroupModelClass(list.get(i).getGroupName(), groupNamesList, false));
+                listData.add(new GroupModelClass(list.get(i).getGroupName(), groupNamesList, false,0));
             }
         }
 

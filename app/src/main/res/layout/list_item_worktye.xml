@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:id="@+id/rl_title_layout"
+        android:id="@+id/rl_calender_syn"
         android:gravity="center"
         android:layout_height="wrap_content">
         <TextView
@@ -45,7 +45,7 @@
         android:id="@+id/gggg"
         android:layout_width="wrap_content"
         android:layout_height="0.5dp"
-        android:layout_below="@+id/rl_title_layout"
+        android:layout_below="@+id/rl_calender_syn"
         android:background="@color/tab_gray" />
     <LinearLayout
         android:id="@+id/ll_search_layout"

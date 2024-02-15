@@ -72,7 +72,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     String cheNeed = "", stockiestNeed = "", unListedDrNeed = "", hospNeed = "", cipNeed = "", rcpaNeed = "", tpNeed = "";
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
     int unlistedDrCount = 0, chemistCount = 0, stockiestCount = 0, hospitalCount = 0, cipCount = 0, inputCount = 0, leaveCount = 0, leaveStatusCount = 0, tpSetupCount = 0, clusterCount = 0;
-    int dcrCount = 0, visitControlCount = 0, missedDateCount = 0;
+    int callSyncCount = 0, visitControlCount = 0, dateSyncCount = 0;
     int productCount = 0, proCatCount = 0, brandCount = 0, compProCount = 0, mapComPrdCount = 0;
     int workTypeCount = 0, holidayCount = 0, weeklyOfCount = 0;
     int proSlideCount = 0, proSpeSlideCount = 0, brandSlideCount = 0, therapticCount = 0;
@@ -81,7 +81,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     // Api call status
     int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0;
     int unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, clusterStatus = 0;
-    int dcrStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, missedDateStatus = 0, stockBalanceStatus = 0;
+    int callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0;
     int productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0;
     int workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0;
     int proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0;
@@ -165,8 +165,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 //            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //        }
 
-        binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
-//        binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+        //  binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
+        binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
         binding.hq.setOnClickListener(view -> {
 
@@ -520,9 +520,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         inputCount = sqLite.getMasterSyncDataByKey(Constants.INPUT).length();
         leaveCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE).length();
         leaveStatusCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS).length();
-        dcrCount = sqLite.getMasterSyncDataByKey(Constants.DCR).length();
+        callSyncCount = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC).length();
         visitControlCount = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL).length();
-        missedDateCount = sqLite.getMasterSyncDataByKey(Constants.MISSED_DATE).length();
+        dateSyncCount = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC).length();
 
         workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
         holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
@@ -559,10 +559,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         inputStatus = sqLite.getMasterSyncStatusByKey(Constants.INPUT);
         leaveStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE);
         leaveStatusStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
-        dcrStatus = sqLite.getMasterSyncStatusByKey(Constants.DCR);
+        callSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.CALL_SYNC);
         myDayPlanStatus = sqLite.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
         visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
-        missedDateStatus = sqLite.getMasterSyncStatusByKey(Constants.MISSED_DATE);
+        dateSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.DATE_SYNC);
         stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
 
         workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
@@ -678,15 +678,15 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //DCR
         dcrModelArray.clear();
-        MasterSyncItemModel dcrModel = new MasterSyncItemModel(Constants.DCR, dcrCount, "Home", "gethome", Constants.DCR, dcrStatus, false);
+        MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, callSyncCount, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
         MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN, -1, Constants.DOCTOR, "gettodaytpnew", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, visitControlCount, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
-        MasterSyncItemModel missedDateModel = new MasterSyncItemModel(Constants.MISSED_DATE, missedDateCount, "MissedDate", "getmissdates", Constants.MISSED_DATE, missedDateStatus, false);
+        MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, dateSyncCount, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, -1, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
-        dcrModelArray.add(dcrModel);
+        dcrModelArray.add(callSyncModel);
         dcrModelArray.add(myDayPlanModel);
         dcrModelArray.add(visitControlModel);
-        dcrModelArray.add(missedDateModel);
+        dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(stockBalanceModel);
 
         //Work Type
@@ -871,6 +871,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void masterSyncAll(boolean hqChanged) {
         NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void isNetworkAvailable(Boolean status) {
                 if (status) {
@@ -924,7 +925,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             }
         });
         networkStatusTask.execute();
-
     }
 
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
@@ -977,9 +977,6 @@ public class MasterSyncActivity extends AppCompatActivity {
             } else if (masterOf.equalsIgnoreCase("Home")) {
                 mapString.put("axn", "home");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-            } else if (masterOf.equalsIgnoreCase("MissedDate")) {
-                mapString.put("axn", "get/misseddcr");
-                call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
             } else if (masterOf.equalsIgnoreCase("AdditionalDcr")) {
                 mapString.put("axn", "table/additionaldcrmasterdata");
                 call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
@@ -1031,7 +1028,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                                         binding.lastSyncTime.setText(dateAndTime);
                                         SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
                                         sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0);
-                                        sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, "[]", 0);
+                                        // sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, "[]", 0);
 
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {
@@ -1577,8 +1574,6 @@ public class MasterSyncActivity extends AppCompatActivity {
     }
 
     ArrayList<SlideModelClass> slideListPrepared(String nfolg) {
-
-
         if (nfolg.equalsIgnoreCase("0")) {
             Slide_list.clear();
             slideId.clear();
@@ -1596,31 +1591,28 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
 
         JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-
         try {
             if (slidedata.length() > 0) {
+                Slide_list = new ArrayList<>();
                 for (int i = 0; i < slidedata.length(); i++) {
                     JSONObject jsonObject = slidedata.getJSONObject(i);
                     String FilePath = jsonObject.optString("FilePath");
                     String id = jsonObject.optString("SlideId");
-
                     if (!slideId.contains(id)) {
                         slideId.add(id);
                         Slide_list.add(new SlideModelClass(FilePath, false, "0", "0"));
                     }
-
                 }
             } else {
                 Slide_list.clear();
                 Slide_list = new ArrayList<>();
                 slideId.clear();
             }
-        } catch (Exception a) {
-            a.printStackTrace();
+        } catch (Exception ignored) {
         }
+
         SharedPref.saveSlideListID(MasterSyncActivity.this, slideId);
         return Slide_list;
-
     }
 
     @Override

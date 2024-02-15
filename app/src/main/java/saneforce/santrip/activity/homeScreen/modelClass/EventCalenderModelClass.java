@@ -3,11 +3,19 @@ package saneforce.santrip.activity.homeScreen.modelClass;
 public class EventCalenderModelClass {
 
 
-    private String dateID  ;
-    private  String EventFlog;
-    private String Month ;
-    private String Year ;
+    private String dateID;
+    private String EventFlog;
+    private String Month;
+    private String Year;
+    private boolean isSelected;
 
+
+    public EventCalenderModelClass(String dateID, String worktypeFlog, String month, String year) {
+        this.dateID = dateID;
+        this.EventFlog = worktypeFlog;
+        Month = month;
+        Year = year;
+    }
 
     public String getDateID() {
         return dateID;
@@ -38,13 +46,6 @@ public class EventCalenderModelClass {
     }
 
     public void setYear(String year) {
-        Year = year;
-    }
-
-    public EventCalenderModelClass(String dateID, String worktypeFlog, String month, String year) {
-        this.dateID = dateID;
-        this.EventFlog = worktypeFlog;
-        Month = month;
         Year = year;
     }
 }

@@ -13,24 +13,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_medium"
         android:text="Call Status"
-        android:layout_marginTop="@dimen/_2sdp"
         android:textColor="@color/black_45"
         android:textSize="@dimen/_7sdp"
         android:textStyle="bold" />
 
 
     <RelativeLayout
-        android:id="@+id/rl_title_layout"
+        android:id="@+id/rl_calender_syn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/_2sdp"
         android:background="@drawable/custom_backround_layout"
         android:backgroundTint="@color/text_sync_bg"
         android:gravity="center"
-        android:layout_marginBottom="@dimen/_2sdp"
         android:orientation="horizontal"
         android:padding="@dimen/_3sdp">
 
@@ -46,11 +46,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/_1sdp"
             android:layout_marginEnd="@dimen/_3sdp"
-            android:layout_toRightOf="@+id/refresh"
+            android:layout_toEndOf="@+id/refresh"
             android:fontFamily="@font/satoshi_regular"
-            android:text="Sync Status"
+            android:text="@string/sync"
             android:textColor="@color/text_sync"
             android:textSize="@dimen/_6sdp"
             android:textStyle="bold" />
@@ -61,7 +62,7 @@
         android:id="@+id/view_bar"
         android:layout_width="wrap_content"
         android:layout_height=".5dp"
-        android:layout_below="@+id/rl_title_layout"
+        android:layout_below="@+id/rl_calender_syn"
         android:layout_marginTop="@dimen/_2sdp"
         android:background="@color/cl_border_color" />
 
@@ -117,8 +118,7 @@
                 <LinearLayout
                     android:id="@+id/ll_next_month"
                     android:layout_width="@dimen/_15sdp"
-                    android:layout_height="@dimen/_15sdp"
-                   >
+                    android:layout_height="@dimen/_15sdp">
 
                     <ImageView
                         android:layout_width="@dimen/_6sdp"
@@ -213,17 +213,15 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendarRecyclerView"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:layout_height="wrap_content" />
-
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_2sdp" />
 
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
 
             <LinearLayout
@@ -234,8 +232,9 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/txt_feild_work"
                         android:layout_width="wrap_content"
@@ -249,7 +248,7 @@
                         android:backgroundTint="@color/green_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Field work"
+                        android:text="@string/field_work"
                         android:textColor="@color/green_60"
                         android:textSize="@dimen/_5sdp" />
 
@@ -267,7 +266,7 @@
                         android:backgroundTint="@color/blue_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Non-Field work"
+                        android:text="@string/non_field_work"
                         android:textColor="@color/blue_60"
                         android:textSize="@dimen/_5sdp" />
 
@@ -285,16 +284,16 @@
                         android:backgroundTint="@color/red_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Leave"
+                        android:text="@string/leave"
                         android:textColor="@color/red_60"
-                        android:textSize="@dimen/_5sdp"
-                        />
+                        android:textSize="@dimen/_5sdp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/txt_miss_rele"
                         android:layout_width="wrap_content"
@@ -309,31 +308,31 @@
                         android:backgroundTint="@color/Hilo_bay_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Missed Released"
+                        android:text="@string/missed_released"
                         android:textColor="@color/Hilo_bay_60"
                         android:textSize="@dimen/_5sdp" />
 
                     <TextView
                         android:id="@+id/txt_re_entry"
                         android:layout_width="wrap_content"
-                        android:layout_toRightOf="@id/txt_miss_rele"
-                        android:layout_below="@id/txt_feild_work"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_feild_work"
                         android:layout_margin="@dimen/_2sdp"
+                        android:layout_toRightOf="@id/txt_miss_rele"
                         android:background="@drawable/custom_backround_layout"
                         android:backgroundTint="@color/pink_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:textSize="@dimen/_5sdp"
-                        android:text="Re Entry"
-                        android:textColor="@color/pink_60" />
+                        android:text="@string/re_entry"
+                        android:textColor="@color/pink_60"
+                        android:textSize="@dimen/_5sdp" />
                 </LinearLayout>
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
 
                     <TextView
@@ -349,9 +348,10 @@
                         android:backgroundTint="@color/lustylavender_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Holiday"
+                        android:text="@string/holiday"
                         android:textColor="@color/lustylavender_60"
                         android:textSize="@dimen/_5sdp" />
+
                     <TextView
                         android:id="@+id/txt_week_off"
                         android:layout_width="wrap_content"
@@ -364,28 +364,15 @@
                         android:backgroundTint="@color/yellow_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="Weekly off"
+                        android:text="@string/weekly_off"
                         android:textColor="@color/yellow_60"
                         android:textSize="@dimen/_5sdp" />
 
 
-                </LinearLayout>
-
-
-
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
-
                     <TextView
-                        android:id="@+id/txt_tp_deviation"
+                        android:id="@+id/txt_leave_approve_pending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txt_leave"
-
                         android:layout_marginStart="@dimen/_2sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
@@ -394,7 +381,32 @@
                         android:backgroundTint="@color/Evening_Blue_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="TP Deviation"
+                        android:text="@string/leave_approve_pending"
+                        android:textColor="@color/Evening_Blue_60"
+                        android:textSize="@dimen/_5sdp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_tp_deviation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_leave"
+                        android:layout_marginStart="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginEnd="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_2sdp"
+                        android:background="@drawable/custom_backround_layout"
+                        android:backgroundTint="@color/Evening_Blue_10"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_3sdp"
+                        android:text="@string/tp_deviation"
                         android:textColor="@color/Evening_Blue_60"
                         android:textSize="@dimen/_5sdp" />
 
@@ -404,7 +416,6 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/txt_holiday"
                         android:layout_marginStart="@dimen/_2sdp"
-
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginEnd="@dimen/_2sdp"
                         android:layout_marginBottom="@dimen/_2sdp"
@@ -413,18 +424,17 @@
                         android:backgroundTint="@color/dark_green_10"
                         android:fontFamily="@font/satoshi_medium"
                         android:padding="@dimen/_3sdp"
-                        android:text="TP Deviation Released"
+                        android:text="@string/tp_deviation_released"
                         android:textColor="@color/dark_green_60"
                         android:textSize="@dimen/_5sdp" />
-
 
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
 
                 </LinearLayout>
@@ -439,7 +449,6 @@
                     android:layout_marginTop="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_2sdp"
                     android:layout_marginBottom="@dimen/_2sdp"
-                    android:visibility="gone"
                     android:layout_toRightOf="@id/txt_tp_deviation"
                     android:background="@drawable/custom_backround_layout"
                     android:backgroundTint="@color/GlassSea_10"
@@ -447,7 +456,8 @@
                     android:padding="@dimen/_3sdp"
                     android:text="Leave Approval Pending"
                     android:textColor="@color/GlassSea_60"
-                    android:textSize="@dimen/_5sdp" />
+                    android:textSize="@dimen/_5sdp"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

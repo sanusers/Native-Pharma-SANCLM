@@ -117,13 +117,7 @@ public class TourPlanActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -188,8 +182,7 @@ public class TourPlanActivity extends AppCompatActivity {
             if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
                 binding.calendarNextButton.setEnabled(false);
                 binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-            } else
-                binding.calendarNextButton.setEnabled(true);
+            } else binding.calendarNextButton.setEnabled(true);
 
             if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
                 monthInAdapterFlag = 0;
@@ -213,8 +206,7 @@ public class TourPlanActivity extends AppCompatActivity {
             if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
                 binding.calendarPrevButton.setEnabled(false);
                 binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-            } else
-                binding.calendarPrevButton.setEnabled(true);
+            } else binding.calendarPrevButton.setEnabled(true);
 
             if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
                 monthInAdapterFlag = 0;
@@ -298,8 +290,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                    if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 &&
-                                            modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
+                                    if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                         isEmpty = true;
                                         position = i;
                                         commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
@@ -322,8 +313,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         break;
                                     }
                                 }
-                                if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 &&
-                                        modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
+                                if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                     isEmpty = true;
                                     position = i;
                                     commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
@@ -389,8 +379,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 }
                             }
 
-                            if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
-                                    modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
+                            if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
                                 isEmpty = true;
                                 position = i;
                                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
@@ -413,8 +402,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 &&
-                                modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) { // when Dr meetup not mandatory but FW meetup mandatory.So check any of the meetup selected
+                        if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) { // when Dr meetup not mandatory but FW meetup mandatory.So check any of the meetup selected
                             isEmpty = true;
                             position = i;
                             commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
@@ -962,10 +950,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
         sessionLists.add(sessionList);
-        if (session2)
-            sessionLists.add(sessionList2);
-        if (session3)
-            sessionLists.add(sessionList3);
+        if (session2) sessionLists.add(sessionList2);
+        if (session3) sessionLists.add(sessionList3);
         ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
         modelClass.setSubmittedTime(submittedTime);
         modelClasses.add(modelClass);
@@ -1029,8 +1015,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
             if (addSessionNeed.equalsIgnoreCase("0"))
                 binding.tpNavigation.addSession.setVisibility(View.VISIBLE);
-            else
-                binding.tpNavigation.addSession.setVisibility(View.GONE);
+            else binding.tpNavigation.addSession.setVisibility(View.GONE);
 
             holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
             JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
@@ -1615,8 +1600,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                         if (modelClassLocal.size() > 0) {
                             for (int j = 0; j < modelClassLocal.size(); j++) {
-                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                        modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
+                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
 
                                     for (int i = 0; i < arrayList.size(); i++) {
                                         ReceiveModel receiveModel = arrayList.get(i);
@@ -1624,8 +1608,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                             SaveTpLocalFull(receiveModel, modelClasses, dayWiseSaveTp, day, monthName, date, dayName, monthNo, year);
                                         }
                                     }
-                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                        modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
+                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
                                     isDataAvailable = true;
                                     ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
                                     modelClasses.add(modelClass);
@@ -1973,10 +1956,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
         sessionLists.add(sessionList);
-        if (session2)
-            sessionLists.add(sessionList2);
-        if (session3)
-            sessionLists.add(sessionList3);
+        if (session2) sessionLists.add(sessionList2);
+        if (session3) sessionLists.add(sessionList3);
         ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
         modelClass.setSubmittedTime(submittedTime);
         modelClasses.add(modelClass);

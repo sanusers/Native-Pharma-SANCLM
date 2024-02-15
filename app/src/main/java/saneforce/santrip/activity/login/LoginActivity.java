@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     String fcmToken = "";
     SQLite sqLite;
     String navigateFrom = "";
-    String userId = "";
+    String userId = "", userPwd = "";
     LoginViewModel loginViewModel = new LoginViewModel();
     CommonUtilsMethods commonUtilsMethods;
     ArrayAdapter<String> languageAdapter;
@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     String language;
     private int passwordNotVisible = 1;
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
         uiInitialisation();
-        binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
+        binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), Constants.APP_VERSION));
 
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, s -> {
@@ -120,19 +121,29 @@ public class LoginActivity extends AppCompatActivity {
         binding.loginBtn.setOnClickListener(view -> {
             UtilityClass.hideKeyboard(LoginActivity.this);
             userId = binding.userId.getText().toString().trim().replaceAll("\\s", "");
-            String password = binding.password.getText().toString().trim().replaceAll("\\s", "");
+            userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
 
-            if (userId.isEmpty()) {
-                binding.userId.requestFocus();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_username), 100);
-            } else if (password.isEmpty()) {
-                binding.password.requestFocus();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_password), 100);
-            } else {
-                if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
-                    login(userId, password);
+            if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
+                    SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
+                    commonUtilsMethods.ShowToast(context, getString(R.string.login_successfully), 100);
+                    startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                    commonUtilsMethods.ShowToast(context, getString(R.string.mismatch), 100);
+                }
+            } else {
+                if (userId.isEmpty()) {
+                    binding.userId.requestFocus();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_user_id), 100);
+                } else if (userPwd.isEmpty()) {
+                    binding.password.requestFocus();
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_password), 100);
+                } else {
+                    if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
+                        login(userId, userPwd);
+                    } else {
+                        commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                    }
                 }
             }
         });
@@ -195,6 +206,7 @@ public class LoginActivity extends AppCompatActivity {
             //  binding.userId.setEnabled(true);
         } else {
             binding.userId.setText(SharedPref.getLoginId(LoginActivity.this));
+            binding.password.setText(SharedPref.getLoginUserPwd(LoginActivity.this));
             //  binding.userId.setEnabled(false);
         }
 
@@ -337,8 +349,7 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
             jsonObject.put("AppDeviceRegId", fcmToken);
             jsonObject.put("location", "0.0 : 0.0");
-
-            Log.e("test", "login master obj : " + jsonObject);
+            Log.v("Login", "--json-" + jsonObject);
             loginViewModel.loginProcess(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()), jsonObject.toString()).observe(LoginActivity.this, new Observer<JsonElement>() {
                 @Override
                 public void onChanged(JsonElement jsonObject) {
@@ -347,7 +358,7 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
                         if (responseObject.getBoolean("success")) {
                             if (responseObject.getString("Android_Detailing").equals("1")) {
-                                Log.e("test", "login response : " + jsonObject);
+                                Log.v("Login", "--json-" + responseObject);
                                 commonUtilsMethods.ShowToast(context, getString(R.string.login_successfully), 100);
                                 process(responseObject);
                             } else {
@@ -359,7 +370,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.v("Login", "--error-" + e);
                     }
                 }
             });
@@ -373,7 +384,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             sqLite.saveLoginData(jsonObject.toString());
             openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
-            SharedPref.saveLoginId(LoginActivity.this, userId);
+            SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
@@ -404,5 +415,4 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
 }

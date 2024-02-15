@@ -40,6 +40,8 @@ public class LoginResponse implements Serializable {
     private String MRHlfDy = "";
     private String Primary_order = "";
     private String Sample_Val_Qty = "";
+    private String ChmRcpaMd = "";
+    private String ChmRcpaMd_Mgr = "";
     private String SFNeed = "";
     private String SQNeed = "";
     private String circular = "";
@@ -54,6 +56,8 @@ public class LoginResponse implements Serializable {
     private String Primary_order_caption = "";
     private String CPNeed = "";
     private String CipSrtNd = "";
+    private String ChmSrtNd = "";
+    private String UnlistSrtNd = "";
     private String HQName = "";
     private String wrk_area_Name = "";
     private String HQNeed = "";
@@ -277,6 +281,38 @@ public class LoginResponse implements Serializable {
     private String HENeed = "";
     private String TPDCR_MGRAppr = "";
     private String GeoTagNeedcip = "";
+
+    public String getChmSrtNd() {
+        return ChmSrtNd;
+    }
+
+    public void setChmSrtNd(String chmSrtNd) {
+        ChmSrtNd = chmSrtNd;
+    }
+
+    public String getUnlistSrtNd() {
+        return UnlistSrtNd;
+    }
+
+    public void setUnlistSrtNd(String unlistSrtNd) {
+        UnlistSrtNd = unlistSrtNd;
+    }
+
+    public String getChmRcpaMd() {
+        return ChmRcpaMd;
+    }
+
+    public void setChmRcpaMd(String chmRcpaMd) {
+        ChmRcpaMd = chmRcpaMd;
+    }
+
+    public String getChmRcpaMd_Mgr() {
+        return ChmRcpaMd_Mgr;
+    }
+
+    public void setChmRcpaMd_Mgr(String chmRcpaMd_Mgr) {
+        ChmRcpaMd_Mgr = chmRcpaMd_Mgr;
+    }
 
     public String getDoc_pob_caption() {
         return Doc_pob_caption;

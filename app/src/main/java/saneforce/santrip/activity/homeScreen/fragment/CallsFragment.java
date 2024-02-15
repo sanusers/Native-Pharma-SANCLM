@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -28,6 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
@@ -90,8 +93,8 @@ public class CallsFragment extends Fragment {
                                 assert response.body() != null;
                                 SharedPref.setTodayCallList(context, response.body().toString());
                                 JSONArray jsonArray = new JSONArray(response.body().toString());
-                                JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.DCR);
-                                JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                                JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
                                 ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
                                 ArrayList<CallsModalClass> TodayCallListTwo = new ArrayList<>();
 
@@ -140,7 +143,7 @@ public class CallsFragment extends Fragment {
                                             }
                                         }
                                     }
-                                    sqLite.saveMasterSyncData(Constants.DCR, jsonArray2.toString(), 0);
+                                    sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray2.toString(), 0);
                                     CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
                                 }
 
@@ -251,17 +254,29 @@ public class CallsFragment extends Fragment {
         });
 
         binding.tvAddCall.setOnClickListener(view -> {
-            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-          /*  if (!skipCheckIn) {
+            // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+            if (CheckInOutNeed.equalsIgnoreCase("0")) {
+                if (SharedPref.getSkipCheckIn(requireContext())) {
+                    if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
+                        commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan), 100);
+                    } else {
+                        startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                    }
+                } else {
+                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_checkin), 100);
+                    try {
+                        HomeDashBoard.dialogCheckInOut.show();
+                    } catch (Exception ignored) {
+
+                    }
+                }
+            } else {
                 if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
                     commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan), 100);
                 } else {
                     startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                 }
-            } else {
-                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_checkin), 100);
-                HomeDashBoard.dialogCheckInOut.show();
-            }*/
+            }
         });
 
         return v;

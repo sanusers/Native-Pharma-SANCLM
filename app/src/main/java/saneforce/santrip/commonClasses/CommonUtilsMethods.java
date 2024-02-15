@@ -171,10 +171,10 @@ public class CommonUtilsMethods {
         Date newDate = null;
         try {
             newDate = spf.parse(date);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        } catch (ParseException ignored) {
         }
         spf = new SimpleDateFormat(requiredFormat);
+        assert newDate != null;
         return spf.format(newDate);
     }
 

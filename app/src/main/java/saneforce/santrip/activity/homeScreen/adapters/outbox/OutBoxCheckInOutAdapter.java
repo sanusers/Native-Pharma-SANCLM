@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.homeScreen.adapters;
+package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
 import android.app.Activity;
 import android.content.Context;
@@ -38,29 +38,29 @@ public class OutBoxCheckInOutAdapter extends RecyclerView.Adapter<OutBoxCheckInO
 
         if (checkInOutModelList.get(position).getCheckInTime() != null) {
             if (checkInOutModelList.get(position).getCheckInTime().isEmpty()) {
-                holder.tagInTime.setVisibility(View.GONE);
-                holder.tvInTime.setVisibility(View.GONE);
+                holder.tagInTime.setVisibility(View.INVISIBLE);
+                holder.tvInTime.setVisibility(View.INVISIBLE);
             } else {
                 holder.tagInTime.setVisibility(View.VISIBLE);
                 holder.tagInTime.setVisibility(View.VISIBLE);
                 holder.tvInTime.setText(checkInOutModelList.get(position).getCheckInTime());
             }
         } else {
-            holder.tagInTime.setVisibility(View.GONE);
-            holder.tvInTime.setVisibility(View.GONE);
+            holder.tagInTime.setVisibility(View.INVISIBLE);
+            holder.tvInTime.setVisibility(View.INVISIBLE);
         }
         if (checkInOutModelList.get(position).getCheckOutTime() != null) {
             if (checkInOutModelList.get(position).getCheckOutTime().isEmpty()) {
-                holder.tagOutTime.setVisibility(View.GONE);
-                holder.tvOutTime.setVisibility(View.GONE);
+                holder.tagOutTime.setVisibility(View.INVISIBLE);
+                holder.tvOutTime.setVisibility(View.INVISIBLE);
             } else {
                 holder.tagOutTime.setVisibility(View.VISIBLE);
                 holder.tvOutTime.setVisibility(View.VISIBLE);
                 holder.tvOutTime.setText(checkInOutModelList.get(position).getCheckOutTime());
             }
         } else {
-            holder.tagOutTime.setVisibility(View.GONE);
-            holder.tvOutTime.setVisibility(View.GONE);
+            holder.tagOutTime.setVisibility(View.INVISIBLE);
+            holder.tvOutTime.setVisibility(View.INVISIBLE);
         }
     }
 

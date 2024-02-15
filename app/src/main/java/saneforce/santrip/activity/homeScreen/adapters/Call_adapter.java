@@ -1,8 +1,6 @@
 package saneforce.santrip.activity.homeScreen.adapters;
 
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SampleValidation;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.isFromActivity;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
@@ -20,15 +18,12 @@ import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SubDi
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.TodayPlanSfCode;
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.binding;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -38,24 +33,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -65,14 +54,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
-import saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
-import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.santrip.activity.map.custSelection.CustList;
-import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -80,7 +65,6 @@ import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
-import saneforce.santrip.utility.NetworkStatusTask;
 
 
 public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataViewholider> {
@@ -99,8 +83,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         sqLite = new SQLite(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
         dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
-        View view = LayoutInflater.from(context).inflate(
-                R.layout.remove_border_progress, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.remove_border_progress, null);
         dialogTransparent.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialogTransparent.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialogTransparent.setContentView(view);
@@ -136,75 +119,46 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             holder.imageView.setImageResource(R.drawable.tp_hospital_icon);
         }
 
-        holder.menu.setOnClickListener((View.OnClickListener) v -> {
+        holder.menu.setOnClickListener(v -> {
             if (UtilityClass.isNetworkAvailable(context)) {
                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
                 final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-                popup.inflate(R.menu.call_menu);
+                popup.inflate(R.menu.call_online_menu);
                 popup.setOnMenuItemClickListener(menuItem -> {
-                        if (menuItem.getItemId() == R.id.menuEdit) {
-                            CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
-                        } else if (menuItem.getItemId() == R.id.menuDelete) {
-                            try {
-                                dialogTransparent.show();
-                                CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
+                    if (menuItem.getItemId() == R.id.menuEdit) {
+                        CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
+                    } else if (menuItem.getItemId() == R.id.menuDelete) {
+                        try {
+                            dialogTransparent.show();
+                            CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
 
-                                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
-                                        jsonArray.remove(i);
-                                        break;
-                                    }
+                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                    jsonArray.remove(i);
+                                    break;
                                 }
-
-                                sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
-                                sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
-
-                                switch (callslist.getDocNameID()) {
-                                    case "1":
-                                        int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
-                                        callAnalysisBinding.txtDocCount.setText(String.format("%d / %d", doc_current_callcount, Doctor_list.length()));
-                                        break;
-                                    case "2":
-                                        int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
-                                        callAnalysisBinding.txtCheCount.setText(String.format("%d / %d", che_current_callcount, Chemist_list.length()));
-                                        break;
-                                    case "3":
-                                        int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
-                                        callAnalysisBinding.txtStockCount.setText(String.format("%d / %d", stockiest_current_callcount, Stockiest_list.length()));
-                                        break;
-                                    case "4":
-                                        int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
-                                        callAnalysisBinding.txtUnlistCount.setText(String.format("%d / %d", unlistered_current_callcount, unlistered_list.length()));
-                                        break;
-                                    case "5":
-                                        int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
-                                        callAnalysisBinding.txtCipCount.setText(String.format("%d / %d", cip_current_callcount, cip_list.length()));
-                                        break;
-                                    case "6":
-                                        int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
-                                        callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
-                                        break;
-                                }
-
-
-                                // CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
-                                new CountDownTimer(300, 300) {
-                                    public void onTick(long millisUntilFinished) {
-                                    }
-
-                                    public void onFinish() {
-                                        removeAt(holder.getAbsoluteAdapterPosition());
-                                        dialogTransparent.dismiss();
-                                    }
-                                }.start();
-
-                            } catch (Exception e) {
-                                Log.v("sdsd", e.toString());
-                                dialogTransparent.dismiss();
                             }
+
+                            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+                            sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
+                            AssignCallAnalysis(SfType, callslist.getDocNameID());
+                            new CountDownTimer(250, 250) {
+                                public void onTick(long millisUntilFinished) {
+                                }
+
+                                public void onFinish() {
+                                    removeAt(holder.getAbsoluteAdapterPosition());
+                                    dialogTransparent.dismiss();
+                                }
+                            }.start();
+
+                        } catch (Exception e) {
+                            Log.v("DeleteCall", "---" + e);
+                            dialogTransparent.dismiss();
                         }
+                    }
                     return true;
                 });
                 popup.show();
@@ -212,6 +166,60 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
             }
         });
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void AssignCallAnalysis(String sfType, String docNameID) {
+        switch (docNameID) {
+            case "1":
+                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("1"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", doc_current_callcount, Doctor_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(doc_current_callcount);
+                }
+                break;
+            case "2":
+                String che_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("2"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", che_current_callcount, Chemist_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(che_current_callcount);
+                }
+                break;
+            case "3":
+                String stockiest_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("3"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtStockCount.setText(String.format("%s / %d", stockiest_current_callcount, Stockiest_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(stockiest_current_callcount);
+                }
+                break;
+            case "4":
+                String unlistered_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("4"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtUnlistCount.setText(String.format("%s / %d", unlistered_current_callcount, unlistered_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(unlistered_current_callcount);
+                }
+                break;
+            case "5":
+                String cip_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("5"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtCipCount.setText(String.format("%s / %d", cip_current_callcount, cip_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(cip_current_callcount);
+                }
+                break;
+            case "6":
+                String hos_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("6"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtHosCount.setText(String.format("%s / %d", hos_current_callcount, hos_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(hos_current_callcount);
+                }
+                break;
+        }
     }
 
     private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode) {
@@ -238,7 +246,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "delete/dcr");
-        Call<ResponseBody> deleteCall = apiInterface.getResponseBody(SharedPref.getCallApiUrl(context), mapString,jsonObject.toString());
+        Call<ResponseBody> deleteCall = apiInterface.getResponseBody(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
         deleteCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
@@ -310,7 +318,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "edit/dcr");
-        Call<JsonElement> getEditCallDetails = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonObject.toString());
+        Call<JsonElement> getEditCallDetails = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
 /*        Call<JsonObject> getEditCallDetails = null;
         getEditCallDetails = apiInterface.getEditCallDetails(jsonObject.toString());*/
 
@@ -325,7 +333,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         CallActivityCustDetails = new ArrayList<>();
-                        CallActivityCustDetails.add(0, new CustList(docName, docCode, type, transSlno, aDetSLNo,"", jsonObject.toString()));
+                        CallActivityCustDetails.add(0, new CustList(docName, docCode, type, transSlno, aDetSLNo, "", jsonObject.toString()));
                         intent.putExtra("isDetailedRequired", "false");
                         intent.putExtra("from_activity", "edit_online");
                         context.startActivity(intent);

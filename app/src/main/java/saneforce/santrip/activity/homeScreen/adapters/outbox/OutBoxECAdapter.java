@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.homeScreen.adapters;
+package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
@@ -10,20 +10,19 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
-import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.storage.SQLite;
 
 public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHolder> {
@@ -43,8 +41,9 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     SQLite sqLite;
     Activity activity;
 
-    public OutBoxECAdapter(Activity activity,Context context, ArrayList<EcModelClass> ecModelClasses) {
-     this.activity = activity;
+
+    public OutBoxECAdapter(Activity activity, Context context, ArrayList<EcModelClass> ecModelClasses) {
+        this.activity = activity;
         this.context = context;
         this.ecModelClasses = ecModelClasses;
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -60,8 +59,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull OutBoxECAdapter.ViewHolder holder, int position) {
-        Log.v("outBoxCall", "---" + ecModelClasses.get(position).getName());
-        holder.tvImageName.setText(ecModelClasses.get(position).getName());
+        holder.tvImageName.setText(ecModelClasses.get(position).getImg_name());
+        holder.tvStatus.setText(ecModelClasses.get(position).getSync_status());
 
         File imgFile = new File(ecModelClasses.get(position).getFilePath());
         if (imgFile.exists()) {
@@ -75,18 +74,33 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             showImage(myBitmap);
         });
 
-        holder.imgDel.setOnClickListener(v -> {
-            File fileDelete = new File(ecModelClasses.get(position).getFilePath());
-            if (fileDelete.exists()) {
-                if (fileDelete.delete()) {
-                    System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
-                } else {
-                    System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+
+        holder.tvMenu.setOnClickListener(v -> {
+            Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+            final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
+            popup.inflate(R.menu.ec_call_menu);
+            popup.setOnMenuItemClickListener(menuItem -> {
+                if (menuItem.getItemId() == R.id.menuSync) {
+                    CallImageApi();
+                } else if (menuItem.getItemId() == R.id.menuDelete) {
+                    File fileDelete = new File(ecModelClasses.get(position).getFilePath());
+                    if (fileDelete.exists()) {
+                        if (fileDelete.delete()) {
+                            System.out.println("file Deleted :" + ecModelClasses.get(position).getFilePath());
+                        } else {
+                            System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
+                        }
+                    }
+                    sqLite.deleteOfflineEC(ecModelClasses.get(position).getId());
+                    removeAt(position);
                 }
-            }
-            sqLite.deleteOfflineEC(ecModelClasses.get(position).getId());
-            removeAt(position);
+                return true;
+            });
+            popup.show();
         });
+    }
+
+    private void CallImageApi() {
     }
 
     @Override
@@ -99,7 +113,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         ecModelClasses.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, ecModelClasses.size());
-        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity,context, listDates);
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         outBoxHeaderAdapter.notifyDataSetChanged();
@@ -119,14 +133,15 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvImageName;
-        ImageView imgView, imgDel;
+        TextView tvImageName, tvStatus, tvMenu;
+        ImageView imgView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvImageName = itemView.findViewById(R.id.tvImageName);
             imgView = itemView.findViewById(R.id.img_view);
-            imgDel = itemView.findViewById(R.id.img_del);
+            tvMenu = itemView.findViewById(R.id.optionView);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
         }
     }
 }

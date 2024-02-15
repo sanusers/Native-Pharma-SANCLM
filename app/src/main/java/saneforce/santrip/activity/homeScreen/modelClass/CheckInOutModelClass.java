@@ -1,20 +1,32 @@
 package saneforce.santrip.activity.homeScreen.modelClass;
 
 public class CheckInOutModelClass {
+    private final String id;
     private String dates;
     private String CheckInTime;
     private String CheckOutTime;
     private String jsonInValues;
     private String jsonOutValues;
     private String CheckCount;
+    private int CheckStatus;
 
-    public CheckInOutModelClass(String dates, String checkInTime, String checkOutTime, String jsonInValues, String jsonOutValues, String checkCount) {
+    public CheckInOutModelClass(String id, String dates, String checkInTime, String checkOutTime, String jsonInValues, String jsonOutValues, String checkCount, int checkStatus) {
+        this.id = id;
         this.dates = dates;
         CheckInTime = checkInTime;
         CheckOutTime = checkOutTime;
         this.jsonInValues = jsonInValues;
         this.jsonOutValues = jsonOutValues;
         this.CheckCount = checkCount;
+        this.CheckStatus = checkStatus;
+    }
+
+    public int getCheckStatus() {
+        return CheckStatus;
+    }
+
+    public void setCheckStatus(int checkStatus) {
+        CheckStatus = checkStatus;
     }
 
     public String getCheckCount() {
@@ -23,6 +35,10 @@ public class CheckInOutModelClass {
 
     public void setCheckCount(String checkCount) {
         CheckCount = checkCount;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getJsonInValues() {

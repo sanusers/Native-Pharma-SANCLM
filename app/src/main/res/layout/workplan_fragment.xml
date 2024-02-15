@@ -390,11 +390,13 @@
                                 android:fontFamily="@font/satoshi_medium"
                                 android:hint="Select Work Type"
                                 android:padding="@dimen/_4sdp"
+                                android:layout_toStartOf="@id/img_arrow_1"
                                 android:textColor="@color/text_dark"
                                 android:textColorHint="@color/text_dark"
                                 android:textSize="@dimen/_7sdp" />
 
                             <ImageView
+                                android:id="@+id/img_arrow_1"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_alignParentRight="true"
@@ -435,11 +437,13 @@
                                 android:fontFamily="@font/satoshi_medium"
                                 android:hint="Select Head Quarters"
                                 android:padding="@dimen/_4sdp"
+                                android:layout_toStartOf="@id/img_arrow_2"
                                 android:textColor="@color/text_dark"
                                 android:textColorHint="@color/text_dark"
                                 android:textSize="@dimen/_7sdp" />
 
                             <ImageView
+                                android:id="@+id/img_arrow_2"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_alignParentRight="true"
@@ -471,11 +475,12 @@
                                 android:padding="@dimen/_4sdp"
                                 android:text=""
                                 android:textColor="@color/text_dark"
-
+                                android:layout_toStartOf="@id/img_arrow_3"
                                 android:textColorHint="@color/text_dark"
                                 android:textSize="@dimen/_7sdp" />
 
                             <ImageView
+                                android:id="@+id/img_arrow_3"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_alignParentRight="true"

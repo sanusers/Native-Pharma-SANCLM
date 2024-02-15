@@ -1,26 +1,57 @@
 package saneforce.santrip.activity.homeScreen.modelClass;
 
 public class EcModelClass {
+    private String cusCode;
+    private String cusName;
+    private String sync_status;
+    private int synced;
     private String dates;
     private String id;
-    private String name;
+    private String img_name;
     private String filePath;
     private String json_values;
-
-    public EcModelClass(String id, String dates, String name, String filePath, String json_values) {
+    public EcModelClass(String id, String dates, String cusCode, String cusName, String img_name, String filePath, String json_values, String sync_status, int synced) {
         this.id = id;
         this.dates = dates;
-        this.name = name;
+        this.img_name = img_name;
+        this.cusCode = cusCode;
+        this.cusName = cusName;
         this.filePath = filePath;
         this.json_values = json_values;
+        this.sync_status = sync_status;
+        this.synced = synced;
     }
 
-    public String getId() {
-        return id;
+    public String getCusCode() {
+        return cusCode;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCusCode(String cusCode) {
+        this.cusCode = cusCode;
+    }
+
+    public String getCusName() {
+        return cusName;
+    }
+
+    public void setCusName(String cusName) {
+        this.cusName = cusName;
+    }
+
+    public String getSync_status() {
+        return sync_status;
+    }
+
+    public void setSync_status(String sync_status) {
+        this.sync_status = sync_status;
+    }
+
+    public int getSynced() {
+        return synced;
+    }
+
+    public void setSynced(int synced) {
+        this.synced = synced;
     }
 
     public String getDates() {
@@ -31,12 +62,20 @@ public class EcModelClass {
         this.dates = dates;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getImg_name() {
+        return img_name;
+    }
+
+    public void setImg_name(String img_name) {
+        this.img_name = img_name;
     }
 
     public String getFilePath() {
@@ -54,4 +93,5 @@ public class EcModelClass {
     public void setJson_values(String json_values) {
         this.json_values = json_values;
     }
+
 }

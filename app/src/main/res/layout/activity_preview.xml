@@ -58,7 +58,6 @@
         android:layout_marginStart="@dimen/_6sdp"
         android:layout_marginTop="@dimen/_6sdp"
         android:background="@color/bg_grey"
-        android:maxWidth="@dimen/_120sdp"
         app:layout_constraintBottom_toTopOf="@id/view_dummy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

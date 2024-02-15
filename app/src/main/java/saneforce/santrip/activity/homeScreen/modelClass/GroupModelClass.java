@@ -6,6 +6,15 @@ import java.util.List;
 public class GroupModelClass {
     private String groupName;
     private boolean isExpanded;
+    private int synced;
+
+    public int getSynced() {
+        return synced;
+    }
+
+    public void setSynced(int synced) {
+        this.synced = synced;
+    }
 
     public boolean isExpanded() {
         return isExpanded;
@@ -39,10 +48,11 @@ public class GroupModelClass {
 
 
 
-    public GroupModelClass(String groupName, ArrayList<ChildListModelClass> childItems, boolean isExpanded) {
+    public GroupModelClass(String groupName, ArrayList<ChildListModelClass> childItems, boolean isExpanded,int synced) {
         this.groupName = groupName;
         this.childItems = childItems;
         this.isExpanded = isExpanded;
+        this.synced = synced;
     }
 
     public GroupModelClass() {

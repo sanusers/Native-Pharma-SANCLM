@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.homeScreen.adapters;
+package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.InputValidation;
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.SampleValidation;
@@ -10,11 +10,13 @@ import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragmen
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.cip_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.hos_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.unlistered_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SfType;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -30,22 +32,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonElement;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
-import saneforce.santrip.activity.homeScreen.call.adapter.product.CheckProductListAdapter;
-import saneforce.santrip.activity.homeScreen.call.fragments.DetailedFragment;
-import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
-import saneforce.santrip.activity.homeScreen.call.pojo.product.SaveCallProductList;
+import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
+import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.storage.SharedPref;
 
 public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.ViewHolder> {
     Context context;
@@ -54,13 +64,15 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
+    ApiInterface apiInterface;
+    ProgressDialog progressDialog;
 
-
-    public OutBoxCallAdapter(Activity activity,Context context, ArrayList<OutBoxCallList> outBoxCallLists) {
+    public OutBoxCallAdapter(Activity activity, Context context, ArrayList<OutBoxCallList> outBoxCallLists, ApiInterface apiInterface) {
         this.context = context;
         this.activity = activity;
         this.outBoxCallLists = outBoxCallLists;
         sqLite = new SQLite(context);
+        this.apiInterface = apiInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
@@ -71,6 +83,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         return new OutBoxCallAdapter.ViewHolder(view);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull OutBoxCallAdapter.ViewHolder holder, int position) {
 
@@ -96,14 +109,26 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         }
 
         holder.tvInOut.setText(String.format("IN - %s OUT - %s", outBoxCallLists.get(position).getIn(), outBoxCallLists.get(position).getOut()));
-        holder.tvStatus.setText(outBoxCallLists.get(position).getStatus());
+        String status = outBoxCallLists.get(position).getStatus();
+        if (status.equalsIgnoreCase(Constants.WAITING_FOR_SYNC)) {
+            holder.tvStatus.setText(context.getString(R.string.waiting_for_sync));
+        } else if (status.equalsIgnoreCase(Constants.CALL_FAILED)) {
+            holder.tvStatus.setText(context.getString(R.string.call_failed));
+        } else if (status.equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
+            holder.tvStatus.setText(context.getString(R.string.duplicate_call));
+        } else if (status.equalsIgnoreCase(Constants.EXCEPTION_ERROR)) {
+            holder.tvStatus.setText(context.getString(R.string.exception_error));
+        }
 
         holder.tvMenu.setOnClickListener(v -> {
             Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
             popup.inflate(R.menu.call_menu);
             popup.setOnMenuItemClickListener(menuItem -> {
-                if (menuItem.getItemId() == R.id.menuEdit) {
+                if (menuItem.getItemId() == R.id.menuSync) {
+                    OutBoxCallList outBoxCallList = outBoxCallLists.get(position);
+                    CallAPI(holder.getAbsoluteAdapterPosition(), outBoxCallList, outBoxCallLists.get(position).getJsonData(), outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getSyncCount());
+                } else if (menuItem.getItemId() == R.id.menuEdit) {
                     Intent intent = new Intent(context, DCRCallActivity.class);
 
                     CallActivityCustDetails = new ArrayList<>();
@@ -134,8 +159,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     UpdateInputSample(outBoxCallLists.get(position).getJsonData());
                     sqLite.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                     try {
-                        if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase("Duplicate Call")) {
-                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                        if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
+                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
@@ -143,39 +168,25 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                     break;
                                 }
                             }
-                            sqLite.saveMasterSyncData(Constants.DCR, jsonArray.toString(), 0);
+                            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
                             sqLite.deleteLineChart(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getDates());
-
-                            switch (outBoxCallLists.get(position).getCusType()) {
-                                case "1":
-                                    int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
-                                    callAnalysisBinding.txtDocCount.setText(String.format("%d / %d", doc_current_callcount, Doctor_list.length()));
-                                    break;
-                                case "2":
-                                    int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
-                                    callAnalysisBinding.txtCheCount.setText(String.format("%d / %d", che_current_callcount, Chemist_list.length()));
-                                    break;
-                                case "3":
-                                    int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
-                                    callAnalysisBinding.txtStockCount.setText(String.format("%d / %d", stockiest_current_callcount, Stockiest_list.length()));
-                                    break;
-                                case "4":
-                                    int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
-                                    callAnalysisBinding.txtUnlistCount.setText(String.format("%d / %d", unlistered_current_callcount, unlistered_list.length()));
-                                    break;
-                                case "5":
-                                    int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
-                                    callAnalysisBinding.txtCipCount.setText(String.format("%d / %d", cip_current_callcount, cip_list.length()));
-                                    break;
-                                case "6":
-                                    int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
-                                    callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
-                                    break;
-                            }
+                            AssignCallAnalysis(SfType, outBoxCallLists.get(position).getCusType());
                         }
-                        // CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
                     } catch (Exception ignored) {
 
+                    }
+                    if (sqLite.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
+                        for (int i = 0; i < listDates.size(); i++) {
+                            if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
+                                for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
+                                    EcModelClass ecModelClass = listDates.get(i).getChildItems().get(3).getEcModelClasses().get(j);
+                                    if (ecModelClass.getDates().equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && ecModelClass.getCusCode().equalsIgnoreCase(outBoxCallLists.get(position).getCusCode()) && ecModelClass.getCusName().equalsIgnoreCase(outBoxCallLists.get(position).getCusName())) {
+                                        listDates.get(i).getChildItems().get(3).getEcModelClasses().remove(j);
+                                        j--;
+                                    }
+                                }
+                            }
+                        }
                     }
                     removeAt(position);
                 }
@@ -184,6 +195,113 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             popup.show();
         });
 
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void AssignCallAnalysis(String sfType, String docNameID) {
+        switch (docNameID) {
+            case "1":
+                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("1"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", doc_current_callcount, Doctor_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(doc_current_callcount);
+                }
+                break;
+            case "2":
+                String che_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("2"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", che_current_callcount, Chemist_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(che_current_callcount);
+                }
+                break;
+            case "3":
+                String stockiest_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("3"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtStockCount.setText(String.format("%s / %d", stockiest_current_callcount, Stockiest_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(stockiest_current_callcount);
+                }
+                break;
+            case "4":
+                String unlistered_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("4"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtUnlistCount.setText(String.format("%s / %d", unlistered_current_callcount, unlistered_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(unlistered_current_callcount);
+                }
+                break;
+            case "5":
+                String cip_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("5"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtCipCount.setText(String.format("%s / %d", cip_current_callcount, cip_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(cip_current_callcount);
+                }
+                break;
+            case "6":
+                String hos_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("6"));
+                if (sfType.equalsIgnoreCase("1")) {
+                    callAnalysisBinding.txtHosCount.setText(String.format("%s / %d", hos_current_callcount, hos_list.length()));
+                } else {
+                    callAnalysisBinding.txtDocCount.setText(hos_current_callcount);
+                }
+                break;
+        }
+    }
+
+    private void CallAPI(int pos, OutBoxCallList outBoxCallList, String jsonData, String cusCode, String cusName, String date, int syncCount) {
+        JSONObject jsonSaveDcr;
+        try {
+            progressDialog = CommonUtilsMethods.createProgressDialog(context);
+            jsonSaveDcr = new JSONObject(jsonData);
+            Map<String, String> mapString = new HashMap<>();
+            mapString.put("axn", "save/dcr");
+            Call<JsonElement> callSaveDcr = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonSaveDcr.toString());
+
+            callSaveDcr.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
+                            if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
+                                sqLite.deleteOfflineCalls(cusCode, cusName, date);
+                                removeAt(pos);
+                                CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+                                commonUtilsMethods.ShowToast(context, context.getString(R.string.call_saved_successfully), 100);
+                            } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
+                                sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
+                                outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
+                                outBoxCallList.setSyncCount(5);
+                                commonUtilsMethods.ShowToast(context, context.getString(R.string.call_already_exist), 100);
+                            }
+                            progressDialog.dismiss();
+                        } catch (Exception e) {
+                            sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.EXCEPTION_ERROR, 0);
+                            outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
+                            outBoxCallList.setSyncCount(5);
+                            Log.v("SendOutboxCall", "---" + e);
+                            progressDialog.dismiss();
+                        }
+                    }
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(syncCount + 1), Constants.CALL_FAILED, 1);
+                    outBoxCallList.setStatus(Constants.CALL_FAILED);
+                    outBoxCallList.setSyncCount(syncCount + 1);
+                    commonUtilsMethods.ShowToast(context, context.getString(R.string.call_failed), 100);
+                    progressDialog.dismiss();
+                }
+            });
+
+        } catch (JSONException e) {
+            progressDialog.dismiss();
+        }
     }
 
 
@@ -259,7 +377,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         outBoxCallLists.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, outBoxCallLists.size());
-        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity,context, listDates);
+        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
         outBoxHeaderAdapter.notifyDataSetChanged();

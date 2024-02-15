@@ -31,9 +31,11 @@ public class Constants {
 
     //DCR
     public static final String DCR = "DCR";
+    public static final String CALL_SYNC = "Call Sync";
     public static final String MY_DAY_PLAN = "MyDay Plan";
     public static final String VISIT_CONTROL = "Visit Control";
     public static final String MISSED_DATE = "Missed Date";
+    public static final String DATE_SYNC = "Date Sync";
     public static final String STOCK_BALANCE_MASTER = "Stock_Balance_Master";
     public static final String STOCK_BALANCE = "Stock Balance";
     public static final String INPUT_BALANCE = "Input Balance";
@@ -80,7 +82,7 @@ public class Constants {
     //-------------------------------------------------------------
 
     //Tour Plan
-    public static final String  STATUS_0 = "planning...";
+    public static final String STATUS_0 = "planning...";
     public static final String STATUS_1 = "Planning completed/Waiting for approval";
     public static final String STATUS_2 = "TP rejected";
     public static final String STATUS_3 = "TP approved";
@@ -93,5 +95,11 @@ public class Constants {
     public static final String NOT_CONNECT = "NOT_CONNECT";
     public final static String CONNECTIVITY_ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
 
+    //CALL
+
+    public static final String WAITING_FOR_SYNC = "Waiting for Sync";
+    public static final String DUPLICATE_CALL = "Duplicate Call";
+    public static final String CALL_FAILED = "Call Failed";
+    public static final String EXCEPTION_ERROR = "Exception Error";
 
 }

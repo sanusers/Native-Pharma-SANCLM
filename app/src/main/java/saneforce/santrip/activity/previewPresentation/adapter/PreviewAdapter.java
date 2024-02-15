@@ -1,6 +1,5 @@
 package saneforce.santrip.activity.previewPresentation.adapter;
 
-import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.BottomLayoutHeadAdapter.SelectedPosPlay;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.from_where;
 
 import android.content.Context;

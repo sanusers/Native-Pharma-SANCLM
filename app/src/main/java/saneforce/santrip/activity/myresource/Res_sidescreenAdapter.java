@@ -110,7 +110,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 if (split_val.equals("2")) {
                     holder.Res_rx.setText(app_adapt.getRes_rx());
                 } else {
-                    holder.Res_rx.setText("-");
+                    holder.Res_rx.setText("");
                 }
             } else {
                 holder.Res_rx.setText("");
@@ -122,7 +122,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 if (split_val.equals("1") || split_val.equals("2")) {
                     holder.Res_Edit.setVisibility(View.GONE);
                     holder.Res_View.setVisibility(View.GONE);
-
                     holder.Res_Table2.setVisibility(View.GONE);
                 }
 

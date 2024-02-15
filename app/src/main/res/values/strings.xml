@@ -215,7 +215,7 @@
     <string name="report">Report</string>
     <string name="analysis">Analysis</string>
     <string name="home">Home</string>
-    <string name="refresh">Refresh</string>
+    <string name="refresh">Refresh Location</string>
     <string name="tour_plan">Tour Plan</string>
     <string name="leave_application">Leave Application</string>
     <string name="reports">Reports</string>
@@ -248,13 +248,15 @@
     <string name="already_visited">Already Visited Today</string>
     <string name="rejected_successfully">Rejected Successfully</string>
     <string name="approved_successfully">Approved Successfully</string>
+    <string name="updated_successfully">Updated Successfully</string>
+    <string name="update">Update</string>
     <string name="send_approved_successfully">Successfully Send Approval</string>
     <string name="failed_to_send_approval">Failed to send Approval</string>
     <string name="no_data_found">No Data Found</string>
     <string name="do_master_sync">Kindly do MasterSync</string>
     <string name="something_wrong">Something Wrong! Try Again</string>
     <string name="response_failed_please_sync">Response Failed! Please Sync Again to retrieve Data</string>
-    <string name="no_network">No Network Available!</string>
+    <string name="no_network">Check your Internet Connection</string>
     <string name="no_slides">No slides!</string>
     <string name="processing">Processing</string>
     <string name="scribble_upload">Scribble Upload Successfully</string>
@@ -272,6 +274,8 @@
     <string name="prd_comp_available">This Product &amp; Company Already Available!</string>
     <string name="already_sel_prd">Already Selected this Product!</string>
     <string name="call_saved_locally">No Network Available, Call Saved Locally</string>
+    <string name="average">Average</string>
+    <string name="calls">Calls</string>
     <string name="enter_the">Enter the </string>
     <string name="select_the">Select the </string>
     <string name="add_rcpa_values">Add RCPA Values</string>
@@ -283,14 +287,18 @@
     <string name="call_saved_successfully">Call Saved Successfully</string>
     <string name="call_already_exist">Call Already Exist</string>
     <string name="call_failed">Call Failed! Try Again</string>
+    <string name="call_fail">Call Failed</string>
+    <string name="duplicate_call">Duplicate Call</string>
+    <string name="waiting_for_sync">Waiting for Sync</string>
+    <string name="exception_error">Exception Error</string>
     <string name="call_failed_saved_locally">Call Failed! Saved Locally</string>
     <string name="call_saved_something_wrong">Call Saved! Something Wrong</string>
     <string name="save_todaywork_plan">Save TodayWorkPlan</string>
     <string name="submit_mydayplan">Kindly submit My DayPlan</string>
     <string name="submit_checkin">Kindly CheckIn</string>
-    <string name="enter_old_pwd">Enter your old password</string>
-    <string name="enter_new_pwd">Enter your new password</string>
-    <string name="enter_repeat_pwd">Enter your repeat password</string>
+    <string name="enter_old_pwd">Enter old password</string>
+    <string name="enter_new_pwd">Enter new password</string>
+    <string name="enter_repeat_pwd">Enter repeat password</string>
     <string name="chk_old_pwd">Old password is wrong! Enter again</string>
     <string name="pwd_not_match">Password mismatch</string>
     <string name="pwd_changed_successfully">Password changed successfully</string>
@@ -298,7 +306,8 @@
     <string name="not_able_to_find_address">Not able to find address! Kindly try again</string>
     <string name="save_settings_con_screen">Kindly Save Settings in Configuration Screen</string>
     <string name="enter_username">Enter your username</string>
-    <string name="enter_password">Enter your password</string>
+    <string name="enter_userid">Enter User Id</string>
+    <string name="enter_password">Enter password</string>
     <string name="enter_url">Enter the URL</string>
     <string name="enter_license">Enter the License Key</string>
     <string name="invalid_url">Invalid Url! Try again</string>
@@ -313,7 +322,8 @@
     <string name="confirm_check_in">Confirm Check IN?</string>
     <string name="hi">Hi, </string>
     <string name="toast_leave_posted">Leave Posted Today</string>
-    <string name="contact_admin">Kindly Contact Admin to Check IN</string>
+    <string name="contact_admin_in">Kindly Contact Admin to Check IN</string>
+    <string name="contact_admin_out">Kindly Contact Admin to Check OUT</string>
     <string name="latitude_longitude"><![CDATA[Latitude & Longitude]]></string>
     <string name="speciality_selection">Speciality Selection</string>
     <string name="change_password">Change Password</string>
@@ -323,7 +333,7 @@
     <string name="az">AZ</string>
     <string name="za">ZA</string>
     <string name="san_media_pvt_ltd">SAN Media Pvt Ltd</string>
-    <string name="not_chose_after_date">you don\'t have permission to choose this date</string>
+    <string name="not_chose_after_date">Not possible to choose this date</string>
     <string name="old_password">Old Password</string>
     <string name="enter_old_password">Enter Old Password</string>
     <string name="new_password">New Password</string>
@@ -334,6 +344,7 @@
     <string name="select_a_language">Select a language</string>
     <string name="user_id">User ID</string>
     <string name="enter_user_id">Enter User ID</string>
+    <string name="mismatch">User Id or Password Mismatch</string>
     <string name="password">Password</string>
     <string name="enterpassword">Enter Password</string>
     <string name="english">English</string>
@@ -343,4 +354,13 @@
     <string name="remainder_call_for_doctor">Remainder Call for Doctor</string>
     <string name="hq_selection">HQ Selection</string>
     <string name="listed_doctor_selection">Listed Doctor Selection</string>
+    <string name="field_work">Field work</string>
+    <string name="non_field_work">Non-Field work</string>
+    <string name="leave">Leave</string>
+    <string name="missed_released">Missed Released</string>
+    <string name="re_entry">Re Entry</string>
+    <string name="holiday">Holiday</string>
+    <string name="weekly_off">Weekly off</string>
+    <string name="leave_approve_pending">Leave Approve Pending</string>
+    <string name="tp_deviation_released">TP Deviation Released</string>
 </resources>
