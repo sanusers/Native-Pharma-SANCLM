@@ -1,6 +1,13 @@
 package saneforce.santrip.activity.homeScreen;
 
+import static android.Manifest.permission.READ_MEDIA_AUDIO;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
+import static saneforce.santrip.commonClasses.Constants.APP_MODE;
+import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
+import static saneforce.santrip.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -149,7 +156,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        Log.v("AAAAAA","PostCreate");
+        Log.v("AAAAAA", "PostCreate");
     }
 
 
@@ -159,7 +166,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onResume();
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-        Log.v("AAAAAA","PostCreate");
+        Log.v("AAAAAA", "PostCreate");
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
@@ -404,7 +411,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (QuizNeed.equalsIgnoreCase("0"))
             arrayNav.add(new ModelNavDrawer(R.drawable.quiz, getString(R.string.quiz)));
-        arrayNav.add(new ModelNavDrawer(R.drawable.survey, getString(R.string.survey)));
+        if (SurveyNeed.equalsIgnoreCase("0"))
+            arrayNav.add(new ModelNavDrawer(R.drawable.survey, getString(R.string.survey)));
         arrayNav.add(new ModelNavDrawer(R.drawable.form, getString(R.string.forms)));
 
         if (ReminderCallNeed.equalsIgnoreCase("0"))
@@ -545,9 +553,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         tvLong.setText(String.valueOf(longitude));
         tvAddress.setText(address);
 
-        btnClose.setOnClickListener(v -> {
-            dialogAfterCheckIn.dismiss();
-        });
+        btnClose.setOnClickListener(v -> dialogAfterCheckIn.dismiss());
 
         dialogAfterCheckIn.show();
     }
@@ -603,7 +609,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.llPresentation.setVisibility(View.GONE);
                 binding.llSlide.setVisibility(View.GONE);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -652,7 +658,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -1069,7 +1075,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             startActivity(new Intent(HomeDashBoard.this, TourPlanActivity.class));
             return true;
         }
-        if (id == R.id.nav_quiz) {
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.quiz))) {
             startActivity(new Intent(HomeDashBoard.this, QuizActivity.class));
             return true;
         }

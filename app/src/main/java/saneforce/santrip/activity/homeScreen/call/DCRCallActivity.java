@@ -464,7 +464,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (RCPANeed.equalsIgnoreCase("0") && RcpaMandatory.equalsIgnoreCase("0")) {
+                    if (RCPANeed.equalsIgnoreCase("1") && RcpaMandatory.equalsIgnoreCase("0")) {
                         if (RCPASelectCompSide.rcpaAddedProdListArrayList.size() == 0) {
                             commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.add_rcpa_values), 100);
                             return false;

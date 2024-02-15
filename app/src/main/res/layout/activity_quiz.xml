@@ -86,7 +86,6 @@
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:padding="@dimen/_2sdp"
-                    android:text="Question : 2"
                     android:textColor="@color/black_45"
                     android:textSize="@dimen/_8sdp"
                     android:textStyle="bold" />
@@ -100,7 +99,7 @@
                     android:layout_marginStart="@dimen/_5sdp"
                     android:fontFamily="@font/satoshi_medium"
                     android:padding="@dimen/_2sdp"
-                    android:text="of the Following lab values ,which would be true in caseof iron deficiency anemia?"
+
                     android:textColor="@color/black_45"
                     android:textSize="@dimen/_8sdp"
                     android:textStyle="bold" />

@@ -50,11 +50,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:gravity="left"
+                            android:gravity="center"
                             android:padding="@dimen/_2sdp"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_7sdp" />
+                            android:textSize="@dimen/_6sdp" />
 
                         <View
                             android:layout_width="1dp"
@@ -71,7 +71,7 @@
                             android:padding="@dimen/_2sdp"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_7sdp"
+                            android:textSize="@dimen/_6sdp"
                             android:visibility="visible" />
 
                         <View
@@ -89,7 +89,7 @@
                             android:gravity="center"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_7sdp"
+                            android:textSize="@dimen/_6sdp"
                             android:visibility="visible" />
 
                         <View
@@ -106,10 +106,9 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:padding="@dimen/_2sdp"
-
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_7sdp"
+                            android:textSize="@dimen/_6sdp"
                             android:visibility="visible" />
 
                         <View
@@ -128,7 +127,7 @@
                             android:padding="@dimen/_2sdp"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/_7sdp"
+                            android:textSize="@dimen/_6sdp"
                             android:visibility="visible" />
 
                         <View

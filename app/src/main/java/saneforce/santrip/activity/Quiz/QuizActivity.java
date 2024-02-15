@@ -1,36 +1,27 @@
 package saneforce.santrip.activity.Quiz;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
 import saneforce.santrip.databinding.ActivityQuizBinding;
 import saneforce.santrip.storage.SQLite;
 
-public class QuizActivity  extends AppCompatActivity {
+public class QuizActivity extends AppCompatActivity {
     ActivityQuizBinding binding;
     SQLite sqLite;
     JSONArray QuesttionjsonArray, AnswerjsonArray;
@@ -42,13 +33,18 @@ public class QuizActivity  extends AppCompatActivity {
     int QuestionNumber = 0;
 
     QuizQuestionAdapter quizQuestionAdapter;
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityQuizBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
 
         sqLite = new SQLite(this);
         mQuizList.clear();
@@ -64,72 +60,60 @@ public class QuizActivity  extends AppCompatActivity {
                     AnswerjsonArray = new JSONArray(answerText);
                 }
 
+                Map<String, ArrayList<JSONObject>> optionListMap = new HashMap<>();
+                for (int i = 0; i < AnswerjsonArray.length(); i++) {
+                    JSONObject jsonObject = AnswerjsonArray.getJSONObject(i);
+                    String questionId = jsonObject.getString("Question_Id");
 
-
-
-
-            Map<String, ArrayList<JSONObject>> optionListMap = new HashMap<>();
-            for (int i = 0; i < AnswerjsonArray.length(); i++) {
-                JSONObject jsonObject = AnswerjsonArray.getJSONObject(i);
-                String questionId = jsonObject.getString("Question_Id");
-
-                if (optionListMap.containsKey(questionId)) {
-                    optionListMap.get(questionId).add(jsonObject);
-                } else {
-                    ArrayList<JSONObject> newList = new ArrayList<>();
-                    newList.add(jsonObject);
-                    optionListMap.put(questionId, newList);
-                }
-            }
-
-            if (QuesttionjsonArray.length() > 0) {
-                for (int j = 0; j < QuesttionjsonArray.length(); j++) {
-                    String optionname = "", optionCode = "", answercode = "";
-                    JSONObject jsonObject = QuesttionjsonArray.getJSONObject(j);
-                    ArrayList<JSONObject> jsonObject1 = optionListMap.get(jsonObject.getString("Question_Id"));
-                    for (JSONObject obj : jsonObject1) {
-                        optionname = optionname + obj.getString("Input_Text") + ",";
-                        optionCode = optionCode + obj.getString("input_id") + ",";
-                        if (obj.getString("Correct_Ans").equalsIgnoreCase("1")) {
-                            answercode = obj.getString("input_id");
-                        }
+                    if (optionListMap.containsKey(questionId)) {
+                        optionListMap.get(questionId).add(jsonObject);
+                    } else {
+                        ArrayList<JSONObject> newList = new ArrayList<>();
+                        newList.add(jsonObject);
+                        optionListMap.put(questionId, newList);
                     }
-                    mQuizList.add(new QuizModelClass(jsonObject.getString("Question_Text"), jsonObject.getString("Question_Id"), optionname, optionCode, answercode, "", ""));
                 }
 
-            }
-            setQuestion(0);
+                if (QuesttionjsonArray.length() > 0) {
+                    for (int j = 0; j < QuesttionjsonArray.length(); j++) {
+                        String optionname = "", optionCode = "", answercode = "";
+                        JSONObject jsonObject = QuesttionjsonArray.getJSONObject(j);
+                        ArrayList<JSONObject> jsonObject1 = optionListMap.get(jsonObject.getString("Question_Id"));
+                        for (JSONObject obj : jsonObject1) {
+                            optionname = optionname + obj.getString("Input_Text") + ",";
+                            optionCode = optionCode + obj.getString("input_id") + ",";
+                            if (obj.getString("Correct_Ans").equalsIgnoreCase("1")) {
+                                answercode = obj.getString("input_id");
+                            }
+                        }
+                        mQuizList.add(new QuizModelClass(jsonObject.getString("Question_Text"), jsonObject.getString("Question_Id"), optionname, optionCode, answercode, "", ""));
+                    }
+
+                }
+                setQuestion(0);
 
             } else {
                 QuesttionjsonArray = null;
                 AnswerjsonArray = null;
             }
         } catch (Exception a) {
-            throw new RuntimeException();
+            Log.v("error", "----");
 
         }
 
+        binding.backArrow.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        binding.btnpreview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (QuestionNumber != 0) {
-                    QuestionNumber = QuestionNumber - 1;
-
-                    setQuestion(QuestionNumber);
-                }
+        binding.btnpreview.setOnClickListener(view -> {
+            if (QuestionNumber != 0) {
+                QuestionNumber = QuestionNumber - 1;
+                setQuestion(QuestionNumber);
             }
         });
 
-        binding.btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (QuestionNumber < mQuizList.size() - 1) {
-                    QuestionNumber = QuestionNumber + 1;
-                    setQuestion(QuestionNumber);
-
-
-                }
+        binding.btnNext.setOnClickListener(view -> {
+            if (QuestionNumber < mQuizList.size() - 1) {
+                QuestionNumber = QuestionNumber + 1;
+                setQuestion(QuestionNumber);
             }
         });
 
@@ -138,25 +122,25 @@ public class QuizActivity  extends AppCompatActivity {
 
     public void setQuestion(int position) {
         binding.txtQuestonName.setText(mQuizList.get(position).getQuestionName());
-        binding.txtQuestonNo.setText("Question : " + String.valueOf(position + 1));
+        binding.txtQuestonNo.setText("Question : " + (position + 1));
         String[] optionsplit = mQuizList.get(position).getOption().split(",");
         String[] optionsplitIds = mQuizList.get(position).getOptionCode().split(",");
 
         opitonList.clear();
-        String SelctionName="";
+        String SelctionName = "";
 
-        if(sQuizMainAnswerList.size()>0){
-            for(QuizOptionModelClass list :sQuizMainAnswerList ){
-                if(list.getQuestionId()==position){
-                    SelctionName=list.getSelectedOption();
+        if (sQuizMainAnswerList.size() > 0) {
+            for (QuizOptionModelClass list : sQuizMainAnswerList) {
+                if (list.getQuestionId() == position) {
+                    SelctionName = list.getSelectedOption();
                 }
-        }
+            }
         }
         for (String option : optionsplit) {
-            if(!SelctionName.equalsIgnoreCase("")&&SelctionName.equalsIgnoreCase(option)){
-                opitonList.add(new QuizOptionModelClass(true,option));
-            }else {
-                opitonList.add(new QuizOptionModelClass(false,option));
+            if (!SelctionName.equalsIgnoreCase("") && SelctionName.equalsIgnoreCase(option)) {
+                opitonList.add(new QuizOptionModelClass(true, option));
+            } else {
+                opitonList.add(new QuizOptionModelClass(false, option));
             }
 
         }
@@ -166,17 +150,17 @@ public class QuizActivity  extends AppCompatActivity {
 
 
                 for (int j = 0; j < sQuizMainAnswerList.size(); j++) {
-                    if( sQuizMainAnswerList.get(j).getQuestionId()==position){
+                    if (sQuizMainAnswerList.get(j).getQuestionId() == position) {
                         sQuizMainAnswerList.remove(j);
                     }
                 }
-                sQuizMainAnswerList.add(new QuizOptionModelClass(position,optionsplit,optionsplitIds,classGroup.getOptionName(),""));
+                sQuizMainAnswerList.add(new QuizOptionModelClass(position, optionsplit, optionsplitIds, classGroup.getOptionName(), ""));
                 opitonList.clear();
                 for (String option : optionsplit) {
-                    if(!classGroup.getOptionName().equalsIgnoreCase("")&&classGroup.getOptionName().equalsIgnoreCase(option)){
-                        opitonList.add(new QuizOptionModelClass(true,option));
-                    }else {
-                        opitonList.add(new QuizOptionModelClass(false,option));
+                    if (!classGroup.getOptionName().equalsIgnoreCase("") && classGroup.getOptionName().equalsIgnoreCase(option)) {
+                        opitonList.add(new QuizOptionModelClass(true, option));
+                    } else {
+                        opitonList.add(new QuizOptionModelClass(false, option));
                     }
                 }
                 quizQuestionAdapter.notifyDataSetChanged();
@@ -185,7 +169,7 @@ public class QuizActivity  extends AppCompatActivity {
             @Override
             public void classUnselected(QuizOptionModelClass classGroup) {
                 for (int j = 0; j < sQuizMainAnswerList.size(); j++) {
-                    if( sQuizMainAnswerList.get(j).getQuestionId()==position){
+                    if (sQuizMainAnswerList.get(j).getQuestionId() == position) {
                         sQuizMainAnswerList.remove(j);
                     }
                 }
@@ -199,5 +183,12 @@ public class QuizActivity  extends AppCompatActivity {
         binding.skRecylerview.setAdapter(quizCountAapter);
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
 }

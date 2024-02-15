@@ -32,7 +32,7 @@ public class ProductFragment extends Fragment {
     public static FragmentProductsBinding productsBinding;
     public static ArrayList<CallCommonCheckedList> checkedPrdList;
     CheckProductListAdapter checkProductListAdapter;
-  FinalProductCallAdapter finalProductCallAdapter;
+    FinalProductCallAdapter finalProductCallAdapter;
     SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -49,6 +49,7 @@ public class ProductFragment extends Fragment {
         } else {
             productsBinding.tagStock.setVisibility(View.GONE);
         }
+
 
         HiddenVisibleFunction();
         AddProductList();
@@ -83,8 +84,15 @@ public class ProductFragment extends Fragment {
                     productsBinding.tagRxQty.setVisibility(View.VISIBLE);
                 break;
             case "2":
+                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
+                    productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                break;
             case "3":
             case "4":
+            case "5":
+            case "6":
                 if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
                     productsBinding.tagSamples.setVisibility(View.VISIBLE);
                 if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))

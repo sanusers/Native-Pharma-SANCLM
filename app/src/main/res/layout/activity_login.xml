@@ -101,7 +101,7 @@
                         android:layout_gravity="right"
                         android:padding="@dimen/_3sdp"
                         android:gravity="center"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:orientation="horizontal"
                         android:layout_height="wrap_content">
                         <ImageView
@@ -138,7 +138,6 @@
 
 
                     <ImageView
-                        android:layout_marginTop="@dimen/_3sdp"
                         android:id="@+id/logoImg"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_40sdp"

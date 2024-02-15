@@ -77,8 +77,15 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                     holder.ed_rxQty.setVisibility(View.VISIBLE);
                 break;
             case "2":
+                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
+                    holder.ed_samplesQty.setVisibility(View.VISIBLE);
+                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                    holder.ed_rxQty.setVisibility(View.VISIBLE);
+                break;
             case "3":
             case "4":
+            case "5":
+            case "6":
                 if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
                     holder.ed_samplesQty.setVisibility(View.VISIBLE);
                 if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))

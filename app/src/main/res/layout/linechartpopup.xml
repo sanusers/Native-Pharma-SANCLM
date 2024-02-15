@@ -29,9 +29,9 @@
             android:layout_width="@dimen/_15sdp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_totalcalls"
+            android:ellipsize="none"
             android:fontFamily="@font/satoshi_medium"
             android:text="258ddd"
-            android:ellipsize="none"
             android:textColor="@color/white"
             android:textSize="@dimen/_5sdp"
             android:textStyle="bold">
@@ -47,7 +47,7 @@
             android:background="@color/white" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_15sdp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_toRightOf="@id/text_linview"
@@ -72,12 +72,11 @@
     </RelativeLayout>
 
     <ImageView
-        android:layout_width="@dimen/_10sdp"
         android:id="@+id/image_id"
+        android:layout_width="@dimen/_10sdp"
         android:layout_height="@dimen/_30sdp"
         android:layout_below="@+id/rl_popllayout"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/_2sdp"
         android:layout_marginTop="@dimen/_minus15sdp"
-       />
+        android:layout_marginEnd="@dimen/_2sdp" />
 </RelativeLayout>

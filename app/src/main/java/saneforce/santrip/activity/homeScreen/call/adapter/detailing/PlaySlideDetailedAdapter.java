@@ -1,9 +1,5 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.detailing;
 
-import static android.Manifest.permission.READ_MEDIA_AUDIO;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
-import static androidx.core.content.ContextCompat.startActivity;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.arrayStore;
 import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.Designation;
 import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.DivCode;
@@ -12,26 +8,21 @@ import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlayS
 import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.StateCode;
 import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.SubDivisionCode;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
-import static saneforce.santrip.activity.homeScreen.call.fragments.DetailedFragment.callDetailingLists;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -45,7 +36,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -63,10 +53,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -74,7 +62,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.LoadBitmap;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.santrip.activity.presentation.SupportClass;
@@ -87,17 +74,17 @@ import saneforce.santrip.storage.SharedPref;
 
 public class PlaySlideDetailedAdapter extends PagerAdapter {
 
+    public static ArrayList<LoadBitmap> storingSlide = new ArrayList<>();
+    public static int presentSlidePos;
+    public static boolean preVal = false;
     private final Context context;
     private final ArrayList<BrandModelClass.Product> productArrayList;
     ArrayList<StoreImageTypeUrl> slideDescribe = new ArrayList<>();
     ArrayList<StoreImageTypeUrl> slideScribble = new ArrayList<>();
-    public static ArrayList<LoadBitmap> storingSlide = new ArrayList<>();
-    public static int presentSlidePos;
     Object objsd;
     ImageView imageView;
     String startT, endT;
     PlaySlideDetailing act;
-    public static boolean preVal = false;
     String slideUrl1 = null;
     Dialog dialogPopUp;
     ApiInterface apiService;
@@ -276,7 +263,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 assert response.body() != null;
-                Log.v("scribbleUpload", "---res---" + response.body().toString());
+                Log.v("scribbleUpload", "---res---" + response.body());
                 if (response.isSuccessful()) {
                     try {
                         JSONObject jsonImgRes;
@@ -486,7 +473,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     } catch (Exception e) {
                         shareImage(photoFile, fileFormat);
                     }
-                    return;
                 }
             }
         });
@@ -712,7 +698,6 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                 }
                 case "gif": {
                     Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(imageView);
-                    return;
                 }
             }
         }
