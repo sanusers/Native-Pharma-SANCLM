@@ -111,28 +111,27 @@ public class PreCallAnalysisFragment extends Fragment {
 
                                 dataSplite(dcrLastVstDetails.get(0).getProdSamp());
                                 HiddenVisibleFunction();
-/*
-                                if (PrdSamNeed.equalsIgnoreCase("0")) {
-                                    preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
-                                    preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.VISIBLE);
-                                } else {
-                                    preCallAnalysisBinding.sampleCaption.setVisibility(View.GONE);
-                                    preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.GONE);
-                                }
-                                if (PrdRxNeed.equalsIgnoreCase("0")) {
-                                    preCallAnalysisBinding.rxCaption.setVisibility(View.VISIBLE);
-                                    preCallAnalysisBinding.rxCaptionLine.setVisibility(View.VISIBLE);
-                                } else {
-                                    preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
-                                    preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
-                                }
-                                if (RCPANeed.equalsIgnoreCase("1")) {
-                                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
-                                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
-                                } else {
-                                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
-                                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
-                                }*/
+//                                if (PrdSamNeed.equalsIgnoreCase("0")) {
+//                                    preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
+//                                    preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.VISIBLE);
+//                                } else {
+//                                    preCallAnalysisBinding.sampleCaption.setVisibility(View.GONE);
+//                                    preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.GONE);
+//                                }
+//                                if (PrdRxNeed.equalsIgnoreCase("0")) {
+//                                    preCallAnalysisBinding.rxCaption.setVisibility(View.VISIBLE);
+//                                    preCallAnalysisBinding.rxCaptionLine.setVisibility(View.VISIBLE);
+//                                } else {
+//                                    preCallAnalysisBinding.rxCaption.setVisibility(View.GONE);
+//                                    preCallAnalysisBinding.rxCaptionLine.setVisibility(View.GONE);
+//                                }
+//                                if (RCPANeed.equalsIgnoreCase("1")) {
+//                                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.VISIBLE);
+//                                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.VISIBLE);
+//                                } else {
+//                                    preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
+//                                    preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
+//                                }
                                /* prdDetails = dcrLastVstDetails.get(0).getProdSamp().replace("#", " , ");
                                 prdDetails = prdDetails.replace("~", "-");
                                 prdDetails = prdDetails.replace("$", "-");
@@ -207,6 +206,7 @@ public class PreCallAnalysisFragment extends Fragment {
     public static void HiddenVisibleFunction() {
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
+
                 if (PrdSamNeed.equalsIgnoreCase("1")) {
                     preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
                     preCallAnalysisBinding.sampleCaptionLine.setVisibility(View.VISIBLE);
@@ -228,7 +228,7 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
                 }
-
+             break;
             case "2":
                 if (PrdSamNeed.equalsIgnoreCase("1")) {
                     preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
@@ -251,7 +251,7 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
                 }
-
+          break;
             case "3":
             case "4":
             case "5":
@@ -287,7 +287,7 @@ public class PreCallAnalysisFragment extends Fragment {
         commonUtilsMethods.setUpLanguage(requireContext());
         getRequiredData();
         // CallPreCallAPI();
-
+        ProductList.clear();
         adapter = new PreCallAnalysisAdapter(ProductList, getActivity());
         LinearLayoutManager manager = new LinearLayoutManager(requireContext());
         preCallAnalysisBinding.recyelerview.setNestedScrollingEnabled(false);

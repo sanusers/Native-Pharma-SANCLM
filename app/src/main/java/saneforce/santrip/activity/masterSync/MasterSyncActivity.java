@@ -696,7 +696,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, callSyncCount, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN, -1, Constants.DOCTOR, "gettodaytpnew", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN, -1, Constants.DOCTOR, "getmydayplan", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, visitControlCount, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, dateSyncCount, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, -1, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
@@ -965,6 +965,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             jsonObject.put("division_code", division_code);
             jsonObject.put("Rsf", rsf);
             jsonObject.put("sf_type", sfType);
+            jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
             jsonObject.put("Designation", designation);
             jsonObject.put("state_code", state_code);
             jsonObject.put("subdivision_code", subdivision_code);
@@ -1597,8 +1598,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-    ArrayList<SlideModelClass> slideListPrepared(String nfolg) {
-        if (nfolg.equalsIgnoreCase("0")) {
+    ArrayList<SlideModelClass> slideListPrepared(String mFlag) {
+        if (mFlag.equalsIgnoreCase("0")) {
             Slide_list.clear();
             slideId.clear();
         } else {
@@ -1613,11 +1614,10 @@ public class MasterSyncActivity extends AppCompatActivity {
             Slide_list = new Gson().fromJson(slideLIST, listType1);
             SlideDownloaderAlertBox.downloading_count = Integer.valueOf(conut);
         }
-
+      
         JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
         try {
             if (slidedata.length() > 0) {
-                Slide_list = new ArrayList<>();
                 for (int i = 0; i < slidedata.length(); i++) {
                     JSONObject jsonObject = slidedata.getJSONObject(i);
                     String FilePath = jsonObject.optString("FilePath");
@@ -1629,7 +1629,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                 }
             } else {
                 Slide_list.clear();
-                Slide_list = new ArrayList<>();
                 slideId.clear();
             }
         } catch (Exception ignored) {

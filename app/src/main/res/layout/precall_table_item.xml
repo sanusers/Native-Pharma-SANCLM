@@ -36,9 +36,7 @@
                         android:id="@+id/product_list_row"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="5">
-
+                        android:orientation="horizontal">
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
@@ -72,7 +70,7 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6sdp"
-                            android:visibility="visible" />
+                            />
 
                         <View
                             android:id="@+id/dummy_sample"
@@ -90,7 +88,7 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6sdp"
-                            android:visibility="visible" />
+                            />
 
                         <View
                             android:id="@+id/dummy_rx"
@@ -99,6 +97,7 @@
                             android:background="@color/bg_grey_dark" />
 
                         <TextView
+                            android:visibility="gone"
                             android:id="@+id/rcpa_qty"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -109,9 +108,10 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6sdp"
-                            android:visibility="visible" />
+                           />
 
                         <View
+                            android:visibility="gone"
                             android:id="@+id/dummy_rcpa"
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
@@ -128,7 +128,7 @@
                             android:text="0"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_6sdp"
-                            android:visibility="visible" />
+                             />
 
                         <View
                             android:layout_width="1dp"

@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.profile;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,6 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
         holder.txt_rcpa.setText(mlist.getRcpa());
         holder.txt_feedback.setText(mlist.getFeedBack());
 
-
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
                 if (PreCallAnalysisFragment.PrdSamNeed.equalsIgnoreCase("1")) {
@@ -62,10 +62,10 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {
-                    holder.txt_rx.setVisibility(View.GONE);
+                    holder.txt_rcpa.setVisibility(View.GONE);
                     holder.view_rcpa.setVisibility(View.GONE);
                 }
-
+             break;
             case "2":
                 if (PreCallAnalysisFragment.PrdSamNeed.equalsIgnoreCase("1")) {
                     holder.txt_sample.setVisibility(View.VISIBLE);
@@ -86,10 +86,10 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {
-                    holder.txt_rx.setVisibility(View.GONE);
+                    holder.txt_rcpa.setVisibility(View.GONE);
                     holder.view_rcpa.setVisibility(View.GONE);
                 }
-
+             break;
             case "3":
             case "4":
             case "5":
@@ -113,7 +113,7 @@ public class PreCallAnalysisAdapter extends RecyclerView.Adapter<PreCallAnalysis
                     holder.txt_rcpa.setVisibility(View.VISIBLE);
                     holder.view_rcpa.setVisibility(View.VISIBLE);
                 } else {
-                    holder.txt_rx.setVisibility(View.GONE);
+                    holder.txt_rcpa.setVisibility(View.GONE);
                     holder.view_rcpa.setVisibility(View.GONE);
                 }
                 break;

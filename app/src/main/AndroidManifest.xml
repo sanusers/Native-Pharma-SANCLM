@@ -220,7 +220,6 @@
             android:name=".activity.homeScreen.HomeDashBoard"
             android:exported="false"
             android:screenOrientation="landscape" />
-
         <service
             android:name=".services.FirebaseService"
             android:exported="false">

@@ -126,23 +126,23 @@ public class LoginActivity extends AppCompatActivity {
             if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
                 if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                     SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                    commonUtilsMethods.ShowToast(context, getString(R.string.login_successfully), 100);
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.login_successfully), 100);
                     startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
                 } else {
-                    commonUtilsMethods.ShowToast(context, getString(R.string.mismatch), 100);
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.mismatch), 100);
                 }
             } else {
                 if (userId.isEmpty()) {
                     binding.userId.requestFocus();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_user_id), 100);
+                    commonUtilsMethods.ShowToast(getApplicationContext(), context.getString(R.string.enter_user_id), 100);
                 } else if (userPwd.isEmpty()) {
                     binding.password.requestFocus();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_password), 100);
+                    commonUtilsMethods.ShowToast(getApplicationContext(), context.getString(R.string.enter_password), 100);
                 } else {
                     if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
                         login(userId, userPwd);
                     } else {
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                        commonUtilsMethods.ShowToast(getApplicationContext(), context.getString(R.string.no_network), 100);
                     }
                 }
             }

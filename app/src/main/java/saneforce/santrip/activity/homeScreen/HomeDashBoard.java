@@ -50,6 +50,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -70,6 +73,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -122,7 +126,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static ActivityHomeDashBoardBinding binding;
     public static int DeviceWith;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
-    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, PresentationNeed, NearMeNeed, QuizNeed, ProfileNeed, ActivityNeed, ReminderCallNeed, InputValidation, SurveyNeed, TpNeed, CheckInOutNeed;
+    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, PresentationNeed, NearMeNeed, QuizNeed, ProfileNeed, ActivityNeed, ReminderCallNeed, InputValidation, SurveyNeed, TpNeed, CheckInOutNeed,DcFencingNeed, ChFencingNeed, StFencingNeed, HosFencingNeed,UnlistFencingNeed;
     public static LocalDate selectedDate;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -194,23 +198,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
         }
-        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+       // registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+      //  unregisterReceiver(receiver);
     }
 
     //To Hide the bottomNavigation When popup
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        if (hasFocus) {
+//            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//        }
+//    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -218,7 +222,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        windowInsetsController.setSystemBarsBehavior(
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+
+        getWindow().getDecorView().setOnApplyWindowInsetsListener((view, windowInsets) -> {
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+            return view.onApplyWindowInsets(windowInsets);
+        });
+
+
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
@@ -232,7 +248,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         getRequiredData();
-
+        AppIdentify();
         if (CheckInOutNeed.equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
             SharedPref.setCheckInTime(getApplicationContext(), "");
             SharedPref.setSkipCheckIn(getApplicationContext(), true);
@@ -251,11 +267,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.llPresentation.setOnClickListener(this);
         binding.llSlide.setOnClickListener(this);
         binding.llNav.cancelImg.setOnClickListener(this);
-
         binding.viewDummy.setVisibility(View.VISIBLE);
 
         layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
         layoutParams.width = DeviceWith / 3;
+        layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
         binding.navView.setLayoutParams(layoutParams);
         binding.navView.setNavigationItemSelectedListener(this);
         setSupportActionBar(binding.Toolbar);
@@ -275,7 +291,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.viewPager.setCurrentItem(Integer.parseInt(SharedPref.getSetUpClickedTab(getApplicationContext())));
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
-
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -381,6 +396,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
                 binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+
             } else {
                 binding.myDrawerLayout.openDrawer(GravityCompat.START);
                 binding.backArrow.setBackgroundResource(R.drawable.cross_img);
@@ -417,6 +433,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (ReminderCallNeed.equalsIgnoreCase("0"))
             arrayNav.add(new ModelNavDrawer(R.drawable.profiling, getString(R.string.remainder_call)));
+
 
         Menu sideMenu = binding.navView.getMenu();
         for (int i = 0; i < arrayNav.size(); i++) {
@@ -582,6 +599,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         QuizNeed = loginResponse.getQuiz_need();
         ReminderCallNeed = loginResponse.getRmdrNeed();
         ActivityNeed = loginResponse.getActivityNd();
+
+        DcFencingNeed=loginResponse.getGeoNeed();
+        ChFencingNeed =loginResponse.getGEOTagNeedche();
+        StFencingNeed =loginResponse.getGEOTagNeedstock();
+        HosFencingNeed =loginResponse.getGeoTagNeedcip();
+        UnlistFencingNeed =loginResponse.getGEOTagNeedunlst();
 
         TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
 
@@ -1395,5 +1418,35 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         }
     }
+
+
+
+    public void AppIdentify() {
+
+        if (NearMeNeed.equalsIgnoreCase("0")) {
+            binding.tvLdot.setVisibility(View.VISIBLE);
+        }
+        if (DcFencingNeed.equalsIgnoreCase("1")) {
+            binding.tvDdot.setVisibility(View.VISIBLE);
+        }
+        if (ChFencingNeed.equalsIgnoreCase("1")) {
+            binding.tvCdot.setVisibility(View.VISIBLE);
+        }
+        if (StFencingNeed.equalsIgnoreCase("1")) {
+            binding.tvSdot.setVisibility(View.VISIBLE);
+        }
+        if (UnlistFencingNeed.equalsIgnoreCase("1")) {
+            binding.tvUdot.setVisibility(View.VISIBLE);
+        }
+        if (HosFencingNeed.equalsIgnoreCase("1")) {
+            binding.tvHdot.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
+
+
+
 }
 
