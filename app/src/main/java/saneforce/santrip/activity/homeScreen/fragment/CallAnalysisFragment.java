@@ -62,6 +62,88 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     Context context;
     CommonUtilsMethods commonUtilsMethods;
 
+
+
+    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.v("fragment", "callanalysis");
+        callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
+        View v = callAnalysisBinding.getRoot();
+        commonUtilsMethods = new CommonUtilsMethods(requireContext());
+        commonUtilsMethods.setUpLanguage(requireContext());
+        context = requireContext();
+        sqLite = new SQLite(requireContext());
+
+        callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+        callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+
+        callAnalysisBinding.llDocChild.setOnClickListener(this);
+        callAnalysisBinding.llCheChild.setOnClickListener(this);
+        callAnalysisBinding.llStockChild.setOnClickListener(this);
+        callAnalysisBinding.llUnliChild.setOnClickListener(this);
+        callAnalysisBinding.llHosChild.setOnClickListener(this);
+        callAnalysisBinding.llCipChild.setOnClickListener(this);
+
+//        if(SharedPref.getMonthForClearCalls(getActivity())!=Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8))){
+//           ClearOldCalls();
+//        }
+        getRequiredData();
+        HiddenVisibleFunctions();
+        SetcallDetailsInLineChart(sqLite, context);
+
+        ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
+
+        vto.addOnGlobalLayoutListener(() -> {
+
+            int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
+            int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
+
+
+            int width = (getwidhtlayout / 3 - 8);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp));
+            param.setMargins(0, 5, 10, 0);
+            callAnalysisBinding.llDocChild.setLayoutParams(param);
+            callAnalysisBinding.llCheChild.setLayoutParams(param);
+            callAnalysisBinding.llStockChild.setLayoutParams(param);
+            callAnalysisBinding.llUnliChild.setLayoutParams(param);
+            callAnalysisBinding.llHosChild.setLayoutParams(param);
+            callAnalysisBinding.llCipChild.setLayoutParams(param);
+        });
+
+
+        callAnalysisBinding.llCallsLayout.setOnTouchListener((v12, event) -> {
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
+            return false;
+        });
+
+
+        callAnalysisBinding.inChart.lineChart.setOnTouchListener((v1, event) -> {
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
+            return false;
+        });
+
+
+        callAnalysisBinding.inChart.lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+
+        });
+
+        return v;
+    }
     public static int computePercent(int current, int total) {
         int percent = 0;
         if (total > 0) percent = current * 100 / total;
@@ -274,7 +356,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
-
         SimpleDateFormat sdfs = new SimpleDateFormat("MMMM");
         SimpleDateFormat sdfss = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -652,83 +733,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     }
 
-    @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.v("fragment", "callanalysis");
-        callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
-        View v = callAnalysisBinding.getRoot();
-        commonUtilsMethods = new CommonUtilsMethods(requireContext());
-        commonUtilsMethods.setUpLanguage(requireContext());
-        context = requireContext();
-        sqLite = new SQLite(requireContext());
 
-        callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
-        callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-
-        callAnalysisBinding.llDocChild.setOnClickListener(this);
-        callAnalysisBinding.llCheChild.setOnClickListener(this);
-        callAnalysisBinding.llStockChild.setOnClickListener(this);
-        callAnalysisBinding.llUnliChild.setOnClickListener(this);
-        callAnalysisBinding.llHosChild.setOnClickListener(this);
-        callAnalysisBinding.llCipChild.setOnClickListener(this);
-
-        getRequiredData();
-        HiddenVisibleFunctions();
-        SetcallDetailsInLineChart(sqLite, context);
-
-        ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
-
-        vto.addOnGlobalLayoutListener(() -> {
-
-            int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
-            int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
-
-
-            int width = (getwidhtlayout / 3 - 8);
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp));
-            param.setMargins(0, 5, 10, 0);
-            callAnalysisBinding.llDocChild.setLayoutParams(param);
-            callAnalysisBinding.llCheChild.setLayoutParams(param);
-            callAnalysisBinding.llStockChild.setLayoutParams(param);
-            callAnalysisBinding.llUnliChild.setLayoutParams(param);
-            callAnalysisBinding.llHosChild.setLayoutParams(param);
-            callAnalysisBinding.llCipChild.setLayoutParams(param);
-        });
-
-
-        callAnalysisBinding.llCallsLayout.setOnTouchListener((v12, event) -> {
-            HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
-            return false;
-        });
-
-
-        callAnalysisBinding.inChart.lineChart.setOnTouchListener((v1, event) -> {
-            HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
-            return false;
-        });
-
-
-        callAnalysisBinding.inChart.lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-
-        });
-
-        return v;
-    }
 
     private void HiddenVisibleFunctions() {
         if (DrNeed.equalsIgnoreCase("0")) {
@@ -883,6 +888,56 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         super.onDestroyView();
     }
 
+
+    private void ClearOldCalls(){
+
+        JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+        if (jsonArray.length() > 0) {
+
+            JSONArray filteredArray = new JSONArray();
+
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        int currentYear = calendar.get(Calendar.YEAR);
+
+
+        Calendar pastMonthCalender = Calendar.getInstance();
+        pastMonthCalender.add(Calendar.MONTH, -1);
+        int previousMonth = pastMonthCalender.get(Calendar.MONTH) + 1;
+        int previousYear = pastMonthCalender.get(Calendar.YEAR);
+
+        Calendar pastSecondMonthCalender = Calendar.getInstance();
+        pastSecondMonthCalender.add(Calendar.MONTH, -1);
+        int previousSecoundMonth = pastSecondMonthCalender.get(Calendar.MONTH) + 1;
+        int previousSecoundYear = pastSecondMonthCalender.get(Calendar.YEAR);
+
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String dcrDate = jsonObject.getString("Dcr_dt");
+                String[] dateParts = dcrDate.split("-");
+                if (dateParts.length == 3) {
+                    int year = Integer.parseInt(dateParts[0]);
+                    int month = Integer.parseInt(dateParts[1]);
+                    if (month == currentMonth && currentYear == year) {
+                        filteredArray.put(jsonObject);
+                    } else if (month == previousMonth && currentYear == previousYear) {
+                        filteredArray.put(jsonObject);
+                    } else if (month == previousSecoundMonth && currentYear == previousSecoundYear) {
+                        filteredArray.put(jsonObject);
+                    }
+                }
+            }
+        } catch (Exception a) {
+            a.printStackTrace();
+        }
+        SharedPref.putMonth(getActivity(),currentYear);
+        sqLite.saveMasterSyncData(Constants.CALL_SYNC,filteredArray.toString(),0);
+
+    }else {
+            sqLite.saveMasterSyncData(Constants.CALL_SYNC,"[]",0);
+        }
+    }
 
 }
 

@@ -67,6 +67,7 @@ public class SharedPref {
     public static final String SLIDEDOWNCOUNT = "slidedowncount";
     public static final String SYNC_STATUS = "SP_MAS_DETAILS";
     public static SharedPreferences sharedPreferences;
+    public static final String SP_CALL_ClEAR_MONTH = "call_clear_month";
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -447,5 +448,15 @@ public class SharedPref {
 
     public static boolean getAutomassyncFromSP(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(SYNC_STATUS, false);
+    }
+
+    public static int getMonthForClearCalls(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getInt(SP_CALL_ClEAR_MONTH, 15);
+    }
+
+    public static void putMonth(Context context,int Month) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putInt( SP_CALL_ClEAR_MONTH, Month).apply();
     }
 }

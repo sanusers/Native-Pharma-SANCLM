@@ -280,14 +280,14 @@ public class CommonUtilsMethods {
         View view = toast.getView();
 
 //Gets the actual oval background of the Toast then sets the colour filter
-        assert view != null;
-        view.getBackground().setColorFilter(context.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+       // assert view != null;
+    //    view.getBackground().setColorFilter(context.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
 
 //Gets the TextView from the Toast so it can be editted
-        TextView text = view.findViewById(android.R.id.message);
-        text.setTextColor(context.getColor(R.color.white));
-
-        toast.show();
+//        TextView text = view.findViewById(android.R.id.message);
+//        text.setTextColor(context.getColor(R.color.white));
+//
+//        toast.show();
     }
 
     public void recycleTestWithoutDivider(RecyclerView rv_test) {
