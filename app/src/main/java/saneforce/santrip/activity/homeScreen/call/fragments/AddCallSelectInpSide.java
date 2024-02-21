@@ -1,12 +1,10 @@
 package saneforce.santrip.activity.homeScreen.call.fragments;
 
-import static android.app.PendingIntent.getActivity;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockInput;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter.Selected_code;
 import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter.Selected_name;
 import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall.addedInpList;
-import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall.addedProductList;
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.callDetailsSideBinding;
 
 import android.annotation.SuppressLint;
@@ -20,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -112,8 +109,8 @@ public class AddCallSelectInpSide extends Fragment {
 
     public static class SelectACInputAdapter extends RecyclerView.Adapter<SelectACInputAdapter.ViewHolder> {
 
-        Context context;
         public static ArrayList<CallCommonCheckedList> callInputList;
+        Context context;
         CommonUtilsMethods commonUtilsMethods;
 
         public SelectACInputAdapter(Context context, ArrayList<CallCommonCheckedList> callInputList) {
@@ -156,7 +153,7 @@ public class AddCallSelectInpSide extends Fragment {
                             SelectContent(callInputList.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         } else {
                             holder.checkBox.setChecked(false);
-                             commonUtilsMethods.ShowToast(context,context.getString(R.string.no_qty_input),100);
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_qty_input), 100);
                         }
                     } else {
                         SelectContent(callInputList.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
@@ -179,7 +176,7 @@ public class AddCallSelectInpSide extends Fragment {
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                             callInputList.get(adapterPos).setCheckedItem(false);
                             checkBox.setChecked(false);
-                             commonUtilsMethods.ShowToast(context,context.getString(R.string.already_available),100);
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.already_available), 100);
                             break;
                         }
                     }

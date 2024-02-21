@@ -8,7 +8,7 @@ public class LoginResponse implements Serializable {
     private String DS_name = "";
 
     private String ChmSmpCap = "";
-
+    private String Division_name = "";
     private String Doc_pob_caption = "";
     private String Stk_pob_caption = "";
     private String Chm_pob_caption = "";
@@ -281,6 +281,14 @@ public class LoginResponse implements Serializable {
     private String HENeed = "";
     private String TPDCR_MGRAppr = "";
     private String GeoTagNeedcip = "";
+
+    public String getDivision_name() {
+        return Division_name;
+    }
+
+    public void setDivision_name(String division_name) {
+        Division_name = division_name;
+    }
 
     public String getChmSrtNd() {
         return ChmSrtNd;

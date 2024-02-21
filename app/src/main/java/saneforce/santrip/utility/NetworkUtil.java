@@ -7,10 +7,6 @@ import android.telephony.TelephonyManager;
 
 import saneforce.santrip.commonClasses.Constants;
 
-/**
- * Created by anartzmugika on 22/6/16.
- */
-
 public class NetworkUtil
 {
     private static int TYPE_WIFI = 1;
@@ -72,6 +68,8 @@ public class NetworkUtil
                     return "3G";
                 case TelephonyManager.NETWORK_TYPE_LTE:    //api<11 : replace by 13
                     return "4G";
+                case TelephonyManager.NETWORK_TYPE_EDGE:
+                    return "2G";
                 default:
                     return "UNKNOWN";
             }

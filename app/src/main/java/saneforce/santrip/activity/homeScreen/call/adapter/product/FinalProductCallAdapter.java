@@ -178,6 +178,26 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         holder.ed_samplesQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                /*if (SampleValidation.equalsIgnoreCase("1")) {
+                    if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
+                        if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                            Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock() +SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock())));
+                            if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) {
+                                Log.v("asdasds", "0000");
+                                holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                            } else {
+                                Log.v("asdasds", "1111");
+                                holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                            }
+                        } else {
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                        }
+                    }
+                } else {
+                    if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                        holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                    }
+                }*/
             }
 
             @Override
@@ -189,10 +209,19 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             public void afterTextChanged(Editable editable) {
                 try {
                     if (SampleValidation.equalsIgnoreCase("1")) {
-                       /* if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
-                             //  productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
-                        } else*/
                         if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
+                           /* if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                                Log.v("asdasds", SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
+                                if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) {
+                                    Log.v("asdasds", "true");
+                                    holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                                } else {
+                                    Log.v("asdasds", "false");
+                                    holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                                }
+                            } else {
+                                holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                            }*/
                             holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
                             if (!editable.toString().isEmpty()) {
                                 int final_value = Integer.parseInt(productListArrayList.get(position).getLast_stock()) - Integer.parseInt(editable.toString());
@@ -214,7 +243,11 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                             }
                         }
                     } else {
+                       /* if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                        } else {*/
                         productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
+                        // }
                     }
                 } catch (Exception ignored) {
                 }

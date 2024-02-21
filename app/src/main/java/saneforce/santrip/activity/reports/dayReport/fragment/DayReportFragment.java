@@ -3,6 +3,7 @@ package saneforce.santrip.activity.reports.dayReport.fragment;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,6 +50,7 @@ import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
 import saneforce.santrip.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.FragmentDayReportBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
@@ -62,18 +63,19 @@ import saneforce.santrip.utility.TimeUtils;
 
 public class DayReportFragment extends Fragment {
 
+    public static String drNeed, cheNeed, stkNeed, unDrNeed, CipNeed, hosNeed, CheckInOutNeed;
     FragmentDayReportBinding binding;
     ApiInterface apiInterface;
     SQLite sqLite;
     LocalDate localDate;
     LoginResponse loginResponse;
+    ProgressDialog progressDialog;
     DayReportAdapter dayReportAdapter;
     CalendarAdapter calendarAdapter;
     AlertDialog calendarDialog;
     ArrayList<DayReportModel> arrayListOfReportData = new ArrayList<>();
     ArrayList<String> daysArrayList = new ArrayList<>();
     DataViewModel dataViewModel;
-
     AlertDialog.Builder alertDialog;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -83,22 +85,13 @@ public class DayReportFragment extends Fragment {
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
-        dataViewModel.getDate().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s));
-            }
-        });
+
+        dataViewModel.getDate().observe(getViewLifecycleOwner(), s -> binding.date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s)));
 
         initialisation();
         populateAdapter();
 
-        binding.calender.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calendarDialog();
-            }
-        });
+        binding.calender.setOnClickListener(view -> calendarDialog());
 
         binding.searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -122,12 +115,7 @@ public class DayReportFragment extends Fragment {
             }
         });
 
-        binding.searchClearIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.searchET.setText("");
-            }
-        });
+        binding.searchClearIcon.setOnClickListener(view -> binding.searchET.setText(""));
 
         return binding.getRoot();
     }
@@ -137,6 +125,14 @@ public class DayReportFragment extends Fragment {
         localDate = LocalDate.now();
         loginResponse = sqLite.getLoginData();
         daysArrayList = daysInMonthArray(localDate);
+
+        drNeed = loginResponse.getDrNeed();
+        cheNeed = loginResponse.getChmNeed();
+        stkNeed = loginResponse.getStkNeed();
+        unDrNeed = loginResponse.getUNLNeed();
+        CipNeed = loginResponse.getCip_need();
+        hosNeed = loginResponse.getHosp_need();
+        CheckInOutNeed = loginResponse.getSrtNd();
 
         ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
         activity.title.setText("Day Report");
@@ -236,29 +232,23 @@ public class DayReportFragment extends Fragment {
             localDate = LocalDate.parse(binding.date.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
             nextArrow.setEnabled(false);
             nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-            prevArrow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    nextArrow.setEnabled(true);
-                    nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
-                    localDate = localDate.minusMonths(1);
-                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
-                    daysArrayList = daysInMonthArray(localDate);
-                    populateCalendarAdapter(recyclerView);
-                }
+            prevArrow.setOnClickListener(view1 -> {
+                nextArrow.setEnabled(true);
+                nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_black, null));
+                localDate = localDate.minusMonths(1);
+                monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
+                daysArrayList = daysInMonthArray(localDate);
+                populateCalendarAdapter(recyclerView);
             });
 
-            nextArrow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    localDate = localDate.plusMonths(1);
-                    monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
-                    daysArrayList = daysInMonthArray(localDate);
-                    populateCalendarAdapter(recyclerView);
-                    if (LocalDate.now().equals(localDate)) {
-                        nextArrow.setEnabled(false);
-                        nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
-                    }
+            nextArrow.setOnClickListener(view12 -> {
+                localDate = localDate.plusMonths(1);
+                monthYear.setText(monthYearFromDate(localDate, TimeUtils.FORMAT_23));
+                daysArrayList = daysInMonthArray(localDate);
+                populateCalendarAdapter(recyclerView);
+                if (LocalDate.now().equals(localDate)) {
+                    nextArrow.setEnabled(false);
+                    nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
                 }
             });
             populateCalendarAdapter(recyclerView);
@@ -284,11 +274,9 @@ public class DayReportFragment extends Fragment {
     }
 
     public void getData(String date) {
-
-        binding.progressBar.setVisibility(View.VISIBLE);
-        NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), new NetworkStatusTask.NetworkStatusInterface() {
-            @Override
-            public void isNetworkAvailable(Boolean status) {
+        progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
+        if (UtilityClass.isNetworkAvailable(requireContext())) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
                 if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
@@ -311,7 +299,7 @@ public class DayReportFragment extends Fragment {
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                binding.progressBar.setVisibility(View.GONE);
+                                progressDialog.dismiss();
                                 try {
                                     Log.v("jsonDayReport", "--response-" + response.body());
                                     if (response.isSuccessful() && response.body() != null) {
@@ -334,27 +322,29 @@ public class DayReportFragment extends Fragment {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                binding.progressBar.setVisibility(View.GONE);
+                                progressDialog.dismiss();
+                                commonUtilsMethods.ShowToast(requireContext(), getString(R.string.toast_response_failed), 100);
                             }
                         });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    binding.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.ShowToast(requireContext(), getString(R.string.no_network), 100);
+                    progressDialog.dismiss();
+                    commonUtilsMethods.ShowToast(requireContext(), getString(R.string.poor_connection), 100);
                 }
-            }
-        });
-        networkStatusTask.execute();
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.ShowToast(requireContext(), getString(R.string.no_network), 100);
+        }
 
     }
 
     public void populateAdapter() {
-        if (arrayListOfReportData.size() > 0)
-            binding.noReportFoundTxt.setVisibility(View.GONE);
-        else
-            binding.noReportFoundTxt.setVisibility(View.VISIBLE);
+        if (arrayListOfReportData.size() > 0) binding.noReportFoundTxt.setVisibility(View.GONE);
+        else binding.noReportFoundTxt.setVisibility(View.VISIBLE);
 
         dayReportAdapter = new DayReportAdapter(arrayListOfReportData, getContext());
         binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(getContext()));

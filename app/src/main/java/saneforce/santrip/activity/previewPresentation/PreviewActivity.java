@@ -39,7 +39,7 @@ import saneforce.santrip.storage.SQLite;
 public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static saneforce.santrip.databinding.ActivityPreviewBinding previewBinding;
-    public static String SelectedTab = "", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
+    public static String SelectedTab = "Matrix", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
     public static int SelectedPosPlay;
     PreviewTabAdapter viewPagerAdapter;
     SQLite sqLite;
@@ -127,6 +127,8 @@ public class PreviewActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 SelectedPosPlay = tab.getPosition();
+                if (tab.getPosition() == 1) SelectedTab = "Matrix";
+                if (tab.getPosition() == 2) SelectedTab = "Spec";
             }
 
             @Override

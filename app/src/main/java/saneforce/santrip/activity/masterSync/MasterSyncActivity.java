@@ -60,12 +60,11 @@ import saneforce.santrip.utility.NetworkStatusTask;
 import saneforce.santrip.utility.TimeUtils;
 
 public class MasterSyncActivity extends AppCompatActivity {
-
     public static ArrayList<SlideModelClass> Slide_list = new ArrayList<>();
     public static ArrayList<String> slideId = new ArrayList<>();
     ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
-    MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
+    MasterSyncAdapter masterSyncAdapter;
     SQLite sqLite;
     LoginResponse loginResponse;
     String sfCode = "", division_code = "", sfType = "", rsf = "", designation = "", state_code = "", subdivision_code = "";
@@ -167,8 +166,8 @@ public class MasterSyncActivity extends AppCompatActivity {
 //            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //        }
 
-        binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
-        //  binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+        //binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
+        binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
         binding.hq.setOnClickListener(view -> {
 
@@ -799,59 +798,57 @@ public class MasterSyncActivity extends AppCompatActivity {
         view.setSelected(true);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void populateAdapter(ArrayList<MasterSyncItemModel> masterSyncItemModels) {
-
-        masterSyncAdapter = new MasterSyncAdapter(masterSyncItemModels, getApplicationContext(), new MasterSyncItemClick() {
-            @Override
-            public void itemClick(MasterSyncItemModel masterSyncItemModel1, int position) {
-                NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
-                    @Override
-                    public void isNetworkAvailable(Boolean status) {
-                        if (status) {
-                            if (binding.listedDr.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), doctorModelArray, position);
-                            } else if (binding.chemist.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), chemistModelArray, position);
-                            } else if (binding.stockiest.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), stockiestModelArray, position);
-                            } else if (binding.unlistedDoctor.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), unlistedDrModelArray, position);
-                            } else if (binding.hospital.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), hospitalModelArray, position);
-                            } else if (binding.cip.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), cipModelArray, position);
-                            } else if (binding.input.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), inputModelArray, position);
-                            } else if (binding.product.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), productModelArray, position);
-                            } else if (binding.cluster.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), clusterModelArray, position);
-                            } else if (binding.leave.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), leaveModelArray, position);
-                            } else if (binding.dcr.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), dcrModelArray, position);
-                            } else if (binding.workType.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), workTypeModelArray, position);
-                            } else if (binding.tourPlan.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), tpModelArray, position);
-                            } else if (binding.slide.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), slideModelArray, position);
-                            } else if (binding.subordinate.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
-                            } else if (binding.Other.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
-                            } else if (binding.setup.isSelected()) {
-                                sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
-                            }
-                        } else {
-                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+        masterSyncAdapter = new MasterSyncAdapter(masterSyncItemModels, getApplicationContext(), (masterSyncItemModel1, position) -> {
+            if (UtilityClass.isNetworkAvailable(this)) {
+                NetworkStatusTask networkStatusTask = new NetworkStatusTask(MasterSyncActivity.this, status -> {
+                    if (status) {
+                        if (binding.listedDr.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), doctorModelArray, position);
+                        } else if (binding.chemist.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), chemistModelArray, position);
+                        } else if (binding.stockiest.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), stockiestModelArray, position);
+                        } else if (binding.unlistedDoctor.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), unlistedDrModelArray, position);
+                        } else if (binding.hospital.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), hospitalModelArray, position);
+                        } else if (binding.cip.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), cipModelArray, position);
+                        } else if (binding.input.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), inputModelArray, position);
+                        } else if (binding.product.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), productModelArray, position);
+                        } else if (binding.cluster.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), clusterModelArray, position);
+                        } else if (binding.leave.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), leaveModelArray, position);
+                        } else if (binding.dcr.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), dcrModelArray, position);
+                        } else if (binding.workType.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), workTypeModelArray, position);
+                        } else if (binding.tourPlan.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), tpModelArray, position);
+                        } else if (binding.slide.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), slideModelArray, position);
+                        } else if (binding.subordinate.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), subordinateModelArray, position);
+                        } else if (binding.Other.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), otherModelArray, position);
+                        } else if (binding.setup.isSelected()) {
+                            sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
+                    } else {
+                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.poor_connection), 100);
                     }
                 });
                 networkStatusTask.execute();
+            } else {
+                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
             }
         });
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 3);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 3);
         binding.recView.setLayoutManager(layoutManager);
         binding.recView.setAdapter(masterSyncAdapter);
         masterSyncAdapter.notifyDataSetChanged();
@@ -1133,7 +1130,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 });
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.v("masterCheck", "--error-" + e);
         }
 
     }

@@ -144,6 +144,7 @@ public class DrSelectionSide extends Fragment {
 
     public void SetDrAdapter() {
         try {
+            callDrListBrand.clear();
             loginResponse = new LoginResponse();
             loginResponse = sqLite.getLoginData();
 
@@ -162,13 +163,23 @@ public class DrSelectionSide extends Fragment {
             }
 
             if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
-                prepareMasterToSync(DcrCallTabLayoutActivity.TodayPlanSfCode);
+                prepareMasterToSync(TodayPlanSfCode);
             } else {
                 jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
             }
+
+          /*  if (jsonArray.length() == 0) {
+                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                for (int i = 0; i < 1; i++) {
+                    JSONObject jsonHQList = jsonArray.getJSONObject(0);
+                    TodayPlanSfCode = jsonHQList.getString("id");
+                }
+            }*/
+
             /*if (jsonArray.length() == 0) {
                 commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
             }*/
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 if (!jsonObject.getString("MappProds").isEmpty() && jsonObject.getString("MappProds").contains("-") && !jsonObject.getString("MProd").isEmpty()) {
@@ -178,7 +189,6 @@ public class DrSelectionSide extends Fragment {
                     callDrListBrand.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Specialty"), jsonObject.getString("SpecialtyCode"), "", "", false));
                 }
             }
-
             selectDoctorAdapter = new SelectDoctorAdapter(requireContext(), callDrListBrand);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             drSelectionSideBinding.selectListView.setLayoutManager(mLayoutManager);
@@ -186,8 +196,10 @@ public class DrSelectionSide extends Fragment {
             drSelectionSideBinding.selectListView.setAdapter(selectDoctorAdapter);
 
         } catch (Exception e) {
-            Log.v("dsds", "---error---" + e);
+            Log.v("dsds", "---error---" + e + "----" + SelectedTab);
         }
+
+
     }
 
     public String getBrands(String mappProds) {
@@ -210,7 +222,7 @@ public class DrSelectionSide extends Fragment {
     public void prepareMasterToSync(String hqCode) {
         masterSyncArray.clear();
 
-        if (DrNeed.equalsIgnoreCase("0")) {
+        if (loginResponse.getDrNeed().equalsIgnoreCase("0")) {
             MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
             masterSyncArray.add(doctorModel);
         }

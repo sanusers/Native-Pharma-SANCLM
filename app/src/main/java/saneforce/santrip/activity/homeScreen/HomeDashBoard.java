@@ -156,7 +156,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        Log.v("AAAAAA", "PostCreate");
     }
 
 
@@ -166,10 +165,17 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onResume();
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-        Log.v("AAAAAA", "PostCreate");
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+
+        if (CheckInOutNeed.equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+            SharedPref.setCheckInTime(getApplicationContext(), "");
+            SharedPref.setSkipCheckIn(getApplicationContext(), true);
+            CheckInOutDate();
+        } else {
+            SharedPref.setSkipCheckIn(getApplicationContext(), false);
         }
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -194,7 +200,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
         }
-        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        try {
+            if (Build.VERSION.SDK_INT >= 33) {
+                registerReceiver(receiver, intentFilter, RECEIVER_NOT_EXPORTED);
+            } else {
+                registerReceiver(receiver, intentFilter);
+            }
+        } catch (Exception ignored) {
+
+        }
     }
 
     @Override
@@ -392,13 +406,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private void addNavItem() {
         arrayNav.clear();
         arrayNav.add(new ModelNavDrawer(R.drawable.refresh, getString(R.string.refresh)));
-
         if (TpNeed.equalsIgnoreCase("0"))
             arrayNav.add(new ModelNavDrawer(R.drawable.calendar_clock, getString(R.string.tour_plan)));
 
         arrayNav.add(new ModelNavDrawer(R.drawable.my_resource, getString(R.string.my_resource)));
         arrayNav.add(new ModelNavDrawer(R.drawable.leave, getString(R.string.leave_application)));
-        arrayNav.add(new ModelNavDrawer(R.drawable.report, getString(R.string.reports)));
+        // arrayNav.add(new ModelNavDrawer(R.drawable.report, getString(R.string.reports)));
 
         if (ActivityNeed.equalsIgnoreCase("0"))
             arrayNav.add(new ModelNavDrawer(R.drawable.activity, getString(R.string.activity)));
@@ -413,6 +426,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             arrayNav.add(new ModelNavDrawer(R.drawable.quiz, getString(R.string.quiz)));
         if (SurveyNeed.equalsIgnoreCase("0"))
             arrayNav.add(new ModelNavDrawer(R.drawable.survey, getString(R.string.survey)));
+
         arrayNav.add(new ModelNavDrawer(R.drawable.form, getString(R.string.forms)));
 
         if (ReminderCallNeed.equalsIgnoreCase("0"))
@@ -425,6 +439,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             sideMenu.getItem(i).setIcon(navList.getDrawable());
         }
     }
+
 
     private void CheckInOutDate() {
         dialogCheckInOut = new Dialog(this);
@@ -561,6 +576,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private void getRequiredData() {
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
+
+        binding.toolbarTitle.setText(loginResponse.getDivision_name());
 
         SfType = loginResponse.getSf_type();
         SfCode = loginResponse.getSF_Code();
@@ -1100,14 +1117,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             return true;
         }
 
-        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.reports))) {
+    /*    if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.reports))) {
             if (UtilityClass.isNetworkAvailable(context)) {
                 startActivity(new Intent(HomeDashBoard.this, ReportsActivity.class));
             } else {
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
             }
             return true;
-        }
+        }*/
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.activity))) {
 
@@ -1119,23 +1136,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.near_me))) {
-            if (SharedPref.getSkipCheckIn(getApplicationContext())) {
-                if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
-                    if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).isEmpty()) {
-                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.submit_mydayplan), 100);
-                    } else {
-                        Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
-                        intent.putExtra("from", "not_tagging");
-                        MapsActivity.SelectedTab = "D";
-                        MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
-                        MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
-                        startActivity(intent);
-                    }
+            if (CheckInOutNeed.equalsIgnoreCase("0")) {
+                if (SharedPref.getSkipCheckIn(getApplicationContext())) {
+                    goToNearMeActivity();
                 } else {
-                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.submit_checkin), 100);
                 }
             } else {
-                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.submit_checkin), 100);
+                goToNearMeActivity();
             }
         }
 
@@ -1149,6 +1157,23 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
         return true;
+    }
+
+    private void goToNearMeActivity() {
+        if (UtilityClass.isNetworkAvailable(HomeDashBoard.this)) {
+            if (SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this).isEmpty()) {
+                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.submit_mydayplan), 100);
+            } else {
+                Intent intent = new Intent(HomeDashBoard.this, MapsActivity.class);
+                intent.putExtra("from", "not_tagging");
+                MapsActivity.SelectedTab = "D";
+                MapsActivity.SelectedHqCode = SharedPref.getTodayDayPlanSfCode(HomeDashBoard.this);
+                MapsActivity.SelectedHqName = SharedPref.getTodayDayPlanSfName(HomeDashBoard.this);
+                startActivity(intent);
+            }
+        } else {
+            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+        }
     }
 
     private void setupCustomTab(TabLayout tabLayout, int tabIndex, String tabTitleText, boolean isTabTitleInvisible) {

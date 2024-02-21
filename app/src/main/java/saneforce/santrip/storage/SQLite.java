@@ -213,18 +213,18 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     public JSONArray getMasterSyncDataByKey(String key) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
-        String data = "";
-        if (cursor.moveToNext()) {
-            data = cursor.getString(1);
-        }
-        cursor.close();
-        db.close();
-
         JSONArray jsonArray = new JSONArray();
         try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
+            String data = "";
+            if (cursor.moveToNext()) {
+                data = cursor.getString(1);
+            }
+            cursor.close();
+            db.close();
             if (data != null && !data.isEmpty()) return jsonArray = new JSONArray(data);
+
         } catch (Exception ignored) {
         }
         return jsonArray;
@@ -245,14 +245,19 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     public int getMasterSyncStatusByKey(String key) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
         int data = 0;
-        if (cursor.moveToNext()) {
-            data = cursor.getInt(2);
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("select * from " + MASTER_SYNC_TABLE + " where " + MASTER_KEY + "=" + "'" + key + "';", null);
+            if (cursor.moveToNext()) {
+                data = cursor.getInt(2);
+            }
+            cursor.close();
+            db.close();
+
+        } catch (Exception ignored) {
+
         }
-        cursor.close();
-        db.close();
         return data;
     }
 
@@ -649,7 +654,7 @@ public class SQLite extends SQLiteOpenHelper {
                     //  }
                 }*/
 
-                listData.add(new GroupModelClass(list.get(i).getGroupName(), groupNamesList, false,0));
+                listData.add(new GroupModelClass(list.get(i).getGroupName(), groupNamesList, false, 0));
             }
         }
 

@@ -85,7 +85,6 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         for (int i = 0; i < MapsActivity.taggedMapListArrayList.size(); i++) {
             if (MapsActivity.taggedMapListArrayList.get(i).getCode().equalsIgnoreCase(code) && MapsActivity.taggedMapListArrayList.get(i).getLat().equalsIgnoreCase(lat) && MapsActivity.taggedMapListArrayList.get(i).getLng().equalsIgnoreCase(lng)) {
-                Log.v("getCode", "true---" + MapsActivity.taggedMapListArrayList.get(i).getCode() + "---" + taggedMapListArrayList.get(i).getLat() + "----" + taggedMapListArrayList.get(i).getLng());
                 MapsActivity.taggedMapListArrayList.set(i, new TaggedMapList(MapsActivity.taggedMapListArrayList.get(i).getName(), MapsActivity.taggedMapListArrayList.get(i).getType(), MapsActivity.taggedMapListArrayList.get(i).getAddr(), MapsActivity.taggedMapListArrayList.get(i).getCode(), true, MapsActivity.taggedMapListArrayList.get(i).getLat(), MapsActivity.taggedMapListArrayList.get(i).getLng(), MapsActivity.taggedMapListArrayList.get(i).getImageName(), MapsActivity.taggedMapListArrayList.get(i).getMeters()));
                 DrCode = code;
                 Lat = MapsActivity.taggedMapListArrayList.get(i).getLat();

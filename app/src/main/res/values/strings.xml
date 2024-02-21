@@ -188,6 +188,7 @@
     <string name="input_selection">Input Selection</string>
     <string name="add_prd_inp"><![CDATA[Add Product & Input]]></string>
     <string name="product">Product</string>
+    <string name="products">Products</string>
     <string name="select_overall_feedback">Select Overall Feedback</string>
     <string name="enter_overall_remark">Enter Overall Remarks</string>
     <string name="select_chemist_name">Select Chemist Name</string>
@@ -257,6 +258,7 @@
     <string name="something_wrong">Something Wrong! Try Again</string>
     <string name="response_failed_please_sync">Response Failed! Please Sync Again to retrieve Data</string>
     <string name="no_network">Check your Internet Connection</string>
+    <string name="poor_connection">Poor Network Connection</string>
     <string name="no_slides">No slides!</string>
     <string name="processing">Processing</string>
     <string name="scribble_upload">Scribble Upload Successfully</string>
@@ -363,4 +365,12 @@
     <string name="weekly_off">Weekly off</string>
     <string name="leave_approve_pending">Leave Approve Pending</string>
     <string name="tp_deviation_released">TP Deviation Released</string>
+    <string name="pob">POB</string>
+    <string name="check_out_time_amp_location"><![CDATA[Check Out time & Location]]></string>
+    <string name="check_in_time_amp_location"><![CDATA[Check IN time & Location]]></string>
+    <string name="approved">Approved</string>
+    <string name="rejected">Rejected</string>
+    <string name="view_more">View More</string>
+    <string name="view_less">View Less</string>
+    <string name="dashboard">DashBoard</string>
 </resources>

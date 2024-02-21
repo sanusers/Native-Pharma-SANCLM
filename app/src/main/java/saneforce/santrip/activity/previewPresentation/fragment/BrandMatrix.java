@@ -9,6 +9,7 @@ import static saneforce.santrip.activity.previewPresentation.PreviewActivity.pre
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class BrandMatrix extends Fragment {
             slideIdList.clear();
             JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
             JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
-
+            Log.v("Brand", mappedBrands + "---" + mappedSlides);
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
                 String brandName = "", code = "", slideId = "", fileName = "", slidePriority = "";
@@ -128,8 +129,8 @@ public class BrandMatrix extends Fragment {
                 brandMatrixBinding.rvBrandList.setVisibility(View.GONE);
             }
 
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            Log.v("Brand", "----" + e);
         }
     }
 

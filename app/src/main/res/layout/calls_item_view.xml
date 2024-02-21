@@ -41,21 +41,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Label 1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/optionview"
                     android:fontFamily="@font/satoshi_medium"
                     android:textColor="@color/text_dark"
-                    android:textSize="@dimen/_7sdp" />
+                    android:textSize="@dimen/_7ssp" />
 
                 <TextView
                     android:layout_below="@+id/textViewLabel1"
                     android:layout_marginTop="@dimen/_3sdp"
-
+                    android:layout_alignParentStart="true"
                     android:id="@+id/textViewLabel2"
+                    android:layout_toStartOf="@id/optionview"
                     android:layout_width="wrap_content"
                     android:fontFamily="@font/satoshi_regular"
                     android:layout_height="wrap_content"
                     android:text="Label 2"
                     android:layout_marginBottom="@dimen/_3sdp"
-                    android:textSize="@dimen/_6sdp" />
+                    android:textSize="@dimen/_6ssp" />
                 <TextView
                     android:id="@+id/optionview"
                     android:layout_width="wrap_content"

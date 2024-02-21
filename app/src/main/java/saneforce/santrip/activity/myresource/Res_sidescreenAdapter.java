@@ -49,12 +49,15 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
+    boolean isEditableProfile;
 
 
-    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val) {//
+    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val, String profileEditNeed) {//
         this.context = context;
         this.resList = resList;
         this.split_val = split_val;
+        sqLite = new SQLite(context);
+        isEditableProfile = profileEditNeed.equalsIgnoreCase("0");
     }
 
     @NonNull
@@ -69,10 +72,9 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     public void onBindViewHolder(@NonNull Res_sidescreenAdapter.ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
         final Resourcemodel_class app_adapt = resList.get(position);
-        sqLite = new SQLite(context);
-
 
         String countlis = String.valueOf(resList.get(position));
+
 
         Log.d("pos1", countlis);
         if (!split_val.equals("2")) {
@@ -116,9 +118,21 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_rx.setText("");
             }
 
+            if (app_adapt.isVisibleView) {
+                holder.Res_View.setVisibility(View.VISIBLE);
+            } else {
+                holder.Res_View.setVisibility(View.GONE);
+            }
+
+            if (isEditableProfile) {
+                holder.Res_Edit.setVisibility(View.VISIBLE);
+            } else {
+                holder.Res_Edit.setVisibility(View.GONE);
+            }
+
+
             if (app_adapt.getRes_Category().equals("") && app_adapt.getRes_rx().equals("") && app_adapt.getRes_Specialty().equals("")) {
                 holder.Res_Table1.setVisibility(View.GONE);
-
                 if (split_val.equals("1") || split_val.equals("2")) {
                     holder.Res_Edit.setVisibility(View.GONE);
                     holder.Res_View.setVisibility(View.GONE);
@@ -129,7 +143,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             if (split_val.equals("1") || split_val.equals("2")) {
                 holder.Res_Edit.setVisibility(View.GONE);
                 holder.Res_View.setVisibility(View.GONE);
-
                 holder.Res_Table2.setVisibility(View.GONE);
             }
             holder.listcount.setText(count + " )");
@@ -145,6 +158,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     context.startActivity(click);
                 }
             });
+
 
         } else {
             if (split_val.equals("2")) {
@@ -187,12 +201,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
                                 L_cLasses.add(new Resourcemodel_class(custom_name, custom_code, vist_ctrlDate, Dcr_dt));
 
-                                Collections.sort(L_cLasses, new Comparator<Resourcemodel_class>() {
-                                    @Override
-                                    public int compare(Resourcemodel_class lhs, Resourcemodel_class rhs) {
-                                        return lhs.getMax_count().compareTo(rhs.getMax_count());
-                                    }
-                                });
+                                Collections.sort(L_cLasses, Comparator.comparing(Resourcemodel_class::getMax_count));
                                 Collections.reverse(L_cLasses);
                             }
 
@@ -214,6 +223,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
             }
         }
+
+
     }
 
 
@@ -222,7 +233,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         return resList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
         public LinearLayout Res_Edit, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
 

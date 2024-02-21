@@ -97,7 +97,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     LoginResponse loginResponse;
     String strClusterID = "", strClusterName = "";
 
-    String worktypeflag = "1", IsFeildWorkFlag = "F0";
+    String DayPlanCount = "1", IsFeildWorkFlag = "F0";
 
     String mSubmitflag = "S0";
     CommonUtilsMethods commonUtilsMethods;
@@ -108,9 +108,22 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     Button btnClose;
     String address;
     JSONObject jsonCheck;
-    String DayPlanCount = "1";
     boolean NeedClusterFlag1 = false, NeedClusterFlag2 = false;
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+            if (UtilityClass.isNetworkAvailable(requireContext())) {
+                syncMyDayPlan();
+                SharedPref.setCheckDateTodayPlan(requireContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+            } else {
+                setUpMyDayplan();
+            }
+        } else {
+            setUpMyDayplan();
+        }
+    }
 
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -174,7 +187,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    @SuppressLint("SetTextI18n")
     public void ShowWorkTypeAlert(TextView mTxtWorktype, RelativeLayout rlculster, RelativeLayout rlHQ) {
         HomeDashBoard.binding.llNav.etSearch.setText("");
         HomeDashBoard.binding.llNav.tvSearchheader.setText(requireContext().getString(R.string.worktype));
@@ -189,12 +201,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SelectedWorkType = WT_ListAdapter.getlisted().get(position);
             try {
                 mTxtWorktype.setText(SelectedWorkType.getString("Name"));
-                if (worktypeflag.equalsIgnoreCase("1")) {
+                if (DayPlanCount.equalsIgnoreCase("1")) {
                     mFwFlg1 = SelectedWorkType.getString("FWFlg");
                     mWTCode1 = SelectedWorkType.getString("Code");
                     mWTName1 = SelectedWorkType.getString("Name");
 
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
                         IsFeildWorkFlag = "F1";
                         rlculster.setVisibility(View.VISIBLE);
                         if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
@@ -213,26 +225,23 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mFwFlg2 = SelectedWorkType.getString("FWFlg");
                     mWTCode2 = SelectedWorkType.getString("Code");
                     mWTName2 = SelectedWorkType.getString("Name");
-
-                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
+                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                        NeedClusterFlag2 = true;
                         IsFeildWorkFlag = "F2";
-                        if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
-                            NeedClusterFlag2 = true;
-                            IsFeildWorkFlag = "F2";
-                            rlculster.setVisibility(View.VISIBLE);
-                            if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
-                                rlHQ.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            mTowncode2 = "";
-                            mTownname2 = "";
-                            mHQCode2 = "";
-                            mHQName2 = "";
-                            chk_cluster = "";
-                            rlculster.setVisibility(View.GONE);
-                            rlHQ.setVisibility(View.GONE);
+                        rlculster.setVisibility(View.VISIBLE);
+                        if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
+                            rlHQ.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        mTowncode2 = "";
+                        mTownname2 = "";
+                        mHQCode2 = "";
+                        mHQName2 = "";
+                        chk_cluster = "";
+                        rlculster.setVisibility(View.GONE);
+                        rlHQ.setVisibility(View.GONE);
                     }
+
                 }
 
                 HomeDashBoard.binding.llNav.etSearch.addTextChangedListener(new TextWatcher() {
@@ -258,7 +267,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-
 
 //    @SuppressLint("SetTextI18n")
 //    public void showClusterAlter() {
@@ -369,7 +377,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         strClusterName = selectedUsers;
                     }
                 }
-                if (worktypeflag.equalsIgnoreCase("1")) {
+                if (DayPlanCount.equalsIgnoreCase("1")) {
                     mTowncode1 = strClusterID;
                     mTownname1 = strClusterName;
                     binding.txtCluster1.setText(strClusterName);

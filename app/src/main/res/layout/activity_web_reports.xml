@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/satoshi_variable"
-                android:text="@string/reports"
+                android:text="@string/dashboard"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
                 tools:ignore="SpUsage" />
@@ -52,8 +52,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recView"
+    <WebView
+        android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/appBar"

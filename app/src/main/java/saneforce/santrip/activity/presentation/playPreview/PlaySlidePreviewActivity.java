@@ -51,6 +51,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     public void onBackPressed() {
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,7 +180,6 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
                             if (!filePath.isEmpty()) {
                                 binding.webView.loadUrl("file://" + filePath);
                             }
-                            break;
                     }
                 }
             } else {
@@ -259,13 +259,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void loadPdf(String fileName) {
-        binding.pdfView.fromFile(new File(fileName))
-                .defaultPage(0)
-                .enableSwipe(true)
-                .swipeHorizontal(false)
-                .enableAnnotationRendering(true)
-                .scrollHandle(new DefaultScrollHandle(this))
-                .load();
+        binding.pdfView.fromFile(new File(fileName)).defaultPage(0).enableSwipe(true).swipeHorizontal(false).enableAnnotationRendering(true).scrollHandle(new DefaultScrollHandle(this)).load();
     }
 
     @Override

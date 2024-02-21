@@ -1,9 +1,13 @@
 package saneforce.santrip.network;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import java.util.concurrent.TimeUnit;
@@ -16,7 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static Retrofit retrofit = null;
-
     static Retrofit getClient(String baseUrl) {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -27,6 +30,7 @@ public class RetrofitClient {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .build();
+
 
         return retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -39,6 +43,4 @@ public class RetrofitClient {
     public static ApiInterface getRetrofit(Context context,String baseUrl){
         return getClient(baseUrl).create(ApiInterface.class);
     }
-
-
 }

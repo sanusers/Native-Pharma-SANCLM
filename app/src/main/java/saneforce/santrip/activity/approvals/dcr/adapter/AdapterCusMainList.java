@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.approvals.dcr.call.DcrDetailViewActivity;
-import saneforce.santrip.activity.approvals.dcr.call.adapter.AdapterCusSingleList;
+import saneforce.santrip.activity.approvals.dcr.detailView.DcrDetailViewActivity;
+import saneforce.santrip.activity.approvals.dcr.detailView.adapter.AdapterCusSingleList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.santrip.activity.homeScreen.call.pojo.input.SaveCallInputList;
 import saneforce.santrip.activity.homeScreen.call.pojo.product.SaveCallProductList;

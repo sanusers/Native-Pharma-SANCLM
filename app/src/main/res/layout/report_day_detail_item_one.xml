@@ -5,74 +5,84 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_5sdp"
-        android:background="@drawable/thin_gray_stroke"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_1sdp"
+        app:cardElevation="5dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
-            android:id="@+id/nameLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:orientation="horizontal"
-            android:padding="@dimen/_5sdp">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/iconName"
-                android:layout_width="@dimen/_14sdp"
-                android:layout_height="@dimen/_14sdp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/tp_dr_icon" />
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/nameLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:layout_toEndOf="@id/iconName"
-                android:fontFamily="@font/satoshi_medium"
-                android:text="Ram Kumar"
-                android:textColor="@color/text_dark"
-                android:textSize="@dimen/_6sdp"
-                tools:ignore="SpUsage" />
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp"
+                app:layout_constraintBottom_toTopOf="@id/view_top"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/iconName"
+                    android:layout_width="@dimen/_14sdp"
+                    android:layout_height="@dimen/_14sdp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/tp_dr_icon" />
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/nameLayout"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:background="#ededed" />
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_toEndOf="@id/iconName"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Ram Kumar"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
 
-        <RelativeLayout
-            android:id="@id/relativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/view"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:padding="@dimen/_3sdp">
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/view_top"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:background="#ededed"
+                app:layout_constraintBottom_toTopOf="@id/ll1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameLayout" />
 
             <LinearLayout
                 android:id="@+id/ll1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/_2sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                app:layout_constraintBottom_toTopOf="@id/view2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_top">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -88,7 +98,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Visit Time"
+                        android:text="@string/visit_time"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -103,9 +113,9 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text=""
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
                 </RelativeLayout>
@@ -124,7 +134,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Modified Time"
+                        android:text="@string/modified_time"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -141,6 +151,7 @@
                         android:text=""
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
                 </RelativeLayout>
@@ -159,7 +170,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Cluster"
+                        android:text="@string/cluster"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -177,6 +188,7 @@
                         android:text=""
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
                 </RelativeLayout>
@@ -195,7 +207,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="POB"
+                        android:text="@string/pob"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -213,6 +225,7 @@
                         android:text=""
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
                 </RelativeLayout>
@@ -231,7 +244,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
                         android:fontFamily="@font/satoshi_medium"
-                        android:text="Feedback"
+                        android:text="@string/feedback"
                         android:textColor="@color/text_dark_65"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -249,31 +262,36 @@
                         android:text=""
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
                         tools:ignore="SpUsage" />
 
                 </RelativeLayout>
-
             </LinearLayout>
 
             <View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@id/ll1"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:background="#ededed" />
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:background="#ededed"
+                app:layout_constraintBottom_toTopOf="@id/ll2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll1" />
 
             <LinearLayout
                 android:id="@+id/ll2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/view2"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:orientation="horizontal">
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/_2sdp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                app:layout_constraintBottom_toTopOf="@id/view3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view2">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -305,6 +323,7 @@
                         android:layout_marginTop="@dimen/_3sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text=""
+                        android:textStyle="bold"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -312,15 +331,20 @@
                 </RelativeLayout>
 
                 <View
+                    android:id="@+id/view_ll2"
                     android:layout_width="1dp"
+                    android:visibility="gone"
                     android:layout_height="match_parent"
+                    android:layout_marginVertical="@dimen/_2sdp"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:background="#ededed" />
 
                 <RelativeLayout
+                    android:id="@+id/rl_nextVisit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_weight="1">
 
                     <TextView
@@ -348,6 +372,7 @@
                         android:layout_marginTop="@dimen/_3sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text=""
+                        android:textStyle="bold"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
@@ -356,34 +381,37 @@
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/expandLayout"
+            <View
+                android:id="@+id/view3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ll2"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true">
+                android:layout_height="1dp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:background="#ededed"
+                app:layout_constraintBottom_toTopOf="@id/constraint_expand_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll2" />
 
-                <View
-                    android:id="@+id/view3"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
-                    android:background="#ededed" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_expand_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toTopOf="@id/viewMore"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view3">
 
                 <LinearLayout
                     android:id="@+id/checkInOutLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/view3"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:orientation="horizontal"
                     android:visibility="gone"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal">
+                    app:layout_constraintBottom_toTopOf="@id/view4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
@@ -398,7 +426,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="Check IN time &amp; Location"
+                            android:text="@string/check_in_time_amp_location"
                             android:textColor="@color/text_dark_65"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -420,24 +448,28 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:gravity="bottom"
-                                android:text=""
+                                android:textStyle="bold"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_5sdp"
                                 tools:ignore="SpUsage" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_marginStart="@dimen/_3sdp"
+                                android:src="@drawable/marker_geo_approval" />
 
                             <TextView
                                 android:id="@+id/checkInMarker"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginStart="@dimen/_5sdp"
-                                android:drawablePadding="@dimen/_5sdp"
+                                android:layout_marginStart="@dimen/_2sdp"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:gravity="bottom|start"
-                                android:text="View"
+                                android:text="@string/view"
                                 android:textColor="@color/pink"
                                 android:textSize="@dimen/_5sdp"
-                                app:drawableStartCompat="@drawable/marker_geo_approval"
                                 tools:ignore="SpUsage" />
 
                         </LinearLayout>
@@ -453,6 +485,7 @@
                             android:fontFamily="@font/satoshi_medium"
                             android:gravity="center"
                             android:text=""
+                            android:textStyle="bold"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             android:visibility="visible"
@@ -463,10 +496,9 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
+                        android:layout_marginVertical="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_5sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
-                        android:layout_marginBottom="@dimen/_5sdp"
                         android:background="#ededed" />
 
                     <RelativeLayout
@@ -482,7 +514,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
                             android:fontFamily="@font/satoshi_medium"
-                            android:text="Check Out time &amp; Location"
+                            android:text="@string/check_out_time_amp_location"
                             android:textColor="@color/text_dark_65"
                             android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
@@ -505,21 +537,26 @@
                                 android:fontFamily="@font/satoshi_medium"
                                 android:gravity="bottom"
                                 android:text=""
+                                android:textStyle="bold"
                                 android:textColor="@color/text_dark"
                                 android:textSize="@dimen/_5sdp"
                                 tools:ignore="SpUsage" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_marginStart="@dimen/_3sdp"
+                                android:src="@drawable/marker_geo_approval" />
 
                             <TextView
                                 android:id="@+id/checkOutMarker"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginStart="@dimen/_5sdp"
-                                android:drawableStart="@drawable/marker_geo_approval"
-                                android:drawablePadding="@dimen/_5sdp"
+                                android:layout_marginStart="@dimen/_2sdp"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:gravity="bottom|start"
-                                android:text="View"
+                                android:text="@string/view"
                                 android:textColor="@color/pink"
                                 android:textSize="@dimen/_5sdp"
                                 tools:ignore="SpUsage" />
@@ -537,45 +574,46 @@
                             android:fontFamily="@font/satoshi_medium"
                             android:gravity="center"
                             android:text=""
+                            android:textStyle="bold"
                             android:textColor="@color/text_dark"
                             android:textSize="@dimen/_5sdp"
                             android:visibility="visible"
                             tools:ignore="SpUsage" />
 
                     </RelativeLayout>
-
                 </LinearLayout>
 
                 <View
                     android:id="@+id/view4"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/checkInOutLayout"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
                     android:background="#ededed"
-                    android:visibility="visible" />
-
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/constraint_expand_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/checkInOutLayout" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/productLayout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/view4"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:visibility="gone">
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/inputLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view4">
 
                     <TextView
                         android:id="@+id/tag_sample_prd"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_1sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:paddingHorizontal="@dimen/_4sdp"
-                        android:paddingVertical="@dimen/_5sdp"
+                        android:paddingVertical="@dimen/_3sdp"
                         android:text="@string/products"
                         android:textColor="@color/light_grey_2"
                         android:textSize="@dimen/_5ssp"
@@ -588,9 +626,9 @@
                         android:id="@+id/constraint_tag_sample_prd"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/_6sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
                         android:background="@drawable/bg_light_grey_1"
-                        android:paddingHorizontal="@dimen/_5sdp"
+                        android:paddingHorizontal="@dimen/_3sdp"
                         android:paddingVertical="@dimen/_1sdp"
                         app:layout_constraintBottom_toTopOf="@id/rv_sample_prd"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -602,7 +640,8 @@
                             android:layout_width="@dimen/_78sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_1sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/product_name"
@@ -620,7 +659,8 @@
                             android:layout_width="@dimen/_40sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_1sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/promoted"
@@ -639,7 +679,8 @@
                             android:layout_width="@dimen/_40sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_1sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/stock"
@@ -658,7 +699,8 @@
                             android:layout_width="@dimen/_40sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_1sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/samples"
@@ -676,7 +718,8 @@
                             android:layout_width="@dimen/_40sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_1sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/rx_qty"
@@ -695,7 +738,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_1sdp"
                             android:layout_marginEnd="@dimen/_8sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/rcpa"
@@ -714,9 +758,9 @@
                         android:id="@+id/rv_sample_prd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/_6sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
                         android:overScrollMode="never"
-                        android:paddingHorizontal="@dimen/_5sdp"
+                        android:paddingHorizontal="@dimen/_4sdp"
                         android:paddingVertical="@dimen/_1sdp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -725,26 +769,16 @@
                         app:layout_constraintTop_toBottomOf="@id/constraint_tag_sample_prd" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:id="@+id/view5"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/productLayout"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginBottom="@dimen/_5sdp"
-                    android:background="#ededed"
-                    android:visibility="gone" />
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/inputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/view5"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:visibility="gone">
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/cardRcpaLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/productLayout">
 
                     <TextView
                         android:id="@+id/tag_input"
@@ -753,7 +787,7 @@
                         android:layout_marginTop="@dimen/_2sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:paddingHorizontal="@dimen/_4sdp"
-                        android:paddingVertical="@dimen/_5sdp"
+                        android:paddingVertical="@dimen/_3sdp"
                         android:text="@string/input"
                         android:textColor="@color/light_grey_2"
                         android:textSize="@dimen/_5ssp"
@@ -768,7 +802,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/_6sdp"
                         android:background="@drawable/bg_light_grey_1"
-                        android:paddingHorizontal="@dimen/_5sdp"
+                        android:paddingHorizontal="@dimen/_3sdp"
                         android:paddingVertical="@dimen/_1sdp"
                         app:layout_constraintBottom_toTopOf="@id/rv_input"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -781,7 +815,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/_4sdp"
                             android:layout_marginVertical="@dimen/_1sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/input_name"
@@ -800,7 +835,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/_4sdp"
                             android:layout_marginVertical="@dimen/_1sdp"
-                            android:fontFamily="@font/satoshi_bold"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
                             android:paddingHorizontal="@dimen/_4sdp"
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/qty"
@@ -819,9 +855,9 @@
                         android:id="@+id/rv_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/_6sdp"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
                         android:overScrollMode="never"
-                        android:paddingHorizontal="@dimen/_5sdp"
+                        android:paddingHorizontal="@dimen/_3sdp"
                         android:paddingVertical="@dimen/_1sdp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -830,66 +866,79 @@
                         app:layout_constraintTop_toBottomOf="@id/constraint_tag_input" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:id="@+id/view61"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/inputLayout"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
-                    android:background="#ededed"
-                    android:visibility="gone" />
 
-                <LinearLayout
-                    android:id="@+id/rcpaLayout"
-                    android:layout_width="match_parent"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardRcpaLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/view61"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/_5sdp">
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:divider="@android:color/transparent"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_1sdp"
+                    app:cardElevation="2dp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/inputLayout">
 
-                    <TextView
-                        android:id="@+id/rcpa"
-                        android:layout_width="wrap_content"
+
+                    <LinearLayout
+                        android:id="@+id/rcpaLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:text="RCPA"
-                        android:textColor="@color/text_dark"
-                        android:textSize="@dimen/_5sdp"
-                        tools:ignore="SpUsage" />
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5sdp">
 
-                    <ImageView
-                        android:layout_width="@dimen/_7sdp"
-                        android:layout_height="@dimen/_7sdp"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/_5sdp"
-                        android:src="@drawable/arrow_down" />
+                        <TextView
+                            android:id="@+id/rcpa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="RCPA"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            tools:ignore="SpUsage" />
 
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="@dimen/_7sdp"
+                            android:layout_height="@dimen/_7sdp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:src="@drawable/arrow_down" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
 
                 <View
-                    android:id="@+id/view6"
+                    android:id="@+id/view5"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_below="@id/rcpaLayout"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
-                    android:background="#ededed" />
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:background="#ededed"
+                    app:layout_constraintBottom_toTopOf="@id/rlOthers"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardRcpaLayout" />
 
                 <RelativeLayout
+                    android:id="@+id/rlOthers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/view6"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true">
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    app:layout_constraintBottom_toTopOf="@id/view6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view5">
 
                     <TextView
                         android:id="@+id/overAllRemarkTxt"
@@ -916,56 +965,58 @@
                         android:layout_marginTop="@dimen/_3sdp"
                         android:fontFamily="@font/satoshi_medium"
                         android:text=""
+                        android:textStyle="bold"
                         android:textColor="@color/text_dark"
                         android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
 
                 </RelativeLayout>
 
-            </RelativeLayout>
 
-        </RelativeLayout>
+                <View
+                    android:id="@+id/view6"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:background="#ededed"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rlOthers" />
 
-        <View
-            android:id="@+id/view7"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/relativeLayout"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:background="#ededed" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
-            android:id="@+id/viewMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/view7"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="@dimen/_5sdp">
-
-            <TextView
-                android:id="@+id/viewMoreTxt"
+            <LinearLayout
+                android:id="@+id/viewMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/satoshi_medium"
-                android:text="View More"
-                android:textColor="@color/text_dark"
-                android:textSize="@dimen/_5sdp"
-                tools:ignore="SpUsage" />
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/constraint_expand_view">
 
-            <ImageView
-                android:id="@+id/viewMoreArrow"
-                android:layout_width="@dimen/_4sdp"
-                android:layout_height="@dimen/_4sdp"
-                android:layout_gravity="center|bottom"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:src="@drawable/arrow_down" />
+                <TextView
+                    android:id="@+id/viewMoreTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="View More"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/viewMoreArrow"
+                    android:layout_width="@dimen/_4sdp"
+                    android:layout_height="@dimen/_4sdp"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/arrow_down" />
 
-    </RelativeLayout>
-
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

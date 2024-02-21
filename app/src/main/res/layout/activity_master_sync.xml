@@ -503,7 +503,7 @@
                         android:paddingStart="@dimen/_3sdp">
 
                         <LinearLayout
-                            android:id="@+id/ll3"
+                            android:id="@+id/checkInOutLayout"
                             android:weightSum="1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -554,7 +554,7 @@
                             android:paddingEnd="@dimen/_minus4sdp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
-                            android:layout_below="@id/ll3" />
+                            android:layout_below="@id/checkInOutLayout" />
 
                         <LinearLayout
                             android:weightSum="3"

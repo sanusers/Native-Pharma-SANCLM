@@ -1,6 +1,4 @@
-package saneforce.santrip.activity.approvals.dcr.call;
-
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+package saneforce.santrip.activity.approvals.dcr.detailView;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.OnItemClickListenerApproval;
-import saneforce.santrip.activity.approvals.dcr.call.adapter.AdapterCusSingleList;
+import saneforce.santrip.activity.approvals.dcr.detailView.adapter.AdapterCusSingleList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.santrip.activity.approvals.tp.pojo.TpModelList;

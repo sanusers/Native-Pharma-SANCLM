@@ -103,7 +103,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public static ArrayList<StoreImageTypeUrl> arrayStore;
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrcallBinding dcrCallBinding;
-    public static String PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd;
+    public static String PobNeed, CapPob, OverallFeedbackNeed, EventCaptureNeed, JwNeed, CusCheckInOutNeed, SampleValidation, InputValidation, PrdSamNeed, PrdRxNeed, CapSamQty, CapRxQty, RcpaCompetitorAdd, SamQtyRestriction, SamQtyRestrictValue, InpQtyRestriction, InpQtyRestrictValue;
     public static ArrayList<CallCommonCheckedList> StockSample = new ArrayList<>();
     public static ArrayList<CallCommonCheckedList> StockInput = new ArrayList<>();
     public static String isFromActivity;
@@ -260,7 +260,7 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view -> {
-            //  progressDialog = CommonUtilsMethods.createProgressDialog(this);
+            progressDialog = CommonUtilsMethods.createProgressDialog(this);
             isCreateJsonSuccess = true;
             gpsTrack = new GPSTrack(DCRCallActivity.this);
             double lat = gpsTrack.getLatitude();
@@ -281,8 +281,17 @@ public class DCRCallActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
+
+                        //   try {
+                        //  if ((boolean) new InternetConnectionTest(context).execute().get()) {
                         CallUploadImage();
                         CallSaveDcrAPI(jsonSaveDcr.toString());
+                        // } else {
+                        //  commonUtilsMethods.ShowToast(getApplicationContext(), "Poor Connection", 100);
+                        //  }
+                        //  } catch (Exception ignored) {
+
+                        //   }
                     } else {
                         tv_address.setText(context.getString(R.string.no_network));
                         // progressDialog.dismiss();
@@ -303,12 +312,11 @@ public class DCRCallActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }
-
                 } else {
-                    //  progressDialog.dismiss();
+                    progressDialog.dismiss();
                 }
             } else {
-                // progressDialog.dismiss();
+                progressDialog.dismiss();
             }
         });
 
@@ -667,7 +675,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         } else {
                             commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.call_failed), 100);
                         }
-                        // progressDialog.dismiss();
+
                         sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                             dialogCheckOut.show();
@@ -675,11 +683,12 @@ public class DCRCallActivity extends AppCompatActivity {
                             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                             startActivity(intent);
                         }
+                        progressDialog.dismiss();
                     /*    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                         startActivity(intent);*/
 
                     } catch (Exception e) {
-                        // progressDialog.dismiss();
+                        progressDialog.dismiss();
                         commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.call_saved_something_wrong), 100);
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                             dialogCheckOut.show();
@@ -697,7 +706,7 @@ public class DCRCallActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 Log.v("callSave", "---" + t);
-                //progressDialog.dismiss();
+                progressDialog.dismiss();
                 commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.call_failed_saved_locally), 100);
                 if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                     dialogCheckOut.show();
@@ -1119,6 +1128,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 json_product.put("Mod", Constants.APP_MODE);
                 json_product.put("SmpQty", "");
                 json_product.put("RxQty", "");
+                json_product.put("RcpaQty", "");
+                json_product.put("Promoted", "");
                 json_product.put("Type", CallActivityCustDetails.get(0).getType());
                 json_product.put("StockistName", "");
                 json_product.put("StockistCode", "");
@@ -1175,8 +1186,25 @@ public class DCRCallActivity extends AppCompatActivity {
                 json_product.put("Timesline", json_date);
                 json_product.put("Appver", Constants.APP_VERSION);
                 json_product.put("Mod", Constants.APP_MODE);
-                json_product.put("SmpQty", CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty());
-                json_product.put("RxQty", CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty());
+                if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty()) {
+                    json_product.put("SmpQty", "0");
+                } else {
+                    json_product.put("SmpQty", CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty());
+                }
+
+                if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty()) {
+                    json_product.put("RxQty", "0");
+                } else {
+                    json_product.put("RxQty", CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty());
+                }
+
+                if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRcpa_qty().isEmpty()) {
+                    json_product.put("RcpaQty", "0");
+                } else {
+                    json_product.put("RcpaQty", CheckProductListAdapter.saveCallProductListArrayList.get(i).getRcpa_qty());
+                }
+
+                json_product.put("Promoted", CheckProductListAdapter.saveCallProductListArrayList.get(i).getPromoted());
                 json_product.put("Type", CallActivityCustDetails.get(0).getType());
                 json_product.put("StockistName", "");
                 json_product.put("StockistCode", "");
@@ -1548,6 +1576,20 @@ public class DCRCallActivity extends AppCompatActivity {
             InputValidation = loginResponse.getInput_validation();
             GeoChk = loginResponse.getGeoChk();
             HosNeed = loginResponse.getHosp_need();
+            if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
+                SamQtyRestriction = "0";
+                SamQtyRestrictValue = "7";
+            } else {
+                SamQtyRestriction = "0";
+                SamQtyRestrictValue = loginResponse.getSample_Val_Qty();
+            }
+
+            if (loginResponse.getInput_Val_Qty().equalsIgnoreCase("0")) {
+                InpQtyRestriction = "1";
+            } else {
+                InpQtyRestriction = "0";
+                InpQtyRestrictValue = loginResponse.getInput_Val_Qty();
+            }
 
             new JSONArray();
             JSONArray jsonArray;

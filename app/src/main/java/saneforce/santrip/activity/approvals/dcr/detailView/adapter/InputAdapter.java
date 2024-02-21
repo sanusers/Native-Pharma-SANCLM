@@ -1,4 +1,4 @@
-package saneforce.santrip.activity.approvals.dcr.call.adapter;
+package saneforce.santrip.activity.approvals.dcr.detailView.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

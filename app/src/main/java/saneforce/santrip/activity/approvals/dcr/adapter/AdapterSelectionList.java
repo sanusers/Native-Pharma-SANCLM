@@ -20,7 +20,7 @@ import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
 public class AdapterSelectionList extends RecyclerView.Adapter<AdapterSelectionList.ViewHolder> {
     Context context;
     ArrayList<AdapterModel> adapterModels;
-    int selectedPosition = -1;
+    int selectedPosition = 0;
     int lastSelectedPosition = -1;
     AdapterCusMainList adapterCusMainList;
     ArrayList<DcrDetailModelList> dcrApprovalLists;

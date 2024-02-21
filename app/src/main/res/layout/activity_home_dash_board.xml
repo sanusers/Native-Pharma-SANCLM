@@ -190,7 +190,7 @@
                         app:tabIndicatorHeight="1dp"
                         app:tabMode="fixed"
                         app:tabSelectedTextColor="@color/text_dark"
-                        app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
+                        app:tabTextAppearance="@style/tab_text"
                         app:tabTextColor="@color/text_dark_65" />
 
                     <View

@@ -2,9 +2,15 @@ package saneforce.santrip.activity.reports;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +32,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityReportsBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
@@ -36,12 +44,15 @@ import saneforce.santrip.utility.NetworkStatusTask;
 
 public class ReportsActivity extends AppCompatActivity {
 
-    ActivityReportsBinding binding;
+    @SuppressLint("StaticFieldLeak")
+    public static ActivityReportsBinding binding;
     ReportsAdapter reportsAdapter;
     ApiInterface apiInterface;
     SQLite sqLite;
     LoginResponse loginResponse;
     CommonUtilsMethods commonUtilsMethods;
+    ProgressDialog progressDialog;
+    String url;
 
 
     //To Hide the bottomNavigation When popup
@@ -49,13 +60,7 @@ public class ReportsActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -74,30 +79,26 @@ public class ReportsActivity extends AppCompatActivity {
 
     }
 
-    public void populateAdapter(){
+    public void populateAdapter() {
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Day Report");
         arrayList.add("Monthly Report");
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
         arrayList.add("Visit Monitor");
+        arrayList.add("Dash Board");
 
-        reportsAdapter = new ReportsAdapter(arrayList,ReportsActivity.this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ReportsActivity.this,4);
+        reportsAdapter = new ReportsAdapter(arrayList, ReportsActivity.this);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(ReportsActivity.this, 4);
         binding.recView.setLayoutManager(layoutManager);
         binding.recView.setAdapter(reportsAdapter);
     }
 
-    public void getData(String report,String date){
-
-        binding.progressBar.setVisibility(View.VISIBLE);
-        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, new NetworkStatusTask.NetworkStatusInterface() {
-            @Override
-            public void isNetworkAvailable(Boolean status) {
-                if(status){
-
+    public void getData(String report, String date) {
+        if (UtilityClass.isNetworkAvailable(this)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
+                if (status) {
                     try {
-//                    apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
 
                         JSONObject jsonObject = new JSONObject();
@@ -109,17 +110,8 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("state_code", loginResponse.getState_Code());
                         jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
                         jsonObject.put("rptDt", date);
-
-//                        jsonObject.put("divisionCode", "25");
-//                        jsonObject.put("rptSF", "MGR2240");
-//                        jsonObject.put("rSF", "MGR2240");
-//                        jsonObject.put("sfCode", "MGR2240");
-
-                        switch (report.toUpperCase()){
-                            case "DAY REPORT" : {
-                                jsonObject.put("tableName", "getdayrpt");
-                                break;
-                            }
+                        if (report.equalsIgnoreCase("DAY REPORT")) {
+                            jsonObject.put("tableName", "getdayrpt");
 //                case "MONTHLY REPORT" : {
 //                    break;
 //                }
@@ -140,17 +132,17 @@ public class ReportsActivity extends AppCompatActivity {
                         call.enqueue(new Callback<JsonElement>() {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                binding.progressBar.setVisibility(View.GONE);
+                                progressDialog.dismiss();
                                 try {
-                                    if(response.isSuccessful() && response.body() != null){
+                                    if (response.isSuccessful() && response.body() != null) {
                                         JsonElement jsonElement = response.body();
                                         JSONArray jsonArray = new JSONArray();
-                                        if(jsonElement.isJsonArray()){
+                                        if (jsonElement.isJsonArray()) {
                                             jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                                            navigate(jsonArray,report,date);
+                                            navigate(jsonArray, report, date);
                                         }
                                     }
-                                }catch (JSONException e){
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
 
@@ -158,33 +150,33 @@ public class ReportsActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                binding.progressBar.setVisibility(View.GONE);
+                                progressDialog.dismiss();
 
                             }
                         });
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                }else{
-                    binding.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_network),100);
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.ShowToast(getApplicationContext(), "Network UnAvailable", 100);
                 }
-            }
-        });
-        networkStatusTask.execute();
+
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+        }
     }
 
-    public void navigate(JSONArray jsonArray,String report,String date){
+    public void navigate(JSONArray jsonArray, String report, String date) {
         Intent intent = new Intent(ReportsActivity.this, ReportFragContainerActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("data",jsonArray.toString());
-        bundle.putString("date",date);
-        bundle.putString("fragment",report);
-        intent.putExtra("reportBundle",bundle);
+        bundle.putString("data", jsonArray.toString());
+        bundle.putString("date", date);
+        bundle.putString("fragment", report);
+        intent.putExtra("reportBundle", bundle);
         startActivity(intent);
-
     }
-
-
 }

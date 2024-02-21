@@ -2,14 +2,8 @@ package saneforce.santrip.activity.reports.dayReport.fragment;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,6 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -37,11 +36,12 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
+import saneforce.santrip.activity.reports.dayReport.adapter.DayReportDetailAdapter;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
-import saneforce.santrip.activity.reports.dayReport.adapter.DayReportDetailAdapter;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.FragmentDayReportDetailBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
@@ -53,7 +53,7 @@ import saneforce.santrip.utility.TimeUtils;
 
 
 public class DayReportDetailFragment extends Fragment {
-
+    public static String callCheckInOutNeed;
     FragmentDayReportDetailBinding binding;
     DayReportDetailAdapter adapter;
     DayReportModel dayReportModel;
@@ -63,6 +63,7 @@ public class DayReportDetailFragment extends Fragment {
     LoginResponse loginResponse;
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
+    ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,13 +83,12 @@ public class DayReportDetailFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()>0) {
+                if (charSequence.length() > 0) {
                     binding.searchClearIcon.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     binding.searchClearIcon.setVisibility(View.GONE);
                 }
-                if(adapter != null)
-                    adapter.getFilter().filter(charSequence);
+                if (adapter != null) adapter.getFilter().filter(charSequence);
             }
 
             @Override
@@ -97,70 +97,51 @@ public class DayReportDetailFragment extends Fragment {
             }
         });
 
-        binding.searchClearIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.searchET.setText("");
+        binding.searchClearIcon.setOnClickListener(view -> binding.searchET.setText(""));
+
+        binding.doctor.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                setSelection(binding.doctor);
+                getData("1", Constants.DOCTOR);
             }
         });
 
-        binding.doctor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!view.isSelected()) {
-                    setSelection(binding.doctor);
-                    getData("1", Constants.DOCTOR);
-                }
+        binding.all.setOnClickListener(v -> {
+
+        });
+
+        binding.chemist.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                setSelection(binding.chemist);
+                getData("2", Constants.CHEMIST);
             }
         });
 
-        binding.chemist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!view.isSelected()) {
-                    setSelection(binding.chemist);
-                    getData("2", Constants.CHEMIST);
-                }
+        binding.stockiest.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                setSelection(binding.stockiest);
+                getData("3", Constants.STOCKIEST);
             }
         });
 
-        binding.stockiest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!view.isSelected()) {
-                    setSelection(binding.stockiest);
-                    getData("3", Constants.STOCKIEST);
-                }
+        binding.unDr.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                setSelection(binding.unDr);
+                getData("4", Constants.UNLISTED_DOCTOR);
             }
         });
 
-        binding.unDr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!view.isSelected()) {
-                    setSelection(binding.unDr);
-                    getData("4", Constants.UNLISTED_DOCTOR);
-                }
+        binding.cip.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                setSelection(binding.cip);
+                getData("5", Constants.CIP);
             }
         });
 
-        binding.cip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!view.isSelected()) {
-                    setSelection(binding.cip);
-                    getData("5", Constants.CIP);
-                }
-            }
-        });
-
-        binding.hosp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!view.isSelected()) {
-                    setSelection(binding.hosp);
-                    getData("6", Constants.HOSPITAL);
-                }
+        binding.hosp.setOnClickListener(view -> {
+            if (!view.isSelected()) {
+                setSelection(binding.hosp);
+                getData("6", Constants.HOSPITAL);
             }
         });
 
@@ -178,23 +159,46 @@ public class DayReportDetailFragment extends Fragment {
 
         ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
         String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dayReportModel.getAdate());
-        activity.title.setText("Day Report ( " + date + " )");
+        activity.title.setText(String.format("Day Report ( %s )", date));
+        int drCount = 0, chmCount = 0, stkCount = 0, undrCount = 0, cipCount = 0, hosCount = 0;
 
-        int allCount = Integer.parseInt(dayReportModel.getDrs()) + Integer.parseInt(dayReportModel.getChm()) + Integer.parseInt(dayReportModel.getStk()) +
-                Integer.parseInt(dayReportModel.getHos());
+        if (loginResponse.getDrNeed().equalsIgnoreCase("0")) {
+            binding.drLayout.setVisibility(View.VISIBLE);
+            drCount = Integer.parseInt(dayReportModel.getDrs());
+            binding.drCount.setText(dayReportModel.getDrs());
+        }
+        if (loginResponse.getChmNeed().equalsIgnoreCase("0")) {
+            binding.cheLayout.setVisibility(View.VISIBLE);
+            chmCount = Integer.parseInt(dayReportModel.getChm());
+            binding.cheCount.setText(dayReportModel.getChm());
+        }
+        if (loginResponse.getStkNeed().equalsIgnoreCase("0")) {
+            binding.stkLayout.setVisibility(View.VISIBLE);
+            stkCount = Integer.parseInt(dayReportModel.getStk());
+            binding.stkCount.setText(dayReportModel.getStk());
+        }
+        if (loginResponse.getUNLNeed().equalsIgnoreCase("0")) {
+            binding.unDrLayout.setVisibility(View.VISIBLE);
+            cipCount = Integer.parseInt(dayReportModel.getUdr());
+            binding.unDrCount.setText(dayReportModel.getUdr());
+        }
+        if (loginResponse.getCip_need().equalsIgnoreCase("0")) {
+            binding.cipLayout.setVisibility(View.VISIBLE);
+            undrCount = Integer.parseInt(dayReportModel.getCip());
+            binding.cipCount.setText(dayReportModel.getCip());
+        }
+        if (loginResponse.getHosp_need().equalsIgnoreCase("0")) {
+            binding.hospLayout.setVisibility(View.VISIBLE);
+            hosCount = Integer.parseInt(dayReportModel.getCip());
+            binding.hospCount.setText(dayReportModel.getHos());
+        }
+
         binding.name.setText(dayReportModel.getTerrWrk());
         binding.workType.setText(dayReportModel.getWtype());
         binding.cluster.setText(dayReportModel.getTerrWrk());
 
         binding.workType2.setText(dayReportModel.getHalfDay_FW_Type());
-        binding.allCount.setText(String.valueOf(allCount));
-        binding.drCount.setText(dayReportModel.getDrs());
-        binding.cheCount.setText(dayReportModel.getChm());
-        binding.stkCount.setText(dayReportModel.getStk());
-        binding.unDrCount.setText(dayReportModel.getUdr());
-        binding.cipCount.setText(dayReportModel.getCip());
-        binding.hospCount.setText(dayReportModel.getHos());
-
+        binding.allCount.setText(String.valueOf(drCount + chmCount + stkCount + cipCount + undrCount + hosCount));
     }
 
     public void setSelection(LinearLayout linearLayout) {
@@ -209,11 +213,10 @@ public class DayReportDetailFragment extends Fragment {
     }
 
     public void getData(String type, String reportOf) {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), new NetworkStatusTask.NetworkStatusInterface() {
-            @Override
-            public void isNetworkAvailable(Boolean status) {
-                if(status) {
+        progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
+        if (UtilityClass.isNetworkAvailable(requireContext())) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(requireContext(), status -> {
+                if (status) {
                     try {
                         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
                         JSONObject jsonObject = new JSONObject();
@@ -234,16 +237,16 @@ public class DayReportDetailFragment extends Fragment {
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                                 Log.e("test", "res : " + response.body());
-                                binding.progressBar.setVisibility(View.GONE);
+                                progressDialog.dismiss();
                                 try {
-                                    if(response.body() != null && response.isSuccessful()) {
+                                    if (response.body() != null && response.isSuccessful()) {
                                         JSONArray jsonArray = new JSONArray();
-                                        if(response.body().isJsonArray()) {
+                                        if (response.body().isJsonArray()) {
                                             jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
                                             Type typeToken = new TypeToken<ArrayList<DayReportDetailModel>>() {
                                             }.getType();
                                             arrayOfReportData = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
-                                            populateAdapter(arrayOfReportData, reportOf);
+                                            populateAdapter(arrayOfReportData, reportOf, type);
                                         }
                                     }
                                 } catch (JSONException e) {
@@ -253,31 +256,50 @@ public class DayReportDetailFragment extends Fragment {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                binding.progressBar.setVisibility(View.GONE);
+                                commonUtilsMethods.ShowToast(requireContext(), getString(R.string.toast_response_failed), 100);
+                                progressDialog.dismiss();
                             }
                         });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }else {
-                    binding.progressBar.setVisibility(View.GONE);
-                    commonUtilsMethods.ShowToast(requireContext(),getString(R.string.no_network),100);
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.ShowToast(requireContext(), getString(R.string.poor_connection), 100);
                 }
-            }
-        });
-        networkStatusTask.execute();
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.ShowToast(requireContext(), getString(R.string.no_network), 100);
+        }
     }
 
-    public void populateAdapter(ArrayList<DayReportDetailModel> arrayList, String reportOf) {
-        if(arrayList.size()>0)
-            binding.noReportFoundTxt.setVisibility(View.GONE);
-        else
-            binding.noReportFoundTxt.setVisibility(View.VISIBLE);
+    public void populateAdapter(ArrayList<DayReportDetailModel> arrayList, String reportOf, String type) {
+        if (arrayList.size() > 0) binding.noReportFoundTxt.setVisibility(View.GONE);
+        else binding.noReportFoundTxt.setVisibility(View.VISIBLE);
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf);
+
+        switch (type) {
+            case "1":
+                callCheckInOutNeed = loginResponse.getCustSrtNd();
+                break;
+            case "2":
+                callCheckInOutNeed = loginResponse.getChmSrtNd();
+                break;
+            case "4":
+                callCheckInOutNeed = loginResponse.getUnlistSrtNd();
+                break;
+            case "5":
+                callCheckInOutNeed = loginResponse.getCipSrtNd();
+                break;
+            default:
+                callCheckInOutNeed = "1";
+                break;
+        }
+
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, loginResponse.getNextVst());
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
-
     }
-
 }

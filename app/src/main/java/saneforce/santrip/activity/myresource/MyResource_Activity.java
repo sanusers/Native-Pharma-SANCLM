@@ -2,7 +2,6 @@ package saneforce.santrip.activity.myresource;
 
 import static saneforce.santrip.commonClasses.UtilityClass.hideKeyboard;
 
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -34,7 +33,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.response.LoginResponse;
@@ -398,7 +396,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 }
             }
         }
-        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount);
+        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount, loginResponse.getMCLDet());
         appRecyclerView.setAdapter(appAdapter_0);
         appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
         appAdapter_0.notifyDataSetChanged();

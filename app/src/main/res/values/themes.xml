@@ -43,7 +43,7 @@
     <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:fontFamily">@font/satoshi_bold</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/_7ssp</item>
     </style>
 
     <style name="tab_text_one" parent="@android:style/TextAppearance.Widget.TabWidget">
@@ -102,7 +102,7 @@
     </style>
 
     <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
-        <item name="android:textSize">@dimen/_8sdp</item>
+        <item name="android:textSize">@dimen/_7ssp</item>
     </style>
 
     <style name="navicaton_text">

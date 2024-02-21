@@ -1,5 +1,12 @@
 package saneforce.santrip.activity.reports.dayReport.adapter;
 
+import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.CheckInOutNeed;
+import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.CipNeed;
+import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.cheNeed;
+import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.drNeed;
+import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.stkNeed;
+import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.unDrNeed;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -9,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,7 +31,6 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.geotagging.GeoTaggingModelList;
-import saneforce.santrip.activity.forms.weekoff.Holiday_fragment;
 import saneforce.santrip.activity.map.MapsActivity;
 import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
@@ -33,14 +39,12 @@ import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
 
 
 public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyViewHolder> implements Filterable {
+    public static ArrayList<GeoTaggingModelList> DayReportMapList = new ArrayList<>();
     ArrayList<DayReportModel> arrayList = new ArrayList<>();
     ArrayList<DayReportModel> supportModelArray = new ArrayList<>();
-    public static ArrayList<GeoTaggingModelList> DayReportMapList = new ArrayList<>();
-
     Context context;
     DataViewModel dataViewModel;
     private ValueFilter valueFilter;
-
 
     public DayReportAdapter(ArrayList<DayReportModel> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -61,35 +65,63 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         DayReportModel dayReportModel = arrayList.get(holder.getAbsoluteAdapterPosition());
         holder.name.setText(dayReportModel.getSF_Name());
         holder.workType.setText(dayReportModel.getWtype());
-        holder.checkInTime.setText(dayReportModel.getIntime());
-        holder.checkInAddress.setText(dayReportModel.getInaddress());
-        holder.checkOutTime.setText(dayReportModel.getOuttime());
-        holder.checkOutAddress.setText(dayReportModel.getOutaddress());
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
 
-        holder.drCount.setText(dayReportModel.getDrs());
-        holder.chemCount.setText(dayReportModel.getChm());
-        holder.stockCount.setText(dayReportModel.getStk());
-        holder.cipCount.setText(dayReportModel.getCip());
-        holder.unDrCount.setText(dayReportModel.getUdr());
-        holder.hospCount.setText(dayReportModel.getHos());
+        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            holder.rlCheckIn.setVisibility(View.VISIBLE);
+            holder.rlCheckOut.setVisibility(View.VISIBLE);
+            holder.checkInTime.setText(dayReportModel.getIntime());
+            holder.checkInAddress.setText(dayReportModel.getInaddress());
+            holder.checkOutTime.setText(dayReportModel.getOuttime());
+            holder.checkOutAddress.setText(dayReportModel.getOutaddress());
+        }
+
+        if (drNeed.equalsIgnoreCase("0")) {
+            holder.drIcon.setVisibility(View.VISIBLE);
+            holder.drCount.setText(dayReportModel.getDrs());
+        }
+
+        if (cheNeed.equalsIgnoreCase("0")) {
+            holder.cheIcon.setVisibility(View.VISIBLE);
+            holder.chemCount.setText(dayReportModel.getChm());
+        }
+
+        if (stkNeed.equalsIgnoreCase("0")) {
+            holder.stockIcon.setVisibility(View.VISIBLE);
+            holder.stockCount.setText(dayReportModel.getStk());
+        }
+
+        if (unDrNeed.equalsIgnoreCase("0")) {
+            holder.unDrIcon.setVisibility(View.VISIBLE);
+            holder.unDrCount.setText(dayReportModel.getUdr());
+        }
+
+        if (CipNeed.equalsIgnoreCase("0")) {
+            holder.cipIcon.setVisibility(View.VISIBLE);
+            holder.cipCount.setText(dayReportModel.getCip());
+        }
+
+        if (CipNeed.equalsIgnoreCase("0")) {
+            holder.hospIcon.setVisibility(View.VISIBLE);
+            holder.hospCount.setText(dayReportModel.getHos());
+        }
 
         int status = dayReportModel.getTyp();
-        switch (status){
-            case 0:{
-                holder.status.setText("Pending");
+        switch (status) {
+            case 0: {
+                holder.status.setText(R.string.pending);
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
                 break;
             }
-            case 1:{
-                holder.status.setText("Approved");
+            case 1: {
+                holder.status.setText(R.string.approved);
                 holder.status.setTextColor(context.getColor(R.color.green_2));
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_priority)));
                 break;
             }
-            case 2:{
-                holder.status.setText("Rejected");
+            case 2: {
+                holder.status.setText(R.string.rejected);
                 holder.status.setTextColor(context.getColor(R.color.pink));
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
                 break;
@@ -106,27 +138,20 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             context.startActivity(new Intent(context, MapsActivity.class));
         });
 
-        holder.checkOutMarker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, MapsActivity.class);
-                intent.putExtra("from", "view_tag_day_report");
-                //   DayReportMapList.clear();
-                //   DayReportMapList.add(new GeoTaggingModelList(dayReportModel.getSF_Name(), dayReportModel.getWtype(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getInaddress()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-                context.startActivity(new Intent(context, MapsActivity.class));
-            }
+        holder.checkOutMarker.setOnClickListener(view -> {
+            Intent intent = new Intent(context, MapsActivity.class);
+            intent.putExtra("from", "view_tag_day_report");
+            //   DayReportMapList.clear();
+            //   DayReportMapList.add(new GeoTaggingModelList(dayReportModel.getSF_Name(), dayReportModel.getWtype(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getInaddress()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            context.startActivity(new Intent(context, MapsActivity.class));
         });
 
-        holder.arrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataViewModel.saveDetailedData(new Gson().toJson(dayReportModel));
-                ReportFragContainerActivity activity = (ReportFragContainerActivity) context;
-                activity.loadFragment(new DayReportDetailFragment());
-
-            }
+        holder.arrow.setOnClickListener(view -> {
+            dataViewModel.saveDetailedData(new Gson().toJson(dayReportModel));
+            ReportFragContainerActivity activity = (ReportFragContainerActivity) context;
+            activity.loadFragment(new DayReportDetailFragment());
         });
 
     }
@@ -138,18 +163,18 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
     @Override
     public Filter getFilter() {
-        if(valueFilter == null) {
+        if (valueFilter == null) {
             valueFilter = new ValueFilter();
         }
         return valueFilter;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-
         TextView name, workType, checkInTime, checkInAddress, checkInMarker, checkOutTime, checkOutAddress, checkOutMarker, submitDate, remarks, status;
         TextView drCount, chemCount, stockCount, unDrCount, cipCount, hospCount;
         ConstraintLayout drIcon, cheIcon, stockIcon, cipIcon, unDrIcon, hospIcon;
         LinearLayout arrow, statusLayout;
+        RelativeLayout rlCheckIn, rlCheckOut;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -181,6 +206,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 
             statusLayout = itemView.findViewById(R.id.statusLayout);
             arrow = itemView.findViewById(R.id.arrow);
+            rlCheckIn = itemView.findViewById(R.id.rl_checkIn);
+            rlCheckOut = itemView.findViewById(R.id.rl_checkOut);
 
         }
     }
@@ -192,15 +219,15 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             FilterResults results = new FilterResults();
 
             ArrayList<DayReportModel> filteredModelArray = new ArrayList<>();
-            if(charSequence != null && charSequence.length()>0) {
+            if (charSequence != null && charSequence.length() > 0) {
                 for (DayReportModel dayReportModel : supportModelArray) {
-                    if(dayReportModel.getTerrWrk().toUpperCase().contains(charSequence.toString().toUpperCase()) || dayReportModel.getWtype().toUpperCase().contains(charSequence.toString().toUpperCase())) {
+                    if (dayReportModel.getTerrWrk().toUpperCase().contains(charSequence.toString().toUpperCase()) || dayReportModel.getWtype().toUpperCase().contains(charSequence.toString().toUpperCase())) {
                         filteredModelArray.add(dayReportModel);
                     }
                 }
                 results.count = filteredModelArray.size();
                 results.values = filteredModelArray;
-            }else {
+            } else {
                 results.count = supportModelArray.size();
                 results.values = supportModelArray;
             }

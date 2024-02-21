@@ -1,6 +1,6 @@
-package saneforce.santrip.activity.approvals.dcr.call.adapter;
+package saneforce.santrip.activity.approvals.dcr.detailView.adapter;
 
-import static saneforce.santrip.activity.approvals.dcr.call.DcrDetailViewActivity.dcrDetailViewBinding;
+import static saneforce.santrip.activity.approvals.dcr.detailView.DcrDetailViewActivity.dcrDetailViewBinding;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.OnItemClickListenerApproval;
-import saneforce.santrip.activity.approvals.dcr.call.DcrDetailViewActivity;
+import saneforce.santrip.activity.approvals.dcr.detailView.DcrDetailViewActivity;
 import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.santrip.activity.homeScreen.call.pojo.input.SaveCallInputList;
 import saneforce.santrip.activity.homeScreen.call.pojo.product.SaveCallProductList;
