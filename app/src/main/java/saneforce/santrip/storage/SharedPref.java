@@ -76,18 +76,14 @@ public class SharedPref {
         editor.clear().apply();
     }
 
-    public static void saveSlideListID(Context context, ArrayList<String> List) {
-        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.putString(SLIDEID, new Gson().toJson(List)).apply();
-    }
 
 
-    public static void saveSlideDownloadingList(Context context, String Downloadcount, ArrayList<SlideModelClass> List) {
+    public static void saveSlideDownloadingList(Context context, String Downloadcount, ArrayList<SlideModelClass> List,ArrayList<String>IdList) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putString(SLIDEDOWNCOUNT, String.valueOf(Downloadcount));
         editor.putString(SLIDELIST, new Gson().toJson(List));
+        editor.putString(SLIDEID, new Gson().toJson(IdList));
         editor.apply();
     }
 
