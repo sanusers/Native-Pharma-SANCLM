@@ -73,7 +73,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -126,7 +125,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static ActivityHomeDashBoardBinding binding;
     public static int DeviceWith;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
-    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, PresentationNeed, NearMeNeed, QuizNeed, ProfileNeed, ActivityNeed, ReminderCallNeed, InputValidation, SurveyNeed, TpNeed, CheckInOutNeed,DcFencingNeed, ChFencingNeed, StFencingNeed, HosFencingNeed,UnlistFencingNeed;
+    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, PresentationNeed, NearMeNeed, QuizNeed, ProfileNeed, ActivityNeed, ReminderCallNeed, InputValidation, SurveyNeed, TpNeed, CheckInOutNeed, DcFencingNeed, ChFencingNeed, StFencingNeed, HosFencingNeed, UnlistFencingNeed;
     public static LocalDate selectedDate;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -226,7 +225,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 //    public void onWindowFocusChanged(boolean hasFocus) {
 //        super.onWindowFocusChanged(hasFocus);
 //        if (hasFocus) {
-//            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 //        }
 //    }
 
@@ -238,10 +237,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         setContentView(binding.getRoot());
 
 
-        WindowInsetsControllerCompat windowInsetsController =
-                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        windowInsetsController.setSystemBarsBehavior(
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        WindowInsetsControllerCompat windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 
         getWindow().getDecorView().setOnApplyWindowInsetsListener((view, windowInsets) -> {
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
@@ -617,11 +614,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         ReminderCallNeed = loginResponse.getRmdrNeed();
         ActivityNeed = loginResponse.getActivityNd();
 
-        DcFencingNeed=loginResponse.getGeoNeed();
-        ChFencingNeed =loginResponse.getGEOTagNeedche();
-        StFencingNeed =loginResponse.getGEOTagNeedstock();
-        HosFencingNeed =loginResponse.getGeoTagNeedcip();
-        UnlistFencingNeed =loginResponse.getGEOTagNeedunlst();
+        DcFencingNeed = loginResponse.getGeoNeed();
+        ChFencingNeed = loginResponse.getGEOTagNeedche();
+        StFencingNeed = loginResponse.getGEOTagNeedstock();
+        HosFencingNeed = loginResponse.getGeoTagNeedcip();
+        UnlistFencingNeed = loginResponse.getGEOTagNeedunlst();
 
         TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
 
@@ -1445,7 +1442,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-
     public void AppIdentify() {
 
         if (NearMeNeed.equalsIgnoreCase("0")) {
@@ -1468,9 +1464,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
 
     }
-
-
-
 
 
 }

@@ -1,10 +1,10 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView;
 
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SamQtyRestrictValue;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SamQtyRestriction;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SampleValidation;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockSample;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
-import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter.New_Edit;
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.callDetailsSideBinding;
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.editedPrdList;
 
@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
-import saneforce.santrip.activity.homeScreen.call.fragments.AddCallSelectPrdSide;
 import saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.homeScreen.call.pojo.additionalCalls.AddSampleAdditionalCall;
@@ -39,6 +37,7 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
     public static ArrayList<AddSampleAdditionalCall> addedProductList;
     Context context;
     CommonUtilsMethods commonUtilsMethods;
+    String finalValue;
 
     public AdapterSampleAdditionalCall(Context context, ArrayList<AddSampleAdditionalCall> addedProductList) {
         this.context = context;
@@ -53,6 +52,7 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         return new ViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -83,6 +83,32 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         }
 
 
+        holder.edt_sam_qty.setOnTouchListener((v, event) -> {
+            if (SampleValidation.equalsIgnoreCase("1")) {
+                if (addedProductList.get(position).getCategory().equalsIgnoreCase("Sample") || addedProductList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
+                    if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                        //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
+                        if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(addedProductList.get(position).getLast_stock())) {
+                            holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedProductList.get(position).getLast_stock())});
+                            finalValue =  addedProductList.get(position).getLast_stock();
+                        } else {
+                            finalValue = SamQtyRestrictValue;
+                            holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                        }
+                    } else {
+                        finalValue =  addedProductList.get(position).getLast_stock();
+                        holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedProductList.get(position).getLast_stock())});
+                    }
+                }
+            } else {
+                if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                    finalValue = SamQtyRestrictValue;
+                    holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                }
+            }
+            return false;
+        });
+
 
         holder.edt_sam_qty.addTextChangedListener(new TextWatcher() {
             @Override
@@ -98,10 +124,8 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
             public void afterTextChanged(Editable editable) {
                 try {
                     if (SampleValidation.equalsIgnoreCase("1")) {
-                        if (addedProductList.get(position).getCategory().equalsIgnoreCase("Sale")) {
-                            addedProductList.set(holder.getBindingAdapterPosition(), new AddSampleAdditionalCall(addedProductList.get(position).getCust_name(), addedProductList.get(position).getCust_code(), addedProductList.get(position).getPrd_name(), addedProductList.get(position).getPrd_code(), addedProductList.get(position).getBalance_stock(), addedProductList.get(position).getLast_stock(), editable.toString(), addedProductList.get(position).getCategory()));
-                        } else if (addedProductList.get(position).getCategory().equalsIgnoreCase("Sample") || addedProductList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
-                            holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedProductList.get(position).getBalance_stock())});
+                        if (addedProductList.get(position).getCategory().equalsIgnoreCase("Sample") || addedProductList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
+                            // holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedProductList.get(position).getBalance_stock())});
                             if (!editable.toString().isEmpty()) {
                                 int final_value = Integer.parseInt(addedProductList.get(position).getLast_stock()) - Integer.parseInt(editable.toString());
                                 holder.tv_sample_stock.setText(String.valueOf(final_value));

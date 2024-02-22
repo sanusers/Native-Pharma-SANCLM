@@ -140,7 +140,7 @@ public class DCRCallActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            dcrCallBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            dcrCallBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -1576,9 +1576,8 @@ public class DCRCallActivity extends AppCompatActivity {
             InputValidation = loginResponse.getInput_validation();
             GeoChk = loginResponse.getGeoChk();
             HosNeed = loginResponse.getHosp_need();
-            if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
-                SamQtyRestriction = "0";
-                SamQtyRestrictValue = "7";
+          /*  if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
+                SamQtyRestriction = "1";
             } else {
                 SamQtyRestriction = "0";
                 SamQtyRestrictValue = loginResponse.getSample_Val_Qty();
@@ -1586,6 +1585,23 @@ public class DCRCallActivity extends AppCompatActivity {
 
             if (loginResponse.getInput_Val_Qty().equalsIgnoreCase("0")) {
                 InpQtyRestriction = "1";
+            } else {
+                InpQtyRestriction = "0";
+                InpQtyRestrictValue = loginResponse.getInput_Val_Qty();
+            }*/
+
+
+            if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
+                SamQtyRestriction = "0";
+                SamQtyRestrictValue = "8";
+            } else {
+                SamQtyRestriction = "0";
+                SamQtyRestrictValue = loginResponse.getSample_Val_Qty();
+            }
+
+            if (loginResponse.getInput_Val_Qty().equalsIgnoreCase("0")) {
+                InpQtyRestriction = "0";
+                InpQtyRestrictValue = "14";
             } else {
                 InpQtyRestriction = "0";
                 InpQtyRestrictValue = loginResponse.getInput_Val_Qty();

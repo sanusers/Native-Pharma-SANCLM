@@ -1,9 +1,10 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView;
 
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.InpQtyRestrictValue;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.InpQtyRestriction;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.InputValidation;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockInput;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter.New_Edit;
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.callDetailsSideBinding;
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.editedInpList;
@@ -19,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +28,6 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
-import saneforce.santrip.activity.homeScreen.call.fragments.AddCallSelectInpSide;
 import saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.homeScreen.call.pojo.additionalCalls.AddInputAdditionalCall;
@@ -39,6 +38,7 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
     public static ArrayList<AddInputAdditionalCall> addedInpList;
     Context context;
     CommonUtilsMethods commonUtilsMethods;
+    String finalValue;
 
     public AdapterInputAdditionalCall(Context context, ArrayList<AddInputAdditionalCall> addedInpList) {
         this.context = context;
@@ -52,6 +52,7 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
         return new ViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
@@ -68,6 +69,30 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
             holder.edt_inp_qty.setHint("0");
         }
 
+
+        holder.edt_inp_qty.setOnTouchListener((v, event) -> {
+            if (InputValidation.equalsIgnoreCase("1")) {
+                if (InpQtyRestriction.equalsIgnoreCase("0")) {
+                    //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
+                    if (Integer.parseInt(InpQtyRestrictValue) >= Integer.parseInt(addedInpList.get(position).getLast_stock())) {
+                        finalValue = addedInpList.get(position).getLast_stock();
+                        holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedInpList.get(position).getLast_stock())});
+                    } else {
+                        holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                    }
+                } else {
+                    finalValue = InpQtyRestrictValue;
+                    holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedInpList.get(position).getLast_stock())});
+                }
+            } else {
+                if (InpQtyRestriction.equalsIgnoreCase("0")) {
+                    finalValue = InpQtyRestrictValue;
+                    holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                }
+            }
+            return false;
+        });
+
         holder.edt_inp_qty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -82,7 +107,8 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
             public void afterTextChanged(Editable editable) {
                 try {
                     if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
-                        holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedInpList.get(position).getLast_stock())});
+                        //   holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
+                        //holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedInpList.get(position).getLast_stock())});
                         if (!editable.toString().isEmpty()) {
                             int final_value = Integer.parseInt(addedInpList.get(position).getLast_stock()) - Integer.parseInt(editable.toString());
                             holder.tv_stock.setText(String.valueOf(final_value));
@@ -92,6 +118,9 @@ public class AdapterInputAdditionalCall extends RecyclerView.Adapter<AdapterInpu
                             addedInpList.set(position, new AddInputAdditionalCall(addedInpList.get(position).getCust_name(), addedInpList.get(position).getCust_code(), addedInpList.get(position).getInput_name(), addedInpList.get(position).getInput_code(), addedInpList.get(position).getLast_stock(), addedInpList.get(position).getLast_stock(), holder.edt_inp_qty.getText().toString()));
                         }
                     } else {
+                        if (InpQtyRestriction.equalsIgnoreCase("0")) {
+                            holder.edt_inp_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                        }
                         addedInpList.set(position, new AddInputAdditionalCall(addedInpList.get(position).getCust_name(), addedInpList.get(position).getCust_code(), addedInpList.get(position).getInput_name(), addedInpList.get(position).getInput_code(), addedInpList.get(position).getBalance_stock(), addedInpList.get(position).getLast_stock(), holder.edt_inp_qty.getText().toString()));
                     }
                 } catch (Exception ignored) {

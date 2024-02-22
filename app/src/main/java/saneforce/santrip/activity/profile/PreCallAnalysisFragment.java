@@ -228,7 +228,7 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
                 }
-             break;
+                break;
             case "2":
                 if (PrdSamNeed.equalsIgnoreCase("1")) {
                     preCallAnalysisBinding.sampleCaption.setVisibility(View.VISIBLE);
@@ -251,7 +251,7 @@ public class PreCallAnalysisFragment extends Fragment {
                     preCallAnalysisBinding.rcpaCaption.setVisibility(View.GONE);
                     preCallAnalysisBinding.rcpaCaptionLine.setVisibility(View.GONE);
                 }
-          break;
+                break;
             case "3":
             case "4":
             case "5":

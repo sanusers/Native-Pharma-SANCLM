@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.product;
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SamQtyRestrictValue;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SamQtyRestriction;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SampleValidation;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockSample;
 import static saneforce.santrip.activity.homeScreen.call.fragments.ProductFragment.productsBinding;
@@ -41,6 +43,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
     ArrayList<SaveCallProductList> productListArrayList;
     CommonUtilsMethods commonUtilsMethods;
     CheckProductListAdapter checkProductListAdapter;
+    String finalValue;
 
 
     public FinalProductCallAdapter(Activity activity, Context context, ArrayList<SaveCallProductList> productListArrayList, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
@@ -48,6 +51,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         this.context = context;
         this.productListArrayList = productListArrayList;
         this.callCommonCheckedListArrayList = callCommonCheckedListArrayList;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -61,7 +65,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        commonUtilsMethods = new CommonUtilsMethods(context);
+
         holder.tv_prd_name.setText(productListArrayList.get(position).getName());
         holder.ed_samplesQty.setText(productListArrayList.get(position).getSample_qty());
         holder.ed_rxQty.setText(productListArrayList.get(position).getRx_qty());
@@ -175,29 +179,38 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             }
         });
 
+
+        holder.ed_samplesQty.setOnTouchListener((v, event) -> {
+            if (SampleValidation.equalsIgnoreCase("1")) {
+                if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
+                    if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                        //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
+                        if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) {
+                            finalValue = productListArrayList.get(position).getLast_stock();
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                        } else {
+                            finalValue = SamQtyRestrictValue;
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                        }
+                    } else {
+                        finalValue = productListArrayList.get(position).getLast_stock();
+                        holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
+                    }
+                }
+            } else {
+                if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                    finalValue = SamQtyRestrictValue;
+                    holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
+                }
+            }
+            return false;
+        });
+
+
         holder.ed_samplesQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                /*if (SampleValidation.equalsIgnoreCase("1")) {
-                    if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample")) {
-                        if (SamQtyRestriction.equalsIgnoreCase("0")) {
-                            Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock() +SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock())));
-                            if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) {
-                                Log.v("asdasds", "0000");
-                                holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
-                            } else {
-                                Log.v("asdasds", "1111");
-                                holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
-                            }
-                        } else {
-                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
-                        }
-                    }
-                } else {
-                    if (SamQtyRestriction.equalsIgnoreCase("0")) {
-                        holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
-                    }
-                }*/
+
             }
 
             @Override
@@ -210,7 +223,8 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                 try {
                     if (SampleValidation.equalsIgnoreCase("1")) {
                         if (productListArrayList.get(position).getCategory().equalsIgnoreCase("Sample") || productListArrayList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
-                           /* if (SamQtyRestriction.equalsIgnoreCase("0")) {
+                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
+                          /*  if (SamQtyRestriction.equalsIgnoreCase("0")) {
                                 Log.v("asdasds", SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
                                 if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) {
                                     Log.v("asdasds", "true");
@@ -222,7 +236,6 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                             } else {
                                 holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
                             }*/
-                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", productListArrayList.get(position).getLast_stock())});
                             if (!editable.toString().isEmpty()) {
                                 int final_value = Integer.parseInt(productListArrayList.get(position).getLast_stock()) - Integer.parseInt(editable.toString());
                                 holder.tv_stocks.setText(String.valueOf(final_value));
@@ -243,11 +256,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
                             }
                         }
                     } else {
-                       /* if (SamQtyRestriction.equalsIgnoreCase("0")) {
-                            holder.ed_samplesQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
-                        } else {*/
                         productListArrayList.set(holder.getBindingAdapterPosition(), new SaveCallProductList(productListArrayList.get(holder.getBindingAdapterPosition()).getName(), productListArrayList.get(holder.getBindingAdapterPosition()).getCode(), productListArrayList.get(holder.getBindingAdapterPosition()).getCategory(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), productListArrayList.get(holder.getBindingAdapterPosition()).getLast_stock(), editable.toString(), productListArrayList.get(holder.getBindingAdapterPosition()).getRx_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getRcpa_qty(), productListArrayList.get(holder.getBindingAdapterPosition()).getPromoted(), productListArrayList.get(holder.getBindingAdapterPosition()).isClicked()));
-                        // }
                     }
                 } catch (Exception ignored) {
                 }

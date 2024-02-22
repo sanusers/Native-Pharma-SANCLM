@@ -5,10 +5,6 @@ import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SampleV
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockInput;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockSample;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
-import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter.Selected_code;
-import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter.Selected_name;
-import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall.addedInpList;
-import static saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall.addedProductList;
 import static saneforce.santrip.activity.homeScreen.call.adapter.input.CheckInputListAdapter.saveCallInputListArrayList;
 import static saneforce.santrip.activity.homeScreen.call.adapter.product.CheckProductListAdapter.saveCallProductListArrayList;
 import static saneforce.santrip.activity.homeScreen.call.fragments.InputFragment.checkedInputList;
@@ -21,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
@@ -197,9 +191,9 @@ public class AdditionalCallDetailedSide extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void AddNewInputData() {
-        for (int i = 0; i < AddCallSelectInpSide.SelectACInputAdapter.callInputList.size(); i++) {
-            if (AddCallSelectInpSide.SelectACInputAdapter.callInputList.get(i).isCheckedItem()) {
-                AddCallSelectInpSide.SelectACInputAdapter.callInputList.get(i).setCheckedItem(false);
+        for (int i = 0; i < AddCallSelectInpSide.SelectACInputAdapter.callInputListAdapter.size(); i++) {
+            if (AddCallSelectInpSide.SelectACInputAdapter.callInputListAdapter.get(i).isCheckedItem()) {
+                AddCallSelectInpSide.SelectACInputAdapter.callInputListAdapter.get(i).setCheckedItem(false);
             }
         }
         AddCallSelectInpSide.selectInputSideBinding.searchList.setText("");
@@ -213,9 +207,9 @@ public class AdditionalCallDetailedSide extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     private void AddNewSampleData() {
-        for (int i = 0; i < AddCallSelectPrdSide.SelectACProductAdapter.callSampleList.size(); i++) {
-            if (AddCallSelectPrdSide.SelectACProductAdapter.callSampleList.get(i).isCheckedItem()) {
-                AddCallSelectPrdSide.SelectACProductAdapter.callSampleList.get(i).setCheckedItem(false);
+        for (int i = 0; i < AddCallSelectPrdSide.SelectACProductAdapter.callSampleListAdapter.size(); i++) {
+            if (AddCallSelectPrdSide.SelectACProductAdapter.callSampleListAdapter.get(i).isCheckedItem()) {
+                AddCallSelectPrdSide.SelectACProductAdapter.callSampleListAdapter.get(i).setCheckedItem(false);
             }
         }
         AddCallSelectPrdSide.selectProductSideBinding.searchList.setText("");

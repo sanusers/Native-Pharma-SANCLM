@@ -1,6 +1,9 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.input;
 
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.InpQtyRestrictValue;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.InpQtyRestriction;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.InputValidation;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockInput;
 
 import android.annotation.SuppressLint;
@@ -10,6 +13,7 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +42,14 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
     ArrayList<SaveCallInputList> saveCallInputLists;
     CheckInputListAdapter checkInputListAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    String finalValue;
 
     public FinalInputCallAdapter(Activity activity, Context context, ArrayList<SaveCallInputList> saveCallInputLists, ArrayList<CallCommonCheckedList> callCommonCheckedLists) {
         this.activity = activity;
         this.context = context;
         this.saveCallInputLists = saveCallInputLists;
         checked_arraylist = callCommonCheckedLists;
+        commonUtilsMethods = new CommonUtilsMethods(context);
     }
 
     @NonNull
@@ -53,9 +59,10 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
         return new ViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        commonUtilsMethods = new CommonUtilsMethods(context);
+
 
         if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
             holder.tv_input_stk.setVisibility(View.VISIBLE);
@@ -74,6 +81,32 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
         holder.ed_inpQty.setText(saveCallInputLists.get(position).getInp_qty());
 
         holder.tv_inp_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, saveCallInputLists.get(position).getInput_name()));
+
+        holder.ed_inpQty.setOnTouchListener((v, event) -> {
+            if (InputValidation.equalsIgnoreCase("1")) {
+                if (InpQtyRestriction.equalsIgnoreCase("0")) {
+                    //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
+                    if (Integer.parseInt(InpQtyRestrictValue) >= Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk())) {
+                        finalValue = saveCallInputLists.get(position).getLast_inp_stk();
+                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
+                    } else {
+                        finalValue = InpQtyRestrictValue;
+                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                    }
+                } else {
+                    finalValue = saveCallInputLists.get(position).getLast_inp_stk();
+                    holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
+                }
+            } else {
+                if (InpQtyRestriction.equalsIgnoreCase("0")) {
+                    finalValue = InpQtyRestrictValue;
+                    holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                }
+            }
+            return false;
+        });
+
+
         holder.ed_inpQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -89,22 +122,20 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
             public void afterTextChanged(Editable editable) {
                 try {
                     if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
-                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", saveCallInputLists.get(position).getLast_inp_stk())});
+                        holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", finalValue)});
                         if (!editable.toString().isEmpty()) {
                             int final_value = Integer.parseInt(saveCallInputLists.get(position).getLast_inp_stk()) - Integer.parseInt(editable.toString());
                             holder.tv_input_stk.setText(String.valueOf(final_value));
                             saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), editable.toString(), String.valueOf(final_value), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
-
                             for (int i = 0; i < StockInput.size(); i++) {
                                 if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
+                                    Log.v("asdasds", "---" + final_value);
                                     StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), String.valueOf(final_value)));
                                 }
                             }
-
                         } else {
                             holder.tv_input_stk.setText(saveCallInputLists.get(position).getLast_inp_stk());
                             saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), "", saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
-
                             for (int i = 0; i < StockInput.size(); i++) {
                                 if (StockInput.get(i).getStockCode().equalsIgnoreCase(saveCallInputLists.get(position).getInp_code())) {
                                     StockInput.set(i, new CallCommonCheckedList(StockInput.get(i).getStockCode(), StockInput.get(i).getActualStock(), saveCallInputLists.get(position).getLast_inp_stk()));
@@ -112,6 +143,9 @@ public class FinalInputCallAdapter extends RecyclerView.Adapter<FinalInputCallAd
                             }
                         }
                     } else {
+                        if (InpQtyRestriction.equalsIgnoreCase("0")) {
+                            holder.ed_inpQty.setFilters(new InputFilter[]{new InputFilterMinMax("1", InpQtyRestrictValue)});
+                        }
                         saveCallInputLists.set(holder.getBindingAdapterPosition(), new SaveCallInputList(saveCallInputLists.get(holder.getBindingAdapterPosition()).getInput_name(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getInp_code(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk(), saveCallInputLists.get(holder.getBindingAdapterPosition()).getLast_inp_stk()));
                     }
 

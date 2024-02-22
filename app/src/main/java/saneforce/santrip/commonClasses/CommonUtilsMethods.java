@@ -15,8 +15,6 @@ import android.os.Parcelable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -82,17 +80,36 @@ public class CommonUtilsMethods {
             }
 
             if (toastMsg) {
+                @SuppressLint("ShowToast") Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
+                View view = toast.getView();
 
-                Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, 0);
+                assert view != null;
+                view.getBackground().setColorFilter(activity.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+
+                TextView text = view.findViewById(android.R.id.message);
+                text.setTextColor(activity.getColor(R.color.white));
+
                 toast.show();
+               /* Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, 0);
+                toast.show();*/
             }
         } catch (IOException e) {
             if (toastMsg) {
                 address = "No Address Found";
-                Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, 0);
+                @SuppressLint("ShowToast") Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
+                View view = toast.getView();
+
+                assert view != null;
+                view.getBackground().setColorFilter(activity.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+
+                TextView text = view.findViewById(android.R.id.message);
+                text.setTextColor(activity.getColor(R.color.white));
+
                 toast.show();
+               /* Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, 0);
+                toast.show();*/
             }
             e.printStackTrace();
         }
@@ -178,73 +195,6 @@ public class CommonUtilsMethods {
         return spf.format(newDate);
     }
 
-    public static String getCurrentTime() {
-        Date currentTime = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        return sdf.format(currentTime);
-    }
-
-
-    public static String getCurrentDate() {
-        Calendar c = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(c.getTimeInMillis());
-    }
-
-    public static String getCurrentAMPM() {
-        Calendar c = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
-        return sdf.format(c.getTimeInMillis());
-    }
-
-    public static String getCurrentDateWithMonthName() {
-        Calendar c = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm aa");
-        return sdf.format(c.getTimeInMillis());
-    }
-
-    public static String getCurrentDateDashBoard() {
-        Calendar c = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy");
-        return sdf.format(c.getTimeInMillis());
-    }
-
-    public static String getCurrentMonthNumber() {
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("M");
-        String val = sdf.format(currentTime);
-        return val;
-    }
-
-    public static String getCurrentMonthName() {
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
-        String val = sdf.format(currentTime);
-        return val;
-    }
-
-    public static String getCurrentYear() {
-        Date currentTime = Calendar.getInstance().getTime();
-        Log.v("Printing_current_time", String.valueOf(currentTime.getTime()));
-        Log.v("Printing_current_time", String.valueOf(currentTime));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        String val = sdf.format(currentTime);
-        Log.v("Printing_current_date", val);
-        return val;
-    }
-
-
-    public static String getCurrentDateDMY() {
-        Date currentTime = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        return sdf.format(currentTime);
-    }
-
-    public static String getCurrentDayNo() {
-        Date currentTime = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("d");
-        return sdf.format(currentTime);
-    }
 
     public static ProgressDialog createProgressDialog(Context context) {
         ProgressDialog dialog = new ProgressDialog(context);
@@ -261,6 +211,19 @@ public class CommonUtilsMethods {
         return dialog;
     }
 
+    public void ShowToast(Context context, String message, int duration) {
+        @SuppressLint("ShowToast") Toast toast = Toast.makeText(context, message, duration);
+        View view = toast.getView();
+
+        assert view != null;
+        view.getBackground().setColorFilter(context.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+
+        TextView text = view.findViewById(android.R.id.message);
+        text.setTextColor(context.getColor(R.color.white));
+
+        toast.show();
+    }
+
     public void setUpLanguage(Context context) {
         String language = SharedPref.getSelectedLanguage(context);
         Resources resources = context.getResources();
@@ -273,21 +236,6 @@ public class CommonUtilsMethods {
         conf.locale = myLocale;
         resources.updateConfiguration(conf, dm);
         LocaleHelper.setLocale(context, language);
-    }
-
-    public void ShowToast(Context context, String message, int duration) {
-        Toast toast = Toast.makeText(context, message, duration);
-        View view = toast.getView();
-
-//Gets the actual oval background of the Toast then sets the colour filter
-       // assert view != null;
-    //    view.getBackground().setColorFilter(context.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
-
-//Gets the TextView from the Toast so it can be editted
-//        TextView text = view.findViewById(android.R.id.message);
-//        text.setTextColor(context.getColor(R.color.white));
-//
-//        toast.show();
     }
 
     public void recycleTestWithoutDivider(RecyclerView rv_test) {

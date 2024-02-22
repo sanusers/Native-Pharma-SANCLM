@@ -49,7 +49,6 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     TextView tv_cusName, tv_dateTime;
     String needCheckInOut;
 
-
     public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut) {
         this.activity = activity;
         this.context = context;

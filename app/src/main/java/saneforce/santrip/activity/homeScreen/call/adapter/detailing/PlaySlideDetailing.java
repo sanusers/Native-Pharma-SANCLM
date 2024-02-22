@@ -4,6 +4,8 @@ package saneforce.santrip.activity.homeScreen.call.adapter.detailing;
 import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.arrayStore;
+import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailedAdapter.slideScribble;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SelectedPosPlay;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.SlideBrandMatrixList;
 import static saneforce.santrip.activity.previewPresentation.fragment.Customized.SlideCustomizedList;
@@ -12,20 +14,26 @@ import static saneforce.santrip.activity.previewPresentation.fragment.Speciality
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,6 +58,7 @@ import java.util.List;
 import java.util.Objects;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.santrip.activity.presentation.SupportClass;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.commonClasses.CommonSharedPreference;
@@ -78,8 +87,13 @@ public class PlaySlideDetailing extends AppCompatActivity {
     double progress = 0;
     int SelectedPos;
     LoginResponse loginResponse;
+    int scribblePos;
+    int val = 0;
     CommonSharedPreference mCommonSharedPreference;
     SQLite sqLite;
+    Dialog dialogPopUp;
+    String defaultTime = "00:00:00";
+
 
     public static void populateViewPagerAdapterNew(ArrayList<BrandModelClass.Product> productsList) {
         itemsPagerAdapter = new PlaySlideDetailedAdapter((PlaySlideDetailing) context, productsList);
@@ -103,8 +117,31 @@ public class PlaySlideDetailing extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
+    }
+
+    public String findingEndTime(int k) {
+        if (checkForLastSlide(k)) {
+            return defaultTime;
+        } else {
+            int j = k + 1;
+            return mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + j);
+        }
+    }
+
+    public boolean checkForLastSlide(int k) {
+        return k == val - 1;
+    }
+
+
+    public int checkForProduct(String slidename) {
+        for (int i = 0; i < arrayStore.size(); i++) {
+            if (arrayStore.get(i).getSlideNam().equals(slidename)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @SuppressLint({"NotifyDataSetChanged", "ClickableViewAccessibility"})
@@ -120,6 +157,9 @@ public class PlaySlideDetailing extends AppCompatActivity {
         initialisation();
 
 
+        binding.rightArrow.setOnClickListener(v -> {
+            DialogPopUp();
+        });
         binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -277,6 +317,130 @@ public class PlaySlideDetailing extends AppCompatActivity {
                 binding.upArrow.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private void DialogPopUp() {
+        dialogPopUp = new Dialog(context);
+        dialogPopUp.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(dialogPopUp.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogPopUp.setContentView(R.layout.detailing_right_popup);
+        dialogPopUp.setCanceledOnTouchOutside(true);
+        Window window = dialogPopUp.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+
+        RelativeLayout rl_like = dialogPopUp.findViewById(R.id.rl_hand_up);
+        RelativeLayout rl_dislike = dialogPopUp.findViewById(R.id.rl_hand_down);
+        RelativeLayout rl_comments = dialogPopUp.findViewById(R.id.rl_comments);
+        RelativeLayout rl_share = dialogPopUp.findViewById(R.id.rl_share);
+        RelativeLayout rl_paint = dialogPopUp.findViewById(R.id.rl_paint);
+        RelativeLayout rl_stop = dialogPopUp.findViewById(R.id.rl_stop);
+
+        rl_like.setEnabled(false);
+        rl_dislike.setEnabled(false);
+        rl_comments.setEnabled(false);
+        rl_share.setEnabled(false);
+        rl_paint.setEnabled(false);
+        rl_stop.setOnClickListener(v1 -> {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            if (PlaySlideDetailedAdapter.preVal) {
+                int timecount = 0;
+
+                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                    int ll = 0;
+                    if (i != 0) {
+                        ll = i - 1;
+                        if (PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() == PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                            PlaySlideDetailedAdapter.storingSlide.remove(ll);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < PlaySlideDetailedAdapter.storingSlide.size(); i++) {
+                    int ll = 0;
+                    if (i != 0) ll = i - 1;
+                    if (i == 0 || PlaySlideDetailedAdapter.storingSlide.get(ll).getIndexVal() != PlaySlideDetailedAdapter.storingSlide.get(i).getIndexVal()) {
+                        mCommonSharedPreference.setValueToPreferenceFeed("timeVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getTiming());
+                        mCommonSharedPreference.setValueToPreferenceFeed("dateVal" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getDateVal());
+                        mCommonSharedPreference.setValueToPreferenceFeed("brd_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandName());
+                        mCommonSharedPreference.setValueToPreferenceFeed("brd_code" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getBrandCode());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_nam" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideName());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_typ" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideType());
+                        mCommonSharedPreference.setValueToPreferenceFeed("slide_url" + timecount, PlaySlideDetailedAdapter.storingSlide.get(i).getSlideUrl());
+                        mCommonSharedPreference.setValueToPreferenceFeed("timeCount", ++timecount);
+                    }
+                }
+
+                val = mCommonSharedPreference.getValueFromPreferenceFeed("timeCount", 0);
+                Log.v("slideData", String.valueOf(val));
+                for (int i = 0; i < val; i++) {
+                    String timevalue = mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + i);
+                    String SlideName = mCommonSharedPreference.getValueFromPreferenceFeed("slide_nam" + i);
+                    String BrandName = mCommonSharedPreference.getValueFromPreferenceFeed("brd_nam" + i);
+                    String BrandCode = mCommonSharedPreference.getValueFromPreferenceFeed("brd_code" + i);
+                    String slidetyp = mCommonSharedPreference.getValueFromPreferenceFeed("slide_typ" + i);
+                    String slideur = mCommonSharedPreference.getValueFromPreferenceFeed("slide_url" + i);
+
+                    String eTime;
+                    if (arrayStore.contains(new StoreImageTypeUrl(SlideName))) {
+                        eTime = findingEndTime(i);
+                        int index = checkForProduct(SlideName);
+                        StoreImageTypeUrl mmm = arrayStore.get(index);
+
+                        try {
+                            JSONArray jj = new JSONArray(mmm.getRemTime());
+                            JSONArray jk = new JSONArray();
+                            JSONObject js = null;
+                            for (int k = 0; k < jj.length(); k++) {
+                                js = jj.getJSONObject(k);
+                                jk.put(js);
+                            }
+                            js = new JSONObject();
+                            js.put("sT", timevalue);
+                            js.put("eT", eTime);
+                            jk.put(js);
+                            mmm.setRemTime(jk.toString());
+                        } catch (Exception ignored) {
+                        }
+                    } else if (!SlideName.isEmpty()) {
+                        eTime = findingEndTime(i);
+                        JSONObject jsonObject = new JSONObject();
+                        JSONArray jsonArray = new JSONArray();
+                        try {
+                            jsonObject.put("sT", timevalue);
+                            jsonObject.put("eT", eTime);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        jsonArray.put(jsonObject);
+                        Log.v("slideData", "----" + BrandName + "----" + SlideName);
+                        boolean isAvailableScrib = false;
+                        scribblePos = 0;
+                        for (int j = 0; j < slideScribble.size(); j++) {
+                            if (slideScribble.get(j).getSlideNam().equalsIgnoreCase(SlideName)) {
+                                isAvailableScrib = true;
+                                scribblePos = j;
+                                break;
+                            }
+                        }
+                        if (isAvailableScrib) {
+                            arrayStore.add(new StoreImageTypeUrl(slideScribble.get(scribblePos).getScribble(), SlideName, slidetyp, slideur, "0", slideScribble.get(scribblePos).getSlideComments(), jsonArray.toString(), BrandName, BrandCode, false));
+                        } else {
+                            arrayStore.add(new StoreImageTypeUrl("", SlideName, slidetyp, slideur, "0", "", jsonArray.toString(), BrandName, BrandCode, false));
+                        }
+                    }
+                }
+            }
+            getOnBackPressedDispatcher().onBackPressed();
+        });
+        params.setMargins(0, 0, 0, 0);
+        wlp.gravity = Gravity.CENTER | Gravity.END;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+        dialogPopUp.show();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
     }
 
     @Override
@@ -453,9 +617,12 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
             if (productsList.size() > 0) {
                 binding.constraintNoData.setVisibility(View.GONE);
+                binding.rightArrow.setVisibility(View.GONE);
             } else {
                 binding.constraintNoData.setVisibility(View.VISIBLE);
+                binding.rightArrow.setVisibility(View.VISIBLE);
             }
+
             populateViewPagerAdapterNew(productsList);
             populateBottomViewAdapterNew(productsList);
         }

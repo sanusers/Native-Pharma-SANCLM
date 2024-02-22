@@ -81,17 +81,14 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
     private final Context context;
     private final ArrayList<BrandModelClass.Product> productArrayList;
     ArrayList<StoreImageTypeUrl> slideDescribe = new ArrayList<>();
-    ArrayList<StoreImageTypeUrl> slideScribble = new ArrayList<>();
+    public static ArrayList<StoreImageTypeUrl> slideScribble = new ArrayList<>();
     Object objsd;
     ImageView imageView;
-    String startT, endT;
     PlaySlideDetailing act;
     String slideUrl1 = null;
     Dialog dialogPopUp;
     ApiInterface apiService;
     CommonSharedPreference mCommonSharedPreference;
-    String finalPrdNam;
-    ArrayList<StoreImageTypeUrl> dummyarr = new ArrayList<>();
     int val = 0;
     String defaultTime = "00:00:00";
     int scribblePos;

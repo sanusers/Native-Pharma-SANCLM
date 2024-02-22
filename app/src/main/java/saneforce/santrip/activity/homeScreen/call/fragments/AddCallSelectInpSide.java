@@ -57,9 +57,9 @@ public class AddCallSelectInpSide extends Fragment {
         });
 
         selectInputSideBinding.btnOk.setOnClickListener(view -> {
-            for (int i = 0; i < SelectACInputAdapter.callInputList.size(); i++) {
-                if (SelectACInputAdapter.callInputList.get(i).isCheckedItem()) {
-                    addedInpList.add(new AddInputAdditionalCall(Selected_name, Selected_code, callInputList.get(i).getName(), callInputList.get(i).getCode(), callInputList.get(i).getStock_balance(), callInputList.get(i).getStock_balance(), ""));
+            for (int i = 0; i < SelectACInputAdapter.callInputListAdapter.size(); i++) {
+                if (SelectACInputAdapter.callInputListAdapter.get(i).isCheckedItem()) {
+                    addedInpList.add(new AddInputAdditionalCall(Selected_name, Selected_code, SelectACInputAdapter.callInputListAdapter.get(i).getName(), SelectACInputAdapter.callInputListAdapter.get(i).getCode(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), ""));
                 }
             }
             commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
@@ -109,13 +109,14 @@ public class AddCallSelectInpSide extends Fragment {
 
     public static class SelectACInputAdapter extends RecyclerView.Adapter<SelectACInputAdapter.ViewHolder> {
 
-        public static ArrayList<CallCommonCheckedList> callInputList;
+        public static ArrayList<CallCommonCheckedList> callInputListAdapter;
         Context context;
         CommonUtilsMethods commonUtilsMethods;
 
-        public SelectACInputAdapter(Context context, ArrayList<CallCommonCheckedList> callInputList) {
+        public SelectACInputAdapter(Context context, ArrayList<CallCommonCheckedList> callInputListAdapter) {
             this.context = context;
-            SelectACInputAdapter.callInputList = callInputList;
+            SelectACInputAdapter.callInputListAdapter = callInputListAdapter;
+            commonUtilsMethods = new CommonUtilsMethods(context);
         }
 
         @NonNull
@@ -128,10 +129,10 @@ public class AddCallSelectInpSide extends Fragment {
         @SuppressLint("NotifyDataSetChanged")
         @Override
         public void onBindViewHolder(@NonNull SelectACInputAdapter.ViewHolder holder, int position) {
-            commonUtilsMethods = new CommonUtilsMethods(context);
-            holder.tv_name.setText(callInputList.get(position).getName());
 
-            if (callInputList.get(position).isCheckedItem()) {
+            holder.tv_name.setText(callInputListAdapter.get(position).getName());
+
+            if (callInputListAdapter.get(position).isCheckedItem()) {
                 holder.checkBox.setChecked(true);
                 holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                 holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
@@ -145,18 +146,18 @@ public class AddCallSelectInpSide extends Fragment {
                 if (holder.checkBox.isPressed()) {
                     if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                         for (int i = 0; i < StockInput.size(); i++) {
-                            if (StockInput.get(i).getStockCode().equalsIgnoreCase(callInputList.get(position).getCode())) {
-                                callInputList.set(position, new CallCommonCheckedList(callInputList.get(position).getName(), callInputList.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
+                            if (StockInput.get(i).getStockCode().equalsIgnoreCase(callInputListAdapter.get(position).getCode())) {
+                                callInputListAdapter.set(position, new CallCommonCheckedList(callInputListAdapter.get(position).getName(), callInputListAdapter.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
                             }
                         }
-                        if (Integer.parseInt(callInputList.get(position).getStock_balance()) > 0) {
-                            SelectContent(callInputList.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+                        if (Integer.parseInt(callInputListAdapter.get(position).getStock_balance()) > 0) {
+                            SelectContent(callInputListAdapter.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                         } else {
                             holder.checkBox.setChecked(false);
                             commonUtilsMethods.ShowToast(context, context.getString(R.string.no_qty_input), 100);
                         }
                     } else {
-                        SelectContent(callInputList.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+                        SelectContent(callInputListAdapter.get(position).getCode(), holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     }
                 }
             });
@@ -170,11 +171,11 @@ public class AddCallSelectInpSide extends Fragment {
                         if (!addedInpList.get(i).getInput_code().equalsIgnoreCase(code)) {
                             tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
-                            callInputList.get(adapterPos).setCheckedItem(true);
+                            callInputListAdapter.get(adapterPos).setCheckedItem(true);
                         } else {
                             tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
-                            callInputList.get(adapterPos).setCheckedItem(false);
+                            callInputListAdapter.get(adapterPos).setCheckedItem(false);
                             checkBox.setChecked(false);
                             commonUtilsMethods.ShowToast(context, context.getString(R.string.already_available), 100);
                             break;
@@ -183,23 +184,23 @@ public class AddCallSelectInpSide extends Fragment {
                 } else {
                     tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                     checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
-                    callInputList.get(adapterPos).setCheckedItem(true);
+                    callInputListAdapter.get(adapterPos).setCheckedItem(true);
                 }
             } else {
                 tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
                 checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
-                callInputList.get(adapterPos).setCheckedItem(false);
+                callInputListAdapter.get(adapterPos).setCheckedItem(false);
             }
         }
 
         @Override
         public int getItemCount() {
-            return callInputList.size();
+            return callInputListAdapter.size();
         }
 
         @SuppressLint("NotifyDataSetChanged")
         public void filterList(ArrayList<CallCommonCheckedList> filteredNames) {
-            callInputList = filteredNames;
+            callInputListAdapter = filteredNames;
             notifyDataSetChanged();
         }
 

@@ -69,6 +69,7 @@ public class SlideDownloaderAlertBox {
         if (!txt_downloadcount.getText().toString().equalsIgnoreCase("0/0")) {
             dialog.show();
         }
+
         dialog.setCancelable(false);
 
         for (SlideModelClass slide : Slide_list) {

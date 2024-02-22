@@ -1073,7 +1073,6 @@ public class MasterSyncActivity extends AppCompatActivity {
                                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "0", slideListPrepared("1"));
                                         }
                                     }
-
                                 } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);
                                     sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
@@ -1611,7 +1610,7 @@ public class MasterSyncActivity extends AppCompatActivity {
             Slide_list = new Gson().fromJson(slideLIST, listType1);
             SlideDownloaderAlertBox.downloading_count = Integer.valueOf(conut);
         }
-      
+
         JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
         try {
             if (slidedata.length() > 0) {
@@ -1639,7 +1638,12 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            binding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 }

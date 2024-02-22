@@ -13,13 +13,11 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,9 +63,9 @@ public class AddCallSelectPrdSide extends Fragment {
         selectProductSideBinding.selectListView.setAdapter(selectACProductAdapter);
 
         selectProductSideBinding.btnOk.setOnClickListener(v1 -> {
-            for (int i = 0; i < SelectACProductAdapter.callSampleList.size(); i++) {
-                if (SelectACProductAdapter.callSampleList.get(i).isCheckedItem()) {
-                    addedProductList.add(new AddSampleAdditionalCall(Selected_name, Selected_code, callSampleList.get(i).getName(), callSampleList.get(i).getCode(), callSampleList.get(i).getStock_balance(), callSampleList.get(i).getStock_balance(), "", callSampleList.get(i).getCategory()));
+            for (int i = 0; i < SelectACProductAdapter.callSampleListAdapter.size(); i++) {
+                if (SelectACProductAdapter.callSampleListAdapter.get(i).isCheckedItem()) {
+                    addedProductList.add(new AddSampleAdditionalCall(Selected_name, Selected_code, SelectACProductAdapter.callSampleListAdapter.get(i).getName(), SelectACProductAdapter.callSampleListAdapter.get(i).getCode(), SelectACProductAdapter.callSampleListAdapter.get(i).getStock_balance(), SelectACProductAdapter.callSampleListAdapter.get(i).getStock_balance(), "", SelectACProductAdapter.callSampleListAdapter.get(i).getCategory()));
                 }
             }
             commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddSampleAdditional);
@@ -110,13 +108,14 @@ public class AddCallSelectPrdSide extends Fragment {
 
     public static class SelectACProductAdapter extends RecyclerView.Adapter<SelectACProductAdapter.ViewHolder> {
 
+        public static ArrayList<CallCommonCheckedList> callSampleListAdapter;
         Context context;
-        public static ArrayList<CallCommonCheckedList> callSampleList;
         CommonUtilsMethods commonUtilsMethods;
 
-        public SelectACProductAdapter(Context context, ArrayList<CallCommonCheckedList> callSampleList) {
+        public SelectACProductAdapter(Context context, ArrayList<CallCommonCheckedList> callSampleListAdapter) {
             this.context = context;
-            SelectACProductAdapter.callSampleList = callSampleList;
+            SelectACProductAdapter.callSampleListAdapter = callSampleListAdapter;
+            commonUtilsMethods = new CommonUtilsMethods(context);
         }
 
         @NonNull
@@ -129,12 +128,12 @@ public class AddCallSelectPrdSide extends Fragment {
         @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "SetTextI18n"})
         @Override
         public void onBindViewHolder(@NonNull SelectACProductAdapter.ViewHolder holder, int position) {
-            commonUtilsMethods = new CommonUtilsMethods(context);
-            holder.tv_name.setText(callSampleList.get(position).getName());
-            holder.tv_category.setVisibility(View.VISIBLE);
-            holder.tv_category.setText(callSampleList.get(position).getCategory());
 
-            if (callSampleList.get(position).isCheckedItem()) {
+            holder.tv_name.setText(callSampleListAdapter.get(position).getName());
+            holder.tv_category.setVisibility(View.VISIBLE);
+            holder.tv_category.setText(callSampleListAdapter.get(position).getCategory());
+
+            if (callSampleListAdapter.get(position).isCheckedItem()) {
                 holder.checkBox.setChecked(true);
                 holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                 holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
@@ -145,9 +144,9 @@ public class AddCallSelectPrdSide extends Fragment {
             }
 
 
-            if (callSampleList.get(position).getCategory().equalsIgnoreCase("Sample")) {
+            if (callSampleListAdapter.get(position).getCategory().equalsIgnoreCase("Sample")) {
                 holder.tv_category.setText("SM");
-            } else if (callSampleList.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
+            } else if (callSampleListAdapter.get(position).getCategory().equalsIgnoreCase("Sale/Sample")) {
                 holder.tv_category.setText("SL/SM");
             }
 
@@ -167,22 +166,22 @@ public class AddCallSelectPrdSide extends Fragment {
                 if (holder.checkBox.isPressed()) {
                     if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
                         for (int i = 0; i < StockSample.size(); i++) {
-                            if (StockSample.get(i).getStockCode().equalsIgnoreCase(callSampleList.get(position).getCode())) {
-                                callSampleList.set(position, new CallCommonCheckedList(callSampleList.get(position).getName(), callSampleList.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callSampleList.get(position).getCategory(), callSampleList.get(position).getCategoryExtra()));
+                            if (StockSample.get(i).getStockCode().equalsIgnoreCase(callSampleListAdapter.get(position).getCode())) {
+                                callSampleListAdapter.set(position, new CallCommonCheckedList(callSampleListAdapter.get(position).getName(), callSampleListAdapter.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callSampleListAdapter.get(position).getCategory(), callSampleListAdapter.get(position).getCategoryExtra()));
                             }
                         }
-                        if (callSampleList.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {
-                            SelectContent(callSampleList.get(position).getCode(), holder.tv_name,holder.checkBox, holder.getBindingAdapterPosition());
-                        } else if (callSampleList.get(position).getCategoryExtra().equalsIgnoreCase("Sample")) {
-                            if (Integer.parseInt(callSampleList.get(position).getStock_balance()) > 0) {
-                                SelectContent(callSampleList.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
+                        if (callSampleListAdapter.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {
+                            SelectContent(callSampleListAdapter.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
+                        } else if (callSampleListAdapter.get(position).getCategoryExtra().equalsIgnoreCase("Sample")) {
+                            if (Integer.parseInt(callSampleListAdapter.get(position).getStock_balance()) > 0) {
+                                SelectContent(callSampleListAdapter.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
                             } else {
                                 holder.checkBox.setChecked(false);
-                                 commonUtilsMethods.ShowToast(context,context.getString(R.string.no_qty_prd),100);
+                                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_qty_prd), 100);
                             }
                         }
                     } else {
-                        SelectContent(callSampleList.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
+                        SelectContent(callSampleListAdapter.get(position).getCode(), holder.tv_name, holder.checkBox, holder.getBindingAdapterPosition());
                     }
                 }
             });
@@ -196,36 +195,36 @@ public class AddCallSelectPrdSide extends Fragment {
                         if (!addedProductList.get(i).getPrd_code().equalsIgnoreCase(code)) {
                             tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
-                            callSampleList.get(adapterPos).setCheckedItem(true);
+                            callSampleListAdapter.get(adapterPos).setCheckedItem(true);
                         } else {
                             tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
                             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
-                            callSampleList.get(adapterPos).setCheckedItem(false);
+                            callSampleListAdapter.get(adapterPos).setCheckedItem(false);
                             checkBox.setChecked(false);
-                             commonUtilsMethods.ShowToast(context,context.getString(R.string.already_available),100);
+                            commonUtilsMethods.ShowToast(context, context.getString(R.string.already_available), 100);
                             break;
                         }
                     }
                 } else {
                     tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                     checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
-                    callSampleList.get(adapterPos).setCheckedItem(true);
+                    callSampleListAdapter.get(adapterPos).setCheckedItem(true);
                 }
             } else {
                 tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
                 checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
-                callSampleList.get(adapterPos).setCheckedItem(false);
+                callSampleListAdapter.get(adapterPos).setCheckedItem(false);
             }
         }
 
         @Override
         public int getItemCount() {
-            return callSampleList.size();
+            return callSampleListAdapter.size();
         }
 
         @SuppressLint("NotifyDataSetChanged")
         public void filterList(ArrayList<CallCommonCheckedList> filteredNames) {
-            this.callSampleList = filteredNames;
+            callSampleListAdapter = filteredNames;
             notifyDataSetChanged();
         }
 
