@@ -9,13 +9,35 @@ public class SlideModelClass {
     public String progressValue;
 
     public String slideid;
-    public SlideModelClass(String imageName, boolean downloadStatus, String downloadSizeStatus, String progressValue) {
-        ImageName = imageName;
-        DownloadStatus = downloadStatus;
-        DownloadSizeStatus = downloadSizeStatus;
+
+    public String id;
+    public SlideModelClass(String imageName, boolean downloadStatus, String downloadSizeStatus, String progressValue,String id) {
+        this.ImageName = imageName;
+        this.DownloadStatus = downloadStatus;
+        this.DownloadSizeStatus = downloadSizeStatus;
         this.progressValue = progressValue;
+        this.id = id;
     }
 
+    public boolean isDownloadStatus() {
+        return DownloadStatus;
+    }
+
+    public String getSlideid() {
+        return slideid;
+    }
+
+    public void setSlideid(String slideid) {
+        this.slideid = slideid;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getImageName () {
         return ImageName;

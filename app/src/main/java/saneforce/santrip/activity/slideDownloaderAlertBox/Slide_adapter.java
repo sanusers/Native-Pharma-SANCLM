@@ -52,23 +52,31 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
             ColorStateList colorStateList = ColorStateList.valueOf(greencolor);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.progressBar.setProgressTintList(colorStateList);
-                holder.text_retry.setVisibility(View.GONE);
+
             }
         }else {
             int redColor = Color.RED;
             ColorStateList colorStateList = ColorStateList.valueOf(redColor);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.progressBar.setProgressTintList(colorStateList);
-                holder.text_retry.setVisibility(View.VISIBLE);
+
             }
         }
 
-       holder.rl_title_layout.setOnClickListener(new View.OnClickListener() {
+        if (list.get(position).getDownloadSizeStatus().equalsIgnoreCase("Download failed")) {
+            holder.text_retry.setVisibility(View.VISIBLE);
+
+        } else {
+            holder.text_retry.setVisibility(View.GONE);
+        }
+
+
+        holder.rl_title_layout.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
 
                String url= "https://"+ SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+list.get(position).getImageName();
-               new DownloadTask(activity,url,list.get(position).getImageName(),list.get(position).getProgressValue(),list.get(position).getDownloadStatus(),list.get(position).getDownloadSizeStatus(),list.get(position),"");
+               new DownloadTask(activity,url,list.get(position).getImageName(),list.get(position).getProgressValue(),list.get(position).getDownloadStatus(),list.get(position).getDownloadSizeStatus(),list.get(position));
 
            }
        });

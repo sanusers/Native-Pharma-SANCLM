@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-
 import saneforce.santrip.R;
 
 public class QuizQuestionAdapter extends RecyclerView.Adapter<QuizQuestionAdapter.Viewholder> {

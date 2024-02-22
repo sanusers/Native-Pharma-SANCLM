@@ -60,11 +60,10 @@ import saneforce.santrip.utility.NetworkStatusTask;
 import saneforce.santrip.utility.TimeUtils;
 
 public class MasterSyncActivity extends AppCompatActivity {
-    public static ArrayList<SlideModelClass> Slide_list = new ArrayList<>();
-    public static ArrayList<String> slideId = new ArrayList<>();
+
     ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
-    MasterSyncAdapter masterSyncAdapter;
+    MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     SQLite sqLite;
     LoginResponse loginResponse;
     String sfCode = "", division_code = "", sfType = "", rsf = "", designation = "", state_code = "", subdivision_code = "";
@@ -1070,7 +1069,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                                             }
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
                                             if (jsonArray.length() > 0)
-                                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "0", slideListPrepared("1"));
+
+                                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, false);
                                         }
                                     }
                                 } else {
@@ -1090,7 +1090,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) {
                                 // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1", slideListPrepared("0"));
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
                             } else {
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
@@ -1115,8 +1116,9 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncItemModels.get(position).setSyncSuccess(1);
                         masterSyncAdapter.notifyDataSetChanged();
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
+                            binding.backArrow.setVisibility(View.VISIBLE);
                             if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, "1", slideListPrepared("0"));
+                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
                             } else {
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 SharedPref.putAutomassync(getApplicationContext(), true);
@@ -1594,45 +1596,45 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-    ArrayList<SlideModelClass> slideListPrepared(String mFlag) {
-        if (mFlag.equalsIgnoreCase("0")) {
-            Slide_list.clear();
-            slideId.clear();
-        } else {
-            String slideID = SharedPref.GetSlideID(MasterSyncActivity.this);
-            String slideLIST = SharedPref.GetSlideList(MasterSyncActivity.this);
-            String conut = SharedPref.GetSlideDownloadingcount(MasterSyncActivity.this);
-            Type listType = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            Type listType1 = new TypeToken<ArrayList<SlideModelClass>>() {
-            }.getType();
-            slideId = new Gson().fromJson(slideID, listType);
-            Slide_list = new Gson().fromJson(slideLIST, listType1);
-            SlideDownloaderAlertBox.downloading_count = Integer.valueOf(conut);
-        }
-
-        JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-        try {
-            if (slidedata.length() > 0) {
-                for (int i = 0; i < slidedata.length(); i++) {
-                    JSONObject jsonObject = slidedata.getJSONObject(i);
-                    String FilePath = jsonObject.optString("FilePath");
-                    String id = jsonObject.optString("SlideId");
-                    if (!slideId.contains(id)) {
-                        slideId.add(id);
-                        Slide_list.add(new SlideModelClass(FilePath, false, "0", "0"));
-                    }
-                }
-            } else {
-                Slide_list.clear();
-                slideId.clear();
-            }
-        } catch (Exception ignored) {
-        }
-
-        SharedPref.saveSlideListID(MasterSyncActivity.this, slideId);
-        return Slide_list;
-    }
+//    ArrayList<SlideModelClass> slideListPrepared(String mFlag) {
+//        if (mFlag.equalsIgnoreCase("0")) {
+//            Slide_list.clear();
+//            slideId.clear();
+//        } else {
+//            String slideID = SharedPref.GetSlideID(MasterSyncActivity.this);
+//            String slideLIST = SharedPref.GetSlideList(MasterSyncActivity.this);
+//            String conut = SharedPref.GetSlideDownloadingcount(MasterSyncActivity.this);
+//            Type listType = new TypeToken<ArrayList<String>>() {
+//            }.getType();
+//            Type listType1 = new TypeToken<ArrayList<SlideModelClass>>() {
+//            }.getType();
+//            slideId = new Gson().fromJson(slideID, listType);
+//            Slide_list = new Gson().fromJson(slideLIST, listType1);
+//            SlideDownloaderAlertBox.downloading_count = Integer.valueOf(conut);
+//        }
+//
+//        JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+//        try {
+//            if (slidedata.length() > 0) {
+//                for (int i = 0; i < slidedata.length(); i++) {
+//                    JSONObject jsonObject = slidedata.getJSONObject(i);
+//                    String FilePath = jsonObject.optString("FilePath");
+//                    String id = jsonObject.optString("SlideId");
+//                    if (!slideId.contains(id)) {
+//                        slideId.add(id);
+//                        Slide_list.add(new SlideModelClass(FilePath, false, "0", "0"));
+//                    }
+//                }
+//            } else {
+//                Slide_list.clear();
+//                slideId.clear();
+//            }
+//        } catch (Exception ignored) {
+//        }
+//
+//        SharedPref.saveSlideListID(MasterSyncActivity.this, slideId);
+//        return Slide_list;
+//    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
