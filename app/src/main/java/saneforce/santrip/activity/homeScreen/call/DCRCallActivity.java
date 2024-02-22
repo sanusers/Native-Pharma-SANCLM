@@ -1576,7 +1576,8 @@ public class DCRCallActivity extends AppCompatActivity {
             InputValidation = loginResponse.getInput_validation();
             GeoChk = loginResponse.getGeoChk();
             HosNeed = loginResponse.getHosp_need();
-          /*  if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
+
+            if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
                 SamQtyRestriction = "1";
             } else {
                 SamQtyRestriction = "0";
@@ -1588,15 +1589,6 @@ public class DCRCallActivity extends AppCompatActivity {
             } else {
                 InpQtyRestriction = "0";
                 InpQtyRestrictValue = loginResponse.getInput_Val_Qty();
-            }*/
-
-
-            if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
-                SamQtyRestriction = "0";
-                SamQtyRestrictValue = "8";
-            } else {
-                SamQtyRestriction = "0";
-                SamQtyRestrictValue = loginResponse.getSample_Val_Qty();
             }
 
             if (loginResponse.getInput_Val_Qty().equalsIgnoreCase("0")) {

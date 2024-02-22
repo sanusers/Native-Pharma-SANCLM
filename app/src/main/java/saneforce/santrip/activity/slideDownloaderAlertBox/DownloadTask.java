@@ -172,7 +172,7 @@ public class DownloadTask {
                     SlideDownloaderAlertBox.dialog.dismiss();
                     SlideDownloaderAlertBox.DownloadingStaus=true;
                     SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(),SlideDownloaderAlertBox.slideId123);
-                    if ( SlideDownloaderAlertBox.MoveMainFlag) {
+                    if (SlideDownloaderAlertBox.MoveMainFlag) {
                         SharedPref.putAutomassync(context, true);
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -180,8 +180,6 @@ public class DownloadTask {
                         activity.finish();
                     }else {
                         commonUtilsMethods.ShowToast(activity, "All Downloading Completed ", 100);
-
-                        Toast.makeText(activity,"All Slide Downloading Completed ",Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
@@ -203,10 +201,7 @@ public class DownloadTask {
                         context.startActivity(intent);
                         activity.finish();
                     }else {
-
                         commonUtilsMethods.ShowToast(activity, "All Slide Downloading Completed ", 100);
-                        Toast.makeText(activity,"All Slide Downloading Completed ",Toast.LENGTH_SHORT).show();
-
                     }
                 }
 

@@ -373,4 +373,5 @@
     <string name="view_more">View More</string>
     <string name="view_less">View Less</string>
     <string name="dashboard">DashBoard</string>
+    <string name="close_preview">Close Preview</string>
 </resources>

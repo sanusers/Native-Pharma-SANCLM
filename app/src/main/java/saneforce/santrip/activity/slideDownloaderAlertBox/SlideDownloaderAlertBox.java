@@ -115,7 +115,6 @@ public class SlideDownloaderAlertBox {
                 if (!downloadStatus) {
                     String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + imageName;
                     new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide);
-
                 }
             }
             adapter.notifyDataSetChanged();

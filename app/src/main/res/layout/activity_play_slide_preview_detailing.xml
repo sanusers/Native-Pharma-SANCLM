@@ -279,7 +279,7 @@
             android:paddingTop="@dimen/_5sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:paddingBottom="@dimen/_5sdp"
-            android:text="Close Preview"
+            android:text="@string/close_preview"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/_6sdp"
