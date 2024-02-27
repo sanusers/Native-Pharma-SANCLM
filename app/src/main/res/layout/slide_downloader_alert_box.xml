@@ -55,7 +55,7 @@
     <View
         android:id="@+id/gggg"
         android:layout_width="wrap_content"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/_1sdp"
         android:layout_below="@+id/rl_calender_syn"
         android:background="#9e9ea5" />
 

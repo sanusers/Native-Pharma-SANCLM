@@ -145,7 +145,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
                 android:background="@color/bg_grey_dark" />
 
             <LinearLayout
@@ -154,7 +154,7 @@
                 android:orientation="horizontal">
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/_1sdp"
                     android:layout_height="match_parent"
                     android:background="@color/bg_grey_dark" />
 
@@ -172,7 +172,7 @@
                     android:textColor="@color/black" />
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/_1sdp"
                     android:layout_height="match_parent"
                     android:background="@color/bg_grey_dark" />
 
@@ -192,7 +192,7 @@
 
                 <View
                     android:id="@+id/sample_caption_line"
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/_1sdp"
                     android:layout_height="match_parent"
                     android:background="@color/bg_grey_dark" />
 
@@ -212,7 +212,7 @@
 
                 <View
                     android:id="@+id/rx_caption_line"
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/_1sdp"
                     android:layout_height="match_parent"
                     android:background="@color/bg_grey_dark" />
 
@@ -232,7 +232,7 @@
 
                 <View
                     android:id="@+id/rcpa_captionLine"
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/_1sdp"
                     android:layout_height="match_parent"
                     android:background="@color/bg_grey_dark" />
 
@@ -251,7 +251,7 @@
                     android:visibility="visible" />
 
                 <View
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/_1sdp"
                     android:layout_height="match_parent"
                     android:background="@color/bg_grey_dark" />
             </LinearLayout>

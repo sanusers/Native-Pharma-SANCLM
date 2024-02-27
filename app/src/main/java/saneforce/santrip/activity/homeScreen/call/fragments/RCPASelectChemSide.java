@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
@@ -82,8 +82,7 @@ public class RCPASelectChemSide extends Fragment {
     private void AddChemistData() {
         try {
             ChemFullList.clear();
-
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));

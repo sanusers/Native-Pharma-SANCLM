@@ -23,9 +23,9 @@ import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingLi
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 public class DetailedFragment extends Fragment {
+    public static ArrayList<CallDetailingList> callDetailingLists;
     RecyclerView rv_detailing_list;
     DetailedFinalCallAdapter detailedFinalCallAdapter;
-    public static ArrayList<CallDetailingList> callDetailingLists;
     CommonUtilsMethods commonUtilsMethods;
 
 
@@ -48,6 +48,10 @@ public class DetailedFragment extends Fragment {
         rv_detailing_list.setItemAnimator(new DefaultItemAnimator());
         rv_detailing_list.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         rv_detailing_list.setAdapter(detailedFinalCallAdapter);
-        Collections.sort(callDetailingLists);
+        try {
+            Collections.sort(callDetailingLists);
+        } catch (Exception ignored) {
+
+        }
     }
 }

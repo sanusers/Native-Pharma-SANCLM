@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_3sdp"
     android:background="@drawable/clear_btn_stroke"
-    android:padding="1dp">
+    android:padding="@dimen/_1sdp">
 
     <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

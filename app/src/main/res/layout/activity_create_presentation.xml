@@ -76,7 +76,7 @@
                 android:layout_weight="1.4"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                app:cardCornerRadius="5dp"
+                app:cardCornerRadius="@dimen/_3sdp"
                 app:cardElevation="0dp"
                 android:layout_marginStart="@dimen/_3sdp">
 
@@ -92,7 +92,7 @@
                 android:layout_weight="0.9"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                app:cardCornerRadius="5dp"
+                app:cardCornerRadius="@dimen/_3sdp"
                 app:cardElevation="0dp"
                 android:layout_marginStart="@dimen/_3sdp">
 

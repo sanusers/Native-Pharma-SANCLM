@@ -467,7 +467,7 @@ public class ListedDoctorFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
         }
     }
 
@@ -479,7 +479,7 @@ public class ListedDoctorFragment extends Fragment {
                 jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
             }
             if (jsonArray.length() == 0) {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) , 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) );
             }
 
             Log.v("DrCall", "-dr_full_length-" + jsonArray.length());

@@ -2,7 +2,6 @@ package saneforce.santrip.activity.reports.dayReport.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.dcr.detailView.adapter.InputAdapter;
@@ -42,6 +40,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     ProductAdapter productAdapter;
     InputAdapter inputAdapter;
     boolean checkInOutNeed, VisitNeed;
+    StringBuilder productPromoted = new StringBuilder();
     private ValueFilter valueFilter;
 
     public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst) {
@@ -121,6 +120,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 if (!dataModel.getProducts().isEmpty()) {
                     holder.rvPrd.setVisibility(View.VISIBLE);
                     holder.PrdLayout.setVisibility(View.VISIBLE);
+                    productPromoted = getList(dataModel.getPromoted_product());
                     productAdapter = new ProductAdapter(context, getProductList(dataModel.getProducts()));
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
                     holder.rvPrd.setLayoutManager(mLayoutManager);
@@ -154,6 +154,15 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
         });
 
+    }
+
+    private StringBuilder getList(String s) {
+        String[] clstarrrayqty = s.split("#");
+        StringBuilder ss1 = new StringBuilder();
+        for (String value : clstarrrayqty) {
+            ss1.append(value.substring(value.lastIndexOf("$") + 1)).append(",");
+        }
+        return new StringBuilder(ss1.substring(0, ss1.length() - 1));
     }
 
 
@@ -197,7 +206,11 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                     } else {
                         PrdRxQty = "0";
                     }
-                    productList.add(new SaveCallProductList(arrayList.get(0).getCode(), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
+                    if (productPromoted.toString().contains(PrdName)) {
+                        productList.add(new SaveCallProductList(arrayList.get(0).getCode(), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
+                    } else {
+                        productList.add(new SaveCallProductList(arrayList.get(0).getCode(), PrdName, PrdSamQty, PrdRxQty, "0", "No"));
+                    }
                 }
             }
         }

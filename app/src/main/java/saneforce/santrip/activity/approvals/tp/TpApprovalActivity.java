@@ -166,7 +166,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.approved_successfully), 100);
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.approved_successfully));
                             removeSelectedData();
                             ApprovalsActivity.TpCount--;
                         }
@@ -174,14 +174,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
             }
         });
     }
@@ -211,7 +211,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                 tpReject(ed_reason.getText().toString());
             } else {
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_enter_reason_for_reject), 100);
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_enter_reason_for_reject));
             }
         });
         dialogReject.show();
@@ -250,7 +250,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.rejected_successfully), 100);
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeSelectedData();
                             ApprovalsActivity.TpCount--;
@@ -261,14 +261,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
                 dialogReject.dismiss();
             }
         });
@@ -331,21 +331,21 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             tpApprovalBinding.rvTpList.setLayoutManager(mLayoutManager);
                             tpApprovalBinding.rvTpList.setAdapter(tpApprovalAdapter);
                         } else {
-                            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_data_found), 100);
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_data_found));
                         }
                     } catch (Exception ignored) {
 
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
             }
         });
     }
@@ -461,21 +461,21 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             tpApprovalBinding.rvTpContentList.setLayoutManager(mLayoutManager);
                             tpApprovalBinding.rvTpContentList.setAdapter(tpApprovalDetailedAdapter);
                         } else {
-                            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_data_found), 100);
+                            commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_data_found));
                         }
                     } catch (Exception e) {
                         Log.v("tpDetailedList", "---" + e);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
             }
         });
     }

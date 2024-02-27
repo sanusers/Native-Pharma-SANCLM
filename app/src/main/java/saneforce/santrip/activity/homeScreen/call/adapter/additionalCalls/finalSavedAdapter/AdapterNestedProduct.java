@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter;
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.PrdSamNeed;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,8 +25,8 @@ public class AdapterNestedProduct extends RecyclerView.Adapter<AdapterNestedProd
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
 
-    public AdapterNestedProduct(Activity activity,Context context, ArrayList<AddSampleAdditionalCall> nestedProduct) {
-      this.activity = activity;
+    public AdapterNestedProduct(Activity activity, Context context, ArrayList<AddSampleAdditionalCall> nestedProduct) {
+        this.activity = activity;
         this.context = context;
         this.nestedProduct = nestedProduct;
     }
@@ -44,10 +46,14 @@ public class AdapterNestedProduct extends RecyclerView.Adapter<AdapterNestedProd
 
         holder.tv_sam_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, nestedProduct.get(position).getPrd_name()));
 
-        if (nestedProduct.get(position).getSample_qty().isEmpty()) {
-            holder.tv_sam_qty.setText("0");
-        } else {
-            holder.tv_sam_qty.setText(nestedProduct.get(position).getSample_qty());
+
+        if (PrdSamNeed.equalsIgnoreCase("1")) {
+            holder.tv_sam_qty.setVisibility(View.VISIBLE);
+            if (nestedProduct.get(position).getSample_qty().isEmpty()) {
+                holder.tv_sam_qty.setText("0");
+            } else {
+                holder.tv_sam_qty.setText(nestedProduct.get(position).getSample_qty());
+            }
         }
 
         if (nestedProduct.size() > 1) {

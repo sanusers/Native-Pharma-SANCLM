@@ -1,8 +1,7 @@
 package saneforce.santrip.activity.homeScreen.call.fragments;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.jwOthers.AdapterCallJointWorkList;
 import saneforce.santrip.activity.homeScreen.call.adapter.jwOthers.JwAdapter;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
@@ -39,11 +39,11 @@ public class JointWorkSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectJwSideBinding selectJwSideBinding;
     public static ArrayList<CallCommonCheckedList> JwList;
+    @SuppressLint("StaticFieldLeak")
+    public static JwAdapter jwAdapter;
     SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
-    @SuppressLint("StaticFieldLeak")
-    public static JwAdapter jwAdapter;
     AdapterCallJointWorkList adapterCallJointWorkList;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -125,25 +125,25 @@ public class JointWorkSelectionSide extends Fragment {
     public void SetupAdapter() {
         JwList.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + DCRCallActivity.TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         jwAdapter = new JwAdapter(getContext(), JwList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         selectJwSideBinding.rvJwList.setLayoutManager(mLayoutManager);
         selectJwSideBinding.rvJwList.setItemAnimator(new DefaultItemAnimator());
-        selectJwSideBinding.rvJwList.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        selectJwSideBinding.rvJwList.addItemDecoration(new DividerItemDecoration(requireActivity(), LinearLayoutManager.VERTICAL));
         selectJwSideBinding.rvJwList.setAdapter(jwAdapter);
     }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<CallCommonCheckedList> selectedJwList, ArrayList<CallCommonCheckedList> Jwlist) {
         adapterCallJointWorkList = new AdapterCallJointWorkList(context, activity, selectedJwList, Jwlist);
-      //  commonUtilsMethods.recycleTestWithDivider(JWOthersFragment.jwothersBinding.rvJointwork);
+        //  commonUtilsMethods.recycleTestWithDivider(JWOthersFragment.jwothersBinding.rvJointwork);
         JWOthersFragment.jwOthersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
     }
 

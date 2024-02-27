@@ -3,8 +3,8 @@
     android:id="@+id/r_lay"
     android:layout_width="@dimen/_300sdp"
     android:layout_height="match_parent"
-    android:layout_marginTop="20dp"
-    android:layout_marginBottom="20dp"
+    android:layout_marginTop="@dimen/_10sdp"
+    android:layout_marginBottom="@dimen/_10sdp"
     android:background="@color/white">
 
     <RelativeLayout
@@ -18,18 +18,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/satoshi_bold"
-            android:padding="10dp"
+            android:padding="@dimen/_5sdp"
             android:text="Scribble"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+             android:textSize="@dimen/_7ssp" />
 
         <ImageView
             android:id="@+id/img_close"
-            android:layout_width="30dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_12sdp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="@dimen/_4sdp"
             android:background="@drawable/iv_close_grey" />
     </RelativeLayout>
 
@@ -43,32 +43,32 @@
         <ImageView
             android:id="@+id/pen_black"
             android:layout_width="55dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/black_pencil" />
 
         <ImageView
             android:id="@+id/pen_red"
             android:layout_width="45dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_toRightOf="@+id/pen_black"
             android:background="@drawable/red_pencil" />
 
         <ImageView
             android:id="@+id/pen_green"
             android:layout_width="45dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="@dimen/_12sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_toRightOf="@+id/pen_red"
             android:background="@drawable/green_pencil" />
 
         <Button
             android:id="@+id/submit"
             android:layout_width="100dp"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/_20sdp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/bg_purple"
@@ -105,41 +105,41 @@
 
         <ImageView
             android:id="@+id/pencil"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/pencil_tool" />
 
         <ImageView
             android:id="@+id/erase"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
             android:layout_below="@+id/pencil"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@drawable/erase_tool" />
 
         <ImageView
             android:id="@+id/sq"
-            android:layout_width="30dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_16sdp"
             android:layout_below="@+id/erase"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@drawable/square_tool" />
 
         <ImageView
             android:id="@+id/cir"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
             android:layout_below="@+id/sq"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@drawable/circle_tool" />
 
         <ImageView
             android:id="@+id/arrow"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="@dimen/_16sdp"
             android:layout_below="@+id/cir"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@mipmap/ic_launcher"
             android:visibility="gone" />
     </RelativeLayout>

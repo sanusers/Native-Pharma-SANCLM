@@ -1,12 +1,14 @@
 package saneforce.santrip.activity.homeScreen.call.fragments;
 
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.InputValidation;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.PrdSamNeed;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SampleValidation;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockInput;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.StockSample;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.santrip.activity.homeScreen.call.adapter.input.CheckInputListAdapter.saveCallInputListArrayList;
 import static saneforce.santrip.activity.homeScreen.call.adapter.product.CheckProductListAdapter.saveCallProductListArrayList;
+import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallFragment.additionalCallBinding;
 import static saneforce.santrip.activity.homeScreen.call.fragments.InputFragment.checkedInputList;
 import static saneforce.santrip.activity.homeScreen.call.fragments.ProductFragment.checkedPrdList;
 
@@ -29,6 +31,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterInputAdditionalCall;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall;
@@ -82,6 +85,10 @@ public class AdditionalCallDetailedSide extends Fragment {
             callDetailsSideBinding.tagInputStock.setVisibility(View.VISIBLE);
         }
 
+        if (PrdSamNeed.equalsIgnoreCase("1")) {
+            callDetailsSideBinding.tagSamQty.setVisibility(View.VISIBLE);
+        }
+
         if (SampleValidation.equalsIgnoreCase("1")) {
             callDetailsSideBinding.tagSamStock.setVisibility(View.VISIBLE);
         }
@@ -127,10 +134,10 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addInputAdditionalCallArrayList.get(lastPos).getInput_name().equalsIgnoreCase("Select") && !addInputAdditionalCallArrayList.get(lastPos).getInput_name().isEmpty()) {
                         AddNewInputData();
                     } else {
-                        commonUtilsMethods.ShowToast(getContext(), requireContext().getString(R.string.sel_input_before_add_new),100);
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.sel_input_before_add_new));
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.no_extra_input),100);
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_extra_input));
                 }
             } else {
                 AddNewInputData();
@@ -145,10 +152,10 @@ public class AdditionalCallDetailedSide extends Fragment {
                     if (!addProductAdditionalCallArrayList.get(lastPos).getPrd_name().equalsIgnoreCase("Select") && !addProductAdditionalCallArrayList.get(lastPos).getPrd_name().isEmpty()) {
                         AddNewSampleData();
                     } else {
-                        commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.sel_prd_before_add_new),100);
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.sel_prd_before_add_new));
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(getContext(),requireContext().getString(R.string.no_extra_prd),100);
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_extra_prd));
                 }
             } else {
                 AddNewSampleData();
@@ -183,7 +190,7 @@ public class AdditionalCallDetailedSide extends Fragment {
             finalAdditionalCallAdapter = new FinalAdditionalCallAdapter(getActivity(), getContext(), FinalAdditionalCallAdapter.checked_arrayList, FinalAdditionalCallAdapter.saveAdditionalCalls, FinalAdditionalCallAdapter.nestedInput, FinalAdditionalCallAdapter.nestedProduct, FinalAdditionalCallAdapter.dummyNestedInput, FinalAdditionalCallAdapter.dummyNestedSample);
             commonUtilsMethods.recycleTestWithoutDivider(FinalAdditionalCallAdapter.rv_nested_calls_input_data);
             commonUtilsMethods.recycleTestWithoutDivider(FinalAdditionalCallAdapter.rv_nested_calls_sample_data);
-            AdditionalCallFragment.rv_add_call_list.setAdapter(finalAdditionalCallAdapter);
+            additionalCallBinding.rvListAdditional.setAdapter(finalAdditionalCallAdapter);
             dcrCallBinding.fragmentAddCallDetailsSide.setVisibility(View.GONE);
         });
         return v;

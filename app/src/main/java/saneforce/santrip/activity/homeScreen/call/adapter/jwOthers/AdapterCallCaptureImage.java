@@ -1,8 +1,11 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.jwOthers;
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.isFromActivity;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,11 +20,15 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCaptureImageList;
+import saneforce.santrip.storage.SharedPref;
 
 
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
@@ -45,11 +52,38 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
         holder.tv_image_name.setText(callCaptureImageLists.get(position).getImg_name());
         holder.ed_img_desc.setText(callCaptureImageLists.get(position).getImg_description());
 
-        holder.img_view.setImageBitmap(callCaptureImageLists.get(position).getImg_view());
+        switch (isFromActivity) {
+            case "new":
+                holder.img_view.setImageBitmap(callCaptureImageLists.get(position).getImg_view());
+                break;
+            case "edit_local":
+                File imgFile = new File(callCaptureImageLists.get(position).getFilePath());
+                if (imgFile.exists()) {
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    holder.img_view.setImageBitmap(myBitmap);
+                }
+                break;
+            case "edit_online":
+                break;
+        }
+
 
         holder.img_del_img.setOnClickListener(view -> removeAt(holder.getBindingAdapterPosition()));
 
-        holder.img_view.setOnClickListener(view -> showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view()));
+        holder.img_view.setOnClickListener(v -> {
+            switch (isFromActivity) {
+                case "new":
+                    showImage(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view());
+                    break;
+                case "edit_local":
+                    showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
+                    break;
+                case "edit_online":
+                    ShowImageEdit(callCaptureImageLists.get(position).getSystemImgName());
+                    break;
+            }
+        });
+
         holder.tv_image_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -63,7 +97,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName()));
+                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_description(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded()));
             }
         });
 
@@ -80,9 +114,37 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
             @Override
             public void afterTextChanged(Editable editable) {
-                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName()));
+                callCaptureImageLists.set(holder.getBindingAdapterPosition(), new CallCaptureImageList(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_name(), editable.toString(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getImg_view(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).getSystemImgName(), callCaptureImageLists.get(holder.getBindingAdapterPosition()).isNewlyAdded()));
             }
         });
+    }
+
+    private void showImageLocal(String filePath) {
+        File imgFile = new File(filePath);
+        if (imgFile.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            Dialog builder = new Dialog(context);
+            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            builder.setCancelable(true);
+            Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+            ImageView imageView = new ImageView(context);
+            imageView.setImageBitmap(myBitmap);
+            builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
+            builder.show();
+        }
+    }
+
+    private void ShowImageEdit(String systemImgName) {
+        Dialog builder = new Dialog(context);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.setCancelable(true);
+        Objects.requireNonNull(builder.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        ImageView imageView = new ImageView(context);
+        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + systemImgName).fitCenter().into(imageView);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams((int) context.getResources().getDimension(R.dimen._300sdp), (int) context.getResources().getDimension(R.dimen._300sdp)));
+        builder.show();
     }
 
     @Override

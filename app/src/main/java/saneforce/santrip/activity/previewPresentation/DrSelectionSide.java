@@ -3,7 +3,6 @@ package saneforce.santrip.activity.previewPresentation;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.Designation;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.DivCode;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.DrNeed;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfType;
 import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.StateCode;
@@ -177,7 +176,7 @@ public class DrSelectionSide extends Fragment {
             }*/
 
             /*if (jsonArray.length() == 0) {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync));
             }*/
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -305,7 +304,7 @@ public class DrSelectionSide extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
         }
     }
 

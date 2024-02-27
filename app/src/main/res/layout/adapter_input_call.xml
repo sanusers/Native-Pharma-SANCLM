@@ -18,7 +18,7 @@
         android:text="@string/input_name"
         android:singleLine="true"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_input_stk"
         app:layout_constraintHorizontal_bias="0.5"
@@ -36,14 +36,14 @@
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:background="@drawable/bg_light_grey_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ed_input_qty"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_input_name"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/ed_input_qty"
@@ -56,7 +56,7 @@
         android:paddingVertical="@dimen/_3sdp"
         android:background="@drawable/bg_light_grey_border"
         android:textColor="@color/text_qty_prd"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:inputType="number"
         android:maxLength="4"
         android:hint="0"
@@ -67,7 +67,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_input_stk"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <ImageView
         android:id="@+id/img_del_input"
@@ -82,7 +82,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/ed_input_qty"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp"
+        tools:layout_editor_absoluteY="@dimen/_1sdp"
         tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

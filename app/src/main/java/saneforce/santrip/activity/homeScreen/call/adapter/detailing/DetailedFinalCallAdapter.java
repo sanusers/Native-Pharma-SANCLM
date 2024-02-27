@@ -1,16 +1,12 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.detailing;
 
-import static saneforce.santrip.activity.homeScreen.call.fragments.RCPASelectCompSide.rcpa_comp_list;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.telecom.Call;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +16,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
-import saneforce.santrip.activity.homeScreen.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinalCallAdapter.ViewHolder> {
@@ -63,6 +55,10 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         holder.tv_timeline.setText(String.format("%s - %s", callDetailingLists.get(position).getSt_end_time().substring(0, 8), callDetailingLists.get(position).getSt_end_time().substring(9, 17)));
         holder.ratingBar.setRating(Float.parseFloat(String.valueOf(callDetailingLists.get(position).getRating())));
         holder.tv_brand_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, callDetailingLists.get(position).getBrandName()));
+
+        if (!callDetailingLists.get(position).getFeedback().isEmpty()) {
+            holder.img_feedback.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.img_feedback_red));
+        }
 
         holder.ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> callDetailingLists.set(holder.getAbsoluteAdapterPosition(), new CallDetailingList(callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandName(),
                 callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getBrandCode(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideName(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideType(), callDetailingLists.get(holder.getAbsoluteAdapterPosition()).getSlideUrl(),
@@ -110,7 +106,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                     InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(ed_remark.getWindowToken(), 0);
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_enter_feedback), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_feedback));
                 }
             });
             dialogFeedback.show();

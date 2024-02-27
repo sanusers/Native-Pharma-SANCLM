@@ -25,7 +25,7 @@
             android:singleLine="true"
             android:text="@string/brand_name"
             android:textColor="@color/dark_purple"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/rating_bar"
             app:layout_constraintHorizontal_bias="0.5"
@@ -48,7 +48,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tv_brand_name"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp" />
+            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
         <ImageView
             android:id="@+id/img_feedback"
@@ -63,7 +63,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/rating_bar"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp"
+            tools:layout_editor_absoluteY="@dimen/_1sdp"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -75,12 +75,12 @@
             android:paddingVertical="@dimen/_3sdp"
             android:text="@string/timeline"
             android:textColor="@color/bg_txt_color"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/img_feedback"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp" />
+            tools:layout_editor_absoluteY="@dimen/_1sdp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

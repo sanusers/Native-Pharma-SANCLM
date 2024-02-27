@@ -97,10 +97,11 @@ public class Constants {
     public final static String CONNECTIVITY_ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
 
     //CALL
-
     public static final String WAITING_FOR_SYNC = "Waiting for Sync";
     public static final String DUPLICATE_CALL = "Duplicate Call";
     public static final String CALL_FAILED = "Call Failed";
     public static final String EXCEPTION_ERROR = "Exception Error";
+    public static final String DCR_FROM_ACTIVITY = "dcr_from_activity";
+    public static final String DETAILING_REQUIRED = "isDetailingRequired";
 
 }

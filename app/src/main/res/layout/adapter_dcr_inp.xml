@@ -18,7 +18,7 @@
         android:singleLine="true"
         android:text="@string/input_name"
         android:textColor="@color/dark_purple"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rl_lay"
         app:layout_constraintHorizontal_bias="0.5"
@@ -33,12 +33,12 @@
         android:layout_marginHorizontal="@dimen/_4sdp"
         android:layout_marginVertical="@dimen/_1sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_input_name"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp">
+        tools:layout_editor_absoluteY="@dimen/_1sdp">
 
         <TextView
             android:id="@+id/tv_inp_qty"
@@ -50,7 +50,7 @@
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_3sdp"
             android:textColor="@color/dark_purple"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/_6ssp"/>
 
     </RelativeLayout>
 

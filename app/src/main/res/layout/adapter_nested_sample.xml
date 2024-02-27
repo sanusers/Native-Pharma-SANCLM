@@ -25,7 +25,7 @@
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_3sdp"
             android:textColor="@color/bg_txt_color"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             android:singleLine="true"
             app:layout_constraintEnd_toStartOf="@id/tv_sam_qty"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,14 +41,15 @@
             android:fontFamily="@font/satoshi_bold"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_3sdp"
+            android:visibility="gone"
             android:background="@drawable/bg_light_grey_2"
             android:textColor="@color/text_qty_prd"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toBottomOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_sample"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp" />
+            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <View

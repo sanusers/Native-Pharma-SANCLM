@@ -1,6 +1,5 @@
 package saneforce.santrip.activity.profile;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
 
 import android.annotation.SuppressLint;
@@ -10,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -21,6 +21,7 @@ import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.storage.SQLite;
 
@@ -35,6 +36,7 @@ public class CustomerProfile extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     CustTabLayoutAdapter viewPagerAdapter;
     SQLite sqLite;
+    TextView cusName;
 
     @Override
     public void onBackPressed() {
@@ -51,13 +53,7 @@ public class CustomerProfile extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            viewPager.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -73,6 +69,8 @@ public class CustomerProfile extends AppCompatActivity {
         btn_skip = findViewById(R.id.btn_skip);
         btn_start = findViewById(R.id.btn_start_det);
         img_back = findViewById(R.id.iv_back);
+        cusName = findViewById(R.id.tag_selection);
+        cusName.setText(CallActivityCustDetails.get(0).getName());
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
@@ -91,9 +89,9 @@ public class CustomerProfile extends AppCompatActivity {
                 if (tab.getPosition() == 1 && !isPreAnalysisCalled) {
                     if (UtilityClass.isNetworkAvailable(CustomerProfile.this)) {
                         progressDialog = CommonUtilsMethods.createProgressDialog(CustomerProfile.this);
-                        PreCallAnalysisFragment.CallPreCallAPI(getApplicationContext(),CustomerProfile.this);
+                        PreCallAnalysisFragment.CallPreCallAPI(getApplicationContext(), CustomerProfile.this);
                     } else {
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                        commonUtilsMethods.showToastMessage(CustomerProfile.this, getString(R.string.no_network));
                     }
                 }
             }
@@ -112,8 +110,8 @@ public class CustomerProfile extends AppCompatActivity {
 
         btn_skip.setOnClickListener(view -> {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
-            intent1.putExtra("isDetailedRequired", "false");
-            intent1.putExtra("from_activity", "new");
+            intent1.putExtra(Constants.DETAILING_REQUIRED, "false");
+            intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());

@@ -308,7 +308,7 @@ public class RemainderCallActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(RemainderCallActivity.this, getString(R.string.no_network));
         }
     }
 
@@ -323,7 +323,7 @@ public class RemainderCallActivity extends AppCompatActivity {
                 jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
             }
             if (jsonArray.length() == 0) {
-                commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                commonUtilsMethods.showToastMessage(RemainderCallActivity.this, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync));
             }
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);

@@ -35,6 +35,7 @@ public class RCPAAddedCompList {
         this.isSelected = isSelected;
         this.totalPrdValue = totalPrdValue;
     }
+
     public RCPAAddedCompList(String chem_names, String chem_code, String prd_name, String prd_code, String comp_company_name, String comp_code, String comp_product, String comp_product_code, String qty, String rate, String value, String remarks, String totalPrdValue) {
         this.Chem_names = chem_names;
         this.Chem_Code = chem_code;

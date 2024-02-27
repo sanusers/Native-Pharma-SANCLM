@@ -1,9 +1,9 @@
 package saneforce.santrip.activity.homeScreen.call.fragments;
 
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CapPob;
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SfCode;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.isFromActivity;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
 import static saneforce.santrip.activity.homeScreen.call.fragments.JointWorkSelectionSide.JwList;
 
 import android.Manifest;
@@ -64,7 +64,30 @@ public class JWOthersFragment extends Fragment {
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
     SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            try {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    String finalPath = "/storage/emulated/0";
+                    Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
+                    filePath = outputFileUri.getPath();
+                    filePath = Objects.requireNonNull(filePath).substring(1);
+                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
 
+                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName, true));
+                    adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                    jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
+                    jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
+                    jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
+                    jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
+                }
+            } catch (Exception ignored) {
+
+            }
+        }
+    });
 
     @SuppressLint("NotifyDataSetChanged")
     @Nullable
@@ -102,7 +125,7 @@ public class JWOthersFragment extends Fragment {
                     // } else captureFileLower();
                 }
             } else {
-                commonUtilsMethods.ShowToast(getContext(), requireContext().getString(R.string.no_add_more_images), 100);
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_add_more_images));
             }
         });
         return v;
@@ -167,58 +190,22 @@ public class JWOthersFragment extends Fragment {
         jwOthersBinding.rvJointwork.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
         jwOthersBinding.rvJointwork.setAdapter(adapterCallJointWorkList);
 
-        if (isFromActivity.equalsIgnoreCase("edit_local")) {
+        if (isFromActivity.equalsIgnoreCase("edit_local") || isFromActivity.equalsIgnoreCase("edit_online")) {
             jwOthersBinding.edRemarks.setText(editRemarks);
             jwOthersBinding.edPob.setText(editPob);
             jwOthersBinding.tvFeedback.setText(editFeedback);
         }
     }
 
-
     public void captureFile() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(requireContext().getExternalCacheDir()).getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg"));
-        imageName = "E_" + SfCode + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
+        imageName = SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         someActivityResultLauncher.launch(intent);
-        // startActivityForResult(intent, 1888);
     }
 
-    public void captureFileLower() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Uri outputFileUri = Uri.fromFile(new File(getExternalCacheDir().getPath(), "pickImageResult.jpeg"));
-        //outputFileUri = FileProvider.getUriForFile(FeedbackActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(getExternalCacheDir().getPath(), "pickImageResult"+System.currentTimeMillis()+".jpeg"));
-        //Log.v("Printing_uri",outputFileUri.toString()+" output "+outputFileUri.getPath()+" raw_msg "+getExternalCacheDir().getPath());
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        //  startActivityForResult(intent, 19);
-    }
-
-    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            try {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    String finalPath = "/storage/emulated/0";
-                    Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
-                    filePath = outputFileUri.getPath();
-                    filePath = Objects.requireNonNull(filePath).substring(1);
-                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-
-                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName));
-                    adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                    jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
-                    jwOthersBinding.rvImgCapture.setItemAnimator(new DefaultItemAnimator());
-                    jwOthersBinding.rvImgCapture.addItemDecoration(new DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL));
-                    jwOthersBinding.rvImgCapture.setAdapter(adapterCallCaptureImage);
-                }
-            } catch (Exception ignored) {
-
-            }
-        }
-    });
 
    /* @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

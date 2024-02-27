@@ -33,6 +33,7 @@ import saneforce.santrip.activity.previewPresentation.fragment.Customized;
 import saneforce.santrip.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.santrip.activity.previewPresentation.fragment.Speciality;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.storage.SQLite;
 
@@ -180,8 +181,8 @@ public class PreviewActivity extends AppCompatActivity {
                 callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             }
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
-            intent1.putExtra("isDetailedRequired", "true");
-            intent1.putExtra("from_activity", "new");
+            intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
+            intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
                 sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());

@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView;
 
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.PrdSamNeed;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SamQtyRestrictValue;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SamQtyRestriction;
 import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.SampleValidation;
@@ -58,7 +59,11 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         commonUtilsMethods = new CommonUtilsMethods(context);
 
         holder.tv_select_sample.setText(addedProductList.get(position).getPrd_name());
-        holder.edt_sam_qty.setText(addedProductList.get(position).getSample_qty());
+
+        if (PrdSamNeed.equalsIgnoreCase("1")) {
+            holder.edt_sam_qty.setVisibility(View.VISIBLE);
+            holder.edt_sam_qty.setText(addedProductList.get(position).getSample_qty());
+        }
 
         if (addedProductList.get(position).getSample_qty().isEmpty()) {
             holder.edt_sam_qty.setHint("0");
@@ -90,13 +95,13 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
                         //  Log.v("asdasds", (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(productListArrayList.get(position).getLast_stock())) + "----" + SamQtyRestrictValue + "----" + productListArrayList.get(position).getLast_stock());
                         if (Integer.parseInt(SamQtyRestrictValue) >= Integer.parseInt(addedProductList.get(position).getLast_stock())) {
                             holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedProductList.get(position).getLast_stock())});
-                            finalValue =  addedProductList.get(position).getLast_stock();
+                            finalValue = addedProductList.get(position).getLast_stock();
                         } else {
                             finalValue = SamQtyRestrictValue;
                             holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", SamQtyRestrictValue)});
                         }
                     } else {
-                        finalValue =  addedProductList.get(position).getLast_stock();
+                        finalValue = addedProductList.get(position).getLast_stock();
                         holder.edt_sam_qty.setFilters(new InputFilter[]{new InputFilterMinMax("1", addedProductList.get(position).getLast_stock())});
                     }
                 }

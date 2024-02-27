@@ -17,8 +17,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="5dp"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginBottom="@dimen/_3sdp"
         android:background="@color/colorPrimary"
         android:visibility="visible" />
 
@@ -40,8 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/text_dark"
-        android:dividerHeight="1dp"
-        android:padding="5dp"
+        android:dividerHeight="@dimen/_1sdp"
+        android:padding="@dimen/_3sdp"
         android:layout_marginTop="@dimen/_3sdp">
 
     </ListView>

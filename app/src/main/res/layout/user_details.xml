@@ -58,7 +58,7 @@
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
                 android:textColor="#282A3C"
-                android:textSize="16sp" />
+                android:textSize="@dimen/_7ssp" />
 
             <TextView
                 android:id="@+id/sf_name"
@@ -67,7 +67,7 @@
                 android:layout_marginTop="@dimen/_4sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="center"
-                android:textSize="14sp" />
+                android:textSize="@dimen/_6ssp" />
 
             <TextView
                 android:id="@+id/clut"
@@ -77,7 +77,7 @@
                 android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
                 android:textColor="#00C689"
-                android:textSize="14sp" />
+                android:textSize="@dimen/_6ssp" />
 
 
         </LinearLayout>
@@ -107,7 +107,7 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:text="@string/change_password"
                 android:textColor="#282A3C"
-                android:textSize="18sp" />
+                android:textSize="@dimen/_7ssp" />
 
         </LinearLayout>
 
@@ -146,7 +146,7 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:text="@string/logout"
                 android:textColor="#282A3C"
-                android:textSize="18sp" />
+                android:textSize="@dimen/_7ssp" />
 
         </LinearLayout>
 

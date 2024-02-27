@@ -163,7 +163,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 });
                 popup.show();
             } else {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
         });
     }
@@ -281,13 +281,13 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("delCall", e.toString());
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.response_failed_please_sync), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.response_failed_please_sync));
             }
         });
     }
@@ -306,7 +306,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
             jsonObject.put("state_code", StateCode);
             jsonObject.put("subdivision_code", SubDivisionCode);
             jsonObject.put("cusname", docName);
-            jsonObject.put("custype", docCode);
+            jsonObject.put("custype", type);
             jsonObject.put("pob", "1");
             Log.v("editCall", jsonObject.toString());
 
@@ -319,39 +319,43 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "edit/dcr");
         Call<JsonElement> getEditCallDetails = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-/*        Call<JsonObject> getEditCallDetails = null;
-        getEditCallDetails = apiInterface.getEditCallDetails(jsonObject.toString());*/
-
         getEditCallDetails.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                 if (response.isSuccessful()) {
                     try {
-                        progressBar.dismiss();
                         assert response.body() != null;
                         JSONObject jsonObject = new JSONObject(response.body().toString());
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         CallActivityCustDetails = new ArrayList<>();
-                        CallActivityCustDetails.add(0, new CustList(docName, docCode, type, transSlno, aDetSLNo, "", jsonObject.toString()));
-                        intent.putExtra("isDetailedRequired", "false");
-                        intent.putExtra("from_activity", "edit_online");
+                        CallActivityCustDetails.add(0, new CustList(docName.substring(0, docName.lastIndexOf(" ---")), docCode, type, transSlno, aDetSLNo, "", jsonObject.toString()));
+                        intent.putExtra(Constants.DETAILING_REQUIRED, "false");
+                        intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(intent);
+                        new CountDownTimer(2000, 2000) {
+                            public void onTick(long millisUntilFinished) {
+                            }
+
+                            public void onFinish() {
+                                progressBar.dismiss();
+                            }
+                        }.start();
                     } catch (Exception e) {
                         progressBar.dismiss();
                         Log.v("editCall", e.toString());
                     }
                 } else {
                     progressBar.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
-
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressBar.dismiss();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
             }
         });
     }

@@ -8,6 +8,7 @@ import static saneforce.santrip.activity.homeScreen.call.adapter.product.CheckPr
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.adapterInputAdditionalCall;
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.adapterSampleAdditionalCall;
 import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide.callDetailsSideBinding;
+import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallFragment.additionalCallBinding;
 import static saneforce.santrip.activity.homeScreen.call.fragments.InputFragment.checkedInputList;
 import static saneforce.santrip.activity.homeScreen.call.fragments.ProductFragment.checkedPrdList;
 
@@ -36,9 +37,7 @@ import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideVi
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.sideView.AdapterSampleAdditionalCall;
 import saneforce.santrip.activity.homeScreen.call.adapter.input.FinalInputCallAdapter;
 import saneforce.santrip.activity.homeScreen.call.adapter.product.FinalProductCallAdapter;
-import saneforce.santrip.activity.homeScreen.call.fragments.AddCallSelectInpSide;
 import saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide;
-import saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallFragment;
 import saneforce.santrip.activity.homeScreen.call.fragments.InputFragment;
 import saneforce.santrip.activity.homeScreen.call.fragments.ProductFragment;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
@@ -140,19 +139,19 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
 
         if (saveAdditionalCalls.get(position).isSamInpView()) {
             AssignRVInputSampleFull(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
-            holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_rv_down));
+            holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_rv_down));
         } else {
             AssignRVInputSampleSingle(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
-            holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_right_rv));
+            holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_right_rv));
         }
 
         holder.img_view_rv.setOnClickListener(view -> {
             if (Objects.equals(holder.img_view_rv.getDrawable().getConstantState(), Objects.requireNonNull(ContextCompat.getDrawable(context, R.drawable.arrow_right_rv)).getConstantState())) {
-                holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_rv_down));
+                holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_rv_down));
                 AssignRVInputSampleFull(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
                 saveAdditionalCalls.set(position, new SaveAdditionalCall(saveAdditionalCalls.get(position).getName(), saveAdditionalCalls.get(position).getCode(), saveAdditionalCalls.get(position).getTown_name(), saveAdditionalCalls.get(position).getTown_code(), true));
             } else {
-                holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.arrow_right_rv));
+                holder.img_view_rv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.arrow_right_rv));
                 AssignRVInputSampleSingle(holder.rv_nested_calls_input_data, holder.rv_nested_calls_sample_data, holder.getBindingAdapterPosition());
                 saveAdditionalCalls.set(position, new SaveAdditionalCall(saveAdditionalCalls.get(position).getName(), saveAdditionalCalls.get(position).getCode(), saveAdditionalCalls.get(position).getTown_name(), saveAdditionalCalls.get(position).getTown_code(), false));
             }
@@ -195,8 +194,8 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
             updateProductStock(holder.getBindingAdapterPosition());
 
             additionalCusListAdapter = new AdditionalCusListAdapter(activity, context, checked_arrayList, saveAdditionalCalls);
-            commonUtilsMethods.recycleTestWithDivider(AdditionalCallFragment.rv_list_data);
-            AdditionalCallFragment.rv_list_data.setAdapter(additionalCusListAdapter);
+            commonUtilsMethods.recycleTestWithDivider(additionalCallBinding.rvCheckDataList);
+            additionalCallBinding.rvCheckDataList.setAdapter(additionalCusListAdapter);
             removeAt(position);
         });
 
@@ -207,15 +206,12 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
             Selected_name = saveAdditionalCalls.get(position).getName();
             Selected_code = saveAdditionalCalls.get(position).getCode();
 
-
-           // AdditionalCallDetailedSide.addInputAdditionalCallArrayList.add(new AddInputAdditionalCall(FinalAdditionalCallAdapter.Selected_name, FinalAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", ""));
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
             callDetailsSideBinding.rvAddInputsAdditional.setLayoutManager(mLayoutManager);
             commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);
             callDetailsSideBinding.rvAddInputsAdditional.setAdapter(adapterInputAdditionalCall);
             adapterInputAdditionalCall.notifyDataSetChanged();
 
-          //  AdditionalCallDetailedSide.addProductAdditionalCallArrayList.add(new AddSampleAdditionalCall(FinalAdditionalCallAdapter.Selected_name, FinalAdditionalCallAdapter.Selected_code, "Select", "", "0", "0", "", ""));
             RecyclerView.LayoutManager mLayoutManagerPrd = new LinearLayoutManager(context);
             callDetailsSideBinding.rvAddSampleAdditional.setLayoutManager(mLayoutManagerPrd);
             commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddSampleAdditional);

@@ -20,14 +20,14 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/_10sdp"
+       android:layout_height="@dimen/_10sdp"
         android:layout_marginHorizontal="@dimen/_8sdp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/_8sdp"
         android:cropToPadding="true"
         android:gravity="center"
         android:padding="@dimen/_2sdp"
-        android:src="@drawable/iv_back"
+        android:src="@drawable/arrow_back_white"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintRight_toLeftOf="@id/tag_selection"
         app:layout_constraintStart_toStartOf="@id/view_top"
@@ -43,9 +43,9 @@
         android:fontFamily="@font/satoshi_bold"
         android:gravity="center"
         android:padding="@dimen/_2sdp"
-        android:text="Name "
+        android:text=""
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="@dimen/_8ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintLeft_toRightOf="@id/iv_back"
@@ -54,12 +54,15 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="?actionBarSize"
-        android:layout_marginStart="@dimen/_6sdp"
-        android:layout_marginTop="@dimen/_6sdp"
-        android:maxWidth="@dimen/_120sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicatorHeight="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:background="@color/bg_grey"
+        android:maxWidth="@dimen/_120sdp"
         app:layout_constraintBottom_toTopOf="@id/view_dummy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -148,7 +151,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
-            android:layout_width="@dimen/_60sdp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -156,14 +159,16 @@
             android:layout_marginVertical="@dimen/_5sdp"
             android:background="@drawable/bg_border_with_pink"
             android:fontFamily="@font/satoshi_bold"
+            android:paddingHorizontal="@dimen/_15sdp"
             android:text="@string/cancel"
             android:textAllCaps="false"
             android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_final_submit"
-            android:layout_width="@dimen/_60sdp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
@@ -175,6 +180,7 @@
             android:text="@string/final_submit"
             android:textAllCaps="false"
             android:textColor="@color/white"
+            android:textSize="@dimen/_6ssp"
             android:textStyle="bold" />
     </RelativeLayout>
     <!--

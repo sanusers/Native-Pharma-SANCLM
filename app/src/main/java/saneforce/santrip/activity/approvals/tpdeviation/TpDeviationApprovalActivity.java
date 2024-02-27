@@ -164,14 +164,14 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this,getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(TpDeviationApprovalActivity.this,getString(R.string.toast_response_failed));
             }
         });
 

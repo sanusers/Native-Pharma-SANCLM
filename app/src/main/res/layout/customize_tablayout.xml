@@ -11,7 +11,7 @@
         app:tabGravity="center"
         app:tabIndicatorColor="@color/text_dark"
         app:tabIndicatorGravity="bottom"
-        app:tabIndicatorHeight="1dp"
+        app:tabIndicatorHeight="@dimen/_1sdp"
         app:tabSelectedTextColor="@color/text_dark"
         app:tabMode="fixed"
         app:tabTextAppearance="@style/MyTabLayoutTextAppearance"

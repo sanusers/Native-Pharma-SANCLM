@@ -249,7 +249,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         }
 
 
-        commonUtilsMethods.ShowToast(context, context.getString(R.string.processing), 100);
+        commonUtilsMethods.showToastMessage(context, context.getString(R.string.processing));
         apiService = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
 
         Call<JsonObject> callImageScrub;
@@ -266,7 +266,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                         JSONObject jsonImgRes;
                         jsonImgRes = new JSONObject(response.body().toString());
                         if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.scribble_upload), 100);
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.scribble_upload));
                             slideScribble.set(scribblePos, new StoreImageTypeUrl(slideScribble.get(scribblePos).getSlideNam(), slideScribble.get(scribblePos).getSlideid(), slideScribble.get(scribblePos).isLike(), slideScribble.get(scribblePos).isDisLike(), slideScribble.get(scribblePos).getSlideComments(), scribbleFileName));
                             dialog.dismiss();
                         }
@@ -275,13 +275,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
                     }
                 } else {
                     dialog.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.something_wrong), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.something_wrong));
                 }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 dialog.dismiss();
             }
         });

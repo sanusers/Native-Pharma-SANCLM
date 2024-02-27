@@ -110,7 +110,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         holder.constraint_main.setOnClickListener(view -> {
             try {
                 boolean isVisitedToday = false;
-                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
@@ -122,7 +122,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 if (!isVisitedToday) {
                     if (VisitControlNeed.equalsIgnoreCase("0") && SfType.equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
                         int count = 0;
-                        JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.DCR);
+                        JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
                         for (int i = 0; i < jsonVisit.length(); i++) {
                             JSONObject jsonObject = jsonVisit.getJSONObject(i);
                             if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
@@ -132,13 +132,13 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                         if (count < Integer.parseInt(cusListArrayList.get(position).getTotalVisitCount())) {
                             goNextActivity(position);
                         } else {
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_of_visit), 100);
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
                         }
                     } else {
                         goNextActivity(position);
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.already_visited), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
                 }
             } catch (Exception e) {
                 Log.v("Call_Data", "---" + e);

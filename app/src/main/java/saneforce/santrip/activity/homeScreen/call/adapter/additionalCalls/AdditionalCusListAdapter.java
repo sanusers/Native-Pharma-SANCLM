@@ -1,10 +1,16 @@
 package saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls;
 
+import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfType;
+import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.VisitControlNeed;
+import static saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallFragment.additionalCallBinding;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +21,18 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.call.adapter.additionalCalls.finalSavedAdapter.FinalAdditionalCallAdapter;
-import saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallFragment;
 import saneforce.santrip.activity.homeScreen.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.homeScreen.call.pojo.additionalCalls.SaveAdditionalCall;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.storage.SQLite;
 
 public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCusListAdapter.ViewHolder> {
     public static ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList;
@@ -33,12 +43,15 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
     ArrayList<CallCommonCheckedList> checked_arrayList;
     FinalAdditionalCallAdapter AdapterSaveAdditionalCall;
     CommonUtilsMethods commonUtilsMethods;
+    SQLite sqLite;
 
     public AdditionalCusListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList) {
         this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
         AdditionalCusListAdapter.saveAdditionalCallArrayList = saveAdditionalCallArrayList;
+        commonUtilsMethods = new CommonUtilsMethods(context);
+        sqLite = new SQLite(context);
     }
 
 
@@ -46,6 +59,8 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         this.activity = activity;
         this.context = context;
         this.checked_arrayList = checked_arrayList;
+        commonUtilsMethods = new CommonUtilsMethods(context);
+        sqLite = new SQLite(context);
     }
 
     @NonNull
@@ -58,7 +73,6 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(checked_arrayList.get(position).getName());
         holder.checkBox.setChecked(checked_arrayList.get(position).isCheckedItem());
 
@@ -74,8 +88,9 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
 
         holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, checked_arrayList.get(position).getName()));
 
-            holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (holder.checkBox.isPressed()) {
+        holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (holder.checkBox.isPressed()) {
+                if (isValidAddCall(checked_arrayList.get(position).getCode(), checked_arrayList.get(position).getTotalVisit())) {
                     if (holder.checkBox.isChecked()) {
                         holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                         holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
@@ -102,14 +117,62 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
                         AssignRecyclerView(activity, context, saveAdditionalCallArrayList, checked_arrayList);
                         AdapterSaveAdditionalCall.notifyDataSetChanged();
                     }
+                } else {
+                    checked_arrayList.get(position).setCheckedItem(false);
+                    notifyDataSetChanged();
                 }
-            });
+            }
+        });
+    }
+
+    private boolean isValidAddCall(String cusCode, String totalVisit) {
+        boolean isValid = false;
+        try {
+            boolean isVisitedToday = false;
+            if (!cusCode.equalsIgnoreCase(CallActivityCustDetails.get(0).getCode())) {
+                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                        isVisitedToday = true;
+                        break;
+                    }
+                }
+
+                if (!isVisitedToday) {
+                    if (VisitControlNeed.equalsIgnoreCase("0") && SfType.equalsIgnoreCase("1")) {
+                        int count = 0;
+                        JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                        for (int i = 0; i < jsonVisit.length(); i++) {
+                            JSONObject jsonObject = jsonVisit.getJSONObject(i);
+                            if (jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
+                                count++;
+                            }
+                        }
+                        if (count < Integer.parseInt(totalVisit)) {
+                            isValid = true;
+                        } else {
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_of_visit));
+                        }
+                    } else {
+                        isValid = true;
+                    }
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.already_visited));
+                }
+            } else {
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.selected_same_doctor));
+            }
+        } catch (Exception e) {
+            Log.v("Call_Data", "---" + e);
+        }
+        return isValid;
     }
 
     private void AssignRecyclerView(Activity activity, Context context, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList, ArrayList<CallCommonCheckedList> cusListArrayList) {
         AdapterSaveAdditionalCall = new FinalAdditionalCallAdapter(activity, context, saveAdditionalCallArrayList, cusListArrayList);
-        commonUtilsMethods.recycleTestWithoutDivider(AdditionalCallFragment.rv_add_call_list);
-        AdditionalCallFragment.rv_add_call_list.setAdapter(AdapterSaveAdditionalCall);
+        commonUtilsMethods.recycleTestWithoutDivider(additionalCallBinding.rvListAdditional);
+        additionalCallBinding.rvListAdditional.setAdapter(AdapterSaveAdditionalCall);
     }
 
     @Override

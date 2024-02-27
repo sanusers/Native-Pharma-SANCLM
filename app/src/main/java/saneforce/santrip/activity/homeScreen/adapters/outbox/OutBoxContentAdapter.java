@@ -163,7 +163,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                         break;
                 }
             } else {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
         });
 

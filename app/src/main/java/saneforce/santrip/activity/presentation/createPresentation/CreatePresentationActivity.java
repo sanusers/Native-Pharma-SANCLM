@@ -117,7 +117,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                             if (!sqLite.presentationExists(name)) {
                                 intentAction(oldName, name);
                             } else {
-                                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.presentation_saved_already),100);
+                               commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.presentation_saved_already));
                             }
                         } else {
                             intentAction(oldName, name);
@@ -126,11 +126,11 @@ public class CreatePresentationActivity extends AppCompatActivity {
                         if (!sqLite.presentationExists(name)) {
                             intentAction("", name);
                         } else {
-                            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.presentation_saved_already),100);
+                           commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.presentation_saved_already));
                         }
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.enter_presentation_name),100);
+                   commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.enter_presentation_name));
                 }
             }
         });

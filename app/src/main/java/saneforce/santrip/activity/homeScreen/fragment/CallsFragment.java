@@ -1,7 +1,5 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
-import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,10 +28,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
 import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
+import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -61,7 +59,6 @@ public class CallsFragment extends Fragment {
     CommonUtilsMethods commonUtilsMethods;
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, SQLite sqLite, boolean isProgressNeed) {
-        TodayCallList.clear();
         if (UtilityClass.isNetworkAvailable(context)) {
             CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
             apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
@@ -101,7 +98,7 @@ public class CallsFragment extends Fragment {
                                         JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
                                         ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
                                         ArrayList<CallsModalClass> TodayCallListTwo = new ArrayList<>();
-
+                                        TodayCallList.clear();
                                         for (int i = 0; i < jsonArray.length(); i++) {
                                             JSONObject json = jsonArray.getJSONObject(i);
                                             TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
@@ -168,14 +165,14 @@ public class CallsFragment extends Fragment {
                                     }
                                 } else {
                                     if (isProgressNeed) progressDialog.dismiss();
-                                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                                 }
                             }
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 if (isProgressNeed) progressDialog.dismiss();
-                                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                             }
                         });
                     } catch (Exception e) {
@@ -185,40 +182,45 @@ public class CallsFragment extends Fragment {
                 } else {
                     if (isProgressNeed) {
                         progressDialog.dismiss();
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.poor_connection), 100);
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
                     }
                 }
             });
             networkStatusTask.execute();
         } else {
-            try {
-                String CheckDate = "";
-                boolean isDataAvailable = false;
-                if (!SharedPref.getTodayCallList(context).isEmpty()) {
-                    JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
-                    CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
+            getFromLocal(context, apiInterface);
+        }
+    }
 
-                    if (CheckDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
-                        isDataAvailable = true;
-                    }
+    private static void getFromLocal(Context context, ApiInterface apiInterface) {
+        try {
+            TodayCallList.clear();
+            String CheckDate = "";
+            boolean isDataAvailable = false;
+            if (!SharedPref.getTodayCallList(context).isEmpty()) {
+                JSONArray jsonArray = new JSONArray(SharedPref.getTodayCallList(context));
+                CheckDate = jsonArray.getJSONObject(0).getString("vstTime").substring(0, 10);
 
-                    if (isDataAvailable) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject json = jsonArray.getJSONObject(i);
-                            TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
-                        }
+                if (CheckDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
+                    isDataAvailable = true;
+                }
+
+                if (isDataAvailable) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject json = jsonArray.getJSONObject(i);
+                        TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
                     }
                 }
-                binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-                adapter = new Call_adapter(context, TodayCallList, apiInterface);
-                LinearLayoutManager manager = new LinearLayoutManager(context);
-                binding.recyelerview.setNestedScrollingEnabled(false);
-                binding.recyelerview.setHasFixedSize(true);
-                binding.recyelerview.setLayoutManager(manager);
-                binding.recyelerview.setAdapter(adapter);
-
-            } catch (Exception ignored) {
             }
+            binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+            adapter = new Call_adapter(context, TodayCallList, apiInterface);
+            LinearLayoutManager manager = new LinearLayoutManager(context);
+            binding.recyelerview.setNestedScrollingEnabled(false);
+            binding.recyelerview.setHasFixedSize(true);
+            binding.recyelerview.setLayoutManager(manager);
+            binding.recyelerview.setAdapter(adapter);
+
+        } catch (Exception ignored) {
         }
     }
 
@@ -254,27 +256,28 @@ public class CallsFragment extends Fragment {
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getRequiredData();
+        getFromLocal(requireContext(), apiInterface);
         CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
 
         binding.rlSyncCall.setOnClickListener(v12 -> {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
             } else {
-                commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network), 100);
+                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             }
         });
 
         binding.tvAddCall.setOnClickListener(view -> {
-            // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-            if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+          /*  if (CheckInOutNeed.equalsIgnoreCase("0")) {
                 if (SharedPref.getSkipCheckIn(requireContext())) {
                     if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
-                        commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan), 100);
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
                     } else {
                         startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_checkin), 100);
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
                     try {
                         HomeDashBoard.dialogCheckInOut.show();
                     } catch (Exception ignored) {
@@ -283,11 +286,11 @@ public class CallsFragment extends Fragment {
                 }
             } else {
                 if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
-                    commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.submit_mydayplan), 100);
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
                 } else {
                     startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                 }
-            }
+            }*/
         });
 
         return v;

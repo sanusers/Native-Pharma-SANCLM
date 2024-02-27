@@ -8,14 +8,26 @@ public class CallCaptureImageList {
     String filePath;
     String SystemImgName;
     Bitmap img_view;
+    boolean isNewlyAdded;
 
-    public CallCaptureImageList(String img_name, String img_description, Bitmap img_view, String filePath, String SystemImgName) {
+    public boolean isNewlyAdded() {
+        return isNewlyAdded;
+    }
+
+    public void setNewlyAdded(boolean newlyAdded) {
+        isNewlyAdded = newlyAdded;
+    }
+
+    public  CallCaptureImageList(String img_name, String img_description, Bitmap img_view, String filePath, String SystemImgName,boolean isNewlyAdded) {
         this.img_name = img_name;
         this.img_description = img_description;
         this.img_view = img_view;
         this.filePath = filePath;
         this.SystemImgName = SystemImgName;
+        this.isNewlyAdded = isNewlyAdded;
     }
+
+
 
     public String getFilePath() {
         return filePath;

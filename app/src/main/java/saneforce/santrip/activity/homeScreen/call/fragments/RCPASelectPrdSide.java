@@ -149,7 +149,7 @@ public class RCPASelectPrdSide extends Fragment {
                             rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                             commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
+                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd));
                         }
                     } catch (Exception ignored) {
                     }
@@ -185,10 +185,10 @@ public class RCPASelectPrdSide extends Fragment {
                             rcpaBinding.tvValue.setText(prdList.get(holder.getBindingAdapterPosition()).getRate());
                             dcrCallBinding.fragmentSelectProductSide.setVisibility(View.GONE);
                         } else {
-                             commonUtilsMethods.ShowToast(context,context.getString(R.string.already_sel_prd),100);
+                             commonUtilsMethods.showToastMessage(context,context.getString(R.string.already_sel_prd));
                         }
                     } else {
-                         commonUtilsMethods.ShowToast(context,context.getString(R.string.no_comp_available),100);
+                         commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_comp_available));
                     }
 
                 } catch (Exception e) {
@@ -210,7 +210,6 @@ public class RCPASelectPrdSide extends Fragment {
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
             final TextView tv_name;
-
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tv_name = itemView.findViewById(R.id.tv_name);

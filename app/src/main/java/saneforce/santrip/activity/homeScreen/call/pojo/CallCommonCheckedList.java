@@ -50,6 +50,15 @@ public class CallCommonCheckedList {
     String categoryExtra;
     String code;
     String stock_balance;
+    String totalVisit;
+
+    public String getTotalVisit() {
+        return totalVisit;
+    }
+
+    public void setTotalVisit(String totalVisit) {
+        this.totalVisit = totalVisit;
+    }
 
     public String getStock_balance() {
         return stock_balance;
@@ -114,12 +123,13 @@ public class CallCommonCheckedList {
         this.code = code;
     }
 
-    public CallCommonCheckedList(String name, String code, String town_name, String town_code, boolean checkedItem) {
+    public CallCommonCheckedList(String name, String code, String town_name, String town_code, boolean checkedItem,String totalVisit) {
         this.checkedItem = checkedItem;
         this.code = code;
         this.name = name;
         this.town_code = town_code;
         this.town_name = town_name;
+        this.totalVisit = totalVisit;
     }
 
     public CallCommonCheckedList(String name,boolean checkedItem) {

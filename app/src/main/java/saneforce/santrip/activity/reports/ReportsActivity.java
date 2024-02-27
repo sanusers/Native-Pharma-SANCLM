@@ -159,14 +159,14 @@ public class ReportsActivity extends AppCompatActivity {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(getApplicationContext(), "Network UnAvailable", 100);
+                    commonUtilsMethods.showToastMessage(getApplicationContext(), "Network UnAvailable");
                 }
 
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
         }
     }
 

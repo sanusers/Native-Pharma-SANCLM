@@ -19,7 +19,7 @@
         android:paddingVertical="@dimen/_3sdp"
         android:text="@string/all"
         android:textColor="@color/text_dark"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -14,7 +14,7 @@
         android:divider="@android:color/transparent"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/_1sdp"
-        app:cardElevation="5dp"
+        app:cardElevation="@dimen/_3sdp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +63,7 @@
             <View
                 android:id="@+id/view_top"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
                 android:layout_marginVertical="@dimen/_1sdp"
                 android:background="#ededed"
                 app:layout_constraintBottom_toTopOf="@id/ll1"
@@ -271,7 +271,7 @@
             <View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginVertical="@dimen/_1sdp"
                 android:background="#ededed"
@@ -332,7 +332,7 @@
 
                 <View
                     android:id="@+id/view_ll2"
-                    android:layout_width="1dp"
+                    android:layout_width="@dimen/_1sdp"
                     android:visibility="gone"
                     android:layout_height="match_parent"
                     android:layout_marginVertical="@dimen/_2sdp"
@@ -384,7 +384,7 @@
             <View
                 android:id="@+id/view3"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
                 android:layout_marginVertical="@dimen/_1sdp"
                 android:background="#ededed"
                 app:layout_constraintBottom_toTopOf="@id/constraint_expand_view"
@@ -494,7 +494,7 @@
                     </RelativeLayout>
 
                     <View
-                        android:layout_width="1dp"
+                        android:layout_width="@dimen/_1sdp"
                         android:layout_height="match_parent"
                         android:layout_marginVertical="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_10sdp"
@@ -586,7 +586,7 @@
                 <View
                     android:id="@+id/view4"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/_1sdp"
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:background="#ededed"
                     android:visibility="gone"
@@ -671,7 +671,7 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_prd_name"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
 
                         <TextView
@@ -692,7 +692,7 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_promoted"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                         <TextView
                             android:id="@+id/tag_samples"
@@ -711,7 +711,7 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_stock"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                         <TextView
                             android:id="@+id/tag_rx_qty"
@@ -730,7 +730,7 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_samples"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                         <TextView
                             android:id="@+id/tag_rcpa_prd"
@@ -750,7 +750,7 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@id/tag_rx_qty"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -847,7 +847,7 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_input_name_main"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -878,7 +878,7 @@
                     android:divider="@android:color/transparent"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/_1sdp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="@dimen/_1sdp"
                     app:cardPreventCornerOverlap="true"
                     app:cardUseCompatPadding="true"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -920,7 +920,7 @@
                 <View
                     android:id="@+id/view5"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/_1sdp"
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:background="#ededed"
                     app:layout_constraintBottom_toTopOf="@id/rlOthers"
@@ -976,7 +976,7 @@
                 <View
                     android:id="@+id/view6"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/_1sdp"
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:background="#ededed"
                    app:layout_constraintBottom_toBottomOf="parent"

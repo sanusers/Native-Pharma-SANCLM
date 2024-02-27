@@ -97,9 +97,9 @@ CommonUtilsMethods commonUtilsMethods;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
                             if (status.equalsIgnoreCase("4")) {
-                                commonUtilsMethods.ShowToast(context, context.getString(R.string.approved_successfully), 100);
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully));
                             } else {
-                                commonUtilsMethods.ShowToast(context, context.getString(R.string.rejected_successfully), 100);
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully));
                             }
                             removeAt(position);
                             ApprovalsActivity.DeviationCount--;
@@ -108,14 +108,14 @@ CommonUtilsMethods commonUtilsMethods;
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
             }
         });
     }

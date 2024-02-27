@@ -123,12 +123,12 @@ public class SlideDownloaderAlertBox {
                 dialog.dismiss();
             });
             }else {
-                commonUtilsMethods.ShowToast(activity, "Already All Slide Downloaded", 100);
+                commonUtilsMethods.showToastMessage(activity, "Already All Slide Downloaded");
             }
         } else {
             downloading_count = 0;
             totalcount = 0;
-            commonUtilsMethods.ShowToast(activity, activity.getString(R.string.no_slides), 100);
+            commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_slides));
             if (MoveMainFlag) {
                 activity.startActivity(new Intent(activity, HomeDashBoard.class));
             }

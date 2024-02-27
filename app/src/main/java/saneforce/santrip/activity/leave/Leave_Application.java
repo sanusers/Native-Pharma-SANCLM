@@ -192,7 +192,7 @@ public class Leave_Application extends AppCompatActivity {
                 tp.putExtra("selectefromdDate", "2");
                 startActivity(tp);
             } else {
-                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_from_date), 100);
+                commonUtilsMethods.showToastMessage(Leave_Application.this, getString(R.string.select_from_date));
             }
         });
 

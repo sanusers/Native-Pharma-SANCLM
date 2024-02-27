@@ -16,13 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
@@ -103,7 +101,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     RejectedLeave(leaveModelLists.get(holder.getBindingAdapterPosition()).getLeave_id(), holder.getBindingAdapterPosition(), ed_reason.getText().toString());
                 } else {
-                     commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_enter_reason_for_reject),100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_enter_reason_for_reject));
                 }
             });
             dialogReject.show();
@@ -135,7 +133,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/approvals");
-        Call<JsonElement> callRejectedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonLeave.toString());
+        Call<JsonElement> callRejectedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonLeave.toString());
         callRejectedLeave.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
@@ -145,7 +143,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                             commonUtilsMethods.ShowToast(context,context.getString(R.string.rejected_successfully),100);
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
@@ -156,14 +154,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 } else {
                     progressDialog.dismiss();
                     dialogReject.dismiss();
-                     commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                 commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 dialogReject.dismiss();
             }
         });
@@ -190,7 +188,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "save/approvals");
-        Call<JsonElement> callApprovedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonLeave.toString());
+        Call<JsonElement> callApprovedLeave = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonLeave.toString());
 
         callApprovedLeave.enqueue(new Callback<JsonElement>() {
             @Override
@@ -201,7 +199,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                             commonUtilsMethods.ShowToast(context,context.getString(R.string.approved_successfully),100);
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.approved_successfully));
                             removeAt(Position);
                             ApprovalsActivity.LeaveCount--;
                         }
@@ -209,14 +207,14 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                     }
                 } else {
                     progressDialog.dismiss();
-                     commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                 commonUtilsMethods.ShowToast(context,context.getString(R.string.toast_response_failed),100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
             }
         });
     }

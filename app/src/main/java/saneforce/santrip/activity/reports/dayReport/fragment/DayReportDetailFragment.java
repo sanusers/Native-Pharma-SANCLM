@@ -159,6 +159,7 @@ public class DayReportDetailFragment extends Fragment {
 
         ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
         String date = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_6, TimeUtils.FORMAT_19, dayReportModel.getAdate());
+        assert activity != null;
         activity.title.setText(String.format("Day Report ( %s )", date));
         int drCount = 0, chmCount = 0, stkCount = 0, undrCount = 0, cipCount = 0, hosCount = 0;
 
@@ -256,7 +257,7 @@ public class DayReportDetailFragment extends Fragment {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                commonUtilsMethods.ShowToast(requireContext(), getString(R.string.toast_response_failed), 100);
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_response_failed));
                                 progressDialog.dismiss();
                             }
                         });
@@ -265,13 +266,13 @@ public class DayReportDetailFragment extends Fragment {
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(requireContext(), getString(R.string.poor_connection), 100);
+                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.poor_connection));
                 }
             });
             networkStatusTask.execute();
         } else {
             progressDialog.dismiss();
-            commonUtilsMethods.ShowToast(requireContext(), getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
         }
     }
 

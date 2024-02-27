@@ -183,20 +183,24 @@ public class OutboxFragment extends Fragment {
         CallApiList(outBoxCallLists);*/
 
     private void CallCheckInOut(int ParentPos, int ChildPos, ArrayList<CheckInOutModelClass> checkInOutModelClasses, GroupModelClass modelClass) {
-        if (checkInOutModelClasses.size() > 0) {
-            isCallAvailable = false;
-            for (int m = 0; m < checkInOutModelClasses.size(); m++) {
-                CheckInOutModelClass checkInOutModelClass = checkInOutModelClasses.get(m);
-                if (checkInOutModelClass.getCheckStatus() == 0) {
-                    isCallAvailable = true;
-                    Log.v("SendOutboxCall", "--checkInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "----" + checkInOutModelClass.getCheckOutTime());
-                    if (checkInOutModelClass.getJsonOutValues().isEmpty()) {
-                        CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonInValues(), modelClass);
-                    } else {
-                        CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonOutValues(), modelClass);
+        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            if (checkInOutModelClasses.size() > 0) {
+                isCallAvailable = false;
+                for (int m = 0; m < checkInOutModelClasses.size(); m++) {
+                    CheckInOutModelClass checkInOutModelClass = checkInOutModelClasses.get(m);
+                    if (checkInOutModelClass.getCheckStatus() == 0) {
+                        isCallAvailable = true;
+                        Log.v("SendOutboxCall", "--checkInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "----" + checkInOutModelClass.getCheckOutTime());
+                        if (checkInOutModelClass.getJsonOutValues().isEmpty()) {
+                            CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonInValues(), modelClass);
+                        } else {
+                            CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonOutValues(), modelClass);
+                        }
                     }
+                    break;
                 }
-                break;
+            } else {
+                isCallAvailable = false;
             }
         } else {
             isCallAvailable = false;

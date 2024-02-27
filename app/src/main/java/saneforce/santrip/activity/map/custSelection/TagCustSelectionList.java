@@ -381,7 +381,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_network));
         }
     }
 
@@ -401,7 +401,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -429,7 +429,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -454,7 +454,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -479,7 +479,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);

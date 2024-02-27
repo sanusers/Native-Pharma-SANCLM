@@ -30,7 +30,7 @@
         android:paddingVertical="@dimen/_2sdp"
         android:text="@string/cancel"
         android:textColor="@color/white"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintTop_toBottomOf="@id/img_plygon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

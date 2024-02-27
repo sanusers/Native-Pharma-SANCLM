@@ -93,7 +93,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     } else {
                         holder.checkBox.setChecked(false);
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.no_qty_input), 100);
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_input));
                     }
                 } else {
                     CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());

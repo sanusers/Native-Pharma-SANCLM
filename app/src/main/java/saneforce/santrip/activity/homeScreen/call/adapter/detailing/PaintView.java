@@ -176,8 +176,8 @@ public class PaintView extends View
         Log.v("line_center_pt",angle+"");*/
        /* paths.moveTo(50, 50);
         paths.lineTo(100, 50);
-        paths.lineTo(100, 100);
-        paths.lineTo(80, 100);
+        paths.lineTo(100);
+        paths.lineTo(80);
         paths.close();
         canvas.drawPath(paths, paints);
         RectF rectF = new RectF();
