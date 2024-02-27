@@ -65,7 +65,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
+        android:installLocation="auto"
+        tools:replace="android:supportsRtl"
         tools:targetApi="31">
+
+        <activity
+            android:name=".activity.activityModule.Activity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".activity.Quiz.QuizActivity"

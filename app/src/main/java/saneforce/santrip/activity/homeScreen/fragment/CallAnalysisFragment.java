@@ -191,7 +191,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
                 if (!Designation.equalsIgnoreCase("MR")) {
-
                     callAnalysisBinding.txtDocCount.setText(String.valueOf(doc_current_callcount));
                     callAnalysisBinding.txtCheCount.setText(String.valueOf(che_current_callcount));
                     callAnalysisBinding.txtStockCount.setText(String.valueOf(stockiest_current_callcount));

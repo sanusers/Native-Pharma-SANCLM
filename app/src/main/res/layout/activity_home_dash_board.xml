@@ -113,8 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/Toolbar"
-            tools:context=".activity.DashBoard.HomeDashBoard"
-            tools:openDrawer="start">
+            tools:context=".activity.DashBoard.HomeDashBoard">
 
             <LinearLayout
                 android:layout_width="match_parent"

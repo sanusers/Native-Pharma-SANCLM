@@ -33,15 +33,16 @@ public class SplashScreen extends AppCompatActivity {
 
         binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
 
         new Handler().postDelayed(() -> {
             if (SharedPref.getSettingState(getApplicationContext())){
                 if (SharedPref.getLoginState(getApplicationContext())){
-                    startActivity(new Intent(SplashScreen.this, HomeDashBoard.class));
+                    Intent  intent= new Intent(SplashScreen.this, HomeDashBoard.class);
+                    startActivity(intent);
                     finish();
                 }else{
                     startActivity(new Intent(SplashScreen.this, LoginActivity.class));
@@ -52,7 +53,7 @@ public class SplashScreen extends AppCompatActivity {
                 finish();
             }
 
-        },2000);
+        },3000);
     }
 
 

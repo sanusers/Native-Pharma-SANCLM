@@ -387,10 +387,10 @@
                                 android:layout_marginTop="@dimen/_2sdp"
                                 android:layout_marginEnd="@dimen/_2sdp"
                                 android:layout_marginBottom="@dimen/_2sdp"
+                                android:layout_toStartOf="@id/img_arrow_1"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:hint="Select Work Type"
                                 android:padding="@dimen/_4sdp"
-                                android:layout_toStartOf="@id/img_arrow_1"
                                 android:textColor="@color/text_dark"
                                 android:textColorHint="@color/text_dark"
                                 android:textSize="@dimen/_7sdp" />

@@ -3,7 +3,6 @@ package saneforce.santrip.activity.login;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
