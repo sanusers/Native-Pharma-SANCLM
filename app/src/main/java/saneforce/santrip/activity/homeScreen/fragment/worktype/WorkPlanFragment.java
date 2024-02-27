@@ -129,7 +129,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
-        Log.v("fragment", "workPlan");
+
         sqLite = new SQLite(getActivity());
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
@@ -362,19 +362,25 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             SelectedHQ = HQ_ListAdapter.getlisted().get(position);
             HomeDashBoard.binding.drMainlayout.closeDrawer(GravityCompat.END);
             try {
-                TextCL.setText("");
-                TextHQ.setText(SelectedHQ.getString("name"));
-                if (DayPlanCount.equalsIgnoreCase("1")) {
-                    mHQCode1 = SelectedHQ.getString("id");
-                    mHQName1 = SelectedHQ.getString("name");
-                    getData(SelectedHQ.getString("id"));
 
-                } else {
-                    mHQCode2 = SelectedHQ.getString("id");
-                    mHQName2 = SelectedHQ.getString("name");
-                    getData(SelectedHQ.getString("id"));
+                if (UtilityClass.isNetworkAvailable(requireContext())) {
+
+                    TextCL.setText("");
+                    TextHQ.setText(SelectedHQ.getString("name"));
+                    if (DayPlanCount.equalsIgnoreCase("1")) {
+                        mHQCode1 = SelectedHQ.getString("id");
+                        mHQName1 = SelectedHQ.getString("name");
+                        getData(SelectedHQ.getString("id"));
+
+                    } else {
+                        mHQCode2 = SelectedHQ.getString("id");
+                        mHQName2 = SelectedHQ.getString("name");
+                        getData(SelectedHQ.getString("id"));
+                    }
+                }else {
+                    TextHQ.setText("");
+                    commonUtilsMethods.ShowToast(requireContext(), getString(R.string.no_network), 100);
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -865,7 +871,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TpVwFlg", "0");
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");
-            Log.e("VALUES", jsonObject.toString());
+
 
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "edetsave/dayplan");
@@ -945,8 +951,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    Log.e("VALUES", String.valueOf(t));
-//                    binding.progressSumit.setVisibility(View.GONE);
+
+                    binding.progressSumit.setVisibility(View.GONE);
                     commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.toast_response_failed), 100);
                 }
             });
@@ -1062,7 +1068,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
         } else {
             commonUtilsMethods.ShowToast(requireContext(), requireContext().getString(R.string.no_network), 100);
-
+            if (DayPlanCount.equalsIgnoreCase("1")) {
+                binding.progressHq1.setVisibility(View.GONE);
+            } else {
+                binding.progressHq2.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -1194,7 +1204,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.txtCluster1.setText("");
                     binding.txtheadquaters1.setText("");
                 }
-
+                binding.llPlan2.setBackground(null);
+                binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.rlworktype2.setEnabled(true);
+                binding.rlcluster2.setEnabled(true);
+                binding.rlheadquates2.setEnabled(true);
+                binding.txtWorktype2.setText("");
+                binding.txtCluster2.setText("");
+                binding.txtheadquaters2.setText("");
 
                 if(workTypeArray.length()==2){
                     JSONObject SecondSeasonDayPlanObject = workTypeArray.getJSONObject(1);
@@ -1284,6 +1303,24 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.setTodayDayPlanSfName(requireContext(), "");
                     SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
 
+                binding.rlworktype1.setEnabled(true);
+                binding.rlcluster1.setEnabled(true);
+                binding.rlheadquates1.setEnabled(true);
+                binding.rlworktype2.setEnabled(true);
+                binding.rlcluster2.setEnabled(true);
+                binding.rlheadquates2.setEnabled(true);
+                binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
+                binding.txtAddPlan.setEnabled(false);
+                binding. txtSave.setTextColor(getResources().getColor(R.color.black));
+                binding.txtSave.setEnabled(true);
+                binding.llPlan1.setBackground(null);
+                binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.llPlan2.setBackground(null);
+                binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
                 }
 
         } catch (Exception a) {

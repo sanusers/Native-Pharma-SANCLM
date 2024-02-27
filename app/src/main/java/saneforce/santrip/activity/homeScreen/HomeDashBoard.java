@@ -105,6 +105,7 @@ import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 import saneforce.santrip.activity.remainderCall.RemainderCallActivity;
 import saneforce.santrip.activity.reports.ReportsActivity;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
+import saneforce.santrip.activity.activityModule.Activity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
@@ -166,6 +167,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         super.onResume();
+
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -235,15 +237,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
-        WindowInsetsControllerCompat windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-
-        getWindow().getDecorView().setOnApplyWindowInsetsListener((view, windowInsets) -> {
-            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
-            return view.onApplyWindowInsets(windowInsets);
-        });
 
 
         intentFilter = new IntentFilter();
@@ -1116,7 +1109,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             startActivity(new Intent(HomeDashBoard.this, QuizActivity.class));
             return true;
         }
-
+        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.activity))) {
+            startActivity(new Intent(HomeDashBoard.this, Activity.class));
+            return true;
+        }
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.my_resource))) {
             startActivity(new Intent(HomeDashBoard.this, MyResource_Activity.class));
             return true;

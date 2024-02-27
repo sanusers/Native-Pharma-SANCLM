@@ -164,7 +164,18 @@ public class MasterSyncActivity extends AppCompatActivity {
 //        }
 
         //binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
-        binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+
+        binding.backArrow.setOnClickListener(view -> {
+            if (navigateFrom.equalsIgnoreCase("Login")) {
+                Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+
+        });
 
         binding.hq.setOnClickListener(view -> {
 
@@ -1594,45 +1605,6 @@ public class MasterSyncActivity extends AppCompatActivity {
         }
     }
 
-//    ArrayList<SlideModelClass> slideListPrepared(String mFlag) {
-//        if (mFlag.equalsIgnoreCase("0")) {
-//            Slide_list.clear();
-//            slideId.clear();
-//        } else {
-//            String slideID = SharedPref.GetSlideID(MasterSyncActivity.this);
-//            String slideLIST = SharedPref.GetSlideList(MasterSyncActivity.this);
-//            String conut = SharedPref.GetSlideDownloadingcount(MasterSyncActivity.this);
-//            Type listType = new TypeToken<ArrayList<String>>() {
-//            }.getType();
-//            Type listType1 = new TypeToken<ArrayList<SlideModelClass>>() {
-//            }.getType();
-//            slideId = new Gson().fromJson(slideID, listType);
-//            Slide_list = new Gson().fromJson(slideLIST, listType1);
-//            SlideDownloaderAlertBox.downloading_count = Integer.valueOf(conut);
-//        }
-//
-//        JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-//        try {
-//            if (slidedata.length() > 0) {
-//                for (int i = 0; i < slidedata.length(); i++) {
-//                    JSONObject jsonObject = slidedata.getJSONObject(i);
-//                    String FilePath = jsonObject.optString("FilePath");
-//                    String id = jsonObject.optString("SlideId");
-//                    if (!slideId.contains(id)) {
-//                        slideId.add(id);
-//                        Slide_list.add(new SlideModelClass(FilePath, false, "0", "0"));
-//                    }
-//                }
-//            } else {
-//                Slide_list.clear();
-//                slideId.clear();
-//            }
-//        } catch (Exception ignored) {
-//        }
-//
-//        SharedPref.saveSlideListID(MasterSyncActivity.this, slideId);
-//        return Slide_list;
-//    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
