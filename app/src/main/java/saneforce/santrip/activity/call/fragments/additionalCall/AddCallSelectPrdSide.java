@@ -35,6 +35,7 @@ import saneforce.santrip.activity.call.pojo.additionalCalls.AddSampleAdditionalC
 import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.databinding.FragmentAcSelectProductSideBinding;
 
 public class AddCallSelectPrdSide extends Fragment {
     public static ArrayList<CallCommonCheckedList> callSampleList;
