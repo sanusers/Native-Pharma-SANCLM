@@ -420,37 +420,4 @@ public class LoginActivity extends AppCompatActivity {
             binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
-    public void ShowToast(String message) {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_layout, findViewById(R.id.toast_layout_root));
-
-        ImageView image = layout.findViewById(R.id.image);
-        image.setImageResource(R.drawable.san_clm_logo);
-        TextView text = layout.findViewById(R.id.text);
-        text.setText(message);
-
-        Toast toast = new Toast(context);
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
-    }
-
-    public void ShowToast(Context context, String message, int duration) {
-        Toast toast = Toast.makeText(context, message, duration);
-        View view = toast.getView();
-        try {
-            assert view != null;
-        } catch (Exception ignored) {
-
-        }
-        view.getBackground().setColorFilter(context.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
-
-        TextView text = view.findViewById(android.R.id.message);
-        text.setTextColor(context.getColor(R.color.white));
-
-        toast.show();
-    }
-
 }

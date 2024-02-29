@@ -4,18 +4,13 @@ import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -23,38 +18,29 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkplanListAdapter;
-import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
@@ -69,9 +55,10 @@ public class Activity extends AppCompatActivity {
     LoginResponse loginResponse;
     SQLite sqLite;
     ApiInterface apiInterface;
+    CommonUtilsMethods commonUtilsMethods;
 
-    ArrayList<ActivityModelClass> ActivityList=new ArrayList<>();
-    ArrayList<ActivityDetailsModelClass> ActivityDetailsList=new ArrayList<>();
+    ArrayList<ActivityModelClass> ActivityList = new ArrayList<>();
+    ArrayList<ActivityDetailsModelClass> ActivityDetailsList = new ArrayList<>();
 
 
     ArrayList<String> dialogtablemultipledatagd = new ArrayList<String>();
@@ -126,38 +113,38 @@ public class Activity extends AppCompatActivity {
     ArrayList<JSONObject> HQList = new ArrayList<>();
 
 
+    TextView textviewtablemultiple, textlabel, textcombosingle, textcombomultiple, textviewtablesingle, headertext, donetxt;
+    EditText textarea, textnumber, textcharacter, textcurrency, txtcurconvert1, txtcurconvert2;
+    TextView textviewdate1, textViewtime1, textviewfromdate, textviewtodate, textviewfromtime, textviewtotime, textfileupload;
 
-    TextView textviewtablemultiple,textlabel,textcombosingle,textcombomultiple,textviewtablesingle,headertext,donetxt;
-    EditText textarea,textnumber,textcharacter,textcurrency,txtcurconvert1,txtcurconvert2;
-    TextView textviewdate1,textViewtime1,textviewfromdate,textviewtodate,textviewfromtime,textviewtotime,textfileupload;
+    int multiarr = 0, singarr = 0, multicomarr = 0, singcomarr = 0, date1 = 0, datefrm = 0, dateto = 0, time1 = 0, timefrm = 0, timeto = 0, fileuload = 0;
 
-    int multiarr=0,singarr=0,multicomarr=0,singcomarr=0,date1=0,datefrm=0,dateto=0,time1=0,timefrm=0,timeto=0,fileuload=0;
+    TextView multitableedittext, singletableedittext, multicomboeditext, singlecomboedittext;
 
-    TextView multitableedittext,singletableedittext,multicomboeditext,singlecomboedittext;
+    ImageView goback, upload, refresh;
 
-    ImageView goback,upload,refresh;
-
-    String[] value,valfrom,valto;
+    String[] value, valfrom, valto;
 
 
     TextView textlatlong, textaddress;
 
 
-
     ActivityAdapter adapter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding=ActivityBinding.inflate(getLayoutInflater());
+        binding = ActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        sqLite=new SQLite(this);
+        sqLite = new SQLite(this);
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
+        commonUtilsMethods = new CommonUtilsMethods(Activity.this);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
-        adapter=new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {
+        adapter = new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {
             binding.namechooseActivity.setText(classGroup.getActivityName());
             binding.llActivityDetailsView.removeAllViews();
             getActivityDetails(classGroup);
@@ -170,9 +157,9 @@ public class Activity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
 
-        if(!loginResponse.getDesig().equalsIgnoreCase("MR")){
+        if (!loginResponse.getDesig().equalsIgnoreCase("MR")) {
             binding.rlheadquates.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.rlheadquates.setVisibility(View.GONE);
         }
 
@@ -195,85 +182,77 @@ public class Activity extends AppCompatActivity {
             for (int i = 0; i < workTypeArray3.length(); i++) {
                 JSONObject jsonObject = workTypeArray3.getJSONObject(i);
                 HQList.add(jsonObject);
-                ActvityHqAdapter adapter1=new ActvityHqAdapter(getApplicationContext(),HQList);
+                ActvityHqAdapter adapter1 = new ActvityHqAdapter(getApplicationContext(), HQList);
                 binding.acRecyelerView.setLayoutManager(new LinearLayoutManager(this));
                 binding.acRecyelerView.setAdapter(adapter1);
             }
-        }catch (Exception a){}
-
-
-
+        } catch (Exception a) {
         }
 
 
-
-
-
-
-    public  void getActivity(){
-
-       try {
-           JSONObject object = new JSONObject();
-           object.put("tableName", "getdynactivity");
-           object.put("sfcode", loginResponse.getSF_Code());
-           object.put("division_code", loginResponse.getDivision_Code());
-           object.put("Rsf", SharedPref.getHqCode(this));
-           object.put("Designation", loginResponse.getDesig());
-           object.put("sf_type", loginResponse.getSf_type());
-            object.put("state_code", loginResponse.getState_Code());
-           object.put("subdivision_code", loginResponse.getSubdivision_code());
-           Map<String, String> QuaryParam = new HashMap<>();
-           QuaryParam.put("axn", "get/activity");
-            Log.v("Response :",""+object.toString());
-           Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QuaryParam, object.toString());
-
-          call.enqueue(new Callback<JsonElement>() {
-              @Override
-              public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-
-                  Log.v("Response :",""+response);
-                  JSONArray jsonArray = new JSONArray();
-                  if(response.isSuccessful()){
-                 try {
-                     JsonElement jsonElement = response.body();
-                     jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-
-                     if(jsonArray.length()>0){
-                         for(int i=0;i<jsonArray.length();i++){
-                             JSONObject jsonObject= jsonArray.getJSONObject(i);
-                             String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
-                             List<String>  DegList= Arrays.asList(Activity_Desig);
-                             if (DegList.contains(loginResponse.getDesig())) {
-                                 ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
-                             }
-                         }
-
-                     }else {
-                         CommonUtilsMethods commonUtilsMethods=new CommonUtilsMethods(getApplicationContext());
-                         commonUtilsMethods.ShowToast(getApplicationContext(),"No Activity",100);
-
-                     }
-
-                  adapter.notifyDataSetChanged();
-
-                 }catch (Exception a){
-                 }
-                  }
-
-              }
-
-              @Override
-              public void onFailure(Call<JsonElement> call, Throwable t) {
-
-              }
-          });
-
-
-       }catch (Exception a){
-           a.printStackTrace();
-       }
     }
 
+
+    public void getActivity() {
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("tableName", "getdynactivity");
+            object.put("sfcode", loginResponse.getSF_Code());
+            object.put("division_code", loginResponse.getDivision_Code());
+            object.put("Rsf", SharedPref.getHqCode(this));
+            object.put("Designation", loginResponse.getDesig());
+            object.put("sf_type", loginResponse.getSf_type());
+            object.put("state_code", loginResponse.getState_Code());
+            object.put("subdivision_code", loginResponse.getSubdivision_code());
+            Map<String, String> QuaryParam = new HashMap<>();
+            QuaryParam.put("axn", "get/activity");
+            Log.v("Response :", String.valueOf(object));
+            Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QuaryParam, object.toString());
+
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+
+                    Log.v("Response :", String.valueOf(response));
+                    JSONArray jsonArray = new JSONArray();
+                    if (response.isSuccessful()) {
+                        try {
+                            JsonElement jsonElement = response.body();
+                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+
+                            if (jsonArray.length() > 0) {
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
+                                    List<String> DegList = Arrays.asList(Activity_Desig);
+                                    if (DegList.contains(loginResponse.getDesig())) {
+                                        ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                                    }
+                                }
+
+                            } else {
+                                commonUtilsMethods.showToastMessage(Activity.this, "No Activity");
+                            }
+                            adapter.notifyDataSetChanged();
+
+                        } catch (Exception a) {
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<JsonElement> call, Throwable t) {
+
+                }
+            });
+
+
+        } catch (Exception a) {
+            a.printStackTrace();
+        }
+    }
 
 
     public void getActivityDetails(ActivityModelClass Data) {
@@ -291,112 +270,103 @@ public class Activity extends AppCompatActivity {
             object.put("slno", Data.getSlNo());
             Map<String, String> QuaryParam = new HashMap<>();
             QuaryParam.put("axn", "get/activity");
-            Log.v("Response :",""+object.toString());
+            Log.v("Response :", String.valueOf(object));
             Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), QuaryParam, object.toString());
             call.enqueue(new Callback<JsonElement>() {
-               @Override
-               public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                @Override
+                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
 
-                   Log.v("Response :",""+response);
-                   JSONArray jsonArray = new JSONArray();
-                   if(response.isSuccessful()){
-                       ActivityDetailsList.clear();
+                    Log.v("Response :", String.valueOf(response));
+                    JSONArray jsonArray = new JSONArray();
+                    if (response.isSuccessful()) {
+                        ActivityDetailsList.clear();
 
-                       try {
-                           JsonElement jsonElement = response.body();
-                           jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-                           if(jsonArray.length()>0){
-                               for(int i=0;i<jsonArray.length();i++){
-                                       JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                           String Field_Name = jsonObject1.getString("Field_Name");
-                                           String Control_Id = jsonObject1.getString("Control_Id");
-                                           String Creation_Id = jsonObject1.getString("Creation_Id");
-                                           String input = jsonObject1.getString("input");
-                                           String madantaory = jsonObject1.getString("Mandatory");
-                                           String Control_Para = jsonObject1.getString("Control_Para");
-                                           String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
-                                           ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name,Control_Id,Creation_Id,input,madantaory,Control_Para,Group_Creation_ID));
+                        try {
+                            JsonElement jsonElement = response.body();
+                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+                            if (jsonArray.length() > 0) {
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                    String Field_Name = jsonObject1.getString("Field_Name");
+                                    String Control_Id = jsonObject1.getString("Control_Id");
+                                    String Creation_Id = jsonObject1.getString("Creation_Id");
+                                    String input = jsonObject1.getString("input");
+                                    String madantaory = jsonObject1.getString("Mandatory");
+                                    String Control_Para = jsonObject1.getString("Control_Para");
+                                    String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
+                                    ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name, Control_Id, Creation_Id, input, madantaory, Control_Para, Group_Creation_ID));
 
-                               }
-                               for (int i = 0; i < ActivityDetailsList.size(); i++) {
+                                }
+                                for (int i = 0; i < ActivityDetailsList.size(); i++) {
 
-                                   if (ActivityDetailsList.get(i).getControlId().equals("addlabeltxtvw")) {
-                                       addedittextcharacter(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("1")) {
-                                       addedittextcharacter(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("2")) {
-                                       addedittextnumeric(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("3")) {
-                                       addedittextarea(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("4")) {
-                                       adddate(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("5")) {
-                                       adddaterange(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("6")) {
-                                       addtime(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("7")) {
-                                       addtimerange(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("8")) {
-                                       addsinglecomboViews(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("9")) {
-                                       addmultiplecomboViews(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("10")) {
-                                       adduploadfile(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("11")) {
-                                       addedittextnumericcurrency(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("12")) {
-                                       addsingletableViews(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("13")) {
-                                       addmultipletableViews(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("17")) {
-                                       addlocationdata(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("18")) {
-                                       addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
-                                   } else if (ActivityDetailsList.get(i).getControlId().equals("19")) {
-                                       digitalsign(ActivityDetailsList.get(i), i);
-                                   }
-
-
+                                    if (ActivityDetailsList.get(i).getControlId().equals("addlabeltxtvw")) {
+                                        addedittextcharacter(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("1")) {
+                                        addedittextcharacter(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("2")) {
+                                        addedittextnumeric(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("3")) {
+                                        addedittextarea(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("4")) {
+                                        adddate(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("5")) {
+                                        adddaterange(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("6")) {
+                                        addtime(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("7")) {
+                                        addtimerange(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("8")) {
+                                        addsinglecomboViews(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("9")) {
+                                        addmultiplecomboViews(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("10")) {
+                                        adduploadfile(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("11")) {
+                                        addedittextnumericcurrency(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("12")) {
+                                        addsingletableViews(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("13")) {
+                                        addmultipletableViews(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("17")) {
+                                        addlocationdata(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("18")) {
+                                        addeditcurrencyconvertor(ActivityDetailsList.get(i), i);
+                                    } else if (ActivityDetailsList.get(i).getControlId().equals("19")) {
+                                        digitalsign(ActivityDetailsList.get(i), i);
+                                    }
 
 
-
-                               }
-                           }else {
-                               CommonUtilsMethods commonUtilsMethods=new CommonUtilsMethods(getApplicationContext());
-                               commonUtilsMethods.ShowToast(getApplicationContext(),"No Activity Details",100);
-                           }
-                       }catch (Exception a){
-                       }
-                   }
+                                }
+                            } else {
+                                commonUtilsMethods.showToastMessage(Activity.this, "No Activity Details");
+                            }
+                        } catch (Exception a) {
+                        }
+                    }
 
 
+                }
 
+                @Override
+                public void onFailure(Call<JsonElement> call, Throwable t) {
 
-               }
+                }
+            });
 
-               @Override
-               public void onFailure(Call<JsonElement> call, Throwable t) {
-
-               }
-           });
-
-        }catch (Exception a){
+        } catch (Exception a) {
             a.printStackTrace();
         }
     }
 
 
-
     @SuppressLint("ResourceType")
-    public void addlabeltxtvw(ActivityDetailsModelClass List, int k){
+    public void addlabeltxtvw(ActivityDetailsModelClass List, int k) {
         LinearLayout textLinearLayout = new LinearLayout(this);
         textLinearLayout.setOrientation(LinearLayout.VERTICAL);
 
         textlabel = new TextView(this);
         textlabel.setText(List.getFieldName().toUpperCase());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textlabel.setBackgroundResource(R.drawable.backround_lite_gray_border);
@@ -412,11 +382,9 @@ public class Activity extends AppCompatActivity {
     }
 
 
-    public void addedittextcharacter(ActivityDetailsModelClass List, int k){
+    public void addedittextcharacter(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
         textLinearLayout1.setOrientation(LinearLayout.VERTICAL);
@@ -426,19 +394,16 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
-
 
 
         textviewdata.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -448,8 +413,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textviewdata);
 
         textcharacter = new EditText(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textcharacter.setBackgroundColor(Color.WHITE);
@@ -483,11 +447,11 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setFocusableInTouchMode(true);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
@@ -524,12 +488,8 @@ public class Activity extends AppCompatActivity {
     }
 
 
-
-
-    public void addedittextarea(ActivityDetailsModelClass List, int k){
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void addedittextarea(ActivityDetailsModelClass List, int k) {
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -540,17 +500,15 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -561,9 +519,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textviewdata);
         textarea = new EditText(this);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textarea.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -590,11 +546,9 @@ public class Activity extends AppCompatActivity {
 
     }
 
-    public void adddate(ActivityDetailsModelClass List, int k){
+    public void adddate(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -602,17 +556,15 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -629,9 +581,7 @@ public class Activity extends AppCompatActivity {
 
         textLinearLayout2.setId(k);
         textLinearLayout2.setTag(date1);
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._100sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._100sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         textviewdate1 = new TextView(this);
         textviewdate.add(textviewdate1);
 
@@ -655,29 +605,25 @@ public class Activity extends AppCompatActivity {
     }
 
 
-    public void adddaterange(ActivityDetailsModelClass List, int k){
+    public void adddaterange(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
         textLinearLayout1.setOrientation(LinearLayout.VERTICAL);
         textLinearLayout1.setLayoutParams(param);
-         binding.llActivityDetailsView.addView(textLinearLayout1);
+        binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -690,7 +636,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout4.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout4.setLayoutParams(params1);
 
-        textviewdata.	setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        textviewdata.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewdata.setTextColor(getResources().getColor(R.color.text_dark));
         textviewdata.setLayoutParams(params1);
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
@@ -699,17 +645,14 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout2);
 
 
-
         textLinearLayout2.addView(textLinearLayout3);
         textLinearLayout2.addView(textLinearLayout4);
 
 
-        textLinearLayout3.setId(k+23);
+        textLinearLayout3.setId(k + 23);
         textLinearLayout3.setTag(datefrm);
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(com.intuit.sdp.R.dimen._100sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(com.intuit.sdp.R.dimen._100sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         textviewfromdate = new TextView(this);
 
         Drawable drawable = getDrawable(R.drawable.calendar_img);
@@ -725,18 +668,16 @@ public class Activity extends AppCompatActivity {
         textviewfromdate.setGravity(CENTER);
         textviewdatefrom.add(textviewfromdate);
         textLinearLayout3.addView(textviewfromdate);
-        textLinearLayout4.setId(k+24);
+        textLinearLayout4.setId(k + 24);
         textLinearLayout4.setTag(dateto);
 
-        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(com.intuit.sdp.R.dimen._100sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams((int) getResources().getDimension(com.intuit.sdp.R.dimen._100sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         textviewtodate = new TextView(this);
         textviewtodate.setCompoundDrawables(drawable, null, null, null);
         textviewtodate.setText("Select To Date");
         textviewtodate.setBackgroundColor(Color.WHITE);
         textviewtodate.setBackgroundResource(R.drawable.background_card_white_plan);
-        textviewtodate.	setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        textviewtodate.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewtodate.setTextColor(getResources().getColor(R.color.text_dark));
 
         textviewtodate.setLayoutParams(params111);
@@ -747,12 +688,11 @@ public class Activity extends AppCompatActivity {
         dateto++;
         datefrm++;
     }
-    public void addtime(ActivityDetailsModelClass List, int k){
+
+    public void addtime(ActivityDetailsModelClass List, int k) {
 
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -760,25 +700,23 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
 
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._100sdp),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._100sdp), LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout2.setLayoutParams(param);
 
-        textviewdata.	setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        textviewdata.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
 
         textviewdata.setTextColor(getResources().getColor(R.color.text_dark));
         textviewdata.setLayoutParams(params1);
@@ -791,9 +729,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.setTag(time1);
 
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._100sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._100sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         textViewtime1 = new TextView(this);
         textViewtime1.setText("Select Time");
         Drawable drawable = getDrawable(R.drawable.clock);
@@ -802,7 +738,7 @@ public class Activity extends AppCompatActivity {
         textViewtime1.setCompoundDrawables(drawable, null, null, null);
         textViewtime1.setBackgroundColor(Color.WHITE);
         textViewtime1.setBackgroundResource(R.drawable.background_card_white_plan);
-        textViewtime1.	setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
+        textViewtime1.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textViewtime1.setTextColor(getResources().getColor(R.color.text_dark));
         textViewtime1.setLayoutParams(params11);
         textViewtime1.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
@@ -811,12 +747,11 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.addView(textViewtime1);
         time1++;
     }
-    public void addtimerange(ActivityDetailsModelClass List, int k){
+
+    public void addtimerange(ActivityDetailsModelClass List, int k) {
 
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -824,18 +759,16 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
 
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -844,7 +777,7 @@ public class Activity extends AppCompatActivity {
         textviewdata.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewdata.setTextColor(getResources().getColor(R.color.text_dark));
         textviewdata.setLayoutParams(params1);
-        textviewdata.setTextSize((int) getResources().getDimension(R.dimen._6sdp));;
+        textviewdata.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         textLinearLayout1.addView(textviewdata);
         textLinearLayout1.addView(textLinearLayout2);
 
@@ -858,12 +791,10 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.addView(textLinearLayout4);
 
 
-        textLinearLayout3.setId(k+33);
+        textLinearLayout3.setId(k + 33);
         textLinearLayout3.setTag(timefrm);
 
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                 (int) getResources().getDimension(R.dimen._100sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._100sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         textviewfromtime = new TextView(this);
         Drawable drawable = getDrawable(R.drawable.clock);
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
@@ -874,17 +805,15 @@ public class Activity extends AppCompatActivity {
         textviewfromtime.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewfromtime.setTextColor(Color.BLACK);
         textviewfromtime.setLayoutParams(params11);
-        textviewfromtime.setTextSize((int) getResources().getDimension(R.dimen._6sdp));;
+        textviewfromtime.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         textviewfromtime.setGravity(CENTER);
 
         textviewtimefrom.add(textviewfromtime);
         textLinearLayout3.addView(textviewfromtime);
-        textLinearLayout4.setId(k+34);
+        textLinearLayout4.setId(k + 34);
         textLinearLayout4.setTag(timeto);
 
-        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams(
-                (int) getResources().getDimension(R.dimen._100sdp),
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params111 = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen._100sdp), LinearLayout.LayoutParams.MATCH_PARENT);
         textviewtotime = new TextView(this);
         textviewtotime.setCompoundDrawables(drawable, null, null, null);
         textviewtotime.setText("Select To Time");
@@ -893,7 +822,7 @@ public class Activity extends AppCompatActivity {
         textviewtotime.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewtotime.setTextColor(Color.BLACK);
         textviewtotime.setLayoutParams(params111);
-        textviewtotime.setTextSize((int) getResources().getDimension(R.dimen._6sdp));;
+        textviewtotime.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         textviewtotime.setGravity(CENTER);
         textviewtimeto.add(textviewtotime);
         textLinearLayout4.addView(textviewtotime);
@@ -907,11 +836,11 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout);
 
         textcombosingle = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textcombosingle.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textcombosingle.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textcombosingle.setText(List.getFieldName());
         }
@@ -945,7 +874,6 @@ public class Activity extends AppCompatActivity {
     }
 
 
-
     private void addmultiplecomboViews(ActivityDetailsModelClass List, int k) {
 
 
@@ -954,17 +882,15 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout);
 
         textcombomultiple = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textcombomultiple.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textcombomultiple.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -984,17 +910,15 @@ public class Activity extends AppCompatActivity {
         multicomboeditext.setLayoutParams(params);
         multicomboeditext.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         multicomboeditext.setVisibility(View.VISIBLE);
-        multicomboeditext.setHint("Select the "+List.getFieldName());
+        multicomboeditext.setHint("Select the " + List.getFieldName());
         textLinearLayout.addView(multicomboeditext);
         multicomboeditextarr.add(multicomboeditext);
         multicomarr++;
 
-     }
+    }
 
-    public void adduploadfile(ActivityDetailsModelClass List, int k){
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void adduploadfile(ActivityDetailsModelClass List, int k) {
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1003,17 +927,15 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins(0, (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -1028,12 +950,11 @@ public class Activity extends AppCompatActivity {
         textfileupload = new TextView(this);
 
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         Drawable drawable = getDrawable(R.drawable.form);
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._10sdp), (int) getResources().getDimension(R.dimen._10sdp));
-        textfileupload.setCompoundDrawables(drawable, null, null, null);        params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
+        textfileupload.setCompoundDrawables(drawable, null, null, null);
+        params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textfileupload.setBackgroundColor(Color.WHITE);
         textfileupload.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen._4sdp));
         textfileupload.setBackgroundResource(R.drawable.background_card_white_plan);
@@ -1050,10 +971,8 @@ public class Activity extends AppCompatActivity {
 
     }
 
-    public void addedittextnumericcurrency(ActivityDetailsModelClass List, int k){
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void addedittextnumericcurrency(ActivityDetailsModelClass List, int k) {
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1064,18 +983,16 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
 
         TextView textviewdata = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
 
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         //textviewdata.setBackgroundResource(R.drawable.linearlayoutbgd);
@@ -1085,16 +1002,14 @@ public class Activity extends AppCompatActivity {
         textviewdata.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         textLinearLayout1.addView(textviewdata);
 
-     //   textLinearLayout1.setBackgroundResource(R.drawable.linearlayoutbgd);
+        //   textLinearLayout1.setBackgroundResource(R.drawable.linearlayoutbgd);
 
         LinearLayout textLinearLayout2 = new LinearLayout(this);
         textLinearLayout2.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout1.addView(textLinearLayout2);
         TextView textviewdata1 = new TextView(this);
         textviewdata.setText(List.getFieldName());
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewdata1.setBackgroundColor(Color.WHITE);
@@ -1108,9 +1023,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.addView(textviewdata1);
         textcurrency = new EditText(this);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textcurrency.setBackgroundColor(Color.WHITE);
@@ -1137,17 +1050,15 @@ public class Activity extends AppCompatActivity {
 
 
         textviewtablesingle = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewtablesingle.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewtablesingle.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewtablesingle.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         textviewtablesingle.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -1166,11 +1077,12 @@ public class Activity extends AppCompatActivity {
         singletableedittext.setLayoutParams(params);
         singletableedittext.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         singletableedittext.setVisibility(View.GONE);
-        singletableedittext.setHint("Select the "+List.getFieldName());
+        singletableedittext.setHint("Select the " + List.getFieldName());
         textLinearLayout.addView(singletableedittext);
         singletableeditextarr.add(singletableedittext);
         singarr++;
     }
+
     private void addmultipletableViews(@NonNull ActivityDetailsModelClass List, int k) {
 
         LinearLayout textLinearLayout = new LinearLayout(this);
@@ -1178,17 +1090,15 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout);
 
         textviewtablemultiple = new TextView(this);
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewtablemultiple.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewtablemultiple.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewtablemultiple.setText(List.getFieldName());
         }
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -1211,48 +1121,42 @@ public class Activity extends AppCompatActivity {
         drawable.setBounds(0, 0, (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._6sdp));
         multitableedittext.setCompoundDrawables(null, null, drawable, null);
         multitableedittext.setHintTextColor(getResources().getColor(R.color.text_dark));
-        multitableedittext.setHint("Select the "+List.getFieldName());
+        multitableedittext.setHint("Select the " + List.getFieldName());
         textLinearLayout.addView(multitableedittext);
         multitableeditextarr.add(multitableedittext);
 
     }
 
-    public void addlocationdata(ActivityDetailsModelClass List, int k){
+    public void addlocationdata(ActivityDetailsModelClass List, int k) {
 
         textviewlatlong.clear();
         textviewaddress.clear();
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
         textLinearLayout1.setOrientation(LinearLayout.VERTICAL);
         textLinearLayout1.setLayoutParams(param);
         binding.llActivityDetailsView.addView(textLinearLayout1);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
-        LinearLayout.LayoutParams paramsre = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        paramsre.gravity= Gravity.RIGHT;
+        LinearLayout.LayoutParams paramsre = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        paramsre.gravity = Gravity.RIGHT;
         paramsre.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout5 = new LinearLayout(this);
         textLinearLayout5.setOrientation(LinearLayout.HORIZONTAL);
         textLinearLayout5.setLayoutParams(param);
-        TextView textView=new TextView(this);
+        TextView textView = new TextView(this);
 
         textView.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textView.setTextColor(getResources().getColor(R.color.text_dark));
         textView.setLayoutParams(params1);
         textView.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
 
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textView.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textView.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textView.setText(List.getFieldName());
         }
@@ -1279,10 +1183,8 @@ public class Activity extends AppCompatActivity {
 //            checkConnection();
 ////            Toast.makeText(Dynamiclisdocview.this,"Location Captured",Toast.LENGTH_LONG).show();
 //        }
-        textlatlong.setText("Lat :0.0"  +  " Long : 0.0");
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        textlatlong.setText("Lat :0.0" + " Long : 0.0");
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params2.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout3 = new LinearLayout(this);
@@ -1297,7 +1199,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textlatlong);
         textLinearLayout1.addView(textLinearLayout3);
 
-        Log.d("textlist",textviewlatlong.get(0).getText().toString().trim().replaceAll("\\s+", " "));
+        Log.d("textlist", textviewlatlong.get(0).getText().toString().trim().replaceAll("\\s+", " "));
 
         textaddress = new TextView(this);
         Geocoder geocoder;
@@ -1315,9 +1217,7 @@ public class Activity extends AppCompatActivity {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params3.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout4 = new LinearLayout(this);
@@ -1329,7 +1229,7 @@ public class Activity extends AppCompatActivity {
         textaddress.setLayoutParams(params3);
         textaddress.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         textviewaddress.add(textaddress);
-        Log.d("textlistadd",textviewaddress.get(0).getText().toString());
+        Log.d("textlistadd", textviewaddress.get(0).getText().toString());
         ImageView datecalender = new ImageView(this);
         datecalender.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         datecalender.setLayoutParams(params1);
@@ -1340,21 +1240,19 @@ public class Activity extends AppCompatActivity {
     }
 
 
-    public void addeditcurrencyconvertor(ActivityDetailsModelClass List, int k){
+    public void addeditcurrencyconvertor(ActivityDetailsModelClass List, int k) {
 
 
-        if (!List.getControlPara().equals("")){
+        if (!List.getControlPara().equals("")) {
             value = List.getControlPara().split("[/]");
             valfrom = value[0].split("[-]");
             valto = value[1].split("[-]");
-            Log.d("testpara",value[0]+"---"+value[1]);
-            Log.d("testpara",valfrom[0]+"---"+valfrom[1]);
-            Log.d("testpara",valto[0]+"---"+valto[1]);
+            Log.d("testpara", value[0] + "---" + value[1]);
+            Log.d("testpara", valfrom[0] + "---" + valfrom[1]);
+            Log.d("testpara", valto[0] + "---" + valto[1]);
         }
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1369,18 +1267,16 @@ public class Activity extends AppCompatActivity {
 
         TextView textviewdata = new TextView(this);
 
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
 
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -1392,16 +1288,14 @@ public class Activity extends AppCompatActivity {
 
         TextView textviewdat = new TextView(this);
 
-        LinearLayout.LayoutParams params113 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params113 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params113.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textviewdat.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
         textviewdat.setTextColor(getResources().getColor(R.color.text_dark));
         textviewdat.setLayoutParams(params113);
-        textviewdat.setText("( "+List.getControlPara()+" )");
+        textviewdat.setText("( " + List.getControlPara() + " )");
         textviewdat.setTextSize((int) getResources().getDimension(R.dimen._6sdp));
         textLinear.addView(textviewdat);
 
@@ -1412,10 +1306,8 @@ public class Activity extends AppCompatActivity {
 
         TextView textviewdata1 = new TextView(this);
         textviewdata.setText(List.getFieldName());
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params11.width=120;
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params11.width = 120;
         params11.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textviewdata1.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -1426,9 +1318,7 @@ public class Activity extends AppCompatActivity {
         textviewdata1.setText(valfrom[0]);
         textLinearLayout2.addView(textviewdata1);
         txtcurconvert1 = new EditText(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -1448,10 +1338,8 @@ public class Activity extends AppCompatActivity {
         textLinearLayout1.addView(textLinearLayout3);
         TextView textviewdata12 = new TextView(this);
         textviewdata.setText(List.getFieldName());
-        LinearLayout.LayoutParams params12 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params12.width=120;
+        LinearLayout.LayoutParams params12 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params12.width = 120;
         params12.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
         textviewdata12.setPadding((int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp), (int) getResources().getDimension(R.dimen._4sdp));
@@ -1462,9 +1350,7 @@ public class Activity extends AppCompatActivity {
         textviewdata12.setText(valto[0]);
         textLinearLayout3.addView(textviewdata12);
         txtcurconvert2 = new EditText(this);
-        LinearLayout.LayoutParams params13 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params13 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params13.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
 
@@ -1515,11 +1401,9 @@ public class Activity extends AppCompatActivity {
 //        });
     }
 
-    public void digitalsign(ActivityDetailsModelClass List, int k){
+    public void digitalsign(ActivityDetailsModelClass List, int k) {
 
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         param.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout1 = new LinearLayout(this);
@@ -1528,18 +1412,16 @@ public class Activity extends AppCompatActivity {
         binding.llActivityDetailsView.addView(textLinearLayout1);
         TextView textviewdata = new TextView(this);
 
-        String firstChar = "<font color='#000000'>" + List.getFieldName() +"</font>";
+        String firstChar = "<font color='#000000'>" + List.getFieldName() + "</font>";
         String firstChar2 = "<font color='#EE0000'> ✶</font>";
 
         if ((List.getMandatory().equals("1")) && (!List.getMandatory().equals(""))) {
-            textviewdata.setText(Html.fromHtml(firstChar + firstChar2 ));
+            textviewdata.setText(Html.fromHtml(firstChar + firstChar2));
         } else {
             textviewdata.setText(List.getFieldName());
         }
 
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         params1.setMargins((int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp), (int) getResources().getDimension(R.dimen._2sdp));
         LinearLayout textLinearLayout2 = new LinearLayout(this);
@@ -1572,9 +1454,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.setTag(time1);
 //        timeclock.setImageResource(R.drawable.edit);
 //        textLinearLayout2.setOnClickListener(onclicklistnersign);
-        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params11 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
         textViewtime1 = new TextView(this);
         textViewtime1.setText("Signature");
 //        textViewtime1.setBackgroundResource(R.drawable.linearlayoutbgd);
@@ -1587,7 +1467,6 @@ public class Activity extends AppCompatActivity {
         textLinearLayout2.addView(textViewtime1);
         time1++;
     }
-
 
 
 }

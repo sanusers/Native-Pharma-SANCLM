@@ -33,7 +33,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing;
+import saneforce.santrip.activity.call.adapter.detailing.PlaySlideDetailing;
 import saneforce.santrip.activity.presentation.SupportClass;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.presentation.createPresentation.CreatePresentationActivity;

@@ -297,6 +297,7 @@
     <string name="call_failed_saved_locally">Call Failed! Saved Locally</string>
     <string name="call_saved_something_wrong">Call Saved! Something Wrong</string>
     <string name="save_todaywork_plan">Save TodayWorkPlan</string>
+    <string name="save_wt_locally">Locally Saved WorkPlan</string>
     <string name="submit_mydayplan">Kindly submit My DayPlan</string>
     <string name="submit_checkin">Kindly CheckIn</string>
     <string name="enter_old_pwd">Enter old password</string>

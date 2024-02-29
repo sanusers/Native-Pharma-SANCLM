@@ -110,7 +110,6 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             holder.tvCount.setVisibility(View.GONE);
         }
 
-
         if (contentList.getChildId() == 0) {
             holder.tvCount.setText(String.valueOf(contentList.getCheckInOutModelClasses().size()));
             if (contentList.isExpanded() && contentList.getCheckInOutModelClasses().size() > 0) {
@@ -121,6 +120,13 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             }
         }
 
+        if (contentList.getChildId() == 1) {
+            if (contentList.getChildName().isEmpty()) {
+                holder.expandContentView.setVisibility(View.GONE);
+            } else {
+                holder.expandContentView.setVisibility(View.VISIBLE);
+            }
+        }
 
         if (contentList.getChildId() == 2) {
             holder.tvCount.setText(String.valueOf(contentList.getOutBoxCallLists().size()));

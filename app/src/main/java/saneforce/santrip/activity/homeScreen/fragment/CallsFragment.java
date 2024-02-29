@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
+import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -28,10 +30,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.adapters.Call_adapter;
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
-import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -268,8 +270,8 @@ public class CallsFragment extends Fragment {
         });
 
         binding.tvAddCall.setOnClickListener(view -> {
-            startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-          /*  if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+            if (CheckInOutNeed.equalsIgnoreCase("0")) {
                 if (SharedPref.getSkipCheckIn(requireContext())) {
                     if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
@@ -290,7 +292,7 @@ public class CallsFragment extends Fragment {
                 } else {
                     startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
                 }
-            }*/
+            }
         });
 
         return v;

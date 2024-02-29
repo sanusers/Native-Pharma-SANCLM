@@ -84,8 +84,8 @@ public class CommonUtilsMethods {
             if (toastMsg) {
                 LayoutInflater inflater = activity.getLayoutInflater();
 
-                View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) activity.findViewById(R.id.toast_layout_root));
-                TextView text = (TextView) layout.findViewById(R.id.text);
+                View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
+                TextView text = layout.findViewById(R.id.text);
                 text.setText("Location Captured:" + address);
 
                 Toast toast = new Toast(activity);
@@ -101,9 +101,9 @@ public class CommonUtilsMethods {
             if (toastMsg) {
                 LayoutInflater inflater = activity.getLayoutInflater();
 
-                View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) activity.findViewById(R.id.toast_layout_root));
+                View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
 
-                TextView text = (TextView) layout.findViewById(R.id.text);
+                TextView text = layout.findViewById(R.id.text);
                 text.setText("No Address Found!  Try Again!");
 
                 Toast toast = new Toast(activity);
@@ -220,11 +220,11 @@ public class CommonUtilsMethods {
 
         LayoutInflater inflater = ((Activity) context).getLayoutInflater();
 
-        View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) ((Activity) context).findViewById(R.id.toast_layout_root));
+        View layout = inflater.inflate(R.layout.toast_layout, ((Activity) context).findViewById(R.id.toast_layout_root));
 
         //ImageView image = layout.findViewById(R.id.image);
         // image.setImageResource(R.drawable.san_clm_logo);
-        TextView text = (TextView) layout.findViewById(R.id.text);
+        TextView text = layout.findViewById(R.id.text);
         text.setText(message);
 
         Toast toast = new Toast(context);

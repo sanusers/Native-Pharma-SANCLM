@@ -113,7 +113,7 @@
             android:screenOrientation="landscape" />
 
         <activity
-            android:name=".activity.homeScreen.call.adapter.detailing.PlaySlideDetailing"
+            android:name=".activity.call.adapter.detailing.PlaySlideDetailing"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
@@ -187,17 +187,17 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".activity.profile.CustomerProfile"
+            android:name=".activity.call.profile.CustomerProfile"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
-            android:name=".activity.homeScreen.call.DCRCallActivity"
+            android:name=".activity.call.DCRCallActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"
+            android:name=".activity.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />

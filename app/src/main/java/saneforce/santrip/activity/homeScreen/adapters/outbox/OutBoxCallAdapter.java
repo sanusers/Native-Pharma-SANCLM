@@ -2,7 +2,7 @@ package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.InputValidation;
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.SampleValidation;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.santrip.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
@@ -46,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
@@ -135,7 +135,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     }
                 } else if (menuItem.getItemId() == R.id.menuEdit) {
                     Intent intent = new Intent(context, DCRCallActivity.class);
-
+                    DCRCallActivity.clickedLocalDate = outBoxCallLists.get(position).getDates();
                     CallActivityCustDetails = new ArrayList<>();
                     CallActivityCustDetails.add(0, new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", "", outBoxCallLists.get(position).getJsonData()));
                     intent.putExtra(Constants.DETAILING_REQUIRED, "false");
@@ -154,8 +154,24 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                     break;
                                 }
                             }
+
                             sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
                             sqLite.deleteLineChart(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getDates());
+
+                            if (outBoxCallLists.get(position).getCusType().equalsIgnoreCase("1")) {
+                                JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
+                                JSONArray jsonAdditional = json.getJSONArray("AdCuss");
+                                for (int aw = 0; aw < jsonAdditional.length(); aw++) {
+                                    JSONObject jsAw = jsonAdditional.getJSONObject(aw);
+                                    sqLite.deleteLineChart(jsAw.getString("Code"), outBoxCallLists.get(position).getDates());
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code"))) {
+                                            jsonArray.remove(i);
+                                        }
+                                    }
+                                }
+                            }
                             AssignCallAnalysis(SfType, outBoxCallLists.get(position).getCusType());
                         }
                     } catch (Exception ignored) {

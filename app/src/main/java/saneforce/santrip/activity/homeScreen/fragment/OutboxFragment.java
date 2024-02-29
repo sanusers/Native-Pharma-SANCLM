@@ -61,7 +61,6 @@ import saneforce.santrip.utility.NetworkCheckInterface;
 
 
 public class OutboxFragment extends Fragment {
-
     @SuppressLint("StaticFieldLeak")
     public static OutboxFragmentBinding outBoxBinding;
     public static ArrayList<GroupModelClass> listDates = new ArrayList<>();
@@ -87,12 +86,7 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, SQLite sqLite, Context context) {
-        if (CheckInOutNeed.equalsIgnoreCase("0")) {
-            listDates = sqLite.getOutBoxDate(true);
-        } else {
-            listDates = sqLite.getOutBoxDate(false);
-        }
-
+        listDates = sqLite.getOutBoxDate();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
@@ -174,13 +168,7 @@ public class OutboxFragment extends Fragment {
         if (!isCallAvailable) {
             SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
         }
-
     }
-
-
-       /* //Call Data
-        ArrayList<OutBoxCallList> outBoxCallLists = sqLite.getOutBoxCallsFullList(Constants.CALL_FAILED, Constants.WAITING_FOR_SYNC);
-        CallApiList(outBoxCallLists);*/
 
     private void CallCheckInOut(int ParentPos, int ChildPos, ArrayList<CheckInOutModelClass> checkInOutModelClasses, GroupModelClass modelClass) {
         if (CheckInOutNeed.equalsIgnoreCase("0")) {

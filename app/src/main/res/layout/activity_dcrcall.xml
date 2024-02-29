@@ -206,7 +206,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_add_call_details_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.AdditionalCallDetailedSide"
+        android:name="saneforce.santrip.activity.call.fragments.additionalCall.AdditionalCallDetailedSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -220,7 +220,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_add_rcpa_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.RCPASelectCompSide"
+        android:name="saneforce.santrip.activity.call.fragments.rcpa.RCPASelectCompSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -234,7 +234,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_fb_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.FeedbackSelectionSide"
+        android:name="saneforce.santrip.activity.call.fragments.jwOthers.FeedbackSelectionSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -248,7 +248,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_jw_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.JointWorkSelectionSide"
+        android:name="saneforce.santrip.activity.call.fragments.jwOthers.JointWorkSelectionSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -262,7 +262,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_chemist_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.RCPASelectChemSide"
+        android:name="saneforce.santrip.activity.call.fragments.rcpa.RCPASelectChemSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -276,7 +276,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_product_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.RCPASelectPrdSide"
+        android:name="saneforce.santrip.activity.call.fragments.rcpa.RCPASelectPrdSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -290,7 +290,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_ac_select_product_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.AddCallSelectPrdSide"
+        android:name="saneforce.santrip.activity.call.fragments.additionalCall.AddCallSelectPrdSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -304,7 +304,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_ac_select_input_side"
-        android:name="saneforce.santrip.activity.homeScreen.call.fragments.AddCallSelectInpSide"
+        android:name="saneforce.santrip.activity.call.fragments.additionalCall.AddCallSelectInpSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"

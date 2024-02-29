@@ -50,9 +50,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -84,11 +81,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.Quiz.QuizActivity;
+import saneforce.santrip.activity.activityModule.Activity;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.activity.forms.Forms_activity;
 import saneforce.santrip.activity.homeScreen.adapters.Callstatusadapter;
 import saneforce.santrip.activity.homeScreen.adapters.CustomPagerAdapter;
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.adapter.TabLayoutAdapter;
+import saneforce.santrip.activity.call.dcrCallSelection.adapter.TabLayoutAdapter;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.homeScreen.fragment.worktype.WorkPlanFragment;
@@ -105,7 +103,6 @@ import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 import saneforce.santrip.activity.remainderCall.RemainderCallActivity;
 import saneforce.santrip.activity.reports.ReportsActivity;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
-import saneforce.santrip.activity.activityModule.Activity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
@@ -126,7 +123,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static ActivityHomeDashBoardBinding binding;
     public static int DeviceWith;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
-    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, PresentationNeed, NearMeNeed, QuizNeed, ProfileNeed, ActivityNeed, ReminderCallNeed, InputValidation, SurveyNeed, TpNeed, CheckInOutNeed, DcFencingNeed, ChFencingNeed, StFencingNeed, HosFencingNeed, UnlistFencingNeed;
+    public static String SfType, SfCode, SfName, DivCode, SfEmpId, EmpId, TodayPlanSfCode, Designation, StateCode, SubDivisionCode, SampleValidation, CustomPresentationNeed, PresentationNeed, NearMeNeed, QuizNeed, ProfileNeed, ActivityNeed, ReminderCallNeed, InputValidation, SurveyNeed, TpNeed, CheckInOutNeed, DcFencingNeed, ChFencingNeed, StFencingNeed, HosFencingNeed, UnlistFencingNeed;
     public static LocalDate selectedDate;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -612,6 +609,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         HosFencingNeed = loginResponse.getGeoTagNeedcip();
         UnlistFencingNeed = loginResponse.getGEOTagNeedunlst();
 
+
         TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
 
         try {
@@ -623,6 +621,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }.getType();
                 customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
                 PresentationNeed = customSetupResponse.getPresentationNeed();
+                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
             }
         } catch (Exception ignored) {
         }
@@ -632,7 +631,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         try {
             if (PresentationNeed.equalsIgnoreCase("0")) {
-                binding.llPresentation.setVisibility(View.VISIBLE);
+                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                    binding.llPresentation.setVisibility(View.VISIBLE);
+                } else {
+                    binding.llPresentation.setVisibility(View.GONE);
+                }
                 binding.llSlide.setVisibility(View.VISIBLE);
             } else {
                 binding.llPresentation.setVisibility(View.GONE);
@@ -1140,10 +1143,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
             return true;
         }*/
-
-        if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.activity))) {
-
-        }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.remainder_call))) {
             startActivity(new Intent(HomeDashBoard.this, RemainderCallActivity.class));

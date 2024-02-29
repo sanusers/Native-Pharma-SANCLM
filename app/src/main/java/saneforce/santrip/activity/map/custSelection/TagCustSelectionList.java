@@ -88,22 +88,18 @@ public class TagCustSelectionList extends AppCompatActivity {
         Log.v("onstart", "-000-");
         super.onStart();
         try {
-            // if (SharedPref.getTaggedSuccessfully(TagCustSelectionList.this).equalsIgnoreCase("true")) {
             if (MapsActivity.isTagged) {
-                //  CustList mm = custListArrayList.get(Integer.parseInt(SharedPref.getCustomerPosition(TagCustSelectionList.this)));
                 CustList mm = custListArrayList.get(Integer.parseInt(SelectedCustPos));
                 int yy = Integer.parseInt(mm.getTag()) + 1;
                 mm.setTag(String.valueOf(yy));
                 if (MapsActivity.GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                     mm.setGeoTagStatus("1");
                 }
-                Log.v("latttlng", "--taggedonstart--" + MapsActivity.TaggedLat + "---" + MapsActivity.TaggedLng);
                 mm.setLatitude(String.valueOf(MapsActivity.TaggedLat));
                 mm.setLongitude(String.valueOf(MapsActivity.TaggedLng));
                 mm.setAddress(String.valueOf(MapsActivity.TaggedAdd));
                 custListAdapter.notifyDataSetChanged();
                 MapsActivity.isTagged = false;
-                // SharedPref.setTaggedSuccessfully(TagCustSelectionList.this, "false");
             }
         } catch (Exception e) {
             Log.v("onstart", e.toString());

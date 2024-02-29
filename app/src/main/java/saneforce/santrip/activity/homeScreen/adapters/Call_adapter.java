@@ -1,6 +1,6 @@
 package saneforce.santrip.activity.homeScreen.adapters;
 
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.santrip.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
@@ -54,7 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.santrip.activity.map.custSelection.CustList;
