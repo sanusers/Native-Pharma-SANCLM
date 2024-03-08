@@ -18,7 +18,7 @@ import java.util.List;
 
 import saneforce.santrip.R;
 
-public class ActvityHqAdapter extends RecyclerView.Adapter<ActvityHqAdapter.Viewholder> {
+public class ActvityListAdapter extends RecyclerView.Adapter<ActvityListAdapter.Viewholder> {
 
     private Context context;
     private List<JSONObject> itemList;
@@ -26,7 +26,7 @@ public class ActvityHqAdapter extends RecyclerView.Adapter<ActvityHqAdapter.View
     private LayoutInflater inflater;
 
 
-    public ActvityHqAdapter(Context context, List<JSONObject> itemList) {
+    public ActvityListAdapter(Context context, List<JSONObject> itemList) {
         this.context = context;
         this.itemList = itemList;
         this.filteredList = itemList;
@@ -35,13 +35,13 @@ public class ActvityHqAdapter extends RecyclerView.Adapter<ActvityHqAdapter.View
 
     @NonNull
     @Override
-    public ActvityHqAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ActvityListAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view_text, parent, false);
-        return new ActvityHqAdapter.Viewholder(view);
+        return new ActvityListAdapter.Viewholder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ActvityHqAdapter.Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull ActvityListAdapter.Viewholder holder, int position) {
 
         try {
             holder.txtHq.setText(filteredList.get(position).getString("name"));

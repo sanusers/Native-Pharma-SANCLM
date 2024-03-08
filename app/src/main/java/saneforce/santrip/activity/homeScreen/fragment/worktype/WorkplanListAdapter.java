@@ -56,7 +56,7 @@ public class WorkplanListAdapter extends BaseAdapter {
         if (view == null) {
             view = inflater.inflate(R.layout.list_view_text, parent, false);
         }TextView itemTitle = view.findViewById(R.id.itemTitle);
-        CheckBox checkBox = view.findViewById(R.id.ch_cluster);
+        CheckBox checkBox = view.findViewById(R.id.ch_mutiple);
         try {
         if(type.equalsIgnoreCase("3")){
             itemTitle.setText(filteredList.get(position).getString("name"));

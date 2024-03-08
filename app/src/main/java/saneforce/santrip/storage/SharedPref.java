@@ -57,6 +57,7 @@ public class SharedPref {
     public static final String TodayDayPlanSfCode = "today_plan_sfcode";
     public static final String TodayDayPlanSfName = "today_plan_sfname";
     public static final String TodayDayPlanClusterCode = "today_plan_cluster_code";
+
     //TodayCalls
     public static final String TODAY_CALL_LIST = "today_call_list";
     //Approval

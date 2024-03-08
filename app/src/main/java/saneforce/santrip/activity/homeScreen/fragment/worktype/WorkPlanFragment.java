@@ -806,22 +806,23 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
     try {
-
         if (DayPlanCount.equalsIgnoreCase("1")) {
             mHQCode = mHQCode1;
             mTowncode = mTowncode1;
             mHQName = mHQName1;
             mFwFlg = mFwFlg1;
 
-
-
         } else {
             if (IsFeildWorkFlag.equalsIgnoreCase("F1")) {
                 mHQCode = mHQCode1;
                 mTowncode = mTowncode1;
                 mHQName = mHQName1;
-
-            } else if (IsFeildWorkFlag.equalsIgnoreCase("F2")) {
+            } else {
+                mHQCode = "";
+                mTowncode = "";
+                mHQName = "";
+            }
+            if (IsFeildWorkFlag.equalsIgnoreCase("F2")) {
                 mHQCode = mHQCode2;
                 mTowncode = mTowncode2;
                 mHQName = mHQName2;

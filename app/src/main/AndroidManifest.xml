@@ -72,6 +72,7 @@
         <activity
             android:name=".activity.activityModule.Activity"
             android:exported="false"
+            android:theme="@style/CustomTheme"
             android:screenOrientation="landscape" />
 
         <activity

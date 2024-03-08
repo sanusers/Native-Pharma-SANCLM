@@ -75,7 +75,7 @@ public class MultiClusterAdapter extends RecyclerView.Adapter<MultiClusterAdapte
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemTitle = itemView.findViewById(R.id.itemTitle);
-            checkBox = itemView.findViewById(R.id.ch_cluster);
+            checkBox = itemView.findViewById(R.id.ch_mutiple);
             checkBox.setVisibility(View.VISIBLE);
         }
 

@@ -37,6 +37,9 @@ public interface ApiInterface {
     @POST("?axn=save/image")
     Call<JsonObject> SaveImg(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
 
+
+
+
  /*   @FormUrlEncoded
     @POST("?axn=action/login")
     Call<JsonElement> login(@Field("data") String userData);

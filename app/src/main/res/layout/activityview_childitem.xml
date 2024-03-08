@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
-            android:layout_toRightOf="@id/ch_cluster"
+            android:layout_toRightOf="@id/ch_mutiple"
             android:fontFamily="@font/satoshi_medium"
             android:padding="@dimen/_5sdp"
             android:text="Work Type"
