@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
@@ -60,7 +61,6 @@
             android:layout_height="match_parent"
             android:background="@color/backround_graey"
             android:orientation="vertical">
-
 
             <RelativeLayout
                 android:id="@+id/rlheadquates"
@@ -183,6 +183,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
+
                         <LinearLayout
                             android:id="@+id/llActivityDetailsView"
                             android:layout_width="match_parent"
@@ -223,6 +224,12 @@
                         android:textSize="@dimen/_7sdp"
                         android:textStyle="bold"
                         app:backgroundTint="@color/black_45" />
+                    <ProgressBar
+                        android:id="@+id/progresssumit"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone" />
 
 
                 </RelativeLayout>

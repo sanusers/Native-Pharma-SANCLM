@@ -3176,6 +3176,7 @@ public class Activity extends AppCompatActivity {
 
 
     public  void  saveActivity(){
+        binding.progresssumit.setVisibility(View.VISIBLE);
         int conut=0;
         try {
         JSONArray jsonArray=new JSONArray();
@@ -3268,6 +3269,7 @@ public class Activity extends AppCompatActivity {
                    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                        if (response.code() == 200 || response.code() == 201) {
                            commonUtilsMethods.ShowToast(Activity.this, "Success", 100);
+                           binding.progresssumit.setVisibility(View.GONE);
                            TaggedImage();
                        }
                    }
@@ -3275,6 +3277,7 @@ public class Activity extends AppCompatActivity {
                    @Override
                    public void onFailure(Call<JsonElement> call, Throwable t) {
                        commonUtilsMethods.ShowToast(Activity.this, t.getMessage(), 100);
+                       binding.progresssumit.setVisibility(View.GONE);
 
                    }
                });
@@ -3284,6 +3287,7 @@ public class Activity extends AppCompatActivity {
 
 
     public void TaggedImage(){
+        binding.progresssumit.setVisibility(View.VISIBLE);
 
   try {
       for (int i = 0; i < ActivityViewItem.size(); i++) {
@@ -3344,6 +3348,7 @@ public class Activity extends AppCompatActivity {
                 saveAttachement.enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        binding.progresssumit.setVisibility(View.GONE);
                         if (response.isSuccessful()) {
                             try {
                                 assert response.body() != null;
@@ -3359,7 +3364,7 @@ public class Activity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
-
+                        binding.progresssumit.setVisibility(View.GONE);
                     }
                 });
             }
