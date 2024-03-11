@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.login;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 

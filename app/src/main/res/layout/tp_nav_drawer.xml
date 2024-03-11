@@ -52,7 +52,7 @@
     <View
         android:id="@+id/lineView"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/_1sdp"
         android:background="#dbdbdb"
         android:layout_below="@id/header"/>
 

@@ -80,11 +80,11 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         SetUpCusListAdapter();
 
         dcrDetailViewBinding.ivBack.setOnClickListener(view -> {
-            finish();   /*startActivity(new Intent(DcrDetailViewActivity.this, DcrCallApprovalActivity.class));*/
+            finish();
         });
 
         dcrDetailViewBinding.btnBack.setOnClickListener(view -> {
-            finish();   /*startActivity(new Intent(DcrDetailViewActivity.this, DcrCallApprovalActivity.class));*/
+            finish();
         });
 
         dcrDetailViewBinding.searchDcr.addTextChangedListener(new TextWatcher() {

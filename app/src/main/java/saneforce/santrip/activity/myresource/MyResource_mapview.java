@@ -182,7 +182,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
                 val = true;
             }
         } catch (Exception e) {
-            commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.loc_not_detect),100);
+            commonUtilsMethods.showToastMessage(MyResource_mapview.this,getString(R.string.loc_not_detect));
             val = false;
         }
         return val;
@@ -403,7 +403,7 @@ public class MyResource_mapview extends FragmentActivity implements  OnMapReadyC
         });
         alertDialog.setNegativeButton("Cancel", (dialog, which) -> {
             if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.loc_setting),100);
+                commonUtilsMethods.showToastMessage(MyResource_mapview.this,getString(R.string.loc_setting));
                 showSettingsAlert(manager);
             } else {
                 dialog.cancel();

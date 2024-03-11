@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.pojo.product.SaveCallProductList;
+import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     Context context;

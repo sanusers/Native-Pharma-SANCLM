@@ -1,6 +1,5 @@
 package saneforce.santrip.activity.slideDownloaderAlertBox;
 
-import static android.content.Context.MODE_PRIVATE;
 import static saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.downloading_count;
 
 import android.annotation.SuppressLint;
@@ -11,9 +10,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -26,24 +22,21 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.storage.SharedPref;
 
 public class DownloadTask {
     private static final String TAG = "DownloadTask";
-    private Activity activity;
-    private String downloadUrl = "";
-    private String downloadFileName = "";
-
     Context context;
     String progressBar_value, downloadmsg;
-
     int processvalue;
     SlideModelClass Slidevalue;
     SharedPreferences sharedpreferences;
     boolean downloadingstatus;
+    private final Activity activity;
+    private String downloadUrl = "";
+    private String downloadFileName = "";
 
     public DownloadTask(Activity activity, String downloadUrl, String filename, String progressBar_value, boolean downloadingstatus, String downloadmsg, SlideModelClass slidevalue) {
         this.activity = activity;
@@ -57,6 +50,38 @@ public class DownloadTask {
         this.context = activity.getApplicationContext();
         processvalue = 0;
         new DownloadingTask().execute();
+    }
+
+    public static void unzip(String filepath, File targetDirectory) throws IOException {
+
+        File zipFile = new File(filepath);
+        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
+        try {
+
+            ZipEntry ze;
+            int count;
+            byte[] buffer = new byte[8192];
+            while ((ze = zis.getNextEntry()) != null) {
+
+                String name = ze.getName();
+                File file = new File(targetDirectory, name);
+
+                if (ze.isDirectory()) {
+                    file.mkdirs();
+                } else {
+                    FileOutputStream fout = new FileOutputStream(file);
+                    try {
+                        while ((count = zis.read(buffer)) != -1) {
+                            fout.write(buffer, 0, count);
+                        }
+                    } finally {
+                        fout.close();
+                    }
+                }
+            }
+        } finally {
+            zis.close();
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -153,93 +178,62 @@ public class DownloadTask {
 
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void onPostExecute(Boolean isDownloadSuccessful) {
             super.onPostExecute(isDownloadSuccessful);
             CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(activity);
             if (isDownloadSuccessful) {
-                Log.e(TAG, "Download  :"+  downloading_count);
+                Log.e(TAG, "Download  :" + downloading_count);
                 Slidevalue.setDownloadSizeStatus("Download completed");
                 Slidevalue.setProgressValue(String.valueOf(100));
                 Slidevalue.setDownloadStatus(true);
                 downloading_count++;
                 SlideDownloaderAlertBox.slideId123.add(Slidevalue.getId());
                 SlideDownloaderAlertBox.dialogdismisscount++;
-                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(downloading_count) + "/" + String.valueOf(SlideDownloaderAlertBox.adapter.getItemCount()));
+                SlideDownloaderAlertBox.txt_downloadcount.setText(downloading_count + "/" + SlideDownloaderAlertBox.adapter.getItemCount());
                 SlideDownloaderAlertBox.recyclerView.getLayoutManager().scrollToPosition(downloading_count);
                 SlideDownloaderAlertBox.adapter.notifyDataSetChanged();
                 if (SlideDownloaderAlertBox.dialogdismisscount == SlideDownloaderAlertBox.adapter.getItemCount()) {
                     SlideDownloaderAlertBox.dialog.dismiss();
-                    SlideDownloaderAlertBox.DownloadingStaus=true;
-                    SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(),SlideDownloaderAlertBox.slideId123);
+                    SlideDownloaderAlertBox.DownloadingStaus = true;
+                    SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(), SlideDownloaderAlertBox.slideId123);
                     if (SlideDownloaderAlertBox.MoveMainFlag) {
                         SharedPref.putAutomassync(context, true);
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                         activity.finish();
-                    }else {
-                        commonUtilsMethods.ShowToast(activity, "All Downloading Completed ", 100);
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, "All Downloading Completed ");
                     }
                 }
             } else {
                 Slidevalue.setProgressValue(String.valueOf(processvalue));
-                SlideDownloaderAlertBox.txt_downloadcount.setText(String.valueOf(downloading_count) + "/" + String.valueOf(SlideDownloaderAlertBox.adapter.getItemCount()));
+                SlideDownloaderAlertBox.txt_downloadcount.setText(downloading_count + "/" + SlideDownloaderAlertBox.adapter.getItemCount());
                 Slidevalue.setDownloadSizeStatus("Download failed");
                 Slidevalue.setDownloadStatus(false);
                 SlideDownloaderAlertBox.dialogdismisscount++;
                 SlideDownloaderAlertBox.adapter.notifyDataSetChanged();
 
                 if (SlideDownloaderAlertBox.dialogdismisscount == SlideDownloaderAlertBox.adapter.getItemCount()) {
-                    SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(),SlideDownloaderAlertBox.slideId123);
+                    SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(), SlideDownloaderAlertBox.slideId123);
                     SlideDownloaderAlertBox.dialog.dismiss();
-                    SlideDownloaderAlertBox.DownloadingStaus=true;
+                    SlideDownloaderAlertBox.DownloadingStaus = true;
                     if (SlideDownloaderAlertBox.MoveMainFlag) {
                         SharedPref.putAutomassync(context, true);
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                         activity.finish();
-                    }else {
-                        commonUtilsMethods.ShowToast(activity, "All Slide Downloading Completed ", 100);
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, "All Slide Downloading Completed ");
                     }
                 }
 
             }
 
 
-        }
-    }
-
-    public static void unzip(String filepath, File targetDirectory) throws IOException {
-
-        File zipFile = new File(filepath);
-        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-        try {
-
-            ZipEntry ze;
-            int count;
-            byte[] buffer = new byte[8192];
-            while ((ze = zis.getNextEntry()) != null) {
-
-                String name = ze.getName();
-                File file = new File(targetDirectory, name);
-
-                if (ze.isDirectory()) {
-                    file.mkdirs();
-                } else {
-                    FileOutputStream fout = new FileOutputStream(file);
-                    try {
-                        while ((count = zis.read(buffer)) != -1) {
-                            fout.write(buffer, 0, count);
-                        }
-                    } finally {
-                        fout.close();
-                    }
-                }
-            }
-        } finally {
-            zis.close();
         }
     }
 }

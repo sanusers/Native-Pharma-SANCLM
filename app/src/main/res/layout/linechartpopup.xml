@@ -40,7 +40,7 @@
 
         <View
             android:id="@+id/text_linview"
-            android:layout_width="1dp"
+            android:layout_width="@dimen/_1sdp"
             android:layout_height="@dimen/_15sdp"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_toRightOf="@id/text_totalcalls"

@@ -31,7 +31,7 @@
                 android:paddingVertical="@dimen/_3sdp"
                 android:text="@string/brand_name"
                 android:textColor="@color/dark_purple"
-                android:textSize="16sp"
+                android:textSize="@dimen/_7ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tag_rating"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -49,13 +49,13 @@
                 android:paddingVertical="@dimen/_3sdp"
                 android:text="@string/rating"
                 android:textColor="@color/dark_purple"
-                android:textSize="16sp"
+                android:textSize="@dimen/_7ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tag_feedback"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/tag_brand_name"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteY="2dp" />
+                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
             <TextView
                 android:id="@+id/tag_feedback"
@@ -67,13 +67,13 @@
                 android:paddingVertical="@dimen/_3sdp"
                 android:text="@string/feedback"
                 android:textColor="@color/dark_purple"
-                android:textSize="16sp"
+                android:textSize="@dimen/_7ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tag_timeline"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/tag_rating"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteY="2dp" />
+                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
             <TextView
                 android:id="@+id/tag_timeline"
@@ -84,19 +84,19 @@
                 android:paddingVertical="@dimen/_3sdp"
                 android:text="@string/timeline"
                 android:textColor="@color/dark_purple"
-                android:textSize="16sp"
+                android:textSize="@dimen/_7ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/tag_feedback"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteY="2dp" />
+                tools:layout_editor_absoluteY="@dimen/_1sdp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/view_dummy"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:layout_marginTop="@dimen/_1sdp"
             android:layout_marginHorizontal="@dimen/_8sdp"
             android:background="@color/dark_purple"

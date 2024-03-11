@@ -20,12 +20,12 @@
 
     <ImageView
         android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
         android:layout_marginHorizontal="@dimen/_8sdp"
         android:cropToPadding="true"
         android:gravity="center"
-        android:src="@drawable/iv_back"
+         android:src="@drawable/arrow_back_white"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintRight_toLeftOf="@id/tag_header"
         app:layout_constraintStart_toStartOf="@id/view_top"
@@ -42,7 +42,7 @@
         android:padding="@dimen/_2sdp"
         android:text="@string/name"
         android:textColor="@color/white"
-        android:textSize="18sp"
+         android:textSize="@dimen/_7ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintLeft_toRightOf="@id/iv_back"
@@ -83,11 +83,11 @@
                 android:hint="@string/search"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
-                android:paddingHorizontal="20dp"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textColorHint="@color/bg_grey_2"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -148,7 +148,7 @@
                 android:singleLine="true"
                 android:text="Name"
                 android:textColor="@color/dark_purple"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
                 app:layout_constraintBottom_toTopOf="@id/tv_cluster_top"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -163,7 +163,7 @@
                 android:padding="@dimen/_2sdp"
                 android:text="Nandanam"
                 android:textColor="@color/light_grey_2"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toTopOf="@id/view_dummy"
                 app:layout_constraintEnd_toEndOf="@id/tv_name"
@@ -174,7 +174,7 @@
             <View
                 android:id="@+id/view_dummy"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
                 android:background="@color/background"
                 app:layout_constraintBottom_toTopOf="@id/constraint_detailed"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -213,7 +213,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/visit_time"
                         android:textColor="@color/light_grey_2"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toTopOf="@id/tv_visit_time"
                         app:layout_constraintEnd_toStartOf="@id/tag_modified_time"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -228,7 +228,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="10:16"
                         android:textColor="@color/cheked_txt_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toTopOf="@id/tag_address"
                         app:layout_constraintEnd_toEndOf="@id/tag_visit_time"
                         app:layout_constraintStart_toStartOf="@id/tag_visit_time"
@@ -242,7 +242,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/modified_time"
                         android:textColor="@color/light_grey_2"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toTopOf="@id/tv_modified_time"
                         app:layout_constraintEnd_toStartOf="@id/tag_cluster"
                         app:layout_constraintStart_toEndOf="@id/tag_visit_time"
@@ -256,7 +256,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="10:16"
                         android:textColor="@color/cheked_txt_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_visit_time"
                         app:layout_constraintEnd_toEndOf="@id/tag_modified_time"
                         app:layout_constraintStart_toStartOf="@id/tag_modified_time"
@@ -270,7 +270,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/cluster"
                         android:textColor="@color/light_grey_2"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toTopOf="@id/tv_cluster"
                         app:layout_constraintEnd_toStartOf="@id/tag_pob"
@@ -285,7 +285,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/cluster"
                         android:textColor="@color/cheked_txt_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@id/tv_modified_time"
                         app:layout_constraintEnd_toEndOf="@id/tag_cluster"
@@ -300,7 +300,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="POB"
                         android:textColor="@color/light_grey_2"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toTopOf="@id/tv_pob"
                         app:layout_constraintEnd_toStartOf="@id/tag_jw"
                         app:layout_constraintStart_toEndOf="@id/tag_cluster"
@@ -315,7 +315,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="0"
                         android:textColor="@color/cheked_txt_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_cluster"
                         app:layout_constraintEnd_toEndOf="@id/tag_pob"
                         app:layout_constraintStart_toStartOf="@id/tag_pob"
@@ -330,7 +330,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/joint_work"
                         android:textColor="@color/light_grey_2"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toTopOf="@id/tv_pob"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/tag_pob"
@@ -344,7 +344,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:text="@string/no_jw"
                         android:textColor="@color/cheked_txt_color"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         app:layout_constraintBottom_toBottomOf="@id/tv_pob"
                         app:layout_constraintEnd_toEndOf="@id/tag_jw"
                         app:layout_constraintStart_toStartOf="@id/tag_jw"
@@ -358,7 +358,7 @@
                         android:paddingVertical="@dimen/_5sdp"
                         android:text="@string/detailed_prd"
                         android:textColor="@color/light_grey_2"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/_6ssp"
                         android:visibility="gone"
                         app:layout_constraintBottom_toTopOf="@id/constraint_tag_detail_prd"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -389,7 +389,7 @@
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/brand_name"
                             android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tag_rating"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -407,13 +407,13 @@
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/rating"
                             android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tag_feedback"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_brand_name"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                         <TextView
                             android:id="@+id/tag_feedback"
@@ -425,13 +425,13 @@
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/feedback"
                             android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tag_timeline"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_rating"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                         <TextView
                             android:id="@+id/tag_timeline"
@@ -442,13 +442,13 @@
                             android:paddingVertical="@dimen/_3sdp"
                             android:text="@string/timeline"
                             android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/tag_feedback"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:layout_editor_absoluteY="2dp" />
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -482,7 +482,7 @@
                             android:paddingVertical="@dimen/_5sdp"
                             android:text="@string/sample_prds"
                             android:textColor="@color/light_grey_2"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_sample_prd"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -511,7 +511,7 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/product_name"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/tag_promoted"
                                 app:layout_constraintHorizontal_bias="0.5"
@@ -529,13 +529,13 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/promoted"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/tag_stock"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@+id/tag_prd_name"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:layout_editor_absoluteY="2dp" />
+                                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
 
                             <TextView
@@ -548,14 +548,14 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/stock"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 android:visibility="gone"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/tag_samples"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@+id/tag_promoted"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:layout_editor_absoluteY="2dp" />
+                                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                             <TextView
                                 android:id="@+id/tag_samples"
@@ -567,13 +567,13 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/samples"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/_7ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/tag_rx_qty"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@+id/tag_stock"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:layout_editor_absoluteY="2dp" />
+                                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                             <TextView
                                 android:id="@+id/tag_rx_qty"
@@ -585,13 +585,13 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/rx_qty"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/tag_rcpa_prd"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@+id/tag_samples"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:layout_editor_absoluteY="2dp" />
+                                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                             <TextView
                                 android:id="@+id/tag_rcpa_prd"
@@ -604,13 +604,13 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/rcpa"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@id/tag_rx_qty"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:layout_editor_absoluteY="2dp" />
+                                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -649,7 +649,7 @@
                             android:paddingVertical="@dimen/_5sdp"
                             android:text="@string/input"
                             android:textColor="@color/light_grey_2"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_input"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -679,7 +679,7 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/input_name"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/tag_qty"
                                 app:layout_constraintHorizontal_bias="0.5"
@@ -698,13 +698,13 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/qty"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.5"
                                 app:layout_constraintStart_toEndOf="@+id/tag_input_name_main"
                                 app:layout_constraintTop_toTopOf="parent"
-                                tools:layout_editor_absoluteY="2dp" />
+                                tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -742,7 +742,7 @@
                             android:paddingVertical="@dimen/_5sdp"
                             android:text="@string/additional_call"
                             android:textColor="@color/light_grey_2"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_additional_call"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -772,7 +772,7 @@
                                 android:paddingVertical="@dimen/_3sdp"
                                 android:text="@string/name"
                                 android:textColor="@color/dark_purple"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/_6ssp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/constraint_sample"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -800,12 +800,12 @@
                                     android:paddingVertical="@dimen/_3sdp"
                                     android:text="@string/sample"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_6ssp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/tag_sam_qty"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    tools:layout_editor_absoluteY="2dp" />
+                                    tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                                 <TextView
                                     android:id="@+id/tag_sam_qty"
@@ -817,12 +817,12 @@
                                     android:paddingVertical="@dimen/_3sdp"
                                     android:text="@string/qty"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_6ssp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toEndOf="@+id/tag_sample"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    tools:layout_editor_absoluteY="2dp" />
+                                    tools:layout_editor_absoluteY="@dimen/_1sdp" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                             <androidx.constraintlayout.widget.ConstraintLayout
@@ -846,12 +846,12 @@
                                     android:paddingVertical="@dimen/_3sdp"
                                     android:text="@string/input"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_6ssp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/tag_input_qty"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    tools:layout_editor_absoluteY="2dp" />
+                                    tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                                 <TextView
                                     android:id="@+id/tag_input_qty"
@@ -863,12 +863,12 @@
                                     android:paddingVertical="@dimen/_3sdp"
                                     android:text="@string/qty"
                                     android:textColor="@color/dark_purple"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_6ssp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toEndOf="@+id/tag_input_name"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    tools:layout_editor_absoluteY="2dp" />
+                                    tools:layout_editor_absoluteY="@dimen/_1sdp" />
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -903,7 +903,7 @@
                             android:paddingVertical="@dimen/_5sdp"
                             android:text="@string/rcpa"
                             android:textColor="@color/light_grey_2"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_rcpa"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -951,7 +951,7 @@
                     <View
                         android:id="@+id/view_dummy_rcpa"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/_1sdp"
                         android:layout_marginVertical="@dimen/_2sdp"
                         android:background="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -978,7 +978,7 @@
                             android:paddingVertical="@dimen/_5sdp"
                             android:text="@string/capture_event"
                             android:textColor="@color/light_grey_2"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_ic"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -1026,7 +1026,7 @@
                     <View
                         android:id="@+id/view_dummy_ic"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/_1sdp"
                         android:layout_marginVertical="@dimen/_2sdp"
                         android:background="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -1052,7 +1052,7 @@
                             android:paddingVertical="@dimen/_2sdp"
                             android:text="@string/overall_remarks"
                             android:textColor="@color/light_grey_2"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/tv_overall_remarks"
                             app:layout_constraintEnd_toStartOf="@id/tag_overall_feedback"
                             app:layout_constraintStart_toStartOf="parent"
@@ -1066,7 +1066,7 @@
                             android:paddingVertical="@dimen/_2sdp"
                             android:text="@string/no_remarks"
                             android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@id/tag_overall_remarks"
                             app:layout_constraintStart_toStartOf="@id/tag_overall_remarks"
@@ -1081,7 +1081,7 @@
                             android:paddingVertical="@dimen/_2sdp"
                             android:text="@string/overall_feedback"
                             android:textColor="@color/light_grey_2"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toTopOf="@id/tv_overall_feedback"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/tag_overall_remarks"
@@ -1095,7 +1095,7 @@
                             android:paddingVertical="@dimen/_2sdp"
                             android:text="@string/no_feedback"
                             android:textColor="@color/dark_purple"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/_6ssp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@id/tag_overall_feedback"
                             app:layout_constraintStart_toStartOf="@id/tag_overall_feedback"
@@ -1105,7 +1105,7 @@
                     <View
                         android:id="@+id/view_dummy_2"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="@dimen/_1sdp"
                         android:layout_marginVertical="@dimen/_4sdp"
                         android:background="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"

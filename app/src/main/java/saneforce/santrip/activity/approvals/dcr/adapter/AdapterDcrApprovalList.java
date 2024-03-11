@@ -48,23 +48,24 @@ public class AdapterDcrApprovalList extends RecyclerView.Adapter<AdapterDcrAppro
     public void onBindViewHolder(@NonNull AdapterDcrApprovalList.ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(dcrApprovalLists.get(position).getSf_name());
-        holder.tv_date.setText(dcrApprovalLists.get(position).getActivity_date());
+        holder.tv_date.setText(CommonUtilsMethods.setConvertDate("dd/MM/yyyy", "dd MMM yyyy", dcrApprovalLists.get(position).getActivity_date()));
+       //  holder.tv_date.setText(dcrApprovalLists.get(position).getActivity_date());
 
         if (dcrApprovalLists.get(position).getSfCode().equalsIgnoreCase(DcrApprovalActivity.SelectedSfCode) && dcrApprovalLists.get(position).getActivity_date().equalsIgnoreCase(DcrApprovalActivity.SelectedActivityDate)) {
-            holder.constraint_main.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_purple));
-            holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.white));
-            holder.tv_date.setBackground(ContextCompat.getDrawable(context,R.drawable.selector_box));
-            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.greater_than_white));
+            holder.constraint_main.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_purple));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.tv_date.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_box));
+            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.greater_than_white));
         } else {
-            holder.constraint_main.setBackground(ContextCompat.getDrawable(context,R.drawable.selector_box));
-            holder.tv_name.setTextColor(ContextCompat.getColor(context,R.color.dark_purple));
-            holder.tv_date.setBackground(ContextCompat.getDrawable(context,R.drawable.bg_light_grey_1));
-            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.greater_than_purple));
+            holder.constraint_main.setBackground(ContextCompat.getDrawable(context, R.drawable.selector_box));
+            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.dark_purple));
+            holder.tv_date.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_light_grey_1));
+            holder.list_arrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.greater_than_purple));
         }
 
 
         holder.constraint_main.setOnClickListener(view -> {
-            onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(),dcrApprovalLists.get(position).getSf_name(),dcrApprovalLists.get(position).getActivity_date(),dcrApprovalLists.get(position).getPlan_name(),dcrApprovalLists.get(position).getWorkType_name(),dcrApprovalLists.get(position).getSfCode(),dcrApprovalLists.get(position).getFieldWork_indicator(),dcrApprovalLists.get(position).getSubmission_date_sub(),dcrApprovalLists.get(position).getOther_wt()),holder.getBindingAdapterPosition());
+            onItemClickListenerApproval.onClick(new DCRApprovalList(dcrApprovalLists.get(position).getTrans_slNo(), dcrApprovalLists.get(position).getSf_name(), dcrApprovalLists.get(position).getActivity_date(), dcrApprovalLists.get(position).getPlan_name(), dcrApprovalLists.get(position).getWorkType_name(), dcrApprovalLists.get(position).getSfCode(), dcrApprovalLists.get(position).getFieldWork_indicator(), dcrApprovalLists.get(position).getSubmission_date_sub(), dcrApprovalLists.get(position).getOther_wt()), holder.getBindingAdapterPosition());
             notifyDataSetChanged();
         });
     }

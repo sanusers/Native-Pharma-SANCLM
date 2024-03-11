@@ -247,6 +247,7 @@
     <string name="no_slides_available">No slides Available!</string>
     <string name="no_of_visit">No of Visit Exceeded</string>
     <string name="already_visited">Already Visited Today</string>
+    <string name="selected_same_doctor">Selected Same Doctor you call now</string>
     <string name="rejected_successfully">Rejected Successfully</string>
     <string name="approved_successfully">Approved Successfully</string>
     <string name="updated_successfully">Updated Successfully</string>
@@ -296,6 +297,7 @@
     <string name="call_failed_saved_locally">Call Failed! Saved Locally</string>
     <string name="call_saved_something_wrong">Call Saved! Something Wrong</string>
     <string name="save_todaywork_plan">Save TodayWorkPlan</string>
+    <string name="save_wt_locally">Locally Saved WorkPlan</string>
     <string name="submit_mydayplan">Kindly submit My DayPlan</string>
     <string name="submit_checkin">Kindly CheckIn</string>
     <string name="enter_old_pwd">Enter old password</string>
@@ -374,4 +376,5 @@
     <string name="view_less">View Less</string>
     <string name="dashboard">DashBoard</string>
     <string name="close_preview">Close Preview</string>
+    <string name="title">Title</string>
 </resources>

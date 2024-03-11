@@ -188,7 +188,7 @@
                         app:tabGravity="center"
                         app:tabIndicatorColor="@color/text_dark"
                         app:tabIndicatorGravity="bottom"
-                        app:tabIndicatorHeight="1dp"
+                        app:tabIndicatorHeight="@dimen/_1sdp"
                         app:tabMode="fixed"
                         app:tabSelectedTextColor="@color/text_dark"
                         app:tabTextAppearance="@style/tab_text"
@@ -253,7 +253,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -299,7 +299,7 @@
                                 android:layout_marginTop="@dimen/_4sdp"
                                 android:layout_marginEnd="@dimen/_2sdp"
                                 android:orientation="horizontal"
-                                android:radius="12dp">
+                                android:radius="@dimen/_6sdp">
 
                                 <LinearLayout
                                     android:id="@+id/ll_presentation"

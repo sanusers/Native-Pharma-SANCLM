@@ -261,18 +261,18 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (modelClass1.getWorkType().getName().isEmpty()) {
                             isEmpty = true;
                             position = i;
-                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.complete_session) + (i + 1), 100);
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
                             break;
                         } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
                             if (modelClass1.getHQ().getName().isEmpty()) {
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_hq_in_session) + (i + 1), 100);
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
                                 break;
                             } else if (modelClass1.getCluster().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_clusters_in_session) + (i + 1), 100);
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
                                 break;
                             } else if (modelClass1.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                                 if (FW_meetup_mandatory.equals("0")) {
@@ -280,12 +280,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                         if (modelClass1.getListedDr().size() == 0) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
                                             break;
                                         } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
                                             break;
                                         }
                                     }
@@ -293,7 +293,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
                                         break;
                                     }
                                 }
@@ -304,19 +304,19 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (modelClass1.getListedDr().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
                                         break;
                                     } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
                                         break;
                                     }
                                 }
                                 if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
                                     break;
                                 }
                             }
@@ -332,7 +332,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         scrollToPosition(position, true);
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.reached_session_limit), 100);
+                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.reached_session_limit));
                 }
             }
         });
@@ -350,18 +350,18 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (modelClass.getWorkType().getName().isEmpty()) {
                     isEmpty = true;
                     position = i;
-                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.complete_session) + (i + 1), 100);
+                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
                     break;
                 } else if (modelClass.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) { // TerrSlFlg is "Y" (yes) means head quarter and clusters are mandatory
                     if (modelClass.getHQ().getName().isEmpty()) {
                         isEmpty = true;
                         position = i;
-                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_hq_in_session) + (i + 1), 100);
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_hq_in_session) + (i + 1));
                         break;
                     } else if (modelClass.getCluster().size() == 0) {
                         isEmpty = true;
                         position = i;
-                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_clusters_in_session) + (i + 1), 100);
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_clusters_in_session) + (i + 1));
                         break;
                     } else if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase("F")) {
                         if (FW_meetup_mandatory.equals("0")) {
@@ -369,12 +369,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                 if (modelClass.getListedDr().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
                                     break;
                                 } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
                                     break;
                                 }
                             }
@@ -382,7 +382,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
                                 break;
                             }
                         }
@@ -393,19 +393,19 @@ public class TourPlanActivity extends AppCompatActivity {
                             if (modelClass.getListedDr().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1), 100);
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
                                 break;
                             } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1), 100);
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
                                 break;
                             }
                         }
                         if (modelClass.getListedDr().size() == 0 && modelClass.getChemist().size() == 0 && modelClass.getStockiest().size() == 0 && modelClass.getUnListedDr().size() == 0 && modelClass.getCip().size() == 0 && modelClass.getHospital().size() == 0) { // when Dr meetup not mandatory but FW meetup mandatory.So check any of the meetup selected
                             isEmpty = true;
                             position = i;
-                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.select_any_masters) + (i + 1), 100);
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
                             break;
                         }
                     }
@@ -2196,11 +2196,11 @@ public class TourPlanActivity extends AppCompatActivity {
                                         JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
                                         if (jsonObject1.has("success") && jsonObject1.getBoolean("success")) {
                                             sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0"); // "0" - success
-                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.send_approved_successfully), 100);
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.send_approved_successfully));
                                             get1MonthRemoteTPData(localDate1);
                                         } else {
                                             sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
-                                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.failed_to_send_approval), 100);
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                         }
                                     } catch (JSONException e) {
                                         binding.progressBar.setVisibility(View.GONE);
@@ -2497,10 +2497,10 @@ public class TourPlanActivity extends AppCompatActivity {
                             }
                         } else {
                             saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
-                            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.something_wrong), 100);
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                         }
                     } else {
-                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.something_wrong), 100);
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.something_wrong));
                         saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
                     }
 
@@ -2517,7 +2517,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (statusOffline) {
                     binding.progressBar.setVisibility(View.GONE);
                 }
-                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.toast_response_failed));
                 saveTpLocal(modelClassArrayList, date, month, "1"); // Sync Failed
             }
         });

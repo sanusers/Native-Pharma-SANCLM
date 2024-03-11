@@ -91,10 +91,10 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (url.isEmpty()) {
                 binding.etWebUrl.requestFocus();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_url), 100);
+                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_url));
             } else if (licenseKey.isEmpty()) {
                 binding.etLicenseKey.requestFocus();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.enter_license), 100);
+                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.enter_license));
             } else {
 
                 SharedPref.Loginsite(getApplicationContext(), url);
@@ -102,10 +102,10 @@ public class SettingsActivity extends AppCompatActivity {
                     if (checkURL(url)) {
                         configuration("https://" + url + "/apps/");
                     } else {
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.no_network));
                 }
             }
         });
@@ -300,13 +300,13 @@ public class SettingsActivity extends AppCompatActivity {
                             }
 
                             if (!licenseKeyValid)
-                                commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
+                                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         SharedPref.Loginsite(getApplicationContext(), url);
                     } else {
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.invalid_url), 100);
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
                     }
                 }
 
@@ -318,7 +318,7 @@ public class SettingsActivity extends AppCompatActivity {
                         configuration("http://" + url + "/apps/");
                     } else {
                         binding.configurationPB.setVisibility(View.GONE);
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.toast_response_failed));
                         Log.e("test", "hit count is : " + hitCount);
                         hitCount = 0;
                     }
@@ -356,7 +356,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void navigate() {
-        runOnUiThread(() -> commonUtilsMethods.ShowToast(context, context.getString(R.string.configure_success), 100));
+        runOnUiThread(() -> commonUtilsMethods.showToastMessage(SettingsActivity.this,getString(R.string.login_successfully)));
         Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
         intent.putExtra(Constants.NAVIGATE_FROM, "Setting");
         startActivity(intent);

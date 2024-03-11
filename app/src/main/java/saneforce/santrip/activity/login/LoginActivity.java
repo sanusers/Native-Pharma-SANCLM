@@ -10,15 +10,20 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         sqLite = new SQLite(getApplicationContext());
-        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(getParent());
         sqLite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
@@ -126,23 +131,23 @@ public class LoginActivity extends AppCompatActivity {
             if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
                 if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                     SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.login_successfully), 100);
+               commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                     startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
                 } else {
-                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.mismatch), 100);
+               commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
                 }
             } else {
                 if (userId.isEmpty()) {
                     binding.userId.requestFocus();
-                    commonUtilsMethods.ShowToast(getApplicationContext(), context.getString(R.string.enter_user_id), 100);
+               commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
                 } else if (userPwd.isEmpty()) {
                     binding.password.requestFocus();
-                    commonUtilsMethods.ShowToast(getApplicationContext(), context.getString(R.string.enter_password), 100);
+               commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
                 } else {
                     if (UtilityClass.isNetworkAvailable(LoginActivity.this)) {
                         login(userId, userPwd);
                     } else {
-                        commonUtilsMethods.ShowToast(getApplicationContext(), context.getString(R.string.no_network), 100);
+                   commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.no_network));
                     }
                 }
             }
@@ -359,14 +364,14 @@ public class LoginActivity extends AppCompatActivity {
                         if (responseObject.getBoolean("success")) {
                             if (responseObject.getString("Android_Detailing").equals("1")) {
                                 Log.v("Login", "--json-" + responseObject);
-                                commonUtilsMethods.ShowToast(context, getString(R.string.login_successfully), 100);
+                                commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                                 process(responseObject);
                             } else {
-                                commonUtilsMethods.ShowToast(context, getString(R.string.access_denied), 100);
+                                commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.access_denied));
                             }
                         } else {
                             if (responseObject.has("msg")) {
-                                commonUtilsMethods.ShowToast(context, responseObject.getString("msg"), 100);
+                                commonUtilsMethods.showToastMessage(LoginActivity.this, responseObject.getString("msg"));
                             }
                         }
                     } catch (JSONException e) {
@@ -408,11 +413,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        if (hasFocus) {
-//            binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        }
-//    }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 }

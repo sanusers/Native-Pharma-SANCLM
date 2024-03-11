@@ -30,7 +30,7 @@
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/black_45"
-                android:textSize="18sp"
+                 android:textSize="@dimen/_7ssp"
                 android:textStyle="bold">
 
             </TextView>
@@ -67,7 +67,7 @@
         <View
             android:id="@+id/view_below"
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:layout_marginTop="@dimen/_4sdp"
             android:layout_marginBottom="@dimen/_2sdp"
             android:background="@color/pink"

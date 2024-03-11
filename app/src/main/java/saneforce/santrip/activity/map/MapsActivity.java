@@ -180,11 +180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            mapsBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            mapsBinding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
@@ -197,9 +193,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
-        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-        commonUtilsMethods.setUpLanguage(getApplicationContext());
-        sqLite = new SQLite(getApplicationContext());
+        commonUtilsMethods = new CommonUtilsMethods(MapsActivity.this);
+        commonUtilsMethods.setUpLanguage(MapsActivity.this);
+        sqLite = new SQLite(MapsActivity.this);
 
 
         Bundle extra = getIntent().getExtras();
@@ -294,7 +290,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         DisplayDialog();
                     }
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.not_able_to_find_address), 100);
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.not_able_to_find_address));
                     Intent intent1 = new Intent(MapsActivity.this, TagCustSelectionList.class);
                     startActivity(intent1);
                 }
@@ -576,7 +572,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 val = true;
             }
         } catch (Exception e) {
-            commonUtilsMethods.ShowToast(context, context.getString(R.string.loc_not_detect), 100);
+            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.loc_not_detect));
         }
         return val;
     }
@@ -715,7 +711,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v("test", jsonTag);
         Map<String, String> mapString = new HashMap<>();
         mapString.put("axn", "geodetails");
-        Call<JsonElement> callSaveGeo = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString,jsonTag);
+        Call<JsonElement> callSaveGeo = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonTag);
 
         callSaveGeo.enqueue(new Callback<JsonElement>() {
             @Override
@@ -726,7 +722,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("Msg").equalsIgnoreCase("Tagged Successfully")) {
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.tagged_successfully), 100);
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tagged_successfully));
                             dialogTagCust.dismiss();
                             CallAPIList(SelectedTab);
                             isTagged = true;
@@ -736,10 +732,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             //SharedPref.setTaggedSuccessfully(MapsActivity.this, "true");
                             finish();
                         } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("Msg").equalsIgnoreCase("You have reached the maximum tags...")) {
-                            commonUtilsMethods.ShowToast(context, jsonSaveRes.getString("Msg"), 100);
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, jsonSaveRes.getString("Msg"));
                             dialogTagCust.dismiss();
                         } else {
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.something_wrong), 100);
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.something_wrong));
                             dialogTagCust.dismiss();
                         }
                     } catch (Exception e) {
@@ -748,7 +744,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
                     dialogTagCust.dismiss();
                 }
             }
@@ -756,7 +752,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
                 dialogTagCust.dismiss();
             }
         });
@@ -807,7 +803,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
                     Map<String, String> mapString = new HashMap<>();
                     mapString.put("axn", "table/dcrmasterdata");
-                    call  = api_interface.getJSONElement(SharedPref.getCallApiUrl(context),mapString,jsonObject.toString());
+                    call = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
                 }
 
                 if (call != null) {
@@ -862,7 +858,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_network));
         }
     }
 
@@ -912,7 +908,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 CallAPIGeo(jsonTag);
                             } else {
                                 dialogTagCust.dismiss();
-                                commonUtilsMethods.ShowToast(context, context.getString(R.string.tag_failed), 100);
+                                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.tag_failed));
                             }
                         } catch (Exception e) {
                             Log.v("img_tag", e.toString());
@@ -920,13 +916,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     } else {
                         dialogTagCust.dismiss();
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.something_wrong), 100);
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.something_wrong));
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_response_failed));
                     dialogTagCust.dismiss();
                 }
             });
@@ -1020,7 +1016,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapsBinding.tvMeters.setText(String.format("%s \n Meters", getDistance));
                 }
             } else {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found), 100);
+                commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.no_data_found));
             }
 
             mMap.setMyLocationEnabled(true);
@@ -1182,10 +1178,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ImageView imageView = dialog.findViewById(R.id.img_dr_content);
 
                     if (Objects.requireNonNull(marker.getSnippet()).substring(marker.getSnippet().lastIndexOf("^") + 1).isEmpty()) {
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_no_img_found), 100);
+                        commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.toast_no_img_found));
                     } else {
                         if (img_url.equalsIgnoreCase("null") || img_url.isEmpty()) {
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.save_settings_con_screen), 100);
+                            commonUtilsMethods.showToastMessage(MapsActivity.this, getString(R.string.save_settings_con_screen));
                         } else {
                             Glide.with(getApplicationContext()).load(img_url + "photos/" + marker.getSnippet().substring(marker.getSnippet().lastIndexOf("^") + 1)).centerCrop().into(imageView);
                             dialog.show();

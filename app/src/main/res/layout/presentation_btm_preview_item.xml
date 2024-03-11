@@ -17,7 +17,7 @@
         android:padding="@dimen/_4sdp"
         android:text="@string/save"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toTopOf="@id/ll_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,16 +34,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_27sdp"
-        android:scaleType="fitXY"
-        android:src="@drawable/no_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_27sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/no_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

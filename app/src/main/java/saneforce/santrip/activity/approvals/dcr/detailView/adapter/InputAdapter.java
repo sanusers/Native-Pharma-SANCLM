@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.pojo.input.SaveCallInputList;
+import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
 
 public class InputAdapter extends RecyclerView.Adapter<InputAdapter.ViewHolder> {
     Context context;

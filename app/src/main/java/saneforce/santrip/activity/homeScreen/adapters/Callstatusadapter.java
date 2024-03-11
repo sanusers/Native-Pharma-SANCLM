@@ -181,7 +181,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.not_chose_after_date), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 }
 
 
@@ -193,7 +193,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.not_chose_after_date), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 }*/
 
             /*   if (new Date().after(strDate)) {
@@ -204,7 +204,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.not_chose_after_date), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 }*/
             }
            /* if (list.getDateID().equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy")) || list.getDateID() > CommonUtilsMethods.getCurrentInstance("MMMM d, yyyy")) {
@@ -219,7 +219,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
 
                 }
             } else {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.submit_checkin), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.submit_checkin));
             }*/
         });
     }

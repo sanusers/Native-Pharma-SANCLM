@@ -23,8 +23,8 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.OnItemClickListenerApproval;
 import saneforce.santrip.activity.approvals.dcr.detailView.DcrDetailViewActivity;
 import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
-import saneforce.santrip.activity.homeScreen.call.pojo.input.SaveCallInputList;
-import saneforce.santrip.activity.homeScreen.call.pojo.product.SaveCallProductList;
+import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
+import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleList.ViewHolder> {

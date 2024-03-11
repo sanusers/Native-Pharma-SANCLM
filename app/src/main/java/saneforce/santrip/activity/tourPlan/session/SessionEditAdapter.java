@@ -456,7 +456,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else {
                     if (!holder.fieldSelected) {
                         if (holder.hqArray.size() == 0) {
@@ -482,10 +482,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 itemPosition = holder.getLayoutPosition();
                 holder.relativeLayout.setSelected(false);
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else {
                     if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                        commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                     } else {
                         if (!holder.fieldSelected) {
                             if (holder.clusterArray.size() == 0) {
@@ -516,11 +516,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.relativeLayout.setSelected(false);
 
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_cluster), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
                     if (!holder.fieldSelected) {
                         if (holder.jointCallArray.size() == 0) {
@@ -551,11 +551,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.relativeLayout.setSelected(false);
 
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_cluster), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
                     if (!holder.fieldSelected) {
                         if (holder.listedDrArray.size() == 0) {
@@ -585,11 +585,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.relativeLayout.setSelected(false);
 
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_cluster), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
 
                     if (!holder.fieldSelected) {
@@ -621,11 +621,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.relativeLayout.setSelected(false);
 
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_cluster), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
                     if (!holder.fieldSelected) {
                         if (holder.stockiestArray.size() == 0) {
@@ -656,11 +656,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.relativeLayout.setSelected(false);
 
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_cluster), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
                     if (!holder.fieldSelected) {
                         if (holder.unListedDrArray.size() == 0) {
@@ -691,11 +691,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.relativeLayout.setSelected(false);
 
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_cluster), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
                     if (!holder.fieldSelected) {
                         if (holder.cipArray.size() == 0) {
@@ -725,11 +725,11 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 holder.relativeLayout.setSelected(false);
 
                 if (holder.workTypeField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_worktype), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_worktype));
                 } else if (sfType.equalsIgnoreCase("2") && holder.hqField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_hq), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_hq));
                 } else if (holder.clusterField.getText().toString().equalsIgnoreCase("Select")) {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.select_cluster), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.select_cluster));
                 } else {
                     if (!holder.fieldSelected) {
                         if (holder.hospArray.size() == 0) {
@@ -1118,7 +1118,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
         }
     }
 
@@ -1157,20 +1157,20 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                         case "W":
                                         case "H": {
                                             workTypeRepeated = true;
-                                            commonUtilsMethods.ShowToast(context, context.getString(R.string.wt_already_selected) + (i + 1), 100);
+                                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                             break;
                                         }
                                         case "N": {
                                             if (inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
                                                 workTypeRepeated = true;
-                                                commonUtilsMethods.ShowToast(context, context.getString(R.string.wt_already_selected) + (i + 1), 100);
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                                 break;
                                             }
                                         }
                                         case "F": {
                                             if (!sfType.equalsIgnoreCase("2")) {
                                                 workTypeRepeated = true;
-                                                commonUtilsMethods.ShowToast(context, context.getString(R.string.wt_already_selected) + (i + 1), 100);
+                                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.wt_already_selected) + (i + 1));
                                                 break;
                                             }
                                         }
@@ -1199,7 +1199,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                 if (modelClass.getWorkType().getFWFlg().equalsIgnoreCase(inputDataArray.getSessionList().get(holder.getAbsoluteAdapterPosition()).getWorkType().getFWFlg())) {
                                     if (modelClass.getHQ().getCode().equalsIgnoreCase(jsonObject.getCode())) {
                                         hqRepeated = true;
-                                        commonUtilsMethods.ShowToast(context, context.getString(R.string.hq_already_selected) + (i + 1), 100);
+                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.hq_already_selected) + (i + 1));
                                         break;
                                     }
                                 }

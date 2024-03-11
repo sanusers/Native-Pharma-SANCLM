@@ -1,13 +1,12 @@
 package saneforce.santrip.activity.previewPresentation;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.Designation;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.DivCode;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.DrNeed;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SfType;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.StateCode;
-import static saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity.SubDivisionCode;
+import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.Designation;
+import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.DivCode;
+import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
+import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.SfType;
+import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.StateCode;
+import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.SubDivisionCode;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SelectedTab;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.brandMatrixBinding;
@@ -50,7 +49,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -177,7 +175,7 @@ public class DrSelectionSide extends Fragment {
             }*/
 
             /*if (jsonArray.length() == 0) {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync));
             }*/
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -305,7 +303,7 @@ public class DrSelectionSide extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
         }
     }
 

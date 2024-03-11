@@ -2,7 +2,7 @@ package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.InputValidation;
 import static saneforce.santrip.activity.homeScreen.HomeDashBoard.SampleValidation;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.santrip.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
@@ -46,13 +46,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
+import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -126,34 +127,19 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             popup.inflate(R.menu.call_menu);
             popup.setOnMenuItemClickListener(menuItem -> {
                 if (menuItem.getItemId() == R.id.menuSync) {
-                    OutBoxCallList outBoxCallList = outBoxCallLists.get(position);
-                    CallAPI(holder.getAbsoluteAdapterPosition(), outBoxCallList, outBoxCallLists.get(position).getJsonData(), outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getSyncCount());
+                    if (UtilityClass.isNetworkAvailable(context)) {
+                        OutBoxCallList outBoxCallList = outBoxCallLists.get(position);
+                        CallAPI(holder.getAbsoluteAdapterPosition(), outBoxCallList, outBoxCallLists.get(position).getJsonData(), outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getSyncCount());
+                    } else {
+                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+                    }
                 } else if (menuItem.getItemId() == R.id.menuEdit) {
                     Intent intent = new Intent(context, DCRCallActivity.class);
-
+                    DCRCallActivity.clickedLocalDate = outBoxCallLists.get(position).getDates();
                     CallActivityCustDetails = new ArrayList<>();
                     CallActivityCustDetails.add(0, new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", "", outBoxCallLists.get(position).getJsonData()));
-                    boolean isDetailingAvailable = false;
-                    try {
-                        JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
-                        JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
-                        for (int i = 0; i < jsonPrdArray.length(); i++) {
-                            JSONObject js = jsonPrdArray.getJSONObject(i);
-                            if (js.getString("Group").equalsIgnoreCase("1")) {
-                                isDetailingAvailable = true;
-                                break;
-                            }
-                        }
-                    } catch (Exception ignored) {
-
-                    }
-
-                    if (isDetailingAvailable) {
-                        intent.putExtra("isDetailedRequired", "true");
-                    } else {
-                        intent.putExtra("isDetailedRequired", "false");
-                    }
-                    intent.putExtra("from_activity", "edit_local");
+                    intent.putExtra(Constants.DETAILING_REQUIRED, "false");
+                    intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_local");
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     UpdateInputSample(outBoxCallLists.get(position).getJsonData());
@@ -168,8 +154,24 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                     break;
                                 }
                             }
+
                             sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
                             sqLite.deleteLineChart(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getDates());
+
+                            if (outBoxCallLists.get(position).getCusType().equalsIgnoreCase("1")) {
+                                JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
+                                JSONArray jsonAdditional = json.getJSONArray("AdCuss");
+                                for (int aw = 0; aw < jsonAdditional.length(); aw++) {
+                                    JSONObject jsAw = jsonAdditional.getJSONObject(aw);
+                                    sqLite.deleteLineChart(jsAw.getString("Code"), outBoxCallLists.get(position).getDates());
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                        if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code"))) {
+                                            jsonArray.remove(i);
+                                        }
+                                    }
+                                }
+                            }
                             AssignCallAnalysis(SfType, outBoxCallLists.get(position).getCusType());
                         }
                     } catch (Exception ignored) {
@@ -270,12 +272,12 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                 sqLite.deleteOfflineCalls(cusCode, cusName, date);
                                 removeAt(pos);
                                 CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
-                                commonUtilsMethods.ShowToast(context, context.getString(R.string.call_saved_successfully), 100);
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully));
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
                                 sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
-                                commonUtilsMethods.ShowToast(context, context.getString(R.string.call_already_exist), 100);
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_already_exist));
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
@@ -294,7 +296,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(syncCount + 1), Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(syncCount + 1);
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.call_failed), 100);
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_failed));
                     progressDialog.dismiss();
                 }
             });

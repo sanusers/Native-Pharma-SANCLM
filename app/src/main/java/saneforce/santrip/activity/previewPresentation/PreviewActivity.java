@@ -1,9 +1,9 @@
 package saneforce.santrip.activity.previewPresentation;
 
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.CallActivityCustDetails;
-import static saneforce.santrip.activity.homeScreen.call.DCRCallActivity.arrayStore;
-import static saneforce.santrip.activity.homeScreen.call.adapter.detailing.PlaySlideDetailing.headingData;
-import static saneforce.santrip.activity.homeScreen.call.fragments.DetailedFragment.callDetailingLists;
+import static saneforce.santrip.activity.call.DCRCallActivity.CallActivityCustDetails;
+import static saneforce.santrip.activity.call.DCRCallActivity.arrayStore;
+import static saneforce.santrip.activity.call.adapter.detailing.PlaySlideDetailing.headingData;
+import static saneforce.santrip.activity.call.fragments.detailing.DetailedFragment.callDetailingLists;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -14,26 +14,31 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.homeScreen.call.DCRCallActivity;
-import saneforce.santrip.activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.santrip.activity.homeScreen.call.pojo.detailing.CallDetailingList;
-import saneforce.santrip.activity.homeScreen.call.pojo.detailing.StoreImageTypeUrl;
+import saneforce.santrip.activity.call.DCRCallActivity;
+import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.santrip.activity.call.pojo.detailing.CallDetailingList;
+import saneforce.santrip.activity.call.pojo.detailing.StoreImageTypeUrl;
 import saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix;
 import saneforce.santrip.activity.previewPresentation.fragment.Customized;
 import saneforce.santrip.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.santrip.activity.previewPresentation.fragment.Speciality;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
+import saneforce.santrip.response.CustomSetupResponse;
 import saneforce.santrip.storage.SQLite;
 
 public class PreviewActivity extends AppCompatActivity {
@@ -45,8 +50,9 @@ public class PreviewActivity extends AppCompatActivity {
     SQLite sqLite;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
-    String startT, endT;
+    String startT, endT, CustomPresentationNeed;
     CommonUtilsMethods commonUtilsMethods;
+    CustomSetupResponse customSetupResponse;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -73,6 +79,7 @@ public class PreviewActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         callDetailingLists = new ArrayList<>();
         arrayStore = new ArrayList<>();
+        getRequiredData();
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -96,32 +103,36 @@ public class PreviewActivity extends AppCompatActivity {
             headingData.clear();
             if (CusType.equalsIgnoreCase("1")) {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
                 headingData.add("A");
+                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
                 headingData.add("B");
+                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                 headingData.add("C");
-                headingData.add("D");
+                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                    headingData.add("D");
+                }
             } else {
                 viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
                 headingData.add("A");
+                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
                 headingData.add("C");
-                headingData.add("D");
+                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                    viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                    headingData.add("D");
+                }
             }
         } else {
             viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
             viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
             viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-            viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+            if (CustomPresentationNeed.equalsIgnoreCase("0"))
+                viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
         }
 
         previewBinding.viewPager.setAdapter(viewPagerAdapter);
         previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
         previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
-        //  previewBinding.viewPager.setOffscreenPageLimit(0);
 
         previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -164,10 +175,7 @@ public class PreviewActivity extends AppCompatActivity {
                 } else {
                     String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
                     if (time.contains("00:00:00")) {
-                      /* int finalTime = Integer.parseInt(time.substring(8,8)) + 1;
-                       Log.v("printing_all_time", "----" + finalTime);*/
                         time = time.replace("00:00:00", time.substring(0, 8));
-                        Log.v("printing_all_time", "----" + time);
                     }
                     Log.v("printing_all_time", time);
                     callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
@@ -180,14 +188,29 @@ public class PreviewActivity extends AppCompatActivity {
                 callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             }
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
-            intent1.putExtra("isDetailedRequired", "true");
-            intent1.putExtra("from_activity", "new");
+            intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
+            intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
                 sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             }
             startActivity(intent1);
         });
+    }
+
+    private void getRequiredData() {
+        try {
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject setupData = jsonArray.getJSONObject(0);
+                customSetupResponse = new CustomSetupResponse();
+                Type typeSetup = new TypeToken<CustomSetupResponse>() {
+                }.getType();
+                customSetupResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
+                CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
+            }
+        } catch (Exception ignored) {
+        }
     }
 
 

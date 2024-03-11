@@ -61,7 +61,6 @@ import saneforce.santrip.utility.NetworkCheckInterface;
 
 
 public class OutboxFragment extends Fragment {
-
     @SuppressLint("StaticFieldLeak")
     public static OutboxFragmentBinding outBoxBinding;
     public static ArrayList<GroupModelClass> listDates = new ArrayList<>();
@@ -87,12 +86,7 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, SQLite sqLite, Context context) {
-        if (CheckInOutNeed.equalsIgnoreCase("0")) {
-            listDates = sqLite.getOutBoxDate(true);
-        } else {
-            listDates = sqLite.getOutBoxDate(false);
-        }
-
+        listDates = sqLite.getOutBoxDate();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
@@ -174,29 +168,27 @@ public class OutboxFragment extends Fragment {
         if (!isCallAvailable) {
             SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
         }
-
     }
 
-
-       /* //Call Data
-        ArrayList<OutBoxCallList> outBoxCallLists = sqLite.getOutBoxCallsFullList(Constants.CALL_FAILED, Constants.WAITING_FOR_SYNC);
-        CallApiList(outBoxCallLists);*/
-
     private void CallCheckInOut(int ParentPos, int ChildPos, ArrayList<CheckInOutModelClass> checkInOutModelClasses, GroupModelClass modelClass) {
-        if (checkInOutModelClasses.size() > 0) {
-            isCallAvailable = false;
-            for (int m = 0; m < checkInOutModelClasses.size(); m++) {
-                CheckInOutModelClass checkInOutModelClass = checkInOutModelClasses.get(m);
-                if (checkInOutModelClass.getCheckStatus() == 0) {
-                    isCallAvailable = true;
-                    Log.v("SendOutboxCall", "--checkInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "----" + checkInOutModelClass.getCheckOutTime());
-                    if (checkInOutModelClass.getJsonOutValues().isEmpty()) {
-                        CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonInValues(), modelClass);
-                    } else {
-                        CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonOutValues(), modelClass);
+        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            if (checkInOutModelClasses.size() > 0) {
+                isCallAvailable = false;
+                for (int m = 0; m < checkInOutModelClasses.size(); m++) {
+                    CheckInOutModelClass checkInOutModelClass = checkInOutModelClasses.get(m);
+                    if (checkInOutModelClass.getCheckStatus() == 0) {
+                        isCallAvailable = true;
+                        Log.v("SendOutboxCall", "--checkInOut--" + checkInOutModelClass.getDates() + "---" + checkInOutModelClass.getCheckInTime() + "----" + checkInOutModelClass.getCheckOutTime());
+                        if (checkInOutModelClass.getJsonOutValues().isEmpty()) {
+                            CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonInValues(), modelClass);
+                        } else {
+                            CallCheckInOutAPI(ParentPos, checkInOutModelClass, ChildPos, m, checkInOutModelClass.getJsonOutValues(), modelClass);
+                        }
                     }
+                    break;
                 }
-                break;
+            } else {
+                isCallAvailable = false;
             }
         } else {
             isCallAvailable = false;

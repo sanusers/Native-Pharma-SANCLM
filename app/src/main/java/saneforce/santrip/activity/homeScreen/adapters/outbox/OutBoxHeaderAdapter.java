@@ -107,7 +107,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 progressDialog = CommonUtilsMethods.createProgressDialog(context);
                 CallOfflineData(groupModelClass, 0);
             } else {
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.no_network), 100);
+                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
         });
 

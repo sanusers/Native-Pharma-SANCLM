@@ -9,8 +9,8 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:textColor="#000000"
-        android:padding="10dp"
-        android:textSize="18dp"
+        android:padding="@dimen/_5sdp"
+        android:textSize="@dimen/_9sdp"
     android:singleLine="true"
         android:background="#ffffff"
         tools:ignore="SpUsage" />

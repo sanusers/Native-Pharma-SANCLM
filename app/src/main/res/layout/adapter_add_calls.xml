@@ -17,7 +17,7 @@
         android:singleLine="true"
         android:text="@string/brand_name"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tag_add_data"
@@ -40,7 +40,7 @@
         android:paddingVertical="@dimen/_3sdp"
         android:text="@string/add_product_input"
         android:textColor="@color/green_2"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -104,7 +104,7 @@
         android:paddingVertical="@dimen/_3sdp"
         android:text="@string/edit"
         android:textColor="#51AFF5"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/img_del_additional_call"
         app:layout_constraintStart_toEndOf="@id/rv_additional_calls_input_data"
@@ -125,7 +125,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteY="2dp"
+        tools:layout_editor_absoluteY="@dimen/_1sdp"
         tools:ignore="ContentDescription" />
 
     <View

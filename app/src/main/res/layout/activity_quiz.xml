@@ -218,7 +218,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="visible"
                     android:layout_below="@id/txt_queston_name"
-                    android:layout_marginTop="1dp">
+                    android:layout_marginTop="@dimen/_1sdp">
 
                 </androidx.recyclerview.widget.RecyclerView>
 

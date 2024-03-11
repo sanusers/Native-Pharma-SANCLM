@@ -24,12 +24,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.storage.SQLite;
 
@@ -57,6 +61,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         return new ViewHolder(view);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull OutBoxECAdapter.ViewHolder holder, int position) {
         holder.tvImageName.setText(ecModelClasses.get(position).getImg_name());
@@ -74,7 +79,6 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
             showImage(myBitmap);
         });
 
-
         holder.tvMenu.setOnClickListener(v -> {
             Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
             final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
@@ -83,6 +87,43 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                 if (menuItem.getItemId() == R.id.menuSync) {
                     CallImageApi();
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
+                    try {
+                        JSONObject jsonObject;
+                        jsonObject = new JSONObject(sqLite.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
+                        JSONArray jsonArray = jsonObject.getJSONArray("EventCapture");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
+                            if (jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                jsonArray.remove(i);
+                                break;
+                            }
+                        }
+
+                        for (int i = 0; i < listDates.size(); i++) {
+                            if (listDates.get(i).getGroupName().equalsIgnoreCase(ecModelClasses.get(position).getDates())) {
+                                for (int j = 0; j < listDates.get(i).getChildItems().get(2).getOutBoxCallLists().size(); j++) {
+                                    OutBoxCallList outBoxCallList = listDates.get(i).getChildItems().get(2).getOutBoxCallLists().get(j);
+                                    if (outBoxCallList.getCusCode().equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                        jsonObject = new JSONObject(outBoxCallList.getJsonData());
+                                        for (int m = 0; m < jsonArray.length(); m++) {
+                                            JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
+                                            if (jsonObjectEC.getString("EventImageName").equalsIgnoreCase(ecModelClasses.get(position).getImg_name())) {
+                                                jsonArray.remove(i);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        sqLite.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
+                        outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
+                        commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
+                        outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
+                        outBoxHeaderAdapter.notifyDataSetChanged();
+                    } catch (Exception ignored) {
+                    }
                     File fileDelete = new File(ecModelClasses.get(position).getFilePath());
                     if (fileDelete.exists()) {
                         if (fileDelete.delete()) {

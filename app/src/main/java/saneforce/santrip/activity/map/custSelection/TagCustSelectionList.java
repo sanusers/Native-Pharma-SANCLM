@@ -88,22 +88,18 @@ public class TagCustSelectionList extends AppCompatActivity {
         Log.v("onstart", "-000-");
         super.onStart();
         try {
-            // if (SharedPref.getTaggedSuccessfully(TagCustSelectionList.this).equalsIgnoreCase("true")) {
             if (MapsActivity.isTagged) {
-                //  CustList mm = custListArrayList.get(Integer.parseInt(SharedPref.getCustomerPosition(TagCustSelectionList.this)));
                 CustList mm = custListArrayList.get(Integer.parseInt(SelectedCustPos));
                 int yy = Integer.parseInt(mm.getTag()) + 1;
                 mm.setTag(String.valueOf(yy));
                 if (MapsActivity.GeoTagApprovalNeed.equalsIgnoreCase("0")) {
                     mm.setGeoTagStatus("1");
                 }
-                Log.v("latttlng", "--taggedonstart--" + MapsActivity.TaggedLat + "---" + MapsActivity.TaggedLng);
                 mm.setLatitude(String.valueOf(MapsActivity.TaggedLat));
                 mm.setLongitude(String.valueOf(MapsActivity.TaggedLng));
                 mm.setAddress(String.valueOf(MapsActivity.TaggedAdd));
                 custListAdapter.notifyDataSetChanged();
                 MapsActivity.isTagged = false;
-                // SharedPref.setTaggedSuccessfully(TagCustSelectionList.this, "false");
             }
         } catch (Exception e) {
             Log.v("onstart", e.toString());
@@ -381,7 +377,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_network));
         }
     }
 
@@ -401,7 +397,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -429,7 +425,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -454,7 +450,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
@@ -479,7 +475,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                         jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
-                        commonUtilsMethods.ShowToast(context, getString(R.string.no_data_found) + " " + context.getString(R.string.do_master_sync), 100);
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);

@@ -330,7 +330,7 @@
                         <View
                             android:id="@+id/view2"
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="@dimen/_1sdp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/ll1"
@@ -460,7 +460,7 @@
                         <View
                             android:id="@+id/view3"
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="@dimen/_1sdp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/ll2"

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,7 +14,10 @@ import android.os.Parcelable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -80,15 +82,16 @@ public class CommonUtilsMethods {
             }
 
             if (toastMsg) {
-                @SuppressLint("ShowToast") Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
-                View view = toast.getView();
+                LayoutInflater inflater = activity.getLayoutInflater();
 
-                assert view != null;
-                view.getBackground().setColorFilter(activity.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+                View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText("Location Captured:" + address);
 
-                TextView text = view.findViewById(android.R.id.message);
-                text.setTextColor(activity.getColor(R.color.white));
-
+                Toast toast = new Toast(activity);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
                 toast.show();
                /* Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
@@ -96,16 +99,17 @@ public class CommonUtilsMethods {
             }
         } catch (IOException e) {
             if (toastMsg) {
-                address = "No Address Found";
-                @SuppressLint("ShowToast") Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
-                View view = toast.getView();
+                LayoutInflater inflater = activity.getLayoutInflater();
 
-                assert view != null;
-                view.getBackground().setColorFilter(activity.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+                View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
 
-                TextView text = view.findViewById(android.R.id.message);
-                text.setTextColor(activity.getColor(R.color.white));
+                TextView text = layout.findViewById(R.id.text);
+                text.setText("No Address Found!  Try Again!");
 
+                Toast toast = new Toast(activity);
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
                 toast.show();
                /* Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
@@ -211,18 +215,41 @@ public class CommonUtilsMethods {
         return dialog;
     }
 
-    public void ShowToast(Context context, String message, int duration) {
-        @SuppressLint("ShowToast") Toast toast = Toast.makeText(context, message, duration);
-        View view = toast.getView();
 
-        assert view != null;
+    public void showToastMessage(Context context, String message) {
+
+        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+
+        View layout = inflater.inflate(R.layout.toast_layout, ((Activity) context).findViewById(R.id.toast_layout_root));
+
+        //ImageView image = layout.findViewById(R.id.image);
+        // image.setImageResource(R.drawable.san_clm_logo);
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(message);
+
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
+
+/*    public void ShowToast(Context context, String message, int duration) {
+        Toast toast = Toast.makeText(context, message, duration);
+        View view = toast.getView();
+        try {
+            assert view != null;
+        } catch (Exception ignored) {
+
+        }
         view.getBackground().setColorFilter(context.getColor(R.color.dark_purple), PorterDuff.Mode.SRC_IN);
+
 
         TextView text = view.findViewById(android.R.id.message);
         text.setTextColor(context.getColor(R.color.white));
-
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         toast.show();
-    }
+    }*/
 
     public void setUpLanguage(Context context) {
         String language = SharedPref.getSelectedLanguage(context);

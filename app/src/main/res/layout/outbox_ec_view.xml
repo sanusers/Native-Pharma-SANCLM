@@ -30,7 +30,7 @@
         android:padding="@dimen/_4sdp"
         android:singleLine="true"
         android:textColor="@color/text_dark"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toTopOf="@id/tvStatus"
         app:layout_constraintEnd_toStartOf="@id/optionView"
         app:layout_constraintStart_toEndOf="@id/img_view"
@@ -46,7 +46,7 @@
         android:padding="@dimen/_4sdp"
         android:singleLine="true"
         android:textColor="@color/pink"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/optionView"
         app:layout_constraintHorizontal_bias="0.0"
@@ -63,7 +63,7 @@
         android:paddingBottom="@dimen/_6sdp"
         android:text="..."
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="@dimen/_9ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,6 +71,6 @@
         app:layout_constraintStart_toEndOf="@+id/tvImageName"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

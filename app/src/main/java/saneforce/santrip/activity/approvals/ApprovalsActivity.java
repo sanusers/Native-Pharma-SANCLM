@@ -38,7 +38,7 @@ import saneforce.santrip.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {
     public static int DcrCount = 0, TpCount = 0, LeaveCount = 0, DeviationCount = 0, GeoTagCount = 0;
-    public static String JwCaption, ClusterCaption, DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
+    public static String  ClusterCaption, DrCaption, ChemistCaption, StockistCaption, UnDrCaption, CIPCaption, HosCaption, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, HospNeed;
     ActivityApprovalsBinding approvalsBinding;
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
@@ -145,7 +145,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         }
                         AssignCountValues();
                     } catch (Exception e) {
-                        commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.something_wrong), 100);
+                        commonUtilsMethods.showToastMessage(ApprovalsActivity.this,getString(R.string.something_wrong));
                         Log.v("counts", "-error-" + e);
                     }
                 }
@@ -153,7 +153,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(getApplicationContext(),getString(R.string.toast_response_failed));
                 progressDialog.dismiss();
             }
         });

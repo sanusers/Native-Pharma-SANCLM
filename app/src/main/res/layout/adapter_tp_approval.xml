@@ -15,7 +15,7 @@
         android:text="Name"
         android:layout_weight="1"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:textStyle="bold" />
 
     <TextView
@@ -29,7 +29,7 @@
         android:text="Month"
         android:layout_weight="1"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:textStyle="bold" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:text="Year"
         android:layout_weight="1"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:textStyle="bold" />
 
     <TextView
@@ -58,7 +58,7 @@
         android:background="@drawable/bg_purple"
         android:text="View"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:textStyle="bold" />
 
 </LinearLayout>

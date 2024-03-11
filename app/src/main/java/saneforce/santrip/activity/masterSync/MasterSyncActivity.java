@@ -66,7 +66,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     SQLite sqLite;
     LoginResponse loginResponse;
     String sfCode = "", division_code = "", sfType = "", rsf = "", designation = "", state_code = "", subdivision_code = "";
-    String cheNeed = "", stockiestNeed = "", unListedDrNeed = "", hospNeed = "", cipNeed = "", rcpaNeed = "", tpNeed = "";
+    String cheNeed = "", stockiestNeed = "", unListedDrNeed = "", hospNeed = "", cipNeed = "", rcpaNeed = "", chmRCpaNeed = "", tpNeed = "";
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
     int unlistedDrCount = 0, chemistCount = 0, stockiestCount = 0, hospitalCount = 0, cipCount = 0, inputCount = 0, leaveCount = 0, leaveStatusCount = 0, tpSetupCount = 0, clusterCount = 0;
     int callSyncCount = 0, visitControlCount = 0, dateSyncCount = 0;
@@ -150,7 +150,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                     sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
                 } else {
-                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 }
             } else {
                 masterSyncAll(false);
@@ -484,7 +484,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
                         }
                     } else {
-                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                     }
                 }
             });
@@ -513,6 +513,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         cipNeed = loginResponse.getCIP_PNeed();
         hospNeed = loginResponse.getHosp_need();
         rcpaNeed = loginResponse.getRcpaNd();
+        chmRCpaNeed = loginResponse.getChm_RCPA_Need();
         tpNeed = loginResponse.getTp_need();
         binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
         rsf = SharedPref.getHqCode(MasterSyncActivity.this); // Rsf is HQ code
@@ -686,7 +687,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         productModelArray.add(proModel);
         productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
-        if (rcpaNeed.equalsIgnoreCase("0")) {
+        if (rcpaNeed.equalsIgnoreCase("1") || chmRCpaNeed.equalsIgnoreCase("1")) {
             MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
             MasterSyncItemModel mapCompPrdModel = new MasterSyncItemModel(Constants.MAPPED_COMPETITOR_PROD, mapComPrdCount, "AdditionalDcr", "getmapcompdet", Constants.MAPPED_COMPETITOR_PROD, mapCompPrdStatus, false);
             productModelArray.add(compProductModel);
@@ -848,12 +849,12 @@ public class MasterSyncActivity extends AppCompatActivity {
                             sync(masterSyncItemModel1.getMasterOf(), masterSyncItemModel1.getRemoteTableName(), setupModelArray, position);
                         }
                     } else {
-                        commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.poor_connection), 100);
+                        commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.poor_connection));
                     }
                 });
                 networkStatusTask.execute();
             } else {
-                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+                commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
             }
         });
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 3);
@@ -951,7 +952,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                     }
                     Log.e("test", "count : " + itemCount);
                 } else {
-                    commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+                    commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 }
 
             }

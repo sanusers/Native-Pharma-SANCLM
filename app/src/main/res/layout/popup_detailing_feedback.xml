@@ -22,7 +22,7 @@
             android:padding="@dimen/_4sdp"
             android:text="@string/feedback"
             android:textColor="@color/dark_purple"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/view_dummy"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         <View
             android:id="@+id/view_dummy"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/_1sdp"
             android:layout_marginVertical="@dimen/_4sdp"
             android:background="@color/light_grey_3"
             app:layout_constraintBottom_toTopOf="@id/ed_remark"
@@ -67,7 +67,7 @@
             android:padding="@dimen/_4sdp"
             android:imeOptions="actionDone"
             android:paddingVertical="@dimen/_3sdp"
-            android:textSize="14sp"
+            android:textSize="@dimen/_6ssp"
             app:layout_constraintBottom_toTopOf="@id/rl_btns"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +102,7 @@
                 android:text="@string/clear"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_purple"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -121,7 +121,7 @@
                 android:text="@string/save"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
                 android:textStyle="bold"
                 tools:ignore="NotSibling,RelativeOverlap" />
         </RelativeLayout>

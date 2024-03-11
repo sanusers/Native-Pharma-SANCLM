@@ -228,7 +228,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
                         finish();
                     } else {
-                        commonUtilsMethods.ShowToast(getApplicationContext(),getString(R.string.no_select_date) + "--" + Afterdate + "--" + date1val, 100);
+                        commonUtilsMethods.showToastMessage(CalendarActivity.this,getString(R.string.no_select_date) + "--" + Afterdate + "--" + date1val);
                     }
                 }
             }

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraint_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/constraint_main"
     android:layout_margin="@dimen/_2sdp">
 
     <CheckBox
         android:id="@+id/chk_box"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
         android:buttonTint="@color/bg_txt_color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_data_name"
@@ -22,19 +22,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_4sdp"
+        android:clickable="true"
+        android:focusable="true"
         android:fontFamily="@font/satoshi_bold"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
-        android:text="@string/brand_name"
         android:singleLine="true"
-        android:clickable="true"
+        android:text="@string/brand_name"
         android:textColor="@color/bg_txt_color"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_tag_category"
         app:layout_constraintStart_toEndOf="@id/chk_box"
-        app:layout_constraintTop_toTopOf="parent"
-        android:focusable="true" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_tag_category"
@@ -45,7 +45,7 @@
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -62,10 +62,9 @@ import saneforce.santrip.activity.approvals.dcr.adapter.AdapterSelectionList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.santrip.activity.approvals.tp.pojo.TpModelList;
-import saneforce.santrip.activity.homeScreen.call.pojo.input.SaveCallInputList;
-import saneforce.santrip.activity.homeScreen.call.pojo.product.SaveCallProductList;
+import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
+import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
-import saneforce.santrip.databinding.ActivityDcrCallApprovalBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.LoginResponse;
@@ -76,7 +75,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SelectedTransCode, SelectedSfCode, SelectedActivityDate;
     public static int SelectedPosition;
     @SuppressLint("StaticFieldLeak")
-    public static ActivityDcrCallApprovalBinding dcrCallApprovalBinding;
+    public static saneforce.santrip.databinding.ActivityDcrCallApprovalBinding dcrCallApprovalBinding;
     public static ArrayList<DcrDetailModelList> dcrDetailedList = new ArrayList<>();
     public static ArrayList<SaveCallProductList> SaveProductList = new ArrayList<>();
     public static ArrayList<SaveCallInputList> saveInputList = new ArrayList<>();
@@ -98,6 +97,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     ArrayList<DCRApprovalList> dcrApprovalLists = new ArrayList<>();
     AdapterDcrApprovalList adapterDcrApprovalList;
     Dialog dialogReject;
+    StringBuilder productPromoted = new StringBuilder();
     CommonUtilsMethods commonUtilsMethods;
 
     private static void SetupAdapter(Context context) {
@@ -174,6 +174,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         countChem = 0;
                         countStk = 0;
                         countUnDr = 0;
+                        String PrdPromoted;
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
                             countAll++;
@@ -194,6 +195,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                 ClusterNames.append(json.getString("SDP_Name")).append(",");
                             }
 
+                            if (json.has("promoted_product"))
+                                productPromoted = getList(json.getString("promoted_product"));
+
                             dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Trans_Detail_Info_Code"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback"), json.getString("visitTime"), json.getString("ModTime")));
 
                             //Extract Product Values
@@ -203,12 +207,9 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                 for (String value : StrArray) {
                                     if (!value.equalsIgnoreCase("  )")) {
                                         PrdName = value.substring(0, value.indexOf('(')).trim();
-                                        Log.v("extract", "--1--" + PrdName);
 
                                         PrdSamQty = value.substring(value.indexOf("(") + 1);
                                         PrdSamQty = PrdSamQty.substring(0, PrdSamQty.indexOf(")"));
-
-                                        Log.v("extract", "--2--" + PrdSamQty);
 
                                         PrdRxQty = value.substring(value.indexOf(")") + 1).trim();
                                         if (PrdRxQty.contains("(")) {
@@ -217,8 +218,11 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                         } else {
                                             PrdRxQty = "0";
                                         }
-                                        Log.v("extract", "--3--" + PrdRxQty);
-                                        SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
+                                        if (productPromoted.toString().contains(PrdName)) {
+                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
+                                        } else {
+                                            SaveProductList.add(new SaveCallProductList(json.getString("Trans_Detail_Name"), PrdName, PrdSamQty, PrdRxQty, "0", "No"));
+                                        }
                                     }
                                 }
                             }
@@ -230,26 +234,24 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                                 for (String value : StrArray) {
                                     if (!value.equalsIgnoreCase("  )")) {
                                         InpName = value.substring(0, value.indexOf('(')).trim();
-                                        Log.v("extract", "-inp--1--" + InpName);
                                         InpQty = value.substring(value.indexOf("(") + 1);
                                         InpQty = InpQty.substring(0, InpQty.indexOf(")"));
-                                        Log.v("extract", "-inp--2--" + InpQty);
                                         saveInputList.add(new SaveCallInputList(json.getString("Trans_Detail_Name"), InpName, InpQty));
                                     }
                                 }
                             }
                         }
                         progressDialog.dismiss();
-                        SetupAdapter(context);
+                        SetupAdapter(DcrApprovalActivity.this);
                     } catch (Exception e) {
                         progressDialog.dismiss();
-                        SetupAdapter(context);
+                        SetupAdapter(DcrApprovalActivity.this);
                         Log.v("extract", "--error--" + e);
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
-                    SetupAdapter(context);
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
+                    SetupAdapter(DcrApprovalActivity.this);
                 }
             }
 
@@ -257,10 +259,19 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
                 SetupAdapter(context);
             }
         });
+    }
+
+    private StringBuilder getList(String s) {
+        String[] clstarrrayqty = s.split("#");
+        StringBuilder ss1 = new StringBuilder();
+        for (String value : clstarrrayqty) {
+            ss1.append(value.substring(value.lastIndexOf("$") + 1)).append(",");
+        }
+        return new StringBuilder(ss1.substring(0, ss1.length() - 1));
     }
 
     //To Hide the bottomNavigation When popup
@@ -275,7 +286,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dcrCallApprovalBinding = ActivityDcrCallApprovalBinding.inflate(getLayoutInflater());
+        dcrCallApprovalBinding = saneforce.santrip.databinding.ActivityDcrCallApprovalBinding.inflate(getLayoutInflater());
         setContentView(dcrCallApprovalBinding.getRoot());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
@@ -339,7 +350,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                 if (!TextUtils.isEmpty(ed_reason.getText().toString())) {
                     rejectApproval(ed_reason.getText().toString());
                 } else {
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_enter_reason_for_reject), 100);
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_enter_reason_for_reject));
                 }
             });
             dialogReject.show();
@@ -379,7 +390,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.rejected_successfully), 100);
+                            commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.rejected_successfully));
                             dialogReject.dismiss();
                             removeSelectedData();
                             DcrCount--;
@@ -389,14 +400,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
             }
         });
     }
@@ -446,7 +457,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                         assert response.body() != null;
                         JSONObject jsonSaveRes = new JSONObject(response.body().toString());
                         if (jsonSaveRes.getString("success").equalsIgnoreCase("true")) {
-                            commonUtilsMethods.ShowToast(context, context.getString(R.string.approved_successfully), 100);
+                            commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.approved_successfully));
                             removeSelectedData();
                             DcrCount--;
                         }
@@ -455,14 +466,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
             }
         });
     }
@@ -523,14 +534,14 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                     }
                 } else {
                     progressDialog.dismiss();
-                    commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                    commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
-                commonUtilsMethods.ShowToast(context, context.getString(R.string.toast_response_failed), 100);
+                commonUtilsMethods.showToastMessage(DcrApprovalActivity.this, getString(R.string.toast_response_failed));
             }
         });
     }

@@ -72,7 +72,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.35"
                 android:background="@color/white"
-                app:cardCornerRadius="5dp"
+                app:cardCornerRadius="@dimen/_3sdp"
                 app:contentPadding="@dimen/_6sdp">
 
                 <RelativeLayout
@@ -278,7 +278,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    app:cardCornerRadius="5dp">
+                    app:cardCornerRadius="@dimen/_3sdp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
