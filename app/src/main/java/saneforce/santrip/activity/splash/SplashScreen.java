@@ -42,6 +42,7 @@ public class SplashScreen extends AppCompatActivity {
             if (SharedPref.getSettingState(getApplicationContext())){
                 if (SharedPref.getLoginState(getApplicationContext())){
                     Intent  intent= new Intent(SplashScreen.this, HomeDashBoard.class);
+                    overridePendingTransition (0, 0);
                     startActivity(intent);
                     finish();
                 }else{

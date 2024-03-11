@@ -6,9 +6,9 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.TOP;
 
-import static saneforce.santrip.activity.homeScreen.call.fragments.JWOthersFragment.callCaptureImageLists;
 
-import android.Manifest;
+
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -21,7 +21,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
-import android.location.Geocoder;
+
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,16 +41,20 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.app.ActivityCompat;
@@ -58,11 +62,10 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +75,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
+
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -93,6 +96,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
@@ -151,17 +155,17 @@ public class Activity extends AppCompatActivity {
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
-
-           adapter=new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {
+        binding.txthqName.setText(SharedPref.getHqName(Activity.this));
+            binding.btnsumit.setEnabled(false);
+            adapter=new ActivityAdapter(getApplicationContext(), ActivityList, classGroup -> {
             binding.namechooseActivity.setText(classGroup.getActivityName());
             binding.llActivityDetailsView.removeAllViews();
-
             getActivityDetails(classGroup);
         });
         binding.skRecylerview.setLayoutManager(new LinearLayoutManager(this));
         binding.skRecylerview.setAdapter(adapter);
 
-        getActivity();
+        getActivity(SharedPref.getHqCode(Activity.this));
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -184,6 +188,7 @@ public class Activity extends AppCompatActivity {
         binding.btnsumit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 saveActivity();
             }
         });
@@ -196,25 +201,39 @@ public class Activity extends AppCompatActivity {
 
 
 
-    public void showHQ() {
+//    public void showHQ() {
+//
+//        JSONArray workTypeArray3 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+//              if(workTypeArray3.length()>0){
+//
+//
+//                  try {   for (int i = 0; i < workTypeArray3.length(); i++) {
+//                      JSONObject jsonObject = workTypeArray3.getJSONObject(i);
+//                      HQList.add(jsonObject);
+//
+//
+//                      binding.viewDummy1.setVisibility(View.GONE);
+//                      binding.txtClDone.setVisibility(View.GONE);
+//                      binding.mainLayout.openDrawer(Gravity.RIGHT);
+//                      commonFun();
+//                    ActvityListAdapter adapter1 = new ActvityListAdapter(getApplicationContext(), HQList, new ChooseHeadQuaters() {
+//                    @Override
+//                     public void Choose(String checkname, String ChckedId) {
+//                        getActivity(ChckedId);
+//                        binding.txthqName.setText(checkname);
+//                        binding.mainLayout.closeDrawer(Gravity.RIGHT);
+//                        commonFun();
+//
+//                    }
+//                });
+//                binding.acRecyelerView.setLayoutManager(new LinearLayoutManager(this));
+//                binding.acRecyelerView.setAdapter(adapter1);
+//            }
+//        }catch (Exception a){}}
+//    }
 
-        try {
-            JSONArray workTypeArray3 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
-            for (int i = 0; i < workTypeArray3.length(); i++) {
-                JSONObject jsonObject = workTypeArray3.getJSONObject(i);
-                HQList.add(jsonObject);
-                ActvityListAdapter adapter1=new ActvityListAdapter(getApplicationContext(),HQList);
-                binding.acRecyelerView.setLayoutManager(new LinearLayoutManager(this));
-                binding.acRecyelerView.setAdapter(adapter1);
-            }
-        }catch (Exception a){}
 
-
-
-        }
-
-
-    public  void getActivity(){
+    public  void getActivity(String hqcode){
 
         if (UtilityClass.isNetworkAvailable(this)) {
             binding.progressMain.setVisibility(View.VISIBLE);
@@ -223,7 +242,7 @@ public class Activity extends AppCompatActivity {
                 object.put("tableName", "getdynactivity");
                 object.put("sfcode", loginResponse.getSF_Code());
                 object.put("division_code", loginResponse.getDivision_Code());
-                object.put("Rsf", SharedPref.getHqCode(this));
+                object.put("Rsf", hqcode);
                 object.put("Designation", loginResponse.getDesig());
                 object.put("sf_type", loginResponse.getSf_type());
                 object.put("state_code", loginResponse.getState_Code());
@@ -245,18 +264,26 @@ public class Activity extends AppCompatActivity {
                                 jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
 
                                 if (jsonArray.length() > 0) {
+
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
                                         List<String> DegList = Arrays.asList(Activity_Desig);
                                         if (DegList.contains(loginResponse.getDesig())) {
+                                            binding.rlNoActivity.setVisibility(View.GONE);
+                                            binding.llMainLayout.setVisibility(View.VISIBLE);
                                             ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
+                                        }else {
+                                            binding.rlNoActivity.setVisibility(View.VISIBLE);
+                                            binding.llMainLayout.setVisibility(View.GONE);
                                         }
                                     }
 
                                 } else {
+                                    binding.rlNoActivity.setVisibility(View.VISIBLE);
+                                    binding.llMainLayout.setVisibility(View.GONE);
                                     CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-                                    commonUtilsMethods.ShowToast(getApplicationContext(), "No Activity", 100);
+                                    commonUtilsMethods.showToastMessage(getApplicationContext(), "No Activity");
 
                                 }
                                 adapter.notifyDataSetChanged();
@@ -270,6 +297,8 @@ public class Activity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<JsonElement> call, Throwable t) {
                         binding.progressMain.setVisibility(View.GONE);
+                        binding.rlNoActivity.setVisibility(View.VISIBLE);
+                        binding.llMainLayout.setVisibility(View.GONE);
                     }
                 });
 
@@ -277,7 +306,7 @@ public class Activity extends AppCompatActivity {
             } catch (Exception a) {
                 a.printStackTrace();
             }}else {
-                commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+                commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
 
         }
     }
@@ -316,6 +345,8 @@ public class Activity extends AppCompatActivity {
                            JsonElement jsonElement = response.body();
                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                            if(jsonArray.length()>0){
+                               binding.rldatalayout.setVisibility(View.VISIBLE);
+                               binding.rlNoData.setVisibility(View.GONE);
                                for(int i=0;i<jsonArray.length();i++){
                                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                                           String Control_Id = jsonObject1.getString("Control_Id");
@@ -327,6 +358,7 @@ public class Activity extends AppCompatActivity {
                                            String Group_Creation_ID = jsonObject1.getString("Group_Creation_ID");
                                            ActivityDetailsList.add(new ActivityDetailsModelClass(Field_Name,Control_Id,Creation_Id,input,madantaory,Control_Para,Group_Creation_ID,Data.getSlNo()));
                                }
+                               int jjj=0;
                                for (int i = 0; i < ActivityDetailsList.size(); i++) {
                                    if (ActivityDetailsList.get(i).getControlId().equals("0")) {
                                        CreateLabelView(ActivityDetailsList.get(i), i);
@@ -367,11 +399,20 @@ public class Activity extends AppCompatActivity {
                                    } else if (ActivityDetailsList.get(i).getControlId().equals("19")) {
                                        digitalsign(ActivityDetailsList.get(i), i);
                                    }
+                                   jjj++;
+                                   if(ActivityDetailsList.size()==jjj){
+                                       binding.btnsumit.setEnabled(true);
+                                   }
                                }
                            }else {
+
+
+                               binding.rldatalayout.setVisibility(View.GONE);
+                               binding.rlNoData.setVisibility(View.VISIBLE);
+
                                binding.progrlessdetail.setVisibility(View.GONE);
                                CommonUtilsMethods commonUtilsMethods=new CommonUtilsMethods(getApplicationContext());
-                               commonUtilsMethods.ShowToast(getApplicationContext(),"No Activity Details",100);
+                               commonUtilsMethods.showToastMessage(getApplicationContext(),"No Activity Details");
                            }
                        }catch (Exception a){
                            Log.e("Error","----- "+a);
@@ -381,7 +422,8 @@ public class Activity extends AppCompatActivity {
 
                @Override
                public void onFailure(Call<JsonElement> call, Throwable t) {
-
+                   binding.rldatalayout.setVisibility(View.VISIBLE);
+                   binding.rlNoData.setVisibility(View.GONE);
                }
            });
 
@@ -390,7 +432,7 @@ public class Activity extends AppCompatActivity {
         }
         }
         else {
-            commonUtilsMethods.ShowToast(getApplicationContext(), getString(R.string.no_network), 100);
+            commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
 
         }
     }
@@ -626,7 +668,7 @@ public class Activity extends AppCompatActivity {
         fArray[0] = new InputFilter.LengthFilter(Integer.parseInt(List.getControlPara()));
         textarea.setFilters(fArray);
 
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+        ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
 
 
 
@@ -2085,7 +2127,7 @@ public class Activity extends AppCompatActivity {
         LabelText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                commonUtilsMethods.ShowToast(Activity.this,"Wait For Location",50);
+                commonUtilsMethods.showToastMessage(Activity.this,"Wait For Location");
 
                 String   address;
                 double latitude = gpsTrack.getLatitude();
@@ -3176,7 +3218,7 @@ public class Activity extends AppCompatActivity {
 
 
     public  void  saveActivity(){
-        binding.progresssumit.setVisibility(View.VISIBLE);
+
         int conut=0;
         try {
         JSONArray jsonArray=new JSONArray();
@@ -3223,10 +3265,10 @@ public class Activity extends AppCompatActivity {
 
                 if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16") || List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.ShowToast(Activity.this, "Fill The From " + List.getFieldName(), 100);
+                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The From " + List.getFieldName());
                         break;
                     } else if (List.getMandatory().equalsIgnoreCase("1") && (List.getAnswerTxt2().equalsIgnoreCase(""))) {
-                        commonUtilsMethods.ShowToast(Activity.this, "Fill The To" + List.getFieldName(), 100);
+                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The To" + List.getFieldName());
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "," + List.getAnswerTxt2());
@@ -3235,7 +3277,7 @@ public class Activity extends AppCompatActivity {
                     }
                 } else if (List.getControlId().equalsIgnoreCase("17")) {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.ShowToast(Activity.this, "Fill The " + List.getFieldName() + "", 100);
+                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The " + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt() + "$" + List.getAnswerTxt2());
@@ -3245,7 +3287,7 @@ public class Activity extends AppCompatActivity {
 
                 } else {
                     if (List.getMandatory().equalsIgnoreCase("1") && List.getAnswerTxt().equalsIgnoreCase("")) {
-                        commonUtilsMethods.ShowToast(Activity.this, "Fill The " + List.getFieldName() + "", 100);
+                        commonUtilsMethods.showToastMessage(Activity.this, "Fill The " + List.getFieldName() + "");
                         break;
                     } else {
                         jsonObject.put("values", List.getAnswerTxt());
@@ -3258,6 +3300,7 @@ public class Activity extends AppCompatActivity {
             }
 
            if(conut==ActivityViewItem.size()) {
+               binding.progresssumit.setVisibility(View.VISIBLE);
                JSONObject MainObject = new JSONObject();
                MainObject.put("tableName", "savedcract");
                MainObject.put("val", jsonArray);
@@ -3268,7 +3311,7 @@ public class Activity extends AppCompatActivity {
                    @Override
                    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                        if (response.code() == 200 || response.code() == 201) {
-                           commonUtilsMethods.ShowToast(Activity.this, "Success", 100);
+                           commonUtilsMethods.showToastMessage(Activity.this, "Success");
                            binding.progresssumit.setVisibility(View.GONE);
                            TaggedImage();
                        }
@@ -3276,7 +3319,7 @@ public class Activity extends AppCompatActivity {
 
                    @Override
                    public void onFailure(Call<JsonElement> call, Throwable t) {
-                       commonUtilsMethods.ShowToast(Activity.this, t.getMessage(), 100);
+                       commonUtilsMethods.showToastMessage(Activity.this, t.getMessage());
                        binding.progresssumit.setVisibility(View.GONE);
 
                    }
@@ -3355,7 +3398,7 @@ public class Activity extends AppCompatActivity {
                                 JSONObject json = new JSONObject(response.body().toString());
                                 Log.v("ImgUpload", json.toString());
                                 json.getString("success");
-                               commonUtilsMethods.ShowToast(Activity.this,"ImageUpload SucessFully",100);
+                               commonUtilsMethods.showToastMessage(Activity.this,"ImageUpload SucessFully");
                             } catch (Exception ignored) {
 
                             }
@@ -3492,5 +3535,71 @@ public class Activity extends AppCompatActivity {
         return yy;
     }
 
+
+
+    void showHQ(){
+
+        try {
+            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+            ArrayList<String> list = new ArrayList<>();
+
+            if (jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    list.add(jsonObject.getString("name"));
+                }
+            }
+
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(Activity.this);
+            LayoutInflater inflater = Activity.this.getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_listview, null);
+            alertDialog.setView(dialogView);
+            TextView headerTxt = dialogView.findViewById(R.id.headerTxt);
+            ListView listView = dialogView.findViewById(R.id.listView);
+            SearchView searchView = dialogView.findViewById(R.id.searchET);
+            headerTxt.setText(getResources().getText(R.string.select_hq));
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(Activity.this, android.R.layout.simple_list_item_1, list);
+            listView.setAdapter(adapter);
+            AlertDialog dialog = alertDialog.create();
+            dialog.setCancelable(false);
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    adapter.getFilter().filter(s);
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    adapter.getFilter().filter(s);
+                    return false;
+                }
+            });
+            listView.setOnItemClickListener((adapterView, view1, position, l) -> {
+                String selectedHq = listView.getItemAtPosition(position).toString();
+                binding.txthqName.setText(selectedHq);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
+                            getActivity(jsonObject.getString("id")); ;
+                            break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                commonFun();
+                dialog.dismiss();
+            });
+
+            alertDialog.setNegativeButton("Close", (dialog1, which) -> dialog1.dismiss());
+
+            dialog.show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

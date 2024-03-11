@@ -25,11 +25,14 @@ public class ActvityListAdapter extends RecyclerView.Adapter<ActvityListAdapter.
     private List<JSONObject> filteredList;
     private LayoutInflater inflater;
 
+    ChooseHeadQuaters chooseHeadQuaters;
 
-    public ActvityListAdapter(Context context, List<JSONObject> itemList) {
+
+    public ActvityListAdapter(Context context, List<JSONObject> itemList,ChooseHeadQuaters ChooseHeadQuaters) {
         this.context = context;
         this.itemList = itemList;
         this.filteredList = itemList;
+        this.chooseHeadQuaters = ChooseHeadQuaters;
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -45,6 +48,16 @@ public class ActvityListAdapter extends RecyclerView.Adapter<ActvityListAdapter.
 
         try {
             holder.txtHq.setText(filteredList.get(position).getString("name"));
+
+            holder.txtHq.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        chooseHeadQuaters.Choose(filteredList.get(position).getString("name"),filteredList.get(position).getString("Code"));
+                    }catch (Exception ignore){}
+
+                }
+            });
         }catch (Exception ignore){
         }
     }

@@ -7,4 +7,5 @@ public interface CheckBoxInterface {
 
     public void UnChecked(String checkname,String ChckedId);
 
+
 }

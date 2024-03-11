@@ -190,7 +190,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-
     public void ShowWorkTypeAlert(TextView mTxtWorktype, RelativeLayout rlculster, RelativeLayout rlHQ) {
         HomeDashBoard.binding.llNav.etSearch.setText("");
         HomeDashBoard.binding.llNav.tvSearchheader.setText(requireContext().getString(R.string.worktype));

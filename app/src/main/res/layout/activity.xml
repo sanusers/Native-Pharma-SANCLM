@@ -56,9 +56,42 @@
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_no_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/img_not_found1"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:src="@drawable/no_data_folder" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_not_found1"
+                android:layout_centerInParent="true"
+                android:layout_marginVertical="@dimen/_2sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:padding="@dimen/_2sdp"
+                android:text="No Activity "
+                android:textColor="@color/dark_purple"
+                android:textSize="@dimen/_7ssp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/ll_mainLayout"
+            android:visibility="gone"
             android:background="@color/backround_graey"
             android:orientation="vertical">
 
@@ -108,7 +141,6 @@
                 android:layout_marginStart="@dimen/_6sdp"
                 android:fontFamily="@font/satoshi_medium"
                 android:text="List of Activity"
-
                 android:textColor="@color/black_45"
                 android:textSize="@dimen/_7sdp"
                 android:textStyle="bold"></TextView>
@@ -140,13 +172,49 @@
                         android:visibility="gone" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rl_no_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/img_not_found"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginHorizontal="@dimen/_1sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:src="@drawable/no_data_folder" />
+
+                    <TextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/img_not_found"
+                        android:layout_centerInParent="true"
+                        android:layout_marginVertical="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_2sdp"
+                        android:text="Select any activity  on list  to view content"
+                        android:textColor="@color/dark_purple"
+                        android:textSize="@dimen/_7ssp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/img_not_found" />
+                </RelativeLayout>
 
 
                 <RelativeLayout
+                    android:id="@+id/rldatalayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_4sdp"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:background="@drawable/custom_backround_layout"
                     android:backgroundTint="@color/white">
 

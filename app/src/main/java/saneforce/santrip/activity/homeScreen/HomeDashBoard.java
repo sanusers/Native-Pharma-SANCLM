@@ -233,56 +233,24 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(CONNECTIVITY_ACTION);
-        receiver = new NetworkChangeReceiver();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+      // THIS CODE IS DESIGN
         DisplayMetrics displayMetrics = new DisplayMetrics();
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         DeviceWith = displayMetrics.widthPixels;
-        sqLite = new SQLite(HomeDashBoard.this);
-        sqLite.getWritableDatabase();
-        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-        commonUtilsMethods.setUpLanguage(getApplicationContext());
-        getRequiredData();
-        AppIdentify();
-        if (CheckInOutNeed.equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-            SharedPref.setCheckInTime(getApplicationContext(), "");
-            SharedPref.setSkipCheckIn(getApplicationContext(), true);
-            CheckInOutDate();
-        } else {
-            SharedPref.setSkipCheckIn(getApplicationContext(), false);
-        }
-
-        binding.rlDateLayoout.setOnClickListener(this);
-        binding.viewCalerderLayout.rlCalenderSyn.setOnClickListener(this);
-        binding.viewCalerderLayout.llNextMonth.setOnClickListener(this);
-        binding.viewCalerderLayout.llBfrMonth.setOnClickListener(this);
-        binding.imgAccount.setOnClickListener(this);
-        binding.llReport.setOnClickListener(this);
-        binding.imgSync.setOnClickListener(this);
-        binding.llPresentation.setOnClickListener(this);
-        binding.llSlide.setOnClickListener(this);
-        binding.llNav.cancelImg.setOnClickListener(this);
-        binding.viewDummy.setVisibility(View.VISIBLE);
-
         layoutParams = (DrawerLayout.LayoutParams) binding.navView.getLayoutParams();
         layoutParams.width = DeviceWith / 3;
         layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
         binding.navView.setLayoutParams(layoutParams);
         binding.navView.setNavigationItemSelectedListener(this);
         setSupportActionBar(binding.Toolbar);
-
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.myDrawerLayout, R.string.nav_open, R.string.nav_close);
         binding.myDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
         actionBarDrawerToggle.syncState();
-
         binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-
         leftViewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
         leftViewPagerAdapter.add(new WorkPlanFragment(), "Work Plan");
         leftViewPagerAdapter.add(new CallsFragment(), "Calls");
@@ -308,23 +276,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-      /*  viewPagerAdapter = new ViewPagerAdapter(this, 1);
-        binding.viewPager.setAdapter(viewPagerAdapter);*/
-
-
         CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
         binding.viewPager1.setAdapter(adapter);
-
         binding.myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.drMainlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-  /*      TabLayoutMediator mediator = new TabLayoutMediator(binding.tabLayout.tablelayout, binding.viewPager, (tab, position) -> tab.setText(""));
-        mediator.attach();
-        setupCustomTab(binding.tabLayout.tablelayout, 0, "WorkPlan", false);
-        setupCustomTab(binding.tabLayout.tablelayout, 1, "Calls", false);
-        setupCustomTab(binding.tabLayout.tablelayout, 2, "Outbox", false);*/
-
-
         ViewTreeObserver vto = binding.rlQuickLink.getViewTreeObserver();
 
         vto.addOnGlobalLayoutListener(() -> {
@@ -338,25 +293,36 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.llAnalys.setLayoutParams(param1);
         });
 
-  /*      binding.tabLayout.tablelayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                TextView tabTitle = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tablayname);
-                tabTitle.setTextColor(ContextCompat.getColor(context, R.color.text_dark));
 
-            }
+        // THIS CODE IS DEVELOPMENT
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(CONNECTIVITY_ACTION);
+        receiver = new NetworkChangeReceiver();
+        sqLite = new SQLite(HomeDashBoard.this);
+        sqLite.getWritableDatabase();
+        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
+        commonUtilsMethods.setUpLanguage(getApplicationContext());
+        getRequiredData();
+        AppIdentify();
+        if (CheckInOutNeed.equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+            SharedPref.setCheckInTime(getApplicationContext(), "");
+            SharedPref.setSkipCheckIn(getApplicationContext(), true);
+            CheckInOutDate();
+        } else {
+            SharedPref.setSkipCheckIn(getApplicationContext(), false);
+        }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                TextView tabTitle = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.tablayname);
-                tabTitle.setTextColor(ContextCompat.getColor(context, R.color.text_dark_65));
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });*/
+        binding.rlDateLayoout.setOnClickListener(this);
+        binding.viewCalerderLayout.rlCalenderSyn.setOnClickListener(this);
+        binding.viewCalerderLayout.llNextMonth.setOnClickListener(this);
+        binding.viewCalerderLayout.llBfrMonth.setOnClickListener(this);
+        binding.imgAccount.setOnClickListener(this);
+        binding.llReport.setOnClickListener(this);
+        binding.imgSync.setOnClickListener(this);
+        binding.llPresentation.setOnClickListener(this);
+        binding.llSlide.setOnClickListener(this);
+        binding.llNav.cancelImg.setOnClickListener(this);
+        binding.viewDummy.setVisibility(View.VISIBLE);
         binding.myDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -1459,6 +1425,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     }
 
+    public void commonFun() {
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+    }
 }
 
