@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/loctionrefresh"
+        android:icon="@drawable/refresh"
+        android:title="@string/refresh"/>
+    <item
+        android:id="@+id/tp"
+        android:icon="@drawable/calendar_clock"
+        android:title="@string/tour_plan" />
+
+    <item
+        android:id="@+id/resource"
+
+        android:icon="@drawable/my_resource"
+        android:title="@string/my_resource"/>
+    <item
+        android:id="@+id/leave"
+
+        android:icon="@drawable/leave"
+        android:title="@string/leave_application" />
+
+    <item
+        android:id="@+id/activity"
+        android:icon="@drawable/activity"
+        android:title="@string/activity"/>
+    <item
+        android:id="@+id/nearme"
+        android:icon="@drawable/nearme"
+        android:title="@string/near_me" />
+    <item
+        android:id="@+id/approval"
+        android:icon="@drawable/leave"
+        android:title="@string/approvals" />
+    <item
+        android:id="@+id/quiz"
+        android:icon="@drawable/quiz"
+        android:title="@string/quiz"/>
+    <item
+        android:id="@+id/survey"
+        android:icon="@drawable/survey"
+        android:title="@string/survey" />
+
+    <item
+         android:id="@+id/form"
+        android:icon="@drawable/form"
+        android:title="@string/forms"/>
+    <item
+        android:id="@+id/remaindercall"
+        android:icon="@drawable/profiling"
+        android:title="@string/remainder_call" />
+</menu>

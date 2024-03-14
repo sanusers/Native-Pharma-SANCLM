@@ -37,7 +37,7 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityReportsBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -49,7 +49,7 @@ public class ReportsActivity extends AppCompatActivity {
     ReportsAdapter reportsAdapter;
     ApiInterface apiInterface;
     SQLite sqLite;
-    LoginResponse loginResponse;
+
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
     String url;
@@ -70,7 +70,7 @@ public class ReportsActivity extends AppCompatActivity {
         binding = ActivityReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         sqLite = new SQLite(ReportsActivity.this);
-        loginResponse = sqLite.getLoginData();
+
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
@@ -102,13 +102,13 @@ public class ReportsActivity extends AppCompatActivity {
                         apiInterface = RetrofitClient.getRetrofit(ReportsActivity.this, SharedPref.getCallApiUrl(ReportsActivity.this));
 
                         JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("sfcode", loginResponse.getSF_Code());
-                        jsonObject.put("sf_type", loginResponse.getSf_type());
-                        jsonObject.put("divisionCode", loginResponse.getDivision_Code());
-                        jsonObject.put("Rsf", loginResponse.getSF_Code());
-                        jsonObject.put("Designation", loginResponse.getDesig());
-                        jsonObject.put("state_code", loginResponse.getState_Code());
-                        jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                        jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                        jsonObject.put("sf_type", SharedPref.getSfType(this));
+                        jsonObject.put("divisionCode", SharedPref.getDivisionCode(this));
+                        jsonObject.put("Rsf", SharedPref.getHqCode(this));
+                        jsonObject.put("Designation", SharedPref.getDesig(this));
+                        jsonObject.put("state_code", SharedPref.getStateCode(this));
+                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
                         jsonObject.put("rptDt", date);
                         if (report.equalsIgnoreCase("DAY REPORT")) {
                             jsonObject.put("tableName", "getdayrpt");

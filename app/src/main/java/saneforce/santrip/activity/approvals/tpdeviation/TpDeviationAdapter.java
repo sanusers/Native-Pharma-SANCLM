@@ -71,13 +71,13 @@ CommonUtilsMethods commonUtilsMethods;
             jsonTpDeviation.put("status", status);
             jsonTpDeviation.put("sfcode", sfCode);
             jsonTpDeviation.put("sfname", sfName);
-            jsonTpDeviation.put("division_code", TpDeviationApprovalActivity.DivCode.replace(",", "").trim());
-            jsonTpDeviation.put("Rsf", TpDeviationApprovalActivity.TodayPlanSfCode);
-            jsonTpDeviation.put("sf_type", TpDeviationApprovalActivity.SfType);
-            jsonTpDeviation.put("Designation", TpDeviationApprovalActivity.Designation);
-            jsonTpDeviation.put("state_code", TpDeviationApprovalActivity.StateCode);
-            jsonTpDeviation.put("subdivision_code", TpDeviationApprovalActivity.SubDivisionCode);
-            jsonTpDeviation.put("Mode", TpDeviationApprovalActivity.SubDivisionCode);
+            jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
+            jsonTpDeviation.put("Rsf", SharedPref.getHqCode(context));
+            jsonTpDeviation.put("sf_type", SharedPref.getSfType(context));
+            jsonTpDeviation.put("Designation", SharedPref.getDesig(context));
+            jsonTpDeviation.put("state_code", SharedPref.getStateCode(context));
+            jsonTpDeviation.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+            jsonTpDeviation.put("Mode", "");
             Log.v("json_approve_tpDev", jsonTpDeviation.toString());
         } catch (Exception ignored) {
 

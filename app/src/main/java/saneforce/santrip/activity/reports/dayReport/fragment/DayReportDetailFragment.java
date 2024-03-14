@@ -45,7 +45,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.FragmentDayReportDetailBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -60,7 +59,7 @@ public class DayReportDetailFragment extends Fragment {
     DataViewModel dataViewModel;
     ApiInterface apiInterface;
     SQLite sqLite;
-    LoginResponse loginResponse;
+
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
@@ -152,7 +151,7 @@ public class DayReportDetailFragment extends Fragment {
 
     public void initialisation() {
         sqLite = new SQLite(getContext());
-        loginResponse = sqLite.getLoginData();
+
         Type type = new TypeToken<DayReportModel>() {
         }.getType();
         dayReportModel = new Gson().fromJson(dataViewModel.getDetailedData().getValue(), type);
@@ -163,32 +162,32 @@ public class DayReportDetailFragment extends Fragment {
         activity.title.setText(String.format("Day Report ( %s )", date));
         int drCount = 0, chmCount = 0, stkCount = 0, undrCount = 0, cipCount = 0, hosCount = 0;
 
-        if (loginResponse.getDrNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.drLayout.setVisibility(View.VISIBLE);
             drCount = Integer.parseInt(dayReportModel.getDrs());
             binding.drCount.setText(dayReportModel.getDrs());
         }
-        if (loginResponse.getChmNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.cheLayout.setVisibility(View.VISIBLE);
             chmCount = Integer.parseInt(dayReportModel.getChm());
             binding.cheCount.setText(dayReportModel.getChm());
         }
-        if (loginResponse.getStkNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.stkLayout.setVisibility(View.VISIBLE);
             stkCount = Integer.parseInt(dayReportModel.getStk());
             binding.stkCount.setText(dayReportModel.getStk());
         }
-        if (loginResponse.getUNLNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.unDrLayout.setVisibility(View.VISIBLE);
             cipCount = Integer.parseInt(dayReportModel.getUdr());
             binding.unDrCount.setText(dayReportModel.getUdr());
         }
-        if (loginResponse.getCip_need().equalsIgnoreCase("0")) {
+        if (SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.cipLayout.setVisibility(View.VISIBLE);
             undrCount = Integer.parseInt(dayReportModel.getCip());
             binding.cipCount.setText(dayReportModel.getCip());
         }
-        if (loginResponse.getHosp_need().equalsIgnoreCase("0")) {
+        if (SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
             binding.hospLayout.setVisibility(View.VISIBLE);
             hosCount = Integer.parseInt(dayReportModel.getCip());
             binding.hospCount.setText(dayReportModel.getHos());
@@ -224,13 +223,13 @@ public class DayReportDetailFragment extends Fragment {
                         jsonObject.put("tableName", "getvwvstdet");
                         jsonObject.put("ACd", dayReportModel.getACode());
                         jsonObject.put("typ", type);
-                        jsonObject.put("sfcode", loginResponse.getSF_Code());
-                        jsonObject.put("division_code", loginResponse.getDivision_Code());
-                        jsonObject.put("Rsf", loginResponse.getSF_Code());
-                        jsonObject.put("sf_type", loginResponse.getSf_type());
-                        jsonObject.put("Designation", loginResponse.getDesig());
-                        jsonObject.put("state_code", loginResponse.getState_Code());
-                        jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                        jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
+                        jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
+                        jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
+                        jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
+                        jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
+                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
                         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
@@ -283,23 +282,23 @@ public class DayReportDetailFragment extends Fragment {
 
         switch (type) {
             case "1":
-                callCheckInOutNeed = loginResponse.getCustSrtNd();
+                callCheckInOutNeed = SharedPref.getCustSrtNd(requireContext());
                 break;
             case "2":
-                callCheckInOutNeed = loginResponse.getChmSrtNd();
+                callCheckInOutNeed = SharedPref.getChmSrtNd(requireContext());
                 break;
             case "4":
-                callCheckInOutNeed = loginResponse.getUnlistSrtNd();
+                callCheckInOutNeed = SharedPref.getUnlistSrtNd(requireContext());
                 break;
             case "5":
-                callCheckInOutNeed = loginResponse.getCipSrtNd();
+                callCheckInOutNeed = SharedPref.getCipSrtNd(requireContext());
                 break;
             default:
                 callCheckInOutNeed = "1";
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, loginResponse.getNextVst());
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()));
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

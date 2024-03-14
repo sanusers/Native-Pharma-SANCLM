@@ -34,18 +34,17 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityLeaveBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class LeaveApprovalActivity extends AppCompatActivity {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode;
     ActivityLeaveBinding leaveBinding;
     ArrayList<LeaveModelList> leaveModelLists = new ArrayList<>();
     LeaveApprovalAdapter leaveApprovalAdapter;
     JSONObject jsonLeave = new JSONObject();
     ApiInterface api_interface;
-    LoginResponse loginResponse;
+
     SQLite sqLite;
     ProgressDialog progressDialog = null;
     CommonUtilsMethods commonUtilsMethods;
@@ -75,7 +74,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
-        getRequiredData();
+
         CallApiLeave();
 
         leaveBinding.ivBack.setOnClickListener(v -> {
@@ -105,13 +104,13 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         progressDialog = CommonUtilsMethods.createProgressDialog(LeaveApprovalActivity.this);
         try {
             jsonLeave.put("tableName", "getlvlapproval");
-            jsonLeave.put("sfcode", SfCode);
-            jsonLeave.put("division_code", DivCode);
-            jsonLeave.put("Rsf", SfCode);
-            jsonLeave.put("sf_type", SfType);
-            jsonLeave.put("Designation", Designation);
-            jsonLeave.put("state_code", StateCode);
-            jsonLeave.put("subdivision_code", SubDivisionCode);
+            jsonLeave.put("sfcode", SharedPref.getSfCode(this));
+            jsonLeave.put("division_code", SharedPref.getDivisionCode(this));
+            jsonLeave.put("Rsf", SharedPref.getHqCode(this));
+            jsonLeave.put("sf_type", SharedPref.getSfType(this));
+            jsonLeave.put("Designation", SharedPref.getDesig(this));
+            jsonLeave.put("state_code", SharedPref.getStateCode(this));
+            jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_get_lvl_list", jsonLeave.toString());
         } catch (Exception ignored) {
 
@@ -155,19 +154,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         });
     }
 
-    private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
 
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(LeaveApprovalActivity.this);
-    }
 
     private void filter(String text) {
         ArrayList<LeaveModelList> filteredNames = new ArrayList<>();

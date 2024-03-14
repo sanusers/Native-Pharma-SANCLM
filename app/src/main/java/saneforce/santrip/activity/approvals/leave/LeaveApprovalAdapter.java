@@ -119,13 +119,13 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("LvID", leave_id);
             jsonLeave.put("LvAPPFlag", "1");
             jsonLeave.put("RejRem", reason);
-            jsonLeave.put("sfcode", LeaveApprovalActivity.SfCode);
-            jsonLeave.put("division_code", LeaveApprovalActivity.DivCode.replace(",", "").trim());
-            jsonLeave.put("Rsf", LeaveApprovalActivity.TodayPlanSfCode);
-            jsonLeave.put("sf_type", LeaveApprovalActivity.SfType);
-            jsonLeave.put("Designation", LeaveApprovalActivity.Designation);
-            jsonLeave.put("state_code", LeaveApprovalActivity.StateCode);
-            jsonLeave.put("subdivision_code", LeaveApprovalActivity.SubDivisionCode);
+            jsonLeave.put("sfcode", SharedPref.getSfCode(context));
+            jsonLeave.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
+            jsonLeave.put("Rsf", SharedPref.getHqCode(context));
+            jsonLeave.put("sf_type", SharedPref.getSfType(context));
+            jsonLeave.put("Designation", SharedPref.getDesig(context));
+            jsonLeave.put("state_code", SharedPref.getStateCode(context));
+            jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(context));
             Log.v("reject_leave", jsonLeave.toString());
         } catch (Exception ignored) {
 
@@ -175,13 +175,13 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             jsonLeave.put("LvID", leave_id);
             jsonLeave.put("LvAPPFlag", "0");
             jsonLeave.put("RejRem", "");
-            jsonLeave.put("sfcode", LeaveApprovalActivity.SfCode);
-            jsonLeave.put("division_code", LeaveApprovalActivity.DivCode.replace(",", "").trim());
-            jsonLeave.put("Rsf", LeaveApprovalActivity.TodayPlanSfCode);
-            jsonLeave.put("sf_type", LeaveApprovalActivity.SfType);
-            jsonLeave.put("Designation", LeaveApprovalActivity.Designation);
-            jsonLeave.put("state_code", LeaveApprovalActivity.StateCode);
-            jsonLeave.put("subdivision_code", LeaveApprovalActivity.SubDivisionCode);
+            jsonLeave.put("sfcode", SharedPref.getSfCode(context));
+            jsonLeave.put("division_code", SharedPref.getDivisionCode(context).replace(",", "").trim());
+            jsonLeave.put("Rsf", SharedPref.getHqCode(context));
+            jsonLeave.put("sf_type",SharedPref.getSfType(context));
+            jsonLeave.put("Designation",SharedPref.getDesig(context));
+            jsonLeave.put("state_code", SharedPref.getStateCode(context));
+            jsonLeave.put("subdivision_code", SharedPref.getSubdivisionCode(context));
         } catch (Exception ignored) {
 
         }

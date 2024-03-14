@@ -34,7 +34,6 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentPrecallAnalysisBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -43,13 +42,12 @@ public class PreCallAnalysisFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentPrecallAnalysisBinding preCallAnalysisBinding;
     public static ApiInterface apiInterface;
-    public static String SfName, SfType, SfCode, RSFCode, DivCode, Designation, StateCode, SubDivisionCode, prdDetails, PrdSamNeed, PrdRxNeed;
+    public static String PrdSamNeed, PrdRxNeed,RCPANeed;
     public static PreCallAnalysisAdapter adapter;
-    public static String RCPANeed;
     public static ArrayList<PreCallAnalysisModelClass> ProductList = new ArrayList<>();
     static List<DCRLastVisitDetails> dcrLastVstDetails = new ArrayList<>();
     static DCRLastVisitDetails.VstDate vstDate;
-    LoginResponse loginResponse;
+
     CommonUtilsMethods commonUtilsMethods;
     SQLite sqLite;
 
@@ -67,13 +65,13 @@ public class PreCallAnalysisFragment extends Fragment {
                 json.put("typ", "U");
             }
             json.put("CusCode", DCRCallActivity.CallActivityCustDetails.get(0).getCode());
-            json.put("sfcode", SfCode);
-            json.put("division_code", DivCode);
-            json.put("Rsf", RSFCode);
-            json.put("sf_type", SfType);
-            json.put("Designation", Designation);
-            json.put("state_code", StateCode);
-            json.put("subdivision_code", SubDivisionCode);
+            json.put("sfcode", SharedPref.getSfCode(context));
+            json.put("division_code", SharedPref.getDivisionCode(context));
+            json.put("Rsf", SharedPref.getHqCode(context));
+            json.put("sf_type", SharedPref.getSfType(context));
+            json.put("Designation", SharedPref.getDesig(context));
+            json.put("state_code", SharedPref.getStateCode(context));
+            json.put("subdivision_code", SharedPref.getSubdivisionCode(context));
             Log.v("json_cus_l_visit", json.toString());
         } catch (Exception ignored) {
 
@@ -299,41 +297,28 @@ public class PreCallAnalysisFragment extends Fragment {
     }
 
     private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        if (SfType.equalsIgnoreCase("1")) {
-            RSFCode = loginResponse.getSF_Code();
-        } else {
-            RSFCode = SharedPref.getTodayDayPlanSfCode(requireContext());
-        }
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
 
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
-                PrdSamNeed = loginResponse.getDrSampNd();
-                PrdRxNeed = loginResponse.getDrRxNd();
-                RCPANeed = loginResponse.getRcpaNd();
+                PrdSamNeed = SharedPref.getDrSampNd(requireContext());
+                PrdRxNeed =  SharedPref.getDrRxNd(requireContext());
+                RCPANeed =  SharedPref.getRcpaNd(requireContext());
                 break;
             case "2":
-                PrdSamNeed = loginResponse.getChmsamQty_need();
-                PrdRxNeed = loginResponse.getChmRxQty();//1
-                RCPANeed = loginResponse.getChm_RCPA_Need();
+                PrdSamNeed = SharedPref.getChmsamqtyNeed(requireContext());
+                PrdRxNeed = SharedPref.getChmRxQty(requireContext());;//1
+                RCPANeed = SharedPref.getChmRcpaNeed(requireContext());
                 break;
             case "3":
                 PrdSamNeed = "0";
-                PrdRxNeed = loginResponse.getStk_Pob_Need();
+                PrdRxNeed = SharedPref.getStkPobNeed(requireContext());
                 RCPANeed = "0";
+                break;
             case "4":
-                PrdRxNeed = loginResponse.getUl_Pob_Need();
+                PrdRxNeed = SharedPref.getUlPobNeed(requireContext());
                 PrdSamNeed = "0";
                 RCPANeed = "0";
+                break;
             case "5":
             case "6":
                 PrdSamNeed = "0";

@@ -34,18 +34,17 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityTpDeviationApprovalBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class TpDeviationApprovalActivity extends AppCompatActivity {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode;
     ActivityTpDeviationApprovalBinding tpDeviationApprovalBinding;
     ArrayList<TpDeviationModelList> tpDeviationModelLists = new ArrayList<>();
     TpDeviationAdapter tpDeviationAdapter;
     JSONObject jsonTpDeviation = new JSONObject();
     ApiInterface api_interface;
-    LoginResponse loginResponse;
+
     SQLite sqLite;
     ProgressDialog progressDialog = null;
     CommonUtilsMethods commonUtilsMethods;
@@ -72,7 +71,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         sqLite = new SQLite(getApplicationContext());
        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-        getRequiredData();
+
         CallTpDeviationAPI();
 
         tpDeviationApprovalBinding.ivBack.setOnClickListener(v -> {
@@ -101,20 +100,6 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
     }
 
 
-    private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(TpDeviationApprovalActivity.this);
-    }
-
     private void filter(String text) {
         ArrayList<TpDeviationModelList> filteredNames = new ArrayList<>();
         for (TpDeviationModelList s : tpDeviationModelLists) {
@@ -129,13 +114,13 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         progressDialog = CommonUtilsMethods.createProgressDialog(TpDeviationApprovalActivity.this);
         try {
             jsonTpDeviation.put("tableName", "getdevappr");
-            jsonTpDeviation.put("sfcode", SfCode);
-            jsonTpDeviation.put("division_code", DivCode);
-            jsonTpDeviation.put("Rsf", SfCode);
-            jsonTpDeviation.put("sf_type", SfType);
-            jsonTpDeviation.put("Designation", Designation);
-            jsonTpDeviation.put("state_code", StateCode);
-            jsonTpDeviation.put("subdivision_code", SubDivisionCode);
+            jsonTpDeviation.put("sfcode", SharedPref.getSfType(this));
+            jsonTpDeviation.put("division_code", SharedPref.getDivisionCode(this));
+            jsonTpDeviation.put("Rsf", SharedPref.getHqCode(this));
+            jsonTpDeviation.put("sf_type", SharedPref.getSfType(this));
+            jsonTpDeviation.put("Designation", SharedPref.getDesig(this));
+            jsonTpDeviation.put("state_code", SharedPref.getStateCode(this));
+            jsonTpDeviation.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_get_tpDev_list", jsonTpDeviation.toString());
         } catch (Exception ignored) {
 

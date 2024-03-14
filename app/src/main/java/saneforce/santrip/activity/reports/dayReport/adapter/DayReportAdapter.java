@@ -1,12 +1,4 @@
 package saneforce.santrip.activity.reports.dayReport.adapter;
-
-import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.CheckInOutNeed;
-import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.CipNeed;
-import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.cheNeed;
-import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.drNeed;
-import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.stkNeed;
-import static saneforce.santrip.activity.reports.dayReport.fragment.DayReportFragment.unDrNeed;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -18,17 +10,13 @@ import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
-
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.santrip.activity.map.MapsActivity;
@@ -36,6 +24,7 @@ import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
 import saneforce.santrip.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
+import saneforce.santrip.storage.SharedPref;
 
 
 public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyViewHolder> implements Filterable {
@@ -68,7 +57,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
 
-        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")) {
             holder.rlCheckIn.setVisibility(View.VISIBLE);
             holder.rlCheckOut.setVisibility(View.VISIBLE);
             holder.checkInTime.setText(dayReportModel.getIntime());
@@ -77,32 +66,32 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.checkOutAddress.setText(dayReportModel.getOutaddress());
         }
 
-        if (drNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
             holder.drIcon.setVisibility(View.VISIBLE);
             holder.drCount.setText(dayReportModel.getDrs());
         }
 
-        if (cheNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
             holder.cheIcon.setVisibility(View.VISIBLE);
             holder.chemCount.setText(dayReportModel.getChm());
         }
 
-        if (stkNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
             holder.stockIcon.setVisibility(View.VISIBLE);
             holder.stockCount.setText(dayReportModel.getStk());
         }
 
-        if (unDrNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
             holder.unDrIcon.setVisibility(View.VISIBLE);
             holder.unDrCount.setText(dayReportModel.getUdr());
         }
 
-        if (CipNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
             holder.cipIcon.setVisibility(View.VISIBLE);
             holder.cipCount.setText(dayReportModel.getCip());
         }
 
-        if (CipNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
             holder.hospIcon.setVisibility(View.VISIBLE);
             holder.hospCount.setText(dayReportModel.getHos());
         }

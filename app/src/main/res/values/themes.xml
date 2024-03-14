@@ -19,10 +19,10 @@
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimaryVariant</item>
-<!--        <item name="android:windowNoTitle">true</item>-->
-<!--        <item name="android:windowActionBar">false</item>-->
-<!--        <item name="android:windowFullscreen">true</item>-->
-<!--        <item name="android:windowContentOverlay">@null</item>-->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
         <!-- Customize your theme here. -->
     </style>
 

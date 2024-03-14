@@ -86,7 +86,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityDcrcallBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -108,7 +107,7 @@ public class DCRCallActivity extends AppCompatActivity {
     SQLite sqLite;
     ProgressDialog progressDialog = null;
     GPSTrack gpsTrack;
-    LoginResponse loginResponse;
+
     JSONObject jsonSaveDcr, jsonImage;
     String GeoChk, capPrd, capInp, RCPANeed, HosNeed, FeedbackMandatory, CurrentDate, MgrRcpaMandatory, EventCapMandatory, JwMandatory, CurrentTime, PrdMandatory, InpMandatory, RcpaMandatory, PobMandatory, RemarkMandatory, SamQtyMandatory, RxQtyMandatory;
     double lat, lng;
@@ -1763,173 +1762,172 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void getRequiredData() {
         try {
-            loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData();
 
-            SfType = loginResponse.getSf_type();
-            SfCode = loginResponse.getSF_Code();
-            SfName = loginResponse.getSF_Name();
-            DivCode = loginResponse.getDivision_Code();
-            SubDivisionCode = loginResponse.getSubdivision_code();
-            Designation = loginResponse.getDesig();
-            StateCode = loginResponse.getState_Code();
-            RcpaCompetitorAdd = loginResponse.getRCPA_competitor_add();
-            EventCapMandatory = loginResponse.getCipEvent_Md();
+
+            SfType = SharedPref.getSfType(this);
+            SfCode =  SharedPref.getSfCode(this);
+            SfName =  SharedPref.getSfName(this);
+            DivCode =  SharedPref.getDivisionCode(this);
+            SubDivisionCode =  SharedPref.getSubdivisionCode(this);;
+            Designation =  SharedPref.getDesig(this);
+            StateCode =  SharedPref.getStateCode(this);
+            RcpaCompetitorAdd =  SharedPref.getRcpaCompetitorAdd(this);;
+            EventCapMandatory =  SharedPref.getCipEventMd(this);;
 
             switch (CallActivityCustDetails.get(0).getType()) {
                 case "1": //Dr
                     //Caption
-                    capPrd = loginResponse.getDoc_Product_caption();
-                    capInp = loginResponse.getDoc_Input_caption();
-                    CapSamQty = loginResponse.getDrSmpQCap();
-                    CapRxQty = loginResponse.getDrRxQCap();
-                    CapPob = loginResponse.getDoc_pob_caption();
+                    capPrd = SharedPref.getDocProductCaption(this);
+                    capInp =SharedPref.getDocInputCaption(this);
+                    CapSamQty = SharedPref.getDrSmpQCap(this);
+                    CapRxQty = SharedPref.getDrRxQCap(this);
+                    CapPob = SharedPref.getDocPobCaption(this);
 
                     //Need
-                    RCPANeed = loginResponse.getRcpaNd();
-                    PobNeed = loginResponse.getDoc_Pob_Need();
-                    OverallFeedbackNeed = loginResponse.getDFNeed();
-                    EventCaptureNeed = loginResponse.getDENeed();
-                    JwNeed = loginResponse.getDoc_jointwork_Need();
-                    PrdSamNeed = loginResponse.getDrSampNd();
-                    PrdRxNeed = loginResponse.getDrRxNd();
-                    CusCheckInOutNeed = loginResponse.getCustSrtNd();
+                    RCPANeed = SharedPref.getRcpaNd(this);
+                    PobNeed = SharedPref.getDocPobCaption(this);
+                    OverallFeedbackNeed = SharedPref.getDfNeed(this);
+                    EventCaptureNeed = SharedPref.getDeNeed(this);;
+                    JwNeed = SharedPref.getDocJointworkNeed(this);
+                    PrdSamNeed = SharedPref.getDrSampNd(this);
+                    PrdRxNeed = SharedPref.getDrRxNd(this);
+                    CusCheckInOutNeed = SharedPref.getCustSrtNd(this);
 
                     //Mandatory
-                    PrdMandatory = loginResponse.getDrPrdMd();
-                    InpMandatory = loginResponse.getDrInpMd();
-                    SamQtyMandatory = loginResponse.getDrSmpQMd();
-                    RxQtyMandatory = loginResponse.getDrRxQMd();
-                    RcpaMandatory = loginResponse.getRcpaMd();
-                    MgrRcpaMandatory = loginResponse.getRcpaMd_Mgr();
-                    EventCapMandatory = loginResponse.getDrEvent_Md();
-                    PobMandatory = loginResponse.getDoc_Pob_Mandatory_Need();
-                    FeedbackMandatory = loginResponse.getDrFeedMd();
-                    JwMandatory = loginResponse.getDoc_jointwork_Mandatory_Need();
-                    RemarkMandatory = loginResponse.getTempNd();
+                    PrdMandatory = SharedPref.getDrPrdMd(this);
+                    InpMandatory =SharedPref.getDrInpMd(this);
+                    SamQtyMandatory = SharedPref.getDrSmpQMd(this);
+                    RxQtyMandatory = SharedPref.getDrRxQMd(this);;
+                    RcpaMandatory =SharedPref.getRcpaMd(this);
+                    MgrRcpaMandatory =SharedPref.getRcpaMdMgr(this);
+                    EventCapMandatory = SharedPref.getDrEventMd(this);
+                    PobMandatory = SharedPref.getDocPobMandatoryNeed(this);
+                    FeedbackMandatory = SharedPref.getDrFeedMd(this);
+                    JwMandatory = SharedPref.getDocJointworkMandatoryNeed(this);
+                    RemarkMandatory = SharedPref.getTempNd(this);
                     break;
                 case "2": //Chemist
                     //Caption
-                    capPrd = loginResponse.getChm_Product_caption();
-                    capInp = loginResponse.getChm_Input_caption();
-                    CapSamQty = loginResponse.getChmSmpCap();
-                    CapRxQty = loginResponse.getChmQCap();
-                    CapPob = loginResponse.getChm_pob_caption();
+                    capPrd = SharedPref.getChmProductCaption(this);
+                    capInp = SharedPref.getChmInputCaption(this);;
+                    CapSamQty = SharedPref.getChmSmpCap(this);
+                    CapRxQty = SharedPref.getChmQCap(this);
+                    CapPob = SharedPref.getChmPobCaption(this);
 
                     //Need
-                    RCPANeed = loginResponse.getChm_RCPA_Need();
-                    PobNeed = loginResponse.getChm_Pob_Need();
-                    EventCaptureNeed = loginResponse.getCENeed();
-                    OverallFeedbackNeed = loginResponse.getCFNeed();
-                    JwNeed = loginResponse.getChm_jointwork_Need();
-                    PrdSamNeed = loginResponse.getChmsamQty_need();
-                    PrdRxNeed = loginResponse.getChmRxQty(); //1
-                    CusCheckInOutNeed = loginResponse.getChmSrtNd();
+                    RCPANeed = SharedPref.getChmRcpaNeed(this);
+                    PobNeed =SharedPref.getChmPobNeed(this);
+                    EventCaptureNeed = SharedPref.getCeNeed(this);
+                    OverallFeedbackNeed =SharedPref.getCfNeed(this);
+                    JwNeed = SharedPref.getChmJointworkNeed(this);
+                    PrdSamNeed = SharedPref.getChmsamqtyNeed(this);
+                    PrdRxNeed = SharedPref.getChmRxQty(this); //1
+                    CusCheckInOutNeed = SharedPref.getChmSrtNd(this);;
 
                     //Mandatory
                     //   RcpaMandatory = loginResponse.getRcpaMd(); //Check This one
-                    PobMandatory = loginResponse.getChm_Pob_Mandatory_Need();
-                    EventCapMandatory = loginResponse.getChmEvent_Md();
-                    JwMandatory = loginResponse.getChm_jointwork_Mandatory_Need();
-                    RcpaMandatory = loginResponse.getChmRcpaMd();
-                    MgrRcpaMandatory = loginResponse.getChmRcpaMd_Mgr();
+                    PobMandatory =SharedPref.getChmPobMandatoryNeed(this);
+                    EventCapMandatory =SharedPref.getChmEventMd(this);
+                    JwMandatory = SharedPref.getChmJointworkMandatoryNeed(this);
+                    RcpaMandatory =SharedPref.getChmRcpaMd(this);
+                    MgrRcpaMandatory =SharedPref.getChmRcpaMdMgr(this);
                     break;
                 case "3": //Stockiest
                     //Caption
-                    capPrd = loginResponse.getStk_Product_caption();
-                    capInp = loginResponse.getStk_Input_caption();
+                    capPrd = SharedPref.getStkProductCaption(this);;
+                    capInp = SharedPref.getStkInputCaption(this);
                     CapSamQty = "Samples";
-                    CapRxQty = loginResponse.getStkQCap();
-                    CapPob = loginResponse.getStk_pob_caption();
+                    CapRxQty = SharedPref.getStkQCap(this);
+                    CapPob = SharedPref.getStkPobCaption(this);
 
                     //Need
-                    PobNeed = loginResponse.getStk_Pob_Need();
-                    OverallFeedbackNeed = loginResponse.getSFNeed();
-                    EventCaptureNeed = loginResponse.getSENeed();
-                    JwNeed = loginResponse.getStk_jointwork_Need();
+                    PobNeed = SharedPref.getStkPobNeed(this);
+                    OverallFeedbackNeed =SharedPref.getSfNeed(this);
+                    EventCaptureNeed = SharedPref.getSeNeed(this);
+                    JwNeed = SharedPref.getStkJointworkNeed(this);
                     PrdSamNeed = "0";
-                    PrdRxNeed = loginResponse.getStk_Pob_Need();
+                    PrdRxNeed = SharedPref.getStkPobNeed(this);
                     CusCheckInOutNeed = "1";
 
                     //Mandatory
-                    EventCapMandatory = loginResponse.getStkEvent_Md();
-                    JwMandatory = loginResponse.getStk_jointwork_Mandatory_Need();
+                    EventCapMandatory = SharedPref.getStkEventMd(this);
+                    JwMandatory =SharedPref.getStkJointworkMandatoryNeed(this);
                     break;
                 case "4": //UNListed Dr
                     //Caption
-                    capPrd = loginResponse.getUl_Product_caption();
-                    capInp = loginResponse.getUl_Input_caption();
-                    CapSamQty = loginResponse.getNLSmpQCap();
-                    CapRxQty = loginResponse.getNLRxQCap();
-                    CapPob = loginResponse.getUldoc_pob_caption();
-                    CusCheckInOutNeed = loginResponse.getUnlistSrtNd();
+                    capPrd = SharedPref.getUlProductCaption(this);;
+                    capInp = SharedPref.getUlInputCaption(this);
+                    CapSamQty = SharedPref.getNlSmpQCap(this);
+                    CapRxQty =SharedPref.getNlRxQCap(this);
+                    CapPob = SharedPref.getUldocPobCaption(this);;
+                    CusCheckInOutNeed = SharedPref.getUnlistSrtNd(this);;
 
                     //Need
-                    PobNeed = loginResponse.getUl_Pob_Need();
-                    OverallFeedbackNeed = loginResponse.getNFNeed();
-                    EventCaptureNeed = loginResponse.getNENeed();
-                    JwNeed = loginResponse.getUl_jointwork_Need();
+                    PobNeed = SharedPref.getUlPobNeed(this);
+                    OverallFeedbackNeed = SharedPref.getNfNeed(this);
+                    EventCaptureNeed = SharedPref.getNeNeed(this);
+                    JwNeed =SharedPref.getUlJointworkNeed(this);
                     PrdSamNeed = "0";
-                    PrdRxNeed = loginResponse.getUl_Pob_Need();
+                    PrdRxNeed =SharedPref.getUlPobNeed(this);;
                     CusCheckInOutNeed = "1";
 
                     //Mandatory
-                    EventCapMandatory = loginResponse.getUlDrEvent_Md();
-                    JwMandatory = loginResponse.getUl_jointwork_Mandatory_Need();
+                    EventCapMandatory = SharedPref.getUldrEventMd(this);
+                    JwMandatory = SharedPref.getUlJointworkMandatoryNeed(this);
                     break;
                 case "5"://CIP
                     //Caption
-                    CapPob = loginResponse.getCIP_pob_caption();
+                    CapPob = SharedPref.getCipPobCaption(this);;
 
                     //Need
-                    PobNeed = loginResponse.getCIPPOBNd();
-                    OverallFeedbackNeed = loginResponse.getCIP_FNeed();
-                    EventCaptureNeed = loginResponse.getCipEvent_Md();
-                    JwNeed = loginResponse.getCIP_jointwork_Need();
+                    PobNeed = SharedPref.getCipPNeed(this);
+                    OverallFeedbackNeed =SharedPref.getCipFNeed(this);
+                    EventCaptureNeed = SharedPref.getCipEventMd(this);
+                    JwNeed =  SharedPref.getCipJointworkNeed(this);
                     PrdSamNeed = "0";
                     PrdRxNeed = "0";
-                    CusCheckInOutNeed = loginResponse.getCipSrtNd();
+                    CusCheckInOutNeed = SharedPref.getCipSrtNd(this);
 
                     //Mandatory
-                    EventCapMandatory = loginResponse.getCipEvent_Md();
-                    PobMandatory = loginResponse.getCIPPOBMd();
+                    EventCapMandatory =  SharedPref.getCipEventMd(this);
+                    PobMandatory = SharedPref.getCipPNeed(this);
                     break;
                 case "6"://HOSPITAL
                     //Caption
-                    CapPob = loginResponse.getHosp_pob_caption();
+                    CapPob =  SharedPref.getHospPobCaption(this);
                     CusCheckInOutNeed = "1";
 
                     //Need
-                    PobNeed = loginResponse.getHosPOBNd();
-                    OverallFeedbackNeed = loginResponse.getHFNeed();
-                    EventCaptureNeed = loginResponse.getHospEvent_Md();
+                    PobNeed =  SharedPref.getHosPobNd(this);
+                    OverallFeedbackNeed =  SharedPref.getHfNeed(this);
+                    EventCaptureNeed =  SharedPref.getHospEventMd(this);
                     JwNeed = "0";
                     PrdSamNeed = "0";
                     PrdRxNeed = "0";
 
                     //Mandatory
-                    EventCapMandatory = loginResponse.getHospEvent_Md();
+                    EventCapMandatory = SharedPref.getHospEventMd(this);
                     //   PobMandatory = loginResponse.getCIPPOBMd();
                     break;
             }
 
-            SampleValidation = loginResponse.getSample_validation();
-            InputValidation = loginResponse.getInput_validation();
-            GeoChk = loginResponse.getGeoChk();
-            HosNeed = loginResponse.getHosp_need();
+            SampleValidation = SharedPref.getSampleValidation(this);
+            InputValidation = SharedPref.getInputValidation(this);
+            GeoChk = SharedPref.getGeoChk(this);
+            HosNeed = SharedPref.getHospNeed(this);
 
-            if (loginResponse.getSample_Val_Qty().equalsIgnoreCase("0")) {
+            if (SharedPref.getSampleValQty(this).equalsIgnoreCase("0")) {
                 SamQtyRestriction = "1";
             } else {
                 SamQtyRestriction = "0";
-                SamQtyRestrictValue = loginResponse.getSample_Val_Qty();
+                SamQtyRestrictValue = SharedPref.getSampleValQty(this);
             }
 
-            if (loginResponse.getInput_Val_Qty().equalsIgnoreCase("0")) {
+            if (SharedPref.getInputValQty(this).equalsIgnoreCase("0")) {
                 InpQtyRestriction = "1";
             } else {
                 InpQtyRestriction = "0";
-                InpQtyRestrictValue = loginResponse.getInput_Val_Qty();
+                InpQtyRestrictValue =SharedPref.getInputValQty(this);
             }
 
             assert isFromActivity != null;
@@ -1938,7 +1936,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     if (SfType.equalsIgnoreCase("1")) {
                         TodayPlanSfCode = SfCode;
                     } else {
-                        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
+                        TodayPlanSfCode = SharedPref.getHqCode(this);
                         if (TodayPlanSfCode.isEmpty()) {
                             JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                             for (int i = 0; i < 1; i++) {

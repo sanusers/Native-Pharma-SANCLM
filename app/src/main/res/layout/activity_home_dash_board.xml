@@ -5,6 +5,7 @@
     android:id="@+id/drMainlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:background="@color/backround_graey"
     tools:context=".activity.homeScreen.HomeDashBoard">
 
@@ -113,6 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/Toolbar"
+            tools:openDrawer="start"
             tools:context=".activity.DashBoard.HomeDashBoard">
 
             <LinearLayout
@@ -499,6 +501,7 @@
                 android:paddingEnd="@dimen/_8sdp"
                 app:itemBackground="@drawable/drawer_item_bg"
                 app:itemIconSize="@dimen/_10sdp"
+                app:menu="@menu/navicationdrawermenuitem"
                 app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
                 app:itemTextColor="@color/black_45">
 

@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityWebReportsBinding;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -25,7 +25,7 @@ public class ReportWebActivity extends AppCompatActivity {
     private final static int FILECHOOSER_RESULTCODE = 1;
     public static ProgressDialog progressDialog;
     ActivityWebReportsBinding binding;
-    LoginResponse loginResponse;
+
     String url;
     SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
@@ -47,7 +47,6 @@ public class ReportWebActivity extends AppCompatActivity {
         binding = ActivityWebReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         sqLite = new SQLite(ReportWebActivity.this);
-        loginResponse = sqLite.getLoginData();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
@@ -93,7 +92,7 @@ public class ReportWebActivity extends AppCompatActivity {
     }
 
     private void PopulateWebView() {
-        url = SharedPref.getTagImageUrl(ReportWebActivity.this) + "MasterFiles/Dashboard_Menu.aspx" + "?sfcode=" + loginResponse.getSF_Code() + "&cMnth=" + CommonUtilsMethods.getCurrentInstance("MM") + "&cYr=" + CommonUtilsMethods.getCurrentInstance("yyyy") + "&div_code=" + loginResponse.getDivision_Code() + "&sf_type=" + loginResponse.getSf_type() + "&SF=" + loginResponse.getSF_Code() + "&Mode=" + Constants.APP_MODE;
+        url = SharedPref.getTagImageUrl(ReportWebActivity.this) + "MasterFiles/Dashboard_Menu.aspx" + "?sfcode=" + SharedPref.getSfCode(this) + "&cMnth=" + CommonUtilsMethods.getCurrentInstance("MM") + "&cYr=" + CommonUtilsMethods.getCurrentInstance("yyyy") + "&div_code=" + SharedPref.getDivisionCode(this)+ "&sf_type=" + SharedPref.getSfType(this)+ "&SF=" + SharedPref.getSfCode(this) + "&Mode=" + Constants.APP_MODE;
 
         binding.webView.getSettings().setJavaScriptEnabled(true);
         binding.webView.setVerticalScrollBarEnabled(true);

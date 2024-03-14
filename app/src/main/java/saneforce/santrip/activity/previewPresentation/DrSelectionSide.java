@@ -1,12 +1,7 @@
 package saneforce.santrip.activity.previewPresentation;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.Designation;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.DivCode;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.SfCode;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.SfType;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.StateCode;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.SubDivisionCode;
+
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SelectedTab;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix.brandMatrixBinding;
@@ -57,7 +52,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.FragmentDrSelectionSideBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -72,7 +66,7 @@ public class DrSelectionSide extends Fragment {
     JSONObject jsonObject;
     SQLite sqLite;
     SelectDoctorAdapter selectDoctorAdapter;
-    LoginResponse loginResponse;
+
     String TodayPlanSfCode;
     String brands;
     CommonUtilsMethods commonUtilsMethods;
@@ -143,11 +137,8 @@ public class DrSelectionSide extends Fragment {
     public void SetDrAdapter() {
         try {
             callDrListBrand.clear();
-            loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData();
-
-            if (loginResponse.getSf_type().equalsIgnoreCase("1")) {
-                TodayPlanSfCode = loginResponse.getSF_Code();
+            if (SharedPref.getSfType(requireContext()).equalsIgnoreCase("1")) {
+                TodayPlanSfCode = SharedPref.getSfCode(requireContext());
             } else {
                 if (SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
                     JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
@@ -220,7 +211,7 @@ public class DrSelectionSide extends Fragment {
     public void prepareMasterToSync(String hqCode) {
         masterSyncArray.clear();
 
-        if (loginResponse.getDrNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
             MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
             masterSyncArray.add(doctorModel);
         }
@@ -235,13 +226,13 @@ public class DrSelectionSide extends Fragment {
                 apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", SfCode);
-                jsonObject.put("division_code", DivCode);
+                jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", SfType);
-                jsonObject.put("Designation", Designation);
-                jsonObject.put("state_code", StateCode);
-                jsonObject.put("subdivision_code", SubDivisionCode);
+                jsonObject.put("sf_type", SharedPref.getSfType(context));
+                jsonObject.put("Designation", SharedPref.getDesig(context));
+                jsonObject.put("state_code", SharedPref.getStateCode(context));
+                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
 
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();

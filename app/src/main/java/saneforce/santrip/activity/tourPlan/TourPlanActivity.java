@@ -58,7 +58,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityTourPlanBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -68,7 +67,7 @@ public class TourPlanActivity extends AppCompatActivity {
     public static LinearLayout addSaveBtnLayout, clrSaveBtnLayout;
     ApiInterface apiInterface;
     SQLite sqLite;
-    LoginResponse loginResponse;
+
     CalendarAdapter calendarAdapter = new CalendarAdapter();
     SummaryAdapter summaryAdapter = new SummaryAdapter();
     SessionEditAdapter sessionEditAdapter = new SessionEditAdapter();
@@ -81,7 +80,6 @@ public class TourPlanActivity extends AppCompatActivity {
     ModelClass.SessionList.WorkType weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType();
     ModelClass.SessionList.WorkType holidayWorkTypeModel = new ModelClass.SessionList.WorkType();
     LocalDate localDate;
-    String sfName = "", sfCode = "", division_code = "", sfType = "", designation = "", state_code = "", subdivision_code = "";
     String drNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "";
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable;
@@ -280,12 +278,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                         if (modelClass1.getListedDr().size() == 0) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this)+ getString(R.string.in_session) + (i + 1));
                                             break;
                                         } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + (i + 1));
                                             break;
                                         }
                                     }
@@ -304,19 +302,19 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (modelClass1.getListedDr().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
                                         break;
                                     } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + (i + 1));
                                         break;
                                     }
                                 }
                                 if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this)+ getString(R.string.more_than_limit) + (i + 1));
                                     break;
                                 }
                             }
@@ -369,12 +367,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                 if (modelClass.getListedDr().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this)+ getString(R.string.in_session) + (i + 1));
                                     break;
                                 } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + (i + 1));
                                     break;
                                 }
                             }
@@ -393,12 +391,12 @@ public class TourPlanActivity extends AppCompatActivity {
                             if (modelClass.getListedDr().size() == 0) {
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + loginResponse.getDrCap() + getString(R.string.in_session) + (i + 1));
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
                                 break;
                             } else if (modelClass.getListedDr().size() > Integer.parseInt(maxDrCount)) { //Selected Dr count should not be more than maxDrCount setup limit
                                 isEmpty = true;
                                 position = i;
-                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + loginResponse.getDrCap() + getString(R.string.more_than_limit) + (i + 1));
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + (i + 1));
                                 break;
                             }
                         }
@@ -991,15 +989,6 @@ public class TourPlanActivity extends AppCompatActivity {
     public void uiInitialization() {
 
         localDate = LocalDate.now();
-        loginResponse = sqLite.getLoginData();
-        sfName = loginResponse.getSF_Name();
-        sfCode = loginResponse.getSF_Code();
-        division_code = loginResponse.getDivision_Code();
-        subdivision_code = loginResponse.getSubdivision_code();
-        designation = loginResponse.getDesig();
-        state_code = loginResponse.getState_Code();
-        sfType = loginResponse.getSf_type();
-
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP);  //Tour Plan setup
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -1453,13 +1442,13 @@ public class TourPlanActivity extends AppCompatActivity {
                     apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("tableName", "getall_tp");
-                    jsonObject.put("sfcode", loginResponse.getSF_Code());
-                    jsonObject.put("division_code", loginResponse.getDivision_Code());
+                    jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
+                    jsonObject.put("division_code",SharedPref.getDivisionCode(TourPlanActivity.this));
                     jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                    jsonObject.put("sf_type", loginResponse.getSf_type());
-                    jsonObject.put("Designation", loginResponse.getDesig());
-                    jsonObject.put("state_code", loginResponse.getState_Code());
-                    jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                    jsonObject.put("sf_type", SharedPref.getSfType(TourPlanActivity.this));
+                    jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
+                    jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
+                    jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(TourPlanActivity.this));
                     jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, LocalDate.now().getMonth().toString()));
                     jsonObject.put("tp_year", LocalDate.now().getYear());
                     Log.v("tpGetPlan", "--json--" + jsonObject);
@@ -2099,13 +2088,13 @@ public class TourPlanActivity extends AppCompatActivity {
             apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", "gettpdetail");
-            jsonObject.put("sfcode", loginResponse.getSF_Code());
-            jsonObject.put("division_code", loginResponse.getDivision_Code());
+            jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
             jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-            jsonObject.put("sf_type", loginResponse.getSf_type());
-            jsonObject.put("Designation", loginResponse.getDesig());
-            jsonObject.put("state_code", loginResponse.getState_Code());
-            jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+            jsonObject.put("sf_type", SharedPref.getSfType(TourPlanActivity.this));
+            jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
+            jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
+            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(TourPlanActivity.this));
             jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
             jsonObject.put("Year", localDate1.getYear());
 
@@ -2174,12 +2163,12 @@ public class TourPlanActivity extends AppCompatActivity {
                         apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "tpsend_appr");
-                        jsonObject.put("sfcode", loginResponse.getSF_Code());
-                        jsonObject.put("SFName", loginResponse.getSF_Name());
-                        jsonObject.put("division_code", loginResponse.getDivision_Code());
+                        jsonObject.put("sfcode", SharedPref.getSfCode(TourPlanActivity.this));
+                        jsonObject.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(TourPlanActivity.this));
                         jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                        jsonObject.put("Designation", loginResponse.getDesig());
-                        jsonObject.put("state_code", loginResponse.getState_Code());
+                        jsonObject.put("Designation", SharedPref.getDesig(TourPlanActivity.this));
+                        jsonObject.put("state_code", SharedPref.getStateCode(TourPlanActivity.this));
                         jsonObject.put("TPMonth", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate1.getMonth().toString()));
                         jsonObject.put("TPYear", localDate1.getYear());
 
@@ -2257,9 +2246,9 @@ public class TourPlanActivity extends AppCompatActivity {
                                 if (modelClass.getDayNo().equals(dateForApproval)) {
                                     JSONObject jsonObject = new JSONObject();
 
-                                    jsonObject.put("SFCode", sfCode);
-                                    jsonObject.put("SFName", sfName);
-                                    jsonObject.put("Div", division_code);
+                                    jsonObject.put("SFCode", SharedPref.getSfCode(TourPlanActivity.this));
+                                    jsonObject.put("SFName", SharedPref.getSfName(TourPlanActivity.this));
+                                    jsonObject.put("Div", SharedPref.getDivisionCode(TourPlanActivity.this));
                                     jsonObject.put("Mnth", modelClass.getMonth());
                                     jsonObject.put("Yr", modelClass.getYear());
                                     jsonObject.put("dayno", modelClass.getDayNo());

@@ -335,31 +335,31 @@ public class ListedDoctorFragment extends Fragment {
     public void prepareMasterToSync(String hqCode) {
         masterSyncArray.clear();
 
-        if (DcrCallTabLayoutActivity.DrNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
             MasterSyncItemModel doctorModel = new MasterSyncItemModel("Doctor", "getdoctors", Constants.DOCTOR + hqCode);
             masterSyncArray.add(doctorModel);
         }
 
-        if (DcrCallTabLayoutActivity.ChemistNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
             MasterSyncItemModel cheModel = new MasterSyncItemModel("Doctor", "getchemist", Constants.CHEMIST + hqCode);
             masterSyncArray.add(cheModel);
         }
 
-        if (DcrCallTabLayoutActivity.StockistNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
             MasterSyncItemModel stockModel = new MasterSyncItemModel("Doctor", "getstockist", Constants.STOCKIEST + hqCode);
             masterSyncArray.add(stockModel);
         }
 
-        if (DcrCallTabLayoutActivity.UnDrNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
             MasterSyncItemModel unListModel = new MasterSyncItemModel("Doctor", "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode);
             masterSyncArray.add(unListModel);
         }
 
-        if (DcrCallTabLayoutActivity.HospNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
             MasterSyncItemModel hospModel = new MasterSyncItemModel("Doctor", "gethospital", Constants.HOSPITAL + hqCode);
             masterSyncArray.add(hospModel);
         }
-        if (DcrCallTabLayoutActivity.CipNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
             MasterSyncItemModel ciModel = new MasterSyncItemModel("Doctor", "getcip", Constants.CIP + hqCode);
             masterSyncArray.add(ciModel);
         }
@@ -378,13 +378,13 @@ public class ListedDoctorFragment extends Fragment {
                 apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", DcrCallTabLayoutActivity.SfCode);
-                jsonObject.put("division_code", DcrCallTabLayoutActivity.DivCode);
+                jsonObject.put("sfcode",SharedPref.getSfCode(context));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", DcrCallTabLayoutActivity.SfType);
-                jsonObject.put("Designation", DcrCallTabLayoutActivity.Designation);
-                jsonObject.put("state_code", DcrCallTabLayoutActivity.StateCode);
-                jsonObject.put("subdivision_code", DcrCallTabLayoutActivity.SubDivisionCode);
+                jsonObject.put("sf_type", SharedPref.getSfType(context));
+                jsonObject.put("Designation", SharedPref.getDesig(context));
+                jsonObject.put("state_code", SharedPref.getStateCode(context));
+                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
 
                 Call<JsonElement> call = null;
                 Map<String, String> mapString = new HashMap<>();
@@ -462,14 +462,13 @@ public class ListedDoctorFragment extends Fragment {
             }
 
             Log.v("DrCall", "-dr_full_length-" + jsonArray.length());
-            Log.v("DrCall", "--dr-" + DcrCallTabLayoutActivity.GeoTagApproval + "--" + DcrCallTabLayoutActivity.DrGeoTag + "----" + DcrCallTabLayoutActivity.TpBasedDcr);
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 try {
-                    if (DcrCallTabLayoutActivity.DrGeoTag.equalsIgnoreCase("1")) {
+                    if (SharedPref.getGeotagNeed(context).equalsIgnoreCase("1")) {
                         if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
-                            if (DcrCallTabLayoutActivity.GeoTagApproval.equalsIgnoreCase("0")) {
+                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                 Log.v("DrCall", "111");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
@@ -489,7 +488,7 @@ public class ListedDoctorFragment extends Fragment {
                         }
                     } else {
                         Log.v("DrCall", "333");
-                        if (DcrCallTabLayoutActivity.TpBasedDcr.equalsIgnoreCase("0")) {
+                        if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
                             Log.v("DrCall", "444");
                             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
                                 custListArrayList = SaveData(jsonObject, i);
@@ -541,7 +540,7 @@ public class ListedDoctorFragment extends Fragment {
         }
 
         Log.v("call", "-dr--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, DcrCallTabLayoutActivity.DrCheckInOutNeed);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, SharedPref.getCustSrtNd(requireContext()));
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

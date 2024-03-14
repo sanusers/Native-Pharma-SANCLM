@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.call.dcrCallSelection.fragments;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -115,16 +117,15 @@ public class ChemistFragment extends Fragment {
     private void SetupAdapter() {
         cusListArrayList.clear();
         try {
-            Log.v("CheCall", DcrCallTabLayoutActivity.GeoTagApproval + "--" + DcrCallTabLayoutActivity.CheGeoTag + "----" + DcrCallTabLayoutActivity.TpBasedDcr);
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
             Log.v("CheCall", "-che_full_length-" + jsonArray.length());
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                if (DcrCallTabLayoutActivity.CheGeoTag.equalsIgnoreCase("1")) {
+                if (SharedPref.getGeotagNeedChe(context).equalsIgnoreCase("1")) {
                     if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
-                        if (DcrCallTabLayoutActivity.GeoTagApproval.equalsIgnoreCase("0")) {
+                        if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
                             if (distance[0] < DcrCallTabLayoutActivity.limitKm * 1000.0) {
@@ -141,7 +142,7 @@ public class ChemistFragment extends Fragment {
                         }
                     }
                 } else {
-                    if (DcrCallTabLayoutActivity.TpBasedDcr.equalsIgnoreCase("0")) {
+                    if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
                         if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
                             cusListArrayList = SaveData(jsonObject, i);
                         }
@@ -169,7 +170,7 @@ public class ChemistFragment extends Fragment {
         }
 
         Log.v("CheCall", "-che--size--" + cusListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), cusListArrayList, DcrCallTabLayoutActivity.CheCheckInOutNeed);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), cusListArrayList,SharedPref.getChmSrtNd(requireContext()));
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

@@ -52,7 +52,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMasterSyncBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -64,9 +63,9 @@ public class MasterSyncActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     SQLite sqLite;
-    LoginResponse loginResponse;
-    String sfCode = "", division_code = "", sfType = "", rsf = "", designation = "", state_code = "", subdivision_code = "";
-    String cheNeed = "", stockiestNeed = "", unListedDrNeed = "", hospNeed = "", cipNeed = "", rcpaNeed = "", chmRCpaNeed = "", tpNeed = "";
+
+
+    String rsf="";
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
     int unlistedDrCount = 0, chemistCount = 0, stockiestCount = 0, hospitalCount = 0, cipCount = 0, inputCount = 0, leaveCount = 0, leaveStatusCount = 0, tpSetupCount = 0, clusterCount = 0;
     int callSyncCount = 0, visitControlCount = 0, dateSyncCount = 0;
@@ -145,7 +144,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         if (navigateFrom.equalsIgnoreCase("Login")) {
             binding.backArrow.setVisibility(View.GONE);
-            if (sfType.equalsIgnoreCase("2")) { //MGR
+            if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                     sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
@@ -498,35 +497,18 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void uiInitialization() {
 
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        sfType = loginResponse.getSf_type();
-        sfCode = loginResponse.getSF_Code();
-        division_code = loginResponse.getDivision_Code();
-        subdivision_code = loginResponse.getSubdivision_code();
-        designation = loginResponse.getDesig();
-        state_code = loginResponse.getState_Code();
-        cheNeed = loginResponse.getChmNeed();
-        stockiestNeed = loginResponse.getStkNeed();
-        unListedDrNeed = loginResponse.getUNLNeed();
-        cipNeed = loginResponse.getCIP_PNeed();
-        hospNeed = loginResponse.getHosp_need();
-        rcpaNeed = loginResponse.getRcpaNd();
-        chmRCpaNeed = loginResponse.getChm_RCPA_Need();
-        tpNeed = loginResponse.getTp_need();
         binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
         rsf = SharedPref.getHqCode(MasterSyncActivity.this); // Rsf is HQ code
 
-        binding.hq.setEnabled(sfType.equalsIgnoreCase("2"));
+        binding.hq.setEnabled(SharedPref.getSfType(this).equalsIgnoreCase("2"));
         binding.lastSyncTime.setText(SharedPref.getLastSync(getApplicationContext()));
 
-        binding.listedDr.setText(loginResponse.getDrCap());
-        binding.chemist.setText(loginResponse.getChmCap());
-        binding.stockiest.setText(loginResponse.getStkCap());
-        binding.unlistedDoctor.setText(loginResponse.getNLCap());
-        binding.hospital.setText(loginResponse.getHosp_caption());
-        binding.cip.setText(loginResponse.getCIP_Caption());
+        binding.listedDr.setText(SharedPref.getDrCap(this));
+        binding.chemist.setText(SharedPref.getChmCap(this));
+        binding.stockiest.setText(SharedPref.getStkCap(this));
+        binding.unlistedDoctor.setText(SharedPref.getUNLcap(this));
+        binding.hospital.setText(SharedPref.getHospCaption(this));
+        binding.cip.setText(SharedPref.getCipCaption(this));
 
         doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
         specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
@@ -618,7 +600,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
     public void prepareArray(String hqCode) {
         doctorModelArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel(loginResponse.getDrCap(), doctorCount, Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
+        MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), doctorCount, Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
         MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, specialityCount, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
         MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, qualificationCount, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
         MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, categoryCount, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
@@ -636,42 +618,42 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Chemist
         chemistModelArray.clear();
-        if (cheNeed.equalsIgnoreCase("0")) {
-            MasterSyncItemModel cheModel = new MasterSyncItemModel(loginResponse.getChmCap(), chemistCount, Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+        if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), chemistCount, Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
             chemistModelArray.add(cheModel);
         } else binding.chemist.setVisibility(View.GONE);
 
         //Stockiest
         stockiestModelArray.clear();
-        if (stockiestNeed.equalsIgnoreCase("0")) {
-            MasterSyncItemModel stockModel = new MasterSyncItemModel(loginResponse.getStkCap(), stockiestCount, Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
+        if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel stockModel = new MasterSyncItemModel(SharedPref.getStkCap(this), stockiestCount, Constants.DOCTOR, "getstockist", Constants.STOCKIEST + hqCode, stockiestStatus, false);
             stockiestModelArray.add(stockModel);
         } else binding.stockiest.setVisibility(View.GONE);
 
         //Unlisted Dr
         unlistedDrModelArray.clear();
-        if (unListedDrNeed.equalsIgnoreCase("0")) {
-            MasterSyncItemModel unListModel = new MasterSyncItemModel(loginResponse.getNLCap(), unlistedDrCount, Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
+        if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel unListModel = new MasterSyncItemModel(SharedPref.getUNLcap(this), unlistedDrCount, Constants.DOCTOR, "getunlisteddr", Constants.UNLISTED_DOCTOR + hqCode, unlistedDrStatus, false);
             unlistedDrModelArray.add(unListModel);
         } else binding.unlistedDoctor.setVisibility(View.GONE);
 
         //Hospital
         hospitalModelArray.clear();
-        if (hospNeed.equalsIgnoreCase("0")) {
-            MasterSyncItemModel hospModel = new MasterSyncItemModel(loginResponse.getHosp_caption(), hospitalCount, Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
+        if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel hospModel = new MasterSyncItemModel(SharedPref.getHospCaption(this), hospitalCount, Constants.DOCTOR, "gethospital", Constants.HOSPITAL + hqCode, hospitalStatus, false);
             hospitalModelArray.add(hospModel);
         } else binding.hospital.setVisibility(View.GONE);
 
         //CIP
         cipModelArray.clear();
-        if (cipNeed.equalsIgnoreCase("0")) {
-            MasterSyncItemModel ciModel = new MasterSyncItemModel(loginResponse.getCIP_Caption(), cipCount, Constants.DOCTOR, "getcip", Constants.CIP + hqCode, cipStatus, false);
+        if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel ciModel = new MasterSyncItemModel(SharedPref.getCipCaption(this), cipCount, Constants.DOCTOR, "getcip", Constants.CIP + hqCode, cipStatus, false);
             cipModelArray.add(ciModel);
         } else binding.cip.setVisibility(View.GONE);
 
         //Cluster
         clusterModelArray.clear();
-        MasterSyncItemModel cluster = new MasterSyncItemModel(loginResponse.getCluster_cap(), clusterCount, Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
+        MasterSyncItemModel cluster = new MasterSyncItemModel(SharedPref.getClusterCap(this), clusterCount, Constants.DOCTOR, "getterritory", Constants.CLUSTER + hqCode, clusterStatus, false);
         clusterModelArray.add(cluster);
 
         //Input
@@ -687,7 +669,7 @@ public class MasterSyncActivity extends AppCompatActivity {
         productModelArray.add(proModel);
         productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
-        if (rcpaNeed.equalsIgnoreCase("1") || chmRCpaNeed.equalsIgnoreCase("1")) {
+        if (SharedPref.getRcpaNd(this).equalsIgnoreCase("1") || SharedPref.getChmRcpaNeed(this).equalsIgnoreCase("1")) {
             MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
             MasterSyncItemModel mapCompPrdModel = new MasterSyncItemModel(Constants.MAPPED_COMPETITOR_PROD, mapComPrdCount, "AdditionalDcr", "getmapcompdet", Constants.MAPPED_COMPETITOR_PROD, mapCompPrdStatus, false);
             productModelArray.add(compProductModel);
@@ -725,7 +707,7 @@ public class MasterSyncActivity extends AppCompatActivity {
 
         //Tour Plan
         tpModelArray.clear();
-        if (tpNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getTpNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel tpSetup = new MasterSyncItemModel(Constants.TP_SETUP, tpSetupCount, Constants.SETUP, "gettpsetup", Constants.TP_SETUP, tpSetupStatus, false);
             MasterSyncItemModel tPlan = new MasterSyncItemModel(Constants.TOUR_PLAN, -1, Constants.TOUR_PLAN, "getall_tp", Constants.TOUR_PLAN, tourPLanStatus, false);
             tpModelArray.add(tpSetup);
@@ -967,14 +949,14 @@ public class MasterSyncActivity extends AppCompatActivity {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", remoteTableName);
-            jsonObject.put("sfcode", sfCode);
-            jsonObject.put("division_code", division_code);
+            jsonObject.put("sfcode", SharedPref.getSfCode(this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
             jsonObject.put("Rsf", rsf);
-            jsonObject.put("sf_type", sfType);
+            jsonObject.put("sf_type", SharedPref.getSfType(this));
             jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-            jsonObject.put("Designation", designation);
-            jsonObject.put("state_code", state_code);
-            jsonObject.put("subdivision_code", subdivision_code);
+            jsonObject.put("Designation", SharedPref.getDesig(this));
+            jsonObject.put("state_code", SharedPref.getStateCode(this));
+            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
             switch (remoteTableName) {
                 case "getholiday":
@@ -1100,6 +1082,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) {
                                 // If product slide quantity is 0 then no need to display a dialog of Downloader
+                                SharedPref.putAutomassync(getApplicationContext(), true);
+                                SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
                             } else {
@@ -1127,6 +1111,8 @@ public class MasterSyncActivity extends AppCompatActivity {
                         masterSyncAdapter.notifyDataSetChanged();
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             binding.backArrow.setVisibility(View.VISIBLE);
+                            SharedPref.putAutomassync(getApplicationContext(), true);
+                            SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                             if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
                             } else {

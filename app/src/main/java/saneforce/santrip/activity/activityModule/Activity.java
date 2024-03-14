@@ -96,7 +96,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
@@ -104,7 +103,7 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -114,16 +113,13 @@ public class Activity extends AppCompatActivity {
     ActivityBinding binding;
     private static final int PICK_FROM_GALLERY = 101;
 
-    LoginResponse loginResponse;
+
     SQLite sqLite;
     ApiInterface apiInterface;
 
     ArrayList<ActivityModelClass> ActivityList=new ArrayList<>();
     ArrayList<ActivityDetailsModelClass> ActivityDetailsList=new ArrayList<>();
     ArrayList<ActivityDetailsModelClass> ActivityViewItem=new ArrayList<>();
-    ArrayList<String> countfile1 = new ArrayList<>();
-    ArrayList<String> filename1 = new ArrayList<>();
-    ArrayList<JSONObject> HQList = new ArrayList<>();
     String[] value,valfrom,valto;
     ActvityList2Adapter adapter1;
 
@@ -131,15 +127,13 @@ public class Activity extends AppCompatActivity {
     GPSTrack gpsTrack;
     Typeface fontregular,fontmedium;
     Uri uri;
-    String filename="";
+
     File file1;
     CommonUtilsMethods commonUtilsMethods;
     public  static TextView FilnameTet;
-    String FileAttachmentResult = "0";
-    String Slno="";
-    StringBuilder stringbuilder = new StringBuilder();
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+
+
+    @Override public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding=ActivityBinding.inflate(getLayoutInflater());
@@ -150,8 +144,7 @@ public class Activity extends AppCompatActivity {
         gpsTrack = new GPSTrack(this);
         sqLite=new SQLite(this);
         commonUtilsMethods=new CommonUtilsMethods(this);
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
@@ -170,7 +163,7 @@ public class Activity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
 
-        if(!loginResponse.getDesig().equalsIgnoreCase("MR")){
+        if(!SharedPref.getDesig(this).equalsIgnoreCase("MR")){
             binding.rlheadquates.setVisibility(View.VISIBLE);
         }else {
             binding.rlheadquates.setVisibility(View.GONE);
@@ -240,13 +233,13 @@ public class Activity extends AppCompatActivity {
             try {
                 JSONObject object = new JSONObject();
                 object.put("tableName", "getdynactivity");
-                object.put("sfcode", loginResponse.getSF_Code());
-                object.put("division_code", loginResponse.getDivision_Code());
+                object.put("sfcode", SharedPref.getSfCode(this));
+                object.put("division_code", SharedPref.getDivisionCode(this));
                 object.put("Rsf", hqcode);
-                object.put("Designation", loginResponse.getDesig());
-                object.put("sf_type", loginResponse.getSf_type());
-                object.put("state_code", loginResponse.getState_Code());
-                object.put("subdivision_code", loginResponse.getSubdivision_code());
+                object.put("Designation", SharedPref.getDesig(this));
+                object.put("sf_type", SharedPref.getSfType(this));
+                object.put("state_code", SharedPref.getStateCode(this));
+                object.put("subdivision_code", SharedPref.getSubdivisionCode(this));
                 Map<String, String> QuaryParam = new HashMap<>();
                 QuaryParam.put("axn", "get/activity");
                 Log.v("Response :", "" + object.toString());
@@ -256,6 +249,7 @@ public class Activity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                         binding.progressMain.setVisibility(View.GONE);
+
                         Log.v("Response :", "" + response);
                         JSONArray jsonArray = new JSONArray();
                         if (response.isSuccessful()) {
@@ -264,22 +258,20 @@ public class Activity extends AppCompatActivity {
                                 jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
 
                                 if (jsonArray.length() > 0) {
-
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         String[] Activity_Desig = jsonObject.getString("Activity_Desig").split(",\\s*");
                                         List<String> DegList = Arrays.asList(Activity_Desig);
-                                        if (DegList.contains(loginResponse.getDesig())) {
+                                        if (DegList.contains( SharedPref.getDesig(Activity.this))) {
                                             binding.rlNoActivity.setVisibility(View.GONE);
                                             binding.llMainLayout.setVisibility(View.VISIBLE);
+                                            binding.rlDetailsMain.setVisibility(View.VISIBLE);
                                             ActivityList.add(new ActivityModelClass(jsonObject.getString("Activity_SlNo"), jsonObject.getString("Activity_Name"), jsonObject.getString("Activity_For"), jsonObject.getString("Active_Flag"), jsonObject.getString("Activity_Desig"), jsonObject.getString("Activity_Available")));
-                                        }else {
-                                            binding.rlNoActivity.setVisibility(View.VISIBLE);
-                                            binding.llMainLayout.setVisibility(View.GONE);
                                         }
                                     }
 
                                 } else {
+                                    binding.rlDetailsMain.setVisibility(View.GONE);
                                     binding.rlNoActivity.setVisibility(View.VISIBLE);
                                     binding.llMainLayout.setVisibility(View.GONE);
                                     CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
@@ -319,13 +311,13 @@ public class Activity extends AppCompatActivity {
        try {
             JSONObject object = new JSONObject();
             object.put("tableName", "getdynactivity_details");
-            object.put("sfcode", loginResponse.getSF_Code());
-            object.put("division_code", loginResponse.getDivision_Code());
+            object.put("sfcode", SharedPref.getSfCode(this));
+            object.put("division_code", SharedPref.getDivisionCode(this));
             object.put("Rsf", SharedPref.getHqCode(this));
-            object.put("Designation", loginResponse.getDesig());
-            object.put("sf_type", loginResponse.getSf_type());
-            object.put("state_code", loginResponse.getState_Code());
-            object.put("subdivision_code", loginResponse.getSubdivision_code());
+            object.put("Designation", SharedPref.getDesig(this));
+            object.put("sf_type",  SharedPref.getSfType(this));
+            object.put("state_code",  SharedPref.getStateCode(this));
+            object.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
             object.put("slno", Data.getSlNo());
             Map<String, String> QuaryParam = new HashMap<>();
             QuaryParam.put("axn", "get/activity");
@@ -334,7 +326,7 @@ public class Activity extends AppCompatActivity {
             call.enqueue(new Callback<JsonElement>() {
                @Override
                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                   binding.progrlessdetail.setVisibility(View.GONE);
+
 
                    Log.v("Response :",""+response);
                    JSONArray jsonArray = new JSONArray();
@@ -346,6 +338,7 @@ public class Activity extends AppCompatActivity {
                            jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                            if(jsonArray.length()>0){
                                binding.rldatalayout.setVisibility(View.VISIBLE);
+                               binding.btnsumit.setVisibility(View.VISIBLE);
                                binding.rlNoData.setVisibility(View.GONE);
                                for(int i=0;i<jsonArray.length();i++){
                                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -403,13 +396,13 @@ public class Activity extends AppCompatActivity {
                                    if(ActivityDetailsList.size()==jjj){
                                        binding.btnsumit.setEnabled(true);
                                    }
-                               }
+                                   binding.progrlessdetail.setVisibility(View.GONE); }
                            }else {
 
 
                                binding.rldatalayout.setVisibility(View.GONE);
                                binding.rlNoData.setVisibility(View.VISIBLE);
-
+                               binding.btnsumit.setVisibility(View.GONE);
                                binding.progrlessdetail.setVisibility(View.GONE);
                                CommonUtilsMethods commonUtilsMethods=new CommonUtilsMethods(getApplicationContext());
                                commonUtilsMethods.showToastMessage(getApplicationContext(),"No Activity Details");
@@ -422,8 +415,9 @@ public class Activity extends AppCompatActivity {
 
                @Override
                public void onFailure(Call<JsonElement> call, Throwable t) {
-                   binding.rldatalayout.setVisibility(View.VISIBLE);
-                   binding.rlNoData.setVisibility(View.GONE);
+                   binding.rldatalayout.setVisibility(View.GONE);
+                   binding.rlNoData.setVisibility(View.VISIBLE);
+                   binding.btnsumit.setVisibility(View.GONE);
                }
            });
 
@@ -1020,6 +1014,8 @@ public class Activity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 textviewfromdate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                commonFun();
+
                             }
                         },
                         year, month, day);
@@ -1088,9 +1084,11 @@ public class Activity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     DatePickerDialog datePickerDialog = new DatePickerDialog(Activity.this,
-                            (view1, year, monthOfYear, dayOfMonth) -> textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+                            (view1, year, monthOfYear, dayOfMonth) ->
+                    textviewtodate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year)
+                            , mYear, mMonth, mDay);
+                    commonFun();
                     datePickerDialog.getDatePicker().setMinDate(dateBefore.getTime());
-
                     datePickerDialog.show();
                 }
             }
@@ -1213,6 +1211,8 @@ public class Activity extends AppCompatActivity {
                                     }, hour, minute, false);
 
                             timePickerDialog.show();
+                            commonFun();
+
                         }, year, month, dayOfMonth);
 
                 datePickerDialog.show();
@@ -1309,7 +1309,10 @@ public class Activity extends AppCompatActivity {
                                               }
                                         }else {
                                             textviewtodate.setText(dateFormat.format(c.getTime()));
+                                            commonFun();
+
                                         }
+                                            commonFun();
 
                                           }, mHour, mMinute, false);
 
@@ -1426,6 +1429,8 @@ public class Activity extends AppCompatActivity {
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
                                 textViewtime1.setText(hourOfDay + ":" + minute);
+                                commonFun();
+
                             }
 
                         }, mHour, mMinute, true);
@@ -1542,6 +1547,7 @@ public class Activity extends AppCompatActivity {
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
                                 textviewfromtime.setText(hourOfDay + ":" + minute);
+                                commonFun();
 
                             }
                         }, mHour, mMinute, false);
@@ -1614,6 +1620,8 @@ public class Activity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Please Select as After From Time ", Toast.LENGTH_LONG).show();
                                 textviewtotime.setText("");
                             }
+                            commonFun();
+
                         }
                     };
 
@@ -3122,7 +3130,9 @@ public class Activity extends AppCompatActivity {
                         String filenmae = parts[parts.length - 1];
                         FilnameTet.setText(String.valueOf(filenmae));
                                 Toast.makeText(getApplicationContext(), "File Accepted", Toast.LENGTH_LONG).show();
-                                File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
+
+
+                        File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "SAN_Images");
                                 if (!dir1.exists()) {
                                     dir1.mkdirs();
                                 }
@@ -3136,7 +3146,7 @@ public class Activity extends AppCompatActivity {
                 }else {
                 Toast.makeText(getApplicationContext(), "Sorry Please Selcted Correct path", Toast.LENGTH_SHORT).show();
             }
-
+            commonFun();
         }
     }
 
@@ -3233,8 +3243,8 @@ public class Activity extends AppCompatActivity {
                 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                 String dateToStr1 = format1.format(today)+" 00:00:00";
 
-                jsonObject.put("sfcode", loginResponse.getSF_Code());
-                jsonObject.put("division_code", loginResponse.getDivision_Code());
+                jsonObject.put("sfcode",  SharedPref.getSfCode(this));
+                jsonObject.put("division_code",  SharedPref.getDivisionCode(this));
                 jsonObject.put("act_date", dateToStr);
                 jsonObject.put("dcr_date", dateToStr1);
                 jsonObject.put("update_time", dateToStr);
@@ -3249,18 +3259,18 @@ public class Activity extends AppCompatActivity {
                 jsonObject.put("lat", gpsTrack.getLatitude());
                 jsonObject.put("lng", gpsTrack.getLongitude());
                 jsonObject.put("cusname", "Name");
-                jsonObject.put("DataSF", loginResponse.getSF_Code());
+                jsonObject.put("DataSF",  SharedPref.getSfCode(this));
                 jsonObject.put("type", "0");
                 jsonObject.put("WT_code", "");
                 jsonObject.put("WTName", "");
                 jsonObject.put("FWFlg", "");
                 jsonObject.put("town_code","");
                 jsonObject.put("town_name", "");
-                jsonObject.put("Rsf", SharedPref.getTodayDayPlanSfCode(Activity.this));
-                jsonObject.put("sf_type", loginResponse.getSf_type());
-                jsonObject.put("Designation", loginResponse.getDesig());
-                jsonObject.put("state_code", loginResponse.getState_Code());
-                jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                jsonObject.put("Rsf", SharedPref.getHqCode(Activity.this));
+                jsonObject.put("sf_type",  SharedPref.getSfType(this));
+                jsonObject.put("Designation",  SharedPref.getDesig(this));
+                jsonObject.put("state_code",  SharedPref.getStateCode(this));
+                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
 
                 if (List.getControlId().equalsIgnoreCase("5") || List.getControlId().equalsIgnoreCase("7") || List.getControlId().equalsIgnoreCase("16") || List.getControlId().equalsIgnoreCase("17")) {
@@ -3345,8 +3355,8 @@ public class Activity extends AppCompatActivity {
                 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                 String dateToStr1 = format1.format(today)+" 00:00:00";
 
-                jsonObject.put("sfcode", loginResponse.getSF_Code());
-                jsonObject.put("division_code", loginResponse.getDivision_Code());
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code",  SharedPref.getDivisionCode(this));
                 jsonObject.put("act_date", dateToStr);
                 jsonObject.put("dcr_date", dateToStr1);
                 jsonObject.put("update_time", dateToStr);
@@ -3361,18 +3371,18 @@ public class Activity extends AppCompatActivity {
                 jsonObject.put("lat", gpsTrack.getLatitude());
                 jsonObject.put("lng", gpsTrack.getLongitude());
                 jsonObject.put("cusname", "Name");
-                jsonObject.put("DataSF", loginResponse.getSF_Code());
+                jsonObject.put("DataSF",  SharedPref.getSfCode(this));
                 jsonObject.put("type", "0");
                 jsonObject.put("WT_code", "");
                 jsonObject.put("WTName", "");
                 jsonObject.put("FWFlg", "");
                 jsonObject.put("town_code","");
                 jsonObject.put("town_name", "");
-                jsonObject.put("Rsf", SharedPref.getTodayDayPlanSfCode(Activity.this));
-                jsonObject.put("sf_type", loginResponse.getSf_type());
-                jsonObject.put("Designation", loginResponse.getDesig());
-                jsonObject.put("state_code", loginResponse.getState_Code());
-                jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                jsonObject.put("Rsf", SharedPref.getHqCode(Activity.this));
+                jsonObject.put("sf_type",  SharedPref.getSfType(this));
+                jsonObject.put("Designation",  SharedPref.getDesig(this));
+                jsonObject.put("state_code",  SharedPref.getStateCode(this));
+                jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
                 jsonObject.put("values", List.getAnswerTxt());
                 jsonObject.put("codes", List.getCodes());
                 JSONArray jsonArray=new JSONArray();

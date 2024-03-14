@@ -53,18 +53,18 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityTpApprovalBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class TpApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SelectedSfCode, SelectedMonthYear, SelectedMonth, SelectedYear, SelectedDay = "", TpDrNeed, TpChemNeed, TpClusterNeed, TpJwNeed, TpStockistNeed, TpUnDrNeed, TpCipNeed, TpHospNeed;
+    public static String  SelectedSfCode, SelectedMonthYear, SelectedMonth, SelectedYear, SelectedDay = "", TpDrNeed, TpChemNeed, TpClusterNeed, TpJwNeed, TpStockistNeed, TpUnDrNeed, TpCipNeed, TpHospNeed;
     @SuppressLint("StaticFieldLeak")
     public static ActivityTpApprovalBinding tpApprovalBinding;
     public static int SelectedPosition;
     ArrayList<TpDetailedModel> tpDetailedModelsList = new ArrayList<>();
     TpApprovalDetailedAdapter tpApprovalDetailedAdapter;
-    LoginResponse loginResponse;
+
     SQLite sqLite;
     Dialog dialogReject;
     ApiInterface api_interface;
@@ -134,20 +134,19 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     }
 
     private void tpApproval() {
-
         progressDialog = CommonUtilsMethods.createProgressDialog(getApplicationContext());
         try {
             jsonTp = new JSONObject();
             jsonTp.put("tableName", "savetpapproval");
-            jsonTp.put("sfcode", SfCode);
+            jsonTp.put("sfcode", SharedPref.getSfCode(this));
             jsonTp.put("Month", SelectedMonth);
             jsonTp.put("Year", SelectedYear);
-            jsonTp.put("division_code", DivCode);
+            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
             jsonTp.put("Rsf", SelectedSfCode);
-            jsonTp.put("sf_type", SfType);
-            jsonTp.put("Designation", Designation);
-            jsonTp.put("state_code", StateCode);
-            jsonTp.put("subdivision_code", SubDivisionCode);
+            jsonTp.put("sf_type", SharedPref.getSfType(this));
+            jsonTp.put("Designation", SharedPref.getDesig(this));
+            jsonTp.put("state_code", SharedPref.getStateCode(this));
+            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
             Log.v("json_tp_Approved", jsonTp.toString());
         } catch (Exception ignored) {
@@ -223,16 +222,16 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         try {
             jsonTp = new JSONObject();
             jsonTp.put("tableName", "savetpreject");
-            jsonTp.put("sfcode", SfCode);
+            jsonTp.put("sfcode", SharedPref.getSfCode(this));
             jsonTp.put("Month", SelectedMonth);
             jsonTp.put("Year", SelectedYear);
             jsonTp.put("reason", reason);
-            jsonTp.put("division_code", DivCode);
+            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
             jsonTp.put("Rsf", SelectedSfCode);
-            jsonTp.put("sf_type", SfType);
-            jsonTp.put("Designation", Designation);
-            jsonTp.put("state_code", StateCode);
-            jsonTp.put("subdivision_code", SubDivisionCode);
+            jsonTp.put("sf_type", SharedPref.getSfType(this));
+            jsonTp.put("Designation", SharedPref.getDesig(this));
+            jsonTp.put("state_code", SharedPref.getStateCode(this));
+            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
             Log.v("json_tp_Reject", jsonTp.toString());
         } catch (Exception ignored) {
@@ -296,12 +295,13 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
         try {
             jsonTp.put("tableName", "gettpapproval");
-            jsonTp.put("sfcode", SfCode);
-            jsonTp.put("division_code", DivCode);
-            jsonTp.put("Rsf", SfCode);
-            jsonTp.put("sf_type", SfType);
-            jsonTp.put("Designation", Designation);
-            jsonTp.put("state_code", SubDivisionCode);
+            jsonTp.put("sfcode", SharedPref.getSfCode(this));
+            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
+            jsonTp.put("Rsf", SharedPref.getHqCode(this));
+            jsonTp.put("sf_type", SharedPref.getSfType(this));
+            jsonTp.put("Designation", SharedPref.getDesig(this));
+            jsonTp.put("state_code", SharedPref.getStateCode(this));
+            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_getTpList", jsonTp.toString());
         } catch (Exception ignored) {
 
@@ -361,18 +361,6 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     }
 
     private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(TpApprovalActivity.this);
-
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP); //Tour Plan setup
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -420,11 +408,12 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
             jsonTp.put("sfcode", SelectedSfCode);
             jsonTp.put("Month", SelectedMonth);
             jsonTp.put("Year", SelectedYear);
-            jsonTp.put("division_code", DivCode);
+            jsonTp.put("division_code", SharedPref.getDivisionCode(this));
             jsonTp.put("Rsf", SelectedSfCode);
-            jsonTp.put("sf_type", SfType);
-            jsonTp.put("Designation", Designation);
-            jsonTp.put("state_code", SubDivisionCode);
+            jsonTp.put("sf_type", SharedPref.getSfType(this));
+            jsonTp.put("Designation", SharedPref.getDesig(this));
+            jsonTp.put("state_code", SharedPref.getStateCode(this));
+            jsonTp.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_getTpDetailedList", jsonTp.toString());
         } catch (Exception ignored) {
 

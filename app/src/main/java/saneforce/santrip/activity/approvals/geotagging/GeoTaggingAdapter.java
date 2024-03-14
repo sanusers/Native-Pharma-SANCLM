@@ -1,12 +1,5 @@
 package saneforce.santrip.activity.approvals.geotagging;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.CIPCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.DrCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.HosCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.StockistCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.UnDrCaption;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -19,14 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
@@ -79,27 +70,27 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
 
         switch (geoTaggingModelLists.get(position).getCust_mode()) {
             case "D":
-                holder.tv_cust_mode.setText(DrCaption);
+                holder.tv_cust_mode.setText(SharedPref.getDrCap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_dr_img));
                 break;
             case "C":
-                holder.tv_cust_mode.setText(ChemistCaption);
+                holder.tv_cust_mode.setText(SharedPref.getChmCap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_chemist_img));
                 break;
             case "S":
-                holder.tv_cust_mode.setText(StockistCaption);
+                holder.tv_cust_mode.setText(SharedPref.getStkCap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_stockist_img));
                 break;
             case "U":
-                holder.tv_cust_mode.setText(UnDrCaption);
+                holder.tv_cust_mode.setText(SharedPref.getUNLcap(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_unlistdr_img));
                 break;
             case "H":
-                holder.tv_cust_mode.setText(HosCaption);
+                holder.tv_cust_mode.setText(SharedPref.getHospCaption(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_cip_img));
                 break;
             case "CIP":
-                holder.tv_cust_mode.setText(CIPCaption);
+                holder.tv_cust_mode.setText(SharedPref.getCipCaption(context));
                 holder.img_cust.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.map_cip_img));
                 break;
         }
@@ -185,14 +176,14 @@ public class GeoTaggingAdapter extends RecyclerView.Adapter<GeoTaggingAdapter.Vi
             }
 
             jsonGeoTag.put("status", Status);
-            jsonGeoTag.put("sfcode", GeoTaggingActivity.SfCode);
-            jsonGeoTag.put("sfname", GeoTaggingActivity.SfName);
-            jsonGeoTag.put("division_code", GeoTaggingActivity.DivCode);
+            jsonGeoTag.put("sfcode", SharedPref.getSfCode(context));
+            jsonGeoTag.put("sfname", SharedPref.getSfName(context));
+            jsonGeoTag.put("division_code",SharedPref.getDivisionCode(context));
             jsonGeoTag.put("Rsf", hqCode);
-            jsonGeoTag.put("sf_type", GeoTaggingActivity.SfType);
-            jsonGeoTag.put("Designation", GeoTaggingActivity.Designation);
-            jsonGeoTag.put("state_code", GeoTaggingActivity.StateCode);
-            jsonGeoTag.put("subdivision_code", GeoTaggingActivity.SubDivisionCode);
+            jsonGeoTag.put("sf_type",SharedPref.getSfType(context));
+            jsonGeoTag.put("Designation", SharedPref.getDesig(context));
+            jsonGeoTag.put("state_code", SharedPref.getStateCode(context));
+            jsonGeoTag.put("subdivision_code", SharedPref.getSubdivisionCode(context));
             jsonGeoTag.put("Mode", Constants.APP_MODE);
             Log.v("json_getGeoTag", jsonGeoTag.toString());
         } catch (Exception ignored) {

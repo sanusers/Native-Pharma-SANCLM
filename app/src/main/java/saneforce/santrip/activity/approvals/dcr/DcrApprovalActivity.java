@@ -1,20 +1,8 @@
 package saneforce.santrip.activity.approvals.dcr;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.CIPCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.CipNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ClusterCaption;
 import static saneforce.santrip.activity.approvals.ApprovalsActivity.DcrCount;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.DrCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.DrNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.HosCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.HospNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.StockistCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.StockistNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.UnDrCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.UnDrNeed;
+
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -67,12 +55,13 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class DcrApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
-    public static String SfName, SfType, SfCode, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SelectedTransCode, SelectedSfCode, SelectedActivityDate;
+
+    public static String SelectedTransCode, SelectedSfCode, SelectedActivityDate;
     public static int SelectedPosition;
     @SuppressLint("StaticFieldLeak")
     public static saneforce.santrip.databinding.ActivityDcrCallApprovalBinding dcrCallApprovalBinding;
@@ -89,7 +78,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     public JSONObject jsonDcrContentList = new JSONObject();
     public ProgressDialog progressDialog = null;
     public ApiInterface api_interface;
-    LoginResponse loginResponse;
+
     SQLite sqLite;
     JSONObject jsonDcrList = new JSONObject();
     JSONObject jsonAccept = new JSONObject();
@@ -102,23 +91,23 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
 
     private static void SetupAdapter(Context context) {
         adapterModels.add(new AdapterModel("All", String.valueOf(countAll)));
-        if (DrNeed.equalsIgnoreCase("0"))
-            adapterModels.add(new AdapterModel(DrCaption, String.valueOf(countDr)));
-        if (ChemistNeed.equalsIgnoreCase("0"))
-            adapterModels.add(new AdapterModel(ChemistCaption, String.valueOf(countChem)));
-        if (StockistNeed.equalsIgnoreCase("0"))
-            adapterModels.add(new AdapterModel(StockistCaption, String.valueOf(countStk)));
-        if (UnDrNeed.equalsIgnoreCase("0"))
-            adapterModels.add(new AdapterModel(UnDrCaption, String.valueOf(countUnDr)));
-        if (CipNeed.equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(CIPCaption, "0"));
-        if (HospNeed.equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(HosCaption, "0"));
+        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(SharedPref.getDrCap(context), String.valueOf(countDr)));
+        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(SharedPref.getChmCap(context), String.valueOf(countChem)));
+        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(SharedPref.getStkCap(context), String.valueOf(countStk)));
+        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0"))
+            adapterModels.add(new AdapterModel(SharedPref.getUNLcap(context), String.valueOf(countUnDr)));
+        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(SharedPref.getCipCaption(context), "0"));
+        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) adapterModels.add(new AdapterModel(SharedPref.getHospCaption(context), "0"));
 
         adapterCusMainList = new AdapterCusMainList(context, dcrDetailedList, SaveProductList, saveInputList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         dcrCallApprovalBinding.rvDcrContentList.setLayoutManager(mLayoutManager);
         dcrCallApprovalBinding.rvDcrContentList.setAdapter(adapterCusMainList);
 
-        adapterSelectionList = new AdapterSelectionList(context, adapterModels, dcrDetailedList, adapterCusMainList, DrCaption, ChemistCaption, StockistCaption, UnDrCaption);
+        adapterSelectionList = new AdapterSelectionList(context, adapterModels, dcrDetailedList, adapterCusMainList, SharedPref.getDrCap(context), SharedPref.getChmCap(context), SharedPref.getStkCap(context), SharedPref.getUNLcap(context));
         dcrCallApprovalBinding.rvSelectionList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         dcrCallApprovalBinding.rvSelectionList.setAdapter(adapterSelectionList);
 
@@ -145,12 +134,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonDcrContentList.put("tableName", "getvwdcrone");
             jsonDcrContentList.put("Trans_SlNo", SelectedTransCode);
             jsonDcrContentList.put("sfcode", SelectedSfCode);
-            jsonDcrContentList.put("division_code", DivCode);
-            jsonDcrContentList.put("Rsf", TodayPlanSfCode);
-            jsonDcrContentList.put("sf_type", SfType);
-            jsonDcrContentList.put("Designation", Designation);
-            jsonDcrContentList.put("state_code", StateCode);
-            jsonDcrContentList.put("subdivision_code", SubDivisionCode);
+            jsonDcrContentList.put("division_code", SharedPref.getDivisionCode(this));
+            jsonDcrContentList.put("Rsf", SharedPref.getHqCode(this));
+            jsonDcrContentList.put("sf_type", SharedPref.getSfType(this));
+            jsonDcrContentList.put("Designation", SharedPref.getDesig(this));
+            jsonDcrContentList.put("state_code", SharedPref.getStateCode(this));
+            jsonDcrContentList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_get_full_dcr_list", jsonDcrContentList.toString());
 
         } catch (Exception ignored) {
@@ -293,7 +282,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        getRequiredData();
+        dcrCallApprovalBinding.tagCluster1.setText(SharedPref.getClusterCap(DcrApprovalActivity.this));
         CallDcrListApi();
 
         dcrCallApprovalBinding.searchDcr.addTextChangedListener(new TextWatcher() {
@@ -365,12 +354,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonReject.put("date", SelectedActivityDate);
             jsonReject.put("reason", toString);
             jsonReject.put("sfcode", SelectedSfCode);
-            jsonReject.put("division_code", DivCode);
-            jsonReject.put("Rsf", TodayPlanSfCode);
-            jsonReject.put("sf_type", SfType);
-            jsonReject.put("Designation", Designation);
-            jsonReject.put("state_code", StateCode);
-            jsonReject.put("subdivision_code", SubDivisionCode);
+            jsonReject.put("division_code", SharedPref.getDivisionCode(this));
+            jsonReject.put("Rsf", SharedPref.getHqCode(this));
+            jsonReject.put("sf_type", SharedPref.getSfType(this));
+            jsonReject.put("Designation", SharedPref.getDesig(this));
+            jsonReject.put("state_code", SharedPref.getStateCode(this));
+            jsonReject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_send_approval", jsonReject.toString());
         } catch (Exception ignored) {
 
@@ -433,12 +422,12 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
             jsonAccept.put("tableName", "dcrapproval");
             jsonAccept.put("date", SelectedActivityDate);
             jsonAccept.put("sfcode", SelectedSfCode);
-            jsonAccept.put("division_code", DivCode);
-            jsonAccept.put("Rsf", TodayPlanSfCode);
-            jsonAccept.put("sf_type", SfType);
-            jsonAccept.put("Designation", Designation);
-            jsonAccept.put("state_code", StateCode);
-            jsonAccept.put("subdivision_code", SubDivisionCode);
+            jsonAccept.put("division_code", SharedPref.getDivisionCode(this));
+            jsonAccept.put("Rsf", SharedPref.getHqCode(this));
+            jsonAccept.put("sf_type", SharedPref.getSfType(this));
+            jsonAccept.put("Designation", SharedPref.getDesig(this));
+            jsonAccept.put("state_code", SharedPref.getStateCode(this));
+            jsonAccept.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_send_approval", jsonAccept.toString());
         } catch (Exception ignored) {
 
@@ -497,13 +486,13 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         progressDialog = CommonUtilsMethods.createProgressDialog(DcrApprovalActivity.this);
         try {
             jsonDcrList.put("tableName", "getvwdcr");
-            jsonDcrList.put("sfcode", SfCode);
-            jsonDcrList.put("division_code", DivCode);
-            jsonDcrList.put("Rsf", TodayPlanSfCode);
-            jsonDcrList.put("sf_type", SfType);
-            jsonDcrList.put("Designation", Designation);
-            jsonDcrList.put("state_code", StateCode);
-            jsonDcrList.put("subdivision_code", SubDivisionCode);
+            jsonDcrList.put("sfcode", SharedPref.getSfCode(this));
+            jsonDcrList.put("division_code", SharedPref.getDivisionCode(this));
+            jsonDcrList.put("Rsf", SharedPref.getHqCode(this));
+            jsonDcrList.put("sf_type", SharedPref.getSfType(this));
+            jsonDcrList.put("Designation", SharedPref.getDesig(this));
+            jsonDcrList.put("state_code", SharedPref.getStateCode(this));
+            jsonDcrList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_getDcr_list", jsonDcrList.toString());
         } catch (Exception ignored) {
 
@@ -546,43 +535,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         });
     }
 
-    private void getRequiredData() {
-        try {
-            loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData();
 
-            SfType = loginResponse.getSf_type();
-            SfCode = loginResponse.getSF_Code();
-            SfName = loginResponse.getSF_Name();
-            DivCode = loginResponse.getDivision_Code();
-            SubDivisionCode = loginResponse.getSubdivision_code();
-            Designation = loginResponse.getDesig();
-            StateCode = loginResponse.getState_Code();
-            TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(DcrApprovalActivity.this);
-
-            dcrCallApprovalBinding.tagCluster1.setText(ClusterCaption);
-            
-          /*  JSONArray jsonArray;
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject setupData = jsonArray.getJSONObject(0);
-
-                setUpResponse = new SetupResponse();
-                Type typeSetup = new TypeToken<SetupResponse>() {
-                }.getType();
-                setUpResponse = new Gson().fromJson(String.valueOf(setupData), typeSetup);
-                DrCaption = setUpResponse.getCaptionDr();
-                ChemistCaption = setUpResponse.getCaptionChemist();
-                StockistCaption = setUpResponse.getCaptionStockist();
-                UnDrCaption = setUpResponse.getCaptionUndr();
-                if (setupData.has("cip_need")) {
-                    CipCaption = setUpResponse.getCaptionCip();
-                }
-            }*/
-        } catch (Exception ignored) {
-
-        }
-    }
 
 
     @Override

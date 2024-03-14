@@ -65,7 +65,6 @@ import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityPlaySlidePreviewDetailingBinding;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 
 public class PlaySlideDetailing extends AppCompatActivity {
@@ -80,13 +79,13 @@ public class PlaySlideDetailing extends AppCompatActivity {
     public static ArrayList<String> headingData = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static Context context;
-    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SpecialityCodePlay, MappedBrandsPlay, MappedSlidesPlay;
+    public static String SpecialityCodePlay, MappedBrandsPlay, MappedSlidesPlay;
     BottomLayoutHeadAdapter bottomPreviewDetailedHeadAdapter;
     boolean playBtnClicked = false;
     MediaController mediaController;
     double progress = 0;
     int SelectedPos;
-    LoginResponse loginResponse;
+
     int scribblePos;
     int val = 0;
     CommonSharedPreference mCommonSharedPreference;
@@ -458,16 +457,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
     }
 
     public void initialisation() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
 
         mediaController = new MediaController(this);
         mediaController.setAnchorView(binding.videoView);

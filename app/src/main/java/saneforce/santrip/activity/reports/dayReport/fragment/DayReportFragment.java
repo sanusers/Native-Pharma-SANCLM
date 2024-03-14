@@ -54,7 +54,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.FragmentDayReportBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -63,12 +62,11 @@ import saneforce.santrip.utility.TimeUtils;
 
 public class DayReportFragment extends Fragment {
 
-    public static String drNeed, cheNeed, stkNeed, unDrNeed, CipNeed, hosNeed, CheckInOutNeed;
     FragmentDayReportBinding binding;
     ApiInterface apiInterface;
     SQLite sqLite;
     LocalDate localDate;
-    LoginResponse loginResponse;
+
     ProgressDialog progressDialog;
     DayReportAdapter dayReportAdapter;
     CalendarAdapter calendarAdapter;
@@ -123,16 +121,7 @@ public class DayReportFragment extends Fragment {
     public void initialisation() {
         sqLite = new SQLite(getContext());
         localDate = LocalDate.now();
-        loginResponse = sqLite.getLoginData();
         daysArrayList = daysInMonthArray(localDate);
-
-        drNeed = loginResponse.getDrNeed();
-        cheNeed = loginResponse.getChmNeed();
-        stkNeed = loginResponse.getStkNeed();
-        unDrNeed = loginResponse.getUNLNeed();
-        CipNeed = loginResponse.getCip_need();
-        hosNeed = loginResponse.getHosp_need();
-        CheckInOutNeed = loginResponse.getSrtNd();
 
         ReportFragContainerActivity activity = (ReportFragContainerActivity) getActivity();
         activity.title.setText("Day Report");
@@ -283,15 +272,15 @@ public class DayReportFragment extends Fragment {
 
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "getdayrpt");
-                        jsonObject.put("sfcode", loginResponse.getSF_Code());
-                        jsonObject.put("sf_type", loginResponse.getSf_type());
-                        jsonObject.put("divisionCode", loginResponse.getDivision_Code());
-                        jsonObject.put("Rsf", loginResponse.getSF_Code());
-                        jsonObject.put("Designation", loginResponse.getDesig());
-                        jsonObject.put("state_code", loginResponse.getState_Code());
-                        jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                        jsonObject.put("sfcode",SharedPref.getSfCode(requireContext()));
+                        jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
+                        jsonObject.put("divisionCode",SharedPref.getDivisionCode(requireContext()));
+                        jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
+                        jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
+                        jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
+                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
                         jsonObject.put("rptDt", date);
-                        Log.v("jsonDayReport", "---" + loginResponse);
+                        Log.v("jsonDayReport", "---" + jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");

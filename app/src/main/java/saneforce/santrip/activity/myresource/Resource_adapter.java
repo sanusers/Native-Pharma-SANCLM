@@ -30,7 +30,6 @@ import java.util.HashSet;
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -55,7 +54,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     ArrayList<String> list = new ArrayList<>();
     String Doc, chm = "", stck = "", unlist = "";
     String po_count;
-    LoginResponse loginResponse;
+
     String geoChk;
 
     public Resource_adapter(Context context, ArrayList<Resourcemodel_class> listeduser) {
@@ -75,9 +74,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     public void onBindViewHolder(@NonNull Resource_adapter.ViewHolder holder, int position) {
         final Resourcemodel_class app_adapt = listeduser.get(position);
         sqLite = new SQLite(context);
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-        geoChk = loginResponse.getGeoChk();
+
+        geoChk = SharedPref.getGeoChk(context);
 
         holder.username.setText(app_adapt.getListed_data());
         holder.usercount.setText(app_adapt.getListed_count());
@@ -93,7 +91,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                 MyResource_Activity.Key = "";
                 listresource.clear();
                 search_list.clear();
-                Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(context, listresource, "", loginResponse.getMCLDet());
+                Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(context, listresource, "", SharedPref.getMclDet(context));
                 appRecyclerView.setAdapter(appAdapter_0);
                 appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                 appAdapter_0.notifyDataSetChanged();
@@ -117,9 +115,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Long = (jsonObject.getString("Long"));
 
                                     boolean isVisibleView = false;
-                                    if (geoChk.equalsIgnoreCase("0") && loginResponse.getGEOTagNeed().equalsIgnoreCase("1")) {
+                                    if (geoChk.equalsIgnoreCase("0") && SharedPref.getGeotagNeed(context).equalsIgnoreCase("1")) {
                                         if (!Lat.isEmpty() && !Long.isEmpty()) {
-                                            if (loginResponse.getGeoTagApprovalNeed().equalsIgnoreCase("0")) {
+                                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                                 isVisibleView = jsonObject.getString("cust_status").equalsIgnoreCase("0");
                                             } else {
                                                 isVisibleView = true;
@@ -129,7 +127,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     listresource.add(new Resourcemodel_class(custom_name, cluster, category, "Rx", specialty, Lat, Long, docval, MyResource_Activity.Key, isVisibleView));
                                 }
                             }
-                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", loginResponse.getMCLDet());
+                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", SharedPref.getMclDet(context));
                             appRecyclerView.setAdapter(appAdapter);
                             appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                             appAdapter.notifyDataSetChanged();
@@ -151,9 +149,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Long = (jsonObject.getString("long"));
 
                                     boolean isVisibleView = false;
-                                    if (geoChk.equalsIgnoreCase("0") && loginResponse.getGEOTagNeedche().equalsIgnoreCase("1")) {
+                                    if (geoChk.equalsIgnoreCase("0") && SharedPref.getGeotagNeedChe(context).equalsIgnoreCase("1")) {
                                         if (!Lat.isEmpty() && !Long.isEmpty()) {
-                                            if (loginResponse.getGeoTagApprovalNeed().equalsIgnoreCase("0")) {
+                                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                                 isVisibleView = jsonObject.getString("cust_status").equalsIgnoreCase("0");
                                             } else {
                                                 isVisibleView = true;
@@ -164,7 +162,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     listresource.add(new Resourcemodel_class(custom_name, cluster, "", "", "", Lat, Long, chmval, MyResource_Activity.Key, isVisibleView));
                                 }
                             }
-                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", loginResponse.getMCLDet());
+                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", SharedPref.getMclDet(context));
                             appRecyclerView.setAdapter(appAdapter);
                             appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                             appAdapter.notifyDataSetChanged();
@@ -186,9 +184,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Long = (jsonObject.getString("long"));
 
                                     boolean isVisibleView = false;
-                                    if (geoChk.equalsIgnoreCase("0") && loginResponse.getGEOTagNeedstock().equalsIgnoreCase("1")) {
+                                    if (geoChk.equalsIgnoreCase("0") && SharedPref.getGeotagNeedStock(context).equalsIgnoreCase("1")) {
                                         if (!Lat.isEmpty() && !Long.isEmpty()) {
-                                            if (loginResponse.getGeoTagApprovalNeed().equalsIgnoreCase("0")) {
+                                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                                 isVisibleView = jsonObject.getString("cust_status").equalsIgnoreCase("0");
                                             } else {
                                                 isVisibleView = true;
@@ -199,7 +197,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     listresource.add(new Resourcemodel_class(custom_name, cluster, "", "", "", Lat, Long, strck_val, MyResource_Activity.Key, isVisibleView));
                                 }
                             }
-                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", loginResponse.getMCLDet());
+                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", SharedPref.getMclDet(context));
                             appRecyclerView.setAdapter(appAdapter);
                             appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                             appAdapter.notifyDataSetChanged();
@@ -225,9 +223,9 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String Long = (jsonObject.getString("long"));
 
                                     boolean isVisibleView = false;
-                                    if (geoChk.equalsIgnoreCase("0") && loginResponse.getGEOTagNeedunlst().equalsIgnoreCase("1")) {
+                                    if (geoChk.equalsIgnoreCase("0") && SharedPref.getGeotagNeedUnlst(context).equalsIgnoreCase("1")) {
                                         if (!Lat.isEmpty() && !Long.isEmpty()) {
-                                            if (loginResponse.getGeoTagApprovalNeed().equalsIgnoreCase("0")) {
+                                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                                 isVisibleView = jsonObject.getString("cust_status").equalsIgnoreCase("0");
                                             } else {
                                                 isVisibleView = true;
@@ -238,7 +236,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                 }
                             }
 
-                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", loginResponse.getMCLDet());
+                            Res_sidescreenAdapter appAdapter = new Res_sidescreenAdapter(context, listresource, "", SharedPref.getMclDet(context));
                             appRecyclerView.setAdapter(appAdapter);
                             appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                             appAdapter.notifyDataSetChanged();
@@ -267,7 +265,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
                                     listresource.add(new Resourcemodel_class(custom_name, "", "", "", "", "", "", "", ""));
 
-                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "1", loginResponse.getMCLDet());
+                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "1", SharedPref.getMclDet(context));
                                     appRecyclerView.setAdapter(appAdapter3);
                                     appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                                     appAdapter3.notifyDataSetChanged();
@@ -292,7 +290,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
                                     listresource.add(new Resourcemodel_class(custom_name, "", product_type, "", "", "", "", "", ""));
 
-                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "1", loginResponse.getMCLDet());
+                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "1", SharedPref.getMclDet(context));
                                     appRecyclerView.setAdapter(appAdapter3);
                                     appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                                     appAdapter3.notifyDataSetChanged();
@@ -313,7 +311,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String custom_name = (jsonObject.getString("Name"));
                                     listresource.add(new Resourcemodel_class(custom_name, "", "", "", "", "", "", "", ""));
 
-                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "1", loginResponse.getMCLDet());
+                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "1", SharedPref.getMclDet(context));
                                     appRecyclerView.setAdapter(appAdapter3);
                                     appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                                     appAdapter3.notifyDataSetChanged();
@@ -356,7 +354,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     }
                                 }
                             }
-                            Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "2", loginResponse.getMCLDet());
+                            Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "2", SharedPref.getMclDet(context));
                             appRecyclerView.setAdapter(appAdapter3);
                             appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                             appAdapter3.notifyDataSetChanged();

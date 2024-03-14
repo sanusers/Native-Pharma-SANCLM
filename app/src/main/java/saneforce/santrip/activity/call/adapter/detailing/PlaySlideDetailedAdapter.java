@@ -1,7 +1,7 @@
 package saneforce.santrip.activity.call.adapter.detailing;
 
 import static saneforce.santrip.activity.call.DCRCallActivity.arrayStore;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.TodayPlanSfCode;
+
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -231,13 +231,13 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
         JSONObject jsonImage = new JSONObject();
         try {
             jsonImage.put("tableName", "uploadscribble");
-            jsonImage.put("sfcode", PlaySlideDetailing.SfCode);
-            jsonImage.put("division_code", PlaySlideDetailing.DivCode);
-            jsonImage.put("Rsf", TodayPlanSfCode);
-            jsonImage.put("sf_type", PlaySlideDetailing.SfType);
-            jsonImage.put("Designation", PlaySlideDetailing.Designation);
-            jsonImage.put("state_code", PlaySlideDetailing.StateCode);
-            jsonImage.put("subdivision_code", PlaySlideDetailing.SubDivisionCode);
+            jsonImage.put("sfcode", SharedPref.getSfCode(context));
+            jsonImage.put("division_code", SharedPref.getDivisionCode(context));
+            jsonImage.put("Rsf", SharedPref.getHqCode(context));
+            jsonImage.put("sf_type", SharedPref.getSfType(context));
+            jsonImage.put("Designation", SharedPref.getDesig(context));
+            jsonImage.put("state_code", SharedPref.getStateCode(context));
+            jsonImage.put("subdivision_code",SharedPref.getSubdivisionCode(context));
             Log.v("scribbleUpload", jsonImage.toString());
         } catch (Exception ignored) {
         }

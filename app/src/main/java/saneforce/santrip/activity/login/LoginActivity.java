@@ -388,6 +388,7 @@ public class LoginActivity extends AppCompatActivity {
     public void process(JSONObject jsonObject) {
         try {
             sqLite.saveLoginData(jsonObject.toString());
+            SharedPref.InsertLogInData(LoginActivity.this,jsonObject);
             openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);

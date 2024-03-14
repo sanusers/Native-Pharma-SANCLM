@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.call.dcrCallSelection.fragments;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -119,9 +121,9 @@ public class CIPFragment extends Fragment {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (SharedPref.getTodayDayPlanClusterCode(requireContext()).contains(jsonObject.getString("Town_Code"))) {
-                    if (DcrCallTabLayoutActivity.CipGeoTag.equalsIgnoreCase("1")) {
+                    if (SharedPref.getGeotagNeedCip(context).equalsIgnoreCase("1")) {
                         if (!jsonObject.getString("Lat").isEmpty() && !jsonObject.getString("Long").isEmpty()) {
-                            if (DcrCallTabLayoutActivity.GeoTagApproval.equalsIgnoreCase("0")) {
+                            if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                                 Log.v("Cip", "--11-");
                                 float[] distance = new float[2];
                                 Location.distanceBetween(Double.parseDouble(jsonObject.getString("Lat")), Double.parseDouble(jsonObject.getString("Long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
@@ -140,7 +142,7 @@ public class CIPFragment extends Fragment {
                             }
                         }
                     } else {
-                        if (DcrCallTabLayoutActivity.TpBasedDcr.equalsIgnoreCase("0")) {
+                        if (SharedPref.getTpbasedDcr(requireContext()).equalsIgnoreCase("0")) {
                             Log.v("Cip", "--33-");
                             if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
                                 custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "5", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
@@ -171,7 +173,7 @@ public class CIPFragment extends Fragment {
         }
 
         Log.v("call", "-cip--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, DcrCallTabLayoutActivity.CIPCheckInOutNeed);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, "1");
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

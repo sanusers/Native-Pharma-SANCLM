@@ -1,6 +1,6 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -24,9 +24,7 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 
 public class E_DetailingAnalysisFragment extends Fragment {
 
-
     LinearLayout doc_layout, che_layout, stokiest_layout, unlistered_layout,ll_analyis_layout,ll_grap_layout;
-
     RelativeLayout e_detailing_layout;
     CommonUtilsMethods commonUtilsMethods;
 

@@ -1,7 +1,6 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
@@ -126,7 +125,7 @@ public class OutboxFragment extends Fragment {
 
             }
 
-            if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            if (SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
                 if (sqLite.getCountCheckInOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) > 0) {
                     SharedPref.setCheckInTime(requireContext(), "");
                     SharedPref.setCheckDateTodayPlan(requireContext(), "");
@@ -171,7 +170,7 @@ public class OutboxFragment extends Fragment {
     }
 
     private void CallCheckInOut(int ParentPos, int ChildPos, ArrayList<CheckInOutModelClass> checkInOutModelClasses, GroupModelClass modelClass) {
-        if (CheckInOutNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
             if (checkInOutModelClasses.size() > 0) {
                 isCallAvailable = false;
                 for (int m = 0; m < checkInOutModelClasses.size(); m++) {

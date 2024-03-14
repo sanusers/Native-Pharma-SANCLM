@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.call.dcrCallSelection.fragments;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -118,9 +120,9 @@ public class UnlistedDoctorFragment extends Fragment {
             Log.v("UNDRCALL", "-UnDr_full_length-" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (DcrCallTabLayoutActivity.UnDrGeoTag.equalsIgnoreCase("1")) {
+                if (SharedPref.getGeotagNeedUnlst(context).equalsIgnoreCase("1")) {
                     if (!jsonObject.getString("lat").isEmpty() && !jsonObject.getString("long").isEmpty()) {
-                        if (DcrCallTabLayoutActivity.GeoTagApproval.equalsIgnoreCase("0")) {
+                        if (SharedPref.getGeotagApprovalNeed(context).equalsIgnoreCase("0")) {
                             Log.v("UNDRCALL", "--11-");
                             float[] distance = new float[2];
                             Location.distanceBetween(Double.parseDouble(jsonObject.getString("lat")), Double.parseDouble(jsonObject.getString("long")), DcrCallTabLayoutActivity.lat, DcrCallTabLayoutActivity.lng, distance);
@@ -139,7 +141,7 @@ public class UnlistedDoctorFragment extends Fragment {
                         }
                     }
                 } else {
-                    if (DcrCallTabLayoutActivity.TpBasedDcr.equalsIgnoreCase("0")) {
+                    if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
                         Log.v("UNDRCALL", "--33-");
                         if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
                             custListArrayList = SaveData(jsonObject, i);
@@ -169,7 +171,7 @@ public class UnlistedDoctorFragment extends Fragment {
         }
 
         Log.v("UNDRCALL", "-UnDr--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, DcrCallTabLayoutActivity.UnDrCheckInOutNeed);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, SharedPref.getUnlistSrtNd(requireContext()));
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

@@ -35,7 +35,6 @@ import java.util.Locale;
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -66,7 +65,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
     HashMap<String, Integer> idCounts = new HashMap<>();
     ArrayList<String> visit_list = new ArrayList<>();
     ArrayList<String> visitlist12 = new ArrayList<>();
-    LoginResponse loginResponse;
+
     double str1, str2;
     Location gps_loc, network_loc, final_loc;
     LinearLayout backArrow, hq_view;
@@ -114,8 +113,6 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
         appRecyclerView.setVisibility(View.VISIBLE);
         sqLite = new SQLite(this);
-
-
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
 
@@ -123,18 +120,17 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString("Origin");
         }
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+
 
 
         backArrow.setOnClickListener(v -> {
             getOnBackPressedDispatcher().onBackPressed();
         });
 
-        if (loginResponse.getDesig_Code().equals("MR")) {
+        if (SharedPref.getDesig(this).equals("MR")) {
             hq_view.setVisibility(View.GONE);
         } else {
-            if (loginResponse.getDesig_Code().equals("MGR")) {
+            if (SharedPref.getDesig(this).equals("MGR")) {
                 hq_view.setVisibility(View.VISIBLE);
                 hq_head.setText(SharedPref.getHqName(MyResource_Activity.this));
             }
@@ -283,18 +279,18 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
             Docvisit();
 
             listed_data.clear();
-            if (loginResponse.getDrNeed().equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(loginResponse.getDrCap(), Doc_count, "1"));
-            if (loginResponse.getChmNeed().equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(loginResponse.getChmCap(), Che_count, "2"));
-            if (loginResponse.getStkNeed().equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(loginResponse.getStkCap(), Strck_count, "3"));
-            if (loginResponse.getUNLNeed().equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(loginResponse.getNLCap(), Unlist_count, "4"));
-            if (loginResponse.getHosp_need().equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(loginResponse.getHosp_caption(), Hosp_count, "5"));
-            if (loginResponse.getCip_need().equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(loginResponse.getCIP_Caption(), Cip_count, "6"));
+            if (SharedPref.getDrNeed(this).equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(SharedPref.getDrCap(this), Doc_count, "1"));
+            if (SharedPref.getChmNeed(this).equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(SharedPref.getChmCap(this), Che_count, "2"));
+            if (SharedPref.getStkNeed(this).equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(SharedPref.getStkCap(this), Strck_count, "3"));
+            if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(SharedPref.getUNLcap(this), Unlist_count, "4"));
+            if (SharedPref.getHospNeed(this).equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(SharedPref.getHospCaption(this), Hosp_count, "5"));
+            if (SharedPref.getCipNeed(this).equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(SharedPref.getCipCaption(this), Cip_count, "6"));
             listed_data.add(new Resourcemodel_class("Input", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.INPUT).length()), "7"));
             listed_data.add(new Resourcemodel_class("Product", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length()), "8"));
             listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(this)).length()), "9"));
@@ -396,7 +392,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 }
             }
         }
-        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount, loginResponse.getMCLDet());
+        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount, SharedPref.getMclDet(this));
         appRecyclerView.setAdapter(appAdapter_0);
         appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
         appAdapter_0.notifyDataSetChanged();

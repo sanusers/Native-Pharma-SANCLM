@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.call.dcrCallSelection.fragments;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -141,7 +143,7 @@ public class HospitalFragment extends Fragment {
                             }
                         }
                     } else {*/
-                    if (DcrCallTabLayoutActivity.TpBasedDcr.equalsIgnoreCase("0")) {
+                    if (SharedPref.getTpbasedDcr(context).equalsIgnoreCase("0")) {
                         Log.v("Hos", "--33-");
                         if (SharedPref.getTodayDayPlanClusterCode(requireContext()).equalsIgnoreCase(jsonObject.getString("Town_Code"))) {
                             custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), "6", jsonObject.getString("Category"), jsonObject.getString("Specialty"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i)));
@@ -172,7 +174,7 @@ public class HospitalFragment extends Fragment {
         }
 
         Log.v("call", "-hos--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, DcrCallTabLayoutActivity.HosCheckInOutNeed);
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, "1");
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

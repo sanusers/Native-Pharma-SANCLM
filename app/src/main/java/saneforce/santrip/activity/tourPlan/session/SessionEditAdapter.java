@@ -54,18 +54,17 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.MyViewHolder> {
 
     public static ModelClass inputDataArray = new ModelClass();
-    static String drCap = "", chemistCap = "", stockiestCap = "", unDrCap = "", hospCap = "", cipCap = "";
     public int itemPosition;
-    Context context;
+    static Context context;
     SQLite sqLite;
-    LoginResponse loginResponse;
+
     ApiInterface apiInterface;
     SessionInterface sessionInterface;
     SessionItemAdapter sessionItemAdapter = new SessionItemAdapter();
@@ -82,22 +81,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         SessionEditAdapter.inputDataArray = inputDataArray;
         this.context = context;
         this.sessionInterface = sessionInterface;
-
         sqLite = new SQLite(context);
-        loginResponse = sqLite.getLoginData();
 
-        sfCode = loginResponse.getSF_Code();
-        division_code = loginResponse.getDivision_Code();
-        subdivision_code = loginResponse.getSubdivision_code();
-        designation = loginResponse.getDesig();
-        state_code = loginResponse.getState_Code();
-        sfType = loginResponse.getSf_type();
-        drCap = loginResponse.getDrCap();
-        chemistCap = loginResponse.getChmCap();
-        stockiestCap = loginResponse.getStkCap();
-        unDrCap = loginResponse.getNLCap();
-        hospCap = loginResponse.getHosp_caption();
-        cipCap = loginResponse.getCIP_Caption();
 //        hq_code = SharedPref.getHqCode(context); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
 
         //Tour Plan setup
@@ -1048,13 +1033,13 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
 
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", sfCode);
-                jsonObject.put("division_code", division_code);
+                jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", sfType);
-                jsonObject.put("Designation", designation);
-                jsonObject.put("state_code", state_code);
-                jsonObject.put("subdivision_code", subdivision_code);
+                jsonObject.put("sf_type", SharedPref.getSfType(context));
+                jsonObject.put("Designation", SharedPref.getDesig(context));
+                jsonObject.put("state_code", SharedPref.getStateCode(context));
+                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
 
 //                Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
@@ -1650,12 +1635,12 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
             listCardView = itemView.findViewById(R.id.listCardView);
             itemRecView = itemView.findViewById(R.id.sessionItemRecView);
 
-            listedDrCapTV.setText(drCap);
-            cheCapTV.setText(chemistCap);
-            stockCapTV.setText(stockiestCap);
-            unListedDrCapTV.setText(unDrCap);
-            hospCapTV.setText(hospCap);
-            cipCapTV.setText(cipCap);
+            listedDrCapTV.setText(SharedPref.getDrCap(context));
+            cheCapTV.setText(SharedPref.getChmCap(context));
+            stockCapTV.setText(SharedPref.getStkCap(context));
+            unListedDrCapTV.setText(SharedPref.getUNLcap(context));
+            hospCapTV.setText(SharedPref.getHospCaption(context));
+            cipCapTV.setText(SharedPref.getCipCaption(context));
 
         }
     }

@@ -1,7 +1,7 @@
 package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
-import static saneforce.santrip.activity.homeScreen.HomeDashBoard.InputValidation;
-import static saneforce.santrip.activity.homeScreen.HomeDashBoard.SampleValidation;
+
+
 import static saneforce.santrip.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
@@ -10,7 +10,7 @@ import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragmen
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.cip_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.hos_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.unlistered_list;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SfType;
+
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
@@ -172,7 +172,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                     }
                                 }
                             }
-                            AssignCallAnalysis(SfType, outBoxCallLists.get(position).getCusType());
+                            AssignCallAnalysis(SharedPref.getSfType(context), outBoxCallLists.get(position).getCusType());
                         }
                     } catch (Exception ignored) {
 
@@ -311,7 +311,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         try {
             JSONObject json = new JSONObject(jsonArray);
             //Input
-            if (InputValidation.equalsIgnoreCase("1")) {
+            if (SharedPref.getInputValidation(context).equalsIgnoreCase("1")) {
                 JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
                 JSONArray jsonInput = json.getJSONArray("Inputs");
                 Log.v("input_wrk", String.valueOf(jsonInput));
@@ -337,7 +337,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             }
 
             //Sample
-            if (SampleValidation.equalsIgnoreCase("1")) {
+            if (SharedPref.getSampleValidation(context).equalsIgnoreCase("1")) {
                 JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
                 JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
                 Log.v("sample_wrk", String.valueOf(jsonPrdArray));

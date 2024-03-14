@@ -25,13 +25,11 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,7 +42,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.MapDcrSelectionBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -62,10 +59,10 @@ public class TagCustSelectionList extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     ApiInterface apiInterface;
     ArrayAdapter<String> arrayAdapter;
-    LoginResponse loginResponse;
+
     JSONArray jsonArray;
     JSONObject jsonObject;
-    String SelectedTab, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, SelectedHqCode, SelectedHqName, DrCaption, ChemistCaption, CipCaption, StockistCaption, UndrCaption, TpBasedDcr;
+    String SelectedTab, SelectedHqCode, SelectedHqName;
 
 
     //To Hide the bottomNavigation When popup
@@ -119,19 +116,19 @@ public class TagCustSelectionList extends AppCompatActivity {
 
         sqLite = new SQLite(getApplicationContext());
 
-        getRequiredData();
+        SelectedTab = MapsActivity.SelectedTab;
 
-        Log.v("data", "--" + SfType + "--" + SfCode);
 
-        if (SfType.equalsIgnoreCase("1")) {
-            AddCustList(SfCode);
-            SelectedHqCode = SfCode;
-            SelectedHqName = SfName;
-            binding.txtSelectedHq.setText(SfName);
+
+        if (SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+            AddCustList(SharedPref.getSfCode(this));
+            SelectedHqCode = SharedPref.getSfCode(this);
+            SelectedHqName = SharedPref.getSfName(this);
+            binding.txtSelectedHq.setText(SharedPref.getSfName(this));
             binding.txtSelectedHq.setEnabled(false);
         } else {
             binding.txtSelectedHq.setEnabled(true);
-            if (TpBasedDcr.equalsIgnoreCase("0")) {
+            if (SharedPref.getTpbasedDcr(this).equalsIgnoreCase("0")) {
                 binding.txtSelectedHq.setEnabled(false);
             }
             SetHqAdapter();
@@ -214,28 +211,6 @@ public class TagCustSelectionList extends AppCompatActivity {
         });
     }
 
-    private void getRequiredData() {
-        try {
-            SelectedTab = MapsActivity.SelectedTab;
-            loginResponse = sqLite.getLoginData();
-            SfType = loginResponse.getSf_type();
-            SfCode = loginResponse.getSF_Code();
-            SfName = loginResponse.getSF_Name();
-            DivCode = loginResponse.getDivision_Code();
-            SubDivisionCode = loginResponse.getSubdivision_code();
-            Designation = loginResponse.getDesig();
-            StateCode = loginResponse.getState_Code();
-            DrCaption = loginResponse.getDrCap();
-            ChemistCaption = loginResponse.getChmCap();
-            StockistCaption = loginResponse.getStkCap();
-            UndrCaption = loginResponse.getNLCap();
-            CipCaption = loginResponse.getCIP_Caption();
-            TpBasedDcr = loginResponse.getTPbasedDCR();
-
-        } catch (Exception ignored) {
-
-        }
-    }
 
     private void SetHqAdapter() {
         HqNameList.clear();
@@ -307,13 +282,13 @@ public class TagCustSelectionList extends AppCompatActivity {
                 apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", SfCode);
-                jsonObject.put("division_code", DivCode);
+                jsonObject.put("sfcode", SharedPref.getSfCode(this));
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this));
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", SfType);
-                jsonObject.put("Designation", Designation);
-                jsonObject.put("state_code", StateCode);
-                jsonObject.put("subdivision_code", SubDivisionCode);
+                jsonObject.put("sf_type", SharedPref.getSfType(this));
+                jsonObject.put("Designation", SharedPref.getDesig(this));
+                jsonObject.put("state_code", SharedPref.getStateCode(this));
+                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
 // Log.e("test","master sync obj in TP : " + jsonObject);
                 Call<JsonElement> call = null;
@@ -390,7 +365,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         switch (SelectedTab) {
             case "D":
                 try {
-                    binding.tagSelection.setText(DrCaption);
+                    binding.tagSelection.setText(SharedPref.getDrCap(this));
                     if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
@@ -418,7 +393,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "C":
                 try {
-                    binding.tagSelection.setText(ChemistCaption);
+                    binding.tagSelection.setText(SharedPref.getChmCap(this));
                     if (!sqLite.getMasterSyncDataOfHQ(Constants.CHEMIST + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
@@ -443,7 +418,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "S":
                 try {
-                    binding.tagSelection.setText(StockistCaption);
+                    binding.tagSelection.setText(SharedPref.getStkCap(this));
                     if (!sqLite.getMasterSyncDataOfHQ(Constants.STOCKIEST + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
@@ -468,7 +443,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 break;
             case "U":
                 try {
-                    binding.tagSelection.setText(UndrCaption);
+                    binding.tagSelection.setText(SharedPref.getUNLcap(this));
                     if (!sqLite.getMasterSyncDataOfHQ(Constants.UNLISTED_DOCTOR + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {

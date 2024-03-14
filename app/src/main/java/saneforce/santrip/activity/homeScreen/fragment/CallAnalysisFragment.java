@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,6 @@ import saneforce.santrip.activity.homeScreen.view.ImageLineChartRenderer;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.CallAnalysisFagmentBinding;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -53,12 +53,10 @@ import saneforce.santrip.utility.TimeUtils;
 public class CallAnalysisFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
     public static CallAnalysisFagmentBinding callAnalysisBinding;
-    public static String SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed;
     public static String key;
     public static JSONArray dcrdatas;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
     SQLite sqLite;
-    LoginResponse loginResponse;
     Context context;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -93,13 +91,21 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 //        if(SharedPref.getMonthForClearCalls(getActivity())!=Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8))){
 //           ClearOldCalls();
 //        }
-        getRequiredData();
         HiddenVisibleFunctions();
-        SetcallDetailsInLineChart(sqLite, context);
+   //     SetcallDetailsInLineChart(sqLite, context);
 
-        ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
+        callAnalysisBinding.progressMain.setVisibility(View.VISIBLE);
 
-        vto.addOnGlobalLayoutListener(() -> {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SetcallDetailsInLineChart(sqLite, context);
+            }
+        }, 1000);
+
+            ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(() -> {
 
             int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
             int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
@@ -190,7 +196,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
 
 
-                if (!Designation.equalsIgnoreCase("MR")) {
+                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
                     callAnalysisBinding.txtDocCount.setText(String.valueOf(doc_current_callcount));
                     callAnalysisBinding.txtCheCount.setText(String.valueOf(che_current_callcount));
                     callAnalysisBinding.txtStockCount.setText(String.valueOf(stockiest_current_callcount));
@@ -261,7 +267,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.inChart.lineChart.clear();
                 callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.VISIBLE);
 
-                if (DrNeed.equalsIgnoreCase("0")) {
+                if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -269,7 +275,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                     setLineChartData("1", sqLite, context);
-                } else if (ChemistNeed.equalsIgnoreCase("0")) {
+                } else if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -277,7 +283,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                     setLineChartData("2", sqLite, context);
-                } else if (StockistNeed.equalsIgnoreCase("0")) {
+                } else if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.VISIBLE);
@@ -285,7 +291,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                     setLineChartData("3", sqLite, context);
-                } else if (UnDrNeed.equalsIgnoreCase("0")) {
+                } else if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -293,7 +299,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                     setLineChartData("4", sqLite, context);
-                } else if (CipNeed.equalsIgnoreCase("0")) {
+                } else if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -301,7 +307,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                     setLineChartData("5", sqLite, context);
-                } else if (HospNeed.equalsIgnoreCase("0")) {
+                } else if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
@@ -320,7 +326,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.llCipChild.setOnClickListener(null);
 
 
-                if (!Designation.equalsIgnoreCase("MR")) {
+                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
                     callAnalysisBinding.txtDocCount.setText("0");
                     callAnalysisBinding.txtCheCount.setText("0");
                     callAnalysisBinding.txtStockCount.setText("0");
@@ -729,65 +735,39 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
         callAnalysisBinding.inChart.lineChart.setRenderer(new ImageLineChartRenderer(callAnalysisBinding.inChart.lineChart, callAnalysisBinding.inChart.lineChart.getAnimator(), callAnalysisBinding.inChart.lineChart.getViewPortHandler(), starBitmap));
-
+        callAnalysisBinding.progressMain.setVisibility(View.GONE);
     }
 
 
 
     private void HiddenVisibleFunctions() {
-        if (DrNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getDrNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llDocHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtDocName.setText(CapDr);
+            callAnalysisBinding.txtDocName.setText(SharedPref.getDrCap(requireContext()));
             callAnalysisBinding.textAverage.setText(String.format("%s %s %s", getString(R.string.average), callAnalysisBinding.txtDocName.getText().toString(), getString(R.string.calls)));
         }
-        if (ChemistNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getChmNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llChemHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtCheName.setText(CapChemist);
+            callAnalysisBinding.txtCheName.setText(SharedPref.getChmCap(requireContext()));
         }
-        if (StockistNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getStkNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llStockHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtStockName.setText(CapStockist);
+            callAnalysisBinding.txtStockName.setText(SharedPref.getStkCap(requireContext()));
         }
-        if (UnDrNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getUnlNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llUnliHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtUnliName.setText(CapUnDr);
+            callAnalysisBinding.txtUnliName.setText(SharedPref.getUNLcap(requireContext()));
         }
-        if (CipNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getCipNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llCipHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtCipName.setText(CapCip);
+            callAnalysisBinding.txtCipName.setText(SharedPref.getCipCaption(requireContext()));
         }
-        if (HospNeed.equalsIgnoreCase("0")) {
+        if (SharedPref.getHospNeed(requireContext()).equalsIgnoreCase("0")) {
             callAnalysisBinding.llHosHead.setVisibility(View.VISIBLE);
-            callAnalysisBinding.txtHosName.setText(CapHos);
+            callAnalysisBinding.txtHosName.setText(SharedPref.getHospCaption(requireContext()));
         }
     }
 
-    private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-
-        CapDr = loginResponse.getDrCap();
-        CapChemist = loginResponse.getChmCap();
-        CapStockist = loginResponse.getStkCap();
-        CapUnDr = loginResponse.getNLCap();
-        CapCip = loginResponse.getCIP_Caption();
-        CapHos = loginResponse.getHosp_caption();
-
-        CipNeed = loginResponse.getCip_need();
-        DrNeed = loginResponse.getDrNeed();
-        ChemistNeed = loginResponse.getChmNeed();
-        StockistNeed = loginResponse.getStkNeed();
-        UnDrNeed = loginResponse.getUNLNeed();
-        HospNeed = loginResponse.getHosp_need();
-    }
 
     @Override
     public void onClick(View v) {

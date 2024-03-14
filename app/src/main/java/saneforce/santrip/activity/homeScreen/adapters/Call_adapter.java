@@ -8,14 +8,6 @@ import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragmen
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.cip_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.hos_list;
 import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.unlistered_list;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.Designation;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.DivCode;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.InputValidation;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SfCode;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SfType;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.StateCode;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.SubDivisionCode;
-import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.TodayPlanSfCode;
 import static saneforce.santrip.activity.homeScreen.fragment.CallsFragment.binding;
 
 import android.annotation.SuppressLint;
@@ -143,7 +135,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
                             sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
                             sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
-                            AssignCallAnalysis(SfType, callslist.getDocNameID());
+                            AssignCallAnalysis( SharedPref.getSfType(context), callslist.getDocNameID());
                             new CountDownTimer(250, 250) {
                                 public void onTick(long millisUntilFinished) {
                                 }
@@ -225,17 +217,17 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     private void CallDeleteAPI(String TranslNo, String aDetSLNo, String type, String date, String docCode) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("sfcode", SfCode);
-            jsonObject.put("division_code", DivCode);
-            jsonObject.put("Rsf", TodayPlanSfCode);
-            jsonObject.put("sf_type", SfType);
-            jsonObject.put("Designation", Designation);
-            jsonObject.put("state_code", StateCode);
-            jsonObject.put("subdivision_code", SubDivisionCode);
+            jsonObject.put("sfcode",  SharedPref.getSfCode(context));
+            jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
+            jsonObject.put("Rsf",  SharedPref.getHqCode(context));
+            jsonObject.put("sf_type",  SharedPref.getSfType(context));
+            jsonObject.put("Designation",  SharedPref.getDesig(context));
+            jsonObject.put("state_code",  SharedPref.getStateCode(context));
+            jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(context));
             jsonObject.put("amc", aDetSLNo);
             jsonObject.put("CusType", type);
-            jsonObject.put("sample_validation", CallsFragment.SampleValidation);
-            jsonObject.put("input_validation", InputValidation);
+            jsonObject.put("sample_validation", SharedPref.getSampleValidation(context));
+            jsonObject.put("input_validation",  SharedPref.getInputValidation(context));
             Log.v("delCall", jsonObject.toString());
         } catch (Exception e) {
             Log.v("delCall", e.toString());
@@ -298,13 +290,13 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         try {
             jsonObject.put("headerno", transSlno);
             jsonObject.put("detno", aDetSLNo);
-            jsonObject.put("sfcode", SfCode);
-            jsonObject.put("division_code", DivCode);
-            jsonObject.put("Rsf", TodayPlanSfCode);
-            jsonObject.put("sf_type", SfType);
-            jsonObject.put("Designation", Designation);
-            jsonObject.put("state_code", StateCode);
-            jsonObject.put("subdivision_code", SubDivisionCode);
+            jsonObject.put("sfcode",  SharedPref.getSfCode(context));
+            jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
+            jsonObject.put("Rsf",  SharedPref.getHqCode(context));
+            jsonObject.put("sf_type",  SharedPref.getSfType(context));
+            jsonObject.put("Designation",  SharedPref.getDesig(context));
+            jsonObject.put("state_code",  SharedPref.getStateCode(context));
+            jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(context));
             jsonObject.put("cusname", docName);
             jsonObject.put("custype", type);
             jsonObject.put("pob", "1");

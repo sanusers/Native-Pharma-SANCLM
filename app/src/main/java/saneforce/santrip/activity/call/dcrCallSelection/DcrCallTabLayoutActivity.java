@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.call.dcrCallSelection;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,16 +24,16 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.databinding.CallDcrSelectionBinding;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class DcrCallTabLayoutActivity extends AppCompatActivity {
-    public static String VisitControlNeed, TodayPlanSfCode, TodayPlanSfName, SfType, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TpBasedDcr, DrGeoTag, CheGeoTag, CipGeoTag, StockiestGeoTag, UnDrGeoTag, GeoTagApproval, DrNeed, ChemistNeed, CipNeed, StockistNeed, UnDrNeed, CapDr, CapChemist, CapStockist, CapCip, CapUnDr, CapHos, HospNeed, DrCheckInOutNeed, CheCheckInOutNeed, StkCheckInOutNeed, UnDrCheckInOutNeed, CIPCheckInOutNeed, HosCheckInOutNeed;
+
+    public static String TodayPlanSfCode, TodayPlanSfName;
     public static double lat, lng, limitKm = 0.5;
     public static ArrayList<String> TodayPlanClusterList = new ArrayList<>();
     CallDcrSelectionBinding dcrSelectionBinding;
-    LoginResponse loginResponse;
+
     TabLayoutAdapter viewPagerAdapter;
     SQLite sqLite;
     GPSTrack gpsTrack;
@@ -59,24 +61,24 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         getRequiredData();
 
         viewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
-        if (DrNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new ListedDoctorFragment(), CapDr);
+        if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new ListedDoctorFragment(), SharedPref.getDrCap(context));
         }
 
-        if (ChemistNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new ChemistFragment(), CapChemist);
+        if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new ChemistFragment(), SharedPref.getChmCap(context));
         }
-        if (CipNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new CIPFragment(), CapCip);
+        if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new CIPFragment(), SharedPref.getCipCaption(context));
         }
-        if (StockistNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new StockiestFragment(), CapStockist);
+        if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new StockiestFragment(), SharedPref.getStkCap(context));
         }
-        if (UnDrNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new UnlistedDoctorFragment(), CapUnDr);
+        if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new UnlistedDoctorFragment(), SharedPref.getUNLcap(context));
         }
-        if (HospNeed.equalsIgnoreCase("0")) {
-            viewPagerAdapter.add(new HospitalFragment(), CapHos);
+        if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
+            viewPagerAdapter.add(new HospitalFragment(), SharedPref.getHospCaption(context));
         }
 
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
@@ -93,51 +95,13 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             lat = gpsTrack.getLatitude();
             lng = gpsTrack.getLongitude();
 
-            loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData();
 
-            SfType = loginResponse.getSf_type();
-            SfCode = loginResponse.getSF_Code();
-            SfName = loginResponse.getSF_Name();
-
-            GeoTagApproval = loginResponse.getGeoTagApprovalNeed();
-            TpBasedDcr = loginResponse.getTPbasedDCR();
-
-            CapDr = loginResponse.getDrCap();
-            CapChemist = loginResponse.getChmCap();
-            CapStockist = loginResponse.getStkCap();
-            CapUnDr = loginResponse.getNLCap();
-            CapCip = loginResponse.getCIP_Caption();
-            CapHos = loginResponse.getHosp_caption();
-
-            CipNeed = loginResponse.getCip_need();
-            DrNeed = loginResponse.getDrNeed();
-            ChemistNeed = loginResponse.getChmNeed();
-            StockistNeed = loginResponse.getStkNeed();
-            UnDrNeed = loginResponse.getUNLNeed();
-            HospNeed = loginResponse.getHosp_need();
-
-            DrGeoTag = loginResponse.getGEOTagNeed();
-            CheGeoTag = loginResponse.getGEOTagNeedche();
-            CipGeoTag = loginResponse.getGeoTagNeedcip();
-            StockiestGeoTag = loginResponse.getGEOTagNeedstock();
-            UnDrGeoTag = loginResponse.getGEOTagNeedunlst();
-
-            DrCheckInOutNeed = loginResponse.getCustSrtNd();
-            CheCheckInOutNeed = loginResponse.getChmSrtNd();
-            StkCheckInOutNeed = "1";
-            UnDrCheckInOutNeed = loginResponse.getUnlistSrtNd();
-            CIPCheckInOutNeed = "1";
-            HosCheckInOutNeed = "1";
-
-            VisitControlNeed = loginResponse.getVstNd();
-
-            if (SfType.equalsIgnoreCase("1")) {
-                TodayPlanSfCode = SfCode;
-                TodayPlanSfName = SfName;
+            if (SharedPref.getSfType(this).equalsIgnoreCase("1")) {
+                TodayPlanSfCode = SharedPref.getSfCode(this);
+                TodayPlanSfName = SharedPref.getSfName(this);
             } else {
-                TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(this);
-                TodayPlanSfName = SharedPref.getTodayDayPlanSfName(this);
+                TodayPlanSfCode = SharedPref.getHqCode(this);
+                TodayPlanSfName = SharedPref.getHqName(this);
                 if (TodayPlanSfCode.equalsIgnoreCase("null") || TodayPlanSfCode.isEmpty()) {
                     JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                     for (int i = 0; i < 1; i++) {

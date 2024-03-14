@@ -199,7 +199,6 @@ public class DownloadTask {
                     SlideDownloaderAlertBox.DownloadingStaus = true;
                     SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(), SlideDownloaderAlertBox.slideId123);
                     if (SlideDownloaderAlertBox.MoveMainFlag) {
-                        SharedPref.putAutomassync(context, true);
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
@@ -221,7 +220,6 @@ public class DownloadTask {
                     SlideDownloaderAlertBox.dialog.dismiss();
                     SlideDownloaderAlertBox.DownloadingStaus = true;
                     if (SlideDownloaderAlertBox.MoveMainFlag) {
-                        SharedPref.putAutomassync(context, true);
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);

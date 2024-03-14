@@ -1,9 +1,6 @@
 package saneforce.santrip.activity.approvals.tp.adapter;
 
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ClusterCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.DrCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.StockistCaption;
+
 import static saneforce.santrip.activity.approvals.tp.TpApprovalActivity.TpChemNeed;
 import static saneforce.santrip.activity.approvals.tp.TpApprovalActivity.TpClusterNeed;
 import static saneforce.santrip.activity.approvals.tp.TpApprovalActivity.TpDrNeed;
@@ -24,6 +21,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.tp.pojo.TpDetailedModel;
+import saneforce.santrip.storage.SharedPref;
 
 public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewDetailsAdapter.ViewHolder> {
     Context context;
@@ -49,7 +47,7 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             if (TpClusterNeed.equalsIgnoreCase("0")) {
                 holder.constraint_cluster.setVisibility(View.VISIBLE);
                 holder.tv_cluster.setText(tpDetailedModels.get(position).getClusterName());
-                holder.tag_cluster.setText(ClusterCaption);
+                holder.tag_cluster.setText(SharedPref.getClusterCap(context));
                 if (!tpDetailedModels.get(position).getClusterName().isEmpty()) {
                     str = tpDetailedModels.get(position).getClusterName().split(",");
                     holder.tv_cluster_count.setText(String.valueOf(str.length));
@@ -59,7 +57,7 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             if (TpDrNeed.equalsIgnoreCase("0")) {
                 holder.constraint_doctor.setVisibility(View.VISIBLE);
                 holder.tv_drList.setText(tpDetailedModels.get(position).getDrName());
-                holder.tag_dr.setText(DrCaption);
+                holder.tag_dr.setText(SharedPref.getDrCap(context));
                 if (!tpDetailedModels.get(position).getDrName().isEmpty()) {
                     str = tpDetailedModels.get(position).getDrName().split(",");
                     holder.tv_dr_count.setText(String.valueOf(str.length));
@@ -69,7 +67,7 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             if (TpChemNeed.equalsIgnoreCase("0")) {
                 holder.constraint_chemist.setVisibility(View.VISIBLE);
                 holder.tv_chemistList.setText(tpDetailedModels.get(position).getChemistName());
-                holder.tag_chemist.setText(ChemistCaption);
+                holder.tag_chemist.setText(SharedPref.getChmCap(context));
                 if (!tpDetailedModels.get(position).getChemistName().isEmpty()) {
                     str = tpDetailedModels.get(position).getChemistName().split(",");
                     holder.tv_chemist_count.setText(String.valueOf(str.length));
@@ -79,7 +77,7 @@ public class TpClickViewDetailsAdapter extends RecyclerView.Adapter<TpClickViewD
             if (TpStockistNeed.equalsIgnoreCase("0")) {
                 holder.constraint_stockiest.setVisibility(View.VISIBLE);
                 holder.tv_stockiestList.setText(tpDetailedModels.get(position).getStockiestName());
-                holder.tag_stockist.setText(StockistCaption);
+                holder.tag_stockist.setText(SharedPref.getStkCap(context));
                 if (!tpDetailedModels.get(position).getStockiestName().isEmpty()) {
                     str = tpDetailedModels.get(position).getStockiestName().split(",");
                     holder.tv_stockiest_count.setText(String.valueOf(str.length));

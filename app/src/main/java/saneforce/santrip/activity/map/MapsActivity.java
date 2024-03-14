@@ -89,7 +89,6 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMapsBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SQLiteHandler;
 import saneforce.santrip.storage.SharedPref;
@@ -117,7 +116,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     GPSTrack gpsTrack;
     SQLiteHandler sqLiteHandler;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
-    LoginResponse loginResponse;
     String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double lat, lng, limitKm = 0.5;
     Dialog dialogTagCust;
@@ -362,50 +360,48 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getRequiredData() {
 
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
 
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
+        SfType = SharedPref.getSfType(this);
+        SfCode = SharedPref.getSfCode(this);
+        SfName = SharedPref.getSfName(this);
+        DivCode = SharedPref.getDivisionCode(this);
+        SubDivisionCode = SharedPref.getSubdivisionCode(this);;
+        Designation = SharedPref.getDesig(this);;
+        StateCode = SharedPref.getStateCode(this);;
 
-        if (loginResponse.getDrNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvDoctor.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvChemist.setText(loginResponse.getDrCap());
+            mapsBinding.tagTvChemist.setText(SharedPref.getDrCap(this));
         }
 
-        if (loginResponse.getChmNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvChemist.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvChemist.setText(loginResponse.getChmCap());
+            mapsBinding.tagTvChemist.setText(SharedPref.getChmCap(this));
         }
 
-        if (loginResponse.getStkNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getStkNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvStockist.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvStockist.setText(loginResponse.getStkCap());
+            mapsBinding.tagTvStockist.setText(SharedPref.getStkCap(this));
         }
 
-        if (loginResponse.getUNLNeed().equalsIgnoreCase("0")) {
+        if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvUndr.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvUndr.setText(loginResponse.getNLCap());
+            mapsBinding.tagTvUndr.setText(SharedPref.getUNLcap(this));
         }
 
-        if (loginResponse.getCip_need().equalsIgnoreCase("0")) {
+        if (SharedPref.getCipNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvCip.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvCip.setText(loginResponse.getCIP_Caption());
+            mapsBinding.tagTvCip.setText(SharedPref.getCipCaption(this));
         }
 
-        if (loginResponse.getHosp_need().equalsIgnoreCase("0")) {
+        if (SharedPref.getHospNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvHospital.setVisibility(View.VISIBLE);
-            mapsBinding.tagTvHospital.setText(loginResponse.getHosp_caption());
+            mapsBinding.tagTvHospital.setText(SharedPref.getHospCaption(this));
         }
 
-        GeoTagImageNeed = loginResponse.getGeoTagImg();
-        GeoTagApprovalNeed = loginResponse.getGeoTagApprovalNeed();
-        limitKm = loginResponse.getDisRad();
+        GeoTagImageNeed = SharedPref.getGeotagImg(this);
+        GeoTagApprovalNeed = SharedPref.getGeotagApprovalNeed(this);
+        limitKm = Double.parseDouble(SharedPref.getDisRad(this));
         img_url = SharedPref.getTagImageUrl(MapsActivity.this);
 
         if (SelectedHqCode.isEmpty()) {

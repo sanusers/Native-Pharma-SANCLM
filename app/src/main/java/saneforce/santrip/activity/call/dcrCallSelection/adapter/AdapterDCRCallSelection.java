@@ -1,8 +1,4 @@
 package saneforce.santrip.activity.call.dcrCallSelection.adapter;
-
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.SfType;
-import static saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity.VisitControlNeed;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -36,6 +32,7 @@ import saneforce.santrip.activity.call.profile.CustomerProfile;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.storage.SharedPref;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     Context context;
@@ -120,7 +117,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 }
 
                 if (!isVisitedToday) {
-                    if (VisitControlNeed.equalsIgnoreCase("0") && SfType.equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
+                    if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
                         int count = 0;
                         JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
                         for (int i = 0; i < jsonVisit.length(); i++) {

@@ -1,7 +1,5 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
-import static saneforce.santrip.activity.homeScreen.HomeDashBoard.CheckInOutNeed;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -40,7 +38,7 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.CallsFragmentBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -51,12 +49,12 @@ public class CallsFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static CallsFragmentBinding binding;
     public static Call_adapter adapter;
-    public static String SfType, FwFlag, SfCode, SfName, DivCode, Designation, StateCode, SubDivisionCode, TodayPlanSfCode, SampleValidation, InputValidation;
+    public static String  FwFlag;
     public static ArrayList<CallsModalClass> TodayCallList = new ArrayList<>();
     public static boolean isNeedtoAdd;
     public static ProgressDialog progressDialog;
     ApiInterface apiInterface;
-    LoginResponse loginResponse;
+
     SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -72,14 +70,14 @@ public class CallsFragment extends Fragment {
                     try {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "gettodycalls");
-                        jsonObject.put("sfcode", SfCode);
+                        jsonObject.put("sfcode",  SharedPref.getSfCode(context));
                         jsonObject.put("ReqDt", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                        jsonObject.put("division_code", DivCode);
-                        jsonObject.put("Rsf", TodayPlanSfCode);
-                        jsonObject.put("sf_type", SfType);
-                        jsonObject.put("Designation", Designation);
-                        jsonObject.put("state_code", StateCode);
-                        jsonObject.put("subdivision_code", SubDivisionCode);
+                        jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
+                        jsonObject.put("Rsf",  SharedPref.getHqCode(context));
+                        jsonObject.put("sf_type", SharedPref.getSfType(context));
+                        jsonObject.put("Designation",  SharedPref.getDesig(context));
+                        jsonObject.put("state_code",  SharedPref.getStateCode(context));
+                        jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(context));
                         Log.v("TodayCalls", "--json--" + jsonObject);
 
                         Map<String, String> mapString = new HashMap<>();
@@ -137,12 +135,12 @@ public class CallsFragment extends Fragment {
                                                         }
                                                     } else {
                                                         isNeedtoAdd = false;
-                                                        SaveDCRData(TodayCallListTwo, i, jsonArray2);
+                                                        SaveDCRData(context,TodayCallListTwo, i, jsonArray2);
                                                     }
                                                 }
                                                 if (isNeedtoAdd && TodayCallListTwo.size() > 0) {
                                                     for (int i = 0; i < TodayCallListTwo.size(); i++) {
-                                                        SaveDCRData(TodayCallListTwo, i, jsonArray2);
+                                                        SaveDCRData(context,TodayCallListTwo, i, jsonArray2);
                                                     }
                                                 }
                                             }
@@ -226,7 +224,7 @@ public class CallsFragment extends Fragment {
         }
     }
 
-    public static void SaveDCRData(ArrayList<CallsModalClass> todayCallListTwo, int i, JSONArray jsonArray2) {
+    public static void SaveDCRData(Context context,ArrayList<CallsModalClass> todayCallListTwo, int i, JSONArray jsonArray2) {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("CustCode", todayCallListTwo.get(i).getDocCode());
@@ -239,7 +237,7 @@ public class CallsFragment extends Fragment {
             jsonObject.put("town_code", "");
             jsonObject.put("town_name", "");
             jsonObject.put("Dcr_flag", "");
-            jsonObject.put("SF_Code", SfCode);
+            jsonObject.put("SF_Code",  SharedPref.getSfCode(context));
             jsonObject.put("Trans_SlNo", todayCallListTwo.get(i).getTrans_Slno());
             jsonObject.put("FW_Indicator", FwFlag);
             jsonObject.put("AMSLNo", todayCallListTwo.get(i).getADetSLNo());
@@ -257,7 +255,6 @@ public class CallsFragment extends Fragment {
         commonUtilsMethods.setUpLanguage(requireContext());
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-        getRequiredData();
         getFromLocal(requireContext(), apiInterface);
         CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
 
@@ -271,9 +268,9 @@ public class CallsFragment extends Fragment {
 
         binding.tvAddCall.setOnClickListener(view -> {
             // startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-            if (CheckInOutNeed.equalsIgnoreCase("0")) {
+            if (SharedPref.getSfCode(requireContext()).equalsIgnoreCase("0")) {
                 if (SharedPref.getSkipCheckIn(requireContext())) {
-                    if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
+                    if (SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
                         commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
                     } else {
                         startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
@@ -287,7 +284,7 @@ public class CallsFragment extends Fragment {
                     }
                 }
             } else {
-                if (SharedPref.getTodayDayPlanSfCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
+                if (SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
                 } else {
                     startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
@@ -296,21 +293,5 @@ public class CallsFragment extends Fragment {
         });
 
         return v;
-    }
-
-    private void getRequiredData() {
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
-
-        SfType = loginResponse.getSf_type();
-        SfCode = loginResponse.getSF_Code();
-        SfName = loginResponse.getSF_Name();
-        DivCode = loginResponse.getDivision_Code();
-        SubDivisionCode = loginResponse.getSubdivision_code();
-        Designation = loginResponse.getDesig();
-        StateCode = loginResponse.getState_Code();
-        SampleValidation = loginResponse.getSample_validation();
-        InputValidation = loginResponse.getInput_validation();
-        TodayPlanSfCode = SharedPref.getTodayDayPlanSfCode(requireContext());
     }
 }

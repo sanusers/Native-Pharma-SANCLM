@@ -1,18 +1,7 @@
 package saneforce.santrip.activity.approvals.geotagging;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.CIPCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.ChemistNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.CipNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.DrCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.DrNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.HosCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.HospNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.StockistCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.StockistNeed;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.UnDrCaption;
-import static saneforce.santrip.activity.approvals.ApprovalsActivity.UnDrNeed;
+
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
@@ -51,7 +39,7 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityGeoTaggingBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -63,7 +51,6 @@ public class GeoTaggingActivity extends AppCompatActivity {
     ArrayList<GeoTaggingModelList> geoTaggingModelSort = new ArrayList<>();
     GeoTaggingAdapter geoTaggingAdapter;
     ApiInterface api_interface;
-    LoginResponse loginResponse;
     JSONObject jsonGeoTagList = new JSONObject();
     ProgressDialog progressDialog = null;
     SQLite sqLite;
@@ -99,7 +86,6 @@ public class GeoTaggingActivity extends AppCompatActivity {
         sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        getRequiredData();
         CallGeoTagApi();
 
         geoTaggingBinding.ivFilter.setOnClickListener(v -> {
@@ -107,12 +93,12 @@ public class GeoTaggingActivity extends AppCompatActivity {
             final PopupMenu popup = new PopupMenu(wrapper, geoTaggingBinding.ivFilter, Gravity.END);
 
             popup.getMenu().add(0, 0, 0, "All");
-            if (DrNeed.equalsIgnoreCase("0")) popup.getMenu().add(1, 1, 1, DrCaption);
-            if (ChemistNeed.equalsIgnoreCase("0")) popup.getMenu().add(2, 2, 2, ChemistCaption);
-            if (StockistNeed.equalsIgnoreCase("0")) popup.getMenu().add(3, 3, 3, StockistCaption);
-            if (UnDrNeed.equalsIgnoreCase("0")) popup.getMenu().add(4, 4, 4, UnDrCaption);
-            if (HospNeed.equalsIgnoreCase("0")) popup.getMenu().add(5, 5, 5, HosCaption);
-            if (CipNeed.equalsIgnoreCase("0")) popup.getMenu().add(6, 6, 6, CIPCaption);
+            if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(1, 1, 1, SharedPref.getDrCap(this));
+            if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(2, 2, 2, SharedPref.getChmCap(context));
+            if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(3, 3, 3, SharedPref.getStkCap(context));
+            if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(4, 4, 4, SharedPref.getUNLcap(context));
+            if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(5, 5, 5, SharedPref.getHospCaption(context));
+            if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) popup.getMenu().add(6, 6, 6, SharedPref.getCipCaption(context));
             popup.getMenu().add(7, 7, 7, "By Name      A - Z");
             popup.getMenu().add(8, 8, 8, "By Name      Z - A");
             popup.getMenu().add(9, 9, 9, "By Date      Newer - Older");
@@ -235,34 +221,19 @@ public class GeoTaggingActivity extends AppCompatActivity {
         }*/
     }
 
-    private void getRequiredData() {
-        try {
-            loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData();
 
-            SfType = loginResponse.getSf_type();
-            SfCode = loginResponse.getSF_Code();
-            SfName = loginResponse.getSF_Name();
-            DivCode = loginResponse.getDivision_Code();
-            SubDivisionCode = loginResponse.getSubdivision_code();
-            Designation = loginResponse.getDesig();
-            StateCode = loginResponse.getState_Code();
-        } catch (Exception ignored) {
-
-        }
-    }
 
     private void CallGeoTagApi() {
         progressDialog = CommonUtilsMethods.createProgressDialog(GeoTaggingActivity.this);
         try {
             jsonGeoTagList.put("tableName", "getgeoappr");
-            jsonGeoTagList.put("sfcode", SfCode);
-            jsonGeoTagList.put("division_code", DivCode);
-            jsonGeoTagList.put("Rsf", SfCode);
-            jsonGeoTagList.put("sf_type", SfType);
-            jsonGeoTagList.put("Designation", Designation);
-            jsonGeoTagList.put("state_code", StateCode);
-            jsonGeoTagList.put("subdivision_code", SubDivisionCode);
+            jsonGeoTagList.put("sfcode", SharedPref.getSfCode(this));
+            jsonGeoTagList.put("division_code", SharedPref.getDivisionCode(this));
+            jsonGeoTagList.put("Rsf", SharedPref.getHqCode(this));
+            jsonGeoTagList.put("sf_type", SharedPref.getSfType(this));
+            jsonGeoTagList.put("Designation", SharedPref.getDesig(this));
+            jsonGeoTagList.put("state_code", SharedPref.getStateCode(this));
+            jsonGeoTagList.put("subdivision_code", SharedPref.getSubdivisionCode(this));
             Log.v("json_getGeoTag_list", jsonGeoTagList.toString());
         } catch (Exception ignored) {
 
@@ -283,7 +254,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject json = jsonArray.getJSONObject(i);
-                            if (DrNeed.equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("D") || ChemistNeed.equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("C") || StockistNeed.equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("S") || UnDrNeed.equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("U") || CipNeed.equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("CIP") || HospNeed.equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("H")) {
+                            if (SharedPref.getDrNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("D") || SharedPref.getChmNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("C") || SharedPref.getStkNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("S") || SharedPref.getUnlNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("U") || SharedPref.getCipNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("CIP") || SharedPref.getHospNeed(context).equalsIgnoreCase("0") && json.getString("cus_mode").equalsIgnoreCase("H")) {
                                 geoTaggingModelLists.add(new GeoTaggingModelList(json.getString("cust_name"), json.getString("Cust_Code"), json.getString("Sf_Name"), json.getString("tagged_sfCode"), json.getString("tagged_cluster"), json.getString("addrs"), json.getString("lat"), json.getString("long"), json.getString("cus_mode"), json.getString("tagged_time"), json.getString("MapId")));
                                 geoTaggingModelSort.add(new GeoTaggingModelList(json.getString("cust_name"), json.getString("Cust_Code"), json.getString("Sf_Name"), json.getString("tagged_sfCode"), json.getString("tagged_cluster"), json.getString("addrs"), json.getString("lat"), json.getString("long"), json.getString("cus_mode"), json.getString("tagged_time"), json.getString("MapId")));
                             }

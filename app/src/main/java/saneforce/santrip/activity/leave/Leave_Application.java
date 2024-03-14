@@ -62,7 +62,7 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -75,7 +75,7 @@ public class Leave_Application extends AppCompatActivity {
     ApiInterface apiInterface;
 
     LinearLayout back_btn, chart_layout;
-    LoginResponse loginResponse;
+
 
     ImageView close_sideview;
     SQLite sqLite;
@@ -356,8 +356,7 @@ public class Leave_Application extends AppCompatActivity {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
-            loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData();
+
 
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
@@ -367,12 +366,12 @@ public class Leave_Application extends AppCompatActivity {
             jsonObject.put("Fdt", f_date);
             jsonObject.put("Tdt", t_date);
             jsonObject.put("LTy", Lshortname);
-            jsonObject.put("division_code", loginResponse.getDivision_Code());
-            jsonObject.put("Rsf", SharedPref.getSfCode(this));
+            jsonObject.put("division_code", SharedPref.getDivisionCode(this));
+            jsonObject.put("Rsf", SharedPref.getHqCode(this));
             jsonObject.put("sf_type", SharedPref.getSfType(this));
-            jsonObject.put("Designation", loginResponse.getDesig());
-            jsonObject.put("state_code", loginResponse.getState_Code());
-            jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+            jsonObject.put("Designation", SharedPref.getDesig(this));
+            jsonObject.put("state_code",  SharedPref.getStateCode(this));
+            jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
             Log.d("JSonobj", String.valueOf(jsonObject));
 
             Map<String, String> qry = new HashMap<>();
@@ -586,8 +585,7 @@ public class Leave_Application extends AppCompatActivity {
                 navigateFrom = getIntent().getExtras().getString("Origin");
             }
 
-            loginResponse = new LoginResponse();
-            loginResponse = sqLite.getLoginData();
+
             String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
             String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
 
@@ -627,13 +625,13 @@ public class Leave_Application extends AppCompatActivity {
                 jsonobj.put("NOD", L_count);
                 jsonobj.put("LvOnAdd", l_address);
                 jsonobj.put("LvRem", l_reason);
-                jsonobj.put("division_code", loginResponse.getDivision_Code());
-                jsonobj.put("Rsf", SharedPref.getSfCode(this));
+                jsonobj.put("division_code",  SharedPref.getDivisionCode(this));
+                jsonobj.put("Rsf", SharedPref.getHqCode(this));
                 jsonobj.put("sf_type", SharedPref.getSfType(this));
-                jsonobj.put("Designation", loginResponse.getDesig());
-                jsonobj.put("state_code", loginResponse.getState_Code());
-                jsonobj.put("subdivision_code", loginResponse.getSubdivision_code());
-                jsonobj.put("sf_emp_id", loginResponse.getSf_emp_id());
+                jsonobj.put("Designation",  SharedPref.getDesig(this));
+                jsonobj.put("state_code",  SharedPref.getStateCode(this));
+                jsonobj.put("subdivision_code",  SharedPref.getSubdivisionCode(this));
+                jsonobj.put("sf_emp_id", SharedPref.getSfEmpId(this));
                 jsonobj.put("leave_typ_code", Ltype_id);
 
 
