@@ -11,44 +11,81 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        >
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/text_dark"
-            android:backgroundTint="@color/text_dark"
-            android:minHeight="?attr/actionBarSize"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
+
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:background="@color/text_dark"
+                android:backgroundTint="@color/text_dark"
+                android:minHeight="?attr/actionBarSize"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp">
+
+                <LinearLayout
+                    android:id="@+id/mapbackArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_6sdp">
+
+                    <ImageView
+                        android:id="@+id/back_btn"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:src="@drawable/arrow_back_white"
+                        tools:ignore="ContentDescription" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/haed_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:fontFamily="@font/satoshi_variable"
+                    android:text="Map View"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_8sdp"
+                    tools:ignore="SpUsage" />
+
+
+            </androidx.appcompat.widget.Toolbar>
 
             <LinearLayout
-                android:id="@+id/mapbackArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="@dimen/_6sdp">
-
-                <ImageView
-                    android:id="@+id/back_btn"
-                    android:layout_width="@dimen/_10sdp"
-                    android:layout_height="@dimen/_10sdp"
-                    android:src="@drawable/arrow_back_white"
-                    tools:ignore="ContentDescription" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tag_doclat"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_8sdp"
-                android:fontFamily="@font/satoshi_variable"
-                android:text="Map View"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_8sdp"
-                tools:ignore="SpUsage" />
+                android:layout_gravity="center"
+                android:background="@drawable/pink_full"
+                android:layout_marginLeft="@dimen/_4sdp"
+                android:layout_marginRight="@dimen/_4sdp"
+                android:layout_weight="1.8"
+                android:gravity="center"
+                android:padding="@dimen/_4sdp"
+                android:visibility="visible">
 
-        </androidx.appcompat.widget.Toolbar>
+                <TextView
+                    android:id="@+id/Doc_taggsave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Save"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/l_view"
@@ -56,6 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/appBar"
             android:background="#FFFFFF"
+            android:visibility="visible"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -65,6 +103,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/Doc_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_2sdp"
@@ -100,11 +139,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_2sdp">
 
+
+
+
                     <ImageView
-                        android:layout_width="@dimen/_9sdp"
-                        android:layout_height="@dimen/_8sdp"
+                        android:layout_width="@dimen/_12sdp"
+                        android:layout_height="@dimen/_10sdp"
                         android:layout_gravity="center"
-                        android:src="@drawable/location"
+                        android:src="@drawable/marker"
                         tools:ignore="ContentDescription" />
 
                     <TextView
@@ -124,6 +166,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/tagging_meters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_3sdp"
@@ -172,26 +215,31 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_marginStart="@dimen/_4sdp"
                     android:layout_marginEnd="@dimen/_3sdp"
-                    android:gravity="center"
                     android:background="@drawable/draktheme_"
+                    android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="@dimen/_8sdp"
                         android:layout_height="@dimen/_10sdp"
                         android:layout_gravity="center"
+
                         android:src="@drawable/view_pic"
                         tools:ignore="ContentDescription" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="View"
                         android:gravity="center"
+                        android:text="View"
                         android:textColor="#F1536E"
                         android:textSize="@dimen/_6sdp"
                         tools:ignore="SpUsage" />
+
+
                 </LinearLayout>
+
+
             </LinearLayout>
         </LinearLayout>
 
@@ -202,9 +250,9 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_below="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/appBar" />
 
 
 </RelativeLayout>

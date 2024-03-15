@@ -1456,8 +1456,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtCluster2.setText("");
                 binding.txtheadquaters2.setText("");
                 HomeDashBoard.binding.textDate.setText("");
-                SharedPref.saveHq(requireContext(), "","");
-                SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")){
+                    SharedPref.saveHq(requireContext(), "","");
+                    SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                }else {
+                    SharedPref.saveHq(requireContext(), SharedPref.getHqName(requireContext()),SharedPref.getSfCode(requireContext()));
+                }
 
                 binding.rlworktype1.setEnabled(true);
                 binding.rlcluster1.setEnabled(true);

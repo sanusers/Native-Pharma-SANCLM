@@ -28,6 +28,7 @@ import java.util.Map;
 
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -40,41 +41,54 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     Map<String, Integer> valueCounts = new HashMap<>();
     Context context;
-    String split_val = "";
+    String split_val;
     String cdate2 = "";
     SQLite sqLite;
     int countvalue = 0;
+    String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
 
     ArrayList<Resourcemodel_class> L_cLasses = new ArrayList<>();
 
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
-    boolean isEditableProfile;
+    LoginResponse loginResponse;
 
 
-    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val, String profileEditNeed) {//
+    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val) {//
         this.context = context;
         this.resList = resList;
         this.split_val = split_val;
         sqLite = new SQLite(context);
-        isEditableProfile = profileEditNeed.equalsIgnoreCase("0");
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData();
     }
 
     @NonNull
     @Override
-    public Res_sidescreenAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.resource_list, parent, false);
         return new ViewHolder(view);
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(@NonNull Res_sidescreenAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
         final Resourcemodel_class app_adapt = resList.get(position);
+//        sqLite = new SQLite(context);
+
+        Doc_geoneed = loginResponse.getGeoNeed();
+        Che_geoneed = loginResponse.getGEOTagNeedche();
+        Stk_geoneed = loginResponse.getGEOTagNeedstock();
+        Cip_geoneed = loginResponse.getGeoTagNeedcip();
+        Ult_geoneed = loginResponse.getGEOTagNeedunlst();
+
+        if (Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) {
+            holder.Res_View.setVisibility(View.VISIBLE);
+        }
+
 
         String countlis = String.valueOf(resList.get(position));
-
 
         Log.d("pos1", countlis);
         if (!split_val.equals("2")) {
@@ -112,40 +126,56 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 if (split_val.equals("2")) {
                     holder.Res_rx.setText(app_adapt.getRes_rx());
                 } else {
-                    holder.Res_rx.setText("");
+                    holder.Res_rx.setText("-");
                 }
             } else {
                 holder.Res_rx.setText("");
             }
 
-            if (app_adapt.isVisibleView) {
-                holder.Res_View.setVisibility(View.VISIBLE);
-            } else {
-                holder.Res_View.setVisibility(View.GONE);
-            }
-
-            if (isEditableProfile) {
-                holder.Res_Edit.setVisibility(View.VISIBLE);
-            } else {
-                holder.Res_Edit.setVisibility(View.GONE);
-            }
-
-
             if (app_adapt.getRes_Category().equals("") && app_adapt.getRes_rx().equals("") && app_adapt.getRes_Specialty().equals("")) {
                 holder.Res_Table1.setVisibility(View.GONE);
                 if (split_val.equals("1") || split_val.equals("2")) {
                     holder.Res_Edit.setVisibility(View.GONE);
-                    holder.Res_View.setVisibility(View.GONE);
+//                    holder.Res_View.setVisibility(View.GONE);
                     holder.Res_Table2.setVisibility(View.GONE);
                 }
-
             }
+
             if (split_val.equals("1") || split_val.equals("2")) {
                 holder.Res_Edit.setVisibility(View.GONE);
-                holder.Res_View.setVisibility(View.GONE);
+//                holder.Res_View.setVisibility(View.GONE);
                 holder.Res_Table2.setVisibility(View.GONE);
             }
+
+
             holder.listcount.setText(count + " )");
+
+            holder.Res_Edit.setOnClickListener(view -> {
+
+                Intent intent = new Intent(context, Resource_profiling.class);
+                intent.putExtra("Doc_name", app_adapt.getDcr_name());
+                intent.putExtra("Doc_code", app_adapt.getDcr_code());
+                intent.putExtra("Qual_values", app_adapt.getRes_Qualifiey());
+                intent.putExtra("Spec_values", app_adapt.getRes_Specialty());
+                intent.putExtra("cate_values", app_adapt.getRes_Category());
+                intent.putExtra("cate_code", app_adapt.getRes_Categorycode());
+                intent.putExtra("Spec_code", app_adapt.getRes_Specialtycode());
+                intent.putExtra("ListedDrSex", app_adapt.getRes_listeddoc_sex());
+                intent.putExtra("DOB", app_adapt.getRes_Dob());
+                intent.putExtra("DOW", app_adapt.getRes_Dow());
+                intent.putExtra("ADDRESS", app_adapt.getRes_adds());
+                intent.putExtra("MOB", app_adapt.getRes_mob());
+                intent.putExtra("PHN", app_adapt.getRes_phn());
+                intent.putExtra("EMAIL", app_adapt.getRes_Email());
+                intent.putExtra("Towncode", app_adapt.getTown_code());
+                intent.putExtra("Town", app_adapt.getTown_name());
+                intent.putExtra("PosDCRname", app_adapt.getPos_name());
+                intent.putExtra("lat", app_adapt.getLatitude());
+                intent.putExtra("long", app_adapt.getLongtitude());
+                context.startActivity(intent);
+
+            });
+
 
             holder.Res_View.setOnClickListener(v -> {
                 Log.d("latlong", app_adapt.Latitude + "--" + app_adapt.Latitude + "--" + app_adapt.getRes_id() + "--" + app_adapt.getCustoum_name());
@@ -153,13 +183,16 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
                 } else {
                     Intent click = new Intent(context, MyResource_mapview.class);
+
                     click.putExtra("type", app_adapt.getRes_id());
                     click.putExtra("cust_name", app_adapt.getCustoum_name());
+                    click.putExtra("Dcr_name","");
+                    click.putExtra("pos_name","");
+                    click.putExtra("Town_loct","");
+
                     context.startActivity(click);
                 }
             });
-
-
         } else {
             if (split_val.equals("2")) {
                 holder.Res_Table1.setVisibility(View.GONE);
@@ -201,7 +234,12 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
                                 L_cLasses.add(new Resourcemodel_class(custom_name, custom_code, vist_ctrlDate, Dcr_dt));
 
-                                Collections.sort(L_cLasses, Comparator.comparing(Resourcemodel_class::getMax_count));
+                                Collections.sort(L_cLasses, new Comparator<Resourcemodel_class>() {
+                                    @Override
+                                    public int compare(Resourcemodel_class lhs, Resourcemodel_class rhs) {
+                                        return lhs.getMax_count().compareTo(rhs.getMax_count());
+                                    }
+                                });
                                 Collections.reverse(L_cLasses);
                             }
 
@@ -216,24 +254,26 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
                     holder.visit_dt.setText(vcount + "/" + app_adapt.getRes_id() + "-Visit");
 
-
                 } catch (Exception a) {
                     a.printStackTrace();
                 }
-
             }
         }
-
-
     }
 
+    //    <Resourcemodel_class> L_cLasses
+    @SuppressLint("NotifyDataSetChanged")
+    public void filterList(ArrayList<Resourcemodel_class> filterdNames) {
+        this.resList = filterdNames;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {
         return resList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
         public LinearLayout Res_Edit, Res_View, Res_Table1, Res_Table2, Click_Res, res_view, vistcntrl_view, Res_visitcntl, end_line, topline, line_endshow;
 

@@ -33,7 +33,7 @@ public class resvisitctrl_adapter extends RecyclerView.Adapter<resvisitctrl_adap
 
     @NonNull
     @Override
-    public resvisitctrl_adapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.visitcntrl_layout, parent, false);
 

@@ -371,6 +371,8 @@ public class SharedPref {
     public static final String SYNC_STATUS = "SP_MAS_DETAILS";
     public static SharedPreferences sharedPreferences;
     public static final String SP_CALL_ClEAR_MONTH = "call_clear_month";
+    public static final String SETHQCODE = "SETHQCODE";
+    public static final String SETHQ_DETAILS = "SETHQ_DETAILS";
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -2239,6 +2241,15 @@ public class SharedPref {
         editor.putInt( SP_CALL_ClEAR_MONTH, Month).apply();
     }
 
+    public static void setDcr_dochqcode(Context context, String status) {//SETHQCODE,SETHQ_DETAILS
+        sharedPreferences = context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SETHQCODE, status).apply();
+    }
+
+    public static String getDcrdoc_hqcode(Context context) {
+        return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(SETHQCODE, "");
+    }
 
 
 }
