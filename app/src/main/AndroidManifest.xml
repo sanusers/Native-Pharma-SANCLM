@@ -259,6 +259,7 @@
             android:name=".activity.forms.weekoff.weekoff_viewscreen"
             android:exported="false"
             android:screenOrientation="landscape" />
+        <activity android:name="saneforce.santrip.activity.remaindercalls.Remaindercalls_activity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

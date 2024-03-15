@@ -2,14 +2,12 @@ package saneforce.santrip.activity.myresource;
 
 import static saneforce.santrip.commonClasses.UtilityClass.hideKeyboard;
 
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,11 +28,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -55,49 +53,35 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
     public static ArrayList<String> list = new ArrayList<>();
     public static String Valcount = "";
     public ArrayList<Resourcemodel_class> listed_data = new ArrayList<>();
-    public Criteria criteria;
-    public String bestProvider;
-    //  TextView hq_head;
+
     protected LocationManager mLocationManager;
     ImageView back_btn;
     RecyclerView resource_id;
     Resource_adapter resourceAdapter;
+    DrawerLayout layout_scrn;
+    Res_sidescreenAdapter res_sidescreenAdapter;
     HashMap<String, Integer> idCounts = new HashMap<>();
-    ArrayList<String> visit_list = new ArrayList<>();
-    ArrayList<String> visitlist12 = new ArrayList<>();
 
-    double str1, str2;
-    Location gps_loc, network_loc, final_loc;
+    LoginResponse loginResponse;
+
     LinearLayout backArrow, hq_view;
     String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
     SQLite sqLite;
-    ArrayList<JSONObject> Coustum_list = new ArrayList<>();
-    TextView hq_head;
-    CommonUtilsMethods commonUtilsMethods;
-    String navigateFrom = "";    //view_screen-
 
-    //To Hide the bottomNavigation When popup
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            drawerLayout.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
+    TextView hq_head;
+    String navigateFrom = "";
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_resource);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
-        commonUtilsMethods.setUpLanguage(getApplicationContext());
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+
         hideKeyboard(MyResource_Activity.this);
         back_btn = findViewById(R.id.back_btn);
         resource_id = findViewById(R.id.resource_id);
@@ -109,10 +93,31 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
         backArrow = findViewById(R.id.backArrow);
         hq_head = findViewById(R.id.hq_head);
         hq_view = findViewById(R.id.hq_view);
+        layout_scrn = findViewById(R.id.layout_scrn);
+
+
+//        layout_scrn.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+
+        layout_scrn.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                layout_scrn.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+                drawerLayout.setBackgroundResource(R.drawable.cross_img);
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                close_sideview.setBackgroundResource(R.drawable.bars_sort_img);
+            }
+        });
 
 
         appRecyclerView.setVisibility(View.VISIBLE);
         sqLite = new SQLite(this);
+
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
 
@@ -120,17 +125,22 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString("Origin");
         }
-
+        loginResponse = new LoginResponse();
+        loginResponse = sqLite.getLoginData();
 
 
         backArrow.setOnClickListener(v -> {
-            getOnBackPressedDispatcher().onBackPressed();
+           getOnBackPressedDispatcher().onBackPressed();
+//            Intent l = new Intent(MyResource_Activity.this, HomeDashBoard.class);
+//            startActivity(l);
+
+//            finish();
         });
 
-        if (SharedPref.getDesig(this).equals("MR")) {
+        if (loginResponse.getDesig_Code().equals("MR")) {
             hq_view.setVisibility(View.GONE);
         } else {
-            if (SharedPref.getDesig(this).equals("MGR")) {
+            if (loginResponse.getDesig_Code().equals("MGR")) {
                 hq_view.setVisibility(View.VISIBLE);
                 hq_head.setText(SharedPref.getHqName(MyResource_Activity.this));
             }
@@ -145,11 +155,23 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
             hideKeyboard(MyResource_Activity.this);
         });
 
-        doSearch();
+        et_Custsearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
     }
-
 
     public void Resource_list() {
         try {
@@ -168,7 +190,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                             Doc_code = jsonObject.getString("Code");
                             count_list.add(Doc_code);
                             Doc_count = String.valueOf(count_list.size());
-                            Log.d("doctor_23", String.valueOf(count_list));
+
                         }
                     }
                 } else {
@@ -279,22 +301,24 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
             Docvisit();
 
             listed_data.clear();
-            if (SharedPref.getDrNeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getDrCap(this), Doc_count, "1"));
-            if (SharedPref.getChmNeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getChmCap(this), Che_count, "2"));
-            if (SharedPref.getStkNeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getStkCap(this), Strck_count, "3"));
-            if (SharedPref.getUnlNeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getUNLcap(this), Unlist_count, "4"));
-            if (SharedPref.getHospNeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getHospCaption(this), Hosp_count, "5"));
-            if (SharedPref.getCipNeed(this).equalsIgnoreCase("0"))
-                listed_data.add(new Resourcemodel_class(SharedPref.getCipCaption(this), Cip_count, "6"));
+            if (loginResponse.getDrNeed().equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(loginResponse.getDrCap(), Doc_count, "1"));
+            if (loginResponse.getChmNeed().equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(loginResponse.getChmCap(), Che_count, "2"));
+            if (loginResponse.getStkNeed().equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(loginResponse.getStkCap(), Strck_count, "3"));
+            if (loginResponse.getUNLNeed().equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(loginResponse.getNLCap(), Unlist_count, "4"));
+            if (loginResponse.getHosp_need().equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(loginResponse.getHosp_caption(), Hosp_count, "5"));
+            if (loginResponse.getCip_need().equalsIgnoreCase("0"))
+                listed_data.add(new Resourcemodel_class(loginResponse.getCIP_Caption(), Cip_count, "6"));
             listed_data.add(new Resourcemodel_class("Input", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.INPUT).length()), "7"));
             listed_data.add(new Resourcemodel_class("Product", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length()), "8"));
             listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(this)).length()), "9"));
             listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
+//               frmlisted_data.add(new Formsmodel_class("Holiday / Weekly off", R.drawable.vacation));
+            listed_data.add(new Resourcemodel_class("Holiday / Weekly off", "", "11"));
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data);
             resource_id.setItemAnimator(new DefaultItemAnimator());
@@ -315,7 +339,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
             JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
             JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
             // Initialize a HashMap to store counts of custom_id1 values
-            String viewlist = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+            String viewlist = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             if (jsonvst_ctl.length() > 0) {
                 for (int i = 0; i < jsonvst_ctl.length(); i++) {
                     JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
@@ -356,48 +380,46 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
     }
 
-    private void doSearch() {
-        et_Custsearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//    public void filter(String charText) {
+//        charText = charText.toLowerCase(Locale.getDefault());
+//
+//        listresource.clear();
+//
+//        if (charText.length() == 0) {
+//            listresource.addAll(search_list);
+//        } else {
+//            for (int i = 0; i < search_list.size(); i++) {
+//
+//                final String text = search_list.get(i).getDcr_name().toLowerCase();
+//                if (text.contains(charText)) {
+//                    listresource.add(search_list.get(i));
+//                }
+//            }
+//        }
+//        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount);
+//        appRecyclerView.setAdapter(appAdapter_0);
+//        appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
+//        appAdapter_0.notifyDataSetChanged();
+//    }
 
-            }
+//    public static ArrayList<Resourcemodel_class> listresource = new ArrayList<>();
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                String text = et_Custsearch.getText().toString().toLowerCase(Locale.getDefault());
-                filter(text);
-                Log.d("Printlog", "example log");
-            }
-        });
-    }
-
-    public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-
-        listresource.clear();
-
-        if (charText.length() == 0) {
-            listresource.addAll(search_list);
-        } else {
-            for (int i = 0; i < search_list.size(); i++) {
-
-                final String text = search_list.get(i).getDcr_name().toLowerCase();
-                if (text.contains(charText)) {
-                    listresource.add(search_list.get(i));
-                }
+    private void filter(String text) {
+        ArrayList<Resourcemodel_class> filterdNames = new ArrayList<>();
+        for (Resourcemodel_class s : listresource) {
+            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
+                filterdNames.add(s);
             }
         }
-        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount, SharedPref.getMclDet(this));
+        Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount);
+        appAdapter_0.filterList(filterdNames);
         appRecyclerView.setAdapter(appAdapter_0);
         appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
-        appAdapter_0.notifyDataSetChanged();
-    }
 
+
+
+    }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {

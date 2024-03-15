@@ -47,6 +47,11 @@ public class SQLite extends SQLiteOpenHelper {
     public static final String MASTER_VALUE = "master_value";
     public static final String SYNC_STATUS = "sync_status"; // 0 - success, 1 - failed
 
+
+    public static final String DCR_DocData = "DCR_DocData";
+    public static final String Dcr_values = "Dcr_values";
+    public static final String Hq_values = "Hq_values";
+
     //Tour PLan Table
     public static final String TOUR_PLAN_OFFLINE_TABLE = "tour_plan_offline_table";
     public static final String TOUR_PLAN_ONLINE_TABLE = "tour_plan_online_table";
@@ -138,6 +143,8 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + CALL_OFFLINE_WORKTYPE_TABLE + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CALL_OFFLINE_WORKTYPE_DATE + " text," + CALL_OFFLINE_WORKTYPE_NAME + " text," + CALL_OFFLINE_WORKTYPE_CODE + " text," + CALL_OFFLINE_WORKTYPE_JSON + " text," + CALL_OFFLINE_WORKTYPE_STATUS + " text," + CALL_OFFLINE_WORKTYPE_SYNC_STATUS + " INTEGER" + ")");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + LINE_CHAT_DATA_TABLE + "(" + LINECHAR_CUSTCODE + " TEXT, " + LINECHAR_CUSTTYPE + " TEXT, " + LINECHAR_DCR_DT + " TEXT, " + LINECHAR_MONTH_NAME + " TEXT, " + LINECHAR_MNTH + " TEXT, " + LINECHAR_YR + " TEXT, " + LINECHAR_CUSTNAME + " TEXT, " + LINECHAR_TOWN_CODE + " TEXT, " + LINECHAR_TOWN_NAME + " TEXT, " + LINECHAR_DCR_FLAG + " TEXT, " + LINECHAR_FM_INDICATOR + " TEXT, " + LINECHAR_SF_CODE + " TEXT, " + LINECHAR_TRANS_SLNO + " TEXT, " + LINECHAR_AMSLNO + " TEXT);");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + PRESENTATION_TABLE + "(" + PRESENTATION_NAME + " TEXT PRIMARY KEY, " + PRESENTATION_DATA + " TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + DCR_DocData + "(" +Hq_values  + " text," + Dcr_values + " text"+ ")");
+
     }
 
     @Override
@@ -151,7 +158,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + OFFLINE_CHECKINOUT_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + LINE_CHAT_DATA_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + PRESENTATION_TABLE);
-
+        db.execSQL("DROP TABLE IF EXISTS " + DCR_DocData);
         onCreate(db);
     }
 
@@ -166,6 +173,7 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + OFFLINE_CHECKINOUT_TABLE);
         db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
         db.execSQL("DELETE FROM " + PRESENTATION_TABLE);
+        db.execSQL("DELETE FROM " + DCR_DocData);
         db.close();
     }
 
@@ -271,6 +279,40 @@ public class SQLite extends SQLiteOpenHelper {
         }
         return data;
     }
+
+    //    -----------------Remainder------------------------
+
+    public void insert_docvalues(String hqcode, String values) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Hq_values, hqcode);
+        contentValues.put(Dcr_values, values);
+        db.insert(DCR_DocData, null, contentValues);
+        db.close();
+    }
+
+    public JSONArray getDcr_datas(String key) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + DCR_DocData + " where " + Hq_values + "=" + "'" + key + "';", null);
+        String data = "";
+        if (cursor.moveToNext()) {
+            data = cursor.getString(1);
+        }
+        cursor.close();
+        db.close();
+
+        JSONArray jsonArray = new JSONArray();
+        try {
+            if (data != null && !data.isEmpty())
+                return jsonArray = new JSONArray(data.toString());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return jsonArray;
+    }
+
+
+
 
     //----------------------------offline----------------------
     //WorkType Table

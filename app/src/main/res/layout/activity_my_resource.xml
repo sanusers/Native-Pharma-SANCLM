@@ -10,6 +10,7 @@
     tools:context=".activity.myresource.MyResource_Activity">
 
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.google.android.material.appbar.AppBarLayout
@@ -85,26 +86,32 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-
-        <LinearLayout
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/layout_scrn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/appBar"
             android:background="#EAECEE">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/resource_id"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/_3sdp"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:layout_marginEnd="@dimen/_3sdp"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:background="#EAECEE">
+                >
 
-            </androidx.recyclerview.widget.RecyclerView>
-        </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/resource_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:background="#EAECEE">
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
     </RelativeLayout>
 
     <include

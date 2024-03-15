@@ -108,8 +108,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-
-        Log.v("fragment", "WorkdayPlan Oncreate");
         if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
             sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
             if (UtilityClass.isNetworkAvailable(requireContext())) {
@@ -121,13 +119,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             setUpMyDayplan();
         }
-
     }
 
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        Log.v("fragment", "WorkdayPlan Oncreate");
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
 
