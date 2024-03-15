@@ -770,7 +770,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:backgroundTint="@color/black_45"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 
 </RelativeLayout>

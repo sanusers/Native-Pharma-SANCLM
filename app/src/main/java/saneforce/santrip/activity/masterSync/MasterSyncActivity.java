@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -135,6 +137,9 @@ public class MasterSyncActivity extends AppCompatActivity {
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
+        Animation blinkAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.downloading);
+        binding.imgDownloading.startAnimation(blinkAnimation);
+
 
         //Initializing all the data array
         uiInitialization();
@@ -498,7 +503,9 @@ public class MasterSyncActivity extends AppCompatActivity {
     public void uiInitialization() {
 
         binding.hqName.setText(SharedPref.getHqName(MasterSyncActivity.this));
-        rsf = SharedPref.getHqCode(MasterSyncActivity.this); // Rsf is HQ code
+            rsf = SharedPref.getHqCode(MasterSyncActivity.this);
+
+       // Rsf is HQ code
 
         binding.hq.setEnabled(SharedPref.getSfType(this).equalsIgnoreCase("2"));
         binding.lastSyncTime.setText(SharedPref.getLastSync(getApplicationContext()));

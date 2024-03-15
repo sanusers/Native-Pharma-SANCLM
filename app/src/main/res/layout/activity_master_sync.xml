@@ -48,6 +48,17 @@
                 android:textSize="@dimen/_7sdp"
                 tools:ignore="SpUsage" />
 
+            <ImageView
+                android:layout_width="@dimen/_10sdp"
+                android:src="@drawable/img_downloding"
+                android:layout_gravity="end"
+                android:scaleType="centerCrop"
+                android:id="@+id/img_downloading"
+                android:layout_marginEnd="@dimen/_3sdp"
+                android:layout_height="@dimen/_10sdp">
+
+            </ImageView>
+
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

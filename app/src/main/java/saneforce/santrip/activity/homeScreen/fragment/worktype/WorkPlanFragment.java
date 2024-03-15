@@ -108,6 +108,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+
+        Log.v("fragment", "WorkdayPlan Oncreate");
         if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
             sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
             if (UtilityClass.isNetworkAvailable(requireContext())) {
@@ -119,10 +121,13 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         } else {
             setUpMyDayplan();
         }
+
     }
 
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        Log.v("fragment", "WorkdayPlan Oncreate");
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
 
@@ -1456,8 +1461,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.txtCluster2.setText("");
                 binding.txtheadquaters2.setText("");
                 HomeDashBoard.binding.textDate.setText("");
-                SharedPref.saveHq(requireContext(), "","");
-                SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")){
+                    SharedPref.saveHq(requireContext(), SharedPref.getHqName(requireContext()),"");
+                    SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
+                }else {
+                    SharedPref.saveHq(requireContext(),SharedPref.getHqName(requireContext()),SharedPref.getSfCode(requireContext()));
+                }
 
                 binding.rlworktype1.setEnabled(true);
                 binding.rlcluster1.setEnabled(true);

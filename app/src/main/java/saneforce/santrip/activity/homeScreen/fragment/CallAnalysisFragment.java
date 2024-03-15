@@ -61,12 +61,17 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     CommonUtilsMethods commonUtilsMethods;
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v("fragment", "callanalysis OnResume");
+    }
 
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.v("fragment", "callanalysis");
+        Log.v("fragment", "callanalysis Oncreate");
         callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
         View v = callAnalysisBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -94,15 +99,14 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         HiddenVisibleFunctions();
    //     SetcallDetailsInLineChart(sqLite, context);
 
-        callAnalysisBinding.progressMain.setVisibility(View.VISIBLE);
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        // Create and start a new thread for the background task
+        Thread backgroundThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 SetcallDetailsInLineChart(sqLite, context);
             }
-        }, 1000);
+        });
+        backgroundThread.start();
 
             ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
             vto.addOnGlobalLayoutListener(() -> {
@@ -354,7 +358,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             a.printStackTrace();
         }
 
-
+        callAnalysisBinding.progressMain.setVisibility(View.GONE);
     }
 
     public static void setLineChartData(String Custype, SQLite sqLite, Context context) {
@@ -733,9 +737,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             starBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.circular_img_doctor);
         }
 
-
         callAnalysisBinding.inChart.lineChart.setRenderer(new ImageLineChartRenderer(callAnalysisBinding.inChart.lineChart, callAnalysisBinding.inChart.lineChart.getAnimator(), callAnalysisBinding.inChart.lineChart.getViewPortHandler(), starBitmap));
-        callAnalysisBinding.progressMain.setVisibility(View.GONE);
+
     }
 
 
@@ -917,6 +920,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             sqLite.saveMasterSyncData(Constants.CALL_SYNC,"[]",0);
         }
     }
+
+
+
 
 }
 
