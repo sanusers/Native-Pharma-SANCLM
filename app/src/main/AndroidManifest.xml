@@ -260,6 +260,7 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity android:name="saneforce.santrip.activity.remaindercalls.Remaindercalls_activity" />
+        <activity android:name="saneforce.santrip.activity.myresource.Resource_profiling" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

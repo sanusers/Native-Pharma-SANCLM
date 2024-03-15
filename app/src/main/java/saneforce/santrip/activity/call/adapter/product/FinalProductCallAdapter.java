@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,27 +76,78 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
 
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
-                    holder.ed_samplesQty.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+                Log.d("listcheck","case1"+"---"+DCRCallActivity.CallActivityCustDetails.get(0).getType());
+                if(DCRCallActivity.save_valid.equals("0")){
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
+                        holder.ed_samplesQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+                        holder.ed_rxQty.setVisibility(View.VISIBLE);
+                }else {
+                    holder.ed_rcpaQty.setText(" ");
+                    holder.ed_rcpaQty.setFocusable(false);
+                    holder.ed_rcpaQty.setBackground(null);
+                    holder.ed_rcpaQty.setHint("");
+
+                    holder.ed_samplesQty.setText(" ");
+                    holder.ed_samplesQty.setFocusable(false);
+                    holder.ed_samplesQty.setBackground(null);
+                    holder.ed_samplesQty.setHint("");
+
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
+//                        holder.ed_samplesQty.setVisibility(View.GONE);
+
+                        if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+//                        holder.ed_rcpaQty.setVisibility(View.GONE);
+                            holder.switch_prompt.setVisibility(View.GONE);
                     holder.ed_rxQty.setVisibility(View.VISIBLE);
+
+
+                }
+
+
                 break;
             case "2":
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
-                    holder.ed_samplesQty.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
-                    holder.ed_rxQty.setVisibility(View.VISIBLE);
-                break;
+                Log.d("listcheck","case2");
             case "3":
             case "4":
-            case "5":
-            case "6":
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
-                    holder.ed_samplesQty.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
-                    holder.ed_rxQty.setVisibility(View.VISIBLE);
+                Log.d("listcheck","case4");
+
+
+                if(DCRCallActivity.save_valid.equals("0")){
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+                        holder.ed_samplesQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                        holder.ed_rxQty.setVisibility(View.VISIBLE);
+
+                }else{
+//                    myTextView. setFocusable(true); myTextView
+
+                    holder.ed_rcpaQty.setText(" ");
+                    holder.ed_rcpaQty.setFocusable(false);
+                    holder.ed_rcpaQty.setBackground(null);
+                    holder.ed_rcpaQty.setHint("");
+
+                    holder.ed_samplesQty.setText(" ");
+                    holder.ed_samplesQty.setFocusable(false);
+                    holder.ed_samplesQty.setBackground(null);
+                    holder.ed_samplesQty.setHint("");
+
+
+
+
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+//                        holder.ed_samplesQty.setVisibility(View.GONE);
+                        if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                            holder.ed_rxQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+                        holder.ed_rxQty.setVisibility(View.VISIBLE);
+//                    holder.ed_rcpaQty.setVisibility(View.GONE);
+                    holder.switch_prompt.setVisibility(View.GONE);
+                }
+
                 break;
             default:
+                Log.d("listcheck","case5");
                 holder.ed_samplesQty.setVisibility(View.GONE);
                 holder.ed_rxQty.setVisibility(View.GONE);
         }

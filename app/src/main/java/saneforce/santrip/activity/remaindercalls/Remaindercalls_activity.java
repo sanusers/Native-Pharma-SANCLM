@@ -94,7 +94,7 @@ public class Remaindercalls_activity extends AppCompatActivity {
         sqLite = new SQLite(this);
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
-        SfType = loginResponse.getSf_type();
+        SfType = SharedPref.getSfType(this);
         REm_hq_code = SharedPref.getSfCode(this);
 
         app_recycler_view.setVisibility(View.VISIBLE);
@@ -114,7 +114,7 @@ public class Remaindercalls_activity extends AppCompatActivity {
         }
 
 
-        if (loginResponse.getDesig_Code().equals("MR")) {
+        if (SharedPref.getDivisionCode(this).equals("MR")) {
 
         } else {
             townname.setOnClickListener(v -> {
@@ -191,7 +191,6 @@ public class Remaindercalls_activity extends AppCompatActivity {
             listeduser.clear();
             JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
 
-
             String Town_Name = "";
 
             Log.d("jsonlist", jsonvst_Doc.toString());//
@@ -209,7 +208,7 @@ public class Remaindercalls_activity extends AppCompatActivity {
                     //"long":"80.24135816842318",
 
 
-                    if (loginResponse.getGeoChk().equals("1")) {//"Lat":"", "Long":"",
+                    if (SharedPref.getGeoNeed(this).equals("1")) {//"Lat":"", "Long":"",
                         if (!jsonObject.getString("Lat").equals("") && !jsonObject.getString("Long").equals("")) {
                             String Code = jsonObject.getString("Code");
                             String Name = jsonObject.getString("Name");
@@ -340,12 +339,12 @@ public class Remaindercalls_activity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
                 jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                jsonObject.put("division_code", loginResponse.getDivision_Code().replace(",", "").trim());
+                jsonObject.put("division_code", SharedPref.getDivisionCode(this).replace(",", "").trim());
                 jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", loginResponse.getSf_type());
-                jsonObject.put("Designation", loginResponse.getDesig());
-                jsonObject.put("state_code", loginResponse.getState_Code());
-                jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
+                jsonObject.put("sf_type", SharedPref.getSfType(this));
+                jsonObject.put("Designation", SharedPref.getDesig(this));
+                jsonObject.put("state_code",SharedPref.getStateCode(this));
+                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
 
 
                 Map<String, String> mapString = new HashMap<>();

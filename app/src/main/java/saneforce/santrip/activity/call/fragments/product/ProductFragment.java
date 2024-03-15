@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,28 +78,72 @@ public class ProductFragment extends Fragment {
         productsBinding.tagSamples.setText(DCRCallActivity.CapSamQty);
         productsBinding.tagRxQty.setText(DCRCallActivity.CapRxQty);
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
+
             case "1":
+                Log.d("listsize123", "logsccuess");
+                if (DCRCallActivity.save_valid.equals("0")) {
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
+                        productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                    }
+                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
+                        productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                    }
+
+                } else {
+                    productsBinding.tagRxQty.setText("Qty");
+                    productsBinding.tagSamples.setText(" ");
+                    productsBinding.tagRcpa.setText(" ");
+
+                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1")) {
+                        productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                    }
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1")) {
+//                        productsBinding.tagRcpa.setVisibility(View.GONE);
+
+//                        productsBinding.tagSamples.setVisibility(View.GONE);
+                        productsBinding.tagPromoted.setVisibility(View.GONE);
+                    }
+                }
+                break;
+            case "2":
+            case "3":
+            case "4":
+                Log.d("listsize123", "logsccuess12");
+
+                if (DCRCallActivity.save_valid.equals("0")) {
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+                        productsBinding.tagSamples.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                        productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                } else {
+                    productsBinding.tagRxQty.setText("Qty");
+                    productsBinding.tagSamples.setText(" ");
+                    productsBinding.tagRcpa.setText(" ");
+
+
+                    if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
+//                        productsBinding.tagSamples.setVisibility(View.GONE);
+                        if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
+                            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+                    if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
+                            productsBinding.tagRxQty.setVisibility(View.VISIBLE);
+//                    productsBinding.tagRcpa.setVisibility(View.GONE);
+//                    productsBinding.tagSamples.setVisibility(View.GONE);
+                    productsBinding.tagPromoted.setVisibility(View.GONE);
+                }
+
+
+                Log.d("listsize123", "logsccuess112");
+                break;
+            case "6":
+                Log.d("listsize123", "logsccuess9999");
                 if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
                     productsBinding.tagSamples.setVisibility(View.VISIBLE);
                 if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("1"))
                     productsBinding.tagRxQty.setVisibility(View.VISIBLE);
                 break;
-            case "2":
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("1"))
-                    productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
-                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                break;
-            case "3":
-            case "4":
-            case "5":
-            case "6":
-                if (DCRCallActivity.PrdSamNeed.equalsIgnoreCase("0"))
-                    productsBinding.tagSamples.setVisibility(View.VISIBLE);
-                if (DCRCallActivity.PrdRxNeed.equalsIgnoreCase("0"))
-                    productsBinding.tagRxQty.setVisibility(View.VISIBLE);
-                break;
             default:
+                Log.d("listsize123", "logsccuess_5555");
                 productsBinding.tagSamples.setVisibility(View.GONE);
                 productsBinding.tagRxQty.setVisibility(View.GONE);
         }

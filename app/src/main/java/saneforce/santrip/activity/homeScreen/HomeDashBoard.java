@@ -100,7 +100,7 @@ import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.myresource.MyResource_Activity;
 import saneforce.santrip.activity.presentation.presentation.PresentationActivity;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
-import saneforce.santrip.activity.remainderCall.RemainderCallActivity;
+
 import saneforce.santrip.activity.remaindercalls.Remaindercalls_activity;
 import saneforce.santrip.activity.reports.ReportsActivity;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
@@ -122,6 +122,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     @SuppressLint("StaticFieldLeak")
     public static ActivityHomeDashBoardBinding binding;
+
     public static int DeviceWith;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
     public static String   CustomPresentationNeed, PresentationNeed;
