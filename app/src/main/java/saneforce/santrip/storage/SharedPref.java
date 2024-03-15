@@ -373,6 +373,9 @@ public class SharedPref {
     public static final String SP_CALL_ClEAR_MONTH = "call_clear_month";
     public static final String SETHQCODE = "SETHQCODE";
     public static final String SETHQ_DETAILS = "SETHQ_DETAILS";
+
+
+    public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
     public static SharedPreferences.Editor editor;
 
     public static void clearSP(Context context) {
@@ -2044,6 +2047,8 @@ public class SharedPref {
         editor.putString(MASTER_LAST_SYNC, date).apply();
     }
 
+
+
     public static void setSaveUrlSetting(Context context, String token) {
         sharedPreferences = context.getSharedPreferences(SP_NAME_NOT_DELETE, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2224,6 +2229,18 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         editor.putBoolean(SYNC_STATUS, mas_sync).apply();
+    }
+
+
+    public static void putSlidestatus(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SLIDE_DOWNLOADING_STATUS, status).apply();
+    }
+
+
+    public static boolean getSlideDowloadingStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(SLIDE_DOWNLOADING_STATUS, false);
     }
 
 

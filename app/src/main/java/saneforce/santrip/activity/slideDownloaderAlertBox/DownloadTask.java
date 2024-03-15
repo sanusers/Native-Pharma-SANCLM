@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -23,6 +24,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.storage.SharedPref;
 
@@ -196,7 +198,6 @@ public class DownloadTask {
                 SlideDownloaderAlertBox.adapter.notifyDataSetChanged();
                 if (SlideDownloaderAlertBox.dialogdismisscount == SlideDownloaderAlertBox.adapter.getItemCount()) {
                     SlideDownloaderAlertBox.dialog.dismiss();
-                    SlideDownloaderAlertBox.DownloadingStaus = true;
                     SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(), SlideDownloaderAlertBox.slideId123);
                     if (SlideDownloaderAlertBox.MoveMainFlag) {
                         Intent intent = new Intent(context, HomeDashBoard.class);
@@ -204,8 +205,11 @@ public class DownloadTask {
                         context.startActivity(intent);
                         activity.finish();
                     } else {
-                        commonUtilsMethods.showToastMessage(context, "All Downloading Completed ");
+                        SharedPref.putSlidestatus(context,true);
+                        commonUtilsMethods.showToastMessage(activity, "All Downloading Completed ");
+
                     }
+                    MasterSyncActivity.binding.imgDownloading.setVisibility(View.GONE);
                 }
             } else {
                 Slidevalue.setProgressValue(String.valueOf(processvalue));
@@ -218,15 +222,16 @@ public class DownloadTask {
                 if (SlideDownloaderAlertBox.dialogdismisscount == SlideDownloaderAlertBox.adapter.getItemCount()) {
                     SharedPref.saveSlideDownloadingList(activity, String.valueOf(downloading_count), SlideDownloaderAlertBox.adapter.getList(), SlideDownloaderAlertBox.slideId123);
                     SlideDownloaderAlertBox.dialog.dismiss();
-                    SlideDownloaderAlertBox.DownloadingStaus = true;
                     if (SlideDownloaderAlertBox.MoveMainFlag) {
                         Intent intent = new Intent(context, HomeDashBoard.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                         activity.finish();
                     } else {
-                        commonUtilsMethods.showToastMessage(context, "All Slide Downloading Completed ");
+                        commonUtilsMethods.showToastMessage(activity, "All Slide Downloading Completed ");
                     }
+                    MasterSyncActivity.binding.imgDownloading.setVisibility(View.GONE);
+                    SharedPref.putSlidestatus(context,true);
                 }
 
             }

@@ -64,7 +64,13 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        Log.v("fragment", "callanalysis OnResume");
+        Thread backgroundThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SetcallDetailsInLineChart(sqLite, context);
+            }
+        });
+        backgroundThread.start();
     }
 
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})

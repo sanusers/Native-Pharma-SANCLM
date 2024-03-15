@@ -61,7 +61,7 @@ import saneforce.santrip.utility.TimeUtils;
 
 public class MasterSyncActivity extends AppCompatActivity {
 
-    ActivityMasterSyncBinding binding;
+   public static ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     SQLite sqLite;

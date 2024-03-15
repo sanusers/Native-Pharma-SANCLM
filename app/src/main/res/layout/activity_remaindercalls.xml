@@ -7,7 +7,7 @@
     android:id="@+id/drawer_layout"
     android:layout_gravity="end"
     app:drawerLayoutCornerSize="0dp"
-    tools:context=".activity.remaindercalls.Remaindercalls_activity">
+    tools:context=".activity.remaindercalls.RemaindercallsActivity">
 
 
 

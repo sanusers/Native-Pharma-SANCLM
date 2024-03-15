@@ -81,14 +81,9 @@
             android:screenOrientation="landscape">
 
         </activity>
-        <activity
-            android:name=".activity.previewPresentation.PreviewActivity"
-            android:exported="false"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
-            android:name=".activity.remainderCall.RemainderCallActivity"
+            android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -259,7 +254,8 @@
             android:name=".activity.forms.weekoff.weekoff_viewscreen"
             android:exported="false"
             android:screenOrientation="landscape" />
-        <activity android:name="saneforce.santrip.activity.remaindercalls.Remaindercalls_activity" />
+        <activity android:name="saneforce.santrip.activity.remaindercalls.RemaindercallsActivity" />
+        <activity android:name="saneforce.santrip.activity.myresource.Resource_profiling" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

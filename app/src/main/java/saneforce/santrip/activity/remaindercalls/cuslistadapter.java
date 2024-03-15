@@ -105,14 +105,14 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
             } else {
 
 
-                Remaindercalls_activity.townname.setText(app_adapt.getDoc_name());
-                Remaindercalls_activity.REm_hq_code = app_adapt.getDoc_code();
+                RemaindercallsActivity.townname.setText(app_adapt.getDoc_name());
+                RemaindercallsActivity.REm_hq_code = app_adapt.getDoc_code();
                 String hqcode = SharedPref.getDcrdoc_hqcode(context);
                 Log.d("hqlist_data", hqcode);
-                Remaindercalls_activity.slt_hq.add(hqcode);
-                if (Remaindercalls_activity.slt_hq.size() != 0) {
-                    for (int v = 0; v < Remaindercalls_activity.slt_hq.size(); v++) {
-                        if (Remaindercalls_activity.slt_hq.get(v).equals("Doctor_" + app_adapt.getDoc_code())) {
+                RemaindercallsActivity.slt_hq.add(hqcode);
+                if (RemaindercallsActivity.slt_hq.size() != 0) {
+                    for (int v = 0; v < RemaindercallsActivity.slt_hq.size(); v++) {
+                        if (RemaindercallsActivity.slt_hq.get(v).equals("Doctor_" + app_adapt.getDoc_code())) {
                             show_hq("Doctor_" + app_adapt.getDoc_code());
                             Vals = "A";
                         }
@@ -125,7 +125,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 }
 
 
-                Remaindercalls_activity.drawer_Layout12.closeDrawer(GravityCompat.END);
+                RemaindercallsActivity.drawer_Layout12.closeDrawer(GravityCompat.END);
 
             }
         });
@@ -160,7 +160,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
     public void show_hq(String hqcode) {
         try {
-            Remaindercalls_activity.listeduser.clear();
+            RemaindercallsActivity.listeduser.clear();
             String Town_Name = "";
             JSONArray jsonvst_Doc = sqLite.getDcr_datas(hqcode);
             Log.d("check_json", jsonvst_Doc.toString());
@@ -181,7 +181,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                             String Town_Code = jsonObject.getString("Town_Code");
 
                             remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, Category, Specialty, Town_Name, CategoryCode, SpecialtyCode, Town_Code, SfType);
-                            Remaindercalls_activity.listeduser.add(doc_VALUES);
+                            RemaindercallsActivity.listeduser.add(doc_VALUES);
                         }
                     } else {
 
@@ -196,7 +196,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                         String Town_Code = jsonObject.getString("Town_Code");
 
                         remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, Category, Specialty, Town_Name, CategoryCode, SpecialtyCode, Town_Code, SfType);
-                        Remaindercalls_activity.listeduser.add(doc_VALUES);
+                        RemaindercallsActivity.listeduser.add(doc_VALUES);
                     }
 
 
@@ -205,13 +205,13 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
             }
 
-            Remaindercalls_activity.remaindercallsAdapter = new remaindercalls_adapter(context, Remaindercalls_activity.listeduser);
-            Remaindercalls_activity.remaindercallsAdapter.filterList(Remaindercalls_activity.listeduser);
-            Remaindercalls_activity.remainded_view.setItemAnimator(new DefaultItemAnimator());
-            Remaindercalls_activity.remainded_view.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
-            Remaindercalls_activity.remainded_view.setAdapter(Remaindercalls_activity.remaindercallsAdapter);
+            RemaindercallsActivity.remaindercallsAdapter = new remaindercalls_adapter(context, RemaindercallsActivity.listeduser);
+            RemaindercallsActivity.remaindercallsAdapter.filterList(RemaindercallsActivity.listeduser);
+            RemaindercallsActivity.remainded_view.setItemAnimator(new DefaultItemAnimator());
+            RemaindercallsActivity.remainded_view.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
+            RemaindercallsActivity.remainded_view.setAdapter(RemaindercallsActivity.remaindercallsAdapter);
 
-            Remaindercalls_activity.remaindercallsAdapter.notifyDataSetChanged();
+            RemaindercallsActivity.remaindercallsAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -273,7 +273,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                     public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                         if (response.isSuccessful()) {
                             try {
-                                Remaindercalls_activity.listeduser.clear();
+                                RemaindercallsActivity.listeduser.clear();
                                 Log.e("test", "response : " + Objects.requireNonNull(response.body()) + "--");
                                 JsonElement jsonElement = response.body();
 
@@ -301,12 +301,12 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                     progressDialog.dismiss();
                                 }
                                 if (jsonElement.toString().equals("[]")) {
-                                    Remaindercalls_activity.listeduser.clear();
+                                    RemaindercallsActivity.listeduser.clear();
                                     Toast.makeText(context, "No Data", Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
                                 }
 
-                                Remaindercalls_activity.remaindercallsAdapter.notifyDataSetChanged();
+                                RemaindercallsActivity.remaindercallsAdapter.notifyDataSetChanged();
                             } catch (Exception e) {
                                 progressDialog.dismiss();
                                 e.printStackTrace();
@@ -334,7 +334,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
     public void Show_Subordinate(JsonArray json, String hq_code) {
         try {
-            Remaindercalls_activity.sub_list.clear();
+            RemaindercallsActivity.sub_list.clear();
             JSONArray jsonvst_Doc = new JSONArray(json.toString());
             sqLite.insert_docvalues("Joint_Work_" + hq_code, jsonvst_Doc.toString());
 
@@ -347,7 +347,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                     String Name = jsonObject.getString("Name");
 
                     remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name);
-                    Remaindercalls_activity.sub_list.add(doc_VALUES);
+                    RemaindercallsActivity.sub_list.add(doc_VALUES);
                 }
             }
         } catch (Exception e) {
@@ -357,7 +357,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
     public void change_hq(JsonArray json, String hq_code) {
         try {
-            Remaindercalls_activity.listeduser.clear();
+            RemaindercallsActivity.listeduser.clear();
             JSONArray jsonArray1 = new JSONArray(json.toString());
             SharedPref.setDcr_dochqcode(context, hq_code);
 
@@ -381,7 +381,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                 String Town_Code = jsonObject.getString("Town_Code");
 
                                 remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, Category, Specialty, Town_Name, CategoryCode, SpecialtyCode, Town_Code, SfType);
-                                Remaindercalls_activity.listeduser.add(doc_VALUES);
+                                RemaindercallsActivity.listeduser.add(doc_VALUES);
                             }
                         } else {
 
@@ -396,7 +396,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                             String Town_Code = jsonObject.getString("Town_Code");
 
                             remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, Category, Specialty, Town_Name, CategoryCode, SpecialtyCode, Town_Code, SfType);
-                            Remaindercalls_activity.listeduser.add(doc_VALUES);
+                            RemaindercallsActivity.listeduser.add(doc_VALUES);
                         }
 
 
@@ -406,11 +406,11 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 }
 
 
-                Remaindercalls_activity.remaindercallsAdapter = new remaindercalls_adapter(context, Remaindercalls_activity.listeduser);
-                Remaindercalls_activity.remaindercallsAdapter.filterList(Remaindercalls_activity.listeduser);
-                Remaindercalls_activity.remainded_view.setItemAnimator(new DefaultItemAnimator());
-                Remaindercalls_activity.remainded_view.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
-                Remaindercalls_activity.remainded_view.setAdapter(Remaindercalls_activity.remaindercallsAdapter);
+                RemaindercallsActivity.remaindercallsAdapter = new remaindercalls_adapter(context, RemaindercallsActivity.listeduser);
+                RemaindercallsActivity.remaindercallsAdapter.filterList(RemaindercallsActivity.listeduser);
+                RemaindercallsActivity.remainded_view.setItemAnimator(new DefaultItemAnimator());
+                RemaindercallsActivity.remainded_view.setLayoutManager(new GridLayoutManager(context, 4, GridLayoutManager.VERTICAL, false));
+                RemaindercallsActivity.remainded_view.setAdapter(RemaindercallsActivity.remaindercallsAdapter);
 
             }
         } catch (Exception e) {

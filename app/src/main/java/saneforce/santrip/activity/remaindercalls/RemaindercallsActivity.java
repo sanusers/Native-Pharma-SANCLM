@@ -50,7 +50,7 @@ import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
-public class Remaindercalls_activity extends AppCompatActivity {
+public class RemaindercallsActivity extends AppCompatActivity {
     ImageView back_btn;
     SQLite sqLite;
     String SfType = "", Sf_code = "";
@@ -104,7 +104,7 @@ public class Remaindercalls_activity extends AppCompatActivity {
         });
 
         close_sideview.setOnClickListener(view -> {
-            Remaindercalls_activity.drawer_Layout12.closeDrawer(GravityCompat.END);
+            RemaindercallsActivity.drawer_Layout12.closeDrawer(GravityCompat.END);
         });
 
         townname.setText(SharedPref.getHqName(this));
@@ -319,7 +319,7 @@ public class Remaindercalls_activity extends AppCompatActivity {
                 }
 //                Log.d("listsize", String.valueOf(hq_view));
 
-                hqlistadapter = new cuslistadapter(Remaindercalls_activity.this, hq_view, "");
+                hqlistadapter = new cuslistadapter(RemaindercallsActivity.this, hq_view, "");
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
                 app_recycler_view.setLayoutManager(mLayoutManager);
                 app_recycler_view.setItemAnimator(new DefaultItemAnimator());

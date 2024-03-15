@@ -100,8 +100,8 @@ import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.myresource.MyResource_Activity;
 import saneforce.santrip.activity.presentation.presentation.PresentationActivity;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
-import saneforce.santrip.activity.remainderCall.RemainderCallActivity;
-import saneforce.santrip.activity.remaindercalls.Remaindercalls_activity;
+
+import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.santrip.activity.reports.ReportsActivity;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -1018,7 +1018,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }*/
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.remainder_call))) {
-            startActivity(new Intent(HomeDashBoard.this, Remaindercalls_activity.class));
+            startActivity(new Intent(HomeDashBoard.this, RemaindercallsActivity.class));
             return true;
         }
 

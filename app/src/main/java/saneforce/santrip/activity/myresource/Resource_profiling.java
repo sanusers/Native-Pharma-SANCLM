@@ -27,10 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,7 +78,7 @@ import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
-public class Resource_profiling extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class Resource_profiling extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     LinearLayout backArrow;
     public static ImageView close_sideview;
     private static EditText email1;

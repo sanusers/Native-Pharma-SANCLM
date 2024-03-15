@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.storage.SQLite;
@@ -38,7 +39,7 @@ public class SlideDownloaderAlertBox {
     public static Dialog dialog;
     static int totalcount = 0;
     public static boolean MoveMainFlag;
-    public static boolean DownloadingStaus=false;
+
     public static ArrayList<String> slideId123 = new ArrayList<>();
 
 
@@ -105,7 +106,7 @@ public class SlideDownloaderAlertBox {
                 dialog.show();
             }
             dialog.setCancelable(false);
-
+                MasterSyncActivity.binding.imgDownloading.setVisibility(View.VISIBLE);
             for (SlideModelClass slide : Slide_list) {
                 String imageName = slide.getImageName();
                 boolean downloadStatus = slide.getDownloadStatus();
@@ -113,6 +114,7 @@ public class SlideDownloaderAlertBox {
                 String img_size_status = slide.getDownloadSizeStatus();
 
                 if (!downloadStatus) {
+                    SharedPref.putSlidestatus(activity.getApplicationContext(),false);
                     String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + imageName;
                     new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide);
                 }
@@ -123,6 +125,7 @@ public class SlideDownloaderAlertBox {
                 dialog.dismiss();
             });
             }else {
+                MasterSyncActivity.binding.imgDownloading.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(activity, "Already All Slide Downloaded");
             }
         } else {

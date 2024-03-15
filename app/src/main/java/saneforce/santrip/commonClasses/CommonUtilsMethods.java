@@ -214,7 +214,22 @@ public class CommonUtilsMethods {
         dialog.setContentView(R.layout.loading_progress);
         return dialog;
     }
+    public void showToastMessage(Activity activity, String message) {
 
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
+
+        //ImageView image = layout.findViewById(R.id.image);
+        // image.setImageResource(R.drawable.san_clm_logo);
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(message);
+
+        Toast toast = new Toast(activity.getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
 
     public void showToastMessage(Context context, String message) {
 
