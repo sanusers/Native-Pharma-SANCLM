@@ -81,7 +81,6 @@
             android:screenOrientation="landscape">
 
         </activity>
-
         <activity
             android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"

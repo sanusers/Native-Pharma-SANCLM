@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.call.fragments.jwOthers;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static saneforce.santrip.activity.call.DCRCallActivity.TodayPlanSfCode;
 import static saneforce.santrip.activity.call.DCRCallActivity.dcrCallBinding;
 
 import android.annotation.SuppressLint;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,11 +127,23 @@ public class JointWorkSelectionSide extends Fragment {
     public void SetupAdapter() {
         JwList.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + DCRCallActivity.TodayPlanSfCode);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
+            if(DCRCallActivity.save_valid.equals("1")){
+                jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
+
+                Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    jsonObject = jsonArray.getJSONObject(i);
+                    JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
+                }
+            }else{
+                jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
+                Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    jsonObject = jsonArray.getJSONObject(i);
+                    JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
+                }
             }
+
         } catch (Exception ignored) {
         }
 
