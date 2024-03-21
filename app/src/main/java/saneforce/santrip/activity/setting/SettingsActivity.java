@@ -300,7 +300,7 @@ public class SettingsActivity extends AppCompatActivity {
                             }
 
                             if (!licenseKeyValid)
-                                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -318,7 +318,7 @@ public class SettingsActivity extends AppCompatActivity {
                         configuration("http://" + url + "/apps/");
                     } else {
                         binding.configurationPB.setVisibility(View.GONE);
-                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.toast_response_failed));
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
                         Log.e("test", "hit count is : " + hitCount);
                         hitCount = 0;
                     }

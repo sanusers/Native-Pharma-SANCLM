@@ -315,6 +315,8 @@
     <string name="enter_url">Enter the URL</string>
     <string name="enter_license">Enter the License Key</string>
     <string name="invalid_url">Invalid Url! Try again</string>
+    <string name="invalid_Lis">Invalid License Key</string>
+
     <string name="configure_success">Configured Successfully</string>
     <string name="day_check_in">Day Check In</string>
     <string name="let_s_get_to_work">Let\'s get to work</string>

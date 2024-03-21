@@ -140,6 +140,9 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     CallActivityCustDetails.add(0, new CustList(outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getCusCode(), type, "", "", "", outBoxCallLists.get(position).getJsonData()));
                     intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                     intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_local");
+                    intent.putExtra("remainder_save", "0");
+                    intent.putExtra("hq_code", "" );
+
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     UpdateInputSample(outBoxCallLists.get(position).getJsonData());

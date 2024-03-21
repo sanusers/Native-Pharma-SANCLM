@@ -60,8 +60,7 @@ public class Forms_activity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
         backArrow.setOnClickListener(v -> {
-            Intent l = new Intent(Forms_activity.this, HomeDashBoard.class);
-            startActivity(l);
+            getOnBackPressedDispatcher().onBackPressed();
         });
 
         frmlisted_data.clear();

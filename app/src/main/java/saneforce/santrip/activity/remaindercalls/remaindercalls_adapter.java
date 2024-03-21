@@ -88,8 +88,8 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
 
                         sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"),  CommonUtilsMethods.getCurrentInstance("hh:mm aa"), listeduser.get(0).getDoc_code(), listeduser.get(0).getDoc_name(), "1");
 
-                        intent12.putExtra("isDetailedRequired", "false");
-                        intent12.putExtra("from_activity", "");
+                        intent12.putExtra("isDetailingRequired", "false");
+                        intent12.putExtra("dcr_from_activity", "");
                         intent12.putExtra("remainder_save", "1");
                         intent12.putExtra("hq_code", RemaindercallsActivity.REm_hq_code );
                         Log.d("REm_hq_code", RemaindercallsActivity.REm_hq_code);

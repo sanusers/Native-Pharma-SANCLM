@@ -150,9 +150,10 @@ public class Leave_Application extends AppCompatActivity {
         mtcard = findViewById(R.id.mtcard);
 
         dailog_list.setVisibility(View.VISIBLE);
-        l_sideview.closeDrawer(Gravity.END);
+        l_sideview.closeDrawer(Gravity.RIGHT);
         ed_Reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_Reason)});
         sqLite = new SQLite(this);
+        l_sideview.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
         back_btn.setOnClickListener(v -> {
             //  onBackPressed();
             getOnBackPressedDispatcher().onBackPressed();

@@ -83,7 +83,8 @@ import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.map.custSelection.CustList;
-import saneforce.santrip.activity.remaindercalls.Remaindercalls_activity;
+
+import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
@@ -159,12 +160,13 @@ public class DCRCallActivity extends AppCompatActivity {
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
-            isDetailingRequired = extra.getString("isDetailedRequired");
-            isFromActivity = extra.getString("from_activity");
+            isDetailingRequired = extra.getString(Constants.DETAILING_REQUIRED);
+            isFromActivity = extra.getString(Constants.DCR_FROM_ACTIVITY);
             save_valid = extra.getString("remainder_save");
             hqcode = extra.getString("hq_code");
 //            Log.d("hqcode",hqcode);
         }
+
 
         dcrCallBinding.tagCustName.setText(CallActivityCustDetails.get(0).getName());
         getRequiredData();
@@ -205,9 +207,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
             if (save_valid.equalsIgnoreCase("1")){
-                Intent intent = new Intent(DCRCallActivity.this, Remaindercalls_activity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                finish();
             }else{
                 if (isFromActivity.equalsIgnoreCase("new")) {
                     sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
@@ -226,17 +226,13 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
-                    Remaindercalls_activity.vals_rm ="";
-
+                    RemaindercallsActivity.vals_rm ="";
                     progressDialog = CommonUtilsMethods.createProgressDialog(this);
 
                     if(save_valid.equalsIgnoreCase("1")){
-
                         Remainder_calls();
 //                Log.d("remaonder_doc",jsonSaveDcr.toString());
                         progressDialog.dismiss();
-
-
                     }else{
                         progressDialog = CommonUtilsMethods.createProgressDialog(this);
                         isCreateJsonSuccess = true;
@@ -258,12 +254,14 @@ public class DCRCallActivity extends AppCompatActivity {
                             if (isCreateJsonSuccess) {
                                 InsertVisitControl();
                                 sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
-                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                                    dialogCheckOut.show();
-                                } else {
-                                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                                    startActivity(intent);
-                                }
+//                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+//                                    dialogCheckOut.show();
+//                                } else {
+//                                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+//                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
                                 if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
                                     CallUploadImage();
                                     CallSaveDcrAPI(jsonSaveDcr.toString());
@@ -280,7 +278,9 @@ public class DCRCallActivity extends AppCompatActivity {
                                         dialogCheckOut.show();
                                     } else {
                                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
+                                        finish();
                                     }
                                 }
                             } else {
@@ -309,39 +309,36 @@ public class DCRCallActivity extends AppCompatActivity {
         } else {
             DetailedFragment.callDetailingLists = new ArrayList<>();
         }
+//if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+//            viewPagerAdapter.add(new ProductFragment(), capPrd);
+//            viewPagerAdapter.add(new InputFragment(), capInp);
+//            if (RCPANeed.equalsIgnoreCase("1")) viewPagerAdapter.add(new RCPAFragment(), "RCPA");
+//            if (isFromActivity.equalsIgnoreCase("new") || isFromActivity.equalsIgnoreCase("edit_local"))
+//                viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
+//            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+//        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
+//            viewPagerAdapter.add(new ProductFragment(), capPrd);
+//            viewPagerAdapter.add(new InputFragment(), capInp);
+//            if (RCPANeed.equalsIgnoreCase("1")) {
+//                viewPagerAdapter.add(new RCPAFragment(), "RCPA");
+//            }
+//            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+//        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
+//            viewPagerAdapter.add(new ProductFragment(), capPrd);
+//            viewPagerAdapter.add(new InputFragment(), capInp);
+//            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+//        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
+//            viewPagerAdapter.add(new ProductFragment(), capPrd);
+//            viewPagerAdapter.add(new InputFragment(), capInp);
+//            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+//        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
+//            viewPagerAdapter.add(new ProductFragment(), "Product");
+//            viewPagerAdapter.add(new InputFragment(), "Input");
+//            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
+//        }
 
-/*
-        if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
-            viewPagerAdapter.add(new ProductFragment(), capPrd);
-            if (save_valid.equalsIgnoreCase("0")) {
-                viewPagerAdapter.add(new InputFragment(), capInp);
-                viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
-                if (RCPANeed.equalsIgnoreCase("1")) {
-                    viewPagerAdapter.add(new RCPAFragment(), "RCPA");
-                }
-            }
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
-            viewPagerAdapter.add(new ProductFragment(), capPrd);
-            viewPagerAdapter.add(new InputFragment(), capInp);
-            if (RCPANeed.equalsIgnoreCase("1")) {
-                viewPagerAdapter.add(new RCPAFragment(), "RCPA");
-            }
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
-            viewPagerAdapter.add(new ProductFragment(), capPrd);
-            viewPagerAdapter.add(new InputFragment(), capInp);
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
-            viewPagerAdapter.add(new ProductFragment(), capPrd);
-            viewPagerAdapter.add(new InputFragment(), capInp);
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-        } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("5")) {
-            viewPagerAdapter.add(new ProductFragment(), "Product");
-            viewPagerAdapter.add(new InputFragment(), "Input");
-            viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
-        }
-*/
+
+
         if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
             viewPagerAdapter.add(new ProductFragment(), capPrd);
             if (save_valid.equalsIgnoreCase("0")) {
@@ -359,6 +356,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 if (RCPANeed.equalsIgnoreCase("1")) {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                 }
+            }else{
+
             }
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")) {
@@ -393,7 +392,9 @@ public class DCRCallActivity extends AppCompatActivity {
         btnCheckOut.setOnClickListener(v -> {
             dialogCheckOut.dismiss();
             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            finish();
         });
     }
 
@@ -731,6 +732,7 @@ public class DCRCallActivity extends AppCompatActivity {
         callSaveDcr.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                Log.v("callSaveApi", "---" + response);
                 if (response.isSuccessful()) {
                     try {
                         JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
@@ -746,13 +748,16 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
 
                         sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        progressDialog.dismiss();
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                             dialogCheckOut.show();
                         } else {
                             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+                            finish();
                         }
-                        progressDialog.dismiss();
+
 
                     } catch (Exception e) {
                         progressDialog.dismiss();
@@ -761,7 +766,9 @@ public class DCRCallActivity extends AppCompatActivity {
                             dialogCheckOut.show();
                         } else {
                             Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
+                            finish();
                         }
                         Log.v("callSave", "---" + e);
                     }
@@ -777,7 +784,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     dialogCheckOut.show();
                 } else {
                     Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finish();
                 }
                 UpdateSampleStock();
                 UpdateInputStock();
@@ -1581,9 +1590,8 @@ public class DCRCallActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                     if (response.isSuccessful()) {
-                        Intent intent12 = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                        startActivity(intent12);
-                        Toast.makeText(DCRCallActivity.this,"Remaindercalls Add Successfully",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DCRCallActivity.this, "Remaindercalls Add Successfully", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                     progressDialog.dismiss();
                 }

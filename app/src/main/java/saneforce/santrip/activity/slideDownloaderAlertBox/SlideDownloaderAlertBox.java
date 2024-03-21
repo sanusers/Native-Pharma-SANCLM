@@ -75,7 +75,7 @@ public class SlideDownloaderAlertBox {
                         Slide_list.add(new SlideModelClass(FilePath, true, "Download Completed", "100",id));
                     }else{
                         AleartShowFlag=true;
-                        Slide_list.add(new SlideModelClass(FilePath, false, "0", "0",id));
+                        Slide_list.add(new SlideModelClass(FilePath, false, "", "",id));
                     }
                 }
             } else {
@@ -119,11 +119,13 @@ public class SlideDownloaderAlertBox {
                     new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide);
                 }
             }
-            adapter.notifyDataSetChanged();
-            cancel_img.setOnClickListener(v -> {
-                MoveMainFlag = false;
-                dialog.dismiss();
-            });
+                adapter.notifyDataSetChanged();
+
+
+                cancel_img.setOnClickListener(v -> {
+                    MoveMainFlag = false;
+                    dialog.dismiss();
+                });
             }else {
                 MasterSyncActivity.binding.imgDownloading.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(activity, "Already All Slide Downloaded");

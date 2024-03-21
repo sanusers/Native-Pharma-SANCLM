@@ -64,100 +64,41 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        Thread backgroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SetcallDetailsInLineChart(sqLite, context);
-            }
-        });
-        backgroundThread.start();
+        Log.d("Fragment_STATUS","OnResume");
+//        Thread backgroundThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                SetcallDetailsInLineChart(sqLite, context);
+//            }
+//        });
+//        backgroundThread.start();
+//    }
     }
-
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.v("fragment", "callanalysis Oncreate");
+        Log.d("Fragment_STATUS","OnResume");
         callAnalysisBinding = CallAnalysisFagmentBinding.inflate(inflater);
         View v = callAnalysisBinding.getRoot();
+        setScreenDesign();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         context = requireContext();
         sqLite = new SQLite(requireContext());
-
-        callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
-        callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
-        callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-
-        callAnalysisBinding.llDocChild.setOnClickListener(this);
-        callAnalysisBinding.llCheChild.setOnClickListener(this);
-        callAnalysisBinding.llStockChild.setOnClickListener(this);
-        callAnalysisBinding.llUnliChild.setOnClickListener(this);
-        callAnalysisBinding.llHosChild.setOnClickListener(this);
-        callAnalysisBinding.llCipChild.setOnClickListener(this);
-
-//        if(SharedPref.getMonthForClearCalls(getActivity())!=Integer.parseInt(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_8))){
-//           ClearOldCalls();
-//        }
         HiddenVisibleFunctions();
-   //     SetcallDetailsInLineChart(sqLite, context);
 
-        // Create and start a new thread for the background task
+
         Thread backgroundThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                callAnalysisBinding.progressMain.setVisibility(View.VISIBLE);
                 SetcallDetailsInLineChart(sqLite, context);
+
             }
         });
         backgroundThread.start();
-
-            ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(() -> {
-
-            int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
-            int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
-
-
-            int width = (getwidhtlayout / 3 - 8);
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp));
-            param.setMargins(0, 5, 10, 0);
-            callAnalysisBinding.llDocChild.setLayoutParams(param);
-            callAnalysisBinding.llCheChild.setLayoutParams(param);
-            callAnalysisBinding.llStockChild.setLayoutParams(param);
-            callAnalysisBinding.llUnliChild.setLayoutParams(param);
-            callAnalysisBinding.llHosChild.setLayoutParams(param);
-            callAnalysisBinding.llCipChild.setLayoutParams(param);
-        });
-
-
-        callAnalysisBinding.llCallsLayout.setOnTouchListener((v12, event) -> {
-            HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
-            return false;
-        });
-
-
-        callAnalysisBinding.inChart.lineChart.setOnTouchListener((v1, event) -> {
-            HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
-            return false;
-        });
-
-
-        callAnalysisBinding.inChart.lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-
-        });
-
         return v;
     }
     public static int computePercent(int current, int total) {
@@ -169,12 +110,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public static void SetcallDetailsInLineChart(SQLite sqLite, Context context) {
         sqLite.clearLinecharTable();
         try {
-            Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
-            Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context));
-            Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context));
-            unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context));
-            cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(context));
-            hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(context));
 
             dcrdatas = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
             if (dcrdatas.length() > 0) {
@@ -326,6 +261,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.VISIBLE);
                     setLineChartData("6", sqLite, context);
                 }
+                callAnalysisBinding.progressMain.setVisibility(View.GONE);
             } else {
                 callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.GONE);
                 callAnalysisBinding.llDocChild.setOnClickListener(null);
@@ -358,13 +294,15 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.txtCipValue.setText("0%");
                     callAnalysisBinding.txtHosValue.setText("0%");
                 }
+
+                callAnalysisBinding.progressMain.setVisibility(View.GONE);
             }
 
         } catch (Exception a) {
             a.printStackTrace();
         }
 
-        callAnalysisBinding.progressMain.setVisibility(View.GONE);
+
     }
 
     public static void setLineChartData(String Custype, SQLite sqLite, Context context) {
@@ -775,6 +713,39 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             callAnalysisBinding.llHosHead.setVisibility(View.VISIBLE);
             callAnalysisBinding.txtHosName.setText(SharedPref.getHospCaption(requireContext()));
         }
+
+        callAnalysisBinding.llCallsLayout.setOnTouchListener((v12, event) -> {
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(false);
+            return false;
+        });
+
+        callAnalysisBinding.inChart.lineChart.setOnTouchListener((v1, event) -> {
+            HomeDashBoard.binding.viewPager1.setScrollEnabled(true);
+            return false;
+        });
+
+
+
+        callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.VISIBLE);
+        callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleStockiest.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
+        callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
+
+        callAnalysisBinding.llDocChild.setOnClickListener(this);
+        callAnalysisBinding.llCheChild.setOnClickListener(this);
+        callAnalysisBinding.llStockChild.setOnClickListener(this);
+        callAnalysisBinding.llUnliChild.setOnClickListener(this);
+        callAnalysisBinding.llHosChild.setOnClickListener(this);
+        callAnalysisBinding.llCipChild.setOnClickListener(this);
+
+        Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
+        Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context));
+        Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context));
+        unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context));
+        cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(context));
+        hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(context));
     }
 
 
@@ -929,6 +900,24 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
 
+    void setScreenDesign (){
+        ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(() -> {
+            int getwidhtlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredWidth();
+            int getlayoutlayout = callAnalysisBinding.callAnalysisLayout.getMeasuredHeight();
+            int width = (getwidhtlayout / 3 - 8);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, getlayoutlayout - getResources().getDimensionPixelSize(R.dimen._22sdp));
+            param.setMargins(0, 5, 10, 0);
+            callAnalysisBinding.llDocChild.setLayoutParams(param);
+            callAnalysisBinding.llCheChild.setLayoutParams(param);
+            callAnalysisBinding.llStockChild.setLayoutParams(param);
+            callAnalysisBinding.llUnliChild.setLayoutParams(param);
+            callAnalysisBinding.llHosChild.setLayoutParams(param);
+            callAnalysisBinding.llCipChild.setLayoutParams(param);
+        });
+
+
+    }
 
 }
 

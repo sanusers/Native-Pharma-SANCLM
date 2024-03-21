@@ -44,9 +44,12 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
         holder.setIsRecyclable(false);
 
         holder.txt_imagename.setText(list.get(position).getImageName());
-        holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgressValue()));
-        holder.text_download_size.setText(list.get(position).getDownloadSizeStatus());
-
+        if(!list.get(position).getProgressValue().equalsIgnoreCase("")){
+            holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgressValue()));
+        }
+        if(!list.get(position).getDownloadSizeStatus().equalsIgnoreCase("")) {
+            holder.text_download_size.setText(list.get(position).getDownloadSizeStatus());
+        }
         if(list.get(position).getDownloadStatus()){
             int greencolor = activity.getResources().getColor(R.color.Green_45);
             ColorStateList colorStateList = ColorStateList.valueOf(greencolor);

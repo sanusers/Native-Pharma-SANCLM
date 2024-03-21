@@ -75,6 +75,7 @@ public class CustomerProfile extends AppCompatActivity {
         isPreAnalysisCalled = false;
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
+
         viewPagerAdapter = new CustTabLayoutAdapter(getSupportFragmentManager());
         viewPagerAdapter.add(new OverviewFragment(), "Overview");
         viewPagerAdapter.add(new PreCallAnalysisFragment(), "Pre Call Analysis");
@@ -113,6 +114,9 @@ public class CustomerProfile extends AppCompatActivity {
             Intent intent1 = new Intent(CustomerProfile.this, DCRCallActivity.class);
             intent1.putExtra(Constants.DETAILING_REQUIRED, "false");
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
+            intent1.putExtra("remainder_save", "0");
+            intent1.putExtra("hq_code", "" );
+
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
@@ -120,6 +124,7 @@ public class CustomerProfile extends AppCompatActivity {
         });
 
         btn_start.setOnClickListener(view -> {
+
             Intent intent = new Intent(CustomerProfile.this, PreviewActivity.class);
             intent.putExtra("from", "call");
             intent.putExtra("cus_name", CallActivityCustDetails.get(0).getName());
@@ -131,6 +136,7 @@ public class CustomerProfile extends AppCompatActivity {
             intent.putExtra("MappedProdCode", CallActivityCustDetails.get(0).getMappedBrands());
             intent.putExtra("MappedSlideCode", CallActivityCustDetails.get(0).getMappedSlides());
             intent.putExtra("CusType", CallActivityCustDetails.get(0).getType());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
 

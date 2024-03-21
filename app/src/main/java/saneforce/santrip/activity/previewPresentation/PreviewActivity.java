@@ -97,42 +97,52 @@ public class PreviewActivity extends AppCompatActivity {
             }
         }
 
-        viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
 
-        if (from_where.equalsIgnoreCase("call")) {
-            headingData.clear();
-            if (CusType.equalsIgnoreCase("1")) {
-                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-                headingData.add("A");
-                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-                headingData.add("B");
-                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                headingData.add("C");
-                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
-                    headingData.add("D");
+        Thread backgroundThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
+
+                if (from_where.equalsIgnoreCase("call")) {
+                    headingData.clear();
+                    if (CusType.equalsIgnoreCase("1")) {
+                        viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                        headingData.add("A");
+                        viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                        headingData.add("B");
+                        viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                        headingData.add("C");
+                        if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                            viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                            headingData.add("D");
+                        }
+                    } else {
+                        viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                        headingData.add("A");
+                        viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                        headingData.add("C");
+                        if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                            viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                            headingData.add("D");
+                        }
+                    }
+                } else {
+                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                    viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                    viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                    if (CustomPresentationNeed.equalsIgnoreCase("0"))
+                        viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
                 }
-            } else {
-                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-                headingData.add("A");
-                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                headingData.add("C");
-                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                    viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
-                    headingData.add("D");
-                }
+
+                previewBinding.viewPager.setAdapter(viewPagerAdapter);
+                previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
+                previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+
             }
-        } else {
-            viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-            viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-            viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-            if (CustomPresentationNeed.equalsIgnoreCase("0"))
-                viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
-        }
+        });
+        backgroundThread.start();
 
-        previewBinding.viewPager.setAdapter(viewPagerAdapter);
-        previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
-        previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
+
 
         previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -190,6 +200,8 @@ public class PreviewActivity extends AppCompatActivity {
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
             intent1.putExtra(Constants.DETAILING_REQUIRED, "true");
             intent1.putExtra(Constants.DCR_FROM_ACTIVITY, "new");
+            intent1 .putExtra("remainder_save", "0");
+            intent1.putExtra("hq_code", "" );
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
                 sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());

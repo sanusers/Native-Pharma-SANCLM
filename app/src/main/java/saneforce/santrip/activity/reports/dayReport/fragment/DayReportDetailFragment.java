@@ -193,7 +193,7 @@ public class DayReportDetailFragment extends Fragment {
             binding.hospCount.setText(dayReportModel.getHos());
         }
 
-        binding.name.setText(dayReportModel.getTerrWrk());
+        binding.name.setText(dayReportModel.getSF_Name());
         binding.workType.setText(dayReportModel.getWtype());
         binding.cluster.setText(dayReportModel.getTerrWrk());
 

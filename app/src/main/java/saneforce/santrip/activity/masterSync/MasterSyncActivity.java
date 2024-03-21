@@ -59,7 +59,7 @@ import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
 import saneforce.santrip.utility.TimeUtils;
 
-public class MasterSyncActivity extends AppCompatActivity {
+public class    MasterSyncActivity extends AppCompatActivity {
 
    public static ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
@@ -79,7 +79,7 @@ public class MasterSyncActivity extends AppCompatActivity {
     // Api call status
     int doctorStatus = 0, specialityStatus = 0, qualificationStatus = 0, categoryStatus = 0, departmentStatus = 0, classStatus = 0, feedbackStatus = 0;
     int unlistedDrStatus = 0, chemistStatus = 0, stockiestStatus = 0, hospitalStatus = 0, cipStatus = 0, inputStatus = 0, leaveStatus = 0, leaveStatusStatus = 0, tpSetupStatus = 0, tourPLanStatus = 0, clusterStatus = 0;
-    int callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0;
+    int callSyncStatus = 0, myDayPlanStatus = 0, visitControlStatus = 0, dateSyncStatus = 0, stockBalanceStatus = 0,calenderEventStaus=0;
     int productStatus = 0, proCatStatus = 0, brandStatus = 0, compProStatus = 0, mapCompPrdStatus = 0;
     int workTypeStatus = 0, holidayStatus = 0, weeklyOfStatus = 0;
     int proSlideStatus = 0, proSpeSlideStatus = 0, brandSlideStatus = 0, therapticStatus = 0;
@@ -141,6 +141,8 @@ public class MasterSyncActivity extends AppCompatActivity {
         binding.imgDownloading.startAnimation(blinkAnimation);
 
 
+
+
         //Initializing all the data array
         uiInitialization();
         arrayForAdapter.clear();
@@ -162,6 +164,11 @@ public class MasterSyncActivity extends AppCompatActivity {
 //            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         } else {
             binding.backArrow.setVisibility(View.VISIBLE);
+            if(SharedPref.getSlideDowloadingStatus(this)){
+                binding.imgDownloading.setVisibility(View.GONE);
+            }else {
+                binding.imgDownloading.setVisibility(View.VISIBLE);
+            }
         }
 //        else {
 //            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -300,6 +307,7 @@ public class MasterSyncActivity extends AppCompatActivity {
                 binding.childSync.setText("Sync Hospital");
 
                 arrayForAdapter.clear();
+                arrayForAdapter.addAll(hospitalModelArray);
                 arrayForAdapter.addAll(hospitalModelArray);
                 populateAdapter(arrayForAdapter);
             }
@@ -577,6 +585,10 @@ public class MasterSyncActivity extends AppCompatActivity {
         visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
         dateSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.DATE_SYNC);
         stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
+        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
+        calenderEventStaus=sqLite.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
+
+
 
         workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
         holidayStatus = sqLite.getMasterSyncStatusByKey(Constants.HOLIDAY);
@@ -697,11 +709,15 @@ public class MasterSyncActivity extends AppCompatActivity {
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, visitControlCount, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, dateSyncCount, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, -1, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
+     //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
+
+
         dcrModelArray.add(callSyncModel);
         dcrModelArray.add(myDayPlanModel);
         dcrModelArray.add(visitControlModel);
         dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(stockBalanceModel);
+
 
         //Work Type
         workTypeModelArray.clear();
@@ -1607,4 +1623,5 @@ public class MasterSyncActivity extends AppCompatActivity {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
 }

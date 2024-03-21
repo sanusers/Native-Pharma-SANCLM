@@ -205,10 +205,11 @@ public class DownloadTask {
                         context.startActivity(intent);
                         activity.finish();
                     } else {
-                        SharedPref.putSlidestatus(context,true);
+
                         commonUtilsMethods.showToastMessage(activity, "All Downloading Completed ");
 
                     }
+                    SharedPref.putSlidestatus(context,true);
                     MasterSyncActivity.binding.imgDownloading.setVisibility(View.GONE);
                 }
             } else {

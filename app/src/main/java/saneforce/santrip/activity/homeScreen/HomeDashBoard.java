@@ -165,8 +165,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("ACTIVITY_STATUS","OnResume");
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
-
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
@@ -197,7 +197,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, true);
+                CommonUtilsMethods.RequestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, false);
             }
         } else {
             CommonUtilsMethods.RequestGPSPermission(HomeDashBoard.this);
@@ -232,6 +232,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d("ACTIVITY_STATUS","OnCreate");
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -782,6 +784,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         user_logout.setOnClickListener(v -> {
             SharedPref.saveLoginState(HomeDashBoard.this, false);
             startActivity(new Intent(HomeDashBoard.this, LoginActivity.class));
+            finish();
         });
 
         user_name.setText(SharedPref.getSfName(this));
@@ -1161,6 +1164,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             jj.put("Designation", SharedPref.getDesig(this));
             jj.put("state_code", SharedPref.getStateCode(this));
             jj.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+            Log.d("object",""+jj.toString());
         } catch (Exception ignored) {
         }
 

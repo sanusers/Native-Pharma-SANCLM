@@ -12,9 +12,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -22,30 +19,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
-import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -70,6 +50,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public static ArrayList<remainder_modelclass> sub_list = new ArrayList<>();
     public static ArrayList<String> slt_hq = new ArrayList<>();
     ArrayList<remainder_modelclass> hq_view = new ArrayList<>();
+    ArrayList<remainder_modelclass> filterd_hqname = new ArrayList<>();
     public static String vals_rm = "";
     ProgressDialog progressDialog = null;
     ApiInterface api_interface;
@@ -166,24 +147,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
 
     }
 
-    public void getData(String hq_code) {
-        ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
 
-        List<MasterSyncItemModel> list = new ArrayList<>();
-
-
-        list.add(new MasterSyncItemModel("Doctor", 0, "Doctor", "getdoctors", Constants.DOCTOR + hq_code, 0, false));
-//
-//        for (int i = 0; i < list.size(); i++) {
-//            syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hq_code);
-//            Log.d("check_syndata", list.get(i).getMasterOf() + "====" + list.get(i).getRemoteTableName() + "===" + list.get(i).getLocalTableKeyName());
-//        }
-
-        for (int i = 0; i < list.size(); i++) {
-            syncMaster(list.get(i), hq_code);
-        }
-
-    }
 
 
     public void show_docdata() {
@@ -292,7 +256,9 @@ public class RemaindercallsActivity extends AppCompatActivity {
     }
 
     private void filter_hq(String text) {
-        ArrayList<remainder_modelclass> filterd_hqname = new ArrayList<>();
+
+
+        filterd_hqname.clear();
         for (remainder_modelclass s : hq_view) {
             if (s.getDoc_name().toLowerCase().contains(text.toLowerCase())) {
                 filterd_hqname.add(s);
@@ -332,93 +298,8 @@ public class RemaindercallsActivity extends AppCompatActivity {
         }
     }
 
-    public void syncMaster(MasterSyncItemModel masterSyncItemModel, String hqCode) {
-        if (UtilityClass.isNetworkAvailable(context)) {
-            try {
-                api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("tableName", masterSyncItemModel.getRemoteTableName());
-                jsonObject.put("sfcode", SharedPref.getSfCode(this));
-                jsonObject.put("division_code", SharedPref.getDivisionCode(this).replace(",", "").trim());
-                jsonObject.put("Rsf", hqCode);
-                jsonObject.put("sf_type", SharedPref.getSfType(this));
-                jsonObject.put("Designation", SharedPref.getDesig(this));
-                jsonObject.put("state_code",SharedPref.getStateCode(this));
-                jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
+    @Override
+    public void onBackPressed() {
 
-
-                Map<String, String> mapString = new HashMap<>();
-                mapString.put("axn", "table/dcrmasterdata");
-                Log.e("test", "master sync obj in TP : " + jsonObject + "--" + hqCode);
-                Call<JsonElement> call = null;
-                if (masterSyncItemModel.getMasterOf().equalsIgnoreCase("Doctor")) {
-                    call = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
-
-                }
-
-                if (call != null) {
-                    call.enqueue(new Callback<JsonElement>() {
-                        @Override
-                        public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-
-                            boolean success = false;
-                            if (response.isSuccessful()) {
-                                try {
-                                    JsonElement jsonElement = response.body();
-
-
-                                    JSONArray jsonArray = new JSONArray();
-                                    assert jsonElement != null;
-                                    if (!jsonElement.isJsonNull()) {
-                                        if (jsonElement.isJsonArray()) {
-                                            JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                            jsonArray = new JSONArray(jsonArray1.toString());
-                                            success = true;
-                                        } else if (jsonElement.isJsonObject()) {
-                                            JsonObject jsonObject = jsonElement.getAsJsonObject();
-                                            JSONObject jsonObject1 = new JSONObject(jsonObject.toString());
-                                            if (!jsonObject1.has("success")) { // json object with "success" : "fail" will be received only when api call is failed ,"success will not be received when api call is success
-                                                jsonArray.put(jsonObject1);
-                                                success = true;
-                                            } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
-                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                                            }
-                                        }
-
-                                        Log.d("syncheck", masterSyncItemModel.getLocalTableKeyName() + "--" + success + "--" + jsonArray.toString());
-
-                                        if (success) {
-
-                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
-                                        }
-                                    } else {
-
-                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                                    }
-
-
-                                    show_docdata();
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                            Log.e("test", "failed : " + t);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                        }
-                    });
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Toast.makeText(context, "No internet connectivity", Toast.LENGTH_SHORT).show();
-        }
     }
-
-
 }

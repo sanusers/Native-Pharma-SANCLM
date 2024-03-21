@@ -341,10 +341,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mapsBinding.imgRefreshMap.setOnClickListener(view -> {
+
             if (CurrentLoc()) {
                 lat = gpsTrack.getLatitude();
                 lng = gpsTrack.getLongitude();
-                CommonUtilsMethods.gettingAddress(MapsActivity.this, parseDouble(String.valueOf(lat)), parseDouble(String.valueOf(lng)), true);
                 LatLng latLng = new LatLng(lat, lng);
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.2f));
                 if (from_tagging.equalsIgnoreCase("tagging")) {
@@ -352,6 +352,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapsBinding.tvTaggedAddress.setText(CommonUtilsMethods.gettingAddress(MapsActivity.this, lat, lng, false));
                     marker = mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapFromVector(getApplicationContext(), R.drawable.marker_map)));
                 }
+
             }
         });
 
@@ -359,7 +360,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getRequiredData() {
-
 
         SfType = SharedPref.getSfType(this);
         SfCode = SharedPref.getSfCode(this);

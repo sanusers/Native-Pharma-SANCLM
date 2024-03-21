@@ -40,6 +40,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -53,6 +54,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -60,6 +62,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
@@ -135,16 +138,12 @@ public class Activity extends AppCompatActivity {
 
     @Override public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding=ActivityBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        commonFun();
+        setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);
         sqLite=new SQLite(this);
         commonUtilsMethods=new CommonUtilsMethods(this);
-
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
         fontregular = ResourcesCompat.getFont(this, R.font.satoshi_regular);
@@ -161,7 +160,7 @@ public class Activity extends AppCompatActivity {
         getActivity(SharedPref.getHqCode(Activity.this));
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-
+        binding.mainLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
         if(!SharedPref.getDesig(this).equalsIgnoreCase("MR")){
             binding.rlheadquates.setVisibility(View.VISIBLE);
@@ -186,10 +185,7 @@ public class Activity extends AppCompatActivity {
             }
         });
 
-
-
-
-
+        binding.mainLayout.closeDrawer(Gravity.RIGHT);
     }
 
 
@@ -1735,7 +1731,7 @@ public class Activity extends AppCompatActivity {
                             ListName.add(mName[1].replaceAll("\"",""));
                             ListIds.add(mCode[1].replaceAll("\"",""));
                         }
-                        ShowListPopup(singlecomboedittext,Idview, ListName,ListIds,false);
+                        ShowListPopup(singlecomboedittext,Idview, ListName,ListIds,List.getFieldName(),false);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1847,7 +1843,7 @@ public class Activity extends AppCompatActivity {
                             ListName.add(mName[1].replaceAll("\"",""));
                             ListIds.add(mCode[1].replaceAll("\"",""));
                         }
-                        ShowListPopup(multicomboeditext,TextCode, ListName,ListIds,true);
+                        ShowListPopup(multicomboeditext,TextCode, ListName,ListIds,List.getFieldName(),true);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -3041,19 +3037,21 @@ public class Activity extends AppCompatActivity {
     }
 
 
-    public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<String> ListName, ArrayList<String> ListIds, boolean isMultipleCheck) {
-
+    public void ShowListPopup(TextView NameView, TextView IdView, ArrayList<String> ListName, ArrayList<String> ListIds,String name, boolean isMultipleCheck) {
         if(isMultipleCheck) {
-            binding.viewDummy1.setVisibility(View.VISIBLE);
-            binding.txtClDone.setVisibility(View.VISIBLE);
+            binding.SlideScreen.viewDummy1.setVisibility(View.VISIBLE);
+            binding.SlideScreen.txtClDone.setVisibility(View.VISIBLE);
         }else {
-            binding.viewDummy1.setVisibility(View.GONE);
-            binding.txtClDone.setVisibility(View.GONE);
+            binding.SlideScreen.viewDummy1.setVisibility(View.GONE);
+            binding.SlideScreen.txtClDone.setVisibility(View.GONE);
         }
+
         List<String> mListName = new ArrayList<>();
         List<String> mListId = new ArrayList<>();
         binding.mainLayout.openDrawer(Gravity.RIGHT);
-         adapter1 = new ActvityList2Adapter(getApplicationContext(), ListName,ListIds, isMultipleCheck, new CheckBoxInterface() {
+        binding.SlideScreen.tvSearchheader.setText("Select "+name);
+        binding.SlideScreen.etSearch.setHint("Search "+name);
+        adapter1 = new ActvityList2Adapter(getApplicationContext(), ListName,ListIds, isMultipleCheck, new CheckBoxInterface() {
             @Override
             public void Checked(String checkname,String id) {
                 if(isMultipleCheck) {
@@ -3071,10 +3069,10 @@ public class Activity extends AppCompatActivity {
                 mListId.remove(id);
             }
         });
-        binding.acRecyelerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        binding.acRecyelerView.setAdapter(adapter1);
+        binding.SlideScreen.acRecyelerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        binding.SlideScreen.acRecyelerView.setAdapter(adapter1);
 
-        binding.etSearch.addTextChangedListener(new TextWatcher() {
+        binding.SlideScreen.etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -3093,7 +3091,7 @@ public class Activity extends AppCompatActivity {
         });
 
 
-        binding.txtClDone.setOnClickListener(new View.OnClickListener() {
+        binding.SlideScreen.txtClDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -3101,13 +3099,17 @@ public class Activity extends AppCompatActivity {
                     NameView.setText(mListName.toString().replaceAll("[\\[\\]]", ""));
                     IdView.setText(mListId.toString().replaceAll("[\\[\\]]", ""));
                     binding.mainLayout.closeDrawer(Gravity.RIGHT);
-
-
-
                 }
             }
         });
 
+        binding.SlideScreen.cancelImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.mainLayout.closeDrawer(Gravity.RIGHT);
+
+            }
+        });
     }
 
     private void Open_Storage() {
@@ -3611,5 +3613,19 @@ public class Activity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-}
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            binding.getRoot().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+  }
 

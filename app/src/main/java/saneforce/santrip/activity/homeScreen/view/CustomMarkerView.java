@@ -59,64 +59,68 @@ public class CustomMarkerView extends MarkerView {
         if (linekey.equalsIgnoreCase("3")) {
 
             if (highlight.getX() == 1.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDateStr, fifteenthDateStr);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDateStr, fifteenthDateStr);
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDateStr, enddate);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDateStr, enddate);
 
             } else if (highlight.getX() == 3.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatepastmonth, fifteenthDatepastmonth);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, fifteenthDatepastmonth);
 
             } else if (highlight.getX() == 4.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatepastmonth, enddatepastmonth);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, enddatepastmonth);
             } else if (highlight.getX() == 5.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, fifteenthDatecurrent);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, fifteenthDatecurrent);
 
             } else if (highlight.getX() == 6.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, enddatecurrent);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, enddatecurrent);
 
             }
         } else if (linekey.equalsIgnoreCase("2")) {
 
             if (highlight.getX() == 1.0) {
 
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatepastmonth, fifteenthDatepastmonth);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, fifteenthDatepastmonth);
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatepastmonth, fifteenthDatepastmonth);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, fifteenthDatepastmonth);
 
 
             } else if (highlight.getX() == 3.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, fifteenthDatecurrent);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, fifteenthDatecurrent);
 
 
             } else if (highlight.getX() == 4.0) {
 
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, enddatecurrent);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, enddatecurrent);
 
             }
 
         } else {
 
             if (highlight.getX() == 1.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, fifteenthDatecurrent);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, fifteenthDatecurrent);
 
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(firstDatecurrent, enddatecurrent);
+                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, enddatecurrent);
 
             }
         }
 
-        int avaragecalls;
+        double avaragecalls;
         int getyvakue = (int) highlight.getY();
-          if(getfeildworkcount!=0.0){
-            avaragecalls = Math.round(getyvakue / getfeildworkcount);
-          }else {
-              avaragecalls=0;
-          }
-
-          Avg_calls.setText(String.valueOf(avaragecalls));
+        if (getfeildworkcount != 0.0) {
+            avaragecalls = Double.valueOf(getyvakue) / Double.valueOf(getfeildworkcount);
+        } else {
+            avaragecalls = 0.0;
+        }
+        String formattedAverage = String.format("%.1f", avaragecalls);
+        if (formattedAverage.endsWith(".0")) {
+            Avg_calls.setText(formattedAverage.substring(0,formattedAverage.length()-2));
+        } else {
+            Avg_calls.setText(formattedAverage);
+        }
         Total_Call_count.setText(String.valueOf(getyvakue));
 
         if (cus.equalsIgnoreCase("1")) {

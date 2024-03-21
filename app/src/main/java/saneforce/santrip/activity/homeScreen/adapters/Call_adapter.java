@@ -324,6 +324,9 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         CallActivityCustDetails.add(0, new CustList(docName.substring(0, docName.lastIndexOf(" ---")), docCode, type, transSlno, aDetSLNo, "", jsonObject.toString()));
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");
+                        intent.putExtra("remainder_save", "0");
+                        intent.putExtra("hq_code", "" );
+
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(intent);
                         new CountDownTimer(2000, 2000) {

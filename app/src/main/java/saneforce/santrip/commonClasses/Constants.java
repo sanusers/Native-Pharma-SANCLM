@@ -40,6 +40,8 @@ public class Constants {
     public static final String STOCK_BALANCE = "Stock Balance";
     public static final String INPUT_BALANCE = "Input Balance";
 
+    public static final String CALENDER_EVENT_STATUS = "Calender Event Status";
+
     //WorkType
     public static final String WORK_TYPE = "Work Type";
     public static final String HOLIDAY = "Holiday";
@@ -103,5 +105,6 @@ public class Constants {
     public static final String EXCEPTION_ERROR = "Exception Error";
     public static final String DCR_FROM_ACTIVITY = "dcr_from_activity";
     public static final String DETAILING_REQUIRED = "isDetailingRequired";
+
 
 }

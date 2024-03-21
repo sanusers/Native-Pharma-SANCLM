@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drMainlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@color/backround_graey"
     tools:context=".activity.homeScreen.HomeDashBoard">
 
@@ -114,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/Toolbar"
-            tools:openDrawer="start"
+
             tools:context=".activity.DashBoard.HomeDashBoard">
 
             <LinearLayout
@@ -632,7 +632,7 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view1"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_180sdp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:background="@drawable/backround_text"

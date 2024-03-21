@@ -117,10 +117,9 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_start_det"
-        android:layout_width="@dimen/_60sdp"
-        android:layout_height="wrap_content"
+        android:layout_width="114dp"
+        android:layout_height="47dp"
         android:layout_marginVertical="@dimen/_5sdp"
-        android:layout_marginStart="@dimen/_3sdp"
         android:layout_marginEnd="@dimen/_6sdp"
         android:layout_toEndOf="@id/btn_skip"
         android:background="@drawable/bg_purple"

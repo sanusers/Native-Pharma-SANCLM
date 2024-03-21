@@ -1117,12 +1117,11 @@ public class SQLite extends SQLiteOpenHelper {
         return count;
     }
 
-    public int getfeildworkcount(String startDate, String endDate) {
+    public int getfeildworkcount( String cutype,String startDate, String endDate) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String custType = "0";
         String Fieldwork = "F";
 
-        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " + " AND " + LINECHAR_FM_INDICATOR + " = '" + Fieldwork + "' " + " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
+        String query = "SELECT COUNT(DISTINCT " + LINECHAR_DCR_DT + ") FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " + " AND " + LINECHAR_FM_INDICATOR + " = '" + Fieldwork + "' " + " AND " + LINECHAR_CUSTTYPE + " = '" + cutype + "'";
         Cursor cursor = db.rawQuery(query, null);
 
         int count = 0;

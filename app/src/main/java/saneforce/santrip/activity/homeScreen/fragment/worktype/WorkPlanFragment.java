@@ -105,9 +105,12 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     JSONObject jsonCheck;
     boolean NeedClusterFlag1 = false, NeedClusterFlag2 = false;
 
+
+
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("ACTIVITY_STATUS","OnResume");
         if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
             sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
             if (UtilityClass.isNetworkAvailable(requireContext())) {
@@ -125,9 +128,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
-
+        Log.d("ACTIVITY_STATUS","oncreateview");
         sqLite = new SQLite(getActivity());
-
+        gpsTrack = new GPSTrack(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -669,7 +672,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             case R.id.btnsumit:
                 if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
                     if (!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                        gpsTrack = new GPSTrack(requireContext());
+
                         latitude = gpsTrack.getLatitude();
                         longitude = gpsTrack.getLongitude();
                         if (UtilityClass.isNetworkAvailable(requireContext())) {
@@ -898,8 +901,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("FwFlg2", mFwFlg2);
 
             jsonObject.put("Remarks", mRemarks1);
-            jsonObject.put("location", "");
-            jsonObject.put("location2", "");
+            jsonObject.put("Entry_location", gpsTrack.getLatitude()+":"+gpsTrack.getLongitude());
+            jsonObject.put("address",gpsTrack.getLocation() );
             jsonObject.put("InsMode", "0");
             jsonObject.put("Appver", getResources().getString(R.string.app_version));
             jsonObject.put("Mod", "");
@@ -908,6 +911,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TpVwFlg", "0");
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");
+
 
         } catch (Exception ignored) {
 

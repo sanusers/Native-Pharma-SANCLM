@@ -6,7 +6,6 @@
     android:layout_gravity="end"
     android:background="@drawable/border_white"
     android:orientation="vertical"
-
     tools:showIn="navigation_view1">
 
     <com.google.android.material.appbar.AppBarLayout

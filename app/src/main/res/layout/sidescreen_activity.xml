@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_180sdp"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="end"
+    android:background="@drawable/border_white"
+    android:orientation="vertical"
+    tools:showIn="navigation_view1">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/rl_calender_syn"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_searchheader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/_7sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="center"
+                        android:padding="@dimen/_4sdp"
+                        android:text="Select"
+                        android:textColor="@color/black_45"
+                        android:layout_marginLeft="@dimen/_4sdp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/cancel_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="-2dp"
+                        android:layout_marginEnd="13dp"
+                        android:background="@color/white"
+                        android:padding="@dimen/_2sdp"
+                        android:src="@drawable/close_icon" />
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/view_dummy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0.5dp"
+                    android:layout_below="@+id/rl_calender_syn"
+                    android:background="@color/tab_gray" />
+                <LinearLayout
+                    android:id="@+id/ll_search_layout"
+                    android:layout_below="@id/view_dummy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:background="@drawable/bg_white_search"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/_8sdp"
+                        android:layout_height="@dimen/_7sdp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_3sdp"
+                        android:src="@drawable/grey_search" />
+
+                    <EditText
+                        android:id="@+id/et_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lineid"
+                        android:layout_margin="@dimen/_1sdp"
+                        android:background="@null"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="left"
+                        android:hint="Search "
+                        android:inputType="text"
+                        android:padding="@dimen/_7sdp"
+                        android:textSize="@dimen/_6sdp" />
+
+
+                </LinearLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_below="@id/ll_search_layout"
+                    android:id="@+id/ac_recyeler_view"
+                    android:layout_width="match_parent"
+                    android:visibility="visible"
+                    android:divider="@null"
+                    android:layout_marginBottom="@dimen/_30sdp"
+                    android:layout_height="wrap_content"
+                    />
+
+                <View
+                    android:id="@+id/view_dummy1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0.5dp"
+                    android:layout_above="@+id/txt_cl_done"
+                    android:background="@color/tab_gray" />
+                <TextView
+
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_gravity="bottom"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="@dimen/_3sdp"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center"
+                    android:text="Save"
+                    android:padding="@dimen/_5sdp"
+                    android:id="@+id/txt_cl_done"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_7sdp"
+                    android:visibility="gone"
+                    android:background="@drawable/edittext_stroke"
+                    app:backgroundTint="@color/text_dark"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_height="@dimen/_20sdp">
+                </TextView>
+            </RelativeLayout>
