@@ -639,7 +639,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
             jsonobj.put("addr", add_crt);
             jsonobj.put("tagged_cust_HQ", SharedPref.getSfCode(this));
             jsonobj.put("mode", Constants.APP_MODE);
-            jsonobj.put("version", Constants.APP_VERSION);
+            jsonobj.put("version", getResources().getString(R.string.app_version));
 
             Log.d("prifiling", jsonobj.toString());
 

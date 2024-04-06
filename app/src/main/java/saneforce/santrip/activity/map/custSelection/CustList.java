@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.map.custSelection;
 
-public class CustList {
+public class
+CustList {
     String name;
     String type;
     String code;

@@ -6,10 +6,14 @@ import static saneforce.santrip.activity.call.adapter.detailing.PlaySlideDetaili
 import static saneforce.santrip.activity.call.fragments.detailing.DetailedFragment.callDetailingLists;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,15 +35,20 @@ import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.call.pojo.detailing.StoreImageTypeUrl;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix;
 import saneforce.santrip.activity.previewPresentation.fragment.Customized;
 import saneforce.santrip.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.santrip.activity.previewPresentation.fragment.Speciality;
+import saneforce.santrip.activity.setting.SettingsActivity;
+import saneforce.santrip.activity.splash.SplashScreen;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.response.CustomSetupResponse;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.storage.SharedPref;
 
 public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
@@ -54,6 +63,7 @@ public class PreviewActivity extends AppCompatActivity {
     CommonUtilsMethods commonUtilsMethods;
     CustomSetupResponse customSetupResponse;
 
+    ProgressDialog progressDialog;
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
@@ -79,72 +89,62 @@ public class PreviewActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         callDetailingLists = new ArrayList<>();
         arrayStore = new ArrayList<>();
+
         getRequiredData();
-
         Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            from_where = extra.getString("from");
-            assert from_where != null;
-            if (from_where.equalsIgnoreCase("call")) {
-                cus_name = extra.getString("cus_name");
-                SpecialityCode = extra.getString("SpecialityCode");
-                SpecialityName = extra.getString("SpecialityName");
-                BrandCode = extra.getString("MappedProdCode");
-                SlideCode = extra.getString("MappedSlideCode");
-                CusType = extra.getString("CusType");
-                previewBinding.tagCustName.setText(cus_name);
-                previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
-            }
-        }
-
-
-        Thread backgroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
-
+            if (extra != null) {
+                from_where = extra.getString("from");
+                assert from_where != null;
                 if (from_where.equalsIgnoreCase("call")) {
-                    headingData.clear();
-                    if (CusType.equalsIgnoreCase("1")) {
-                        viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-                        headingData.add("A");
-                        viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
-                        headingData.add("B");
-                        viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                        headingData.add("C");
-                        if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                            viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
-                            headingData.add("D");
-                        }
-                    } else {
-                        viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-                        headingData.add("A");
-                        viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                        headingData.add("C");
-                        if (CustomPresentationNeed.equalsIgnoreCase("0")) {
-                            viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
-                            headingData.add("D");
-                        }
+                    cus_name = extra.getString("cus_name");
+                    SpecialityCode = extra.getString("SpecialityCode");
+                    SpecialityName = extra.getString("SpecialityName");
+                    BrandCode = extra.getString("MappedProdCode");
+                    SlideCode = extra.getString("MappedSlideCode");
+                    CusType = extra.getString("CusType");
+                    previewBinding.tagCustName.setText(cus_name);
+                    previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
+                }
+            }
+            viewPagerAdapter = new PreviewTabAdapter(getSupportFragmentManager());
+
+            if (from_where.equalsIgnoreCase("call")) {
+                headingData.clear();
+                if (CusType.equalsIgnoreCase("1")) {
+                    viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                    headingData.add("A");
+                    viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                    headingData.add("B");
+                    viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                    headingData.add("C");
+                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+                        viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                        headingData.add("D");
                     }
                 } else {
                     viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
-                    viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                    headingData.add("A");
                     viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
-                    if (CustomPresentationNeed.equalsIgnoreCase("0"))
+                    headingData.add("C");
+                    if (CustomPresentationNeed.equalsIgnoreCase("0")) {
                         viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
+                        headingData.add("D");
+                    }
                 }
-
-                previewBinding.viewPager.setAdapter(viewPagerAdapter);
-                previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
-                previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
-
+            } else {
+                viewPagerAdapter.add(new HomeBrands(), getResources().getString(R.string.home));
+                viewPagerAdapter.add(new BrandMatrix(), getResources().getString(R.string.brand_matrix));
+                viewPagerAdapter.add(new Speciality(), getResources().getString(R.string.speciality));
+                if (CustomPresentationNeed.equalsIgnoreCase("0"))
+                    viewPagerAdapter.add(new Customized(), getResources().getString(R.string.custom_presentation));
             }
-        });
-        backgroundThread.start();
+            previewBinding.viewPager.setAdapter(viewPagerAdapter);
+            previewBinding.tabLayout.setupWithViewPager(previewBinding.viewPager);
+            previewBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
 
 
 
-        previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            previewBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 SelectedPosPlay = tab.getPosition();
@@ -163,7 +163,6 @@ public class PreviewActivity extends AppCompatActivity {
             }
         });
 
-        previewBinding.ivBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         previewBinding.ivBack.setOnClickListener(v -> {
             if (from_where.equalsIgnoreCase("call")) {

@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_version" translatable="false">1.0</string>
+
+    <string name="app_mode" translatable="false">Android-Edet</string>
+    <string name="app_version" translatable="false">DemoTest1.0</string>
     <string name="str_app_name">SAN TRIP</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -282,7 +284,7 @@
     <string name="enter_the">Enter the </string>
     <string name="select_the">Select the </string>
     <string name="add_rcpa_values">Add RCPA Values</string>
-    <string name="jointwork_need">Jointwork Needed</string>
+    <string name="jointwork_need"> Select Jointwork </string>
     <string name="add_pob_values">Add Pob Values</string>
     <string name="event_capture_needed">Event Capture Needed</string>
     <string name="need_competitors_for_prd">Need Competitor for Products</string>

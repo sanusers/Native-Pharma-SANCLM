@@ -1,6 +1,8 @@
 package saneforce.santrip.activity.masterSync;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -54,6 +56,10 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMasterSyncBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -65,8 +71,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     SQLite sqLite;
-
-
+    public static Dialog dialog1;
     String rsf="";
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
     int unlistedDrCount = 0, chemistCount = 0, stockiestCount = 0, hospitalCount = 0, cipCount = 0, inputCount = 0, leaveCount = 0, leaveStatusCount = 0, tpSetupCount = 0, clusterCount = 0;
@@ -116,6 +121,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
     String holidayMode = "", weeklyOffCaption = "";
     boolean isDataAvailable;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB db;
+
+   static   Context context;
+    private MasterDataDao masterDataDao;
+
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
@@ -124,10 +134,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("AAAAA","OnCreate");
         binding = ActivityMasterSyncBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
+        context=getApplicationContext();
         sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
@@ -139,8 +150,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
         }
         Animation blinkAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.downloading);
         binding.imgDownloading.startAnimation(blinkAnimation);
-
-
+        db = RoomDB.getDatabase(this);
+        masterDataDao=db.masterDataDao();
 
 
         //Initializing all the data array
@@ -167,7 +178,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
             if(SharedPref.getSlideDowloadingStatus(this)){
                 binding.imgDownloading.setVisibility(View.GONE);
             }else {
-                binding.imgDownloading.setVisibility(View.VISIBLE);
+                binding.imgDownloading.setVisibility(View.GONE);
             }
         }
 //        else {
@@ -181,12 +192,19 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                finish();
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
             }
 
         });
+
+        binding.imgDownloading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SlideDownloaderAlertBox.dialog.show();
+            }
+        });
+
 
         binding.hq.setOnClickListener(view -> {
 
@@ -580,6 +598,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         inputStatus = sqLite.getMasterSyncStatusByKey(Constants.INPUT);
         leaveStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE);
         leaveStatusStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+
         callSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.CALL_SYNC);
         myDayPlanStatus = sqLite.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
         visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
@@ -1060,6 +1079,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                     }
 
                                     if (success) {
+
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(0);
 
@@ -1067,6 +1087,21 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                         binding.lastSyncTime.setText(dateAndTime);
                                         SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
                                         sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0);
+                                        MasterDataTable MainData =new MasterDataTable();
+                                        MainData.setMasterKey(masterSyncItemModels.get(position).getLocalTableKeyName());
+                                        MainData.setMasterValuse(jsonArray.toString());
+                                        MainData.setSyncstatus(0);
+                                        MasterDataTable mNChecked= masterDataDao.getMasterSyncDataByKey(masterSyncItemModels.get(position).getLocalTableKeyName());
+                                        if(mNChecked!=null){
+                                            masterDataDao.updatedata(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
+                                        }else {
+                                            masterDataDao.insert(MainData);
+                                        }
+
+                                        if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
+                                            CallDataRestClass.resetcallValues(context);
+                                        }
+
                                         // sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, "[]", 0);
 
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
@@ -1076,6 +1111,30 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
                                                 sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
                                                 sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
+
+                                                MasterDataTable stockdata =new MasterDataTable();
+                                                stockdata.setMasterKey(Constants.STOCK_BALANCE);
+                                                stockdata.setMasterValuse( stockBalanceArray.toString());
+                                                stockdata.setSyncstatus(0);
+
+                                                MasterDataTable mChecked= masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
+                                                if(mChecked!=null){
+                                                    masterDataDao.updatedata(Constants.STOCK_BALANCE,stockBalanceArray.toString());
+                                                }else {
+                                                    masterDataDao.insert(stockdata);
+                                                }
+
+                                                MasterDataTable inputdata =new MasterDataTable();
+                                                inputdata.setMasterKey(Constants.INPUT_BALANCE);
+                                                inputdata.setMasterValuse(inputBalanceArray.toString());
+                                                inputdata.setSyncstatus(0);
+                                                MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
+                                                if(nChecked !=null){
+                                                    masterDataDao.updatedata(Constants.INPUT_BALANCE,inputBalanceArray.toString());
+                                                }else {
+                                                    masterDataDao.insert(inputdata);
+                                                }
+
                                             }
                                         } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")) {
                                             if (mgrInitialSync) {
@@ -1623,5 +1682,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
+
+
+
 
 }

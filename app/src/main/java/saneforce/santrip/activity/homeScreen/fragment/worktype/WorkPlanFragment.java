@@ -4,7 +4,7 @@ package saneforce.santrip.activity.homeScreen.fragment.worktype;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 import static saneforce.santrip.commonClasses.Constants.APP_MODE;
-import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
+
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -269,6 +269,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     public void showMultiClusterAlter() {
+        listSelectedCluster.clear();
         HomeDashBoard.binding.llNav.etSearch.setText("");
         HomeDashBoard.binding.llNav.txtClDone.setVisibility(View.VISIBLE);
         HomeDashBoard.binding.llNav.wkRecyelerView.setVisibility(View.VISIBLE);
@@ -689,7 +690,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             jsonCheck.put("long", longitude);
                             jsonCheck.put("address", address);
                             jsonCheck.put("update", "1");
-                            jsonCheck.put("Appver", APP_VERSION);
+                            jsonCheck.put("Appver", getResources().getString(R.string.app_version));
                             jsonCheck.put("Mod", APP_MODE);
                             jsonCheck.put("sf_emp_id",  SharedPref.getSfEmpId(requireContext()));
                             jsonCheck.put("sfname", SharedPref.getSfName(requireContext()));
@@ -901,11 +902,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("FwFlg2", mFwFlg2);
 
             jsonObject.put("Remarks", mRemarks1);
-            jsonObject.put("Entry_location", gpsTrack.getLatitude()+":"+gpsTrack.getLongitude());
-            jsonObject.put("address",gpsTrack.getLocation() );
+            jsonObject.put("location", gpsTrack.getLatitude()+":"+gpsTrack.getLongitude());
+            jsonObject.put("address",CommonUtilsMethods.gettingAddress(getActivity(), gpsTrack.getLatitude(), gpsTrack.getLongitude(), false));
             jsonObject.put("InsMode", "0");
             jsonObject.put("Appver", getResources().getString(R.string.app_version));
-            jsonObject.put("Mod", "");
+            jsonObject.put("Mod", getResources().getString(R.string.app_mode));
             jsonObject.put("SubmittedDate", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
             jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
             jsonObject.put("TpVwFlg", "0");
@@ -1057,6 +1058,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             jsonObject.put("TP_cluster", "");
             jsonObject.put("TP_worktype", "");*/
 
+            Log.e("todayCallList:Object",jsonObject.toString());
+
             Map<String, String> mapString = new HashMap<>();
             mapString.put("axn", "edetsave/dayplan");
             Call<JsonElement> saveMyDayPlan = api_interface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
@@ -1077,7 +1080,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                 } else {
                                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()),  SharedPref.getSfCode(requireContext()));
                                 }
+
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode);
+                                if(mFwFlg1.equalsIgnoreCase("F")||mFwFlg2.equalsIgnoreCase("F")){
+                                    SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),true,true);
+                                }else {
+                                    SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),true,false);
+
+                                }
 
                                 JSONArray MydayPlanDataList = new JSONArray();
                                 JSONObject FisrstSeasonObject = new JSONObject();
@@ -1119,9 +1129,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     SecondSeasonObject.put("TP_worktype", "");
                                     MydayPlanDataList.put(SecondSeasonObject);
                                 }
-
                                 sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0);
                             } else {
+                                setUpMyDayplan();
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
                             }
                         } catch (Exception ignored) {
@@ -1132,6 +1142,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                    binding.progressSumit.setVisibility(View.GONE);
+                    setUpMyDayplan();
                     Log.e("VALUES", String.valueOf(t));
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.toast_response_failed));
                 }
@@ -1276,7 +1288,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         try {
             JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
             JSONArray worktypedata = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
-
+            SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),false,false);
             if (workTypeArray.length() > 0) {
                 SharedPref.setCheckDateTodayPlan(requireContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                 if (workTypeArray.length() == 2) {
@@ -1348,6 +1360,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     binding.rlcluster1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                     binding.rlheadquates1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                     if (mFwFlg1.equalsIgnoreCase("F")) {
+
                         binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
                     } else {
                         binding.rlworktype1.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
@@ -1404,6 +1417,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         mHQName2 = SecondSeasonDayPlanObject.getString("HQNm");
                         //   mRemarks1 = SecondSeasonDayPlanObject.getString("Rem");
 
+
+
+
+
                         if (worktypedata.length() > 0) {
                             for (int i = 0; i < worktypedata.length(); i++) {
                                 JSONObject mJsonObject = worktypedata.getJSONObject(i);
@@ -1439,6 +1456,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                         binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
                         if (mFwFlg2.equalsIgnoreCase("F")) {
+
                             binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_plan));
                         } else {
                             binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.background_card_white_plan));
@@ -1449,7 +1467,19 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtAddPlan.setTextColor(getResources().getColor(R.color.gray_45));
                         binding.txtAddPlan.setEnabled(false);
                     }
+
+
+
                 }
+
+
+                if(mFwFlg1.equalsIgnoreCase("F")||mFwFlg2.equalsIgnoreCase("F")){
+                    SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),true,true);
+                }else {
+                    SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),true,false);
+                }
+
+
             } else {
                 sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
                 binding.txtWorktype1.setText("");
@@ -1465,7 +1495,9 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
                 }else {
                     SharedPref.saveHq(requireContext(),SharedPref.getHqName(requireContext()),SharedPref.getSfCode(requireContext()));
+                    SharedPref.setTodayDayPlanClusterCode(requireContext(), "");
                 }
+                SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),false,false);
 
                 binding.rlworktype1.setEnabled(true);
                 binding.rlcluster1.setEnabled(true);
@@ -1485,6 +1517,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 binding.rlheadquates2.setBackground(getResources().getDrawable(R.drawable.backround_text));
                 binding.rlworktype2.setBackground(getResources().getDrawable(R.drawable.backround_text));
                 binding.rlcluster2.setBackground(getResources().getDrawable(R.drawable.backround_text));
+                binding.cardPlan2.setVisibility(View.GONE);
             }
 
         } catch (Exception a) {
@@ -1547,6 +1580,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        setUpMyDayplan();
                     }
                 }
 

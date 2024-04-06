@@ -188,29 +188,30 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
         if (file.exists()) {
             String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
+            final Bitmap[] bitmap = {null};
             switch (fileFormat) {
                 case "jpg":
                 case "png":
                 case "jpeg":
                 case "mp4": {
                     Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(holder.imageView);
-                    return;
+                    break;
                 }
                 case "pdf": {
-                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                    Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
+
+                    bitmap[0] = SupportClass.pdfToBitmap(file.getAbsoluteFile());
+                    Glide.with(context).asBitmap().load(bitmap[0]).into(holder.imageView);
+                    break;
                 }
                 case "zip": {
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(), "image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
+                    bitmap[0] = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(), "image"));
+                    if (bitmap[0] != null)
+                        Glide.with(context).asBitmap().load(bitmap[0]).into(holder.imageView);
+                    break;
                 }
                 case "gif": {
                     Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.imageView);
-                    return;
+                    break;
                 }
             }
         }

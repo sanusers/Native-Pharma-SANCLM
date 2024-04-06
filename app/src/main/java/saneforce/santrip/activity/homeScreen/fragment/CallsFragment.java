@@ -39,6 +39,10 @@ import saneforce.santrip.databinding.CallsFragmentBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 
+import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -56,7 +60,12 @@ public class CallsFragment extends Fragment {
     ApiInterface apiInterface;
 
     SQLite sqLite;
+    private RoomDB db;
+    private static MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
+
+
+    public static  Context Mcontext;
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, SQLite sqLite, boolean isProgressNeed) {
         if (UtilityClass.isNetworkAvailable(context)) {
@@ -94,8 +103,11 @@ public class CallsFragment extends Fragment {
                                         assert response.body() != null;
                                         SharedPref.setTodayCallList(context, response.body().toString());
                                         JSONArray jsonArray = new JSONArray(response.body().toString());
-                                        JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
-                                        JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+
+
+
+                                        JSONArray jsonArray1 =new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                                        JSONArray jsonArray2 =new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                         ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
                                         ArrayList<CallsModalClass> TodayCallListTwo = new ArrayList<>();
                                         TodayCallList.clear();
@@ -144,20 +156,30 @@ public class CallsFragment extends Fragment {
                                                     }
                                                 }
                                             }
-                                            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray2.toString(), 0);
-                                            CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
+
+                                            MasterDataTable data = new MasterDataTable();
+                                            data.setMasterKey(Constants.CALL_SYNC);
+                                            data.setMasterValuse(jsonArray2.toString());
+                                            data.setSyncstatus(0);
+                                            MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                            if (mNChecked != null) {
+                                                masterDataDao.updatedata(Constants.CALL_SYNC, jsonArray2.toString());
+                                            } else {
+                                                masterDataDao.insert(data);
+
+                                            }
+                                            CallDataRestClass.resetcallValues(context);
                                         }
 
-
-                                        binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-
-                                        adapter = new Call_adapter(context, TodayCallList, finalApiInterface);
-                                        LinearLayoutManager manager = new LinearLayoutManager(context);
-                                        binding.recyelerview.setNestedScrollingEnabled(false);
-                                        binding.recyelerview.setHasFixedSize(true);
-                                        binding.recyelerview.setLayoutManager(manager);
-                                        binding.recyelerview.setAdapter(adapter);
+//                                        binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+//                                        adapter = new Call_adapter(context, TodayCallList, finalApiInterface);
+//                                        LinearLayoutManager manager = new LinearLayoutManager(context);
+//                                        binding.recyelerview.setNestedScrollingEnabled(false);
+//                                        binding.recyelerview.setHasFixedSize(true);
+//                                        binding.recyelerview.setLayoutManager(manager);
+//                                        binding.recyelerview.setAdapter(adapter);
                                         adapter.notifyDataSetChanged();
+
                                         if (isProgressNeed) progressDialog.dismiss();
                                     } catch (Exception e) {
                                         if (isProgressNeed) progressDialog.dismiss();
@@ -213,13 +235,15 @@ public class CallsFragment extends Fragment {
                 }
             }
             binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-            adapter = new Call_adapter(context, TodayCallList, apiInterface);
-            LinearLayoutManager manager = new LinearLayoutManager(context);
-            binding.recyelerview.setNestedScrollingEnabled(false);
-            binding.recyelerview.setHasFixedSize(true);
-            binding.recyelerview.setLayoutManager(manager);
-            binding.recyelerview.setAdapter(adapter);
 
+            adapter.notifyDataSetChanged();
+//            adapter = new Call_adapter(context, TodayCallList, apiInterface);
+//            LinearLayoutManager manager = new LinearLayoutManager(context);
+//            binding.recyelerview.setNestedScrollingEnabled(false);
+//            binding.recyelerview.setHasFixedSize(true);
+//            binding.recyelerview.setLayoutManager(manager);
+//            binding.recyelerview.setAdapter(adapter);
+//            adapter.notifyDataSetChanged();
         } catch (Exception ignored) {
         }
     }
@@ -253,10 +277,30 @@ public class CallsFragment extends Fragment {
         sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        Mcontext=requireContext();
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
         CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
+        db = RoomDB.getDatabase(requireContext());
+        masterDataDao =db.masterDataDao();
+
+
+
+
+
+
+        adapter = new Call_adapter(requireContext(), TodayCallList, apiInterface);
+        LinearLayoutManager manager = new LinearLayoutManager(requireContext());
+        binding.recyelerview.setNestedScrollingEnabled(false);
+        binding.recyelerview.setHasFixedSize(true);
+        binding.recyelerview.setLayoutManager(manager);
+        binding.recyelerview.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+
+
+
 
         binding.rlSyncCall.setOnClickListener(v12 -> {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
@@ -284,14 +328,20 @@ public class CallsFragment extends Fragment {
                     }
                 }
             } else {
-                if (SharedPref.getHqCode(requireContext()).equalsIgnoreCase("null") || SharedPref.getHqCode(requireContext()).isEmpty()) {
+                if (!SharedPref.getMydayPlanStatus(requireContext()))
                     commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
-                } else {
-                    startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
-                }
+                else if (!SharedPref.getFeildWorkStatus(requireContext()))
+                    commonUtilsMethods.showToastMessage(requireContext(), "Kindly Submit Feild Work");
+                else startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+
             }
         });
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

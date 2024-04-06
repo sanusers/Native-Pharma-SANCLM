@@ -540,7 +540,7 @@ public class ListedDoctorFragment extends Fragment {
         }
 
         Log.v("call", "-dr--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, SharedPref.getCustSrtNd(requireContext()));
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, SharedPref.getCustSrtNd(requireContext()),"1");
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

@@ -90,7 +90,7 @@ public class Leave_Application extends AppCompatActivity {
     ArrayList<String> leave_typeid = new ArrayList<>();
     ArrayList<String> leave_typename = new ArrayList<>();
     ArrayList<String> listdate = new ArrayList<>();
-    ArrayList<String> balance_count = new ArrayList<>();
+
     String Ltype_id, L_typename, L_count = "", Lshortname, avilable, leavety;
     int totalval = 0, val = 0;
     public static DrawerLayout l_sideview;
@@ -99,7 +99,7 @@ public class Leave_Application extends AppCompatActivity {
     Button submit_leave;
     ApiInterface apiService;
     String l_address = "", l_reason = "";
-    Piechart_adapter piechart_adapter;
+
     CardView mtcard;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -150,10 +150,10 @@ public class Leave_Application extends AppCompatActivity {
         mtcard = findViewById(R.id.mtcard);
 
         dailog_list.setVisibility(View.VISIBLE);
-        l_sideview.closeDrawer(Gravity.RIGHT);
+//        l_sideview.closeDrawer(Gravity.RIGHT);
         ed_Reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_Reason)});
         sqLite = new SQLite(this);
-        l_sideview.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+
         back_btn.setOnClickListener(v -> {
             //  onBackPressed();
             getOnBackPressedDispatcher().onBackPressed();
@@ -256,6 +256,7 @@ public class Leave_Application extends AppCompatActivity {
     public void showalert_leavetype() {
         et_Custsearch.getText().clear();
         l_sideview.setVisibility(View.VISIBLE);
+        l_sideview.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
         l_sideview.openDrawer(Gravity.END);
 
         leave_type.clear();

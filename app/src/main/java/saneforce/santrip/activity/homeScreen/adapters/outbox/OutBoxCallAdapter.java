@@ -55,6 +55,10 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -67,6 +71,9 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
     Activity activity;
     ApiInterface apiInterface;
     ProgressDialog progressDialog;
+    RoomDB roomDB;
+
+    MasterDataDao masterDataDao;
 
     public OutBoxCallAdapter(Activity activity, Context context, ArrayList<OutBoxCallList> outBoxCallLists, ApiInterface apiInterface) {
         this.context = context;
@@ -75,6 +82,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         sqLite = new SQLite(context);
         this.apiInterface = apiInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao=roomDB.masterDataDao();
     }
 
     @NonNull
@@ -149,7 +158,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     sqLite.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                     try {
                         if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
-                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                            JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(outBoxCallLists.get(position).getCusCode())) {
@@ -158,15 +168,27 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                 }
                             }
 
-                            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
-                            sqLite.deleteLineChart(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getDates());
+                            MasterDataTable mData =new MasterDataTable();
+                            mData.setMasterKey(Constants.CALL_SYNC);
+                            mData.setMasterValuse(jsonArray.toString());
+                            mData.setSyncstatus(0);
+                            MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                            if(Checked !=null){
+                                masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                            }else {
+                                masterDataDao.insert(mData);
+                            }
+
+                            CallDataRestClass.resetcallValues(context);
+
+                         //   sqLite.deleteLineChart(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getDates());
 
                             if (outBoxCallLists.get(position).getCusType().equalsIgnoreCase("1")) {
                                 JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
                                 JSONArray jsonAdditional = json.getJSONArray("AdCuss");
                                 for (int aw = 0; aw < jsonAdditional.length(); aw++) {
                                     JSONObject jsAw = jsonAdditional.getJSONObject(aw);
-                                    sqLite.deleteLineChart(jsAw.getString("Code"), outBoxCallLists.get(position).getDates());
+                                  //  sqLite.deleteLineChart(jsAw.getString("Code"), outBoxCallLists.get(position).getDates());
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code"))) {
@@ -175,7 +197,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                                     }
                                 }
                             }
-                            AssignCallAnalysis(SharedPref.getSfType(context), outBoxCallLists.get(position).getCusType());
+                           // AssignCallAnalysis(SharedPref.getSfType(context), outBoxCallLists.get(position).getCusType());
                         }
                     } catch (Exception ignored) {
 

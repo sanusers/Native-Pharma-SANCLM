@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import saneforce.santrip.activity.slideDownloaderAlertBox.SlideModelClass;
 
@@ -53,6 +54,7 @@ public class SharedPref {
     public static final String DIVISION_NAME = "Division_name";
     public static final String DESIG = "Desig";
     public static final String HQ_NAME = "HQName";
+    public static final String HQ_NAMEMAIN = "HQNameMain";
     public static final String SF_STAT = "SFStat";
     public static final String DIVISION_CODE = "Division_Code";
     public static final String T_BASE = "TBase";
@@ -375,6 +377,19 @@ public class SharedPref {
     public static final String SETHQ_DETAILS = "SETHQ_DETAILS";
 
 
+    public static final String IS_MYDAYPLAN = "IS_MYDAYPLAN";
+    public static final String IS_FEILD = "IS_FEILD";
+
+
+    public static final String JWKCODE= "JWKCODE";
+    public static final String JWKDATE = "JWKDATE";
+
+
+
+
+
+
+
     public static final String SLIDE_DOWNLOADING_STATUS = "Slide_downloding_status";
     public static SharedPreferences.Editor editor;
 
@@ -687,7 +702,7 @@ public class SharedPref {
         editor.apply();
 
     }catch (Exception ignore){
-            ignore.printStackTrace();
+       throw new RuntimeException();
         }
 
     }
@@ -2115,9 +2130,32 @@ public class SharedPref {
         editor.putString(HQ_NAME, name);
         editor.putString(HQ_CODE, code).apply();
     }
+    public static void saveHqMain(Context context, String name){
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(HQ_NAMEMAIN, name).apply();
+    }
 
+
+
+    public static void MydayPlanStausAndFeildWorkStatus(Context context, boolean MydayplanStatus, boolean FeildWorkStatus){
+        sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(IS_MYDAYPLAN, MydayplanStatus);
+        editor.putBoolean(IS_FEILD, FeildWorkStatus).apply();
+    }
+
+    public static boolean getFeildWorkStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(IS_FEILD, false);
+    }
+    public static boolean getMydayPlanStatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getBoolean(IS_MYDAYPLAN, false);
+    }
     public static String getHqName(Context context) {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_NAME, "");
+    }
+    public static String getHqNameMain(Context context) {
+        return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(HQ_NAMEMAIN, "");
     }
 
     public static String getHqCode(Context context) {
@@ -2266,6 +2304,24 @@ public class SharedPref {
 
     public static String getDcrdoc_hqcode(Context context) {
         return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(SETHQCODE, "");
+    }
+
+
+    public static void setJWKCODE(Context context, List<String> Jwkcode, String JwkDate) {
+        Gson  gson = new Gson();
+        String json = gson.toJson(Jwkcode);
+        sharedPreferences = context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(JWKDATE, JwkDate);
+        editor.putString(JWKCODE, json).apply();
+    }
+
+    public static String getJWKCODE(Context context) {
+        return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(JWKCODE, "");
+    }
+
+    public static String getJWKDATE(Context context) {
+        return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(JWKDATE, "");
     }
 
 

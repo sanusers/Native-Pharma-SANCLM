@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -51,6 +52,9 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityLoginBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.DownloaderClass;
@@ -74,7 +78,9 @@ public class LoginActivity extends AppCompatActivity {
     Resources resources;
     String language;
     private int passwordNotVisible = 1;
-
+    RoomDB roomDB;
+    MasterDataDao masterDataDao;
+    CallTableDao callTableDao;
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +96,14 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
+
+        roomDB=RoomDB.getDatabase(getApplicationContext());
+
+        masterDataDao=roomDB.masterDataDao();
+        callTableDao=roomDB.callTableDao();
+
         uiInitialisation();
-        binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), Constants.APP_VERSION));
+        binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
 
         if (fcmToken.isEmpty()) {
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(LoginActivity.this, s -> {
@@ -182,19 +194,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private void DeleteAllFiles() {
         sqLite.deleteAllTable();
+        masterDataDao.deleteAllMasterData();
+        callTableDao.deleteAllData();
+
         SharedPref.clearSP(LoginActivity.this);
-        File apkStorage = new File(LoginActivity.this.getExternalFilesDir(null) + "/Slides/");
-        if (apkStorage.exists() && apkStorage.isDirectory()) {
-            File[] files = apkStorage.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    file.delete();
-                }
-            }
-        }
         SharedPref.saveLoginState(getApplicationContext(), false);
         SharedPref.saveSettingState(getApplicationContext(), false);
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
+
+        if(iscleared()){
+            Toast.makeText(LoginActivity.this,"isSuceess",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(LoginActivity.this,"Failed",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void uiInitialisation() {
@@ -347,7 +359,7 @@ public class LoginActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", userId);
             jsonObject.put("password", password);
-            jsonObject.put("versionNo", Constants.APP_VERSION);
+            jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
             jsonObject.put("mode", Constants.APP_MODE);
             jsonObject.put("Device_version", Build.VERSION.RELEASE);
             jsonObject.put("device_id", deviceId);
@@ -363,7 +375,7 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
                         if (responseObject.getBoolean("success")) {
                             if (responseObject.getString("Android_Detailing").equals("1")) {
-                                Log.v("Login", "--json-" + responseObject);
+                                Log.v("Android_Detailing", "--json-" + responseObject);
                                 commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                                 process(responseObject);
                             } else {
@@ -394,6 +406,8 @@ public class LoginActivity extends AppCompatActivity {
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));
             SharedPref.saveHq(LoginActivity.this, jsonObject.getString("HQName"), jsonObject.getString("SF_Code"));
+            SharedPref.saveHqMain(LoginActivity.this, jsonObject.getString("HQName"));
+
             if (SharedPref.getAutomassyncFromSP(LoginActivity.this)) {
                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                 Intent intent = new Intent(LoginActivity.this, HomeDashBoard.class);
@@ -420,5 +434,33 @@ public class LoginActivity extends AppCompatActivity {
         if (hasFocus) {
             binding.rlHead.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
+    }
+
+
+
+    boolean iscleared(){
+        File slidesFolder;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            slidesFolder = new File(LoginActivity.this.getExternalFilesDir(null), "Slides");
+        } else {
+            return false;
+        }
+
+
+        if (slidesFolder.exists()) {
+            deleteRecursive(slidesFolder);
+        }
+        slidesFolder.delete();
+        return true;
+
+    }
+
+    private void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        fileOrDirectory.delete();
     }
 }

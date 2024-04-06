@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -407,14 +408,8 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                     default:
                         throw new IllegalStateException("Unexpected value: " + app_adapt.getListed_data());
                 }
-                if (MyResource_Activity.drawerLayout.isDrawerOpen(Gravity.END)) {
-                    MyResource_Activity.drawerLayout.closeDrawer(Gravity.END);
 
-                } else {
-                    MyResource_Activity.drawerLayout.openDrawer(Gravity.END);
-
-                }
-
+                MyResource_Activity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
                 search_list.addAll(listresource);
 
 

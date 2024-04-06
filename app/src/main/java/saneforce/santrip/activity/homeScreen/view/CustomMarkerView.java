@@ -12,6 +12,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 
 import saneforce.santrip.R;
+import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.santrip.storage.SQLite;
 
 public class CustomMarkerView extends MarkerView {
@@ -21,25 +22,17 @@ public class CustomMarkerView extends MarkerView {
     private RelativeLayout layout;
 
     SQLite sqLite;
-    String cus, firstDateStr, fifteenthDateStr, enddate, firstDatepastmonth, fifteenthDatepastmonth, enddatepastmonth, firstDatecurrent, fifteenthDatecurrent, enddatecurrent, linekey;
+    String cus, linekey;
     Context context;
 
+    CallTableDao callTableDao;
 
-    public CustomMarkerView(Context context, int layoutResource, String custype, String firstDateStr, String fifteenthDateStr, String enddate, String firstDatepastmonth, String fifteenthDatepastmonth, String enddatepastmonth, String firstDatecurrent, String fifteenthDatecurrent, String enddatecurrent, String linekey) {
+    public CustomMarkerView(Context context, int layoutResource, String custype,CallTableDao callTableDao,  String linekey) {
 
 
         super(context, layoutResource);
-        this.firstDateStr = firstDateStr;
-        this.fifteenthDateStr = fifteenthDateStr;
-        this.enddate = enddate;
-        this.firstDatepastmonth = firstDatepastmonth;
-        this.fifteenthDatepastmonth = fifteenthDatepastmonth;
-        this.enddatepastmonth = enddatepastmonth;
-        this.firstDatecurrent = firstDatecurrent;
-        this.fifteenthDatecurrent = fifteenthDatecurrent;
-        this.enddatecurrent = enddatecurrent;
         this.linekey = linekey;
-
+        this.callTableDao=callTableDao;
         this.context = context;
         this.cus = custype;
         imageView = findViewById(R.id.image_id);
@@ -59,51 +52,51 @@ public class CustomMarkerView extends MarkerView {
         if (linekey.equalsIgnoreCase("3")) {
 
             if (highlight.getX() == 1.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDateStr, fifteenthDateStr);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"C1");
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDateStr, enddate);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"C2");
 
             } else if (highlight.getX() == 3.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, fifteenthDatepastmonth);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B1");
 
             } else if (highlight.getX() == 4.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, enddatepastmonth);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B2");
             } else if (highlight.getX() == 5.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, fifteenthDatecurrent);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A1");
 
             } else if (highlight.getX() == 6.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, enddatecurrent);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A2");
 
             }
         } else if (linekey.equalsIgnoreCase("2")) {
 
             if (highlight.getX() == 1.0) {
 
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, fifteenthDatepastmonth);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B1");
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatepastmonth, fifteenthDatepastmonth);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"B2");
 
 
             } else if (highlight.getX() == 3.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, fifteenthDatecurrent);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A1");
 
 
             } else if (highlight.getX() == 4.0) {
 
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, enddatecurrent);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A2");
 
             }
 
         } else {
 
             if (highlight.getX() == 1.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, fifteenthDatecurrent);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A1");
 
 
             } else if (highlight.getX() == 2.0) {
-                getfeildworkcount = sqLite.getfeildworkcount(cus,firstDatecurrent, enddatecurrent);
+                getfeildworkcount = callTableDao.getFieldworkCount(cus,"A2");
 
             }
         }

@@ -64,6 +64,7 @@
                     android:layout_height="@dimen/_15sdp"
                     android:layout_marginEnd="@dimen/_3sdp"
                     android:background="@drawable/border_white"
+                    android:visibility="gone"
                     android:layout_gravity="end">
 
                     <TextView

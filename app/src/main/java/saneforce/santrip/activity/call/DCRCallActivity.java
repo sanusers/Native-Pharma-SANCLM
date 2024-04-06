@@ -93,6 +93,10 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityDcrcallBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -128,10 +132,11 @@ public class DCRCallActivity extends AppCompatActivity {
     Dialog dialogCheckOut;
     Button btnCheckOut;
     TextView tv_address, tv_dateTime;
-    String address, latEdit, lngEdit;
+    String address, latEdit, lngEdit,VistTime;
     int mBatteryPercent = 0;
 
-
+    RoomDB roomDB;
+    MasterDataDao masterDataDao;
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
@@ -155,6 +160,8 @@ public class DCRCallActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonSharedPreference = new CommonSharedPreference(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
+        roomDB=RoomDB.getDatabase(getApplicationContext());
+        masterDataDao=roomDB.masterDataDao();
         sqLite = new SQLite(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
@@ -219,10 +226,6 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-
-
-
-
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
@@ -234,7 +237,6 @@ public class DCRCallActivity extends AppCompatActivity {
 //                Log.d("remaonder_doc",jsonSaveDcr.toString());
                         progressDialog.dismiss();
                     }else{
-                        progressDialog = CommonUtilsMethods.createProgressDialog(this);
                         isCreateJsonSuccess = true;
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                             if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
@@ -252,7 +254,10 @@ public class DCRCallActivity extends AppCompatActivity {
                         if (CheckRequiredFunctions() && CheckCurrentLoc()) {
                             CreateJsonFileCall();
                             if (isCreateJsonSuccess) {
-                                InsertVisitControl();
+                                if(isFromActivity.equalsIgnoreCase("new")){
+                                    InsertVisitControl();
+                                }
+
                                 sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
@@ -277,6 +282,7 @@ public class DCRCallActivity extends AppCompatActivity {
                                     if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                                         dialogCheckOut.show();
                                     } else {
+
                                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
@@ -399,8 +405,9 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     private void InsertVisitControl() {
-        JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+
         try {
+            JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("CustCode", CallActivityCustDetails.get(0).getCode());
             jsonObject.put("CustType", CallActivityCustDetails.get(0).getType());
@@ -417,7 +424,18 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonObject.put("FW_Indicator", FwFlag);
             jsonObject.put("AMSLNo", "");
             jsonArray.put(jsonObject);
-            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+      //      sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+
+            MasterDataTable inputdata =new MasterDataTable();
+            inputdata.setMasterKey(Constants.CALL_SYNC);
+            inputdata.setMasterValuse(jsonArray.toString());
+            inputdata.setSyncstatus(0);
+            MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+            if(nChecked !=null){
+                masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+            }else {
+                masterDataDao.insert(inputdata);
+            }
 
             if (AdditionalCusListAdapter.saveAdditionalCallArrayList.size() > 0) {
                 for (int i = 0; i < AdditionalCusListAdapter.saveAdditionalCallArrayList.size(); i++) {
@@ -437,9 +455,24 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonObject.put("FW_Indicator", FwFlag);
                     jsonObject.put("AMSLNo", "");
                     jsonArray.put(jsonObject);
-                    sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+             //       sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+
+                        MasterDataTable mData =new MasterDataTable();
+                        mData.setMasterKey(Constants.CALL_SYNC);
+                        mData.setMasterValuse(jsonArray.toString());
+                        mData.setSyncstatus(0);
+                        MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                        if(Checked !=null){
+                            masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                        }else {
+                            masterDataDao.insert(mData);
+                        }
+
+
                 }
             }
+
+            CallDataRestClass.resetcallValues(context);
 
         } catch (Exception ignored) {
         }
@@ -879,9 +912,11 @@ public class DCRCallActivity extends AppCompatActivity {
                 ss1 = new StringBuilder(ss1.toString().replace("$0^0", "") + ",");
                 int index = ss1.indexOf("$");
                 ss1 = new StringBuilder(ss1.substring(0, index) + ",");
+
             } else if (data.equalsIgnoreCase("Rx")) {
                 ss1.append(value.substring(value.indexOf("$") + 1));
                 ss1 = new StringBuilder(ss1.toString().replace("$0^0", "") + ",");
+
             } else if (data.equalsIgnoreCase("input")) {
                 ss1.append(value.substring(value.indexOf("~") + 1)).append(",");
             } else if (data.equalsIgnoreCase("names") || data.equalsIgnoreCase("codes")) {
@@ -923,6 +958,7 @@ public class DCRCallActivity extends AppCompatActivity {
         ArrayList<String> prdRxQtyList = new ArrayList<>();
         ArrayList<String> prdStkName = new ArrayList<>();
         ArrayList<String> prdStkCode = new ArrayList<>();
+        ArrayList<String> prdRcpaQtyList = new ArrayList<>();
         ArrayList<String> input = new ArrayList<>();
         ArrayList<String> inputCode = new ArrayList<>();
         ArrayList<String> inputQty = new ArrayList<>();
@@ -1011,8 +1047,19 @@ public class DCRCallActivity extends AppCompatActivity {
             latEdit = js.getString("lati");
             lngEdit = js.getString("long");
 
+
+
+
+
             if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") || CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
                 if (js.has("Product_Detail")) {
+                    String time =js.getString("tm");
+                    JSONArray jsonmain = new JSONArray(json.getString("DCRMain"));
+                    JSONObject js1 = jsonmain.getJSONObject(0);
+                    JSONObject activityDateObject = js1.getJSONObject("Activity_Date");
+                    String activityDate = activityDateObject.getString("date").substring(0,10);
+                    VistTime =activityDate+" "+time;
+
                     Log.v("jsonExtractOnline", "----" + "0000");
                     if (!js.getString("Product_Detail").isEmpty() && !js.getString("Product_Detail").equalsIgnoreCase("#")) {
                         Log.v("jsonExtractOnline", "----" + "1111");
@@ -1027,9 +1074,15 @@ public class DCRCallActivity extends AppCompatActivity {
 
                         String rx_qty = extractValues(js.getString("Product_Detail"), "Rx");
                         getValues(rx_qty, prdRxQtyList);
+//                        String Rcpa_qty = extractValues1(js.getString("Product_Detail"), "Rcpa");
+//                        getValues(Rcpa_qty, prdRcpaQtyList);
                     }
                 }
             } else {
+                JSONObject js1 = jsonPrdArray.getJSONObject(0);
+                JSONObject vstTime = js1.getJSONObject("vstTime");
+                VistTime = vstTime.getString("date");
+
                 if (js.has("Additional_Prod_Dtls")) {
                     if (!js.getString("Additional_Prod_Dtls").isEmpty()) {
                         String prd_names = extractValues(js.getString("Additional_Prod_Dtls"), "names");
@@ -1227,6 +1280,7 @@ public class DCRCallActivity extends AppCompatActivity {
             if (iEnd != -1) {
                 latEdit = json.getString("Entry_location").substring(0, iEnd);
             }
+
             lngEdit = json.getString("Entry_location").substring(json.getString("Entry_location").lastIndexOf(":") + 1);
 
             Log.v("jsonExtractLocal", "----" + latEdit + "---" + lngEdit);
@@ -1553,7 +1607,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonobjlist.put("feedback_value", FeedbackSelectionSide.feedbackName);
             jsonobjlist.put("location", lat + ":" + lng);
             jsonobjlist.put("geoaddress", CommonUtilsMethods.gettingAddress(this, lat, lng, false));
-            jsonobjlist.put("app_version", Constants.APP_VERSION);
+            jsonobjlist.put("app_version", getResources().getString(R.string.app_version));
             jsonobjlist.put("Mode", "Android-Edet");
             BatteryManager bm = (BatteryManager) this.getSystemService(BATTERY_SERVICE);
             mBatteryPercent = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
@@ -1668,7 +1722,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 json_date1.put("sTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + DetailedFragment.callDetailingLists.get(i).getSt_end_time().substring(0, (DetailedFragment.callDetailingLists.get(i).getSt_end_time().indexOf(" "))));
                 json_date1.put("eTm", DetailedFragment.callDetailingLists.get(i).getDate() + " " + DetailedFragment.callDetailingLists.get(i).getSt_end_time().substring((DetailedFragment.callDetailingLists.get(i).getSt_end_time().indexOf(" ")) + 1));
                 json_product.put("Timesline", json_date1);
-                json_product.put("Appver", Constants.APP_VERSION);
+                json_product.put("Appver", getResources().getString(R.string.app_version));
                 json_product.put("Mod", Constants.APP_MODE);
                 json_product.put("SmpQty", "");
                 json_product.put("RxQty", "");
@@ -1729,7 +1783,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 json_date.put("sTm", CurrentDate + " " + CurrentTime);
                 json_date.put("eTm", CurrentDate + " " + CurrentTime);
                 json_product.put("Timesline", json_date);
-                json_product.put("Appver", Constants.APP_VERSION);
+                json_product.put("Appver", getResources().getString(R.string.app_version));
                 json_product.put("Mod", Constants.APP_MODE);
                 if (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty()) {
                     json_product.put("SmpQty", "0");
@@ -1880,7 +1934,7 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("SpecCode", "2");
             jsonSaveDcr.put("mappedProds", "");
             jsonSaveDcr.put("mode", "0");
-            jsonSaveDcr.put("Appver", Constants.APP_VERSION);
+            jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
             jsonSaveDcr.put("Mod", Constants.APP_MODE);
 
             JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
@@ -1898,7 +1952,12 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("town_name", CallActivityCustDetails.get(0).getTown_name());
             jsonSaveDcr.put("ModTime", CurrentDate + " " + CurrentTime);
             jsonSaveDcr.put("ReqDt", CurrentDate + " " + CurrentTime);
-            jsonSaveDcr.put("vstTime", CurrentDate + " " + CurrentTime);
+
+            if (isFromActivity.equalsIgnoreCase("new")) {
+                jsonSaveDcr.put("vstTime", CurrentDate + " " + CurrentTime);
+            } else {
+                jsonSaveDcr.put("vstTime", VistTime);
+            }
             jsonSaveDcr.put("Remarks", jwOthersBinding.edRemarks.getText());
             if (isFromActivity.equalsIgnoreCase("edit_online")) {
                 jsonSaveDcr.put("amc", CallActivityCustDetails.get(0).getADetSlNo());
@@ -2348,6 +2407,8 @@ public class DCRCallActivity extends AppCompatActivity {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
             JSONArray jsonArrayPrdStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
             Log.v("chkSample", "---size--111----" + jsonArray.length() + "----" + jsonArrayPrdStk.length());
+            ProductFragment.checkedPrdList.add(new CallCommonCheckedList("No Product","","",false,"",""));
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -2420,6 +2481,41 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("chkSample", "---error---" + e);
         }
     }
+
+
+
+    public String extractValues1(String s, String data) {
+        if (TextUtils.isEmpty(s)) return "";
+
+        String[] clstarrrayqty = s.split("#");
+        StringBuilder ss1 = new StringBuilder();
+
+        for (String value : clstarrrayqty) {
+
+       String[] dataArray=value.substring(value.indexOf("~")+1).split("$");
+       // A BECOSIS SAL~5$69$0^48
+
+      if (data.equalsIgnoreCase("names") || data.equalsIgnoreCase("codes")) {
+          ss1.append(value.substring(0,value.indexOf("~")-1));
+
+      }else if (data.equalsIgnoreCase("Sample")) {
+                ss1.append(dataArray[0]);
+      }else if (data.equalsIgnoreCase("Rx")) {
+          ss1.append(dataArray[1]);
+      }else if (data.equalsIgnoreCase("Rcpa")) {
+          String[] rcpa = dataArray[2].replace("^", ",").split("[,]");
+          ss1.append(rcpa[1]);
+      }}
+
+        String finalValue = "";
+        finalValue = ss1.substring(0, ss1.length());
+        if (finalValue.isEmpty()) {
+            finalValue = "0";
+        }
+        Log.v("jsonExtractOnline", "product_inputs_qty--333--" + finalValue);
+        return finalValue;
+    }
+
 }
 
 

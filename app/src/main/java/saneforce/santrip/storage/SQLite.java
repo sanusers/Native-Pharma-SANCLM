@@ -18,6 +18,7 @@ import org.json.JSONException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -175,6 +176,9 @@ public class SQLite extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + PRESENTATION_TABLE);
         db.execSQL("DELETE FROM " + DCR_DocData);
         db.close();
+
+
+
     }
 
 
@@ -1046,28 +1050,6 @@ public class SQLite extends SQLiteOpenHelper {
 
     //---------------------------------------------
 
-    // insertdata Li nechart
-    public void insertLinecharData(String custCode, String custType, String dcrDt, String monthName, String mnth, String yr, String custName, String townCode, String townName, String dcrFlag, String sfCode, String transSlNo, String amslNo, String fw_indicater) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(LINECHAR_CUSTCODE, custCode);
-        values.put(LINECHAR_CUSTTYPE, custType);
-        values.put(LINECHAR_DCR_DT, dcrDt);
-        values.put(LINECHAR_MONTH_NAME, monthName);
-        values.put(LINECHAR_MNTH, mnth);
-        values.put(LINECHAR_YR, yr);
-        values.put(LINECHAR_CUSTNAME, custName);
-        values.put(LINECHAR_TOWN_CODE, townCode);
-        values.put(LINECHAR_TOWN_NAME, townName);
-        values.put(LINECHAR_DCR_FLAG, dcrFlag);
-        values.put(LINECHAR_SF_CODE, sfCode);
-        values.put(LINECHAR_TRANS_SLNO, transSlNo);
-        values.put(LINECHAR_FM_INDICATOR, fw_indicater);
-        values.put(LINECHAR_AMSLNO, amslNo);
-
-        db.insert(LINE_CHAT_DATA_TABLE, null, values);
-        db.close();
-    }
 
     public void deleteLineChart(String cusCode, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1076,46 +1058,27 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
 
-    public void clearLinecharTable() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE);
-        db.close();
-    }
-
 
     public int getcurrentmonth_calls_count(String CustType) {
-
         SQLiteDatabase db = this.getReadableDatabase();
-        String currentYearMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(new Date());
-        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE strftime('%Y-%m', " + LINECHAR_DCR_DT + ") = '" + currentYearMonth + "'" + " AND " + LINECHAR_CUSTTYPE + " = '" + CustType + "'";
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
 
-        Cursor cursor = db.rawQuery(query, null);
+        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE +
+                " WHERE " + LINECHAR_MNTH + " = ? AND " + LINECHAR_CUSTTYPE + " = ?";
+        String[] selectionArgs = { String.valueOf(currentMonth), CustType };
+
+        Cursor cursor = db.rawQuery(query, selectionArgs);
         int count = 0;
         if (cursor != null) {
-            cursor.moveToFirst();
-            count = cursor.getInt(0);
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
             cursor.close();
         }
-        db.close();
         return count;
     }
 
-
-    public int getcalls_count_by_range(String startDate, String endDate, String custType) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_DCR_DT + " >= '" + startDate + "' " + " AND " + LINECHAR_DCR_DT + " <= '" + endDate + "' " + " AND " + LINECHAR_CUSTTYPE + " = '" + custType + "'";
-
-        Cursor cursor = db.rawQuery(query, null);
-        int count = 0;
-        if (cursor != null) {
-            cursor.moveToFirst();
-            count = cursor.getInt(0);
-            cursor.close();
-        }
-        db.close();
-        return count;
-    }
 
     public int getfeildworkcount( String cutype,String startDate, String endDate) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1132,22 +1095,6 @@ public class SQLite extends SQLiteOpenHelper {
         }
         db.close();
         return count;
-    }
-
-
-    public boolean isMonthDataAvailableForCustType(String custType, String month) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT COUNT(*) FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_CUSTTYPE + " = '" + custType + "'" + " AND " + LINECHAR_MNTH + " = '" + month + "'";
-        Cursor cursor = db.rawQuery(query, null);
-
-        int count = 0;
-        if (cursor != null) {
-            cursor.moveToFirst();
-            count = cursor.getInt(0);
-            cursor.close();
-        }
-        db.close();
-        return count > 0;
     }
 
 

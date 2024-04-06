@@ -622,8 +622,7 @@
         android:layout_height="@dimen/_20sdp"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:background="#26282A3C"
-        android:backgroundTint="#26282A3C"
+        android:backgroundTint="@color/black_45"
         android:visibility="gone" />
 
 </RelativeLayout>

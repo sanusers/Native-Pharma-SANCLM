@@ -47,7 +47,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
-import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -55,6 +54,10 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -67,6 +70,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     SQLite sqLite;
     Dialog dialogTransparent;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB db;
+    private static MasterDataDao masterDataDao;
 
     public Call_adapter(Context context, ArrayList<CallsModalClass> list, ApiInterface apiInterface) {
         this.context = context;
@@ -74,6 +79,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         this.apiInterface = apiInterface;
         sqLite = new SQLite(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
+        db = RoomDB.getDatabase(context);
+        masterDataDao =db.masterDataDao();
         dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
         View view = LayoutInflater.from(context).inflate(R.layout.remove_border_progress, null);
         dialogTransparent.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -113,18 +120,21 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
         holder.menu.setOnClickListener(v -> {
             if (UtilityClass.isNetworkAvailable(context)) {
+
                 Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-                final PopupMenu popup = new PopupMenu(wrapper, v, Gravity.END);
-                popup.inflate(R.menu.call_online_menu);
-                popup.setOnMenuItemClickListener(menuItem -> {
+                PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.END);
+                popupMenu.getMenuInflater().inflate(R.menu.call_online_menu, popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
                     if (menuItem.getItemId() == R.id.menuEdit) {
                         CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
                         try {
                             dialogTransparent.show();
-                            CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
 
-                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                            CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
+                            String mMdata= masterDataDao.getDataByKey(Constants.CALL_SYNC);
+                            JSONArray jsonArray = new JSONArray(mMdata);
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
@@ -132,10 +142,23 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                     break;
                                 }
                             }
+                         //   sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+                            MasterDataTable data = new MasterDataTable();
+                            data.setMasterKey(Constants.CALL_SYNC);
+                            data.setMasterValuse(jsonArray.toString());
+                            data.setSyncstatus(0);
+                            MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                            if (mNChecked != null) {
+                                masterDataDao.updatedata(Constants.CALL_SYNC, jsonArray.toString());
+                            } else {
+                                masterDataDao.insert(data);
 
-                            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
-                            sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
-                            AssignCallAnalysis( SharedPref.getSfType(context), callslist.getDocNameID());
+                            }
+                            CallDataRestClass.resetcallValues(context);
+
+                            //masterDataDao.updatedata(users[0].getMasterKey(),users[0].getMasterValuse());
+                            ///   sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
+                       //     AssignCallAnalysis( SharedPref.getSfType(context), callslist.getDocNameID());
                             new CountDownTimer(250, 250) {
                                 public void onTick(long millisUntilFinished) {
                                 }
@@ -153,7 +176,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     }
                     return true;
                 });
-                popup.show();
+                popupMenu.show();
             } else {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
             }
@@ -256,6 +279,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             }
                         }
                         SharedPref.setTodayCallList(context, jsonArray.toString());
+                        commonUtilsMethods.showToastMessage(context, "CAll Deleted");
 
 
                      /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);

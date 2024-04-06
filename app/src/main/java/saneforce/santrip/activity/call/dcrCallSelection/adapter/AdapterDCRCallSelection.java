@@ -31,6 +31,8 @@ import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.call.profile.CustomerProfile;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -45,13 +47,22 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     ImageView img_Close;
     TextView tv_cusName, tv_dateTime;
     String needCheckInOut;
+    RoomDB roomDB;
 
-    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut) {
+    MasterDataDao masterDataDao;
+
+
+
+    String isFrom;
+    public AdapterDCRCallSelection(Activity activity, Context context, ArrayList<CustList> cusListArrayList, String needCheckInOut, String isFrom) {
         this.activity = activity;
         this.context = context;
         this.cusListArrayList = cusListArrayList;
         sqLite = new SQLite(context);
         this.needCheckInOut = needCheckInOut;
+        this.isFrom = isFrom;
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao=roomDB.masterDataDao();
 
         if (needCheckInOut.equalsIgnoreCase("0")) {
             dialogCheckIn = new Dialog(context);
@@ -80,6 +91,23 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         holder.tv_specialist.setText(cusListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(cusListArrayList.get(position).getTown_name());
 
+
+        if (isFrom.equalsIgnoreCase("1") || isFrom.equalsIgnoreCase("4")) {
+            holder.tv_category.setVisibility(View.VISIBLE);
+            holder.tv_specialist.setVisibility(View.VISIBLE);
+
+        } else if (isFrom.equalsIgnoreCase("5")) {
+            holder.tv_category.setVisibility(View.VISIBLE);
+            holder.tv_specialist.setVisibility(View.GONE);
+
+        }else {
+            holder.tv_category.setVisibility(View.GONE);
+            holder.tv_specialist.setVisibility(View.GONE);
+
+        }
+
+
+
         holder.tv_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, cusListArrayList.get(position).getName()));
 
         for (int i = 0; i < DcrCallTabLayoutActivity.TodayPlanClusterList.size(); i++) {
@@ -107,7 +135,8 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         holder.constraint_main.setOnClickListener(view -> {
             try {
                 boolean isVisitedToday = false;
-                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
@@ -119,7 +148,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
                 if (!isVisitedToday) {
                     if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1") && cusListArrayList.get(position).getType().equalsIgnoreCase("1")) {
                         int count = 0;
-                        JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                        JSONArray jsonVisit = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                         for (int i = 0; i < jsonVisit.length(); i++) {
                             JSONObject jsonObject = jsonVisit.getJSONObject(i);
                             if (jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {

@@ -35,8 +35,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import saneforce.santrip.R;
@@ -48,6 +53,7 @@ import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentJwothersBinding;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.storage.SharedPref;
 
 
 public class JWOthersFragment extends Fragment {
@@ -62,6 +68,8 @@ public class JWOthersFragment extends Fragment {
     public static AdapterCallJointWorkList adapterCallJointWorkList;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
     SQLite sqLite;
+   public static ArrayList<String> JWKCodeList =new ArrayList<>();
+   Gson gson;
     CommonUtilsMethods commonUtilsMethods;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
@@ -97,11 +105,13 @@ public class JWOthersFragment extends Fragment {
         sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-
+        gson = new Gson();
         HiddenVisibleFunction();
         SetupAdapter();
 
-
+        String getjwkcode = SharedPref.getJWKCODE(requireContext());
+        Type type = new TypeToken<List<String>>() {}.getType();
+        JWKCodeList=gson.fromJson(getjwkcode, type);
         jwOthersBinding.tvFeedback.setOnClickListener(view -> dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE));
 
         jwOthersBinding.btnAddJw.setOnClickListener(view -> {

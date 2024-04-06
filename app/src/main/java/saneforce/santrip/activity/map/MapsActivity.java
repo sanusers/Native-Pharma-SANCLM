@@ -629,7 +629,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             jsonObject.put("cust_name", cust_name);
             jsonObject.put("mode", Constants.APP_MODE);
-            jsonObject.put("version", Constants.APP_VERSION);
+            jsonObject.put("version", getResources().getString(R.string.app_version));
             jsonObject.put("towncode", town_code);
             jsonObject.put("townname", town_name);
             if (GeoTagApprovalNeed.equalsIgnoreCase("0")) {
