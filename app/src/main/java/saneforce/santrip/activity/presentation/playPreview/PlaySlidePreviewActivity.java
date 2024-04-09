@@ -200,8 +200,7 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void initialisation() {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new SlideTimer(), 2000, 5000);
+        startTimer();
         mediaController = new MediaController(this);
         mediaController.setAnchorView(binding.videoView);
 

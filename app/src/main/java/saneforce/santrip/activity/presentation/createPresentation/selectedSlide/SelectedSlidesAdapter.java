@@ -58,7 +58,7 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
 
         holder.brandName.setText(product.getBrandName());
         holder.fileName.setText(product.getSlideName());
-        getFromFilePath(product.getSlideName(),holder);
+        SupportClass.setThumbnail(context, product.getSlideName(), holder.slideImage);
 
         arrayList.get(holder.getAbsoluteAdapterPosition()).setDraggedPosition(holder.getAbsoluteAdapterPosition() + 1);
 
@@ -102,38 +102,6 @@ public class SelectedSlidesAdapter extends RecyclerView.Adapter<SelectedSlidesAd
             rowView = itemView;
         }
 
-    }
-
-    public void getFromFilePath(String fileName, MyViewHolder holder){
-        File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
-        if (file.exists()){
-            String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
-            switch (fileFormat){
-                case "jpg" :
-                case "png" :
-                case "jpeg" :
-                case "mp4" :{
-                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(holder.slideImage);
-                    return;
-                }
-                case "pdf" :{
-                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                    Glide.with(context).asBitmap().load(bitmap).into(holder.slideImage);
-                    return;
-                }
-                case "zip" :{
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(),"image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(holder.slideImage);
-                    return;
-                }
-                case "gif" :{
-                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.slideImage);
-                    return;
-                }
-            }
-        }
     }
 
 

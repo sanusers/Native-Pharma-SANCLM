@@ -11,14 +11,12 @@
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -65,36 +63,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        android:installLocation="auto"
         tools:replace="android:supportsRtl"
         tools:targetApi="31">
 
         <activity
             android:name=".activity.activityModule.Activity"
             android:exported="false"
-            android:theme="@style/CustomTheme"
             android:screenOrientation="landscape"
-            />
-
+            android:theme="@style/CustomTheme" />
         <activity
             android:name=".activity.Quiz.QuizActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden" >
-
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity
             android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activity.reports.ReportWebActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activity.reports.ReportFragContainerActivity"
             android:exported="false"
@@ -108,7 +99,6 @@
             android:name=".activity.presentation.playPreview.PlaySlidePreviewActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".activity.call.adapter.detailing.PlaySlideDetailing"
             android:exported="false"
@@ -203,7 +193,6 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".activity.leave.Leave_Application"
             android:exported="false"
@@ -255,19 +244,20 @@
             android:name=".activity.forms.weekoff.weekoff_viewscreen"
             android:exported="false"
             android:screenOrientation="landscape" />
-        <activity android:name="saneforce.santrip.activity.remaindercalls.RemaindercallsActivity"
+        <activity
+            android:name=".activity.remaindercalls.RemaindercallsActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
-
-        <activity android:name="saneforce.santrip.activity.myresource.Resource_profiling"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.myresource.Resource_profiling"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-        <!--   <provider
+        <!--
+   <provider
                android:name="androidx.core.content.FileProvider"
                android:authorities="${applicationId}.saneforce.santrip.fileprovider"
                android:exported="false"
@@ -275,8 +265,8 @@
                <meta-data
                    android:name="android.support.FILE_PROVIDER_PATHS"
                    android:resource="@xml/filepaths" />
-           </provider>-->
-
+           </provider>
+        -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="saneforce.santrip.fileprovider"
@@ -287,6 +277,9 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
+        <service android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -78,7 +78,7 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
         ArrayList<BrandModelClass.Product> products = presentation.getProducts();
 
         if (products.size() > 0)
-            getFromFilePath(products.get(0).getSlideName(), holder);
+            SupportClass.setThumbnail(context, products.get(0).getSlideName(), holder.imageView);
 
         holder.name.setText(presentation.getPresentationName());
         if (products.size() > 1)
@@ -181,38 +181,6 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
             name = itemView.findViewById(R.id.presentationName);
             imageView = itemView.findViewById(R.id.imageView);
             playButton = itemView.findViewById(R.id.play_button);
-        }
-    }
-
-    public void getFromFilePath(String fileName, MyViewHolder holder) {
-        File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
-        if (file.exists()) {
-            String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
-            switch (fileFormat) {
-                case "jpg":
-                case "png":
-                case "jpeg":
-                case "mp4": {
-                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(holder.imageView);
-                    return;
-                }
-                case "pdf": {
-                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                    Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
-                }
-                case "zip": {
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(), "image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
-                }
-                case "gif": {
-                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.imageView);
-                    return;
-                }
-            }
         }
     }
 

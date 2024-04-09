@@ -79,7 +79,7 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
            public void onClick(View v) {
 
                String url= "https://"+ SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+list.get(position).getImageName();
-               new DownloadTask(activity,url,list.get(position).getImageName(),list.get(position).getProgressValue(),list.get(position).getDownloadStatus(),list.get(position).getDownloadSizeStatus(),list.get(position));
+               new DownloadTask(activity,url,list.get(position).getImageName(),list.get(position).getProgressValue(),list.get(position).getDownloadStatus(),list.get(position).getDownloadSizeStatus(),list.get(position), ()-> new ThumbnailTask(activity.getApplicationContext(), list.get(position).getImageName(), null));
 
            }
        });

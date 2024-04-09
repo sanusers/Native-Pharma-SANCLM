@@ -55,7 +55,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
         holder.name.setText(arrayList.get(position).getBrandName());
         products = arrayList.get(position).getProductArrayList();
 
-        if (products.size() > 0) getFromFilePath(products.get(0).getSlideName(), holder);
+        if (products.size() > 0) SupportClass.setThumbnail(context, products.get(0).getSlideName(), holder.imageView);
 
         if (products.size() > 1) holder.count.setText(products.size() + " Asserts");
         else holder.count.setText(products.size() + " Assert");
@@ -95,38 +95,6 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
             }
         });
 
-    }
-
-    private void getFromFilePath(String fileName, MyViewHolder holder) {
-        File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
-        if (file.exists()) {
-            String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
-            switch (fileFormat) {
-                case "jpg":
-                case "png":
-                case "jpeg":
-                case "mp4": {
-                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(holder.imageView);
-                    return;
-                }
-                case "pdf": {
-                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                    Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
-                }
-                case "zip": {
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(), "image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
-                }
-                case "gif": {
-                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.imageView);
-                    return;
-                }
-            }
-        }
     }
 
     @Override

@@ -83,35 +83,32 @@ public class SlideImageAdapter extends RecyclerView.Adapter<SlideImageAdapter.My
     }
 
     public void getFromFilePath(String fileName,MyViewHolder holder){
-        File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
-        if (file.exists()){
-            String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
-            switch (fileFormat){
-                case "jpg" :
-                case "png" :
-                case "jpeg" :
-                case "mp4" :{
-                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(holder.imageView);
-                    return;
-                }
-                case "pdf" :{
-                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                    Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
-                }
-                case "zip" :{
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(),"image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    return;
-                }
-                case "gif" :{
-                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.imageView);
-                    return;
-                }
-            }
-        }
+        SupportClass.setThumbnail(context, fileName, holder.imageView);
+//        File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
+//        String fileFormat = SupportClass.getFileExtension(fileName);
+//        File thumbnail = new File(context.getExternalFilesDir(null)+ "/Thumbnails/", fileName.replace(fileFormat, ".jpeg"));
+//        if (file.exists()){
+//            Bitmap bitmap;
+//            switch (fileFormat){
+//                case "jpg" :
+//                case "png" :
+//                case "jpeg" :
+//                case "mp4" :
+//                case "pdf" :
+//                case "zip" :{
+//                    if(thumbnail.exists()) {
+//                        bitmap = BitmapFactory.decodeFile(thumbnail.getAbsolutePath());
+//                        if(bitmap != null)
+//                            Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
+//                    }
+//                    return;
+//                }
+//                case "gif" :{
+//                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.imageView);
+//                    return;
+//                }
+//            }
+//        }
     }
 
 
