@@ -43,7 +43,7 @@ public class BottomPreviewDetailedAdapter extends RecyclerView.Adapter<BottomPre
 
     @Override
     public void onBindViewHolder(@NonNull BottomPreviewDetailedAdapter.MyViewHolder holder, int position) {
-            getFromFilePath(arrayList.get(holder.getAbsoluteAdapterPosition()).getSlideName(), holder.imageView);
+        SupportClass.setThumbnail(context, arrayList.get(holder.getAbsoluteAdapterPosition()).getSlideName(), holder.imageView);
 
         holder.itemView.setSelected(viewPager.getCurrentItem() == holder.getAbsoluteAdapterPosition());
 
@@ -66,35 +66,4 @@ public class BottomPreviewDetailedAdapter extends RecyclerView.Adapter<BottomPre
         }
     }
 
-    public void getFromFilePath(String fileName, ImageView imageView) {
-        File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
-        if (file.exists()) {
-            String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
-            switch (fileFormat) {
-                case "jpg":
-                case "png":
-                case "jpeg":
-                case "mp4": {
-                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(imageView);
-                    return;
-                }
-                case "pdf": {
-                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                    Glide.with(context).asBitmap().load(bitmap).into(imageView);
-                    return;
-                }
-                case "zip": {
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(), "image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(imageView);
-                    return;
-                }
-                case "gif": {
-                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(imageView);
-                    return;
-                }
-            }
-        }
-    }
 }

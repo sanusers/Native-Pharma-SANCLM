@@ -6,12 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.ParcelFileDescriptor;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+
 import java.io.File;
 import java.util.ArrayList;
-
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.adapter.detailing.PlaySlideDetailing;
@@ -59,7 +55,7 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
         holder.name.setText(arrayList.get(position).getBrandName());
         products = arrayList.get(position).getProductArrayList();
 
-        if (products.size() > 0) getFromFilePath(products.get(0).getSlideName(), holder);
+        if (products.size() > 0) SupportClass.setThumbnail(context, products.get(0).getSlideName(), holder.imageView);
 
         if (products.size() > 1) holder.count.setText(products.size() + " Asserts");
         else holder.count.setText(products.size() + " Assert");
@@ -100,58 +96,6 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.MyViewHo
         });
 
     }
-
-    private void getFromFilePath(String fileName, MyViewHolder holder) {
-        File file = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
-        if (file.exists()) {
-            String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
-            switch (fileFormat) {
-                case "jpg":
-                case "png":
-                case "jpeg":
-                case "mp4": {
-                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(holder.imageView);
-                    break;
-                }
-                case "pdf": {
-
-               //     StringToBitMap(fileName);
-
-                    new Handler().postDelayed(() -> {
-                           Bitmap bitma = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                        Glide.with(context).asBitmap().load(bitma).into(holder.imageView);
-                        },3000);
-
-                    break;
-                }
-                case "zip": {
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(), "image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(holder.imageView);
-                    break;
-                }
-                case "gif": {
-                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(holder.imageView);
-                    break;
-                }
-            }
-        }
-    }public Bitmap StringToBitMap(String encodedString)
-    {
-        try
-        {
-            byte [] encodeByte= Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        }
-        catch(Exception e)
-        {
-            e.getMessage();
-            return null;
-        }
-    }
-
 
     @Override
     public int getItemCount() {

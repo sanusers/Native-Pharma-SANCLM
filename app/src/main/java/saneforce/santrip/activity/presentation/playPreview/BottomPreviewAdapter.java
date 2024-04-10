@@ -1,9 +1,6 @@
 package saneforce.santrip.activity.presentation.playPreview;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
-
-import java.io.File;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
@@ -43,7 +37,7 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
 
     @Override
     public void onBindViewHolder (@NonNull BottomPreviewAdapter.MyViewHolder holder, int position) {
-        getFromFilePath(arrayList.get(holder.getAbsoluteAdapterPosition()).getSlideName(),holder.imageView);
+        SupportClass.setThumbnail(context, arrayList.get(holder.getAbsoluteAdapterPosition()).getSlideName(), holder.imageView);
 
         holder.itemView.setSelected(viewPager.getCurrentItem() == holder.getAbsoluteAdapterPosition());
         holder.itemView.setOnClickListener(view -> {
@@ -66,39 +60,5 @@ public class BottomPreviewAdapter extends RecyclerView.Adapter<BottomPreviewAdap
             imageView = itemView.findViewById(R.id.imageView);
         }
     }
-
-    public void getFromFilePath(String fileName, ImageView imageView){
-        File file = new File(context.getExternalFilesDir(null)+ "/Slides/", fileName);
-        if (file.exists()){
-            String fileFormat = SupportClass.getFileExtension(fileName);
-            Bitmap bitmap = null;
-            switch (fileFormat){
-                case "jpg" :
-                case "png" :
-                case "jpeg" :
-                case "mp4" :{
-                    Glide.with(context).asBitmap().load(Uri.fromFile(new File(file.getAbsolutePath()))).into(imageView);
-                    return;
-                }
-                case "pdf" :{
-                    bitmap = SupportClass.pdfToBitmap(file.getAbsoluteFile());
-                    Glide.with(context).asBitmap().load(bitmap).into(imageView);
-                    return;
-                }
-                case "zip" :{
-                    bitmap = BitmapFactory.decodeFile(SupportClass.getFileFromZip(file.getAbsolutePath(),"image"));
-                    if (bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(imageView);
-                    return;
-                }
-                case "gif" :{
-                    Glide.with(context).asGif().load(new File(file.getAbsolutePath())).into(imageView);
-                    return;
-                }
-            }
-        }
-    }
-
-
 
 }

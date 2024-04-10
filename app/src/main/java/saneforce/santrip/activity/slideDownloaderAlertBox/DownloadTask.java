@@ -39,8 +39,9 @@ public class DownloadTask {
     private final Activity activity;
     private String downloadUrl = "";
     private String downloadFileName = "";
+    private TaskCallback taskCallback;
 
-    public DownloadTask(Activity activity, String downloadUrl, String filename, String progressBar_value, boolean downloadingstatus, String downloadmsg, SlideModelClass slidevalue) {
+    public DownloadTask(Activity activity, String downloadUrl, String filename, String progressBar_value, boolean downloadingstatus, String downloadmsg, SlideModelClass slidevalue, TaskCallback taskCallback) {
         this.activity = activity;
         this.downloadUrl = downloadUrl;
         this.downloadFileName = filename;
@@ -48,6 +49,7 @@ public class DownloadTask {
         this.downloadingstatus = downloadingstatus;
         this.downloadmsg = downloadmsg;
         this.Slidevalue = slidevalue;
+        this.taskCallback = taskCallback;
 
         this.context = activity.getApplicationContext();
         processvalue = 0;
@@ -191,6 +193,7 @@ public class DownloadTask {
                 Slidevalue.setProgressValue(String.valueOf(100));
                 Slidevalue.setDownloadStatus(true);
                 downloading_count++;
+                taskCallback.onTaskCompleted();
                 SlideDownloaderAlertBox.slideId123.add(Slidevalue.getId());
                 SlideDownloaderAlertBox.dialogdismisscount++;
                 SlideDownloaderAlertBox.txt_downloadcount.setText(downloading_count + "/" + SlideDownloaderAlertBox.adapter.getItemCount());
