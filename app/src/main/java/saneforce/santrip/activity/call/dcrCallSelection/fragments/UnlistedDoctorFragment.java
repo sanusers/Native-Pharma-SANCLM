@@ -171,7 +171,7 @@ public class UnlistedDoctorFragment extends Fragment {
         }
 
         Log.v("UNDRCALL", "-UnDr--size--" + custListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, SharedPref.getUnlistSrtNd(requireContext()));
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), custListArrayList, SharedPref.getUnlistSrtNd(requireContext()),"4");
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);

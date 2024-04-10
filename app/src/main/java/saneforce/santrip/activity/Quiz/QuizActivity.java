@@ -49,6 +49,7 @@ public class QuizActivity extends AppCompatActivity {
         sqLite = new SQLite(this);
         mQuizList.clear();
         try {
+
             JSONArray quizdata = sqLite.getMasterSyncDataByKey(Constants.QUIZ);
             if (quizdata.length() > 0) {
                 for (int i = 0; i < quizdata.length(); i++) {

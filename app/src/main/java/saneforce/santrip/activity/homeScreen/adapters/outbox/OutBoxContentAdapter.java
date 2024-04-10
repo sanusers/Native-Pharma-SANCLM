@@ -58,6 +58,10 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -74,6 +78,10 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     boolean isCallAvailable;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
+    RoomDB roomDB;
+
+    MasterDataDao masterDataDao;
+
 
     public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses) {
         this.activity = activity;
@@ -82,6 +90,9 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         sqLite = new SQLite(context);
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         commonUtilsMethods = new CommonUtilsMethods(context);
+
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao=roomDB.masterDataDao();
     }
 
     @NonNull
@@ -511,7 +522,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
     private void DeleteUpdateDcrTable(String date, String cusCode, String cusType) {
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+            JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
@@ -519,35 +530,44 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     break;
                 }
             }
-
-            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
-            sqLite.deleteLineChart(cusCode, date);
-            switch (cusType) {
-                case "1":
-                    int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
-                    callAnalysisBinding.txtDocCount.setText(String.format("%d / %d", doc_current_callcount, Doctor_list.length()));
-                    break;
-                case "2":
-                    int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
-                    callAnalysisBinding.txtCheCount.setText(String.format("%d / %d", che_current_callcount, Chemist_list.length()));
-                    break;
-                case "3":
-                    int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
-                    callAnalysisBinding.txtStockCount.setText(String.format("%d / %d", stockiest_current_callcount, Stockiest_list.length()));
-                    break;
-                case "4":
-                    int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
-                    callAnalysisBinding.txtUnlistCount.setText(String.format("%d / %d", unlistered_current_callcount, unlistered_list.length()));
-                    break;
-                case "5":
-                    int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
-                    callAnalysisBinding.txtCipCount.setText(String.format("%d / %d", cip_current_callcount, cip_list.length()));
-                    break;
-                case "6":
-                    int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
-                    callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
-                    break;
+            MasterDataTable mData =new MasterDataTable();
+            mData.setMasterKey(Constants.CALL_SYNC);
+            mData.setMasterValuse(jsonArray.toString());
+            mData.setSyncstatus(0);
+            MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+            if(Checked !=null){
+                masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+            }else {
+                masterDataDao.insert(mData);
             }
+            CallDataRestClass.resetcallValues(context);
+
+//            switch (cusType) {
+//                case "1":
+//                    int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
+//                    callAnalysisBinding.txtDocCount.setText(String.format("%d / %d", doc_current_callcount, Doctor_list.length()));
+//                    break;
+//                case "2":
+//                    int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
+//                    callAnalysisBinding.txtCheCount.setText(String.format("%d / %d", che_current_callcount, Chemist_list.length()));
+//                    break;
+//                case "3":
+//                    int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
+//                    callAnalysisBinding.txtStockCount.setText(String.format("%d / %d", stockiest_current_callcount, Stockiest_list.length()));
+//                    break;
+//                case "4":
+//                    int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
+//                    callAnalysisBinding.txtUnlistCount.setText(String.format("%d / %d", unlistered_current_callcount, unlistered_list.length()));
+//                    break;
+//                case "5":
+//                    int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
+//                    callAnalysisBinding.txtCipCount.setText(String.format("%d / %d", cip_current_callcount, cip_list.length()));
+//                    break;
+//                case "6":
+//                    int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
+//                    callAnalysisBinding.txtHosCount.setText(String.format("%d / %d", hos_current_callcount, hos_list.length()));
+//                    break;
+//            }
         } catch (Exception ignored) {
 
         }

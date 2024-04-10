@@ -91,9 +91,9 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public static ModelClass.SessionList prepareSessionListForAdapter() {
+
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
         ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass("", "");
-
         ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
         ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();

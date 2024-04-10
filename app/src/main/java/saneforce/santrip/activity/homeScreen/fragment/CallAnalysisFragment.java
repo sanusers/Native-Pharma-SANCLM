@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +25,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,6 +43,8 @@ import saneforce.santrip.activity.homeScreen.view.ImageLineChartRenderer;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.CallAnalysisFagmentBinding;
+import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -54,26 +53,20 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     @SuppressLint("StaticFieldLeak")
     public static CallAnalysisFagmentBinding callAnalysisBinding;
     public static String key;
-    public static JSONArray dcrdatas;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
     SQLite sqLite;
-    Context context;
+     public static Context context;
     CommonUtilsMethods commonUtilsMethods;
 
+    public static int DrCallsCount, CheCallsCount, StkCallsCount, UnlCallSCount, CipCallsCount, HosCallsCount;
 
+    static CallTableDao callTableDao;
+    RoomDB db;
     @Override
     public void onResume() {
         super.onResume();
         Log.d("Fragment_STATUS","OnResume");
-//        Thread backgroundThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                SetcallDetailsInLineChart(sqLite, context);
-//            }
-//        });
-//        backgroundThread.start();
-//    }
+
     }
     @SuppressLint({"MissingInflatedId", "ClickableViewAccessibility"})
     @Nullable
@@ -88,17 +81,9 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         context = requireContext();
         sqLite = new SQLite(requireContext());
         HiddenVisibleFunctions();
-
-
-        Thread backgroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                callAnalysisBinding.progressMain.setVisibility(View.VISIBLE);
-                SetcallDetailsInLineChart(sqLite, context);
-
-            }
-        });
-        backgroundThread.start();
+        db = RoomDB.getDatabase(getActivity());
+        callTableDao=db.callTableDao();
+        SetcallDetailsInLineChart();
         return v;
     }
     public static int computePercent(int current, int total) {
@@ -107,48 +92,25 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         return percent;
     }
 
-    public static void SetcallDetailsInLineChart(SQLite sqLite, Context context) {
-        sqLite.clearLinecharTable();
+    public static void SetcallDetailsInLineChart() {
         try {
+            Calendar calendar = Calendar.getInstance();
+            int month = calendar.get(Calendar.MONTH)+1;
 
-            dcrdatas = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
-            if (dcrdatas.length() > 0) {
-                for (int i = 0; i < dcrdatas.length(); i++) {
-                    JSONObject jsonObject = dcrdatas.getJSONObject(i);
-                    String CustCode = jsonObject.optString("CustCode");
-                    String CustType = jsonObject.optString("CustType");
-                    String Dcr_dt = jsonObject.optString("Dcr_dt");
-                    String month_name = jsonObject.optString("month_name");
-                    String Mnth = jsonObject.optString("Mnth");
-                    String Yr = jsonObject.optString("Yr");
-                    String CustName = jsonObject.optString("CustName");
-                    String town_code = jsonObject.optString("town_code");
-                    String town_name = jsonObject.optString("town_name");
-                    String Dcr_flag = jsonObject.optString("Dcr_flag");
-                    String SF_Code = jsonObject.optString("SF_Code");
-                    String Trans_SlNo = jsonObject.optString("Trans_SlNo");
-                    String FW_Indicator = jsonObject.optString("FW_Indicator");
-                    String AMSLNo = jsonObject.optString("AMSLNo");
-                    sqLite.insertLinecharData(CustCode, CustType, Dcr_dt, month_name, Mnth, Yr, CustName, town_code, town_name, Dcr_flag, SF_Code, Trans_SlNo, AMSLNo, FW_Indicator);
-                }
-
-
-                int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");
-                int che_current_callcount = sqLite.getcurrentmonth_calls_count("2");
-                int stockiest_current_callcount = sqLite.getcurrentmonth_calls_count("3");
-                int unlistered_current_callcount = sqLite.getcurrentmonth_calls_count("4");
-                int cip_current_callcount = sqLite.getcurrentmonth_calls_count("5");
-                int hos_current_callcount = sqLite.getcurrentmonth_calls_count("6");
-
+                DrCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "1");
+                CheCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "2");
+                StkCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "3");
+                UnlCallSCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "4");
+                CipCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "5");
+                HosCallsCount = callTableDao.getCurrentMonthCallsCount(  String.valueOf(month), "6");
+                callAnalysisBinding.txtDocCount.setText(String.valueOf(DrCallsCount));
+                callAnalysisBinding.txtCheCount.setText(String.valueOf(CheCallsCount));
+                callAnalysisBinding.txtStockCount.setText(String.valueOf(StkCallsCount));
+                callAnalysisBinding.txtUnlistCount.setText(String.valueOf(UnlCallSCount));
+                callAnalysisBinding.txtCipCount.setText(String.valueOf(CipCallsCount));
+                callAnalysisBinding.txtHosCount.setText(String.valueOf(HosCallsCount));
 
                 if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
-                    callAnalysisBinding.txtDocCount.setText(String.valueOf(doc_current_callcount));
-                    callAnalysisBinding.txtCheCount.setText(String.valueOf(che_current_callcount));
-                    callAnalysisBinding.txtStockCount.setText(String.valueOf(stockiest_current_callcount));
-                    callAnalysisBinding.txtUnlistCount.setText(String.valueOf(unlistered_current_callcount));
-                    callAnalysisBinding.txtCipCount.setText(String.valueOf(cip_current_callcount));
-                    callAnalysisBinding.txtHosCount.setText(String.valueOf(hos_current_callcount));
-
                     callAnalysisBinding.imgDoc.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgChe.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgStock.setVisibility(View.VISIBLE);
@@ -164,21 +126,20 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.FlHosProgress.setVisibility(View.GONE);
 
                 } else {
-                    callAnalysisBinding.txtDocCount.setText(doc_current_callcount + " / " + Doctor_list.length());
-                    callAnalysisBinding.txtCheCount.setText(che_current_callcount + " / " + Chemist_list.length());
-                    callAnalysisBinding.txtStockCount.setText(stockiest_current_callcount + " / " + Stockiest_list.length());
-                    callAnalysisBinding.txtUnlistCount.setText(unlistered_current_callcount + " / " + unlistered_list.length());
-                    callAnalysisBinding.txtCipCount.setText(cip_current_callcount + " / " + cip_list.length());
-                    callAnalysisBinding.txtHosCount.setText(hos_current_callcount + " / " + hos_list.length());
+                    callAnalysisBinding.txtDocCount.setText(DrCallsCount + " / " + Doctor_list.length());
+                    callAnalysisBinding.txtCheCount.setText(CheCallsCount + " / " + Chemist_list.length());
+                    callAnalysisBinding.txtStockCount.setText(StkCallsCount + " / " + Stockiest_list.length());
+                    callAnalysisBinding.txtUnlistCount.setText(UnlCallSCount + " / " + unlistered_list.length());
+                    callAnalysisBinding.txtCipCount.setText(CipCallsCount + " / " + cip_list.length());
+                    callAnalysisBinding.txtHosCount.setText(HosCallsCount + " / " + hos_list.length());
 
                     int doc_progress_value, che_progress_value, stockiest_progress_value, unlistered_progress_value, cip_progress_value, hos_progress_value;
-
-                    doc_progress_value = computePercent(doc_current_callcount, Doctor_list.length());
-                    che_progress_value = computePercent(che_current_callcount, Chemist_list.length());
-                    stockiest_progress_value = computePercent(stockiest_current_callcount, Stockiest_list.length());
-                    unlistered_progress_value = computePercent(unlistered_current_callcount, unlistered_list.length());
-                    cip_progress_value = computePercent(cip_current_callcount, cip_list.length());
-                    hos_progress_value = computePercent(hos_current_callcount, hos_list.length());
+                    doc_progress_value = computePercent(DrCallsCount, Doctor_list.length());
+                    che_progress_value = computePercent(CheCallsCount, Chemist_list.length());
+                    stockiest_progress_value = computePercent(StkCallsCount, Stockiest_list.length());
+                    unlistered_progress_value = computePercent(UnlCallSCount, unlistered_list.length());
+                    cip_progress_value = computePercent(CipCallsCount, cip_list.length());
+                    hos_progress_value = computePercent(HosCallsCount, hos_list.length());
 
                     callAnalysisBinding.txtDocValue.setText(doc_progress_value + "%");
                     callAnalysisBinding.txtCheValue.setText(che_progress_value + "%");
@@ -219,7 +180,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("1", sqLite, context);
+                    setLineChartData("1", context);
                 } else if (SharedPref.getChmNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.VISIBLE);
@@ -227,7 +188,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("2", sqLite, context);
+                    setLineChartData("2", context);
                 } else if (SharedPref.getStkNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -235,7 +196,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("3", sqLite, context);
+                    setLineChartData("3", context);
                 } else if (SharedPref.getUnlNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -243,7 +204,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("4", sqLite, context);
+                    setLineChartData("4", context);
                 } else if (SharedPref.getCipNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -251,7 +212,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.VISIBLE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
-                    setLineChartData("5", sqLite, context);
+                    setLineChartData("5",  context);
                 } else if (SharedPref.getHospNeed(context).equalsIgnoreCase("0")) {
                     callAnalysisBinding.imgDownTriangleDoc.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleChe.setVisibility(View.GONE);
@@ -259,44 +220,45 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     callAnalysisBinding.imgDownTriangleUnlistered.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                     callAnalysisBinding.imgDownTriangleHos.setVisibility(View.VISIBLE);
-                    setLineChartData("6", sqLite, context);
-                }
-                callAnalysisBinding.progressMain.setVisibility(View.GONE);
-            } else {
-                callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.GONE);
-                callAnalysisBinding.llDocChild.setOnClickListener(null);
-                callAnalysisBinding.llCheChild.setOnClickListener(null);
-                callAnalysisBinding.llStockChild.setOnClickListener(null);
-                callAnalysisBinding.llUnliChild.setOnClickListener(null);
-                callAnalysisBinding.llHosChild.setOnClickListener(null);
-                callAnalysisBinding.llCipChild.setOnClickListener(null);
-
-
-                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
-                    callAnalysisBinding.txtDocCount.setText("0");
-                    callAnalysisBinding.txtCheCount.setText("0");
-                    callAnalysisBinding.txtStockCount.setText("0");
-                    callAnalysisBinding.txtUnlistCount.setText("0");
-                    callAnalysisBinding.txtCipCount.setText("0");
-                    callAnalysisBinding.txtHosCount.setText("0");
-                } else {
-                    callAnalysisBinding.txtDocCount.setText("0 / " + Doctor_list.length());
-                    callAnalysisBinding.txtCheCount.setText("0 / " + Chemist_list.length());
-                    callAnalysisBinding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
-                    callAnalysisBinding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
-                    callAnalysisBinding.txtCipCount.setText("0 / " + cip_list.length());
-                    callAnalysisBinding.txtHosCount.setText("0 / " + hos_list.length());
-
-                    callAnalysisBinding.txtDocValue.setText("0%");
-                    callAnalysisBinding.txtCheValue.setText("0%");
-                    callAnalysisBinding.txtStockValue.setText("0%");
-                    callAnalysisBinding.txtUnlistedValue.setText("0%");
-                    callAnalysisBinding.txtCipValue.setText("0%");
-                    callAnalysisBinding.txtHosValue.setText("0%");
+                    setLineChartData("6", context);
                 }
 
-                callAnalysisBinding.progressMain.setVisibility(View.GONE);
-            }
+
+//            } else {
+//                callAnalysisBinding.inChart.llMonthlayout.setVisibility(View.GONE);
+//                callAnalysisBinding.llDocChild.setOnClickListener(null);
+//                callAnalysisBinding.llCheChild.setOnClickListener(null);
+//                callAnalysisBinding.llStockChild.setOnClickListener(null);
+//                callAnalysisBinding.llUnliChild.setOnClickListener(null);
+//                callAnalysisBinding.llHosChild.setOnClickListener(null);
+//                callAnalysisBinding.llCipChild.setOnClickListener(null);
+//
+//
+//                if (!SharedPref.getDesig(context).equalsIgnoreCase("MR")) {
+//                    callAnalysisBinding.txtDocCount.setText("0");
+//                    callAnalysisBinding.txtCheCount.setText("0");
+//                    callAnalysisBinding.txtStockCount.setText("0");
+//                    callAnalysisBinding.txtUnlistCount.setText("0");
+//                    callAnalysisBinding.txtCipCount.setText("0");
+//                    callAnalysisBinding.txtHosCount.setText("0");
+//                } else {
+//                    callAnalysisBinding.txtDocCount.setText("0 / " + Doctor_list.length());
+//                    callAnalysisBinding.txtCheCount.setText("0 / " + Chemist_list.length());
+//                    callAnalysisBinding.txtStockCount.setText(" 0/ " + Stockiest_list.length());
+//                    callAnalysisBinding.txtUnlistCount.setText(" 0/ " + unlistered_list.length());
+//                    callAnalysisBinding.txtCipCount.setText("0 / " + cip_list.length());
+//                    callAnalysisBinding.txtHosCount.setText("0 / " + hos_list.length());
+//
+//                    callAnalysisBinding.txtDocValue.setText("0%");
+//                    callAnalysisBinding.txtCheValue.setText("0%");
+//                    callAnalysisBinding.txtStockValue.setText("0%");
+//                    callAnalysisBinding.txtUnlistedValue.setText("0%");
+//                    callAnalysisBinding.txtCipValue.setText("0%");
+//                    callAnalysisBinding.txtHosValue.setText("0%");
+//                }
+//
+//
+//            }
 
         } catch (Exception a) {
             a.printStackTrace();
@@ -305,99 +267,65 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public static void setLineChartData(String Custype, SQLite sqLite, Context context) {
+    public static void setLineChartData(String Custype, Context context) {
+
+        //   A  -  CurrentMonth  A1  is = 1-15 ,A2  is = 1-31
+        //   B  -  PastMonth     B1  is = 1-15 ,B2  is = 1-31
+        //  C -  PastMonth      C1  is = 1-15 ,C2  is = 1-31
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         SimpleDateFormat sdfs = new SimpleDateFormat("MMMM");
-        SimpleDateFormat sdfss = new SimpleDateFormat("yyyy-MM-dd");
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -2);
-
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        Date firstDate = calendar.getTime();
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        Date lastDate = calendar.getTime();
-        String First_Date_of_Two_Months_Ago = sdf.format(firstDate);
-        String Last_Date_of_Two_Months_Ago = sdf.format(lastDate);
-
-        calendar.set(Calendar.DAY_OF_MONTH, 15);
-        Date fifteenthDate = calendar.getTime();
-
-        calendar.set(Calendar.DAY_OF_MONTH, 16);
-        Date sixteenthDate = calendar.getTime();
-
-        String firstDateStr = sdfss.format(firstDate);
-        String fifteenthDateStr = sdfss.format(fifteenthDate);
-        String sixteenthDateStr = sdfss.format(sixteenthDate);
-        String enddate = sdfss.format(lastDate);
-        String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+        Calendar MonthC = Calendar.getInstance();
+        MonthC.add(Calendar.MONTH, -2);
+        MonthC.set(Calendar.DAY_OF_MONTH, 1);
+        MonthC.set(Calendar.DAY_OF_MONTH, MonthC.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date lastDate = MonthC.getTime();
+        String MonthCLastDate = sdf.format(lastDate);
+        String month = String.valueOf(MonthC.get(Calendar.MONTH) + 1);
 
 
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.add(Calendar.MONTH, -1);
-        calendar1.set(Calendar.DAY_OF_MONTH, 1);
-        Date firstDate1 = calendar1.getTime();
-        calendar1.set(Calendar.DAY_OF_MONTH, calendar1.getActualMaximum(Calendar.DAY_OF_MONTH));
-        Date lastDate1 = calendar1.getTime();
-        String First_Date_of_pastmonth = sdf.format(firstDate1);
-        String Last_Date_of_pastmonth = sdf.format(lastDate1);
-        calendar1.set(Calendar.DAY_OF_MONTH, 15);
-        Date fifteenthDate1 = calendar1.getTime();
-        calendar1.set(Calendar.DAY_OF_MONTH, 16);
-        Date sixteenthDate1 = calendar1.getTime();
-        String firstDatepastmonth = sdfss.format(firstDate1);
-        String fifteenthDatepastmonth = sdfss.format(fifteenthDate1);
-        String sixteenthDatepastmonth = sdfss.format(sixteenthDate1);
-        String enddatepastmonth = sdfss.format(lastDate1);
-        String month1 = String.valueOf(calendar1.get(Calendar.MONTH) + 1);
+        Calendar MonthB = Calendar.getInstance();
+        MonthB.add(Calendar.MONTH, -1);
+        MonthB.set(Calendar.DAY_OF_MONTH, 1);
+
+        MonthB.set(Calendar.DAY_OF_MONTH, MonthB.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date lastDate1 = MonthB.getTime();
+        String MonthBLastDate = sdf.format(lastDate1);
+
+        String month1 = String.valueOf(MonthB.get(Calendar.MONTH) + 1);
 
 
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(Calendar.DAY_OF_MONTH, 1);
-        Date firstDate2 = calendar2.getTime();
-        calendar2.set(Calendar.DAY_OF_MONTH, calendar2.getActualMaximum(Calendar.DAY_OF_MONTH));
-        Date lastDate2 = calendar2.getTime();
-        String currentfirstdate = sdf.format(firstDate2);
-        String cutrrentlastdate = sdf.format(lastDate2);
-        calendar2.set(Calendar.DAY_OF_MONTH, 15);
-        Date fifteenthDate2 = calendar2.getTime();
-
-        calendar2.set(Calendar.DAY_OF_MONTH, 16);
-        Date sixteenthDate2 = calendar2.getTime();
-
-        String firstDatecurrent = sdfss.format(firstDate2);
-        String fifteenthDatecurrent = sdfss.format(fifteenthDate2);
-        String sixteenthDatecurrent = sdfss.format(sixteenthDate2);
-        String enddatecurrent = sdfss.format(lastDate2);
-
+        Calendar MonthA = Calendar.getInstance();
+        MonthA.set(Calendar.DAY_OF_MONTH, 1);
+        MonthA.set(Calendar.DAY_OF_MONTH, MonthA.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date lastDate2 = MonthA.getTime();
+        String MonthALastDate = sdf.format(lastDate2);
 
         ArrayList<Entry> entries = new ArrayList<>();
+        boolean isMonthC = callTableDao.isMonthDataAvailableForCustType(Custype, month);
+        boolean isMonthB = callTableDao.isMonthDataAvailableForCustType(Custype, month1);
 
-        boolean ispast2month = sqLite.isMonthDataAvailableForCustType(Custype, month);
-        boolean ispast1month = sqLite.isMonthDataAvailableForCustType(Custype, month1);
 
 
         List<Integer> listYrange = new ArrayList<>();
-        if (ispast2month) {
+        if (isMonthC) {
             key = "3";
-            callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(calendar.getTime()));
-            callAnalysisBinding.inChart.txtMonthTwo.setText(sdfs.format(calendar1.getTime()));
-            callAnalysisBinding.inChart.txtMonthThree.setText(sdfs.format(calendar2.getTime()));
+            callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(MonthC.getTime()));
+            callAnalysisBinding.inChart.txtMonthTwo.setText(sdfs.format(MonthB.getTime()));
+            callAnalysisBinding.inChart.txtMonthThree.setText(sdfs.format(MonthA.getTime()));
             callAnalysisBinding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
             callAnalysisBinding.inChart.txtMonthThree.setVisibility(View.VISIBLE);
-            callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(calendar.getTime()), calendar.get(Calendar.YEAR), sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
+            callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthC.getTime()), MonthC.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
-
-            int xaxis1 = sqLite.getcalls_count_by_range(firstDateStr, fifteenthDateStr, Custype);
-            int xaxis2 = sqLite.getcalls_count_by_range(firstDateStr, enddate, Custype);
-            int xaxis3 = sqLite.getcalls_count_by_range(firstDatepastmonth, fifteenthDatepastmonth, Custype);
-            int xaxis4 = sqLite.getcalls_count_by_range(firstDatepastmonth, enddatepastmonth, Custype);
-            int xaxis5 = sqLite.getcalls_count_by_range(firstDatecurrent, fifteenthDatecurrent, Custype);
-            int xaxis6 = sqLite.getcalls_count_by_range(firstDatecurrent, enddatecurrent, Custype);
-
+            int xaxis1 = callTableDao.getCallsCountByRange("C1", Custype);
+            int xaxis2 = callTableDao.getCallsCountByRange("C2", Custype);
+            int xaxis3 = callTableDao.getCallsCountByRange("B1", Custype);
+            int xaxis4 = callTableDao.getCallsCountByRange("B2", Custype);
+            int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A2", Custype);
 
             listYrange.add(xaxis1);
             listYrange.add(xaxis2);
@@ -415,19 +343,19 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 entries.add(new Entry(6, xaxis6));
             }
 
-        } else if (ispast1month) {
+        } else if (isMonthB) {
             key = "2";
-            callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(calendar1.getTime()));
-            callAnalysisBinding.inChart.txtMonthTwo.setText(sdfs.format(calendar2.getTime()));
+            callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(MonthB.getTime()));
+            callAnalysisBinding.inChart.txtMonthTwo.setText(sdfs.format(MonthA.getTime()));
             callAnalysisBinding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
             callAnalysisBinding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.VISIBLE);
-            callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(calendar1.getTime()), calendar1.get(Calendar.YEAR), sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
+            callAnalysisBinding.textDate.setText(String.format("%s %d - %s %d", sdfs.format(MonthB.getTime()), MonthB.get(Calendar.YEAR), sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
-            int xaxis3 = sqLite.getcalls_count_by_range(firstDatepastmonth, fifteenthDatepastmonth, Custype);
-            int xaxis4 = sqLite.getcalls_count_by_range(firstDatepastmonth, enddatepastmonth, Custype);
-            int xaxis5 = sqLite.getcalls_count_by_range(firstDatecurrent, fifteenthDatecurrent, Custype);
-            int xaxis6 = sqLite.getcalls_count_by_range(firstDatecurrent, enddatecurrent, Custype);
+            int xaxis3 = callTableDao.getCallsCountByRange("B1", Custype);
+            int xaxis4 = callTableDao.getCallsCountByRange("B2", Custype);
+            int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A2", Custype);
 
             listYrange.add(xaxis3);
             listYrange.add(xaxis4);
@@ -443,14 +371,14 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
         } else {
             key = "1";
-            callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(calendar2.getTime()));
+            callAnalysisBinding.inChart.txtMonthOne.setText(sdfs.format(MonthA.getTime()));
             callAnalysisBinding.inChart.txtMonthTwo.setVisibility(View.INVISIBLE);
             callAnalysisBinding.inChart.txtMonthThree.setVisibility(View.INVISIBLE);
             callAnalysisBinding.inChart.txtMonthOne.setVisibility(View.VISIBLE);
-            callAnalysisBinding.textDate.setText(String.format("%s %d", sdfs.format(calendar2.getTime()), calendar2.get(Calendar.YEAR)));
+            callAnalysisBinding.textDate.setText(String.format("%s %d", sdfs.format(MonthA.getTime()), MonthA.get(Calendar.YEAR)));
 
-            int xaxis5 = sqLite.getcalls_count_by_range(firstDatecurrent, fifteenthDatecurrent, Custype);
-            int xaxis6 = sqLite.getcalls_count_by_range(firstDatecurrent, enddatecurrent, Custype);
+            int xaxis5 = callTableDao.getCallsCountByRange("A1", Custype);
+            int xaxis6 = callTableDao.getCallsCountByRange("A2", Custype);
 
             listYrange.add(xaxis5);
             listYrange.add(xaxis6);
@@ -463,8 +391,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
         }
-
-
         LineDataSet dataSet = new LineDataSet(entries, "");
         dataSet.setDrawValues(false);
         dataSet.setColor(Color.BLACK);
@@ -508,44 +434,50 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
             public String getAxisLabel(float value, AxisBase axis) {
 
 
-                if (ispast2month) {
+                if (isMonthC) {
 
                     if (value == 0f) {
                         return "";
                     } else if (value == 1f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
                     } else if (value == 2f) {
-                        return "1" + getSuperscript("s") + " - " + Last_Date_of_Two_Months_Ago + getSuperscript("t");
+                        return "1" + getSuperscript("s") + " - " + MonthCLastDate + getSuperscript("t");
 
                     } else if (value == 3f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
                     } else if (value == 4f) {
-                        return "1" + getSuperscript("s") + " - " + Last_Date_of_pastmonth + getSuperscript("t");
+                        return "1" + getSuperscript("s") + " - " + MonthBLastDate + getSuperscript("t");
 
                     } else if (value == 5f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
                     } else if (value == 6f) {
-                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15){
-                            return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");}
-                        else {return "";}                    } else {
+                        if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                            return "1" + getSuperscript("s") + " - " + MonthALastDate + getSuperscript("t");
+                        } else {
+                            return "";
+                        }
+                    } else {
                         return "";
                     }
 
 
-                } else if (ispast1month) {
+                } else if (isMonthB) {
                     if (value == 0f) {
                         return "";
                     } else if (value == 1f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
                     } else if (value == 2f) {
-                        return "1" + getSuperscript("s") + " - " + Last_Date_of_pastmonth + getSuperscript("t");
+                        return "1" + getSuperscript("s") + " - " + MonthBLastDate + getSuperscript("t");
                     } else if (value == 3f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
 
                     } else if (value == 4f) {
-                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15){
-                            return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");}
-                        else {return "";}                    } else {
+                        if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                            return "1" + getSuperscript("s") + " - " + MonthALastDate + getSuperscript("t");
+                        } else {
+                            return "";
+                        }
+                    } else {
                         return "";
                     }
 
@@ -557,9 +489,11 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                     } else if (value == 1f) {
                         return "1" + getSuperscript("s") + " - 15" + getSuperscript("t");
                     } else if (value == 2f) {
-                        if(Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7))>15){
-                            return "1" + getSuperscript("s") + " - " + cutrrentlastdate + getSuperscript("t");}
-                        else {return "";}
+                        if (Integer.valueOf(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_7)) > 15) {
+                            return "1" + getSuperscript("s") + " - " + MonthALastDate + getSuperscript("t");
+                        } else {
+                            return "";
+                        }
                     } else {
                         return "";
                     }
@@ -623,18 +557,16 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         leftYAxis.setEnabled(true);
         leftYAxis.setTextSize(12);
         leftYAxis.setGridColor(context.getResources().getColor(R.color.charline_color));
-
         leftYAxis.setDrawZeroLine(true);
         leftYAxis.setZeroLineColor(context.getResources().getColor(R.color.gray_45));
         leftYAxis.setZeroLineWidth(1.2f);
 
 
-        CustomMarkerView mv = new CustomMarkerView(context, R.layout.linechartpopup, Custype, firstDateStr, fifteenthDateStr, enddate, firstDatepastmonth, fifteenthDatepastmonth, enddatepastmonth, firstDatecurrent, fifteenthDatecurrent, enddatecurrent, key);
+        CustomMarkerView mv = new CustomMarkerView(context, R.layout.linechartpopup, Custype, callTableDao, key);
         mv.setChartView(callAnalysisBinding.inChart.lineChart);
 
         callAnalysisBinding.inChart.lineChart.setMarkerView(mv);
         YAxis rightAxis = callAnalysisBinding.inChart.lineChart.getAxisRight();
-
         rightAxis.setAxisLineColor(context.getResources().getColor(R.color.white));
         rightAxis.setDrawAxisLine(false);
         rightAxis.setDrawLabels(false);
@@ -765,7 +697,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                 callAnalysisBinding.inChart.lineChart.clear();
 
-                setLineChartData("1", sqLite, context);
+                setLineChartData("1",context);
 
 
                 break;
@@ -779,7 +711,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                 callAnalysisBinding.inChart.lineChart.clear();
 
-                setLineChartData("2", sqLite, context);
+                setLineChartData("2", context);
 
 
                 break;
@@ -793,7 +725,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                 callAnalysisBinding.inChart.lineChart.clear();
 
-                setLineChartData("3", sqLite, context);
+                setLineChartData("3", context);
 
 
                 break;
@@ -807,7 +739,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                 callAnalysisBinding.inChart.lineChart.clear();
 
-                setLineChartData("4", sqLite, context);
+                setLineChartData("4", context);
 
 
                 break;
@@ -821,7 +753,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.GONE);
                 callAnalysisBinding.inChart.lineChart.clear();
 
-                setLineChartData("5", sqLite, context);
+                setLineChartData("5", context);
 
 
                 break;
@@ -834,7 +766,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
                 callAnalysisBinding.imgDownTriangleCip.setVisibility(View.GONE);
                 callAnalysisBinding.imgDownTriangleHos.setVisibility(View.VISIBLE);
                 callAnalysisBinding.inChart.lineChart.clear();
-                setLineChartData("6", sqLite, context);
+                setLineChartData("6",  context);
                 break;
 
         }
@@ -848,55 +780,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     }
 
 
-    private void ClearOldCalls(){
-
-        JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
-        if (jsonArray.length() > 0) {
-
-            JSONArray filteredArray = new JSONArray();
-
-        Calendar calendar = Calendar.getInstance();
-        int currentMonth = calendar.get(Calendar.MONTH) + 1;
-        int currentYear = calendar.get(Calendar.YEAR);
-
-
-        Calendar pastMonthCalender = Calendar.getInstance();
-        pastMonthCalender.add(Calendar.MONTH, -1);
-        int previousMonth = pastMonthCalender.get(Calendar.MONTH) + 1;
-        int previousYear = pastMonthCalender.get(Calendar.YEAR);
-
-        Calendar pastSecondMonthCalender = Calendar.getInstance();
-        pastSecondMonthCalender.add(Calendar.MONTH, -1);
-        int previousSecoundMonth = pastSecondMonthCalender.get(Calendar.MONTH) + 1;
-        int previousSecoundYear = pastSecondMonthCalender.get(Calendar.YEAR);
-
-        try {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String dcrDate = jsonObject.getString("Dcr_dt");
-                String[] dateParts = dcrDate.split("-");
-                if (dateParts.length == 3) {
-                    int year = Integer.parseInt(dateParts[0]);
-                    int month = Integer.parseInt(dateParts[1]);
-                    if (month == currentMonth && currentYear == year) {
-                        filteredArray.put(jsonObject);
-                    } else if (month == previousMonth && currentYear == previousYear) {
-                        filteredArray.put(jsonObject);
-                    } else if (month == previousSecoundMonth && currentYear == previousSecoundYear) {
-                        filteredArray.put(jsonObject);
-                    }
-                }
-            }
-        } catch (Exception a) {
-            a.printStackTrace();
-        }
-        SharedPref.putMonth(getActivity(),currentYear);
-        sqLite.saveMasterSyncData(Constants.CALL_SYNC,filteredArray.toString(),0);
-
-    }else {
-            sqLite.saveMasterSyncData(Constants.CALL_SYNC,"[]",0);
-        }
-    }
 
 
 
@@ -918,6 +801,8 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
 
     }
+
+
 
 }
 

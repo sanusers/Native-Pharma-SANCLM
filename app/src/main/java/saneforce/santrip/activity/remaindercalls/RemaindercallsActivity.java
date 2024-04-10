@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -36,6 +37,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
     String SfType = "", Sf_code = "";
     LoginResponse loginResponse;
     TextView search_bar, headtext_id;
+    RelativeLayout hq_name1;
     public static TextView townname;
     public static EditText et_Custsearch;
     public static RecyclerView remainded_view;
@@ -71,6 +73,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
         headtext_id = findViewById(R.id.headtext_id);
         close_sideview = findViewById(R.id.close_sideview);
         et_Custsearch = findViewById(R.id.et_Custsearch);
+        hq_name1 = findViewById(R.id.hq_name1);
 
         sqLite = new SQLite(this);
         loginResponse = new LoginResponse();
@@ -90,19 +93,15 @@ public class RemaindercallsActivity extends AppCompatActivity {
 
         townname.setText(SharedPref.getHqName(this));
 
-        if (loginResponse.getGeoChk().equals("1")) {
-//            getData(SharedPref.getHqCode(this));
-        }
 
 
-        if (SharedPref.getDivisionCode(this).equals("MR")) {
-
-        } else {
+        if (!loginResponse.getDesig_Code().equals("MR")) {
             townname.setOnClickListener(v -> {
                 show_hq();
-                drawer_Layout12.openDrawer(GravityCompat.END);
+                drawer_Layout12.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
 
             });
+
         }
 
         headtext_id.setText("HeadQuarter");
@@ -298,8 +297,4 @@ public class RemaindercallsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
 }

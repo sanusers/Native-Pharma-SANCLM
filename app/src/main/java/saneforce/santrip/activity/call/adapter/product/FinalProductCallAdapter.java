@@ -72,7 +72,9 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
         holder.ed_rxQty.setText(productListArrayList.get(position).getRx_qty());
         holder.ed_rcpaQty.setText(productListArrayList.get(position).getRcpa_qty());
         holder.switch_prompt.setChecked(productListArrayList.get(position).getPromoted().equalsIgnoreCase("0"));
-
+        if(DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")||DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")){
+            holder.switch_prompt.setVisibility(View.GONE);
+        }
 
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
             case "1":
@@ -435,7 +437,7 @@ public class FinalProductCallAdapter extends RecyclerView.Adapter<FinalProductCa
             ed_rxQty = itemView.findViewById(R.id.ed_rx_qty);
             ed_rcpaQty = itemView.findViewById(R.id.tv_rcpa);
             img_del_prd = itemView.findViewById(R.id.img_del_prd);
-            switch_prompt = itemView.findViewById(R.id.switch_promoted);
+            switch_prompt = itemView.findViewById(R.id.img_promoted);
         }
     }
 }

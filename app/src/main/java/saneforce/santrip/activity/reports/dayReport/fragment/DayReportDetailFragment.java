@@ -230,6 +230,8 @@ public class DayReportDetailFragment extends Fragment {
                         jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
                         jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
                         jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(requireContext()));
+
+                        Log.d("paramObject",jsonObject.toString());
                         Map<String, String> mapString = new HashMap<>();
                         mapString.put("axn", "get/reports");
                         Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
@@ -298,7 +300,7 @@ public class DayReportDetailFragment extends Fragment {
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()));
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()),dayReportModel.getACode());
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

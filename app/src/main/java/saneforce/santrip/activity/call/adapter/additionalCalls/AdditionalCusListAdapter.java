@@ -33,6 +33,9 @@ import saneforce.santrip.activity.call.pojo.additionalCalls.SaveAdditionalCall;
 import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -46,6 +49,8 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
     FinalAdditionalCallAdapter AdapterSaveAdditionalCall;
     CommonUtilsMethods commonUtilsMethods;
     SQLite sqLite;
+    RoomDB roomDB;
+    MasterDataDao masterDataDao;
 
     public AdditionalCusListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList) {
         this.activity = activity;
@@ -54,6 +59,8 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         AdditionalCusListAdapter.saveAdditionalCallArrayList = saveAdditionalCallArrayList;
         commonUtilsMethods = new CommonUtilsMethods(context);
         sqLite = new SQLite(context);
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao= roomDB.masterDataDao();
     }
 
 
@@ -63,6 +70,8 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         this.checked_arrayList = checked_arrayList;
         commonUtilsMethods = new CommonUtilsMethods(context);
         sqLite = new SQLite(context);
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao= roomDB.masterDataDao();
     }
 
     @NonNull
@@ -134,7 +143,9 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
             boolean isLocal = false;
 
             if (isFromActivity.equalsIgnoreCase("edit_local")) {
-                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+
+
+                JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(clickedLocalDate) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
@@ -144,12 +155,22 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
                         break;
                     }
                 }
-                sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+
+                MasterDataTable inputdata =new MasterDataTable();
+                inputdata.setMasterKey(Constants.CALL_SYNC);
+                inputdata.setMasterValuse(jsonArray.toString());
+                inputdata.setSyncstatus(0);
+                MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                if(nChecked !=null){
+                    masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                }else {
+                    masterDataDao.insert(inputdata);
+                }
             }
 
             if (!isLocal) {
                 if (!cusCode.equalsIgnoreCase(CallActivityCustDetails.get(0).getCode())) {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                    JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
@@ -161,7 +182,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
                     if (!isVisitedToday) {
                         if (SharedPref.getVstNd(context).equalsIgnoreCase("0") && SharedPref.getSfType(context).equalsIgnoreCase("1")) {
                             int count = 0;
-                            JSONArray jsonVisit = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                            JSONArray jsonVisit = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                             for (int i = 0; i < jsonVisit.length(); i++) {
                                 JSONObject jsonObject = jsonVisit.getJSONObject(i);
                                 if (jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.masterSync.DialogboxClass;
 import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
@@ -102,6 +103,7 @@ public class SlideDownloaderAlertBox {
             recyclerView.setAdapter(adapter);
             builder.setView(dialogView);
             dialog = builder.create();
+            HomeDashBoard.dialog=dialog;
             if (!txt_downloadcount.getText().toString().equalsIgnoreCase("0/0")) {
                 dialog.show();
             }
@@ -130,6 +132,8 @@ public class SlideDownloaderAlertBox {
                 MasterSyncActivity.binding.imgDownloading.setVisibility(View.GONE);
                 commonUtilsMethods.showToastMessage(activity, "Already All Slide Downloaded");
             }
+            DialogboxClass dialogboxClass=new DialogboxClass();
+            dialogboxClass.setDialog(dialog);
         } else {
             downloading_count = 0;
             totalcount = 0;

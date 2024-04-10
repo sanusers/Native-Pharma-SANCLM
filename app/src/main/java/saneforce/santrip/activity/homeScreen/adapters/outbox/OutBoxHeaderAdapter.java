@@ -52,6 +52,10 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -66,6 +70,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
+     RoomDB db;
+     MasterDataDao masterDataDao;
 
     public OutBoxHeaderAdapter(Activity activity, Context context, ArrayList<GroupModelClass> groupModelClasses) {
         this.activity = activity;
@@ -74,6 +80,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         sqLite = new SQLite(context);
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         commonUtilsMethods = new CommonUtilsMethods(context);
+        db=RoomDB.getDatabase(context);
+        masterDataDao=db.masterDataDao();
+
     }
 
     @NonNull
@@ -251,7 +260,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
                 CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
             }
-            CallAnalysisFragment.SetcallDetailsInLineChart(sqLite, context);
+            CallDataRestClass.resetcallValues(context);
+
+
             RefreshAdapter();
         }
     }
@@ -374,7 +385,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
                                 sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
                                 groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().set(outBoxList, new OutBoxCallList(cusName, cusCode, date, outBoxCallList.getIn(), outBoxCallList.getOut(), jsonData, outBoxCallList.getCusType(), Constants.DUPLICATE_CALL, 5));
-                                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(date) && jsonObject.getString("CustCode").equalsIgnoreCase(cusCode)) {
@@ -383,7 +394,18 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                                     }
                                 }
                                 UpdateEcData(date, cusCode, cusName, Constants.DUPLICATE_CALL, 1);
-                                sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+
+                                MasterDataTable mData =new MasterDataTable();
+                                mData.setMasterKey(Constants.CALL_SYNC);
+                                mData.setMasterValuse(jsonArray.toString());
+                                mData.setSyncstatus(0);
+                                MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                if(Checked !=null){
+                                    masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                                }else {
+                                    masterDataDao.insert(mData);
+                                }
+
                             }
                             CallAPIOfflineCalls(groupModelClass, childPos);
                             notifyDataSetChanged();

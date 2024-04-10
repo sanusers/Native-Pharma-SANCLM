@@ -24,7 +24,7 @@
         android:layout_marginStart="@dimen/_8sdp"
         android:cropToPadding="true"
         android:gravity="center"
-        android:padding="@dimen/_2sdp"
+
         android:src="@drawable/arrow_back_white"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintRight_toLeftOf="@id/tag_selection"
@@ -117,8 +117,8 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_start_det"
-        android:layout_width="114dp"
-        android:layout_height="47dp"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_6sdp"
         android:layout_toEndOf="@id/btn_skip"

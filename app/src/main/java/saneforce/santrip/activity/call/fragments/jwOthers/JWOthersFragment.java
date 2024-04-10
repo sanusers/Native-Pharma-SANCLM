@@ -1,7 +1,9 @@
 package saneforce.santrip.activity.call.fragments.jwOthers;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.call.DCRCallActivity.CapPob;
 import static saneforce.santrip.activity.call.DCRCallActivity.SfCode;
+import static saneforce.santrip.activity.call.DCRCallActivity.TodayPlanSfCode;
 import static saneforce.santrip.activity.call.DCRCallActivity.dcrCallBinding;
 import static saneforce.santrip.activity.call.DCRCallActivity.isFromActivity;
 
@@ -15,6 +17,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +38,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import saneforce.santrip.R;
@@ -46,8 +57,11 @@ import saneforce.santrip.activity.call.adapter.jwOthers.AdapterCallJointWorkList
 import saneforce.santrip.activity.call.pojo.CallCaptureImageList;
 import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentJwothersBinding;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.TimeUtils;
 
 
 public class JWOthersFragment extends Fragment {
@@ -62,6 +76,8 @@ public class JWOthersFragment extends Fragment {
     public static AdapterCallJointWorkList adapterCallJointWorkList;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
     SQLite sqLite;
+   public static ArrayList<String> JWKCodeList =new ArrayList<>();
+   Gson gson;
     CommonUtilsMethods commonUtilsMethods;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
@@ -97,9 +113,53 @@ public class JWOthersFragment extends Fragment {
         sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-
+        gson = new Gson();
         HiddenVisibleFunction();
         SetupAdapter();
+
+        if(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5).equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
+            if (isFromActivity.equalsIgnoreCase("new")) {
+                Log.v("Testing","new");
+                String getjwkcode = SharedPref.getJWKCODE(requireContext());
+                if (!getjwkcode.equalsIgnoreCase("")) {
+                    Type type = new TypeToken<List<String>>() {
+                    }.getType();
+                    JWKCodeList = gson.fromJson(getjwkcode, type);
+
+                    try {
+                        if (DCRCallActivity.save_valid.equals("1")) {
+                            JSONArray jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
+
+                            Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (JWKCodeList.contains(jsonObject.getString("Code"))) {
+                                    callAddedJointList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), true));
+                                }
+                            }
+                        } else {
+                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
+                            Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (JWKCodeList.contains(jsonObject.getString("Code"))) {
+                                    callAddedJointList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), true));
+                                }
+                            }
+                        }
+
+                    } catch (Exception ignored) {
+                        Log.v("Testing","issue");
+                    }
+
+
+                }
+            }
+        }else {
+            JWKCodeList.clear();
+            SharedPref.setJWKCODE(context, JWKCodeList, "");
+            Log.v("Testing","OLD");
+            }
 
 
         jwOthersBinding.tvFeedback.setOnClickListener(view -> dcrCallBinding.fragmentSelectFbSide.setVisibility(View.VISIBLE));

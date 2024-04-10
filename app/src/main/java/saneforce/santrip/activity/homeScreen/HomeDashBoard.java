@@ -3,10 +3,11 @@ package saneforce.santrip.activity.homeScreen;
 import static android.Manifest.permission.READ_MEDIA_AUDIO;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
+
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 import static saneforce.santrip.commonClasses.Constants.APP_MODE;
-import static saneforce.santrip.commonClasses.Constants.APP_VERSION;
+
 import static saneforce.santrip.commonClasses.Constants.CONNECTIVITY_ACTION;
 
 import android.Manifest;
@@ -112,7 +113,8 @@ import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.CustomSetupResponse;
-
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkChangeReceiver;
@@ -123,6 +125,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @SuppressLint("StaticFieldLeak")
     public static ActivityHomeDashBoardBinding binding;
     public static int DeviceWith;
+    public static Dialog dialog;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
     public static String   CustomPresentationNeed, PresentationNeed;
     public static LocalDate selectedDate;
@@ -152,8 +155,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
     String holidayMode = "", weeklyOffCaption = "";
-
+    public  static  CustomPagerAdapter adapter;
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
+    RoomDB roomDB;
+
+    MasterDataDao masterDataDao;
+
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -172,13 +179,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
         }
 
-        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-            SharedPref.setCheckInTime(getApplicationContext(), "");
-            SharedPref.setSkipCheckIn(getApplicationContext(), true);
-            CheckInOutDate();
-        } else {
-            SharedPref.setSkipCheckIn(getApplicationContext(), false);
-        }
+//        if (SharedPref.getSrtNd(this).equalsIgnoreCase("0") && !SharedPref.getCheckTodayCheckInOut(this).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
+//            SharedPref.setCheckInTime(getApplicationContext(), "");
+//            SharedPref.setSkipCheckIn(getApplicationContext(), true);
+//            CheckInOutDate();
+//        } else {
+//            SharedPref.setSkipCheckIn(getApplicationContext(), false);
+//        }
 
         if (Build.VERSION.SDK_INT >= 33) {
             if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(HomeDashBoard.this, READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
@@ -263,6 +270,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
 
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao=roomDB.masterDataDao();
+
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
 
@@ -284,8 +294,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        CustomPagerAdapter adapter = new CustomPagerAdapter(getSupportFragmentManager());
+        adapter = new CustomPagerAdapter(getSupportFragmentManager());
         binding.viewPager1.setAdapter(adapter);
+        binding.viewPager1.setOffscreenPageLimit(3);
         binding.myDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.drMainlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         ViewTreeObserver vto = binding.rlQuickLink.getViewTreeObserver();
@@ -421,7 +432,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 jsonCheck.put("long", longitude);
                 jsonCheck.put("address", address);
                 jsonCheck.put("update", "0");
-                jsonCheck.put("Appver", APP_VERSION);
+                jsonCheck.put("Appver", getResources().getString(R.string.app_version));
                 jsonCheck.put("Mod", APP_MODE);
                 jsonCheck.put("sf_emp_id", SharedPref.getSfEmpId(this));
                 jsonCheck.put("sfname", SharedPref.getSfName(this));
@@ -699,12 +710,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 ListID.remove(i);
             }
         }
+        try {
+            JSONArray dcrdatas = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+            if (dcrdatas.length() > 0) {
+                for (int i = 0; i < dcrdatas.length(); i++) {
 
-
-        JSONArray dcrdatas = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
-        if (dcrdatas.length() > 0) {
-            for (int i = 0; i < dcrdatas.length(); i++) {
-                try {
                     JSONObject jsonObject = dcrdatas.getJSONObject(i);
                     String CustType = jsonObject.optString("CustType");
                     String worktypeFlog = jsonObject.optString("FW_Indicator");
@@ -716,15 +726,14 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         //   Log.v("Calender", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_21, TimeUtils.FORMAT_28, date1) + "---" + worktypeFlog + "---" + mMonth + "---" + mYear);
                         callsatuslist.add(new EventCalenderModelClass(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_21, TimeUtils.FORMAT_28, date1), worktypeFlog, mMonth, mYear));
                     }
-                } catch (JSONException ignored) {
+
                 }
-            }
 
 
             JSONArray dateSync = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
             if (dateSync.length() > 0) {
                 for (int i = 0; i < dateSync.length(); i++) {
-                    try {
+
                         JSONObject jsonObject = dateSync.getJSONObject(i);
                         String flag = jsonObject.optString("flg");
                         String tbName = jsonObject.optString("tbname");
@@ -748,9 +757,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             // Log.v("Calender", date1 + " --- " + mMonth + " --- " + mYear);
                             callsatuslist.add(new EventCalenderModelClass(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_21, TimeUtils.FORMAT_28, date1), worktypeFlog, mMonth, mYear));
                         }
-                    } catch (JSONException e) {
-                        Log.v("Calender", "---" + e);
-                    }
                 }
             }
 
@@ -761,6 +767,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 }
             }
         }
+
+    } catch (JSONException ignored) {
+    }
         return daysInMonthArray;
     }
 
@@ -789,7 +798,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         user_name.setText(SharedPref.getSfName(this));
         sf_name.setText(SharedPref.getDsName(this));
-        Cluster.setText(SharedPref.getHqName(this));
+        Cluster.setText(SharedPref.getHqNameMain(this));
 
         l_click.setOnClickListener(v -> {
             popupWindow.dismiss();
@@ -1140,7 +1149,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 break;
 
             case R.id.img_sync:
-                startActivity(new Intent(HomeDashBoard.this, MasterSyncActivity.class));
+
+                Intent intent1=new Intent(HomeDashBoard.this,MasterSyncActivity.class);
+                startActivity(intent1);
                 break;
 
             case R.id.img_account:
@@ -1341,7 +1352,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             binding.tvLdot.setVisibility(View.VISIBLE);
         }
-        if (SharedPref.getGeoNeed(this).equalsIgnoreCase("1")) {
+        if (SharedPref.getGeotagNeed(this).equalsIgnoreCase("1")) {
             binding.tvDdot.setVisibility(View.VISIBLE);
         }
         if (SharedPref.getGeotagNeedChe(this).equalsIgnoreCase("1")) {

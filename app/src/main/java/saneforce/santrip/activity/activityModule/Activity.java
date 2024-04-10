@@ -447,7 +447,7 @@ public class Activity extends AppCompatActivity {
         textLinearLayout.addView(textlabel);
         textlabel.setId(k);
         binding.llActivityDetailsView.addView(textLinearLayout);
-      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),"","",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
+      ActivityViewItem.add(new ActivityDetailsModelClass(k,List.getFieldName(),List.getFieldName(),"",List.getControlId(),List.getCreationId(),List.getInput(),List.getMandatory(),List.getControlPara(),List.getGroupCreationId()," ",List.getSlno()));
 
     }
 

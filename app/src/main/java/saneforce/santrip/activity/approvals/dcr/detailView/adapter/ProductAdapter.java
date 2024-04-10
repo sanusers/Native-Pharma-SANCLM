@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,10 +36,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.tv_name.setText(getProductList.get(position).getName());
-        holder.tv_promoted.setText(getProductList.get(position).getPromoted());
+
+
+
         holder.tv_samQty.setText(getProductList.get(position).getSample_qty());
         holder.tv_rxQty.setText(getProductList.get(position).getRx_qty());
         holder.tv_rcpa.setText(getProductList.get(position).getRcpa_qty());
+
+        if(getProductList.get(position).getPromoted().equalsIgnoreCase("Yes")){
+            holder.img_promoted.setImageDrawable(context.getResources().getDrawable(R.drawable.tick_icone));
+        }else {
+            holder.img_promoted.setImageDrawable(context.getResources().getDrawable(R.drawable.gray_cross_icon));
+        }
+
     }
 
     @Override
@@ -48,12 +58,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_name, tv_promoted, tv_samQty, tv_rxQty, tv_rcpa;
+        TextView tv_name, tv_samQty, tv_rxQty, tv_rcpa;
+
+        ImageView img_promoted;
 
         public ViewHolder(@NonNull View v) {
             super(v);
             tv_name = v.findViewById(R.id.tv_prd_name);
-            tv_promoted = v.findViewById(R.id.tv_promoted);
+            img_promoted = v.findViewById(R.id.img_promoted);
             tv_samQty = v.findViewById(R.id.tv_samples);
             tv_rxQty = v.findViewById(R.id.tv_rx_qty);
             tv_rcpa = v.findViewById(R.id.tv_rcpa);

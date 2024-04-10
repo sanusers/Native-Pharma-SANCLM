@@ -48,6 +48,9 @@ import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 
@@ -72,14 +75,19 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
     ArrayList<String> dummyNames = new ArrayList<>();
     FinalInputCallAdapter finalInputCallAdapter;
     FinalProductCallAdapter finalProductCallAdapter;
-    SQLite sqLite;
+
+    RoomDB roomDB;
+
+    MasterDataDao masterDataDao;
 
     public FinalAdditionalCallAdapter(Activity activity, Context context, ArrayList<SaveAdditionalCall> saveAdditionalCalls, ArrayList<CallCommonCheckedList> CheckedCusListArrayList) {
         this.activity = activity;
         this.context = context;
         FinalAdditionalCallAdapter.saveAdditionalCalls = saveAdditionalCalls;
         checked_arrayList = CheckedCusListArrayList;
-        sqLite = new SQLite(context);
+
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao=roomDB.masterDataDao();
     }
 
     public FinalAdditionalCallAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> cusListArrayList, ArrayList<SaveAdditionalCall> saveAdditionalCallArrayList, ArrayList<AddInputAdditionalCall> nestedInput, ArrayList<AddSampleAdditionalCall> nestedProduct, ArrayList<AddInputAdditionalCall> dummyNestedInput, ArrayList<AddSampleAdditionalCall> dummyNestedSample) {
@@ -91,7 +99,7 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
         FinalAdditionalCallAdapter.nestedProduct = nestedProduct;
         FinalAdditionalCallAdapter.dummyNestedInput = dummyNestedInput;
         FinalAdditionalCallAdapter.dummyNestedSample = dummyNestedSample;
-        sqLite = new SQLite(context);
+
     }
 
     @NonNull
@@ -199,7 +207,9 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
 
             try {
                 if (isFromActivity.equalsIgnoreCase("edit_local")) {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
+
+                    JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(clickedLocalDate) && jsonObject.getString("CustCode").equalsIgnoreCase(saveAdditionalCalls.get(position).getCode())) {
@@ -207,7 +217,18 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
                             break;
                         }
                     }
-                    sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
+
+                    MasterDataTable inputdata =new MasterDataTable();
+                    inputdata.setMasterKey(Constants.CALL_SYNC);
+                    inputdata.setMasterValuse(jsonArray.toString());
+                    inputdata.setSyncstatus(0);
+                    MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                    if(nChecked !=null){
+                        masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                    }else {
+                        masterDataDao.insert(inputdata);
+                    }
+
                 }
             } catch (Exception ignored) {
             }

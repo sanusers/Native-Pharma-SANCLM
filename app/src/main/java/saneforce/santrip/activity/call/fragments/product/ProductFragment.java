@@ -77,6 +77,13 @@ public class ProductFragment extends Fragment {
     private void HiddenVisibleFunction() {
         productsBinding.tagSamples.setText(DCRCallActivity.CapSamQty);
         productsBinding.tagRxQty.setText(DCRCallActivity.CapRxQty);
+
+
+
+        if(DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")||DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")){
+            productsBinding.tagPromoted.setVisibility(View.GONE);
+        }
+
         switch (DCRCallActivity.CallActivityCustDetails.get(0).getType()) {
 
             case "1":

@@ -170,7 +170,7 @@ public class ChemistFragment extends Fragment {
         }
 
         Log.v("CheCall", "-che--size--" + cusListArrayList.size());
-        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), cusListArrayList,SharedPref.getChmSrtNd(requireContext()));
+        adapterDCRCallSelection = new AdapterDCRCallSelection(getActivity(), getContext(), cusListArrayList,SharedPref.getChmSrtNd(requireContext()),"2");
         rv_list.setItemAnimator(new DefaultItemAnimator());
         rv_list.setLayoutManager(new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false));
         rv_list.setAdapter(adapterDCRCallSelection);
