@@ -165,10 +165,15 @@ public class    MasterSyncActivity extends AppCompatActivity {
             if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
-                    sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0); // to get all the HQ list initially only for MGR
+                    sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
+                //    sync(Constants.MY_DAY_PLAN, "getmydayplan", dcrModelArray, 0); // to get all the HQ list initially only for MGR
+// to get all the HQ list initially only for MGR
                 } else {
                     commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
                 }
+
+
+
             } else {
                 masterSyncAll(false);
             }
@@ -707,7 +712,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         productModelArray.add(proModel);
         productModelArray.add(proCatModel);
         productModelArray.add(brandModel);
-        if (SharedPref.getRcpaNd(this).equalsIgnoreCase("1") || SharedPref.getChmRcpaNeed(this).equalsIgnoreCase("1")) {
+        if (SharedPref.getRcpaNd(this).equalsIgnoreCase("0") || SharedPref.getChmRcpaNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel compProductModel = new MasterSyncItemModel(Constants.COMPETITOR_PROD, compProCount, Constants.PRODUCT, "getcompdet", Constants.COMPETITOR_PROD, compProStatus, false);
             MasterSyncItemModel mapCompPrdModel = new MasterSyncItemModel(Constants.MAPPED_COMPETITOR_PROD, mapComPrdCount, "AdditionalDcr", "getmapcompdet", Constants.MAPPED_COMPETITOR_PROD, mapCompPrdStatus, false);
             productModelArray.add(compProductModel);
@@ -1685,6 +1690,70 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
 
 
+public void  MydayplanSync(){
+  try {
+      JSONObject jsonObject=new JSONObject();
+      jsonObject.put("tableName","getmydayplan");
+      jsonObject.put("sfcode",SharedPref.getSfType(this));
+      jsonObject.put("division_code",SharedPref.getDivisionCode(this));
+      jsonObject.put("Rsf",SharedPref.getSfCode(this));
+      jsonObject.put("sf_type",SharedPref.getSfType(this));
+      jsonObject.put("ReqDt",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
+      jsonObject.put("Designation",SharedPref.getDesig(this));
+      jsonObject.put("state_code",SharedPref.getStateCode(this));
+      jsonObject.put("subdivision_code",SharedPref.getSubdivisionCode(this));
+      Map<String, String> mapString = new HashMap<>();
+      mapString.put("axn", "table/dcrmasterdata");
+      apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
+      Call<JsonElement>  call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
 
+      call.enqueue(new Callback<JsonElement>() {
+          @Override
+          public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+              try {
+
+                  if (response.code() == 200 || response.code() == 201) {
+                      JsonElement jsonElement = response.body();
+                      if (!jsonElement.isJsonNull()) {
+                          if (jsonElement.isJsonArray()) {
+                              JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
+
+                              String HqName = "", HqCode = "";
+                              if (jsonArray.length() > 0) {
+                                  JSONObject firstObject = jsonArray.getJSONObject(0);
+                                  if (firstObject.getString("FWFlg").equalsIgnoreCase("F")) {
+                                      HqName = firstObject.getString("HQNm");
+                                      HqCode = firstObject.getString("SFMem");
+                                  }
+                                  if (jsonArray.length() == 2) {
+                                      JSONObject secondObject = jsonArray.getJSONObject(1);
+                                      if (secondObject.getString("FWFlg").equalsIgnoreCase("F")) {
+                                          HqName = secondObject.getString("HQNm");
+                                          HqCode = secondObject.getString("SFMem");
+                                      }
+                                  }
+                                  SharedPref.saveHq(MasterSyncActivity.this, HqName, HqCode);
+                              }
+                          }
+                      }
+                  }else {
+                      SharedPref.saveHq(MasterSyncActivity.this, "", "");
+                  }
+              } catch (Exception ignore) {
+              }
+
+
+          }
+
+          @Override
+          public void onFailure(Call<JsonElement> call, Throwable t) {
+
+          }
+      });
+
+  }catch (Exception ignore){
+  }
+
+    }
 
 }

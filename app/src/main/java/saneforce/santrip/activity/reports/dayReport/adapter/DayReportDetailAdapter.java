@@ -1,7 +1,12 @@
 package saneforce.santrip.activity.reports.dayReport.adapter;
 
+
+
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +18,45 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.dcr.detailView.adapter.InputAdapter;
 import saneforce.santrip.activity.approvals.dcr.detailView.adapter.ProductAdapter;
 import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
 import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportDetailModel;
+import saneforce.santrip.activity.reports.dayReport.model.DayReportRcpaModelClass;
+import saneforce.santrip.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.UtilityClass;
+import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkStatusTask;
 
 public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetailAdapter.MyViewHolder> implements Filterable {
 
@@ -40,14 +70,24 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     ProductAdapter productAdapter;
     InputAdapter inputAdapter;
     boolean checkInOutNeed, VisitNeed;
-    StringBuilder productPromoted = new StringBuilder();
+    ArrayList productPromoted = new ArrayList();
     private ValueFilter valueFilter;
+    ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
+    ArrayList<DayReportRcpaModelClass> rcpaList = new ArrayList<>();
+     String DcrDetailsCode;
+    ApiInterface apiInterface;
+    ProgressDialog progressDialog;
 
-    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst) {
+    String acdCode;
+
+
+
+    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode) {
         this.context = context;
         this.arrayList = arrayList;
         this.supportModelArray = arrayList;
         this.reportOf = reportOf;
+        this.acdCode=ActCode;
         commonUtilsMethods = new CommonUtilsMethods(context);
         checkInOutNeed = callCheckInOutNeed.equalsIgnoreCase("0");
         VisitNeed = nextVst.equalsIgnoreCase("0");
@@ -73,6 +113,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.jointWork.setText(dataModel.getWWith());
         holder.nextVisit.setText(dataModel.getNextVstDate());
         holder.overAllRemark.setText(dataModel.getRemarks());
+        DcrDetailsCode=dataModel.getTrans_Detail_Slno();
+
 
 
         if (checkInOutNeed) {
@@ -154,15 +196,35 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
         });
 
+        holder.EventLayout.setOnClickListener(view -> {
+
+            EvetCapureAPICall();
+        });
+
+        holder.rcpaLayoutitle.setOnClickListener(view -> {
+
+            if(holder.rcpaLayout.getVisibility()==View.VISIBLE){
+                holder.rcpaLayout.setVisibility(View.GONE);
+            }else {
+                Rcpagetdata(holder.rvRcpa,holder.rcpaLayout);
+            }
+
+
+
+        });
+
     }
 
-    private StringBuilder getList(String s) {
+    private ArrayList<String>  getList(String s) {
+
+        ArrayList<String> list=new ArrayList<>();
         String[] clstarrrayqty = s.split("#");
         StringBuilder ss1 = new StringBuilder();
         for (String value : clstarrrayqty) {
-            ss1.append(value.substring(value.lastIndexOf("$") + 1)).append(",");
+            list.add(value.substring(value.lastIndexOf("$") + 1));
+           // ss1.append(value.substring(value.lastIndexOf("$") + 1)).append(",");
         }
-        return new StringBuilder(ss1.substring(0, ss1.length() - 1));
+        return list ;
     }
 
 
@@ -188,34 +250,41 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
     public ArrayList<SaveCallProductList> getProductList(String products) {
         //Extract Product Values
-        String PrdName, PrdSamQty, PrdRxQty;
         productList = new ArrayList<>();
         if (!products.isEmpty()) {
-            String[] StrArray = products.split(",");
-            for (String value : StrArray) {
-                if (!value.equalsIgnoreCase("  )")) {
-                    PrdName = value.substring(0, value.indexOf('(')).trim();
+            String str = products.replace(")", "");
+            String[] separated = str.split(",");
 
-                    PrdSamQty = value.substring(value.indexOf("(") + 1);
-                    PrdSamQty = PrdSamQty.substring(0, PrdSamQty.indexOf(")"));
-
-                    PrdRxQty = value.substring(value.indexOf(")") + 1).trim();
-                    if (PrdRxQty.contains("(")) {
-                        PrdRxQty = PrdRxQty.substring(PrdRxQty.indexOf("(") + 1);
-                        PrdRxQty = PrdRxQty.substring(0, PrdRxQty.indexOf(")"));
-                    } else {
-                        PrdRxQty = "0";
-                    }
-                    if (productPromoted.toString().contains(PrdName)) {
-                        productList.add(new SaveCallProductList(arrayList.get(0).getCode(), PrdName, PrdSamQty, PrdRxQty, "0", "Yes"));
-                    } else {
-                        productList.add(new SaveCallProductList(arrayList.get(0).getCode(), PrdName, PrdSamQty, PrdRxQty, "0", "No"));
-                    }
+            List<String> resultList = new ArrayList<>();
+            for (String str1 : separated) {
+                str1 = str1.trim();
+                if (!str1.isEmpty()) {
+                    resultList.add(str1);
                 }
             }
+            String[] newArray = resultList.toArray(new String[0]);
+            for (String s : newArray) {
+                String[] item = s.split("[(]");
+
+                String Rcpa = item[3];
+                if (item[3].contains("^")) {
+                    String[] rcpa = item[3].replace("^", ",").split("[,]");
+                    Rcpa = rcpa[1];
+                }
+                Log.e("PromotedCode", productPromoted + " ???? " + item[0]);
+                if (productPromoted.contains(item[0].trim())) {
+                    Log.e("PromotedCode", "Yes");
+                    productList.add(new SaveCallProductList(arrayList.get(0).getCode(), item[0], item[1], item[2], Rcpa, "Yes"));
+                } else {
+                    Log.e("PromotedCode", "No");
+                    productList.add(new SaveCallProductList(arrayList.get(0).getCode(), item[0], item[1], item[2], Rcpa, "No"));
+                }
+
+            }
         }
-        return productList;
-    }
+            return productList;
+        }
+
 
     @Override
     public int getItemCount() {
@@ -234,10 +303,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker;
         TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt;
         ImageView nameIcon, viewMoreArrow;
-        LinearLayout viewMore, checkInOutLayout;
+        LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle;
         RelativeLayout rlNextVisit;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
-        RecyclerView rvPrd, rvInput;
+
+
+
+        RecyclerView rvPrd, rvInput,rvRcpa;
         View viewNextVisit;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -260,13 +332,16 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             viewMoreTxt = itemView.findViewById(R.id.viewMoreTxt);
             rlNextVisit = itemView.findViewById(R.id.rl_nextVisit);
             viewNextVisit = itemView.findViewById(R.id.view_ll2);
-
+            EventLayout=itemView.findViewById(R.id.eventcaptureLayout);
+            rcpaLayout=itemView.findViewById(R.id.rcpaLayout);
+            rcpaLayoutitle=itemView.findViewById(R.id.rcpaLayoutitle);
 
             nameIcon = itemView.findViewById(R.id.iconName);
             expandLayout = itemView.findViewById(R.id.constraint_expand_view);
             viewMore = itemView.findViewById(R.id.viewMore);
             viewMoreArrow = itemView.findViewById(R.id.viewMoreArrow);
             rvPrd = itemView.findViewById(R.id.rv_sample_prd);
+            rvRcpa = itemView.findViewById(R.id.Rcparecyelerview);
             PrdLayout = itemView.findViewById(R.id.productLayout);
             rvInput = itemView.findViewById(R.id.rv_input);
             InpLayout = itemView.findViewById(R.id.inputLayout);
@@ -305,5 +380,175 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             notifyDataSetChanged();
         }
     }
+
+
+
+
+
+    public  void EvetCapureAPICall(){
+
+
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        if (UtilityClass.isNetworkAvailable(context)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                if (status) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("tableName", "getevent_rpt");
+                        jsonObject.put("dcr_cd", acdCode);
+                        jsonObject.put("dcrdetail_cd", DcrDetailsCode);
+                        jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                        jsonObject.put("Rsf", SharedPref.getHqCode(context));
+                        jsonObject.put("sf_type", SharedPref.getSfType(context));
+                        jsonObject.put("Designation", SharedPref.getDesig(context));
+                        jsonObject.put("state_code", SharedPref.getStateCode(context));
+                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        Log.d("paramObject",jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                Log.e("test", "res : " + response.body());
+                                progressDialog.dismiss();
+                                try {
+                                    if (response.body() != null && response.isSuccessful()) {
+                                        JSONArray jsonArray = new JSONArray();
+                                        if (response.body().isJsonArray()) {
+                                            jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                            Type typeToken = new TypeToken<ArrayList<EventCaptureModelClass>>() {
+                                            }.getType();
+                                            EventCaptureData = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
+
+                                            if(EventCaptureData.size()>0){
+                                                setEventCaptureData(EventCaptureData);
+                                            }else {
+                                                commonUtilsMethods.showToastMessage(context, "No Event Capture");
+                                            }
+
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                }
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+        }
+
+    }
+
+   public void setEventCaptureData(ArrayList<EventCaptureModelClass> List){
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.dayreport_eventcapture_image_layout, null);
+        dialog.setView(view);
+        RecyclerView recyclerView=view.findViewById(R.id.recyelerview);
+        EventCaptureAdapter adapter =new EventCaptureAdapter(context,List);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(adapter);
+        AlertDialog dialog1=dialog.create();
+        dialog1.show();
+
+    }
+
+
+
+
+    public  void Rcpagetdata(RecyclerView recyclerView ,LinearLayout layout){
+
+
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        if (UtilityClass.isNetworkAvailable(context)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                if (status) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("tableName", "getdcr_rcpa");
+                        jsonObject.put("dcrdetail_cd", DcrDetailsCode);
+                        jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                        jsonObject.put("Rsf", SharedPref.getHqCode(context));
+                        jsonObject.put("sf_type", SharedPref.getSfType(context));
+                        jsonObject.put("Designation", SharedPref.getDesig(context));
+                        jsonObject.put("state_code", SharedPref.getStateCode(context));
+                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        Log.d("paramObject",jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                Log.e("test", "res : " + response.body());
+                                progressDialog.dismiss();
+                                try {
+                                    if (response.body() != null && response.isSuccessful()) {
+                                        JSONArray jsonArray = new JSONArray();
+                                        if (response.body().isJsonArray()) {
+                                            jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                            Type typeToken = new TypeToken<ArrayList<DayReportRcpaModelClass>>() {
+                                            }.getType();
+                                            rcpaList = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
+                                            if(rcpaList.size()>0){
+                                                ReoportRcpaAdapter adapter=new ReoportRcpaAdapter(rcpaList,context);
+                                                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                                commonUtilsMethods.recycleTestWithDivider(recyclerView);
+                                                recyclerView.setAdapter(adapter);
+                                                layout.setVisibility(View.VISIBLE);
+                                            }else {
+                                                commonUtilsMethods.showToastMessage(context, "No RCPA Data");
+                                            }
+
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                }
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+        }
+
+    }
+
 
 }

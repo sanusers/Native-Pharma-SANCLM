@@ -609,14 +609,14 @@
                             android:textColor="@color/dark_purple"
                             android:textSize="@dimen/_5ssp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/tag_promoted"
+                            app:layout_constraintEnd_toStartOf="@+id/product_qty"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintHorizontal_chainStyle="spread_inside"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/tag_promoted"
+                            android:id="@+id/product_qty"
                             android:layout_width="@dimen/_40sdp"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="@dimen/_1sdp"
@@ -649,7 +649,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tag_samples"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/tag_promoted"
+                            app:layout_constraintStart_toEndOf="@+id/product_qty"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:layout_editor_absoluteY="@dimen/_1sdp" />
 

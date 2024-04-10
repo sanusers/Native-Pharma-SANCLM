@@ -82,7 +82,8 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
-                if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
+                if(!checked_arrayList.get(position).getName().equalsIgnoreCase("No Input")){
+                    if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                     for (int i = 0; i < StockInput.size(); i++) {
                         if (StockInput.get(i).getStockCode().equalsIgnoreCase(checked_arrayList.get(position).getCode())) {
                             checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
@@ -97,6 +98,17 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                 } else {
                     CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                 }
+            }else {
+                    if(holder.checkBox.isChecked()){
+                        holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                    }else {
+                        holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                    }
+
+                }
+
             }
         });
     }

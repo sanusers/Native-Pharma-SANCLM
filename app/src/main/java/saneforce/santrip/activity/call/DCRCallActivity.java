@@ -2,6 +2,7 @@ package saneforce.santrip.activity.call;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment.JWKCodeList;
 import static saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment.callCaptureImageLists;
 import static saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment.jwOthersBinding;
 
@@ -99,6 +100,7 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.TimeUtils;
 
 public class DCRCallActivity extends AppCompatActivity {
 
@@ -237,6 +239,8 @@ public class DCRCallActivity extends AppCompatActivity {
 //                Log.d("remaonder_doc",jsonSaveDcr.toString());
                         progressDialog.dismiss();
                     }else{
+
+
                         isCreateJsonSuccess = true;
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                             if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
@@ -350,7 +354,7 @@ public class DCRCallActivity extends AppCompatActivity {
             if (save_valid.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new InputFragment(), capInp);
                 viewPagerAdapter.add(new AdditionalCallFragment(), "Additional Calls");
-                if (RCPANeed.equalsIgnoreCase("1")) {
+                if (RCPANeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                 }
             }
@@ -359,7 +363,7 @@ public class DCRCallActivity extends AppCompatActivity {
             viewPagerAdapter.add(new ProductFragment(), capPrd);
             if (save_valid.equalsIgnoreCase("0")) {
                 viewPagerAdapter.add(new InputFragment(), capInp);
-                if (RCPANeed.equalsIgnoreCase("1")) {
+                if (RCPANeed.equalsIgnoreCase("0")) {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                 }
             }else{
@@ -900,42 +904,7 @@ public class DCRCallActivity extends AppCompatActivity {
         return yy;
     }
 
-    public String extractValues(String s, String data) {
-        if (TextUtils.isEmpty(s)) return "";
 
-        String[] clstarrrayqty = s.split("#");
-        StringBuilder ss1 = new StringBuilder();
-
-        for (String value : clstarrrayqty) {
-            if (data.equalsIgnoreCase("sample")) {
-                ss1.append(value.substring(value.indexOf("~") + 1));
-                ss1 = new StringBuilder(ss1.toString().replace("$0^0", "") + ",");
-                int index = ss1.indexOf("$");
-                ss1 = new StringBuilder(ss1.substring(0, index) + ",");
-
-            } else if (data.equalsIgnoreCase("Rx")) {
-                ss1.append(value.substring(value.indexOf("$") + 1));
-                ss1 = new StringBuilder(ss1.toString().replace("$0^0", "") + ",");
-
-            } else if (data.equalsIgnoreCase("input")) {
-                ss1.append(value.substring(value.indexOf("~") + 1)).append(",");
-            } else if (data.equalsIgnoreCase("names") || data.equalsIgnoreCase("codes")) {
-                ss1.append(value.substring(0, value.indexOf("~"))).append(",");
-            } else if (data.equalsIgnoreCase("stockistname")) {
-                ss1.append(value.substring(0, value.indexOf("^")).substring(value.lastIndexOf("~") + 1)).append(",");
-            } else if (data.equalsIgnoreCase("stockistcode")) {
-                ss1.append(value.substring(value.indexOf("^") + 1)).append(",");
-            }
-        }
-        // Log.v("jsonExtractOnline", "product_inputs_qty--333--" + ss1);
-        String finalValue = "";
-        finalValue = ss1.substring(0, ss1.length() - 1);
-        if (finalValue.isEmpty()) {
-            finalValue = "0";
-        }
-        Log.v("jsonExtractOnline", "product_inputs_qty--333--" + finalValue);
-        return finalValue;
-    }
 
     private void getValues(String names, ArrayList<String> addDatas) {
         String[] separated = names.split(",");
@@ -1074,8 +1043,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
                         String rx_qty = extractValues(js.getString("Product_Detail"), "Rx");
                         getValues(rx_qty, prdRxQtyList);
-//                        String Rcpa_qty = extractValues1(js.getString("Product_Detail"), "Rcpa");
-//                        getValues(Rcpa_qty, prdRcpaQtyList);
+                        String Rcpa_qty = extractValues(js.getString("Product_Detail"), "Rcpa");
+                        getValues(Rcpa_qty, prdRcpaQtyList);
                     }
                 }
             } else {
@@ -1096,6 +1065,9 @@ public class DCRCallActivity extends AppCompatActivity {
 
                         String rx_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Rx");
                         getValues(rx_qty, prdRxQtyList);
+
+                        String Rcpa_qty = extractValues(js.getString("Additional_Prod_Dtls"), "Rcpa");
+                        getValues(Rcpa_qty, prdRcpaQtyList);
                     }
                 }
             }
@@ -1164,6 +1136,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("jsonExtractOnline", "product--size--" + prdNameList.size());
             Log.v("jsonExtractOnline", "product-sam-size--" + prdSamQtyList.size());
             Log.v("jsonExtractOnline", "product-rx-size--" + prdRxQtyList.size());
+            Log.v("jsonExtractOnline", "product-rRCpa-size--" + prdRcpaQtyList.size());
             Log.v("jsonExtractOnline", "product-promoted--" + productPromoted);
 
             for (int m = 0; m < prdNameList.size(); m++) {
@@ -1172,9 +1145,9 @@ public class DCRCallActivity extends AppCompatActivity {
                     if (PrdList.getCode().equalsIgnoreCase(prdCodeList.get(m))) {
                         int lastStock = Integer.parseInt(PrdList.getStock_balance()) + Integer.parseInt(prdSamQtyList.get(m));
                         if (productPromoted.toString().contains(prdNameList.get(m))) {
-                            CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), "", "0", true));
+                            CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), prdRcpaQtyList.get(m), "0", true));
                         } else {
-                            CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), "", "1", true));
+                            CheckProductListAdapter.saveCallProductListArrayList.add(new SaveCallProductList(prdNameList.get(m), prdCodeList.get(m), PrdList.getCategory(), PrdList.getStock_balance(), String.valueOf(lastStock), prdSamQtyList.get(m), prdRxQtyList.get(m), prdRcpaQtyList.get(m), "1", true));
                         }
                         PrdList.setCheckedItem(true);
                         break;
@@ -1680,14 +1653,17 @@ public class DCRCallActivity extends AppCompatActivity {
             JSONArray jsonArray = new JSONArray();
             jsonSaveDcr = new JSONObject();
 
+            JWKCodeList.clear();
             //JointWork
             for (int i = 0; i < JWOthersFragment.callAddedJointList.size(); i++) {
                 JSONObject json_joint = new JSONObject();
                 json_joint.put("Code", JWOthersFragment.callAddedJointList.get(i).getCode());
                 json_joint.put("Name", JWOthersFragment.callAddedJointList.get(i).getName());
+                JWKCodeList.add(JWOthersFragment.callAddedJointList.get(i).getCode());
                 jsonArray.put(json_joint);
             }
             jsonSaveDcr.put("JointWork", jsonArray);
+            SharedPref.setJWKCODE(context, JWKCodeList, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5));
 
             //Input
             jsonArray = new JSONArray();
@@ -2333,6 +2309,8 @@ public class DCRCallActivity extends AppCompatActivity {
         try {
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.INPUT);
             JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
+            InputFragment.checkedInputList.add(new CallCommonCheckedList("No Input" ,"", "", false));
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -2484,38 +2462,47 @@ public class DCRCallActivity extends AppCompatActivity {
 
 
 
-    public String extractValues1(String s, String data) {
+
+    public String extractValues(String s, String data) {
         if (TextUtils.isEmpty(s)) return "";
 
         String[] clstarrrayqty = s.split("#");
         StringBuilder ss1 = new StringBuilder();
 
         for (String value : clstarrrayqty) {
+            String[] dataArray=value.substring(value.indexOf("~")+1).split("\\$");
 
-       String[] dataArray=value.substring(value.indexOf("~")+1).split("$");
-       // A BECOSIS SAL~5$69$0^48
+            if (data.equalsIgnoreCase("sample")) {
+                ss1.append(value.substring(value.indexOf("~") + 1));
+                ss1 = new StringBuilder(ss1.toString().replace("$0^0", "") + ",");
+                int index = ss1.indexOf("$");
+                ss1 = new StringBuilder(ss1.substring(0, index) + ",");
 
-      if (data.equalsIgnoreCase("names") || data.equalsIgnoreCase("codes")) {
-          ss1.append(value.substring(0,value.indexOf("~")-1));
-
-      }else if (data.equalsIgnoreCase("Sample")) {
-                ss1.append(dataArray[0]);
-      }else if (data.equalsIgnoreCase("Rx")) {
-          ss1.append(dataArray[1]);
-      }else if (data.equalsIgnoreCase("Rcpa")) {
-          String[] rcpa = dataArray[2].replace("^", ",").split("[,]");
-          ss1.append(rcpa[1]);
-      }}
-
-        String finalValue = "";
-        finalValue = ss1.substring(0, ss1.length());
-        if (finalValue.isEmpty()) {
-            finalValue = "0";
+            } else if (data.equalsIgnoreCase("input")) {
+                ss1.append(value.substring(value.indexOf("~") + 1)).append(",");
+            } else if (data.equalsIgnoreCase("names") || data.equalsIgnoreCase("codes")) {
+                ss1.append(value.substring(0, value.indexOf("~"))).append(",");
+            } else if (data.equalsIgnoreCase("stockistname")) {
+                ss1.append(value.substring(0, value.indexOf("^")).substring(value.lastIndexOf("~") + 1)).append(",");
+            } else if (data.equalsIgnoreCase("stockistcode")) {
+                ss1.append(value.substring(value.indexOf("^") + 1)).append(",");
+            }else if (data.equalsIgnoreCase("Rx")) {
+                ss1.append(dataArray[1]).append(",");
+            }else if (data.equalsIgnoreCase("Rcpa")) {
+                String[] rcpa = dataArray[2].replace("^", ",").split("[,]");
+                ss1.append(rcpa[1]).append(",");
+            }
         }
+        // Log.v("jsonExtractOnline", "product_inputs_qty--333--" + ss1);
+        String finalValue = "";
+        finalValue = ss1.substring(0, ss1.length() - 1);
+                if (finalValue.isEmpty()) {
+                    finalValue = "0";
+                }
+
         Log.v("jsonExtractOnline", "product_inputs_qty--333--" + finalValue);
         return finalValue;
     }
-
 }
 
 

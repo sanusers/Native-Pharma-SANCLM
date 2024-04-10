@@ -20,14 +20,14 @@
         android:textColor="@color/dark_purple"
         android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/switch_promoted"
+        app:layout_constraintEnd_toStartOf="@+id/img_promoted"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch_promoted"
+        android:id="@+id/img_promoted"
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_12sdp"
         android:paddingVertical="@dimen/_1sdp"
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ed_samples"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/switch_promoted"
+        app:layout_constraintStart_toEndOf="@+id/img_promoted"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteY="@dimen/_1sdp" />
 

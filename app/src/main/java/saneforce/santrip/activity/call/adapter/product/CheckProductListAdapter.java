@@ -113,27 +113,35 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
-
-                if(!callCommonCheckedListArrayList.get(position).getCode().equalsIgnoreCase("")){
+                if (!callCommonCheckedListArrayList.get(position).getName().equalsIgnoreCase("No Product")) {
                     if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
-                    for (int i = 0; i < StockSample.size(); i++) {
-                        if (StockSample.get(i).getStockCode().equalsIgnoreCase(callCommonCheckedListArrayList.get(position).getCode())) {
-                            callCommonCheckedListArrayList.set(position, new CallCommonCheckedList(callCommonCheckedListArrayList.get(position).getName(), callCommonCheckedListArrayList.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callCommonCheckedListArrayList.get(position).getCategory(), callCommonCheckedListArrayList.get(position).getCategoryExtra()));
+                        for (int i = 0; i < StockSample.size(); i++) {
+                            if (StockSample.get(i).getStockCode().equalsIgnoreCase(callCommonCheckedListArrayList.get(position).getCode())) {
+                                callCommonCheckedListArrayList.set(position, new CallCommonCheckedList(callCommonCheckedListArrayList.get(position).getName(), callCommonCheckedListArrayList.get(position).getCode(), StockSample.get(i).getCurrentStock(), false, callCommonCheckedListArrayList.get(position).getCategory(), callCommonCheckedListArrayList.get(position).getCategoryExtra()));
+                            }
                         }
-                    }
-                    if (callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sale") || callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {
-                        CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                    } else if (callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sample")) {
-                        if (Integer.parseInt(callCommonCheckedListArrayList.get(position).getStock_balance()) > 0) {
+                        if (callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sale") || callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sale/Sample")) {
                             CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                        } else {
-                            holder.checkBox.setChecked(false);
-                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd));
+                        } else if (callCommonCheckedListArrayList.get(position).getCategoryExtra().equalsIgnoreCase("Sample")) {
+                            if (Integer.parseInt(callCommonCheckedListArrayList.get(position).getStock_balance()) > 0) {
+                                CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
+                            } else {
+                                holder.checkBox.setChecked(false);
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_qty_prd));
+                            }
                         }
+                    } else {
+                        CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     }
-                } else {
-                    CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
-                }}
+                }else {
+                    if(holder.checkBox.isChecked()){
+                        holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                    }else {
+                        holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                    }
+                }
             }
         });
     }

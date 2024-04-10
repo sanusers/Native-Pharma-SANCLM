@@ -21,8 +21,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.santrip.activity.call.fragments.jwOthers.JointWorkSelectionSide;
 import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
-import saneforce.santrip.storage.SharedPref;
-import saneforce.santrip.utility.TimeUtils;
+
 
 public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
     ArrayList<CallCommonCheckedList> jwLists;
@@ -43,7 +42,7 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        for (int j = 0; j < JWOthersFragment.callAddedJointList.size(); j++) {
+        for (int j = 0; j < JWOthersFragment. callAddedJointList.size(); j++) {
             if (JWOthersFragment.callAddedJointList.get(j).getCode().equalsIgnoreCase(jwLists.get(position).getCode())) {
                 jwLists.set(position, new CallCommonCheckedList(jwLists.get(position).getName(), jwLists.get(position).getCode(), true));
             }
@@ -52,11 +51,11 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
         holder.tv_name.setText(jwLists.get(position).getName());
         holder.checkBox.setChecked(jwLists.get(position).isCheckedItem());
 
-//        if(JWKCodeList.contains(jwLists.get(position).getCode())){
-//            holder.checkBox.setChecked(true);
-//        }else {
-//            holder.checkBox.setChecked(false);
-//        }
+        if(JWKCodeList.contains(jwLists.get(position).getCode())){
+            holder.checkBox.setChecked(true);
+        }else {
+            holder.checkBox.setChecked(false);
+        }
 
         if (holder.checkBox.isChecked()) {
             holder.checkBox.setChecked(true);
@@ -71,16 +70,15 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
                 if (holder.checkBox.isChecked()) {
-               //     JWKCodeList.add( jwLists.get(position).getCode());
                     holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
                     holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
                     jwLists.get(position).setCheckedItem(true);
                     JointWorkSelectionSide.JwList.get(position).setCheckedItem(true);
 
-                    //SharedPref.setJWKCODE(context, JWKCodeList, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5));
+
                 } else {
 
-                 //   JWKCodeList.remove(jwLists.get(position).getCode());
+
                     holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
                     holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
                     jwLists.get(position).setCheckedItem(false);
@@ -91,7 +89,7 @@ public class JwAdapter extends RecyclerView.Adapter<JwAdapter.ViewHolder> {
                             j--;
                         }
                     }
-                //    SharedPref.setJWKCODE(context, JWKCodeList, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5));
+
                 }
             }
         });

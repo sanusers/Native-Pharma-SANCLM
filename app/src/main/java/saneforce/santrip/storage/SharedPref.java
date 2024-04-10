@@ -2136,8 +2136,6 @@ public class SharedPref {
         editor.putString(HQ_NAMEMAIN, name).apply();
     }
 
-
-
     public static void MydayPlanStausAndFeildWorkStatus(Context context, boolean MydayplanStatus, boolean FeildWorkStatus){
         sharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
