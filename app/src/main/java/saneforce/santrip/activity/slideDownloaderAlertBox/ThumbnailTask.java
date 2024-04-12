@@ -23,7 +23,7 @@ public class ThumbnailTask {
         this.fileName = fileName;
         this.context = context;
         this.taskCallback = taskCallback;
-        new ThumbnailCreatingTask().execute();
+        new ThumbnailCreatingTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private class ThumbnailCreatingTask extends AsyncTask<Void, Void, Boolean> {
@@ -70,7 +70,11 @@ public class ThumbnailTask {
         protected void onPostExecute(Boolean isCompleted) {
             super.onPostExecute(isCompleted);
             Log.d("Thumbnail Conversion", fileName + " returned: " + isCompleted);
-            if(taskCallback != null) taskCallback.onTaskCompleted();
+            try {
+                if(taskCallback != null) taskCallback.onTaskCompleted();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
 
