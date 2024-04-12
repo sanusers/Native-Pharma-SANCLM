@@ -180,7 +180,6 @@
                         android:layout_width="@dimen/_8sdp"
                         android:layout_height="@dimen/_10sdp"
                         android:layout_gravity="center"
-
                         android:src="@drawable/view_pic"
                         tools:ignore="ContentDescription" />
 
@@ -192,22 +191,12 @@
                         android:textColor="#F1536E"
                         android:textSize="@dimen/_6sdp"
                         tools:ignore="SpUsage" />
-
-
                 </LinearLayout>
-
-
             </LinearLayout>
         </LinearLayout>
 
 
     </com.google.android.material.appbar.AppBarLayout>
-
-
-
-
-
-
 
 
     <androidx.fragment.app.FragmentContainerView

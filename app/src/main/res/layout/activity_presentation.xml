@@ -12,8 +12,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -23,7 +23,7 @@
             android:backgroundTint="@color/text_dark"
             android:minHeight="?attr/actionBarSize"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" >
+            tools:layout_editor_absoluteY="0dp">
 
             <LinearLayout
                 android:id="@+id/backArrow"
@@ -42,12 +42,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:fontFamily="@font/satoshi_variable"
                 android:text="Presentation"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_7sdp"
-                android:layout_marginStart="@dimen/_16sdp"
-                android:fontFamily="@font/satoshi_variable"
-                tools:ignore="SpUsage"/>
+                tools:ignore="SpUsage" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -56,12 +56,12 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="0dp"
+        android:layout_below="@id/appBar"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/appBar"
+        android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/_6sdp"
-        android:layout_alignParentBottom="true">
+        app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -71,33 +71,77 @@
                 android:id="@+id/createPresentationBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/create_presentation"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_6sdp"
-                android:textAllCaps="false"
-                android:fontFamily="@font/satoshi_variable"
-                android:gravity="center"
-                android:backgroundTint="@color/text_dark"
-                app:icon="@drawable/iv_add_white"
-                app:iconGravity="start"
-                android:paddingStart="@dimen/_7sdp"
-                android:paddingEnd="@dimen/_7sdp"
-                android:paddingTop="@dimen/_5sdp"
-                android:paddingBottom="@dimen/_5sdp"
                 android:layout_marginStart="@dimen/_6sdp"
                 android:layout_marginTop="@dimen/_6sdp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:backgroundTint="@color/text_dark"
+                android:fontFamily="@font/satoshi_variable"
+                android:gravity="center"
+                android:paddingStart="@dimen/_7sdp"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingEnd="@dimen/_7sdp"
+                android:paddingBottom="@dimen/_5sdp"
+                android:text="@string/create_presentation"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_6sdp"
+                app:icon="@drawable/iv_add_white"
+                app:iconGravity="start"
                 app:layout_constraintBottom_toTopOf="@id/presentationRecView"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                tools:ignore="SpUsage"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="SpUsage" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:windowSoftInputMode="adjustResize|adjustPan"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_not_found"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_marginHorizontal="@dimen/_1sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:src="@drawable/no_data_folder"
+                    android:windowSoftInputMode="adjustResize|adjustPan"
+                    app:layout_constraintBottom_toTopOf="@id/tv_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_2sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:padding="@dimen/_2sdp"
+                    android:text="@string/no_presentation_found"
+                    android:textColor="@color/dark_purple"
+                    android:textSize="@dimen/_7ssp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/img_not_found" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/presentationRecView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:padding="@dimen/_3sdp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

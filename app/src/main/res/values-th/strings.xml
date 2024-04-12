@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="google_maps_key">AIzaSyBQe14kV-8aZneHfyAMYDT5PKeG5eNKCEE</string>
+    <string name="str_save_settings">บันทึกการตั้งค่า</string>
+</resources>

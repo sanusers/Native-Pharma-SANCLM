@@ -1,0 +1,1022 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_1sdp"
+        app:cardElevation="@dimen/_3sdp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/nameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp"
+                app:layout_constraintBottom_toTopOf="@id/view_top"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iconName"
+                    android:layout_width="@dimen/_14sdp"
+                    android:layout_height="@dimen/_14sdp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/tp_dr_icon" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_toEndOf="@id/iconName"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="Ram Kumar"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_6sdp"
+                    tools:ignore="SpUsage" />
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/view_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:background="#ededed"
+                app:layout_constraintBottom_toTopOf="@id/ll1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameLayout" />
+
+            <LinearLayout
+                android:id="@+id/ll1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/_2sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                app:layout_constraintBottom_toTopOf="@id/view2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_top">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/visitTimeTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/visit_time"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/visitTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/visitTimeTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/modifyTimeTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/modified_time"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/modifyTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/modifyTimeTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text=""
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/clusterTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/cluster"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/cluster"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/clusterTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text=""
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/pobTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/pob"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/pob"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/pobTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text=""
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/feedbackTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="@string/feedback"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/feedback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/feedbackTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text=""
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        android:textStyle="bold"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:background="#ededed"
+                app:layout_constraintBottom_toTopOf="@id/ll2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll1" />
+
+            <LinearLayout
+                android:id="@+id/ll2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/_2sdp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                app:layout_constraintBottom_toTopOf="@id/view3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view2">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/jointWorkTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Joint Work"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/jointWork"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/jointWorkTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text=""
+                        android:textStyle="bold"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/view_ll2"
+                    android:layout_width="@dimen/_1sdp"
+                    android:visibility="gone"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="@dimen/_2sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="#ededed" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_nextVisit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/nextVisitTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Next Visit date"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/nextVisit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/nextVisitTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text=""
+                        android:textStyle="bold"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:background="#ededed"
+                app:layout_constraintBottom_toTopOf="@id/constraint_expand_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll2" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_expand_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toTopOf="@id/viewMore"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view3">
+
+                <LinearLayout
+                    android:id="@+id/checkInOutLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/view4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/checkIn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="@string/check_in_time_amp_location"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_5sdp"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/checkInLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/checkIn"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/checkInTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_5sdp"
+                                tools:ignore="SpUsage" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_marginStart="@dimen/_3sdp"
+                                android:src="@drawable/marker_geo_approval" />
+
+                            <TextView
+                                android:id="@+id/checkInMarker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="@dimen/_2sdp"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom|start"
+                                android:text="@string/view"
+                                android:textColor="@color/pink"
+                                android:textSize="@dimen/_5sdp"
+                                tools:ignore="SpUsage" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/inAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/checkInLayout"
+                            android:layout_alignParentStart="true"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="center"
+                            android:text=""
+                            android:textStyle="bold"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:visibility="visible"
+                            tools:ignore="SpUsage" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:background="#ededed" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/checkOut"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="@string/check_out_time_amp_location"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_5sdp"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/checkOutLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/checkOut"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/checkOutTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom"
+                                android:text=""
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_5sdp"
+                                tools:ignore="SpUsage" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_6sdp"
+                                android:layout_height="@dimen/_6sdp"
+                                android:layout_marginStart="@dimen/_3sdp"
+                                android:src="@drawable/marker_geo_approval" />
+
+                            <TextView
+                                android:id="@+id/checkOutMarker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="@dimen/_2sdp"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom|start"
+                                android:text="@string/view"
+                                android:textColor="@color/pink"
+                                android:textSize="@dimen/_5sdp"
+                                tools:ignore="SpUsage" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/outAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/checkOutLayout"
+                            android:layout_alignParentStart="true"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="center"
+                            android:text=""
+                            android:textStyle="bold"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            android:visibility="visible"
+                            tools:ignore="SpUsage" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view4"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:background="#ededed"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/constraint_expand_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/checkInOutLayout" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/productLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/inputLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view4">
+
+                    <TextView
+                        android:id="@+id/tag_sample_prd"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_1sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:paddingHorizontal="@dimen/_4sdp"
+                        android:paddingVertical="@dimen/_3sdp"
+                        android:text="@string/products"
+                        android:textColor="@color/light_grey_2"
+                        android:textSize="@dimen/_5ssp"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_tag_sample_prd"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_tag_sample_prd"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:background="@drawable/bg_light_grey_1"
+                        android:paddingHorizontal="@dimen/_3sdp"
+                        android:paddingVertical="@dimen/_1sdp"
+                        app:layout_constraintBottom_toTopOf="@id/rv_sample_prd"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tag_sample_prd">
+
+                        <TextView
+                            android:id="@+id/tag_prd_name"
+                            android:layout_width="@dimen/_78sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/product_name"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tag_promoted"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_chainStyle="spread_inside"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tag_promoted"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/promoted"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tag_stock"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tag_prd_name"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
+
+
+                        <TextView
+                            android:id="@+id/tag_stock"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/stock"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tag_samples"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tag_promoted"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
+
+                        <TextView
+                            android:id="@+id/tag_samples"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/samples"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tag_rx_qty"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tag_stock"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
+
+                        <TextView
+                            android:id="@+id/tag_rx_qty"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/rx_qty"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tag_rcpa_prd"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tag_samples"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
+
+                        <TextView
+                            android:id="@+id/tag_rcpa_prd"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:layout_marginEnd="@dimen/_8sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/rcpa"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@id/tag_rx_qty"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_sample_prd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:overScrollMode="never"
+                        android:paddingHorizontal="@dimen/_4sdp"
+                        android:paddingVertical="@dimen/_1sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/constraint_tag_sample_prd" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/inputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@id/cardRcpaLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/productLayout">
+
+                    <TextView
+                        android:id="@+id/tag_input"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:paddingHorizontal="@dimen/_4sdp"
+                        android:paddingVertical="@dimen/_3sdp"
+                        android:text="@string/input"
+                        android:textColor="@color/light_grey_2"
+                        android:textSize="@dimen/_5ssp"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_tag_input"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_tag_input"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_6sdp"
+                        android:background="@drawable/bg_light_grey_1"
+                        android:paddingHorizontal="@dimen/_3sdp"
+                        android:paddingVertical="@dimen/_1sdp"
+                        app:layout_constraintBottom_toTopOf="@id/rv_input"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tag_input">
+
+                        <TextView
+                            android:id="@+id/tag_input_name_main"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_4sdp"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/input_name"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tag_qty"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_chainStyle="spread"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tag_qty"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_4sdp"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_3sdp"
+                            android:text="@string/qty"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_5ssp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tag_input_name_main"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteY="@dimen/_1sdp" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_3sdp"
+                        android:overScrollMode="never"
+                        android:paddingHorizontal="@dimen/_3sdp"
+                        android:paddingVertical="@dimen/_1sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/constraint_tag_input" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardRcpaLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:divider="@android:color/transparent"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/_1sdp"
+                    app:cardElevation="@dimen/_1sdp"
+                    app:cardPreventCornerOverlap="true"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/inputLayout">
+
+
+                    <LinearLayout
+                        android:id="@+id/rcpaLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/_5sdp">
+
+                        <TextView
+                            android:id="@+id/rcpa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="RCPA"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            tools:ignore="SpUsage" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_7sdp"
+                            android:layout_height="@dimen/_7sdp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:src="@drawable/arrow_down" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <View
+                    android:id="@+id/view5"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:background="#ededed"
+                    app:layout_constraintBottom_toTopOf="@id/rlOthers"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardRcpaLayout" />
+
+                <RelativeLayout
+                    android:id="@+id/rlOthers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:paddingHorizontal="@dimen/_3sdp"
+                    app:layout_constraintBottom_toTopOf="@id/view6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view5">
+
+                    <TextView
+                        android:id="@+id/overAllRemarkTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Overall Remarks"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                    <TextView
+                        android:id="@+id/overAllRemark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/overAllRemarkTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text=""
+                        android:textStyle="bold"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
+                        tools:ignore="SpUsage" />
+
+                </RelativeLayout>
+
+
+                <View
+                    android:id="@+id/view6"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginVertical="@dimen/_1sdp"
+                    android:background="#ededed"
+                   app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rlOthers" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/viewMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/constraint_expand_view">
+
+                <TextView
+                    android:id="@+id/viewMoreTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:text="View More"
+                    android:textColor="@color/text_dark"
+                    android:textSize="@dimen/_5sdp"
+                    tools:ignore="SpUsage" />
+
+                <ImageView
+                    android:id="@+id/viewMoreArrow"
+                    android:layout_width="@dimen/_4sdp"
+                    android:layout_height="@dimen/_4sdp"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/arrow_down" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

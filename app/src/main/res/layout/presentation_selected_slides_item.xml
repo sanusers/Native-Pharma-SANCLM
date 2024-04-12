@@ -11,7 +11,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="@dimen/_3sdp"
         app:cardElevation="0dp"
         android:backgroundTint="#26282A3C"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="5dp"
+                    app:cardCornerRadius="@dimen/_3sdp"
                     app:cardElevation="0dp">
 
                     <ImageView

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_3sdp"
+    android:layout_marginVertical="@dimen/_2sdp"
+    android:elevation="@dimen/_2sdp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_3sdp"
+    tools:ignore="UnusedAttribute">
+
+    <View
+        android:id="@+id/view_top"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_2sdp"
+        android:layout_marginHorizontal="@dimen/_4sdp"
+        android:background="@drawable/view_pink_border"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:padding="@dimen/_2sdp">
+
+        <TextView
+            android:id="@+id/txt_cust_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_1sdp"
+            android:fontFamily="@font/satoshi_bold"
+            android:gravity="start|top"
+            android:paddingHorizontal="@dimen/_1sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:singleLine="true"
+            android:text="Name"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/txt_cat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_cat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_1sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:paddingHorizontal="@dimen/_1sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="@string/category"
+            android:textColor="@color/light_grey_2"
+            android:textSize="@dimen/_6ssp"
+            app:layout_constraintBottom_toTopOf="@id/txt_specialist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_cust_name" />
+
+        <TextView
+            android:id="@+id/txt_specialist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_1sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="start"
+            android:paddingHorizontal="@dimen/_1sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="Cardio Surgeon"
+            android:textColor="@color/light_grey_2"
+            android:textSize="@dimen/_6ssp"
+            app:layout_constraintBottom_toTopOf="@id/txt_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_cat" />
+
+        <TextView
+            android:id="@+id/txt_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_2sdp"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:background="@drawable/bg_light_pink"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:text="Anna Nagar"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6ssp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_specialist"
+            app:layout_goneMarginStart="@dimen/_2sdp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

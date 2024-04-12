@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/_2sdp"
     android:layout_marginBottom="@dimen/_2sdp">
 
@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_2sdp"
         app:cardElevation="0dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
@@ -25,39 +25,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:text="Wasim Jaffer Ahmeed - HQ - designation"
-                android:textSize="@dimen/_6sdp"
-                android:textColor="@color/txt_sample"
-                android:fontFamily="@font/satoshi_bold"
+                android:layout_alignParentEnd="true"
                 android:layout_gravity="center"
+                android:fontFamily="@font/satoshi_bold"
                 android:gravity="center"
                 android:padding="@dimen/_5sdp"
+                android:text="Wasim Jaffer Ahmeed - HQ - designation"
+                android:textColor="@color/txt_sample"
+                android:textSize="@dimen/_6sdp"
                 tools:ignore="SpUsage" />
 
             <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_below="@id/name"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/name"
                 android:background="#ededed" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/view"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/view"
                 android:orientation="horizontal"
                 android:padding="@dimen/_5sdp">
 
                 <RelativeLayout
-                    android:layout_weight="1.1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1.1"
                     android:paddingStart="@dimen/_5sdp">
 
                     <TextView
@@ -65,135 +65,144 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
-                        android:text="Work Type"
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark_65"
-                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Work Type"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/workType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_below="@id/workTypeTxt"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="Field Work"
-                        android:textSize="@dimen/_5sdp"
                         android:textColor="@color/text_dark"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        tools:ignore="SpUsage" />
-
-                    <TextView
-                        android:id="@+id/checkIn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@id/workType"
-                        android:text="Check IN time &amp; Location"
                         android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark_65"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
-                        android:id="@+id/checkInLayout"
+                    <RelativeLayout
+                        android:id="@+id/rl_checkIn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/workType"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_below="@id/checkIn"
-                        android:gravity="center">
+                        android:layout_marginTop="@dimen/_7sdp"
+                        android:visibility="gone">
 
                         <TextView
-                            android:id="@+id/checkInTime"
+                            android:id="@+id/checkIn"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="17 Oct 2023 04:32 PM"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_gravity="center"
-                            android:gravity="bottom"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Check IN time &amp; Location"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
 
-                        <TextView
-                            android:id="@+id/checkInMarker"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:id="@+id/checkInLayout"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_5sdp"
-                            android:text="View"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/pink"
-                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_below="@id/checkIn"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/checkInTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom"
+                                android:text="17 Oct 2023 04:32 PM"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_5sdp"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/checkInMarker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:drawablePadding="@dimen/_5sdp"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom|start"
+                                android:text="View"
+                                android:textColor="@color/pink"
+                                android:textSize="@dimen/_5sdp"
+                                app:drawableStartCompat="@drawable/marker_geo_approval"
+                                tools:ignore="SpUsage" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/inAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/checkInLayout"
+                            android:layout_alignParentStart="true"
                             android:layout_gravity="center"
-                            android:gravity="bottom|start"
-                            android:drawablePadding="@dimen/_5sdp"
-                            tools:ignore="SpUsage"
-                            app:drawableStartCompat="@drawable/marker_geo_approval" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/inAddress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/checkInLayout"
-                        android:text="No.4 Chaimers Road, Nandanam, Chennai."
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        tools:ignore="SpUsage" />
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="center"
+                            android:text="No.4 Chaimers Road, Nandanam, Chennai."
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            tools:ignore="SpUsage" />
+                    </RelativeLayout>
 
                     <TextView
                         android:id="@+id/remarksTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/rl_checkIn"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_below="@id/inAddress"
-                        android:text="Remarks"
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark_65"
-                        android:fontFamily="@font/satoshi_medium"
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Remarks"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/remarks"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_below="@id/remarksTxt"
-                        android:text="Field Work planned according to allocation"
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark"
-                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_alignParentStart="true"
                         android:layout_gravity="center"
-                        android:gravity="start"
                         android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="start"
+                        android:text="Field Work planned according to allocation"
+                        android:textColor="@color/text_dark"
+                        android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_weight="1.1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1.1"
                     android:paddingStart="@dimen/_8sdp">
 
                     <TextView
@@ -201,113 +210,121 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
-                        android:text="Submitted date"
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark_65"
-                        android:fontFamily="@font/satoshi_medium"
+                        android:layout_alignParentEnd="true"
                         android:layout_gravity="center"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:text="Submitted date"
+                        android:textColor="@color/text_dark_65"
+                        android:textSize="@dimen/_5sdp"
                         tools:ignore="SpUsage" />
 
                     <TextView
                         android:id="@+id/submitDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_below="@id/submit"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
                         android:text="20 Oct 2023"
-                        android:textSize="@dimen/_5sdp"
                         android:textColor="@color/text_dark"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        tools:ignore="SpUsage" />
-
-                    <TextView
-                        android:id="@+id/checkOut"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@id/submitDate"
-                        android:text="Check Out time &amp; Location"
                         android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark_65"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/_7sdp"
                         tools:ignore="SpUsage" />
 
-                    <LinearLayout
-                        android:id="@+id/checkOutLayout"
+                    <RelativeLayout
+                        android:id="@+id/rl_checkOut"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/submitDate"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_below="@id/checkOut"
-                        android:gravity="center">
+                        android:layout_marginTop="@dimen/_7sdp"
+                        android:visibility="gone">
 
                         <TextView
-                            android:id="@+id/checkOutTime"
+                            android:id="@+id/checkOut"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="18 Oct 2023 01:32 AM"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:gravity="bottom"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Check Out time &amp; Location"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
 
-                        <TextView
-                            android:id="@+id/checkOutMarker"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:id="@+id/checkOutLayout"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_5sdp"
-                            android:text="View"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/pink"
-                            android:fontFamily="@font/satoshi_medium"
+                            android:layout_below="@id/checkOut"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/checkOutTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom"
+                                android:text="18 Oct 2023 01:32 AM"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_5sdp"
+                                tools:ignore="SpUsage" />
+
+                            <TextView
+                                android:id="@+id/checkOutMarker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="@dimen/_5sdp"
+                                android:drawablePadding="@dimen/_5sdp"
+                                android:fontFamily="@font/satoshi_medium"
+                                android:gravity="bottom|start"
+                                android:text="View"
+                                android:textColor="@color/pink"
+                                android:textSize="@dimen/_5sdp"
+                                app:drawableStartCompat="@drawable/marker_geo_approval"
+                                tools:ignore="SpUsage" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/outAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/checkOutLayout"
+                            android:layout_alignParentStart="true"
                             android:layout_gravity="center"
-                            android:gravity="bottom|start"
-                            android:drawablePadding="@dimen/_5sdp"
-                            tools:ignore="SpUsage"
-                            app:drawableStartCompat="@drawable/marker_geo_approval" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/outAddress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/checkOutLayout"
-                        android:text="No.4 Chaimers Road, Nandanam, Chennai."
-                        android:textSize="@dimen/_5sdp"
-                        android:textColor="@color/text_dark"
-                        android:fontFamily="@font/satoshi_medium"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        tools:ignore="SpUsage" />
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:gravity="center"
+                            android:text="No.4 Chaimers Road, Nandanam, Chennai."
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
+                            tools:ignore="SpUsage" />
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:id="@+id/iconLayout1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_below="@id/rl_checkOut"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_below="@id/outAddress">
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:orientation="horizontal">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/drLayout"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/drIcon"
@@ -322,15 +339,15 @@
                                 android:id="@+id/drCount"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
                                 android:background="@drawable/tp_badge_circle"
+                                android:gravity="center"
                                 android:text="0"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
-                                android:textStyle="bold"
                                 android:textSize="@dimen/_5sdp"
-                                android:gravity="center"
-                                android:layout_marginBottom="@dimen/_minus4sdp"
-                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:textStyle="bold"
                                 app:layout_constraintBottom_toTopOf="@id/drIcon"
                                 app:layout_constraintStart_toEndOf="@id/drIcon"
                                 tools:ignore="SpUsage" />
@@ -341,30 +358,31 @@
                             android:id="@+id/cheLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_3sdp">
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/chemistIcon"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
                                 android:src="@drawable/tp_chemist_icon"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/chemistCount"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
                                 android:background="@drawable/tp_badge_circle"
+                                android:gravity="center"
                                 android:text="0"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
-                                android:textStyle="bold"
                                 android:textSize="@dimen/_5sdp"
-                                android:gravity="center"
-                                android:layout_marginBottom="@dimen/_minus4sdp"
-                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:textStyle="bold"
                                 app:layout_constraintBottom_toTopOf="@id/chemistIcon"
                                 app:layout_constraintStart_toEndOf="@id/chemistIcon"
                                 tools:ignore="SpUsage" />
@@ -375,30 +393,31 @@
                             android:id="@+id/stkLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_3sdp">
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/stockiestIcon"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
                                 android:src="@drawable/tp_stockiest_icon"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/stockiestCount"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
                                 android:background="@drawable/tp_badge_circle"
+                                android:gravity="center"
                                 android:text="0"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
-                                android:textStyle="bold"
                                 android:textSize="@dimen/_5sdp"
-                                android:gravity="center"
-                                android:layout_marginBottom="@dimen/_minus4sdp"
-                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:textStyle="bold"
                                 app:layout_constraintBottom_toTopOf="@id/stockiestIcon"
                                 app:layout_constraintStart_toEndOf="@id/stockiestIcon"
                                 tools:ignore="SpUsage" />
@@ -409,30 +428,31 @@
                             android:id="@+id/cipLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_3sdp">
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/cipIcon"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
                                 android:src="@drawable/tp_cip_icon"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/cipCount"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
                                 android:background="@drawable/tp_badge_circle"
+                                android:gravity="center"
                                 android:text="0"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
-                                android:textStyle="bold"
                                 android:textSize="@dimen/_5sdp"
-                                android:gravity="center"
-                                android:layout_marginBottom="@dimen/_minus4sdp"
-                                android:layout_marginStart="@dimen/_minus7sdp"
+                                android:textStyle="bold"
                                 app:layout_constraintBottom_toTopOf="@id/cipIcon"
                                 app:layout_constraintStart_toEndOf="@id/cipIcon"
                                 tools:ignore="SpUsage" />
@@ -443,30 +463,31 @@
                             android:id="@+id/unDrLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_3sdp">
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/unDrIcon"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
                                 android:src="@drawable/tp_unlist_dr_icon"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/unDrCount"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_minus6sdp"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
                                 android:background="@drawable/tp_badge_circle"
+                                android:gravity="center"
                                 android:text="0"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
-                                android:textStyle="bold"
                                 android:textSize="@dimen/_5sdp"
-                                android:gravity="center"
-                                android:layout_marginBottom="@dimen/_minus4sdp"
-                                android:layout_marginStart="@dimen/_minus6sdp"
+                                android:textStyle="bold"
                                 app:layout_constraintBottom_toTopOf="@id/unDrIcon"
                                 app:layout_constraintStart_toEndOf="@id/unDrIcon"
                                 tools:ignore="SpUsage" />
@@ -477,30 +498,31 @@
                             android:id="@+id/hospLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_3sdp">
+                            android:layout_marginStart="@dimen/_3sdp"
+                            android:visibility="gone">
 
                             <ImageView
                                 android:id="@+id/hospIcon"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
                                 android:src="@drawable/tp_hospital_icon"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/hospCount"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_10sdp"
+                                android:layout_marginStart="@dimen/_minus6sdp"
+                                android:layout_marginBottom="@dimen/_minus4sdp"
                                 android:background="@drawable/tp_badge_circle"
+                                android:gravity="center"
                                 android:text="0"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
-                                android:textStyle="bold"
                                 android:textSize="@dimen/_5sdp"
-                                android:gravity="center"
-                                android:layout_marginBottom="@dimen/_minus4sdp"
-                                android:layout_marginStart="@dimen/_minus6sdp"
+                                android:textStyle="bold"
                                 app:layout_constraintBottom_toTopOf="@id/hospIcon"
                                 app:layout_constraintStart_toEndOf="@id/hospIcon"
                                 tools:ignore="SpUsage" />
@@ -512,47 +534,47 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:layout_weight="0.8"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="0.8"
                     android:paddingStart="@dimen/_10sdp">
 
                     <LinearLayout
                         android:id="@+id/statusLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
                         android:layout_alignParentTop="true"
-                        android:gravity="start">
+                        android:layout_alignParentEnd="true"
+                        android:gravity="start"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Status"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark_65"
-                            android:fontFamily="@font/satoshi_medium"
                             android:layout_gravity="start"
+                            android:fontFamily="@font/satoshi_medium"
+                            android:text="Status"
+                            android:textColor="@color/text_dark_65"
+                            android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
 
                         <TextView
                             android:id="@+id/status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pending"
-                            android:textSize="@dimen/_5sdp"
-                            android:textColor="@color/text_dark"
-                            android:fontFamily="@font/satoshi_medium"
                             android:layout_gravity="start"
                             android:layout_marginTop="@dimen/_3sdp"
                             android:background="@drawable/backround_text"
                             android:backgroundTint="@color/text_dark_15"
+                            android:fontFamily="@font/satoshi_medium"
                             android:paddingStart="@dimen/_5sdp"
-                            android:paddingEnd="@dimen/_5sdp"
                             android:paddingTop="@dimen/_2sdp"
+                            android:paddingEnd="@dimen/_5sdp"
                             android:paddingBottom="@dimen/_2sdp"
+                            android:text="Pending"
+                            android:textColor="@color/text_dark"
+                            android:textSize="@dimen/_5sdp"
                             tools:ignore="SpUsage" />
 
                     </LinearLayout>

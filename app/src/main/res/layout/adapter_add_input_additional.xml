@@ -22,9 +22,8 @@
         android:singleLine="true"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         android:textStyle="normal"
-        app:drawableEndCompat="@drawable/drop_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_stock"
         app:layout_constraintHorizontal_bias="0.5"
@@ -42,7 +41,7 @@
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_select_input"
         app:layout_constraintEnd_toStartOf="@+id/ed_input_qty"
@@ -61,7 +60,7 @@
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:textColor="@color/bg_txt_color"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="@id/tv_select_input"
         app:layout_constraintEnd_toStartOf="@+id/img_del_input"
         app:layout_constraintStart_toEndOf="@+id/tv_stock"
@@ -78,7 +77,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ed_input_qty"
         app:layout_constraintTop_toTopOf="@id/tv_select_input"
-        tools:layout_editor_absoluteY="2dp"
+        tools:layout_editor_absoluteY="@dimen/_1sdp"
         tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

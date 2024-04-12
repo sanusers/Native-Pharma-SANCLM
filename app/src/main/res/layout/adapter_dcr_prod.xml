@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="@dimen/_3sdp"
+    android:paddingVertical="@dimen/_2sdp"
     android:windowSoftInputMode="adjustPan">
 
     <TextView
@@ -18,7 +18,7 @@
         android:singleLine="true"
         android:text="@string/product_name"
         android:textColor="@color/dark_purple"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_promoted"
         app:layout_constraintHorizontal_bias="0.5"
@@ -37,14 +37,14 @@
         android:singleLine="true"
         android:text="@string/product_name"
         android:textColor="@color/dark_purple"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_stock"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_prd_name"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="UseSwitchCompatOrMaterialXml"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <TextView
         android:id="@+id/tv_stock"
@@ -57,14 +57,14 @@
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_samples"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_promoted"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_samples"
@@ -77,13 +77,13 @@
         android:paddingVertical="@dimen/_3sdp"
         android:singleLine="true"
         android:textColor="@color/dark_purple"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_rx_qty"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_stock"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_rx_qty"
@@ -96,13 +96,13 @@
         android:paddingVertical="@dimen/_3sdp"
         android:singleLine="true"
         android:textColor="@color/dark_purple"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_rcpa"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_samples"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_rcpa"
@@ -115,11 +115,11 @@
         android:paddingVertical="@dimen/_3sdp"
         android:singleLine="true"
         android:textColor="@color/dark_purple"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@id/tv_rx_qty"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

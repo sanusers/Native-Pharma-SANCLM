@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/tp_calender_cell_stroke"
-    android:padding="1dp">
+    android:padding="@dimen/_1sdp">
 
     <ImageView
         android:id="@+id/cornerImage"

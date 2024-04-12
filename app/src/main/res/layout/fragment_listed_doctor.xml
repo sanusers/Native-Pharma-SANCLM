@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.homeScreen.call.dcrCallSelection.fragments.ListedDoctorFragment">
+    tools:context=".activity.call.dcrCallSelection.fragments.ListedDoctorFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,18 +14,19 @@
             android:id="@+id/constraint_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_1sdp"
+            app:layout_constraintBottom_toTopOf="@id/constraint_rv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            android:layout_marginTop="@dimen/_1sdp"
-            app:layout_constraintBottom_toTopOf="@id/constraint_rv">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_hide_hq"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
                 android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/search_cust"
@@ -45,7 +46,7 @@
                     android:paddingStart="@dimen/_10sdp"
                     android:text="@string/highlights_selected_hq"
                     android:textColor="@color/pink"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/_6ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -69,17 +70,17 @@
                 android:id="@+id/search_cust"
                 android:layout_width="@dimen/_130sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
                 android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:background="@drawable/border_shape_spinner"
                 android:drawableStart="@drawable/grey_search"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="@string/search"
                 android:imeOptions="actionDone"
-                android:paddingHorizontal="20dp"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/light_grey"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_filter"
                 app:layout_constraintTop_toTopOf="parent"
@@ -90,8 +91,8 @@
                 android:id="@+id/iv_filter"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginVertical="@dimen/_3sdp"
                 android:layout_marginHorizontal="@dimen/_6sdp"
+                android:layout_marginVertical="@dimen/_3sdp"
                 android:background="@drawable/bg_purple"
                 android:src="@drawable/iv_filter"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -113,13 +114,14 @@
                 android:text="0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_4ssp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_rv"
             android:layout_width="match_parent"
@@ -134,11 +136,11 @@
                 android:id="@+id/rv_cust_list_selection"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -165,7 +167,7 @@
                 android:paddingVertical="@dimen/_2sdp"
                 android:text="Filter_Selection"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="@dimen/_7ssp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/view_dummy"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -207,11 +209,11 @@
                 android:drawableStart="@drawable/grey_search"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="@string/search"
-                android:visibility="gone"
-                android:paddingHorizontal="20dp"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/light_grey"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/hq_list_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

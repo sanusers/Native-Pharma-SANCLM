@@ -16,8 +16,13 @@
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimaryVariant</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -42,13 +47,13 @@
     <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:fontFamily">@font/satoshi_bold</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/_7ssp</item>
     </style>
 
     <style name="tab_text_one" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:fontFamily">@font/satoshi_bold</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/_7ssp</item>
     </style>
 
     <style name="RatingBar" parent="Theme.AppCompat">
@@ -60,7 +65,17 @@
         <item name="android:textColor">@color/dark_purple</item>
         <item name="fontFamily">@font/satoshi_bold</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/_6ssp</item>
+        <item name="backgroundColor">@color/red_10</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+    </style>
+
+    <style name="popupMenuStyle1" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/gray_45</item>
+        <item name="fontFamily">@font/satoshi_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textSize">@dimen/_6ssp</item>
         <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
     </style>
 
@@ -70,7 +85,7 @@
 
     <style name="PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">
         <item name="android:divider">@color/bg_grey_2</item>
-        <item name="android:dividerHeight">1dp</item>
+        <item name="android:dividerHeight">0.5dp</item>
     </style>
 
 
@@ -91,7 +106,7 @@
     </style>
 
     <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
-        <item name="android:textSize">@dimen/_8sdp</item>
+        <item name="android:textSize">@dimen/_7ssp</item>
     </style>
 
     <style name="navicaton_text">
@@ -106,11 +121,11 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:paddingStart">@dimen/_3sdp</item>
+        <item name="android:paddingEnd">@dimen/_3sdp</item>
+        <item name="android:paddingTop">@dimen/_1sdp</item>
+        <item name="android:paddingBottom">@dimen/_1sdp</item>
+        <item name="android:textSize">@dimen/_4sdp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -119,6 +134,7 @@
         <item name="android:textSize">@dimen/_8sdp</item>
         <!-- Add other text attributes here if needed -->
     </style>
+
     <style name="GrayButton">
         <item name="android:background">#EEEEEE</item>
         <item name="android:textColor">#000000</item>
@@ -136,7 +152,7 @@
     </style>
 
     <style name="NoBackground" parent="Theme.AppCompat.Dialog">
-    <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="Theme.SANCLM.NoActionBar">
@@ -149,7 +165,15 @@
     <style name="Theme.SANCLM.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     //Slide Image Slider
-    <style name="Theme.AnAutomaticAndroidSlider" parent="Theme.AppCompat.Light.DarkActionBar"/>
 
+    <style name="Theme.AnAutomaticAndroidSlider" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+
+    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 
 </resources>

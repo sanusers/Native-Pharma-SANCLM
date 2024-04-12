@@ -27,7 +27,6 @@
       android:layout_marginTop="@dimen/_3sdp"
       android:layout_toRightOf="@+id/txt_call"
       android:fontFamily="@font/satoshi_medium"
-      android:text="5"
       android:textColor="@color/black_45"
       android:textSize="@dimen/_7sdp">
 
@@ -35,6 +34,7 @@
 
 
   <RelativeLayout
+      android:id="@+id/rl_sync_call"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentEnd="true"

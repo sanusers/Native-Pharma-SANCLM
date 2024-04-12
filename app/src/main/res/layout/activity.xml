@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text_dark"
+                android:backgroundTint="@color/text_dark"
+                android:minHeight="?attr/actionBarSize"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="0dp">
+
+                <LinearLayout
+                    android:id="@+id/backArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_6sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:src="@drawable/arrow_back_white"
+                        tools:ignore="ContentDescription" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:fontFamily="@font/satoshi_variable"
+                    android:text="Activity"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_7sdp" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/backround_graey"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/rlheadquates"
+                android:visibility="gone"
+                android:layout_width="@dimen/_170sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:background="@drawable/backround_text"
+                android:backgroundTint="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txthqName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_toStartOf="@id/img_arrow_1"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:hint="MR_Name"
+                    android:padding="@dimen/_4sdp"
+                    android:textColor="@color/text_dark"
+                    android:textColorHint="@color/text_dark"
+                    android:textSize="@dimen/_7sdp" />
+
+                <ImageView
+                    android:id="@+id/img_arrow_1"
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_6sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:src="@drawable/down_arrow" />
+            </RelativeLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:fontFamily="@font/satoshi_medium"
+                android:text="List of Activity"
+
+                android:textColor="@color/black_45"
+                android:textSize="@dimen/_7sdp"
+                android:textStyle="bold"></TextView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:orientation="horizontal">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sk_recylerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_weight="2"></androidx.recyclerview.widget.RecyclerView>
+
+                <RelativeLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_backround_layout"
+                    android:backgroundTint="@color/white">
+
+                    <TextView
+                        android:id="@+id/namechooseActivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_3sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_marginEnd="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:padding="@dimen/_3sdp"
+                        android:text="Name Of Activity"
+                        android:textColor="@color/black_45"
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold"></TextView>
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@+id/btnsumit"
+                        android:layout_below="@id/namechooseActivity"
+                        android:layout_marginStart="@dimen/_3sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_marginEnd="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:background="@drawable/custom_backround_layout"
+                        android:backgroundTint="@color/backround_graey">
+
+                        <LinearLayout
+                            android:id="@+id/llActivityDetailsView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                        </LinearLayout>
+
+                    </ScrollView>
+
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnsumit"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="@dimen/_3sdp"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:layout_marginEnd="@dimen/_3sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:background="@drawable/edittext_stroke"
+                        android:fontFamily="@font/satoshi_medium"
+                        android:gravity="center"
+                        android:padding="@dimen/_4sdp"
+                        android:text="Submit"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_7sdp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/black_45" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="end"
+        android:background="@drawable/background_navicationview"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"
+        app:itemBackground="@drawable/drawer_item_bg"
+        app:itemIconSize="@dimen/_10sdp"
+        app:itemTextAppearance="@style/CustomNavDrawerItemTextStyle"
+        app:itemTextColor="@color/black_45">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:id="@+id/rl_calender_syn"
+                android:gravity="center"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_searchheader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/_9sdp"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="center"
+                    android:padding="@dimen/_4sdp"
+                    android:text="Select"
+                    android:textColor="@color/black_45"
+                    android:layout_marginLeft="@dimen/_4sdp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/cancel_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="-2dp"
+                    android:layout_marginEnd="13dp"
+                    android:background="@color/white"
+                    android:padding="@dimen/_2sdp"
+                    android:src="@drawable/close_icon" />
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/view_dummy"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/rl_calender_syn"
+                android:background="@color/tab_gray" />
+            <LinearLayout
+                android:id="@+id/ll_search_layout"
+                android:layout_below="@id/view_dummy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:background="@drawable/bg_white_search"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="@dimen/_7sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:src="@drawable/grey_search" />
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lineid"
+                    android:layout_margin="@dimen/_1sdp"
+                    android:background="@null"
+                    android:fontFamily="@font/satoshi_medium"
+                    android:gravity="left"
+                    android:hint="Search "
+                    android:inputType="text"
+                    android:padding="@dimen/_7sdp"
+                    android:textSize="@dimen/_6sdp" />
+
+
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_below="@id/ll_search_layout"
+                android:id="@+id/ac_recyeler_view"
+                android:layout_width="match_parent"
+                android:visibility="visible"
+                android:divider="@null"
+                android:layout_marginBottom="@dimen/_30sdp"
+                android:layout_height="wrap_content"
+                />
+
+            <View
+                android:id="@+id/eeee"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_above="@+id/txt_cl_done"
+                android:background="@color/tab_gray" />
+            <TextView
+                android:layout_width="@dimen/_40sdp"
+                android:layout_gravity="bottom"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/_3sdp"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:text="Save"
+                android:padding="@dimen/_5sdp"
+                android:id="@+id/txt_cl_done"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_7sdp"
+                android:visibility="gone"
+                android:background="@drawable/edittext_stroke"
+                app:backgroundTint="@color/text_dark"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_height="@dimen/_20sdp">
+            </TextView>
+        </RelativeLayout>
+
+    </com.google.android.material.navigation.NavigationView>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

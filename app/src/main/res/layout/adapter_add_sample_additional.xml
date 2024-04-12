@@ -22,9 +22,8 @@
         android:singleLine="true"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         android:textStyle="normal"
-        app:drawableEndCompat="@drawable/drop_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_sample_stock"
         app:layout_constraintHorizontal_bias="0.5"
@@ -43,7 +42,7 @@
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_select_sample"
         app:layout_constraintEnd_toStartOf="@+id/ed_sample_qty"
@@ -51,7 +50,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_select_sample"
         app:layout_constraintTop_toTopOf="@id/tv_select_sample"
         app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/ed_sample_qty"
@@ -62,17 +61,18 @@
         android:fontFamily="@font/satoshi_bold"
         android:imeOptions="actionDone"
         android:inputType="number"
+        android:visibility="gone"
         android:paddingHorizontal="@dimen/_3sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:textColor="@color/bg_txt_color"
-        android:textSize="14sp"
+        android:textSize="@dimen/_6ssp"
         app:layout_constraintBottom_toBottomOf="@id/tv_select_sample"
         app:layout_constraintEnd_toStartOf="@+id/img_del_sample"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_sample_stock"
         app:layout_constraintTop_toTopOf="@id/tv_select_sample"
         app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <ImageView
         android:id="@+id/img_del_sample"
@@ -88,6 +88,6 @@
         app:layout_constraintStart_toEndOf="@+id/ed_sample_qty"
         app:layout_constraintTop_toTopOf="@id/tv_select_sample"
         tools:ignore="ContentDescription"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

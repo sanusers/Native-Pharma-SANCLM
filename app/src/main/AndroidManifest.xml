@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:screenOrientation="landscape">
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
     <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -26,10 +28,19 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
     <supports-screens
         android:largeScreens="true"
@@ -39,6 +50,7 @@
 
     <application
         android:allowBackup="true"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:hardwareAccelerated="true"
@@ -53,20 +65,55 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
+        android:installLocation="auto"
+        tools:replace="android:supportsRtl"
         tools:targetApi="31">
 
+        <activity
+            android:name=".activity.activityModule.Activity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".activity.Quiz.QuizActivity"
+            android:exported="false"
+            android:screenOrientation="landscape">
+
+        </activity>
+        <activity
+            android:name=".activity.previewPresentation.PreviewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".activity.remainderCall.RemainderCallActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".activity.reports.ReportWebActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".activity.reports.ReportFragContainerActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.reports.ReportsActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.presentation.playPreview.PlaySlidePreviewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".activity.call.adapter.detailing.PlaySlideDetailing"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
@@ -80,7 +127,7 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
-            android:name=".activity.approvals.dcr.call.DcrDetailViewActivity"
+            android:name=".activity.approvals.dcr.detailView.DcrDetailViewActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
@@ -140,17 +187,17 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".activity.profile.CustomerProfile"
+            android:name=".activity.call.profile.CustomerProfile"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity
-            android:name=".activity.homeScreen.call.DCRCallActivity"
+            android:name=".activity.call.DCRCallActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".activity.homeScreen.call.dcrCallSelection.DcrCallTabLayoutActivity"
+            android:name=".activity.call.dcrCallSelection.DcrCallTabLayoutActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -197,7 +244,7 @@
 
         <service
             android:name=".services.FirebaseService"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -216,15 +263,26 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <!--   <provider
+               android:name="androidx.core.content.FileProvider"
+               android:authorities="${applicationId}.saneforce.santrip.fileprovider"
+               android:exported="false"
+               android:grantUriPermissions="true">
+               <meta-data
+                   android:name="android.support.FILE_PROVIDER_PATHS"
+                   android:resource="@xml/filepaths" />
+           </provider>-->
+
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="saneforce.sanclm.fileprovider"
+            android:authorities="saneforce.santrip.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
     </application>
 
 </manifest>

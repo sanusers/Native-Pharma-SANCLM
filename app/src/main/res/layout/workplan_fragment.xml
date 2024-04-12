@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,15 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/progress_sumit"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:background="#26282A3C"
-            android:backgroundTint="#26282A3C"
-            android:visibility="gone" />
 
 
         <ScrollView
@@ -396,6 +387,7 @@
                                 android:layout_marginTop="@dimen/_2sdp"
                                 android:layout_marginEnd="@dimen/_2sdp"
                                 android:layout_marginBottom="@dimen/_2sdp"
+                                android:layout_toStartOf="@id/img_arrow_1"
                                 android:fontFamily="@font/satoshi_medium"
                                 android:hint="Select Work Type"
                                 android:padding="@dimen/_4sdp"
@@ -404,6 +396,7 @@
                                 android:textSize="@dimen/_7sdp" />
 
                             <ImageView
+                                android:id="@+id/img_arrow_1"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_alignParentRight="true"
@@ -444,11 +437,13 @@
                                 android:fontFamily="@font/satoshi_medium"
                                 android:hint="Select Head Quarters"
                                 android:padding="@dimen/_4sdp"
+                                android:layout_toStartOf="@id/img_arrow_2"
                                 android:textColor="@color/text_dark"
                                 android:textColorHint="@color/text_dark"
                                 android:textSize="@dimen/_7sdp" />
 
                             <ImageView
+                                android:id="@+id/img_arrow_2"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_alignParentRight="true"
@@ -480,11 +475,12 @@
                                 android:padding="@dimen/_4sdp"
                                 android:text=""
                                 android:textColor="@color/text_dark"
-
+                                android:layout_toStartOf="@id/img_arrow_3"
                                 android:textColorHint="@color/text_dark"
                                 android:textSize="@dimen/_7sdp" />
 
                             <ImageView
+                                android:id="@+id/img_arrow_3"
                                 android:layout_width="@dimen/_10sdp"
                                 android:layout_height="@dimen/_6sdp"
                                 android:layout_alignParentRight="true"
@@ -610,7 +606,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="center"
             android:padding="@dimen/_4sdp"
-            android:text="Final Submit"
+            android:text="@string/final_submit"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/_8sdp"
@@ -619,4 +615,15 @@
 
 
     </RelativeLayout>
-</FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_sumit"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="#26282A3C"
+        android:backgroundTint="#26282A3C"
+        android:visibility="gone" />
+
+</RelativeLayout>

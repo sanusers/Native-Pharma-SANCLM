@@ -27,7 +27,7 @@
             android:paddingVertical="@dimen/_5sdp"
             android:text="Chemist Name"
             android:textColor="@color/dark_purple"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -45,7 +45,7 @@
             android:paddingVertical="@dimen/_5sdp"
             android:text="@string/total"
             android:textColor="@color/pink"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/img_del_chem"
             app:layout_constraintHorizontal_bias="1.0"
@@ -62,13 +62,13 @@
             android:layout_marginHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_4sdp"
             android:src="@drawable/iv_del"
-            android:textSize="16sp"
+            android:textSize="@dimen/_7ssp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/tv_chemist_name"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteY="2dp"
+            tools:layout_editor_absoluteY="@dimen/_1sdp"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@
         android:paddingVertical="@dimen/_3sdp"
         android:text="@string/brand_name"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/img_del_jw"
         app:layout_constraintStart_toStartOf="parent"

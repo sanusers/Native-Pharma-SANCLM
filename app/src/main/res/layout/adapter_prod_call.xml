@@ -18,7 +18,7 @@
         android:singleLine="true"
         android:text="@string/product_name"
         android:textColor="@color/dark_purple"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/switch_promoted"
         app:layout_constraintHorizontal_bias="0.5"
@@ -29,8 +29,8 @@
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_promoted"
         android:layout_width="@dimen/_20sdp"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/_1sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:paddingVertical="@dimen/_1sdp"
         android:layout_marginEnd="@dimen/_6sdp"
         android:scaleX="0.8"
         android:scaleY="0.8"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:track="@drawable/custom_switch_bg"
         tools:ignore="UseSwitchCompatOrMaterialXml"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <TextView
         android:id="@+id/tv_stock"
@@ -50,19 +50,20 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/_2sdp"
         android:layout_marginEnd="@dimen/_6sdp"
+        android:visibility="gone"
         android:background="@drawable/bg_light_grey_2"
         android:fontFamily="@font/satoshi_bold"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:text="@string/qty"
         android:textColor="@color/text_qty_prd"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ed_samples"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/switch_promoted"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/ed_samples"
@@ -74,11 +75,12 @@
         android:hint="0"
         android:imeOptions="actionDone"
         android:inputType="number"
+        android:visibility="gone"
         android:maxLength="4"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:windowSoftInputMode="adjustResize|adjustPan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ed_rx_qty"
@@ -86,7 +88,7 @@
         app:layout_constraintStart_toEndOf="@+id/tv_stock"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/ed_rx_qty"
@@ -96,13 +98,14 @@
         android:background="@drawable/bg_light_grey_border"
         android:fontFamily="@font/satoshi_bold"
         android:hint="0"
+        android:visibility="gone"
         android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="4"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:windowSoftInputMode="adjustResize|adjustPan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_rcpa"
@@ -110,7 +113,7 @@
         app:layout_constraintStart_toEndOf="@+id/ed_samples"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/tv_rcpa"
@@ -127,7 +130,7 @@
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_3sdp"
         android:textColor="@color/text_qty_prd"
-        android:textSize="16sp"
+        android:textSize="@dimen/_7ssp"
         android:windowSoftInputMode="adjustResize|adjustPan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -135,7 +138,7 @@
         app:layout_constraintStart_toEndOf="@+id/ed_rx_qty"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText"
-        tools:layout_editor_absoluteY="2dp" />
+        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
     <ImageView
         android:id="@+id/img_del_prd"
@@ -149,6 +152,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="2dp"
+        tools:layout_editor_absoluteY="@dimen/_1sdp"
         tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

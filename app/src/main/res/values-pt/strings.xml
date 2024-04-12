@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="str_app_name">SAN CLM</string>
-    <string name="preference_name">saneforce.sanclm.preferencefile</string>
+    <string name="str_app_name">SAN TRIP</string>
+    <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Marcação</string>
     <string name="txt_doctor">Doutor</string>
     <string name="txt_chemist">Químico</string>
@@ -9,5 +9,7 @@
     <string name="txt_undr">Médico não listado</string>
     <string name="txt_add_tag">Adicionar etiqueta</string>
     <string name="search">Portugal</string>
+    <string name="str_save_settings">Salvar configurações</string>
+    <string name="user_id">ID do usuário</string>
 
 </resources>

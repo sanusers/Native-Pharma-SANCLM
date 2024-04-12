@@ -25,10 +25,10 @@
                 android:layout_centerVertical="true"
                 android:fontFamily="@font/satoshi_medium"
                 android:gravity="center|left"
-                android:paddingLeft="15dp"
+                android:paddingLeft="@dimen/_7sdp"
                 android:text="Select Speciality"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
+                 android:textSize="@dimen/_7ssp"
                 android:textStyle="normal"
                 android:typeface="serif"
                 tools:ignore="RtlSymmetry" />
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:padding="10dp"
+                android:padding="@dimen/_5sdp"
                 app:srcCompat="@drawable/iv_close_grey"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
@@ -57,15 +57,15 @@
             android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:hint="@string/search"
-            android:paddingLeft="10dp"
-            android:paddingRight="20dp"
+            android:paddingLeft="@dimen/_5sdp"
+            android:paddingRight="@dimen/_10sdp"
             android:textColor="#000"
             android:textColorHint="#C3C0C0"
-            android:textSize="15dp"
+            android:textSize="@dimen/_7sdp"
             android:visibility="visible"
             tools:ignore="SpUsage" />
 
@@ -82,7 +82,7 @@
             android:id="@+id/tick_dummy"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/_4sdp"
             android:src="@drawable/trash_icon"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -97,11 +97,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginHorizontal="@dimen/_8sdp"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="@dimen/_7sdp"
             android:fontFamily="@font/satoshi_medium"
             android:padding="@dimen/_1sdp"
             android:textColor="#000000"
-            android:textSize="18sp"
+             android:textSize="@dimen/_7ssp"
             android:typeface="serif"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/tick_dummy"
@@ -117,12 +117,12 @@
             android:id="@+id/rv_filter_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:background="#ffffff"
             android:divider="#e4e2e2"
-            android:dividerHeight="1dp"/>
+            android:dividerHeight="@dimen/_1sdp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -134,8 +134,8 @@
         <Button
             android:id="@+id/ok"
             android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_margin="10dp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_margin="@dimen/_5sdp"
             android:background="#353434"
             android:text="OK"
             android:textColor="#ffffff" />

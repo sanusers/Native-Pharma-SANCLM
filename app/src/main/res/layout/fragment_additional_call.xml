@@ -24,7 +24,7 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/search_add_call"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="@dimen/_20sdp"
                 android:layout_marginHorizontal="@dimen/_1sdp"
                 android:layout_marginBottom="@dimen/_1sdp"
                 android:background="@drawable/border_shape_spinner"
@@ -32,12 +32,12 @@
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="@string/search"
                 android:imeOptions="actionDone"
-                android:paddingHorizontal="20dp"
                 android:maxLines="1"
+                android:paddingHorizontal="@dimen/_10sdp"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textColorHint="@color/light_grey"
-                android:textSize="14sp"
+                android:textSize="@dimen/_6ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/rv_check_data_list"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +51,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="@dimen/_1sdp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:background="@drawable/bg_white_without_border"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -95,7 +95,7 @@
                     android:paddingVertical="@dimen/_3sdp"
                     android:text="@string/name"
                     android:textColor="@color/dark_purple"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/_7ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/constraint_sample"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -123,12 +123,12 @@
                         android:paddingVertical="@dimen/_3sdp"
                         android:text="@string/product_name"
                         android:textColor="@color/dark_purple"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/_7ssp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/tag_sam_qty"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_editor_absoluteY="2dp" />
+                        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                     <TextView
                         android:id="@+id/tag_sam_qty"
@@ -140,12 +140,13 @@
                         android:paddingVertical="@dimen/_3sdp"
                         android:text="@string/qty"
                         android:textColor="@color/dark_purple"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/_7ssp"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tag_product"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_editor_absoluteY="2dp" />
+                        tools:layout_editor_absoluteY="@dimen/_1sdp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -169,12 +170,12 @@
                         android:paddingVertical="@dimen/_3sdp"
                         android:text="@string/input"
                         android:textColor="@color/dark_purple"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/_7ssp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/tag_input_qty"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_editor_absoluteY="2dp" />
+                        tools:layout_editor_absoluteY="@dimen/_1sdp" />
 
                     <TextView
                         android:id="@+id/tag_input_qty"
@@ -186,12 +187,12 @@
                         android:paddingVertical="@dimen/_3sdp"
                         android:text="@string/qty"
                         android:textColor="@color/dark_purple"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/_7ssp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tag_input"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_editor_absoluteY="2dp" />
+                        tools:layout_editor_absoluteY="@dimen/_1sdp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
@@ -204,7 +205,7 @@
                     android:paddingHorizontal="@dimen/_2sdp"
                     android:paddingVertical="@dimen/_3sdp"
                     android:textColor="@color/dark_purple"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/_7ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/tag_dummy"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -228,7 +229,7 @@
             <View
                 android:id="@+id/view_dummy"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/_1sdp"
                 android:layout_marginHorizontal="@dimen/_2sdp"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:background="@color/dark_purple"

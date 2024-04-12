@@ -330,7 +330,7 @@
                         <View
                             android:id="@+id/view2"
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="@dimen/_1sdp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/ll1"
@@ -460,7 +460,7 @@
                         <View
                             android:id="@+id/view3"
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="@dimen/_1sdp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_below="@id/ll2"
@@ -563,6 +563,7 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/drLayout"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_3sdp">
@@ -619,6 +620,7 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/cheLayout"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_3sdp">
@@ -675,6 +677,7 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/stkLayout"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_3sdp">
@@ -731,6 +734,7 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/unDrLayout"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_3sdp">
@@ -787,6 +791,7 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/cipLayout"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_3sdp">
@@ -843,6 +848,7 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/hospLayout"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_3sdp">

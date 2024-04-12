@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardCornerRadius="@dimen/_3sdp"
+    card_view:cardElevation="2dp"
+    card_view:contentPadding="0dp"
+    android:layout_marginStart="@dimen/_4sdp"
+    android:padding="@dimen/_2sdp"
+    android:layout_marginBottom="@dimen/_2sdp"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardPreventCornerOverlap="true"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtActivityName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_toStartOf="@id/img_arrow_1"
+            android:fontFamily="@font/satoshi_medium"
+            android:hint="Meeting"
+            android:padding="@dimen/_4sdp"
+            android:textColor="@color/text_dark"
+            android:textColorHint="@color/text_dark"
+            android:textSize="@dimen/_7sdp" />
+
+        <ImageView
+            android:id="@+id/img_arrow_1"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_6sdp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:src="@drawable/right_arrow" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
