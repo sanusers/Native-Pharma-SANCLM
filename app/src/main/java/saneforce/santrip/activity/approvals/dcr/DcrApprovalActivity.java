@@ -187,7 +187,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
                             if (json.has("promoted_product"))
                                 productPromoted = getList(json.getString("promoted_product"));
 
-                            dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Trans_Detail_Info_Code"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback"), json.getString("visitTime"), json.getString("ModTime")));
+                            dcrDetailedList.add(new DcrDetailModelList(dcrCallApprovalBinding.tvName.getText().toString(), json.getString("Trans_Detail_Name"), json.getString("Trans_Detail_Info_Code"), json.getString("Type"), json.getString("Trans_Detail_Info_Type"), json.getString("SDP_Name"), json.getString("pob"), json.getString("remarks"), json.getString("jointwrk"), json.getString("Call_Feedback"), json.getString("visitTime"), json.getString("ModTime"), json.getString("Trans_SlNo"), json.getString("Trans_Detail_Slno")));
 
                             //Extract Product Values
                             String PrdName, PrdSamQty, PrdRxQty;

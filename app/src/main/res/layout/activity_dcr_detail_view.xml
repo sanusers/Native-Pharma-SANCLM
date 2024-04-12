@@ -25,7 +25,7 @@
         android:layout_marginHorizontal="@dimen/_8sdp"
         android:cropToPadding="true"
         android:gravity="center"
-         android:src="@drawable/arrow_back_white"
+        android:src="@drawable/arrow_back_white"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintRight_toLeftOf="@id/tag_header"
         app:layout_constraintStart_toStartOf="@id/view_top"
@@ -42,7 +42,7 @@
         android:padding="@dimen/_2sdp"
         android:text="@string/name"
         android:textColor="@color/white"
-         android:textSize="@dimen/_7ssp"
+        android:textSize="@dimen/_7ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/view_top"
         app:layout_constraintLeft_toRightOf="@id/iv_back"
@@ -912,10 +912,10 @@
                         <ImageView
                             android:id="@+id/tag_view_rcpa"
                             android:layout_width="@dimen/_8sdp"
-                            android:src="@drawable/arrow_down"
                             android:layout_height="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginEnd="@dimen/_8sdp"
+                            android:src="@drawable/arrow_down"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_rcpa"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -933,7 +933,7 @@
                             app:layout_constraintBottom_toTopOf="@id/rv_rcpa"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tag_rcpa"/>
+                            app:layout_constraintTop_toBottomOf="@id/tag_rcpa" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_rcpa"
@@ -955,9 +955,98 @@
                         android:layout_marginVertical="@dimen/_2sdp"
                         android:background="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/rcpaLayout"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintBottom_toTopOf="@id/constraint_main_capImg"
                         app:layout_constraintTop_toBottomOf="@id/constraint_main_rcpa" />
+
+
+                    <LinearLayout
+                        android:id="@+id/rcpaLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@id/constraint_main_capImg"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_visit_time"
+                        app:layout_constraintTop_toBottomOf="@id/view_dummy_rcpa">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_3sdp"
+                            android:layout_marginVertical="@dimen/_1sdp"
+                            android:background="@drawable/bg_light_grey_1"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/_5sdp"
+                            android:weightSum="5">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:text="ProductName"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:text="Qty"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:text="Competitor Name"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.5"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:text="Competitor Productname"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:fontFamily="@font/satoshi_bold"
+                                android:text="Qty"
+                                android:textColor="@color/dark_purple"
+                                android:textSize="@dimen/_6sdp" />
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/Rcparecyelerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/_3sdp"
+                            android:overScrollMode="never"
+                            android:paddingHorizontal="@dimen/_4sdp"
+                            android:paddingVertical="@dimen/_1sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_sample_prd"
+                            tools:listitem="@layout/report_rcpa_child_table_item" />
+
+                    </LinearLayout>
+
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraint_main_capImg"
@@ -966,7 +1055,7 @@
                         app:layout_constraintBottom_toTopOf="@id/view_dummy_ic"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/tv_visit_time"
-                        app:layout_constraintTop_toBottomOf="@id/view_dummy_rcpa">
+                        app:layout_constraintTop_toBottomOf="@id/rcpaLayout">
 
                         <TextView
                             android:id="@+id/tag_ic"
@@ -987,10 +1076,10 @@
                         <ImageView
                             android:id="@+id/tag_view_ic"
                             android:layout_width="@dimen/_8sdp"
-                            android:src="@drawable/arrow_down"
                             android:layout_height="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginEnd="@dimen/_8sdp"
+                            android:src="@drawable/arrow_down"
                             app:layout_constraintBottom_toTopOf="@id/constraint_tag_ic"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -1030,8 +1119,8 @@
                         android:layout_marginVertical="@dimen/_2sdp"
                         android:background="@color/background"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/constraint_extra"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/constraint_main_capImg" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout

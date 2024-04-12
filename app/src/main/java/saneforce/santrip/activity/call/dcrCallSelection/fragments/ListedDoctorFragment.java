@@ -452,11 +452,8 @@ public class ListedDoctorFragment extends Fragment {
 
     private void SetupAdapter(String filteredStr, String RequiredFiltered) {
         try {
-            if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode)) {
-                prepareMasterToSync(DcrCallTabLayoutActivity.TodayPlanSfCode);
-            } else {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
-            }
+            jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
+
             if (jsonArray.length() == 0) {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) );
             }

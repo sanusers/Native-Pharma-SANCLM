@@ -16,11 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+
 
 import saneforce.santrip.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.ChildListModelClass;
@@ -180,8 +178,6 @@ public class SQLite extends SQLiteOpenHelper {
 
 
     }
-
-
     //------------------------ Login ------------------------------------
     public void saveLoginData(String data) {
         SQLiteDatabase db = this.getWritableDatabase();

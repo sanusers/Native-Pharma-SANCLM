@@ -16,7 +16,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
+
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.santrip.activity.map.MapsActivity;
@@ -33,7 +39,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
     ArrayList<DayReportModel> supportModelArray = new ArrayList<>();
     Context context;
     DataViewModel dataViewModel;
-    private ValueFilter valueFilter;
+
 
     public DayReportAdapter(ArrayList<DayReportModel> arrayList, Context context) {
         this.arrayList = arrayList;
@@ -96,6 +102,15 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.hospCount.setText(dayReportModel.getHos());
         }
 
+
+        if(dayReportModel.getFWFlg().equalsIgnoreCase("F")){
+            holder.arrow.setVisibility(View.VISIBLE);
+            holder.DcrIconLayout.setVisibility(View.VISIBLE);
+        }else {
+            holder.arrow.setVisibility(View.GONE);
+            holder.DcrIconLayout.setVisibility(View.GONE);
+        }
+
         int status = dayReportModel.getTyp();
         switch (status) {
             case 0: {
@@ -150,19 +165,19 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         return arrayList.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        if (valueFilter == null) {
-            valueFilter = new ValueFilter();
-        }
-        return valueFilter;
-    }
+//    @Override
+//    public Filter getFilter() {
+//        if (valueFilter == null) {
+//            valueFilter = new ValueFilter();
+//        }
+//        return valueFilter;
+//    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, workType, checkInTime, checkInAddress, checkInMarker, checkOutTime, checkOutAddress, checkOutMarker, submitDate, remarks, status;
         TextView drCount, chemCount, stockCount, unDrCount, cipCount, hospCount;
         ConstraintLayout drIcon, cheIcon, stockIcon, cipIcon, unDrIcon, hospIcon;
-        LinearLayout arrow, statusLayout;
+        LinearLayout arrow, statusLayout, DcrIconLayout;
         RelativeLayout rlCheckIn, rlCheckOut;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -192,6 +207,8 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             unDrCount = itemView.findViewById(R.id.unDrCount);
             cipCount = itemView.findViewById(R.id.cipCount);
             hospCount = itemView.findViewById(R.id.hospCount);
+            DcrIconLayout = itemView.findViewById(R.id.iconLayout1);
+
 
             statusLayout = itemView.findViewById(R.id.statusLayout);
             arrow = itemView.findViewById(R.id.arrow);
@@ -201,35 +218,68 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         }
     }
 
-    private class ValueFilter extends Filter {
+//    private class ValueFilter extends Filter {
+//
+//        @Override
+//        protected FilterResults performFiltering(CharSequence charSequence) {
+//            FilterResults results = new FilterResults();
+//
+//            ArrayList<DayReportModel> filteredModelArray = new ArrayList<>();
+//            if (charSequence != null && charSequence.length() > 0) {
+//                for (DayReportModel dayReportModel : supportModelArray) {
+//                    if (dayReportModel.getTerrWrk().toUpperCase().contains(charSequence.toString().toUpperCase()) || dayReportModel.getWtype().toUpperCase().contains(charSequence.toString().toUpperCase())) {
+//                        filteredModelArray.add(dayReportModel);
+//                    }
+//                }
+//                results.count = filteredModelArray.size();
+//                results.values = filteredModelArray;
+//            } else {
+//                results.count = supportModelArray.size();
+//                results.values = supportModelArray;
+//            }
+//            return results;
+//
+//        }
+//
+//        @SuppressWarnings("unchecked")
+//        @Override
+//        protected void publishResults(CharSequence constraint, FilterResults results) {
+//            arrayList = (ArrayList<DayReportModel>) results.values;
+//            notifyDataSetChanged();
+//        }
+//    }
 
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            FilterResults results = new FilterResults();
-
-            ArrayList<DayReportModel> filteredModelArray = new ArrayList<>();
-            if (charSequence != null && charSequence.length() > 0) {
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String searchString = constraint.toString().toLowerCase();
+                ArrayList<DayReportModel> filtered = new ArrayList<>();
                 for (DayReportModel dayReportModel : supportModelArray) {
-                    if (dayReportModel.getTerrWrk().toUpperCase().contains(charSequence.toString().toUpperCase()) || dayReportModel.getWtype().toUpperCase().contains(charSequence.toString().toUpperCase())) {
-                        filteredModelArray.add(dayReportModel);
+                    try {
+                        if (dayReportModel.getTerrWrk().toUpperCase().contains(constraint.toString().toUpperCase()) || dayReportModel.getWtype().toUpperCase().contains(constraint.toString().toUpperCase())|| dayReportModel.getSF_Name().toUpperCase().contains(constraint.toString().toUpperCase())) {
+                            filtered.add(dayReportModel);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
                 }
-                results.count = filteredModelArray.size();
-                results.values = filteredModelArray;
-            } else {
-                results.count = supportModelArray.size();
-                results.values = supportModelArray;
+                arrayList = filtered;
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = arrayList;
+                return filterResults;
             }
-            return results;
 
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            arrayList = (ArrayList<DayReportModel>) results.values;
-            notifyDataSetChanged();
-        }
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                arrayList = (ArrayList<DayReportModel>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
+
+
 
 }

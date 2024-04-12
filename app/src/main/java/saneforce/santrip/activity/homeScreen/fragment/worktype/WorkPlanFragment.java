@@ -1354,6 +1354,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         binding.txtCluster1.setText(mTownname1);
                         binding.txtheadquaters1.setText(mHQName1);
                         SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
+
                     }
 
                     binding.llPlan1.setBackground(getResources().getDrawable(R.drawable.background_button_border_black));

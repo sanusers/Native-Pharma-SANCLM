@@ -70,7 +70,7 @@ public class ThumbnailTask {
         protected void onPostExecute(Boolean isCompleted) {
             super.onPostExecute(isCompleted);
             Log.d("Thumbnail Conversion", fileName + " returned: " + isCompleted);
-            if(taskCallback != null) taskCallback.onTaskCompleted();
+            //if(taskCallback != null) taskCallback.onTaskCompleted();
         }
 
 

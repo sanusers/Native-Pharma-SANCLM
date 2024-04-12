@@ -1372,18 +1372,22 @@ public class TourPlanActivity extends AppCompatActivity {
             case "1":  // when waiting for approval
                 binding.tpNavigation.sessionEdit.setEnabled(false);
                 binding.rejectedReasonTxt.setText("");
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
                 break;
             case "3":  //Approved by manager
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.rejectedReasonTxt.setText(reason);
                 binding.tpNavigation.sessionEdit.setEnabled(false);
                 break;
             case "2":  //Rejected by manager
+                binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText(reason);
                 break;
             case "":
             case "0":
             case "-1":  // when planning(0),monthly status send call failed(-1)
+                binding.rejectionReasonLayout.setVisibility(View.GONE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText("");
                 break;
@@ -2256,7 +2260,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("Rejection_Reason", "");
                                     jsonObject.put("TPDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_4, modelClass.getDate()) + " 00:00:00");
                                     jsonObject.put("submitted_time", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-                                    jsonObject.put("Entry_mode", "0");
+                                    jsonObject.put("Entry_mode", "Android -Edetailing");
                                     jsonObject.put("Approve_mode", "");
                                     jsonObject.put("Approved_time", "");
                                     jsonObject.put("app_version", BuildConfig.VERSION_NAME);

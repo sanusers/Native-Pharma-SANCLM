@@ -215,18 +215,47 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
-            if (save_valid.equalsIgnoreCase("1")){
-                finish();
-            }else{
-                if (isFromActivity.equalsIgnoreCase("new")) {
-                    sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                    Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                } else {
-                    getOnBackPressedDispatcher().onBackPressed();
+
+
+
+
+
+
+         Dialog   dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dcr_cancel_alert);
+            dialog.setCancelable(false);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
+            TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+            TextView btn_no=dialog.findViewById(R.id.btn_no);
+
+
+            btn_yes.setOnClickListener(view12 -> {
+                if (save_valid.equalsIgnoreCase("1")){
+                    finish();
+                }else{
+                    if (isFromActivity.equalsIgnoreCase("new")) {
+                        sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    } else {
+                        getOnBackPressedDispatcher().onBackPressed();
+                    }
                 }
-            }
+
+            });
+
+            btn_no.setOnClickListener(view12 -> {
+                dialog.dismiss();
+            });
+
+
+
+
+
+
+
 
         });
 
@@ -535,6 +564,7 @@ public class DCRCallActivity extends AppCompatActivity {
     }
 
     public boolean CheckRequiredFunctions() {
+
         switch (CallActivityCustDetails.get(0).getType()) {
             case "1":
                 if (SfType.equalsIgnoreCase("1")) {
@@ -2502,6 +2532,18 @@ public class DCRCallActivity extends AppCompatActivity {
 
         Log.v("jsonExtractOnline", "product_inputs_qty--333--" + finalValue);
         return finalValue;
+    }
+
+
+
+    void  AlertboxForCancel(){
+
+
+
+
+
+
+
     }
 }
 

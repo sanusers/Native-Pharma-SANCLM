@@ -225,7 +225,7 @@ public class DayReportDetailFragment extends Fragment {
                         jsonObject.put("typ", type);
                         jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
-                        jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));
+                        jsonObject.put("Rsf", dayReportModel.getSF_Code());
                         jsonObject.put("sf_type", SharedPref.getSfType(requireContext()));
                         jsonObject.put("Designation", SharedPref.getDesig(requireContext()));
                         jsonObject.put("state_code", SharedPref.getStateCode(requireContext()));
@@ -300,7 +300,7 @@ public class DayReportDetailFragment extends Fragment {
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()),dayReportModel.getACode());
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()),dayReportModel.getACode(),dayReportModel.getSF_Code());
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

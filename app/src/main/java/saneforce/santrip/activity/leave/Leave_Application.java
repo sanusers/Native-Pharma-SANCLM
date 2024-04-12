@@ -646,11 +646,9 @@ public class Leave_Application extends AppCompatActivity {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-
                             if (response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-
-                                Toast.makeText(Leave_Application.this, "Leave submit successfully", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.showToastMessage(Leave_Application.this,"Leave submit successfully");
                                 finish();
                             }
                         }
