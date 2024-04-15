@@ -46,6 +46,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
+import saneforce.santrip.activity.presentation.createPresentation.brand.BrandNameAdapter;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.activity.tourPlan.model.EditModelClass;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
@@ -201,7 +202,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         holder.unListedDrModelArray = new ArrayList<>(holder.sessionData.getUnListedDr());
         holder.cipModelArray = new ArrayList<>(holder.sessionData.getCip());
         holder.hospitalModelArray = new ArrayList<>(holder.sessionData.getHospital());
-
+        designation = SharedPref.getDesig(context);
         if (holder.sessionData.getVisible()) {
             holder.itemView.setVisibility(View.VISIBLE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -236,11 +237,22 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         workTypeBasedUI(holder, holder.sessionData, true);
 
         //HQ
-        if (holder.sessionData.getHQ().getName().equals("")) {
-            holder.hqField.setText("Select");
-        } else {
-            holder.hqField.setText(holder.sessionData.getHQ().getName());
-            holder.selectedHq = holder.sessionData.getHQ().getCode();
+        switch (designation){
+            case "MR":
+                holder.hqLayout.setVisibility(View.GONE);
+                holder.sessionData.getHQ().setName(SharedPref.getHqName(context));
+                holder.sessionData.getHQ().setCode(SharedPref.getHqCode(context));
+                holder.hqField.setText(holder.sessionData.getHQ().getName());
+                holder.selectedHq = holder.sessionData.getHQ().getCode();
+                break;
+            case "MGR" :
+                if (holder.sessionData.getHQ().getName().equals("")) {
+                    holder.hqField.setText("Select");
+                } else {
+                    holder.hqField.setText(holder.sessionData.getHQ().getName());
+                    holder.selectedHq = holder.sessionData.getHQ().getCode();
+                }
+
         }
 
         if (!holder.selectedHq.equals("")) {

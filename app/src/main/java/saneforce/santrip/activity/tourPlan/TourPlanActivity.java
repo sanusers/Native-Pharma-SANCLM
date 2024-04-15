@@ -157,6 +157,7 @@ public class TourPlanActivity extends AppCompatActivity {
             Log.v("ssdasd", "000");
             binding.tvSync.setEnabled(false);
             binding.progressBar.setVisibility(View.VISIBLE);
+
             LocalDate localDate1 = LocalDate.now();
             if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
                 // SetUpOneMonthAPI(localDate1.minusMonths(1), "prev");
@@ -176,7 +177,6 @@ public class TourPlanActivity extends AppCompatActivity {
             binding.calendarPrevButton.setEnabled(true);
             binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
             localDate = localDate.plusMonths(1);
-
             if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
                 binding.calendarNextButton.setEnabled(false);
                 binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
@@ -1054,6 +1054,9 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
                     weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
                 else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                    if (SharedPref.getDesig(TourPlanActivity.this).equals("MR")) {
+                        weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
+                    }
                     holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
             }
         } catch (JSONException e) {
@@ -1157,12 +1160,10 @@ public class TourPlanActivity extends AppCompatActivity {
             JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
 
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-
                 Type type = new TypeToken<ArrayList<ModelClass>>() {
                 }.getType();
                 modelClasses = new Gson().fromJson(savedDataArray.toString(), type);
             } else { //If tour plan table has no data
-
                 SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
                 ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate1));
                 String monthYear = monthYearFromDate(localDate1);
@@ -1183,10 +1184,9 @@ public class TourPlanActivity extends AppCompatActivity {
                         sessionList = prepareSessionListForAdapter();
                         //  Log.v("getTp","--222--" + day + "---" + dayName);
                         if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                            sessionList.setWorkType(weeklyOffWorkTypeModel);
-
+                        sessionList.setWorkType(weeklyOffWorkTypeModel);
                         if (holidayDateArray.contains(day))
-                            sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
+                        sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
 
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                         sessionLists.add(sessionList);
@@ -1209,7 +1209,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateCalendarAdapter(ArrayList<ModelClass> arrayList) {
         binding.monthYear.setText(monthYearFromDate(localDate));
-
         calendarAdapter = new CalendarAdapter(arrayList, TourPlanActivity.this, (position, date, modelClass) -> {
 
             if (!date.equals("")) {
@@ -1378,6 +1377,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.tpNavigation.sessionEdit.setEnabled(false);
                 break;
             case "2":  //Rejected by manager
+                binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpNavigation.sessionEdit.setEnabled(true);
                 binding.rejectedReasonTxt.setText(reason);
                 break;
@@ -1409,6 +1409,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 break;
             }
             case "2": {
+                binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                 binding.tpStatusTxt.setText(Constants.STATUS_2);
                 binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
                 break;
@@ -2124,6 +2125,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                         }
                                         case "2": {
                                             binding.tpStatusTxt.setText(Constants.STATUS_2);
+                                            binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
                                             break;
                                         }
                                         case "3": {

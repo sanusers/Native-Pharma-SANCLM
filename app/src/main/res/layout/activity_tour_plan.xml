@@ -326,6 +326,7 @@
                             tools:ignore="SpUsage" />
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/rejectionReasonLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -381,6 +382,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/rejectionReasonLayout"
+                            android:layout_marginTop="14dp"
                             android:paddingBottom="@dimen/_5sdp" />
 
                     </RelativeLayout>

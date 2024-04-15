@@ -354,7 +354,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results = new FilterResults();
-
             ArrayList<DayReportDetailModel> filteredModelArray = new ArrayList<>();
             if (charSequence != null && charSequence.length() > 0) {
                 for (DayReportDetailModel model : supportModelArray) {
