@@ -16,6 +16,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -83,6 +85,7 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.map.custSelection.CustList;
 
 import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
@@ -100,6 +103,7 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkUtil;
 import saneforce.santrip.utility.TimeUtils;
 
 public class DCRCallActivity extends AppCompatActivity {
@@ -260,16 +264,15 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
+
+
                     RemaindercallsActivity.vals_rm ="";
-                    progressDialog = CommonUtilsMethods.createProgressDialog(this);
+                    progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
 
                     if(save_valid.equalsIgnoreCase("1")){
                         Remainder_calls();
 //                Log.d("remaonder_doc",jsonSaveDcr.toString());
-                        progressDialog.dismiss();
                     }else{
-
-
                         isCreateJsonSuccess = true;
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                             if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
@@ -289,8 +292,8 @@ public class DCRCallActivity extends AppCompatActivity {
                             if (isCreateJsonSuccess) {
                                 if(isFromActivity.equalsIgnoreCase("new")){
                                     InsertVisitControl();
-                                }
 
+                                }
                                 sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
@@ -300,28 +303,35 @@ public class DCRCallActivity extends AppCompatActivity {
 //                                    startActivity(intent);
 //                                    finish();
 //                                }
-                                if (UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                                    CallUploadImage();
-                                    CallSaveDcrAPI(jsonSaveDcr.toString());
-                                } else {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
-                                    if (JWOthersFragment.callCaptureImageLists.size() > 0) {
-                                        for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
-                                            sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
-                                        }
-                                    }
-                                    UpdateInputStock();
-                                    UpdateSampleStock();
-                                    if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                                        dialogCheckOut.show();
-                                    } else {
 
-                                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
+                                if (JWOthersFragment.callCaptureImageLists.size() > 0) {
+                                    for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
+                                        sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                                     }
                                 }
+                                UpdateInputStock();
+                                UpdateSampleStock();
+
+                                if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
+                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
+                                }else {
+                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
+                                    //progressDialog.dismiss();
+                                }
+
+                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
+                                //    progressDialog.dismiss();
+                                    dialogCheckOut.show();
+                                } else {
+
+//                                    new Handler().postDelayed(()->{
+                                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                                        intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+//                             ;
+                                }
+
                             } else {
                                 progressDialog.dismiss();
                             }
@@ -508,6 +518,7 @@ public class DCRCallActivity extends AppCompatActivity {
             CallDataRestClass.resetcallValues(context);
 
         } catch (Exception ignored) {
+
         }
     }
 
@@ -1679,7 +1690,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 address = CommonUtilsMethods.gettingAddress(this, Double.parseDouble(latEdit), Double.parseDouble(lngEdit), false);
             }
 
-
+            Log.v("final_value_call", "---injonite---");
             JSONArray jsonArray = new JSONArray();
             jsonSaveDcr = new JSONObject();
 
@@ -1692,6 +1703,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 JWKCodeList.add(JWOthersFragment.callAddedJointList.get(i).getCode());
                 jsonArray.put(json_joint);
             }
+            Log.v("final_value_call", "---inputzise---"+ jsonArray.toString()                                                                                                          );
             jsonSaveDcr.put("JointWork", jsonArray);
             SharedPref.setJWKCODE(context, JWKCodeList, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5));
 
@@ -2030,6 +2042,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
             Log.v("final_value_call", String.valueOf(jsonSaveDcr));
         } catch (Exception e) {
+
             Log.v("final_value_call", "---error----" + e);
             isCreateJsonSuccess = false;
         }

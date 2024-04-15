@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -205,7 +206,7 @@ public class CommonUtilsMethods {
         try {
             dialog.show();
         } catch (WindowManager.BadTokenException ignored) {
-
+            Log.e("DialogboxStatus",""+ignored);
         }
 
         dialog.setCancelable(false);

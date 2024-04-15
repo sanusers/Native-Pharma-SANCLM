@@ -1202,6 +1202,7 @@ public class TourPlanActivity extends AppCompatActivity {
             }
 
         } catch (JSONException e) {
+            Log.e("--Errr--",""+e);
             e.printStackTrace();
         }
         return modelClasses;

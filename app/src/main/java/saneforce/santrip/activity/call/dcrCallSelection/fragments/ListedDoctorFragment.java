@@ -454,6 +454,8 @@ public class ListedDoctorFragment extends Fragment {
         try {
             jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
 
+            Log.d("hqSfcoe",DcrCallTabLayoutActivity.TodayPlanSfCode);
+
             if (jsonArray.length() == 0) {
                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_data_found)  + "  " +  context.getString(R.string.do_master_sync) );
             }

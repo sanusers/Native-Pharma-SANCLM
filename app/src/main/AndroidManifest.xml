@@ -114,7 +114,7 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />
         <activity
-            android:name=".activity.approvals.dcr.detailView.DcrDetailViewActivity"
+            android:name=".activity.approvals.dcr.detailView.C"
             android:exported="false"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" />

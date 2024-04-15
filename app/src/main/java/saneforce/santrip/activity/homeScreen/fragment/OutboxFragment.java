@@ -62,6 +62,7 @@ import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkCheckInterface;
+import saneforce.santrip.utility.NetworkUtil;
 
 
 public class OutboxFragment extends Fragment {
@@ -80,6 +81,8 @@ public class OutboxFragment extends Fragment {
     private MasterDataDao masterDataDao;
 
     public static void NetworkConnectCallHomeDashBoard(String log) {
+
+        Log.e("NOT_CONNECT",""+log);
         if (!TextUtils.isEmpty(log)) {
             if (!log.equalsIgnoreCase("NOT_CONNECT")) {
                 if (mCheckNetwork != null) mCheckNetwork.checkNetwork();
@@ -165,6 +168,8 @@ public class OutboxFragment extends Fragment {
     }
 
     private void refreshPendingFunction() {
+
+        Log.e("RefreshStatus","Is Working");
         SendOfflineData(this::sendingOfflineCalls);
 
     }
@@ -263,7 +268,6 @@ public class OutboxFragment extends Fragment {
         } else {
             isCallAvailable = false;
         }
-
         if (!isCallAvailable) {
             if (listDates.get(ParentPos).getChildItems().get(0).getCheckInOutModelClasses().size() == 0 && listDates.get(ParentPos).getChildItems().get(2).getOutBoxCallLists().size() == 0 && listDates.get(ParentPos).getChildItems().get(3).getEcModelClasses().size() == 0) {
                 listDates.remove(ParentPos);
@@ -695,4 +699,13 @@ public class OutboxFragment extends Fragment {
         }
     }
 */
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String status = NetworkUtil.getConnectivityStatusString(requireContext());
+        OutboxFragment.NetworkConnectCallHomeDashBoard(status);
+
+//        new Handler().postDelayed(this::refreshPendingFunction, 200);
+    }
 }
