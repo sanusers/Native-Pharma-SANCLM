@@ -48,9 +48,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         String selectefromdDate = intent.getStringExtra("selectefromdDate");
         if (!Leave_Application.Fromdate.getText().toString().equals("")) {
             date1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
-
         }
-
         frm_date = selectefromdDate;
         initWidgets();
         selectedDate = LocalDate.now();
@@ -83,7 +81,6 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
     @SuppressLint("NewApi")
     private ArrayList<String> daysInMonthArray(LocalDate date) {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
-
         YearMonth yearMonth = YearMonth.from(date);
         int daysInMonth = yearMonth.lengthOfMonth();
         LocalDate firstOfMonth = date.withDayOfMonth(1);

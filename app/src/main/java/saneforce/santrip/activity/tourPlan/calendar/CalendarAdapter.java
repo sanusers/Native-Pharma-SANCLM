@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import retrofit2.http.POST;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 
@@ -42,7 +43,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         ModelClass modelClass = inputData.get(holder.getAbsoluteAdapterPosition());
         String date = modelClass.getDayNo();
         holder.dateNo.setText(date);
-
         if (!date.isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) //if work type is not empty means tour plan added for the date
             holder.cornerImage.setVisibility(View.VISIBLE);
 

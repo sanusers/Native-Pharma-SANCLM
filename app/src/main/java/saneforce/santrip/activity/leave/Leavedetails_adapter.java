@@ -36,8 +36,6 @@ public class Leavedetails_adapter extends RecyclerView.Adapter<Leavedetails_adap
         if (!app_adapt.getLeaveDates().equals("")||!app_adapt.getLeaveDates().equals("null")) {
             holder.L_date.setText(app_adapt.getLeaveDates());
         }
-
-
     }
 
 

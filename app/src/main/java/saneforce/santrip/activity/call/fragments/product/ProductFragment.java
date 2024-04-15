@@ -78,8 +78,6 @@ public class ProductFragment extends Fragment {
         productsBinding.tagSamples.setText(DCRCallActivity.CapSamQty);
         productsBinding.tagRxQty.setText(DCRCallActivity.CapRxQty);
 
-
-
         if(DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")||DCRCallActivity.CallActivityCustDetails.get(0).getType().equalsIgnoreCase("3")){
             productsBinding.tagPromoted.setVisibility(View.GONE);
         }

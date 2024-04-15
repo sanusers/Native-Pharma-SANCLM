@@ -994,7 +994,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-
+           System.out.println("baseUrl-->");
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", remoteTableName);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));

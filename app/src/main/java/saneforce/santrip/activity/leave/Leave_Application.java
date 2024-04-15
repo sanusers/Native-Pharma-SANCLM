@@ -317,8 +317,6 @@ public class Leave_Application extends AppCompatActivity {
                         Ltype_id = leave_typeid.get(i);
                         L_typename = leave_typename.get(i);
                         Lshortname = leave_type.get(i);
-
-
                         try {
                             JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
                             for (int d = 0; d < jsonArray1.length(); d++) {
