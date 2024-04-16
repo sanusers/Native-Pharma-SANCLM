@@ -50,6 +50,13 @@ public class ThumbnailTask {
                 Bitmap bitmap = SupportClass.generateBitmap(context, sourceFile, fileFormat);
                 if(bitmap != null) {
                     try {
+                        if (destinationFile.exists()) {
+                            if (destinationFile.delete()) {
+                                Log.d("Thumbnail Conversion", "Old thumbnail(" + fileName + ") deleted.");
+                            } else {
+                                Log.e("Thumbnail Conversion", "Failed to delete old thumbnail(" + fileName + ").");
+                            }
+                        }
                         if(!destinationFile.createNewFile()) {
                             Log.e("Thumbnail Conversion", "Destination File Creation Failed.");
                             return false;

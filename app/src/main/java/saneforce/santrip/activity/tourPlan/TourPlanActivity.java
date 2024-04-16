@@ -1068,46 +1068,55 @@ public class TourPlanActivity extends AppCompatActivity {
         int daysInMonth = yearMonth.lengthOfMonth();
         LocalDate firstOfMonth = date.withDayOfMonth(1);
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
-        switch (dayOfWeek) {
-            case 1: {
-                dayOfWeek = 2;
-                break;
-            }
-            case 2: {
-                dayOfWeek = 3;
-                break;
-            }
-            case 3: {
-                dayOfWeek = 4;
-                break;
-            }
-            case 4: {
-                dayOfWeek = 5;
-                break;
-            }
-            case 5: {
-                dayOfWeek = 6;
-                break;
-            }
-            case 6: {
-                dayOfWeek = 7;
-                break;
-            }
-            case 7: {
-                dayOfWeek = 1;
-                break;
-            }
+        if(dayOfWeek == 7) dayOfWeek = 1;
+        else dayOfWeek++;
+//        switch (dayOfWeek) {
+//            case 1: {
+//                dayOfWeek = 2;
+//                break;
+//            }
+//            case 2: {
+//                dayOfWeek = 3;
+//                break;
+//            }
+//            case 3: {
+//                dayOfWeek = 4;
+//                break;
+//            }
+//            case 4: {
+//                dayOfWeek = 5;
+//                break;
+//            }
+//            case 5: {
+//                dayOfWeek = 6;
+//                break;
+//            }
+//            case 6: {
+//                dayOfWeek = 7;
+//                break;
+//            }
+//            case 7: {
+//                dayOfWeek = 1;
+//                break;
+//            }
+//        }
+
+        int trailingNumOfDaysEmpty = 7 - ((daysInMonth + dayOfWeek -1) % 7);
+        for (int i = 1; i< dayOfWeek + daysInMonth + trailingNumOfDaysEmpty; i++) {
+            if(i>=dayOfWeek && i<(daysInMonth + dayOfWeek))
+                daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
+            else daysInMonthArray.add("");
         }
 
-        for (int i = 1; i <= 42; i++) {
-            if (i < dayOfWeek) {
-                daysInMonthArray.add("");
-            } else {
-                if (i < daysInMonth + dayOfWeek) {
-                    daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
-                }
-            }
-        }
+//        for (int i = 1; i <= 42; i++) {
+//            if (i < dayOfWeek) {
+//                daysInMonthArray.add("");
+//            } else {
+//                if (i < daysInMonth + dayOfWeek) {
+//                    daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
+//                }
+//            }
+//        }
 
 //        for(int i = 1; i <= 42; i++) {
 //            if(i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
@@ -1118,19 +1127,19 @@ public class TourPlanActivity extends AppCompatActivity {
 //        }
 
         //To eliminate the excess empty dates which comes with the LocalDate library
-        if (daysInMonthArray.size() >= 22 && daysInMonthArray.size() <= 28) {
-            for (int i = daysInMonthArray.size(); i < 28; i++) {
-                daysInMonthArray.add("");
-            }
-        } else if (daysInMonthArray.size() >= 29 && daysInMonthArray.size() <= 35) {
-            for (int i = daysInMonthArray.size(); i < 35; i++) {
-                daysInMonthArray.add("");
-            }
-        } else if (daysInMonthArray.size() >= 36 && daysInMonthArray.size() <= 42) {
-            for (int i = daysInMonthArray.size(); i < 42; i++) {
-                daysInMonthArray.add("");
-            }
-        }
+//        if (daysInMonthArray.size() >= 22 && daysInMonthArray.size() <= 28) {
+//            for (int i = daysInMonthArray.size(); i < 28; i++) {
+//                daysInMonthArray.add("");
+//            }
+//        } else if (daysInMonthArray.size() >= 29 && daysInMonthArray.size() <= 35) {
+//            for (int i = daysInMonthArray.size(); i < 35; i++) {
+//                daysInMonthArray.add("");
+//            }
+//        } else if (daysInMonthArray.size() >= 36 && daysInMonthArray.size() <= 42) {
+//            for (int i = daysInMonthArray.size(); i < 42; i++) {
+//                daysInMonthArray.add("");
+//            }
+//        }
 
         return daysInMonthArray;
     }
