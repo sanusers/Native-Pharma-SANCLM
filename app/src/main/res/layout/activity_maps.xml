@@ -286,7 +286,7 @@
         android:background="@color/white"
         android:drawablePadding="@dimen/_2sdp"
         android:paddingVertical="@dimen/_4sdp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
