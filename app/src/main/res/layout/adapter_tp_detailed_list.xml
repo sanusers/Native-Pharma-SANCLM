@@ -31,8 +31,8 @@
 
             <TextView
                 android:id="@+id/tv_dayNo"
-                android:layout_width="@dimen/_15sdp"
-                android:layout_height="@dimen/_15sdp"
+                android:layout_width="@dimen/_17sdp"
+                android:layout_height="@dimen/_17sdp"
                 android:layout_marginStart="@dimen/_4sdp"
                 android:layout_marginEnd="@dimen/_2sdp"
                 android:background="@drawable/bg_light_cement"
@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:padding="@dimen/_4sdp"
                 android:singleLine="true"
-                android:text="01"
+                android:text="02"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_6ssp"
                 app:layout_constraintBottom_toBottomOf="parent"

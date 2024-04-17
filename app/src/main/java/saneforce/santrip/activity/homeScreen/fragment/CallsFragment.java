@@ -98,7 +98,9 @@ public class CallsFragment extends Fragment {
                             @SuppressLint("NotifyDataSetChanged")
                             @Override
                             public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                binding.rlSyncCall.setEnabled(true);
                                 if (response.isSuccessful()) {
+
                                     try {
                                         assert response.body() != null;
                                         SharedPref.setTodayCallList(context, response.body().toString());
@@ -193,6 +195,7 @@ public class CallsFragment extends Fragment {
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                binding.rlSyncCall.setEnabled(true);
                                 if (isProgressNeed) progressDialog.dismiss();
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                             }
@@ -203,6 +206,7 @@ public class CallsFragment extends Fragment {
                     }
                 } else {
                     if (isProgressNeed) {
+                        binding.rlSyncCall.setEnabled(true);
                         progressDialog.dismiss();
                         commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
                     }
@@ -210,6 +214,7 @@ public class CallsFragment extends Fragment {
             });
             networkStatusTask.execute();
         } else {
+            binding.rlSyncCall.setEnabled(true);
             getFromLocal(context, apiInterface);
         }
     }
@@ -304,6 +309,7 @@ public class CallsFragment extends Fragment {
 
         binding.rlSyncCall.setOnClickListener(v12 -> {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
+                binding.rlSyncCall.setEnabled(false);
                 CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
             } else {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));

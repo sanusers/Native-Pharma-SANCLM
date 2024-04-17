@@ -69,6 +69,7 @@ public class OutboxFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static OutboxFragmentBinding outBoxBinding;
     public static ArrayList<GroupModelClass> listDates = new ArrayList<>();
+    public static boolean IsFromDCR=false;
     @SuppressLint("StaticFieldLeak")
     public static OutBoxHeaderAdapter outBoxHeaderAdapter;
     static NetworkCheckInterface mCheckNetwork;
@@ -703,8 +704,13 @@ public class OutboxFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String status = NetworkUtil.getConnectivityStatusString(requireContext());
-        OutboxFragment.NetworkConnectCallHomeDashBoard(status);
+
+        if(IsFromDCR){
+            String status = NetworkUtil.getConnectivityStatusString(requireContext());
+            OutboxFragment.NetworkConnectCallHomeDashBoard(status);
+            IsFromDCR=false;
+        }
+
 
 //        new Handler().postDelayed(this::refreshPendingFunction, 200);
     }

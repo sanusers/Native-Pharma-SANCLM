@@ -987,9 +987,9 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
     public void uiInitialization() {
-
         localDate = LocalDate.now();
         try {
+
             JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP);  //Tour Plan setup
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -1048,17 +1048,17 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
             }
 
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
-            for (int i = 0; i < workTypeArray.length(); i++) {
-                JSONObject jsonObject = workTypeArray.getJSONObject(i);
+
+
+            JSONArray workTypeArray1 = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
+            for (int i = 0; i < workTypeArray1.length(); i++) {
+                JSONObject jsonObject = workTypeArray1.getJSONObject(i);
                 if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
                     weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
                 else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
-                    if (SharedPref.getDesig(TourPlanActivity.this).equals("MR")) {
-                        weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
-                    }
-                holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
+                    holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

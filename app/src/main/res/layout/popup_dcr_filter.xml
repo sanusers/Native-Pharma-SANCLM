@@ -68,6 +68,7 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black"
             android:textSize="@dimen/_6ssp"
+            android:visibility="gone"
             android:textStyle="normal"
             app:drawableEndCompat="@drawable/spin_down_arrow"
             app:drawableTint="@color/black"
@@ -81,6 +82,7 @@
             android:layout_width="@dimen/_128sdp"
             android:layout_height="@dimen/_20sdp"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_4sdp"
             android:layout_marginEnd="@dimen/_25sdp"
@@ -165,6 +167,7 @@
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_4sdp"
             android:src="@drawable/iv_del"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/constraint_category"
@@ -186,6 +189,7 @@
             android:paddingStart="@dimen/_5sdp"
             android:paddingEnd="@dimen/_7sdp"
             android:text="Add Condition"
+            android:visibility="gone"
             android:textColor="@color/green_2"
             android:textSize="@dimen/_6ssp"
             app:layout_constraintBottom_toTopOf="@id/constraint_btns"
@@ -236,6 +240,22 @@
             app:layout_constraintStart_toStartOf="@id/constraint_territory"
             app:layout_constraintTop_toBottomOf="@id/constraint_territory"
             app:layout_constraintVertical_bias="0.0" />
+
+
+        <ListView
+            android:id="@+id/lv_class"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_50sdp"
+            android:background="@color/white"
+            android:divider="@color/light_grey"
+            android:dividerHeight="@dimen/_1sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/constraint_class"
+            app:layout_constraintStart_toStartOf="@id/constraint_class"
+            app:layout_constraintTop_toBottomOf="@id/constraint_class"
+            app:layout_constraintVertical_bias="0.0" />
+
 
 
         <androidx.constraintlayout.widget.ConstraintLayout

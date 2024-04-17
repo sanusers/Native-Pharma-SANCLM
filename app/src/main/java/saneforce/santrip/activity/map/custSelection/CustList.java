@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.map.custSelection;
 
+import androidx.annotation.NonNull;
+
 public class
 CustList {
     String name;
@@ -35,6 +37,11 @@ CustList {
     String ADetSlNo;
     boolean IsExtra;
     String totalRcpa;
+
+    String Class;
+
+    String ClassCode;
+
 
     public CustList(String name, String code) {
         this.name = name;
@@ -121,7 +128,7 @@ CustList {
         this.qualification = qualification;
     }
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, boolean isClusterAvailable) {
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode,String ClassCode,  String specialistCode, boolean isClusterAvailable) {
         this.name = name;
         this.code = code;
         this.type = type;
@@ -144,9 +151,11 @@ CustList {
         this.qualification = qualification;
         this.PriorityPrdCode = priorityPrdCode;
         this.isClusterAvailable = isClusterAvailable;
+        this.specialistCode = specialistCode;
+        this.ClassCode = ClassCode;
     }
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, String totalVisitCount, boolean isClusterAvailable) {
+    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, String totalVisitCount, String Class,String ClassCode,boolean isClusterAvailable) {
         this.name = name;
         this.code = code;
         this.type = type;
@@ -173,6 +182,8 @@ CustList {
         this.MappedSlides = MappedSlideCode;
         this.totalVisitCount = totalVisitCount;
         this.isClusterAvailable = isClusterAvailable;
+        this.Class = Class;
+        this.ClassCode = ClassCode;
     }
 
     public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode) {
@@ -200,6 +211,7 @@ CustList {
         this.PriorityPrdCode = priorityPrdCode;
         this.MappedBrands = MappedBrandCode;
         this.MappedSlides = MappedSlideCode;
+
     }
 
     public CustList(String name, String code, String type, String category, String specialist, String latitude, String longitude, String address, String town_name, String towncode, String tag, String maxTag, String position, String geoTagStatus) {
@@ -217,35 +229,9 @@ CustList {
         this.maxTag = maxTag;
         this.position = position;
         this.geoTagStatus = geoTagStatus;
+
     }
 
-    public CustList(String name, String code, String type, String category, String categoryCode, String specialist, String specialistCode, String town_name, String towncode, String tag, String maxTag, String position, String latitude, String longitude, String address, String dob, String wed_date, String email, String mobile, String phone, String qualification, String priorityPrdCode, String MappedBrandCode, String MappedSlideCode, boolean isClusterAvailable) {
-        this.name = name;
-        this.code = code;
-        this.type = type;
-        this.category = category;
-        this.categoryCode = categoryCode;
-        this.specialist = specialist;
-        this.specialistCode = specialistCode;
-        this.town_name = town_name;
-        this.town_code = towncode;
-        this.Tag = tag;
-        this.maxTag = maxTag;
-        this.position = position;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.address = address;
-        this.dob = dob;
-        this.wedding_date = wed_date;
-        this.email = email;
-        this.mobile = mobile;
-        this.phone = phone;
-        this.qualification = qualification;
-        this.PriorityPrdCode = priorityPrdCode;
-        this.MappedBrands = MappedBrandCode;
-        this.MappedSlides = MappedSlideCode;
-        this.isClusterAvailable = isClusterAvailable;
-    }
 
     public String getSpecialistCode() {
         return specialistCode;
@@ -269,6 +255,14 @@ CustList {
 
     public void setTotalVisitCount(String totalVisitCount) {
         this.totalVisitCount = totalVisitCount;
+    }
+
+    public String getclass() {
+        return Class;
+    }
+
+    public void setClass(String aClass) {
+        Class = aClass;
     }
 
     public String getMappedBrands() {
@@ -536,5 +530,15 @@ CustList {
 
     public void setMaxTag(String maxTag) {
         this.maxTag = maxTag;
+    }
+
+
+
+    public String getClassCode() {
+        return ClassCode;
+    }
+
+    public void setClassCode(String classCode) {
+        ClassCode = classCode;
     }
 }

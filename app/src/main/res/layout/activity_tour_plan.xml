@@ -334,8 +334,6 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginStart="@dimen/_6sdp"
                             android:layout_marginTop="@dimen/_6sdp"
-                            android:visibility="visible"
-
                             android:layout_marginEnd="@dimen/_6sdp"
                             android:layout_marginBottom="@dimen/_3sdp"
                             android:orientation="horizontal">

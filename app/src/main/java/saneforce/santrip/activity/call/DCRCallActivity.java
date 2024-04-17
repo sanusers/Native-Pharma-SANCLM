@@ -5,6 +5,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment.JWKCodeList;
 import static saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment.callCaptureImageLists;
 import static saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment.jwOthersBinding;
+import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -325,6 +326,8 @@ public class DCRCallActivity extends AppCompatActivity {
                                 } else {
 
 //                                    new Handler().postDelayed(()->{
+
+                                      IsFromDCR =true;
                                         Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
                                         intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
