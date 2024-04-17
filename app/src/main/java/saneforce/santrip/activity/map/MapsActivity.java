@@ -4,6 +4,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 import static saneforce.santrip.activity.approvals.geotagging.GeoTaggingAdapter.geoTagViewList;
+import static saneforce.santrip.activity.call.DCRCallActivity.SfCode;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -22,6 +23,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -64,6 +66,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +82,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.call.DCRCallActivity;
+import saneforce.santrip.activity.camera.CameraActivity;
 import saneforce.santrip.activity.map.custSelection.CustListAdapter;
 import saneforce.santrip.activity.map.custSelection.TagCustSelectionList;
 import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
@@ -120,16 +125,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     double lat, lng, limitKm = 0.5;
     Dialog dialogTagCust;
     CommonUtilsMethods commonUtilsMethods;
+    private String destinationFilePath;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
         @Override
         public void onActivityResult(ActivityResult result) {
             try {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    String finalPath = "/storage/emulated/0";
-                    filePath = outputFileUri.getPath();
-                    filePath = Objects.requireNonNull(filePath).substring(1);
-                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+//                    String finalPath = "/storage/emulated/0";
+//                    filePath = outputFileUri.getPath();
+//                    filePath = Objects.requireNonNull(filePath).substring(1);
+//                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
                     DisplayDialog();
                 }
             } catch (Exception ignored) {
@@ -488,12 +494,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void captureFile() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(getExternalCacheDir()).getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg"));
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        outputFileUri = FileProvider.getUriForFile(MapsActivity.this, getApplicationContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(getExternalCacheDir()).getPath(), SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg"));
+//        imageName = SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
+//        taggedTime = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        someActivityResultLauncher.launch(intent);
         imageName = SfCode + "_" + cust_code + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
-        taggedTime = CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent intent = new Intent(this, CameraActivity.class);
+        File file = null;
+        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            file = new File(context.getExternalFilesDir(null) + "/NearMeTagging/");
+        }else {
+            Log.e("File Creation", "captureFile: " );
+        }
+        if(file != null && !file.exists()) {
+            if(!file.mkdirs()) {
+                Log.e("File Creation", "Directory Creation Failed.");
+            }
+        }
+        File destinationFile = new File(file, imageName);
+        try {
+            if(!destinationFile.createNewFile()) {
+                Log.e("File Creation", "Destination File Creation Failed.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        destinationFilePath = destinationFile.getAbsolutePath();
+        intent.putExtra("FILE_PATH", destinationFilePath);
+        intent.putExtra("FROM", "MapsActivity");
+        intent.putExtra("L_FLAG", SharedPref.getGeoChk(this).equalsIgnoreCase("0"));
+        intent.putExtra("CAMERA_MODE", "BACK");
         someActivityResultLauncher.launch(intent);
     }
 
@@ -886,7 +919,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ApiInterface apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getTagApiImageUrl(getApplicationContext()));
             Call<JsonObject> callImage;
             HashMap<String, RequestBody> values = field(jsonImage);
-            MultipartBody.Part img = convertImg("UploadImg", filePath);
+            MultipartBody.Part img = convertImg("UploadImg", destinationFilePath);
             callImage = apiInterface.SaveImg(values, img);
 
             callImage.enqueue(new Callback<JsonObject>() {

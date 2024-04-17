@@ -14,8 +14,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +47,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,7 @@ import saneforce.santrip.activity.call.adapter.jwOthers.AdapterCallCaptureImage;
 import saneforce.santrip.activity.call.adapter.jwOthers.AdapterCallJointWorkList;
 import saneforce.santrip.activity.call.pojo.CallCaptureImageList;
 import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
+import saneforce.santrip.activity.camera.CameraActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentJwothersBinding;
@@ -79,18 +83,19 @@ public class JWOthersFragment extends Fragment {
    public static ArrayList<String> JWKCodeList =new ArrayList<>();
    Gson gson;
     CommonUtilsMethods commonUtilsMethods;
+    private String destinationFilePath;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
             try {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    String finalPath = "/storage/emulated/0";
-                    Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
-                    filePath = outputFileUri.getPath();
-                    filePath = Objects.requireNonNull(filePath).substring(1);
-                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
-
-                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, filePath, imageName, true));
+//                    String finalPath = "/storage/emulated/0";
+//                    Bitmap photo = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), outputFileUri);
+//                    filePath = outputFileUri.getPath();
+//                    filePath = Objects.requireNonNull(filePath).substring(1);
+//                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
+                    Bitmap photo = BitmapFactory.decodeFile(destinationFilePath);
+                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, destinationFilePath, imageName, true));
                     adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                     jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);
@@ -263,11 +268,36 @@ public class JWOthersFragment extends Fragment {
     }
 
     public void captureFile() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(requireContext().getExternalCacheDir()).getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg"));
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        outputFileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", new File(Objects.requireNonNull(requireContext().getExternalCacheDir()).getPath(), SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg"));
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         imageName = SfCode + "_" + DCRCallActivity.CallActivityCustDetails.get(0).getCode() + "_" + CommonUtilsMethods.getCurrentInstance("dd-MM-yyyy").replace("-", "") + CommonUtilsMethods.getCurrentInstance("HHmmss") + ".jpeg";
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent intent = new Intent(requireActivity(), CameraActivity.class);
+        File file = null;
+        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            file = new File(context.getExternalFilesDir(null) + "/JWOthersImages/");
+        }else {
+            Log.e("File Creation", "captureFile: " );
+        }
+        if(file != null && !file.exists()) {
+            if(!file.mkdirs()) {
+                Log.e("File Creation", "Directory Creation Failed.");
+            }
+        }
+        File destinationFile = new File(file, imageName);
+        try {
+            if(!destinationFile.createNewFile()) {
+                Log.e("File Creation", "Destination File Creation Failed.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        destinationFilePath = destinationFile.getAbsolutePath();
+        intent.putExtra("FILE_PATH", destinationFilePath);
+        intent.putExtra("FROM", "JWOthersFragment");
+        intent.putExtra("L_FLAG", SharedPref.getGeoChk(requireContext()).equalsIgnoreCase("0"));
+        intent.putExtra("CAMERA_MODE", "BACK");
         someActivityResultLauncher.launch(intent);
     }
 

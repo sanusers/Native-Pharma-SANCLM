@@ -22,12 +22,14 @@ import android.widget.ImageView;
 import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Objects;
 
+import saneforce.santrip.R;
 import saneforce.santrip.activity.slideDownloaderAlertBox.ThumbnailTask;
 
 public class SupportClass {
@@ -291,7 +293,6 @@ public class SupportClass {
     }
 
     private static void setThumbnail(Context context, String fileFormat, File thumbnail, ImageView imageView) {
-        Bitmap bitmap;
         switch (fileFormat){
             case "jpg":
             case "png":
@@ -303,9 +304,7 @@ public class SupportClass {
             case "html":
             case "zip":{
                 if(thumbnail.exists()) {
-                    bitmap = BitmapFactory.decodeFile(thumbnail.getAbsolutePath());
-                    if(bitmap != null)
-                        Glide.with(context).asBitmap().load(bitmap).into(imageView);
+                    Glide.with(context).load(new File(thumbnail.getAbsolutePath())).downsample(DownsampleStrategy.CENTER_INSIDE).placeholder(R.drawable.no_image).into(imageView);
                 }
                 break;
             }
