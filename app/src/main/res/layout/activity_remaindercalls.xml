@@ -39,7 +39,7 @@
                     android:padding="@dimen/_6sdp">
 
                     <ImageView
-                        android:id="@+id/back_btn"
+                        android:id="@+id/remback_btn"
                         android:layout_width="@dimen/_10sdp"
                         android:layout_height="@dimen/_10sdp"
                         android:src="@drawable/arrow_back_white" />

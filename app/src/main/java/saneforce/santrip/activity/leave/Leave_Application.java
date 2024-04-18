@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -60,6 +61,8 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.databinding.ActivityLeaveApplicationBinding;
+import saneforce.santrip.databinding.ActivityRemaindercallsBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 
@@ -68,23 +71,18 @@ import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
 public class Leave_Application extends AppCompatActivity {
-    public static TextView Fromdate, Todate, l_days, Leave_Type, balance_days;
-    TextView Head_Ltype, Head_fromdate, Head_todate, c_val, c_val1, c_val2, c_val_tol, c_val_tol_1, c_val_tol_2, txt_Attachement, headtext_id;
-    EditText ed_Address, ed_Reason, et_Custsearch;
+    TextView  headtext_id;
+    EditText et_Custsearch;
 
     ApiInterface apiInterface;
-
-    LinearLayout back_btn, chart_layout;
-
-
     ImageView close_sideview;
     SQLite sqLite;
     String navigateFrom = "";
-    public static RecyclerView leave_details;
+
     ArrayAdapter<String> adapter;
     public static ArrayList<Leave_modelclass> List_LeaveDates = new ArrayList<>();
     public static ArrayList<Leave_modelclass> Chart_list = new ArrayList<>();
-    public static ArrayList<Leave_modelclass> pchart_list = new ArrayList<>();
+
     ArrayList<String> leave_type = new ArrayList<>();
     public static ArrayList<String> ltypecount = new ArrayList<>();
     ArrayList<String> leave_typeid = new ArrayList<>();
@@ -93,22 +91,19 @@ public class Leave_Application extends AppCompatActivity {
 
     String Ltype_id, L_typename, L_count = "", Lshortname, avilable, leavety;
     int totalval = 0, val = 0;
-    public static DrawerLayout l_sideview;
+
     public static ListView dailog_list;
-    RecyclerView RL_piechart;
-    Button submit_leave;
-    ApiInterface apiService;
     String l_address = "", l_reason = "";
 
-    CardView mtcard;
     CommonUtilsMethods commonUtilsMethods;
+   public static ActivityLeaveApplicationBinding leavebinding;
 
     //To Hide the bottomNavigation When popup
-    @Override
+
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            chart_layout.setSystemUiVisibility(
+            leavebinding.chartLayout.setSystemUiVisibility(
                   View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -117,50 +112,35 @@ public class Leave_Application extends AppCompatActivity {
         }
     }
 
-    @SuppressLint({"WrongConstant", "SetTextI18n"})
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+
+
+    @SuppressLint("WrongConstant")
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        setContentView(R.layout.activity_leave_application);
+        leavebinding = ActivityLeaveApplicationBinding.inflate(getLayoutInflater());
+        setContentView(leavebinding.getRoot());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
-        Fromdate = findViewById(R.id.et_from_date);
-        Todate = findViewById(R.id.et_to_date);
-        Head_Ltype = findViewById(R.id.Head_Ltype);
-        Head_todate = findViewById(R.id.Head_todate);
-        Head_fromdate = findViewById(R.id.Head_fromdate);
-        back_btn = findViewById(R.id.backArrow);
-        chart_layout = findViewById(R.id.chart_layout);
-        leave_details = findViewById(R.id.leave_details);
-        l_days = findViewById(R.id.l_days);
-        txt_Attachement = findViewById(R.id.txt_Attachement);
-        Leave_Type = findViewById(R.id.Leave_Type);
-        ed_Reason = findViewById(R.id.ed_Reason);
-        ed_Address = findViewById(R.id.ed_Address);
-        l_sideview = findViewById(R.id.leave_side);
-        headtext_id = findViewById(R.id.headtext_id);
+
         dailog_list = findViewById(R.id.cutumdailog_list);
         close_sideview = findViewById(R.id.close_sideview);
+        headtext_id = findViewById(R.id.headtext_id);
         et_Custsearch = findViewById(R.id.et_Custsearch);
-        balance_days = findViewById(R.id.balance_days);
-        RL_piechart = findViewById(R.id.RL_piechart);
-        submit_leave = findViewById(R.id.submit_leave);
-        mtcard = findViewById(R.id.mtcard);
+
 
         dailog_list.setVisibility(View.VISIBLE);
-//        l_sideview.closeDrawer(Gravity.RIGHT);
-        ed_Reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_Reason)});
+        leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
         sqLite = new SQLite(this);
 
-        back_btn.setOnClickListener(v -> {
+        leavebinding.leavebackArrow.setOnClickListener(v -> {
             //  onBackPressed();
             getOnBackPressedDispatcher().onBackPressed();
           /*  Intent l = new Intent(Leave_Application.this, HomeDashBoard.class);
             startActivity(l);*/
         });
-//L_count
 
         String colorText = "<font color=\"#85929e\">" + "Leave Date From" + "</font>"
                 + " " + "<font color=\"#F1536E\">" + "*";
@@ -169,26 +149,26 @@ public class Leave_Application extends AppCompatActivity {
         String colorText2 = "<font color=\"#85929e\">" + "Leave Type" + "</font>"
                 + " " + "<font color=\"#F1536E\">" + "*";
 
-        Head_fromdate.setText(Html.fromHtml(colorText));
-        Head_todate.setText(Html.fromHtml(colorText1));
-        Head_Ltype.setText(Html.fromHtml(colorText2));
+        leavebinding.HeadFromdate.setText(Html.fromHtml(colorText));
+        leavebinding.HeadTodate.setText(Html.fromHtml(colorText1));
+        leavebinding.HeadLtype.setText(Html.fromHtml(colorText2));
 
         close_sideview.setOnClickListener(v -> {
-            l_sideview.closeDrawer(Gravity.END);
+            leavebinding.leaveSide.closeDrawer(Gravity.END);
             hideKeyboard(Leave_Application.this);
         });
         leave_applydates();
 
-        headtext_id.setText("Leave Type");
-        Fromdate.setOnClickListener(v -> {
+        leavebinding.LeaveType.setText("Leave Type");
+        leavebinding.etFromDate.setOnClickListener(v -> {
             Intent tp = new Intent(Leave_Application.this, CalendarActivity.class);
             tp.putExtra("selectefromdDate", "1");
             startActivity(tp);
         });
 
 
-        Todate.setOnClickListener(v -> {
-            if (!Fromdate.getText().toString().equals("")) {
+        leavebinding.etToDate.setOnClickListener(v -> {
+            if (!leavebinding.etFromDate.getText().toString().equals("")) {
                 Intent tp = new Intent(Leave_Application.this, CalendarActivity.class);
                 tp.putExtra("selectefromdDate", "2");
                 startActivity(tp);
@@ -198,22 +178,22 @@ public class Leave_Application extends AppCompatActivity {
         });
 
 
-        Leave_Type.setOnClickListener(v -> {
-            if (Fromdate.getText().toString().equals("")) {
+        leavebinding.LeaveType.setOnClickListener(v -> {
+            if (leavebinding.etFromDate.getText().toString().equals("")) {
                 Toast.makeText(this, "Select From Date", Toast.LENGTH_SHORT).show();
-            } else if (Todate.getText().toString().equals("")) {
+            } else if (leavebinding.etToDate.getText().toString().equals("")) {
                 Toast.makeText(this, "Select To Date", Toast.LENGTH_SHORT).show();
             } else {
                 showalert_leavetype();
             }
         });
 
-        submit_leave.setOnClickListener(v -> {
-            if (Fromdate.getText().toString().equals("")) {
+        leavebinding.submitLeave.setOnClickListener(v -> {
+            if (leavebinding.etFromDate.getText().toString().equals("")) {
                 Toast.makeText(this, "Select From Date", Toast.LENGTH_SHORT).show();
-            } else if (Todate.getText().toString().equals("")) {
+            } else if (leavebinding.etToDate.getText().toString().equals("")) {
                 Toast.makeText(this, "Select To Date", Toast.LENGTH_SHORT).show();
-            } else if (Leave_Type.getText().toString().equals("")) {
+            } else if ( leavebinding.LeaveType.getText().toString().equals("")) {
                 Toast.makeText(this, "Select Leave Type", Toast.LENGTH_SHORT).show();
             } else {
                 Submit();
@@ -255,9 +235,9 @@ public class Leave_Application extends AppCompatActivity {
     @SuppressLint("WrongConstant")
     public void showalert_leavetype() {
         et_Custsearch.getText().clear();
-        l_sideview.setVisibility(View.VISIBLE);
-        l_sideview.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-        l_sideview.openDrawer(Gravity.END);
+        leavebinding.leaveSide.setVisibility(View.VISIBLE);
+        leavebinding.leaveSide.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+        leavebinding.leaveSide.openDrawer(Gravity.END);
 
         leave_type.clear();
         leave_typeid.clear();
@@ -313,7 +293,7 @@ public class Leave_Application extends AppCompatActivity {
                 String selectedFromList = dailog_list.getItemAtPosition(position).toString();
                 for (int i = 0; i < leave_typename.size(); i++) {
                     if (selectedFromList.equals(leave_typename.get(i))) {
-                        Leave_Type.setText(selectedFromList);
+                        leavebinding.LeaveType.setText(selectedFromList);
                         Ltype_id = leave_typeid.get(i);
                         L_typename = leave_typename.get(i);
                         Lshortname = leave_type.get(i);
@@ -338,7 +318,7 @@ public class Leave_Application extends AppCompatActivity {
 
                     }
                 }
-                l_sideview.closeDrawer(Gravity.END);
+                leavebinding.leaveSide.closeDrawer(Gravity.END);
             });
 
         } catch (Exception e) {
@@ -360,8 +340,8 @@ public class Leave_Application extends AppCompatActivity {
 
 
 
-            String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
-            String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
+            String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etFromDate.getText().toString()));
+            String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etToDate.getText().toString()));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", "getlvlvalid");
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
@@ -398,9 +378,9 @@ public class Leave_Application extends AppCompatActivity {
                                         Leavedetails();
                                     } else {
                                         List_LeaveDates.clear();
-                                        Fromdate.setText("");
-                                        Todate.setText("");
-                                        Leave_Type.setText("");
+                                        leavebinding.etFromDate.setText("");
+                                        leavebinding.etToDate.setText("");
+                                        leavebinding.LeaveType.setText("");
 
                                         Toast.makeText(Leave_Application.this, msg, Toast.LENGTH_SHORT).show();
 
@@ -419,17 +399,17 @@ public class Leave_Application extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                         List_LeaveDates.clear();
-                        Fromdate.setText("");
-                        Todate.setText("");
-                        Leave_Type.setText("");
-                        balance_days.setText("");
+                        leavebinding.etFromDate.setText("");
+                        leavebinding.etToDate.setText("");
+                        leavebinding.LeaveType.setText("");
+                        leavebinding.balanceDays.setText("");
                         List_LeaveDates.clear();
 
                         Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
                         LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
-                        Leave_Application.leave_details.setLayoutManager(LayoutManagerpoc);
-                        Leave_Application.leave_details.setItemAnimator(new DefaultItemAnimator());
-                        Leave_Application.leave_details.setAdapter(l_details);
+                        Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+                        Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+                        Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
                         l_details.notifyDataSetChanged();
 
                         Toast.makeText(Leave_Application.this, "case failure", Toast.LENGTH_SHORT).show();
@@ -451,8 +431,8 @@ public class Leave_Application extends AppCompatActivity {
         List_LeaveDates.clear();
         DateFormat mFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
         try {
-            String F_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, Leave_Application.Fromdate.getText().toString()));
-            String T_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, Leave_Application.Todate.getText().toString()));
+            String F_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, leavebinding.etFromDate.getText().toString()));
+            String T_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_19, leavebinding.etToDate.getText().toString()));
 
             Date fromDate = mFormat.parse(F_date);
             Date toDate = mFormat.parse(T_date);
@@ -464,7 +444,7 @@ public class Leave_Application extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        Leave_Application.l_days.setText(listdate.size() + " days " + L_typename);
+        Leave_Application.leavebinding.lDays.setText(listdate.size() + " days " + L_typename);
         L_count = String.valueOf(listdate.size());
         totalval = Integer.parseInt((avilable));
         val = Integer.parseInt(L_count);
@@ -475,10 +455,10 @@ public class Leave_Application extends AppCompatActivity {
 
         } else {
             if (leavety.equals("LOP")) {
-                balance_days.setText("");
+                leavebinding.balanceDays.setText("");
             } else {
                 String balval = String.valueOf(bal);
-                balance_days.setText(balval + " " + "days remaining");
+                leavebinding.balanceDays.setText(balval + " " + "days remaining");
             }
         }
 
@@ -499,9 +479,9 @@ public class Leave_Application extends AppCompatActivity {
                 }
                 Leavedetails_adapter l_details = new Leavedetails_adapter(this, List_LeaveDates);
                 LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
-                Leave_Application.leave_details.setLayoutManager(LayoutManagerpoc);
-                Leave_Application.leave_details.setItemAnimator(new DefaultItemAnimator());
-                Leave_Application.leave_details.setAdapter(l_details);
+                Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+                Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+                Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
                 l_details.notifyDataSetChanged();
 
             }
@@ -534,8 +514,8 @@ public class Leave_Application extends AppCompatActivity {
             JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             String lstatus = (jsonArray.get(0).toString());
             if (lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
-                chart_layout.setVisibility(View.GONE);
-                mtcard.setVisibility(View.VISIBLE);
+                leavebinding.chartLayout.setVisibility(View.GONE);
+                leavebinding.mtcard.setVisibility(View.VISIBLE);
             } else {
 //                Log.d("Leave_data", jsonArray + "--" + jsonArray1);
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -556,9 +536,9 @@ public class Leave_Application extends AppCompatActivity {
 //                        Collections.reverse(Chart_list);
                             Piechart_adapter chart_details = new Piechart_adapter(Leave_Application.this, Chart_list);
 
-                            RL_piechart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-                            RL_piechart.setItemAnimator(new DefaultItemAnimator());
-                            RL_piechart.setAdapter(chart_details);
+                            leavebinding.RLPiechart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                            leavebinding.RLPiechart.setItemAnimator(new DefaultItemAnimator());
+                            leavebinding.RLPiechart.setAdapter(chart_details);
                             chart_details.notifyDataSetChanged();
 
                         }
@@ -588,12 +568,12 @@ public class Leave_Application extends AppCompatActivity {
             }
 
 
-            String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Fromdate.getText().toString()));
-            String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, Todate.getText().toString()));
+            String f_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etFromDate.getText().toString()));
+            String t_date = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_21, leavebinding.etToDate.getText().toString()));
 
             @SuppressLint("HardwareIds") String deviceId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-            l_address = ed_Address.getText().toString();
-            l_reason = ed_Reason.getText().toString();
+            l_address = leavebinding.edAddress.getText().toString();
+            l_reason = leavebinding.edReason.getText().toString();
 
 //   {
 //
@@ -665,19 +645,19 @@ public class Leave_Application extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            Fromdate.setText("");
-            Todate.setText("");
-            Leave_Type.setText("");
-            ed_Address.getText().clear();
-            ed_Reason.getText().clear();
-            balance_days.setText("");
+            leavebinding.etFromDate.setText("");
+            leavebinding.etToDate.setText("");
+            leavebinding.LeaveType.setText("");
+            leavebinding.edAddress.getText().clear();
+            leavebinding.edReason.getText().clear();
+            leavebinding.balanceDays.setText("");
             List_LeaveDates.clear();
 
             Leavedetails_adapter l_details = new Leavedetails_adapter(Leave_Application.this, List_LeaveDates);
             LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(Leave_Application.this);
-            Leave_Application.leave_details.setLayoutManager(LayoutManagerpoc);
-            Leave_Application.leave_details.setItemAnimator(new DefaultItemAnimator());
-            Leave_Application.leave_details.setAdapter(l_details);
+            Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+            Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+            Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
             l_details.notifyDataSetChanged();
 
 

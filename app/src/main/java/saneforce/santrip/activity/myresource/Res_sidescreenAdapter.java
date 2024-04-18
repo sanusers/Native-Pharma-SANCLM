@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,45 +23,42 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
+
 
 public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAdapter.ViewHolder> {
 
-    public static View list_resource;
+
     ArrayList<Resourcemodel_class> resList;
     ArrayList<String> resList1 = new ArrayList<>();
 
-
-    Map<String, Integer> valueCounts = new HashMap<>();
     Context context;
     String split_val;
     String cdate2 = "";
     SQLite sqLite;
-    int countvalue = 0;
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
 
     ArrayList<Resourcemodel_class> L_cLasses = new ArrayList<>();
 
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
-    LoginResponse loginResponse;
+
+    Resource_adapter resourceAdapter;
+    private OnItemClickListener onItemClickListener;
 
 
-    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val) {//
+    public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val) {
         this.context = context;
         this.resList = resList;
         this.split_val = split_val;
         sqLite = new SQLite(context);
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+
     }
 
     @NonNull
@@ -70,32 +68,47 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         return new ViewHolder(view);
     }
 
-    @SuppressLint("ResourceAsColor")
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
+
+    @SuppressLint({"ResourceAsColor", "WrongConstant"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String count = String.valueOf((position + 1));
         final Resourcemodel_class app_adapt = resList.get(position);
-//        sqLite = new SQLite(context);
 
-        Doc_geoneed = loginResponse.getGeoNeed();
-        Che_geoneed = loginResponse.getGEOTagNeedche();
-        Stk_geoneed = loginResponse.getGEOTagNeedstock();
-        Cip_geoneed = loginResponse.getGeoTagNeedcip();
-        Ult_geoneed = loginResponse.getGEOTagNeedunlst();
+
+        Doc_geoneed = SharedPref.getGeoNeed(context);
+        Che_geoneed = SharedPref.getGeotagNeedChe(context);
+        Stk_geoneed = SharedPref.getGeotagNeedStock(context);
+        Cip_geoneed = SharedPref.getGeotagNeedCip(context);
+        Ult_geoneed = SharedPref.getGeotagNeedUnlst(context);
 
         if (Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) {
             holder.Res_View.setVisibility(View.VISIBLE);
         }
 
-
-        String countlis = String.valueOf(resList.get(position));
-
-        Log.d("pos1", countlis);
         if (!split_val.equals("2")) {
+
+
+
 
             if (!app_adapt.getDcr_name().equals("") && !app_adapt.getDcr_name().equals("null")) {
                 holder.Res_Name.setText(app_adapt.getDcr_name());
             }
+
+            holder.Res_Name.setOnClickListener(view -> {
+                MyResource_Activity.datalist = app_adapt.getDcr_code();
+
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(resList.get(position));
+                }
+                MyResource_Activity.binding.drawerLayout.closeDrawer(Gravity.END);
+            });
+//adapter click to activity without intent or referec activity screen  in android java
+
             if (!app_adapt.getRes_custname().equals("") && !app_adapt.getRes_custname().equals("null")) {
                 holder.Res_culter.setText(app_adapt.getRes_custname());
             } else {
@@ -132,6 +145,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_rx.setText("");
             }
 
+
             if (app_adapt.getRes_Category().equals("") && app_adapt.getRes_rx().equals("") && app_adapt.getRes_Specialty().equals("")) {
                 holder.Res_Table1.setVisibility(View.GONE);
                 if (split_val.equals("1") || split_val.equals("2")) {
@@ -145,6 +159,13 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 holder.Res_Edit.setVisibility(View.GONE);
 //                holder.Res_View.setVisibility(View.GONE);
                 holder.Res_Table2.setVisibility(View.GONE);
+            }
+            if(split_val.equals("1")&&!app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")){
+                holder.Res_Table1.setVisibility(View.VISIBLE);
+                holder.Res_category.setVisibility(View.VISIBLE);
+
+                holder.Res_category.setText("From: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                holder.Res_rx.setText("To: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
             }
 
 
@@ -173,7 +194,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                 intent.putExtra("lat", app_adapt.getLatitude());
                 intent.putExtra("long", app_adapt.getLongtitude());
                 context.startActivity(intent);
-
             });
 
 
@@ -183,16 +203,17 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
                 } else {
                     Intent click = new Intent(context, MyResource_mapview.class);
-
                     click.putExtra("type", app_adapt.getRes_id());
                     click.putExtra("cust_name", app_adapt.getCustoum_name());
-                    click.putExtra("Dcr_name","");
-                    click.putExtra("pos_name","");
-                    click.putExtra("Town_loct","");
-
+                    click.putExtra("Dcr_name", "");
+                    click.putExtra("pos_name", "");
+                    click.putExtra("Town_loct", "");
                     context.startActivity(click);
                 }
             });
+
+
+
         } else {
             if (split_val.equals("2")) {
                 holder.Res_Table1.setVisibility(View.GONE);
@@ -218,20 +239,17 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     String colorText = "<font color=\"#F1536E\">" + app_adapt.getDcr_name() + val + "</font>";
                     holder.Res_Name.setText(Html.fromHtml(colorText));
 
-
                     Log.d("vistdates", "vist_ctrlDate" + "--" + app_adapt.getCustoum_name() + "--" + app_adapt.getVisit_count() + "--" + app_adapt.cust_name + "--" + app_adapt.getLatitude());
                     for (int i = 0; i < jsonvst_ctl.length(); i++) {
                         JSONObject jsonObject = jsonvst_ctl.getJSONObject(i);
 
                         if (app_adapt.getRes_custname().equals(jsonObject.getString("CustCode"))) {
-
                             if (app_adapt.getLatitude().equals(jsonObject.getString("Mnth"))) {
                                 String custom_name = ((jsonObject.getString("CustName")));
                                 String custom_code = ((jsonObject.getString("CustCode")));
                                 String Dcr_dt = ((jsonObject.getString("Dcr_dt")));
                                 String vist_ctrlDate = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, (jsonObject.getString("Dcr_dt"))));
                                 vcount++;
-
                                 L_cLasses.add(new Resourcemodel_class(custom_name, custom_code, vist_ctrlDate, Dcr_dt));
 
                                 Collections.sort(L_cLasses, new Comparator<Resourcemodel_class>() {
@@ -261,17 +279,21 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         }
     }
 
-    //    <Resourcemodel_class> L_cLasses
     @SuppressLint("NotifyDataSetChanged")
     public void filterList(ArrayList<Resourcemodel_class> filterdNames) {
         this.resList = filterdNames;
         notifyDataSetChanged();
     }
 
+
+
     @Override
     public int getItemCount() {
         return resList.size();
     }
+
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView Res_Name, Res_category, Res_specialty, Res_rx, Res_culter, listcount;
@@ -308,6 +330,9 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             Res_visitcntl = itemView.findViewById(R.id.Res_visitcntl);
 
         }
+    }
+    public interface OnItemClickListener {
+        void onItemClick(Resourcemodel_class item);
     }
 
 

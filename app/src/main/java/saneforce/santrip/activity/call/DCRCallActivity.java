@@ -16,8 +16,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -85,10 +83,9 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.map.custSelection.CustList;
 
-import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
+
 import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
@@ -97,13 +94,13 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityDcrcallBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
-import saneforce.santrip.utility.NetworkUtil;
 import saneforce.santrip.utility.TimeUtils;
 
 public class DCRCallActivity extends AppCompatActivity {
@@ -220,11 +217,6 @@ public class DCRCallActivity extends AppCompatActivity {
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
 
-
-
-
-
-
          Dialog   dialog = new Dialog(this);
             dialog.setContentView(R.layout.dcr_cancel_alert);
             dialog.setCancelable(false);
@@ -254,19 +246,10 @@ public class DCRCallActivity extends AppCompatActivity {
                 dialog.dismiss();
             });
 
-
-
-
-
-
-
-
         });
 
         dcrCallBinding.btnFinalSubmit.setOnClickListener(view ->{
-
-
-                    RemaindercallsActivity.vals_rm ="";
+            RemaindercallsActivity.vals_rm ="";
                     progressDialog = CommonUtilsMethods.createProgressDialog(DCRCallActivity.this);
 
                     if(save_valid.equalsIgnoreCase("1")){

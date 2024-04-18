@@ -46,8 +46,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         Intent intent = getIntent();
         String selectefromdDate = intent.getStringExtra("selectefromdDate");
-        if (!Leave_Application.Fromdate.getText().toString().equals("")) {
-            date1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
+        if (!Leave_Application.leavebinding.etFromDate.getText().toString().equals("")) {
+            date1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.leavebinding.etFromDate.getText().toString())));
 
         }
 
@@ -73,7 +73,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
         } else {
             monthYearText.setText(monthYearFromDate(date1));
             ArrayList<String> daysInMonth = daysInMonthArray(date1);
-            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, date1, monthYearFromDate(date1), Leave_Application.Fromdate.getText().toString(), "2"); // Pass selectedDate
+            CalendarAdapter calendarAdapter = new CalendarAdapter(daysInMonth, this, date1, monthYearFromDate(date1), Leave_Application.leavebinding.etFromDate.getText().toString(), "2"); // Pass selectedDate
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
             calendarRecyclerView.setLayoutManager(layoutManager);
             calendarRecyclerView.setAdapter(calendarAdapter);
@@ -99,7 +99,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
         } else {
             if (frm_date.equals("2")) {
-                LocalDate today1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
+                LocalDate today1 = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.leavebinding.etFromDate.getText().toString())));
                 int fromdate = today1.getMonthValue();
                 int fromyear = today1.getYear();
                 YearMonth yearMonth1 = YearMonth.from(date1);//2023-11
@@ -174,20 +174,20 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
             List_LeaveDates.clear();
             Leavedetails_adapter l_details = new Leavedetails_adapter(this, List_LeaveDates);
             LinearLayoutManager LayoutManagerpoc = new LinearLayoutManager(CalendarActivity.this);
-            Leave_Application.leave_details.setLayoutManager(LayoutManagerpoc);
-            Leave_Application.leave_details.setItemAnimator(new DefaultItemAnimator());
-            Leave_Application.leave_details.setAdapter(l_details);
+            Leave_Application.leavebinding.leaveDetails.setLayoutManager(LayoutManagerpoc);
+            Leave_Application.leavebinding.leaveDetails.setItemAnimator(new DefaultItemAnimator());
+            Leave_Application.leavebinding.leaveDetails.setAdapter(l_details);
             l_details.notifyDataSetChanged();
 
-            if (Leave_Application.Fromdate.getText().toString().equals("") || frm_date.equals("1")) {
+            if (Leave_Application.leavebinding.etFromDate.getText().toString().equals("") || frm_date.equals("1")) {
 
 
                 List_LeaveDates.clear();
-                Leave_Application.Fromdate.setText("");
-                Leave_Application.Todate.setText("");
-                Leave_Application.Leave_Type.setText("");
-                Leave_Application.l_days.setText("");
-                Leave_Application.balance_days.setText("");
+                Leave_Application.leavebinding.etFromDate.setText("");
+                Leave_Application.leavebinding.etToDate.setText("");
+                Leave_Application.leavebinding.LeaveType.setText("");
+                Leave_Application.leavebinding.lDays.setText("");
+                Leave_Application.leavebinding.balanceDays.setText("");
 
 
                 String date_sel = dayText + " " + monthYearFromDate(selectedDate);//yyyy-mm-dd
@@ -199,8 +199,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 //                if ((day == currentDate.getDayOfMonth() && (currentDate.getMonth()).equals(dateval.getMonth()) && currentDate.getDayOfYear() == dateval.getDayOfYear()) ||
 //                        (day <= currentDate.getDayOfMonth() && currentDate.getMonthValue() <= dateval.getMonthValue() ) ||
 //                        (day >= currentDate.getDayOfMonth() && currentDate.getMonthValue() <= dateval.getMonthValue() )) {
-                Leave_Application.Todate.setText("");
-                Leave_Application.Fromdate.setText(from_val);
+                Leave_Application.leavebinding.etToDate.setText("");
+                Leave_Application.leavebinding.etFromDate.setText(from_val);
                 finish();
 //                } else {
 ////                        Toast.makeText(calender_screen.this, "Not Select Date", Toast.LENGTH_SHORT).show();
@@ -208,23 +208,22 @@ public class CalendarActivity extends AppCompatActivity implements CalendarAdapt
 
             } else {
                 if (frm_date.equals("2")) {
-                    Leave_Application.Todate.setText("");
-                    Leave_Application.Leave_Type.setText("");
-                    Leave_Application.l_days.setText("");
-                    Leave_Application.balance_days.setText("");
+                    Leave_Application.leavebinding.etToDate.setText("");
+                    Leave_Application.leavebinding.LeaveType.setText("");
+                    Leave_Application.leavebinding.lDays.setText("");
+                    Leave_Application.leavebinding.balanceDays.setText("");
                     listdate.clear();
                     String date_sel = dayText + " " + monthYearFromDate(date1);//yyyy-mm-dd
-
 
                     date1val = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_4, date_sel)));
 
                     String date_sel1 = dayText + " " + monthYearFromDate(date1val);//yyyy-mm-dd
                     from_val1 = (TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_18, date_sel1));
                     int day = Integer.parseInt(dayText);
-                    Afterdate = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.Fromdate.getText().toString())));
+                    Afterdate = LocalDate.parse((TimeUtils.GetConvertedDate(TimeUtils.FORMAT_18, TimeUtils.FORMAT_4, Leave_Application.leavebinding.etFromDate.getText().toString())));
 
                     if (Afterdate.isBefore(date1val) || Afterdate.equals(date1val)) {
-                        Leave_Application.Todate.setText(from_val1);
+                        Leave_Application.leavebinding.etToDate.setText(from_val1);
 
                         finish();
                     } else {
