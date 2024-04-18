@@ -6,9 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +60,6 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
         this.context = context;
         this.listeduser1 = listeduser1;
         this.pos = pos;
-
         sqLite = new SQLite(context);
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
@@ -84,12 +80,9 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
         holder.itemTitle.setText(app_adapt.getDoc_name());
 
         holder.itemTitle.setOnClickListener(view -> {
-
             Log.d("itemTitle", app_adapt.getDoc_name());
             if (!Resource_profiling.profil_val.equals("")) {
-
                 Resource_profiling.drawer_Layout12.closeDrawer(GravityCompat.END);
-
                 if (pos.equals("Q")) {
                     Resource_profiling.Qual_code = app_adapt.getDoc_code();
                     Resource_profiling.Qualification.setText(app_adapt.getDoc_name());
@@ -100,15 +93,11 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                     Resource_profiling.cate_code = app_adapt.getDoc_code();
                     Resource_profiling.Category.setText(app_adapt.getDoc_name());
                 }
-
-
             } else {
-
-
                 RemaindercallsActivity.townname.setText(app_adapt.getDoc_name());
                 RemaindercallsActivity.REm_hq_code = app_adapt.getDoc_code();
                 String hqcode = SharedPref.getDcrdoc_hqcode(context);
-                Log.d("hqlist_data", hqcode);
+                Log.d("hqlist_data", hqcode+"--"+ app_adapt.getDoc_code());
                 RemaindercallsActivity.slt_hq.add(hqcode);
                 if (RemaindercallsActivity.slt_hq.size() != 0) {
                     for (int v = 0; v < RemaindercallsActivity.slt_hq.size(); v++) {
@@ -120,20 +109,12 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 }
                 if (Vals.equals("")) {
                     getData(app_adapt.getDoc_code());
-
-
                 }
-
-
                 RemaindercallsActivity.drawer_Layout12.closeDrawer(GravityCompat.END);
 
             }
         });
-
-
     }
-
-
     @Override
     public int getItemCount() {
         return listeduser1.size();
@@ -145,12 +126,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox ch_cluster;
         TextView itemTitle;
-        ImageView close_sideview;
-        LinearLayout linearlist;
-
-        //        //ch_cluster,itemTitle
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemTitle = (itemView).findViewById(R.id.itemTitle);
@@ -162,20 +138,21 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
         try {
             RemaindercallsActivity.listeduser.clear();
             String Town_Name = "";
+            Log.d("check_json", hqcode);
             JSONArray jsonvst_Doc = sqLite.getDcr_datas(hqcode);
-            Log.d("check_json", jsonvst_Doc.toString());
+
             if (!jsonvst_Doc.equals("[]") || !jsonvst_Doc.equals("null") && loginResponse.getRemainder_geo().equals("0")) {
                 for (int i = 0; i < jsonvst_Doc.length(); i++) {
                     JSONObject jsonObject = jsonvst_Doc.getJSONObject(i);
+                    Log.d("geo_tack",loginResponse.getGeoChk());
                     if (loginResponse.getGeoChk().equals("1")) {//"Lat":"", "Long":"",
-                        if (!jsonObject.getString("Lat").equals("") && !jsonObject.getString("Long").equals("")) {
+                        if ((!jsonObject.getString("Lat").equals("")) && (!jsonObject.getString("Long").equals(""))) {
 
                             String Code = jsonObject.getString("Code");
                             String Name = jsonObject.getString("Name");
                             String Category = jsonObject.getString("Category");
                             String Specialty = jsonObject.getString("Specialty");
                             Town_Name = jsonObject.getString("Town_Name");
-
                             String CategoryCode = jsonObject.getString("CategoryCode");
                             String SpecialtyCode = jsonObject.getString("SpecialtyCode");
                             String Town_Code = jsonObject.getString("Town_Code");
@@ -184,7 +161,6 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                             RemaindercallsActivity.listeduser.add(doc_VALUES);
                         }
                     } else {
-
                         String Code = jsonObject.getString("Code");
                         String Name = jsonObject.getString("Name");
                         String Category = jsonObject.getString("Category");
@@ -198,11 +174,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                         remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, Category, Specialty, Town_Name, CategoryCode, SpecialtyCode, Town_Code, SfType);
                         RemaindercallsActivity.listeduser.add(doc_VALUES);
                     }
-
-
                 }
-
-
             }
 
             RemaindercallsActivity.remaindercallsAdapter = new remaindercalls_adapter(context, RemaindercallsActivity.listeduser);
@@ -216,19 +188,13 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 
     public void getData(String hq_code) {
-        ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
-
+//        ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
         List<MasterSyncItemModel> list = new ArrayList<>();
-
-
         list.add(new MasterSyncItemModel("Doctor", 0, "Doctor", "getdoctors", Constants.DOCTOR + hq_code, 0, false));
-
         for (int i = 0; i < list.size(); i++) {
             syncMaster(list.get(i).getMasterOf(), list.get(i).getRemoteTableName(), list.get(i).getLocalTableKeyName(), hq_code);
             Log.d("check_syndata", list.get(i).getMasterOf() + "====" + list.get(i).getRemoteTableName() + "===" + list.get(i).getLocalTableKeyName());
@@ -257,9 +223,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                 jsonObject.put("Designation", loginResponse.getDesig());
                 jsonObject.put("state_code", loginResponse.getState_Code());
                 jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
-
                 Log.d("jsonObject", String.valueOf(jsonObject));
-
                 Map<String, String> mapString = new HashMap<>();
 
                 if (masterFor.equalsIgnoreCase("Doctor")) {
@@ -277,18 +241,25 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                 Log.e("test", "response : " + Objects.requireNonNull(response.body()) + "--");
                                 JsonElement jsonElement = response.body();
 
-
                                 Log.d("json_check", jsonElement.toString());
                                 progressDialog.dismiss();
 
                                 if (!jsonElement.isJsonNull() || !jsonElement.equals("[]")) {
-
                                     if (jsonElement.isJsonArray()) {
                                         JsonArray jsonArray1 = jsonElement.getAsJsonArray();
-                                        Log.d("check_jsonval", jsonArray1.toString());
+                                        Log.d("check_jsonval",hq_code+"--"+jsonArray1.toString());
+
+                                        /*MasterDataTable MainData =new MasterDataTable();
+                                        MainData.setMasterKey("Doctor_"+hq_code);
+                                        MainData.setMasterValuse(jsonArray1.toString());
+                                        MainData.setSyncstatus(0);*/
+
+
+
+                                        sqLite.saveMasterSyncData("Doctor_" +hq_code, jsonArray1.toString(), 0);
+
                                         if (masterFor.equals("Doctor")) {
                                             progressDialog.dismiss();
-
                                             change_hq(jsonArray1, LocalTableKeyName);
                                         }
                                         if (masterFor.equals("Subordinate")) {//Subordinate
@@ -305,7 +276,6 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                     Toast.makeText(context, "No Data", Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
                                 }
-
                                 RemaindercallsActivity.remaindercallsAdapter.notifyDataSetChanged();
                             } catch (Exception e) {
                                 progressDialog.dismiss();
@@ -360,8 +330,9 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
             RemaindercallsActivity.listeduser.clear();
             JSONArray jsonArray1 = new JSONArray(json.toString());
             SharedPref.setDcr_dochqcode(context, hq_code);
+            Log.d("hq_check",hq_code+"-----"+ jsonArray1.toString());
 
-            sqLite.insert_docvalues("Doctor_" + hq_code, jsonArray1.toString());
+            sqLite.insert_docvalues( hq_code, jsonArray1.toString());
             String Town_Name = "";
             if (jsonArray1.length() > 0) {
                 if (!jsonArray1.equals("[]") || !jsonArray1.equals("null") && loginResponse.getRemainder_geo().equals("0")) {

@@ -1,9 +1,6 @@
 package saneforce.santrip.activity.remaindercalls;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,13 +18,16 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.navigation.NavigationView;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -34,7 +35,7 @@ import saneforce.santrip.storage.SharedPref;
 public class RemaindercallsActivity extends AppCompatActivity {
     ImageView back_btn;
     SQLite sqLite;
-    String SfType = "", Sf_code = "";
+    String SfType = "";
     LoginResponse loginResponse;
     TextView search_bar, headtext_id;
     RelativeLayout hq_name1;
@@ -54,8 +55,6 @@ public class RemaindercallsActivity extends AppCompatActivity {
     ArrayList<remainder_modelclass> hq_view = new ArrayList<>();
     ArrayList<remainder_modelclass> filterd_hqname = new ArrayList<>();
     public static String vals_rm = "";
-    ProgressDialog progressDialog = null;
-    ApiInterface api_interface;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -74,7 +73,6 @@ public class RemaindercallsActivity extends AppCompatActivity {
         close_sideview = findViewById(R.id.close_sideview);
         et_Custsearch = findViewById(R.id.et_Custsearch);
         hq_name1 = findViewById(R.id.hq_name1);
-
         sqLite = new SQLite(this);
         loginResponse = new LoginResponse();
         loginResponse = sqLite.getLoginData();
@@ -93,34 +91,23 @@ public class RemaindercallsActivity extends AppCompatActivity {
 
         townname.setText(SharedPref.getHqName(this));
 
-
-
         if (!loginResponse.getDesig_Code().equals("MR")) {
             townname.setOnClickListener(v -> {
                 show_hq();
                 drawer_Layout12.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-
             });
-
         }
 
         headtext_id.setText("HeadQuarter");
-        Show_Subordinate();
-
 
         show_docdata();
-
         search_bar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 filter(editable.toString());
@@ -130,20 +117,15 @@ public class RemaindercallsActivity extends AppCompatActivity {
         et_Custsearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 filter_hq(editable.toString());
             }
         });
-
     }
 
 
@@ -153,24 +135,21 @@ public class RemaindercallsActivity extends AppCompatActivity {
         try {
             listeduser.clear();
             JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
-
             String Town_Name = "";
 
-            Log.d("jsonlist", jsonvst_Doc.toString());//
+            Log.d("jsonlist","Doctor_"+SharedPref.getHqCode(this) +"--"+jsonvst_Doc.toString());
 
-            sqLite.insert_docvalues("Doctor_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+//            MasterDataTable MainData =new MasterDataTable();
+//            MainData.setMasterKey("Doctor_"+SharedPref.getHqCode(this));
+//            MainData.setMasterValuse(jsonvst_Doc.toString());
+//            MainData.setSyncstatus(0);
+//            MasterDataTable mNChecked= masterDataDao.getMasterSyncDataByKey(masterSyncItemModels.get(position).getLocalTableKeyName());
 
-
+            sqLite.saveMasterSyncData("Doctor_"+SharedPref.getHqCode(this), jsonvst_Doc.toString(), 0);
             SharedPref.setDcr_dochqcode(this, "Doctor_" + SharedPref.getHqCode(this));
-
-
             if (jsonvst_Doc.length() > 0) {
                 for (int i = 0; i < jsonvst_Doc.length(); i++) {
                     JSONObject jsonObject = jsonvst_Doc.getJSONObject(i);
-                    //"lat":"13.029991513522175",
-                    //"long":"80.24135816842318",
-
-
                     if (SharedPref.getGeoNeed(this).equals("1")) {//"Lat":"", "Long":"",
                         if (!jsonObject.getString("Lat").equals("") && !jsonObject.getString("Long").equals("")) {
                             String Code = jsonObject.getString("Code");
@@ -178,11 +157,9 @@ public class RemaindercallsActivity extends AppCompatActivity {
                             String Category = jsonObject.getString("Category");
                             String Specialty = jsonObject.getString("Specialty");
                             Town_Name = jsonObject.getString("Town_Name");
-
                             String CategoryCode = jsonObject.getString("CategoryCode");
                             String SpecialtyCode = jsonObject.getString("SpecialtyCode");
                             String Town_Code = jsonObject.getString("Town_Code");
-
 
                             remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, Category, Specialty, Town_Name, CategoryCode, SpecialtyCode, Town_Code, SfType);
                             listeduser.add(doc_VALUES);
@@ -193,7 +170,6 @@ public class RemaindercallsActivity extends AppCompatActivity {
                         String Category = jsonObject.getString("Category");
                         String Specialty = jsonObject.getString("Specialty");
                         Town_Name = jsonObject.getString("Town_Name");
-
                         String CategoryCode = jsonObject.getString("CategoryCode");
                         String SpecialtyCode = jsonObject.getString("SpecialtyCode");
                         String Town_Code = jsonObject.getString("Town_Code");
@@ -201,8 +177,6 @@ public class RemaindercallsActivity extends AppCompatActivity {
                         remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, Category, Specialty, Town_Name, CategoryCode, SpecialtyCode, Town_Code, SfType);
                         listeduser.add(doc_VALUES);
                     }
-
-
                 }
                 Log.d("listsize_SfType", String.valueOf(SfType));
                 remaindercallsAdapter = new remaindercalls_adapter(this, listeduser);
@@ -210,10 +184,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
                 remainded_view.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
                 remainded_view.setAdapter(remaindercallsAdapter);
                 remaindercallsAdapter.notifyDataSetChanged();
-
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -281,8 +252,6 @@ public class RemaindercallsActivity extends AppCompatActivity {
                     remainder_modelclass doc_VALUES = new remainder_modelclass(Code, Name, "");
                     hq_view.add(doc_VALUES);
                 }
-//                Log.d("listsize", String.valueOf(hq_view));
-
                 hqlistadapter = new cuslistadapter(RemaindercallsActivity.this, hq_view, "");
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
                 app_recycler_view.setLayoutManager(mLayoutManager);

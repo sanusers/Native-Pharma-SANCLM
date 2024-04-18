@@ -32,7 +32,7 @@
             android:text="Work Type"
             android:textColor="@color/cl_text_color"
             android:textSize="@dimen/_6sdp"
-             />
+            />
 
 
     </LinearLayout>
@@ -46,6 +46,5 @@
         android:layout_marginEnd="@dimen/_5sdp"
         android:background="@color/tab_gray" />
 </LinearLayout>
-
 
 

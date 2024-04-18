@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.myresource.callstatusview.Call_statusfrist_view"
+    tools:ignore="Orientation">
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/view_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/NO_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+
+        android:orientation="vertical"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/img_rcpa"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+            android:fontFamily="@font/satoshi_medium"
+            android:gravity="center"
+            android:text="@string/yet_to_add_rcpa"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_7ssp" />
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

@@ -26,7 +26,7 @@
             android:layout_marginTop="@dimen/_4sdp"
             android:text="doctor name"
             android:textColor="#282A3C"
-            android:textSize="@dimen/_8sdp"
+            android:textSize="@dimen/_7sdp"
             android:textStyle="bold"
             tools:ignore="DuplicateIds" />
 
@@ -40,7 +40,7 @@
 
             android:text="catagory"
             android:textColor="#282A3C"
-            android:textSize="@dimen/_8sdp" />
+            android:textSize="@dimen/_7sdp" />
 
         <TextView
             android:id="@+id/doc_spec"
@@ -51,7 +51,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:text="Specality"
             android:textColor="#282A3C"
-            android:textSize="@dimen/_8sdp" />
+            android:textSize="@dimen/_7sdp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
             android:layout_marginLeft="@dimen/_4sdp"
             android:layout_marginTop="@dimen/_4sdp"
             android:layout_marginBottom="@dimen/_5sdp"
-            android:background="@drawable/bg_light_grey_2">
+            android:background="@drawable/bg_light_pink">
 
             <TextView
                 android:id="@+id/town_name"
@@ -68,7 +68,8 @@
                 android:fontFamily="@font/satoshi_medium"
                 android:text="townname"
                 android:textColor="#282A3C"
-                android:textSize="@dimen/_8sdp"
+                android:textSize="@dimen/_7sdp"
+                android:padding="@dimen/_4sdp"
                 android:textStyle="bold" />
 
         </LinearLayout>

@@ -252,6 +252,12 @@
             android:name=".activity.myresource.Resource_profiling"
             android:exported="false"
             android:screenOrientation="landscape" />
+        <activity android:name="saneforce.santrip.activity.myresource.callstatusview.Callsstatus_screenview"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity android:name="saneforce.santrip.activity.myresource.Categoryview.Cate_viewscreen"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
