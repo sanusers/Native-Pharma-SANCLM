@@ -20,7 +20,26 @@ public class DcrDetailModelList {
     String sdp_name;
     String remark,call_feedback;
     String hq_name;
-    String modTime,visitTime;
+
+    public String getDct_id() {
+        return dct_id;
+    }
+
+    public void setDct_id(String dct_id) {
+        this.dct_id = dct_id;
+    }
+
+    public String getDcr_detial_id() {
+        return dcr_detial_id;
+    }
+
+    public void setDcr_detial_id(String dcr_detial_id) {
+        dcr_detial_id = dcr_detial_id;
+    }
+
+    String modTime,visitTime,dct_id,dcr_detial_id;
+
+
 
     public String getModTime() {
         return modTime;
@@ -126,7 +145,7 @@ public class DcrDetailModelList {
         this.name = name;
     }
 
-    public DcrDetailModelList(String hqName,String name, String code,String typeCust, String type, String sdp_name, String pob, String remark, String jointwork, String call_feedback,String visitTime,String modTime) {
+    public DcrDetailModelList(String hqName,String name, String code,String typeCust, String type, String sdp_name, String pob, String remark, String jointwork, String call_feedback,String visitTime,String modTime,String dcr_id,String dcr_detial_id) {
         this.hq_name = hqName;
         this.name = name;
         this.code = code;
@@ -139,6 +158,8 @@ public class DcrDetailModelList {
         this.call_feedback = call_feedback;
         this.visitTime = visitTime;
         this.modTime = modTime;
+        this.dct_id = dcr_id;
+        this.dcr_detial_id= dcr_detial_id;
     }
 
     public DcrDetailModelList(String name, String typeCust, String type, String sdp_name, String pob, String remark, String jointwork, String call_feedback,int selected_pos) {
@@ -151,5 +172,6 @@ public class DcrDetailModelList {
         this.jointWork = jointwork;
         this.call_feedback = call_feedback;
         this.selected_pos = selected_pos;
+
     }
 }

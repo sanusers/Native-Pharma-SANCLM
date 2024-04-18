@@ -106,6 +106,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
             popup.setOnMenuItemClickListener(menuItem -> {
                 switch (menuItem.getItemId()) {
                     case 0:
+
                         SortTable("All");
                         break;
                     case 1:

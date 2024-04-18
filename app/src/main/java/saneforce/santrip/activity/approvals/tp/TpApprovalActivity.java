@@ -320,6 +320,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
                     try {
+                        tpModelLists.clear();
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         if (jsonArray.length() > 0) {
                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -429,6 +430,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                 assert response.body() != null;
                 if (response.isSuccessful()) {
                     progressDialog.dismiss();
+                    tpDetailedModelsList.clear();
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         if (jsonArray.length() > 0) {

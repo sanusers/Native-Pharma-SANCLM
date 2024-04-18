@@ -1,26 +1,55 @@
 package saneforce.santrip.activity.approvals.dcr.detailView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.OnItemClickListenerApproval;
 import saneforce.santrip.activity.approvals.dcr.detailView.adapter.AdapterCusSingleList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DCRApprovalList;
 import saneforce.santrip.activity.approvals.dcr.pojo.DcrDetailModelList;
 import saneforce.santrip.activity.approvals.tp.pojo.TpModelList;
+import saneforce.santrip.activity.reports.dayReport.adapter.EventCaptureAdapter;
+import saneforce.santrip.activity.reports.dayReport.adapter.ReoportRcpaAdapter;
+import saneforce.santrip.activity.reports.dayReport.model.DayReportRcpaModelClass;
+import saneforce.santrip.activity.reports.dayReport.model.EventCaptureModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityDcrDetailViewBinding;
+import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkStatusTask;
 
 public class DcrDetailViewActivity extends AppCompatActivity implements OnItemClickListenerApproval {
     public static ArrayList<DcrDetailModelList> dcrDetailModelLists;
@@ -181,4 +210,8 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     public void onItemClick(TpModelList tpModelLists,int pos) {
 
     }
+
+
+
+
 }

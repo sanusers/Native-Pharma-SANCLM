@@ -79,14 +79,16 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     ProgressDialog progressDialog;
 
     String acdCode;
+    String ReportingSfCode;
 
 
 
-    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode) {
+    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode) {
         this.context = context;
         this.arrayList = arrayList;
         this.supportModelArray = arrayList;
         this.reportOf = reportOf;
+        this.ReportingSfCode=ReportingSfCode;
         this.acdCode=ActCode;
         commonUtilsMethods = new CommonUtilsMethods(context);
         checkInOutNeed = callCheckInOutNeed.equalsIgnoreCase("0");
@@ -204,13 +206,17 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.rcpaLayoutitle.setOnClickListener(view -> {
 
             if(holder.rcpaLayout.getVisibility()==View.VISIBLE){
+                holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                 holder.rcpaLayout.setVisibility(View.GONE);
             }else {
-                Rcpagetdata(holder.rvRcpa,holder.rcpaLayout);
+                holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                if(rcpaList.size()>0){
+                    holder.rcpaLayout.setVisibility(View.VISIBLE);
+                }else {
+                    Rcpagetdata(holder.rvRcpa,holder.rcpaLayout);
+                }
+
             }
-
-
-
         });
 
     }
@@ -302,7 +308,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker;
         TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt;
-        ImageView nameIcon, viewMoreArrow;
+        ImageView nameIcon, viewMoreArrow,rcpa_arrow;
         LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle;
         RelativeLayout rlNextVisit;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
@@ -335,7 +341,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             EventLayout=itemView.findViewById(R.id.eventcaptureLayout);
             rcpaLayout=itemView.findViewById(R.id.rcpaLayout);
             rcpaLayoutitle=itemView.findViewById(R.id.rcpaLayoutitle);
-
+            rcpa_arrow=itemView.findViewById(R.id.rcpa_arrow);
             nameIcon = itemView.findViewById(R.id.iconName);
             expandLayout = itemView.findViewById(R.id.constraint_expand_view);
             viewMore = itemView.findViewById(R.id.viewMore);
@@ -354,7 +360,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results = new FilterResults();
-
             ArrayList<DayReportDetailModel> filteredModelArray = new ArrayList<>();
             if (charSequence != null && charSequence.length() > 0) {
                 for (DayReportDetailModel model : supportModelArray) {
@@ -400,7 +405,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         jsonObject.put("dcrdetail_cd", DcrDetailsCode);
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
-                        jsonObject.put("Rsf", SharedPref.getHqCode(context));
+                        jsonObject.put("Rsf", ReportingSfCode);
                         jsonObject.put("sf_type", SharedPref.getSfType(context));
                         jsonObject.put("Designation", SharedPref.getDesig(context));
                         jsonObject.put("state_code", SharedPref.getStateCode(context));
@@ -489,7 +494,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         jsonObject.put("dcrdetail_cd", DcrDetailsCode);
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
-                        jsonObject.put("Rsf", SharedPref.getHqCode(context));
+                        jsonObject.put("Rsf",ReportingSfCode);
                         jsonObject.put("sf_type", SharedPref.getSfType(context));
                         jsonObject.put("Designation", SharedPref.getDesig(context));
                         jsonObject.put("state_code", SharedPref.getStateCode(context));
@@ -518,7 +523,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 recyclerView.setAdapter(adapter);
                                                 layout.setVisibility(View.VISIBLE);
                                             }else {
-                                                commonUtilsMethods.showToastMessage(context, "No RCPA Data");
+                                                commonUtilsMethods.showToastMessage(context, "No RCPA Values");
                                             }
 
                                         }

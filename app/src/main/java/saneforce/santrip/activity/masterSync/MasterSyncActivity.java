@@ -165,8 +165,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
             if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
-                    sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
-                //    sync(Constants.MY_DAY_PLAN, "getmydayplan", dcrModelArray, 0); // to get all the HQ list initially only for MGR
+                   /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
+                    sync(Constants.DOCTOR, "getmydayplan", dcrModelArray, 1);
+                    // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
                 } else {
                     commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
@@ -993,7 +994,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-
+           System.out.println("baseUrl-->");
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", remoteTableName);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
@@ -1015,9 +1016,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("ReqDt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                     break;
                 }
-                case "gettpdetail": {
-                    jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
-                    jsonObject.put("Year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                case "getall_tp": {
+                    jsonObject.put("tp_month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_8, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
+                    jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
             }
@@ -1141,7 +1142,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 }
 
                                             }
-                                        } else if (masterOf.equalsIgnoreCase(Constants.SUBORDINATE) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getsubordinate")) {
+                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmydayplan")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
@@ -1668,14 +1669,32 @@ public class    MasterSyncActivity extends AppCompatActivity {
         apiSuccessCount = 0;
         if (jsonArray.length() > 0) {
             try {
-                binding.hqName.setText(jsonArray.getJSONObject(0).getString("name"));
-                rsf = jsonArray.getJSONObject(0).getString("id");
-                SharedPref.saveHq(MasterSyncActivity.this, jsonArray.getJSONObject(0).getString("name"), rsf);
+                String HqName="", Hqcode="";
+                JSONObject firstObject = jsonArray.getJSONObject(0);
+                if (firstObject.getString("FWFlg").equalsIgnoreCase("F")) {
+                    Hqcode = firstObject.getString("SFMem");
+
+                    HqName=  firstObject.getString("HQNm");
+                }
+                if (jsonArray.length() == 2) {
+                    JSONObject secondObject = jsonArray.getJSONObject(1);
+                    if (secondObject.getString("FWFlg").equalsIgnoreCase("F")) {
+                        Hqcode = secondObject.getString("SFMem");
+                        HqName=  secondObject.getString("HQNm");
+                    }
+                }
+           //     SharedPref.saveHq(MasterSyncActivity.this, HqName, Hqcode);
+
+                binding.hqName.setText(HqName);
+                rsf = Hqcode;
+               // SharedPref.saveHq(MasterSyncActivity.this, jsonArray.getJSONObject(0).getString("name"), rsf);
                 prepareArray(rsf);// to replace the new rsf values
                 masterSyncAll(false);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }else {
+            masterSyncAll(false);
         }
     }
 

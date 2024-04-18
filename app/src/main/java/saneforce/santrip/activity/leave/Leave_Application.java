@@ -317,8 +317,6 @@ public class Leave_Application extends AppCompatActivity {
                         Ltype_id = leave_typeid.get(i);
                         L_typename = leave_typename.get(i);
                         Lshortname = leave_type.get(i);
-
-
                         try {
                             JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
                             for (int d = 0; d < jsonArray1.length(); d++) {
@@ -646,11 +644,9 @@ public class Leave_Application extends AppCompatActivity {
                     call.enqueue(new Callback<JsonElement>() {
                         @Override
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-
                             if (response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-
-                                Toast.makeText(Leave_Application.this, "Leave submit successfully", Toast.LENGTH_SHORT).show();
+                                commonUtilsMethods.showToastMessage(Leave_Application.this,"Leave submit successfully");
                                 finish();
                             }
                         }

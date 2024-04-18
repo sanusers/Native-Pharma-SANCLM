@@ -45,7 +45,7 @@ public class TaggingAdapter extends RecyclerView.Adapter<TaggingAdapter.ViewHold
         holder.tv_name.setText(taggedMapLists.get(position).getName());
         holder.tv_address.setText(taggedMapLists.get(position).getAddr());
         holder.tv_meters.setText(String.format("%s Meter", taggedMapLists.get(position).getMeters()));
-
+        System.out.println("latLong--->"+taggedMapLists.get(position).getLat());
 
         if (taggedMapLists.get(position).clicked) {
             holder.img_info.setImageDrawable(context.getResources().getDrawable(R.drawable.info_icon_pink));

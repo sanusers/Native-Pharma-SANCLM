@@ -279,7 +279,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                             }
                         }
                         SharedPref.setTodayCallList(context, jsonArray.toString());
-                        commonUtilsMethods.showToastMessage(context, "CAll Deleted");
+                        commonUtilsMethods.showToastMessage(context, "Call Deleted");
 
 
                      /*   JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DCR);

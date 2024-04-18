@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +29,7 @@ import java.util.Objects;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.santrip.activity.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.call.profile.CustomerProfile;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -39,6 +42,8 @@ import saneforce.santrip.storage.SharedPref;
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     Context context;
     ArrayList<CustList> cusListArrayList;
+
+    ArrayList<CustList> FillteredList;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
     SQLite sqLite;
@@ -61,6 +66,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         sqLite = new SQLite(context);
         this.needCheckInOut = needCheckInOut;
         this.isFrom = isFrom;
+        this.FillteredList=cusListArrayList;
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
 
@@ -74,6 +80,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             tv_cusName = dialogCheckIn.findViewById(R.id.txt_cus_name);
             tv_dateTime = dialogCheckIn.findViewById(R.id.txt_date_time);
         }
+
     }
 
     @NonNull
@@ -222,4 +229,6 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
             view_top = itemView.findViewById(R.id.view_top);
         }
     }
+
+
 }

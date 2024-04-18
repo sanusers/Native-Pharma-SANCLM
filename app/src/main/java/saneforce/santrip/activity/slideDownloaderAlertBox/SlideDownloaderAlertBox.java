@@ -40,7 +40,6 @@ public class SlideDownloaderAlertBox {
     public static Dialog dialog;
     static int totalcount = 0;
     public static boolean MoveMainFlag;
-
     public static ArrayList<String> slideId123 = new ArrayList<>();
 
 
@@ -84,7 +83,6 @@ public class SlideDownloaderAlertBox {
                 slideIdList.clear();
             }
 
-
         if (Slide_list.size() > 0) {
             if(AleartShowFlag){
 
@@ -122,9 +120,7 @@ public class SlideDownloaderAlertBox {
                 }
             }
                 adapter.notifyDataSetChanged();
-
-
-                cancel_img.setOnClickListener(v -> {
+            cancel_img.setOnClickListener(v -> {
                     MoveMainFlag = false;
                     dialog.dismiss();
                 });

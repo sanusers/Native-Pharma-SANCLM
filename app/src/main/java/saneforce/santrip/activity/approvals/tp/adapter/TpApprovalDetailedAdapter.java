@@ -4,6 +4,7 @@ import static saneforce.santrip.activity.approvals.tp.TpApprovalActivity.Selecte
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,21 +32,23 @@ public class TpApprovalDetailedAdapter extends RecyclerView.Adapter<TpApprovalDe
     public TpApprovalDetailedAdapter(Context context, ArrayList<TpDetailedModel> tpModelLists) {
         this.context = context;
         this.tpDetailedList = tpModelLists;
+
+
     }
 
     @NonNull
     @Override
     public TpApprovalDetailedAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.adapter_tp_detailed_list, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_tp_detailed_list, parent, false);
         return new ViewHolder(view);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull TpApprovalDetailedAdapter.ViewHolder holder, int position) {
-        holder.tvDayNo.setText(tpDetailedList.get(position).getDayNo());
+            holder.tvDayNo.setText(tpDetailedList.get(position).getDayNo());
 
-        if (SelectedDay.equalsIgnoreCase(tpDetailedList.get(position).getDayNo())) {
+            if (SelectedDay.equalsIgnoreCase(tpDetailedList.get(position).getDayNo())) {
             holder.rvViewDetailed.setVisibility(View.VISIBLE);
             holder.listArrow.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.up_arrow));
             tpClickedList = new ArrayList<>();

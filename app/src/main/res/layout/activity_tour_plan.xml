@@ -306,12 +306,11 @@
                             android:id="@+id/tv_sync"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginStart="@dimen/_6sdp"
-                            android:layout_marginTop="@dimen/_4sdp"
-                            android:layout_marginEnd="@dimen/_6sdp"
-                            android:layout_marginBottom="@dimen/_6sdp"
+                            android:layout_marginStart="@dimen/_2sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginEnd="@dimen/_2sdp"
+                            android:layout_marginBottom="@dimen/_2sdp"
                             android:background="@drawable/bg_light_pink_2"
                             android:drawablePadding="@dimen/_1sdp"
                             android:fontFamily="@font/satoshi_medium"
@@ -326,10 +325,11 @@
                             tools:ignore="SpUsage" />
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/rejectionReasonLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/summary"
+                            android:layout_below="@id/tv_sync"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentEnd="true"
                             android:layout_marginStart="@dimen/_6sdp"
@@ -381,6 +381,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/rejectionReasonLayout"
+                            android:layout_marginTop="14dp"
                             android:paddingBottom="@dimen/_5sdp" />
 
                     </RelativeLayout>
