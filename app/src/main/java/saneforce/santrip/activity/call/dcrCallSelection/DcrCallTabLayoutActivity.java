@@ -2,6 +2,8 @@ package saneforce.santrip.activity.call.dcrCallSelection;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
+import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -84,7 +86,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         dcrSelectionBinding.viewPagerCallSelection.setAdapter(viewPagerAdapter);
         dcrSelectionBinding.tabLayoutCall.setupWithViewPager(dcrSelectionBinding.viewPagerCallSelection);
         //dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(viewPagerAdapter.getCount());
-        dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(0);
+        dcrSelectionBinding.viewPagerCallSelection.setOffscreenPageLimit(7);
 
         dcrSelectionBinding.ivBack.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
     }
@@ -128,4 +130,7 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             Log.v("required_data", "--tab-dcr-" + e);
         }
     }
+
+
+
 }

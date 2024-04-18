@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -220,22 +221,17 @@ public class DCRCallActivity extends AppCompatActivity {
         });
 
         dcrCallBinding.btnCancel.setOnClickListener(view -> {
-
-
-
-
-
-
-         Dialog   dialog = new Dialog(this);
-            dialog.setContentView(R.layout.dcr_cancel_alert);
-            dialog.setCancelable(false);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
-            TextView btn_yes=dialog.findViewById(R.id.btn_yes);
-            TextView btn_no=dialog.findViewById(R.id.btn_no);
+                Dialog   dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dcr_cancel_alert);
+                dialog.setCancelable(false);
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+                TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+                TextView btn_no=dialog.findViewById(R.id.btn_no);
 
 
             btn_yes.setOnClickListener(view12 -> {
+                dialog.dismiss();
                 if (save_valid.equalsIgnoreCase("1")){
                     finish();
                 }else{
@@ -244,23 +240,16 @@ public class DCRCallActivity extends AppCompatActivity {
                         Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+                        finish();
                     } else {
                         getOnBackPressedDispatcher().onBackPressed();
                     }
                 }
-
             });
 
             btn_no.setOnClickListener(view12 -> {
                 dialog.dismiss();
             });
-
-
-
-
-
-
-
 
         });
 
@@ -272,7 +261,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     if(save_valid.equalsIgnoreCase("1")){
                         Remainder_calls();
-//                Log.d("remaonder_doc",jsonSaveDcr.toString());
+
                     }else{
                         isCreateJsonSuccess = true;
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
@@ -289,21 +278,14 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
 
                         if (CheckRequiredFunctions() && CheckCurrentLoc()) {
+
                             CreateJsonFileCall();
                             if (isCreateJsonSuccess) {
+
                                 if(isFromActivity.equalsIgnoreCase("new")){
                                     InsertVisitControl();
-
                                 }
                                 sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
-//                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-//                                    dialogCheckOut.show();
-//                                } else {
-//                                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-//                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                    startActivity(intent);
-//                                    finish();
-//                                }
 
                                 if (JWOthersFragment.callCaptureImageLists.size() > 0) {
                                     for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
@@ -311,28 +293,23 @@ public class DCRCallActivity extends AppCompatActivity {
                                     }
                                 }
                                 UpdateInputStock();
+
                                 UpdateSampleStock();
 
                                 if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
                                     commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_locally));
                                 }else {
                                     commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_saved_successfully));
-                                    //progressDialog.dismiss();
                                 }
 
                                 if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
-                                //    progressDialog.dismiss();
                                     dialogCheckOut.show();
                                 } else {
+                                    IsFromDCR =true;
+                                    Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
+                                    startActivity(intent);
+                                    finish();
 
-//                                    new Handler().postDelayed(()->{
-
-                                      IsFromDCR =true;
-                                        Intent intent = new Intent(DCRCallActivity.this, HomeDashBoard.class);
-                                        intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
-//                             ;
                                 }
 
                             } else {
@@ -427,6 +404,7 @@ public class DCRCallActivity extends AppCompatActivity {
         }
 
         dcrCallBinding.viewPager.setAdapter(viewPagerAdapter);
+        dcrCallBinding.viewPager.setOffscreenPageLimit(4);
         dcrCallBinding.tabLayout.setupWithViewPager(dcrCallBinding.viewPager);
         dcrCallBinding.viewPager.setOffscreenPageLimit(viewPagerAdapter.getCount());
     }
@@ -501,6 +479,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     jsonObject.put("FW_Indicator", FwFlag);
                     jsonObject.put("AMSLNo", "");
                     jsonArray.put(jsonObject);
+
              //       sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
 
                         MasterDataTable mData =new MasterDataTable();
@@ -518,7 +497,6 @@ public class DCRCallActivity extends AppCompatActivity {
                 }
             }
 
-            CallDataRestClass.resetcallValues(context);
 
         } catch (Exception ignored) {
 
@@ -2548,18 +2526,6 @@ public class DCRCallActivity extends AppCompatActivity {
 
         Log.v("jsonExtractOnline", "product_inputs_qty--333--" + finalValue);
         return finalValue;
-    }
-
-
-
-    void  AlertboxForCancel(){
-
-
-
-
-
-
-
     }
 }
 

@@ -5,6 +5,7 @@ import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 import static saneforce.santrip.commonClasses.Constants.APP_MODE;
 
@@ -113,11 +114,13 @@ import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.CustomSetupResponse;
+import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkChangeReceiver;
+import saneforce.santrip.utility.NetworkUtil;
 import saneforce.santrip.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -173,6 +176,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onResume() {
         super.onResume();
         Log.d("ACTIVITY_STATUS","OnResume");
+        CallDataRestClass.resetcallValues(context);
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
@@ -1372,6 +1376,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public void commonFun() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.v("Is","Working");
 
     }
 }

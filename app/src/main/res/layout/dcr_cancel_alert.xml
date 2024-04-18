@@ -19,10 +19,10 @@
             android:layout_marginVertical="@dimen/_3sdp"
             android:fontFamily="@font/satoshi_bold"
             android:gravity="center"
-            android:padding="@dimen/_4sdp"
+            android:padding="@dimen/_2sdp"
             android:text="Alert"
             android:textColor="@color/dark_purple"
-            android:textSize="@dimen/_7ssp"
+            android:textSize="@dimen/_7sdp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -44,7 +44,7 @@
             android:padding="@dimen/_4sdp"
             android:layout_alignParentStart="true"
             android:paddingVertical="@dimen/_3sdp"
-            android:textSize="@dimen/_8ssp"
+            android:textSize="@dimen/_7sdp"
 
        />
 
@@ -63,8 +63,8 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_no"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_25sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_20sdp"
                 android:layout_marginVertical="@dimen/_2sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_toLeftOf="@id/btn_yes"
@@ -78,8 +78,8 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_yes"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_25sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_20sdp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginHorizontal="@dimen/_2sdp"

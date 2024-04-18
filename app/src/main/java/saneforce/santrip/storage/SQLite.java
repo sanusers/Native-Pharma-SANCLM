@@ -441,7 +441,7 @@ public class SQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CALL_SYNC_STATUS_EC, checkSynced);
-        contentValues.put(CALL_SYNC_STATUS, status);
+        contentValues.put(CALL_STATUS_EC, status);
         db.update(CALL_OFFLINE_EC_TABLE, contentValues, COLUMN_ID + "=?", new String[]{id});
         db.close();
     }
@@ -632,7 +632,7 @@ public class SQLite extends SQLiteOpenHelper {
 
     public ArrayList<GroupModelClass> getOutBoxDate() {
         boolean isAvailable = false;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         String date;
         ArrayList<GroupModelClass> list = new ArrayList<>();
 

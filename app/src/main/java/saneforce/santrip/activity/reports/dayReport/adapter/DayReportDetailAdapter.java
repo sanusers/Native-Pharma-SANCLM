@@ -431,7 +431,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                             if(EventCaptureData.size()>0){
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
-                                                commonUtilsMethods.showToastMessage(context, "No Event Capture");
+                                                commonUtilsMethods.showToastMessage(context, " Event Capture Not Available");
                                             }
 
                                         }
@@ -523,7 +523,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 recyclerView.setAdapter(adapter);
                                                 layout.setVisibility(View.VISIBLE);
                                             }else {
-                                                commonUtilsMethods.showToastMessage(context, "No RCPA Values");
+                                                commonUtilsMethods.showToastMessage(context, " RCPA  Details Not Available");
                                             }
 
                                         }

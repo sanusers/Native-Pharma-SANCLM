@@ -97,7 +97,8 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, SQLite sqLite, Context context) {
-        listDates = sqLite.getOutBoxDate();
+        SQLite sq=new SQLite(context);
+        listDates = sq.getOutBoxDate();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         outBoxBinding.rvOutBoxHead.setLayoutManager(mLayoutManager);
@@ -114,6 +115,7 @@ public class OutboxFragment extends Fragment {
         commonUtilsMethods.setUpLanguage(requireContext());
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
+
         SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
 
         new Handler().postDelayed(this::refreshPendingFunction, 200);
@@ -714,4 +716,6 @@ public class OutboxFragment extends Fragment {
 
 //        new Handler().postDelayed(this::refreshPendingFunction, 200);
     }
+
+
 }
