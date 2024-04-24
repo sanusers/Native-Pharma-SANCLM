@@ -168,7 +168,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
             }
 
   //        input filter_add
-
             if(split_val.equalsIgnoreCase("11")){
                 if(!app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")){
                     holder.Res_Table1.setVisibility(View.VISIBLE);

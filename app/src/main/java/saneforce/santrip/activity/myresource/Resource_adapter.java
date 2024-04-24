@@ -265,8 +265,13 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String to_date = jsonTDate.getString("date");
                                     String[] Toval = to_date.split(" ");
 
-                                    listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", Frm_val[0], Toval[0],
-                                            "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                    listresource.add(new Resourcemodel_class("",custom_name, "", "", "", "","", "", Frm_val[0], Toval[0],
+                                            "", "", "","","","","","","","","","",""));
+
+                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "11");
+                                    appRecyclerView.setAdapter(appAdapter3);
+                                    appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                    appAdapter3.notifyDataSetChanged();
                                 }
                             }
                         }
