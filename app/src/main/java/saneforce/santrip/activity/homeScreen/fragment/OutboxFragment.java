@@ -1,6 +1,13 @@
 package saneforce.santrip.activity.homeScreen.fragment;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Chemist_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Doctor_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.Stockiest_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.callAnalysisBinding;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.cip_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.hos_list;
+import static saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment.unlistered_list;
 
 
 import android.annotation.SuppressLint;
@@ -55,7 +62,7 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkCheckInterface;
 import saneforce.santrip.utility.NetworkUtil;

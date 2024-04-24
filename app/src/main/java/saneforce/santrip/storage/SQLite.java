@@ -651,6 +651,8 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     public ArrayList<GroupModelClass> getOutBoxDate() {
+        ArrayList<GroupModelClass> listData = new ArrayList<>();
+        try{
         boolean isAvailable = false;
         SQLiteDatabase db = this.getWritableDatabase();
         String date;
@@ -752,7 +754,7 @@ public class SQLite extends SQLiteOpenHelper {
             }
         }
 
-        ArrayList<GroupModelClass> listData = new ArrayList<>();
+
         ArrayList<ChildListModelClass> groupNamesList;
 
         if (list.size() > 0) {
@@ -775,6 +777,11 @@ public class SQLite extends SQLiteOpenHelper {
         }
 
         db.close();
+        return listData;
+    }catch(Exception e){
+            e.printStackTrace();
+        }
+
         return listData;
     }
 

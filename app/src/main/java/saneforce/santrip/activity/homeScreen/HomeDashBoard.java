@@ -5,7 +5,6 @@ import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.Manifest.permission.READ_MEDIA_VIDEO;
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.IsFromDCR;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 import static saneforce.santrip.commonClasses.Constants.APP_MODE;
 
@@ -24,8 +23,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -103,7 +104,7 @@ import saneforce.santrip.activity.myresource.MyResource_Activity;
 import saneforce.santrip.activity.presentation.presentation.PresentationActivity;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 
-import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
+
 import saneforce.santrip.activity.reports.ReportsActivity;
 import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -113,8 +114,8 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.santrip.response.CustomSetupResponse;
-import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
@@ -122,7 +123,6 @@ import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkChangeReceiver;
-import saneforce.santrip.utility.NetworkUtil;
 import saneforce.santrip.utility.TimeUtils;
 
 public class HomeDashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -132,7 +132,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static int DeviceWith;
     public static Dialog dialog;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
-    public static String   CustomPresentationNeed, PresentationNeed;
+    public static String CustomPresentationNeed, PresentationNeed;
     public static LocalDate selectedDate;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -140,7 +140,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     GPSTrack gpsTrack;
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
-//    SQLite sqLite;
+    SQLite sqLite;
     ApiInterface apiInterface;
 
     CustomSetupResponse customSetupResponse;
@@ -160,13 +160,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
     String holidayMode = "", weeklyOffCaption = "";
-    public  static  CustomPagerAdapter adapter;
+    public static CustomPagerAdapter adapter;
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     RoomDB roomDB;
 
     MasterDataDao masterDataDao;
-    private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
-
+    OfflineCheckInOutDataDao offlineCheckInOutDataDao;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -178,8 +177,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("ACTIVITY_STATUS","OnResume");
-        CallDataRestClass.resetcallValues(context);
+        Log.d("ACTIVITY_STATUS", "OnResume");
         commonUtilsMethods.setUpLanguage(HomeDashBoard.this);
         if (binding.myDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
@@ -247,11 +245,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("ACTIVITY_STATUS","OnCreate");
+        Log.d("ACTIVITY_STATUS", "OnCreate");
         binding = ActivityHomeDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-      // THIS CODE IS DESIGN
+        // THIS CODE IS DESIGN
         DisplayMetrics displayMetrics = new DisplayMetrics();
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
@@ -277,12 +275,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.tabLayout.setupWithViewPager(binding.viewPager);
         binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
 
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
-
 
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -399,8 +398,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
 
-
-
     private void CheckInOutDate() {
         dialogCheckInOut = new Dialog(this);
         dialogCheckInOut.setContentView(R.layout.dialog_daycheckin);
@@ -458,7 +455,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 SharedPref.setSkipCheckIn(getApplicationContext(), false);
                 SharedPref.setCheckTodayCheckInOut(getApplicationContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-//                sqLite.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
                 offlineCheckInOutDataDao.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
                 SetupOutBoxAdapter(this, this);
                 CallDialogAfterCheckIn();
@@ -619,8 +615,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         callsatuslist.clear();
         try {
             if (String.valueOf(date.getMonth()).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("MMMM"))) {
-//                JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
                 JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+
                 if (workTypeArray.length() > 0) {
                     JSONObject jsonObject = workTypeArray.getJSONObject(0);
                     String TPDt = jsonObject.getString("TPDt");
@@ -742,11 +738,11 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 }
 
+                JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
 
-//            JSONArray dateSync = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
-            JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
-            if (dateSync.length() > 0) {
-                for (int i = 0; i < dateSync.length(); i++) {
+             //   JSONArray dateSync = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
+                if (dateSync.length() > 0) {
+                    for (int i = 0; i < dateSync.length(); i++) {
 
                         JSONObject jsonObject = dateSync.getJSONObject(i);
                         String flag = jsonObject.optString("flg");
@@ -771,19 +767,19 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                             // Log.v("Calender", date1 + " --- " + mMonth + " --- " + mYear);
                             callsatuslist.add(new EventCalenderModelClass(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_21, TimeUtils.FORMAT_28, date1), worktypeFlog, mMonth, mYear));
                         }
+                    }
+                }
+
+                for (EventCalenderModelClass list : callsatuslist) {
+                    int index = ListID.indexOf(list.getDateID());
+                    if (index != -1) {
+                        daysInMonthArray.get(index).setWorktypeFlog(list.getWorktypeFlog());
+                    }
                 }
             }
 
-            for (EventCalenderModelClass list : callsatuslist) {
-                int index = ListID.indexOf(list.getDateID());
-                if (index != -1) {
-                    daysInMonthArray.get(index).setWorktypeFlog(list.getWorktypeFlog());
-                }
-            }
+        } catch (JSONException ignored) {
         }
-
-    } catch (JSONException ignored) {
-    }
         return daysInMonthArray;
     }
 
@@ -853,6 +849,83 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         ImageView cls_but = dialogPwdChange.findViewById(R.id.close);
 
 
+        old_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                String str = s.toString();
+                if (str.length() > 0 && str.contains(" ")) {
+//                    old_password.setError("Space is not allowed");
+                    String val = old_password.getText().toString();
+                    val = val.replace(" ", "");
+                    old_password.setText("");
+                    old_password.setText(val);
+
+                    old_password.setSelection(val.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+        });
+        new_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                String str = s.toString();
+                if (str.length() > 0 && str.contains(" ")) {
+//                    old_password.setError("Space is not allowed");
+                    String val = new_password.getText().toString();
+                    val = val.replace(" ", "");
+                    new_password.setText("");
+                    new_password.setText(val);
+                    new_password.setSelection(val.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+        });
+        remain_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                String str = s.toString();
+                if (str.length() > 0 && str.contains(" ")) {
+//                    old_password.setError("Space is not allowed");
+                    String val = remain_password.getText().toString();
+                    val = val.replace(" ", "");
+                    remain_password.setText("");
+                    remain_password.setText(val);
+                    remain_password.setSelection(val.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+        });
+
         old_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(old_password)});
         new_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(new_password)});
         remain_password.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(remain_password)});
@@ -872,7 +945,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 old_password.setSelection(old_password.length());
             }
         });
-
 
         newPass_view.setOnClickListener(v -> {
             if (!new_password.getText().toString().equals("")) {
@@ -904,6 +976,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.chk_old_pwd));
                 } else if (!new_password.getText().toString().equals(remain_password.getText().toString())) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.pwd_not_match));
+                } else if (new_password.getText().toString().equals(password)) {
+                    commonUtilsMethods.showToastMessage(HomeDashBoard.this, getString(R.string.chg_new_pwd));
                 } else {
                     try {
                         progressDialog = CommonUtilsMethods.createProgressDialog(getApplicationContext());
@@ -914,14 +988,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 }
             }
-
         });
-
 
         cls_but.setOnClickListener(v -> dialogPwdChange.dismiss());
 
+        dialogPwdChange.setCanceledOnTouchOutside(false);
         dialogPwdChange.show();
-
     }
 
     private void CallChangePasswordAPI(String oldPwd, String newPwd, String confirmPwd) {
@@ -929,7 +1001,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         try {
             jj.put("tableName", "savechpwd");
             jj.put("sfcode", SharedPref.getSfCode(this));
-            jj.put("division_code",  SharedPref.getDivisionCode(this));
+            jj.put("division_code", SharedPref.getDivisionCode(this));
             jj.put("Rsf", SharedPref.getHqCode(this));
             jj.put("sf_type", SharedPref.getSfType(this));
             jj.put("Designation", SharedPref.getDesig(this));
@@ -1205,8 +1277,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         JsonElement jsonElement = response.body();
                         assert jsonElement != null;
                         JsonArray jsonArray = jsonElement.getAsJsonArray();
-//                        sqLite.saveMasterSyncData(Constants.DATE_SYNC, jsonArray.toString(), 0);
                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
+
                         binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
                         binding.tabLayout.setVisibility(View.VISIBLE);
                         binding.viewPager.setVisibility(View.VISIBLE);
@@ -1301,8 +1373,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void getCallsDataToCalender() {
         callStatusList.clear();
-        JSONArray dcrData = masterDataDao.getMasterDataTableOrNew("DCR").getMasterSyncDataJsonArray();
-//        JSONArray dcrData = sqLite.getMasterSyncDataByKey("DCR");
+        JSONArray dcrData = masterDataDao.getMasterDataTableOrNew(Constants.DCR).getMasterSyncDataJsonArray();
+
         if (dcrData.length() > 0) {
             for (int i = 0; i < dcrData.length(); i++) {
                 try {
@@ -1388,13 +1460,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public void commonFun() {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Log.v("Is","Working");
 
     }
 }

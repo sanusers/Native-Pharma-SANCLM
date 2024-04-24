@@ -56,16 +56,11 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
         remainder_modelclass app_adapt = listeduser.get(position);
         holder.doc_name.setText(app_adapt.getDoc_name());
         holder.doc_cat.setText(app_adapt.getDoc_cat());
         holder.doc_spec.setText(app_adapt.getDoc_spec());
         holder.town_name.setText(" " + app_adapt.getDoc_town() + " ");
-
-
-
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

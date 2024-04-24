@@ -116,6 +116,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> subordinateModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
+    public static ArrayList<String> HQCODE_SYN = new ArrayList<>();
     SharedPreferences sharedpreferences;
     LocalDate localDate;
     ArrayList<String> weeklyOffDays = new ArrayList<>();
@@ -268,6 +269,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
                             if (jsonObject.getString("name").equalsIgnoreCase(selectedHq)) {
                                 rsf = jsonObject.getString("id");
                                 SharedPref.saveHq(MasterSyncActivity.this, selectedHq, rsf);
+                                 //myresource
+                                HQCODE_SYN.add(jsonObject.getString("id"));
+                                SharedPref.setsyn_hqcode(this, String.valueOf(HQCODE_SYN));
                                 prepareArray(rsf); // replace the new rsf value
                                 masterSyncAll(true);
                                 break;

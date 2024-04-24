@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">Test.H.1</string>
+    <string name="app_version" translatable="false">Version.H1</string>
     <string name="str_app_name">SAN TRIP</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -305,6 +305,7 @@
     <string name="enter_old_pwd">Enter old password</string>
     <string name="enter_new_pwd">Enter new password</string>
     <string name="enter_repeat_pwd">Enter repeat password</string>
+    <string name="chg_new_pwd"> change new password</string>
     <string name="chk_old_pwd">Old password is wrong! Enter again</string>
     <string name="pwd_not_match">Password mismatch</string>
     <string name="pwd_changed_successfully">Password changed successfully</string>
