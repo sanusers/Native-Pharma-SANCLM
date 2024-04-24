@@ -50,7 +50,7 @@ public class SlideDownloaderAlertBox {
         try {
         ArrayList<SlideModelClass> Slide_list = new ArrayList<>();
         ArrayList<String> slideIdList = new ArrayList<>();
-        SQLite sqLite=new SQLite(activity);
+//        SQLite sqLite=new SQLite(activity);
             MasterDataDao masterDataDao = RoomDB.getDatabase(activity).masterDataDao();
         boolean AleartShowFlag=false;
         MoveMainFlag = MoveFlag;

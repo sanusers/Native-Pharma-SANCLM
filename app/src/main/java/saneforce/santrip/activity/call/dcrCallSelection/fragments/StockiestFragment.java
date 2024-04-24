@@ -58,7 +58,7 @@ public class StockiestFragment extends Fragment {
     ImageButton iv_filter;
     ImageView img_close;
     Button btn_apply;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName,tvTerritory,tv_filter_count;
     CommonUtilsMethods commonUtilsMethods;
@@ -82,7 +82,7 @@ public class StockiestFragment extends Fragment {
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
 
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());

@@ -69,7 +69,7 @@ import saneforce.santrip.storage.SharedPref;
 public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.ViewHolder> {
     Context context;
     ArrayList<OutBoxCallList> outBoxCallLists;
-    SQLite sqLite;
+//    SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
@@ -86,7 +86,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         this.context = context;
         this.activity = activity;
         this.outBoxCallLists = outBoxCallLists;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         this.apiInterface = apiInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
         roomDB=RoomDB.getDatabase(context);
@@ -317,7 +317,7 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 //                                sqLite.deleteOfflineCalls(cusCode, cusName, date);
                                 callsUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 removeAt(pos);
-                                CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+                                CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully));
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
 //                                sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);

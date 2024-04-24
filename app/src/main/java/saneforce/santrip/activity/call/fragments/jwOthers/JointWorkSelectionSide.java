@@ -46,7 +46,7 @@ public class JointWorkSelectionSide extends Fragment {
     public static ArrayList<CallCommonCheckedList> JwList;
     @SuppressLint("StaticFieldLeak")
     public static JwAdapter jwAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
     AdapterCallJointWorkList adapterCallJointWorkList;
@@ -61,7 +61,7 @@ public class JointWorkSelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectJwSideBinding = FragmentSelectJwSideBinding.inflate(inflater);
         View v = selectJwSideBinding.getRoot();
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         dcrDocDataDao = roomDB.dcrDocDataDao();
         masterDataDao = roomDB.masterDataDao();

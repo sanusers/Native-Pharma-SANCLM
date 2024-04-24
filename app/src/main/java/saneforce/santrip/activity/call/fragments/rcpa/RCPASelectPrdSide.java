@@ -40,7 +40,7 @@ public class RCPASelectPrdSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectProductSideBinding selectProductSideBinding;
     public static ArrayList<SaveCallProductList> PrdFullList;
-    SQLite sqLite;
+//    SQLite sqLite;
     ProductAdapter PrdAdapter;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -49,7 +49,7 @@ public class RCPASelectPrdSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectProductSideBinding = FragmentSelectProductSideBinding.inflate(inflater);
         View v = selectProductSideBinding.getRoot();
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         AddProductsData();
@@ -105,7 +105,7 @@ public class RCPASelectPrdSide extends Fragment {
         Context context;
         ArrayList<SaveCallProductList> prdList;
         JSONArray jsonArray;
-        SQLite sqLite;
+//        SQLite sqLite;
         JSONObject jsonObject;
         boolean isAvailableCompetitor;
         CommonUtilsMethods commonUtilsMethods;
@@ -129,7 +129,7 @@ public class RCPASelectPrdSide extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
-            sqLite = new SQLite(context);
+//            sqLite = new SQLite(context);
             holder.tv_name.setText(prdList.get(position).getName());
             holder.tv_name.setOnClickListener(view -> {
 

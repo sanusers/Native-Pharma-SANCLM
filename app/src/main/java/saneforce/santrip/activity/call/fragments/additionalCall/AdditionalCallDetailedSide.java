@@ -59,7 +59,7 @@ public class AdditionalCallDetailedSide extends Fragment {
     FinalAdditionalCallAdapter finalAdditionalCallAdapter;
     FinalInputCallAdapter finalInputCallAdapter;
     FinalProductCallAdapter finalProductCallAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     int lastPos;
 
     @SuppressLint("NotifyDataSetChanged")
@@ -69,7 +69,7 @@ public class AdditionalCallDetailedSide extends Fragment {
         callDetailsSideBinding = FragmentAddCallDetailsSideBinding.inflate(getLayoutInflater());
         View v = callDetailsSideBinding.getRoot();
 
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 

@@ -45,7 +45,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     ArrayList<EcModelClass> ecModelClasses;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     Activity activity;
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
@@ -57,7 +57,7 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         this.context = context;
         this.ecModelClasses = ecModelClasses;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();

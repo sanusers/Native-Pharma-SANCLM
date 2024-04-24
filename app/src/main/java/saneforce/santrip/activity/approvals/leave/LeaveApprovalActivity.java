@@ -45,7 +45,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
     JSONObject jsonLeave = new JSONObject();
     ApiInterface api_interface;
 
-    SQLite sqLite;
+//    SQLite sqLite;
     ProgressDialog progressDialog = null;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -73,7 +73,7 @@ public class LeaveApprovalActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
 
         CallApiLeave();
 

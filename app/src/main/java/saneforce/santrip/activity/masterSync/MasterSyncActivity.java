@@ -74,7 +74,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
    public static ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
-    SQLite sqLite;
+//    SQLite sqLite;
     public static Dialog dialog1;
     String rsf="";
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
@@ -145,10 +145,10 @@ public class    MasterSyncActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         context=getApplicationContext();
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        sqLite.getWritableDatabase();
+//        sqLite.getWritableDatabase();
         sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {

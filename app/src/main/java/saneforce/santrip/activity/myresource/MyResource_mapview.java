@@ -97,7 +97,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 
     Circle mCircle;
     ArrayList<Mapview_modelclass> listed_cust = new ArrayList<>();
-    SQLite sqLite;
+//    SQLite sqLite;
     String Cust_type, Cust_name, Dcrname,pos_name,Lat,Long,Town;
 
     Marker mCurrLocationMarker;
@@ -141,7 +141,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         tagging_meters = findViewById(R.id.tagging_meters);
         Doc_name = findViewById(R.id.Doc_name);
 
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
         roomDB =  RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         loginDataDao = roomDB.loginDataDao();

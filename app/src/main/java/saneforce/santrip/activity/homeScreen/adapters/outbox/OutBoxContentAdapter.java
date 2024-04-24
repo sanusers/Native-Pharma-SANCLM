@@ -65,7 +65,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     Context context;
     ArrayList<ChildListModelClass> childListModelClasses;
     OutBoxCallAdapter outBoxCallAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     ApiInterface apiInterface;
     OutBoxCheckInOutAdapter outBoxCheckInOutAdapter;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
@@ -85,7 +85,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         this.activity = activity;
         this.context = context;
         this.childListModelClasses = groupModelClasses;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         commonUtilsMethods = new CommonUtilsMethods(context);
 
@@ -449,7 +449,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         }
 
         if (!isCallAvailable) {
-            CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+            CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             progressDialog.dismiss();
             notifyDataSetChanged();
         }

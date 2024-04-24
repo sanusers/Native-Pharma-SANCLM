@@ -27,7 +27,7 @@ import saneforce.santrip.storage.SQLite;
 
 public class HomeBrands extends Fragment {
     FragmentHomePreviewBinding homePreviewBinding;
-    SQLite sqLite;
+//    SQLite sqLite;
     public static ArrayList<BrandModelClass> SlideHomeBrandList = new ArrayList<>();
     ArrayList<String> brandCodeList = new ArrayList<>();
     PreviewAdapter previewAdapter;
@@ -42,7 +42,7 @@ public class HomeBrands extends Fragment {
         View v = homePreviewBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         getRequiredData();

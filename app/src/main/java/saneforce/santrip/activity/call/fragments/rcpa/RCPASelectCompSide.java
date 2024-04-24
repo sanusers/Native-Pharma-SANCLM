@@ -57,7 +57,7 @@ public class RCPASelectCompSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static RCPAChemistAdapter rcpaChemistAdapter;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     double getTotalValue = 0, valueRounded;
     ArrayList<Double> CompQty = new ArrayList<>();
     JSONArray jsonArray;
@@ -75,7 +75,7 @@ public class RCPASelectCompSide extends Fragment {
         View v = rcpaSideBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         SetupAdapter();

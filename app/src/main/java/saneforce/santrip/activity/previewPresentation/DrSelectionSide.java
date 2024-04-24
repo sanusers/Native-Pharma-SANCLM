@@ -67,7 +67,7 @@ public class DrSelectionSide extends Fragment {
     ApiInterface apiInterface;
     JSONArray jsonArray;
     JSONObject jsonObject;
-    SQLite sqLite;
+//    SQLite sqLite;
     SelectDoctorAdapter selectDoctorAdapter;
 
     String TodayPlanSfCode;
@@ -81,7 +81,7 @@ public class DrSelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         drSelectionSideBinding = FragmentDrSelectionSideBinding.inflate(inflater);
         View v = drSelectionSideBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -319,7 +319,7 @@ public class DrSelectionSide extends Fragment {
     public static class SelectDoctorAdapter extends RecyclerView.Adapter<SelectDoctorAdapter.ViewHolder> {
         Context context;
         ArrayList<CustList> callDrList;
-        SQLite sqLite;
+//        SQLite sqLite;
         private RoomDB roomDB;
         private MasterDataDao masterDataDao;
 
@@ -339,7 +339,7 @@ public class DrSelectionSide extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull SelectDoctorAdapter.ViewHolder holder, int position) {
-            sqLite = new SQLite(context);
+//            sqLite = new SQLite(context);
             holder.tvName.setText(callDrList.get(position).getName());
 
             if (SelectedTab.equalsIgnoreCase("Spec")) {
@@ -359,10 +359,10 @@ public class DrSelectionSide extends Fragment {
             holder.tvName.setOnClickListener(v -> {
                 if (SelectedTab.equalsIgnoreCase("Spec")) {
                     specialityPreviewBinding.tvSelectDoctor.setText(String.format("%s - %s", callDrList.get(position).getName(), callDrList.get(position).getSpecialist()));
-                    getSelectedSpec(context, sqLite, callDrList.get(position).getSpecialistCode(), callDrList.get(position).getSpecialist(), masterDataDao);
+                    getSelectedSpec(context, callDrList.get(position).getSpecialistCode(), callDrList.get(position).getSpecialist(), masterDataDao);
                 } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
                     brandMatrixBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
-                    getSelectedMatrix(context, sqLite, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides(), masterDataDao);
+                    getSelectedMatrix(context, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides(), masterDataDao);
                 }
                 drSelectionSideBinding.searchList.setText("");
                 drSelectionSideBinding.selectListView.scrollToPosition(0);

@@ -40,7 +40,7 @@ import saneforce.santrip.storage.SQLite;
 public class SpecialitySelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectFbSideBinding selectSpecialitySideBinding;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONObject jsonObject;
     ArrayList<String> list_name = new ArrayList<>();
     ArrayList<String> list_code = new ArrayList<>();
@@ -55,7 +55,7 @@ public class SpecialitySelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectSpecialitySideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectSpecialitySideBinding.getRoot();
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -95,9 +95,9 @@ public class SpecialitySelectionSide extends Fragment {
         selectSpecialitySideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
             selectSpecialitySideBinding.searchList.setText("");
             if (list_name.get(i).equalsIgnoreCase("All") && list_code.get(i).isEmpty()) {
-                getRequiredData(requireContext(), sqLite, list_name.get(i), masterDataDao);
+                getRequiredData(requireContext(), list_name.get(i), masterDataDao);
             } else {
-                getSelectedSpec(requireContext(), sqLite, list_code.get(i), list_name.get(i), masterDataDao);
+                getSelectedSpec(requireContext(), list_code.get(i), list_name.get(i), masterDataDao);
             }
             previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
             previewBinding.fragmentSelectSpecialistSide.setVisibility(View.GONE);

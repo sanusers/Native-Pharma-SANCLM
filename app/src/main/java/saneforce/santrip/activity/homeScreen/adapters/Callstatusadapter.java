@@ -40,7 +40,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
     private final Context context;
     LocalDate selectedMonth;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<String> dateStrings = new ArrayList<>();
     String selectedDate;
     private RoomDB roomDB;
@@ -52,7 +52,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         this.context = context;
         this.selectedMonth = selectedMonth;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
         dateStrings.clear();

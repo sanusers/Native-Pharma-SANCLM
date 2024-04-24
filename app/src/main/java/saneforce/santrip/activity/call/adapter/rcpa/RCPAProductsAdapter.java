@@ -54,7 +54,7 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
     RCPACompListAdapter rcpaCompListAdapter;
     CommonUtilsMethods commonUtilsMethods;
     JSONArray jsonArray;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONObject jsonObject;
     String ChemCode, PrdCode;
     double getTotalValue = 0, valueRounded;
@@ -83,7 +83,7 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
 
         holder.prd_name.setText(ProductList.get(position).getPrd_name());
         holder.tv_qty.setText(ProductList.get(position).getQty());

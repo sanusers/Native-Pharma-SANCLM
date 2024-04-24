@@ -21,7 +21,7 @@ public class CustomMarkerView extends MarkerView {
     private ImageView imageView;
     private RelativeLayout layout;
 
-    SQLite sqLite;
+//    SQLite sqLite;
     String cus, linekey;
     Context context;
 
@@ -39,7 +39,7 @@ public class CustomMarkerView extends MarkerView {
         Total_Call_count = (TextView) findViewById(R.id.text_total_call_count);
         Avg_calls = (TextView) findViewById(R.id.text_call_count);
         layout = findViewById(R.id.rl_popllayout);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
 
     }
 

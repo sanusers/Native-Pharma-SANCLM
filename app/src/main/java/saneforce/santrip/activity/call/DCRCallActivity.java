@@ -121,7 +121,7 @@ public class DCRCallActivity extends AppCompatActivity {
     DCRCallTabLayoutAdapter viewPagerAdapter;
     CommonUtilsMethods commonUtilsMethods;
     CommonSharedPreference commonSharedPreference;
-    SQLite sqLite;
+//    SQLite sqLite;
     ProgressDialog progressDialog = null;
     GPSTrack gpsTrack;
 
@@ -175,7 +175,7 @@ public class DCRCallActivity extends AppCompatActivity {
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
         callsUtil = new CallsUtil(this);
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
         Bundle extra = getIntent().getExtras();

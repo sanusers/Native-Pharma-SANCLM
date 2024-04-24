@@ -53,7 +53,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
     ApiInterface api_interface;
     JSONObject jsonGeoTagList = new JSONObject();
     ProgressDialog progressDialog = null;
-    SQLite sqLite;
+//    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
 
     @Override
@@ -83,7 +83,7 @@ public class GeoTaggingActivity extends AppCompatActivity {
         setContentView(geoTaggingBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         CallGeoTagApi();

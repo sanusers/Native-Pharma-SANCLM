@@ -48,7 +48,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
     ArrayList<CallCommonCheckedList> checked_arrayList;
     FinalAdditionalCallAdapter AdapterSaveAdditionalCall;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     RoomDB roomDB;
     MasterDataDao masterDataDao;
 
@@ -58,7 +58,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         this.checked_arrayList = checked_arrayList;
         AdditionalCusListAdapter.saveAdditionalCallArrayList = saveAdditionalCallArrayList;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB=RoomDB.getDatabase(context);
         masterDataDao= roomDB.masterDataDao();
     }
@@ -69,7 +69,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         this.context = context;
         this.checked_arrayList = checked_arrayList;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB=RoomDB.getDatabase(context);
         masterDataDao= roomDB.masterDataDao();
     }

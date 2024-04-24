@@ -79,7 +79,7 @@ public class JWOthersFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallJointWorkList adapterCallJointWorkList;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
-    SQLite sqLite;
+//    SQLite sqLite;
    public static ArrayList<String> JWKCodeList =new ArrayList<>();
    Gson gson;
     CommonUtilsMethods commonUtilsMethods;
@@ -118,7 +118,7 @@ public class JWOthersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jwOthersBinding = FragmentJwothersBinding.inflate(inflater);
         View v = jwOthersBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         dcrDocDataDao = roomDB.dcrDocDataDao();
         masterDataDao = roomDB.masterDataDao();

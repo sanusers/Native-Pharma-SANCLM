@@ -39,7 +39,7 @@ public class RCPASelectChemSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectChemistSideBinding selectChemistSideBinding;
     ArrayList<CustList> ChemFullList = new ArrayList<>();
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
     ChemistAdapter CheAdapter;
@@ -52,7 +52,7 @@ public class RCPASelectChemSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectChemistSideBinding = FragmentSelectChemistSideBinding.inflate(inflater);
         View v = selectChemistSideBinding.getRoot();
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());

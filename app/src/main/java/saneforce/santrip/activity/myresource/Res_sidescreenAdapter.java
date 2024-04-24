@@ -46,7 +46,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     Context context;
     String split_val;
     String cdate2 = "";
-    SQLite sqLite;
+//    SQLite sqLite;
     int countvalue = 0;
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
 
@@ -64,7 +64,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         this.context = context;
         this.resList = resList;
         this.split_val = split_val;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
         loginDataDao = roomDB.loginDataDao();

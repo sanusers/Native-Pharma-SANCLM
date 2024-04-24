@@ -59,7 +59,7 @@ public class CallsFragment extends Fragment {
     public static ProgressDialog progressDialog;
     ApiInterface apiInterface;
 
-    SQLite sqLite;
+//    SQLite sqLite;
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
@@ -67,7 +67,7 @@ public class CallsFragment extends Fragment {
 
     public static  Context Mcontext;
 
-    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, SQLite sqLite, boolean isProgressNeed) {
+    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
         if (UtilityClass.isNetworkAvailable(context)) {
             CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
             apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
@@ -280,14 +280,14 @@ public class CallsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         Mcontext=requireContext();
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
-        CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
+        CallTodayCallsAPI(requireContext(), apiInterface, false);
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
 
@@ -311,7 +311,7 @@ public class CallsFragment extends Fragment {
         binding.rlSyncCall.setOnClickListener(v12 -> {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 binding.rlSyncCall.setEnabled(false);
-                CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
+                CallTodayCallsAPI(requireContext(), apiInterface, true);
             } else {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             }

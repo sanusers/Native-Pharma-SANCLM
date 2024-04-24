@@ -46,7 +46,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
     ArrayList<CustList> FillteredList;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
-    SQLite sqLite;
+//    SQLite sqLite;
     Dialog dialogCheckIn;
     Button btnCheckIN;
     ImageView img_Close;
@@ -63,7 +63,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
         this.activity = activity;
         this.context = context;
         this.cusListArrayList = cusListArrayList;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         this.needCheckInOut = needCheckInOut;
         this.isFrom = isFrom;
         this.FillteredList=cusListArrayList;

@@ -104,7 +104,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     String dob_dt, dow_dt;
     Date dateBefore;
     EditText main_address, RP_mobile, RP_phone, district, city;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<remainder_modelclass> hq_view = new ArrayList<>();
     String qualif, cate, spec, dob, dow, address, mobile, phone, email, docname, docsex, doc_code, Dcr_posname, Lat, Long, Town_val;
     public static String profil_val = "";
@@ -154,7 +154,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         gpsTrack = new GPSTrack(this);
         app_recycler_view.setVisibility(View.VISIBLE);
         Bundle extra = getIntent().getExtras();
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         loginDataDao = roomDB.loginDataDao();
         masterDataDao = roomDB.masterDataDao();

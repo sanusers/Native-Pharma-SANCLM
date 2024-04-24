@@ -48,7 +48,7 @@ public class ReportsActivity extends AppCompatActivity {
     public static ActivityReportsBinding binding;
     ReportsAdapter reportsAdapter;
     ApiInterface apiInterface;
-    SQLite sqLite;
+//    SQLite sqLite;
 
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
@@ -69,7 +69,7 @@ public class ReportsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        sqLite = new SQLite(ReportsActivity.this);
+//        sqLite = new SQLite(ReportsActivity.this);
 
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());

@@ -56,7 +56,7 @@ public class TagCustSelectionList extends AppCompatActivity {
     List<String> HqCodeList = new ArrayList<>();
     CustListAdapter custListAdapter;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     ArrayList<CustList> custListArrayNew = new ArrayList<>();
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
@@ -119,7 +119,7 @@ public class TagCustSelectionList extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         SelectedTab = MapsActivity.SelectedTab;

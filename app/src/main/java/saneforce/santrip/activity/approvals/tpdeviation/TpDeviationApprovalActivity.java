@@ -45,7 +45,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
     JSONObject jsonTpDeviation = new JSONObject();
     ApiInterface api_interface;
 
-    SQLite sqLite;
+//    SQLite sqLite;
     ProgressDialog progressDialog = null;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -69,7 +69,7 @@ public class TpDeviationApprovalActivity extends AppCompatActivity {
         setContentView(tpDeviationApprovalBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
        commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
 
         CallTpDeviationAPI();

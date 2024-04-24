@@ -69,7 +69,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
     LinearLayout backArrow, hq_view;
     String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
-    SQLite sqLite;
+//    SQLite sqLite;
 
     TextView hq_head;
     String navigateFrom = "";
@@ -120,10 +120,10 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
 
         appRecyclerView.setVisibility(View.VISIBLE);
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
 
-        sqLite = new SQLite(getApplicationContext());
-        sqLite.getWritableDatabase();
+//        sqLite = new SQLite(getApplicationContext());
+//        sqLite.getWritableDatabase();
 
         roomDB = RoomDB.getDatabase(getApplicationContext());
         loginDataDao = roomDB.loginDataDao();

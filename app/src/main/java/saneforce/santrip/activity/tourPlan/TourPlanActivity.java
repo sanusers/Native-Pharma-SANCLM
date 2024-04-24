@@ -72,7 +72,7 @@ import saneforce.santrip.utility.TimeUtils;
 public class TourPlanActivity extends AppCompatActivity {
     public static LinearLayout addSaveBtnLayout, clrSaveBtnLayout;
     ApiInterface apiInterface;
-    SQLite sqLite;
+//    SQLite sqLite;
     private RoomDB roomDB;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
@@ -134,7 +134,7 @@ public class TourPlanActivity extends AppCompatActivity {
         binding = ActivityTourPlanBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         roomDB = RoomDB.getDatabase(getApplicationContext());
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = roomDB.tourPlanOnlineDataDao();

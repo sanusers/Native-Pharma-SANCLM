@@ -137,7 +137,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     GPSTrack gpsTrack;
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
-    SQLite sqLite;
+//    SQLite sqLite;
     ApiInterface apiInterface;
 
     CustomSetupResponse customSetupResponse;
@@ -321,8 +321,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
-        sqLite = new SQLite(HomeDashBoard.this);
-        sqLite.getWritableDatabase();
+//        sqLite = new SQLite(HomeDashBoard.this);
+//        sqLite.getWritableDatabase();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         getRequiredData();
@@ -456,7 +456,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 SharedPref.setCheckTodayCheckInOut(getApplicationContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
 //                sqLite.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
                 offlineCheckInOutDataDao.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                SetupOutBoxAdapter(this, sqLite, this);
+                SetupOutBoxAdapter(this, this);
                 CallDialogAfterCheckIn();
             }
         });

@@ -79,7 +79,7 @@ public class Leave_Application extends AppCompatActivity {
 
 
     ImageView close_sideview;
-    SQLite sqLite;
+//    SQLite sqLite;
     String navigateFrom = "";
     public static RecyclerView leave_details;
     ArrayAdapter<String> adapter;
@@ -157,7 +157,7 @@ public class Leave_Application extends AppCompatActivity {
         dailog_list.setVisibility(View.VISIBLE);
 //        l_sideview.closeDrawer(Gravity.RIGHT);
         ed_Reason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(ed_Reason)});
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
 
         back_btn.setOnClickListener(v -> {
             //  onBackPressed();
@@ -356,8 +356,8 @@ public class Leave_Application extends AppCompatActivity {
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
-            sqLite = new SQLite(getApplicationContext());
-            sqLite.getWritableDatabase();
+//            sqLite = new SQLite(getApplicationContext());
+//            sqLite.getWritableDatabase();
 
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
@@ -588,8 +588,8 @@ public class Leave_Application extends AppCompatActivity {
             String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
             Log.e("test", "login url : " + baseUrl + replacedUrl);
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
-            sqLite = new SQLite(getApplicationContext());
-            sqLite.getWritableDatabase();
+//            sqLite = new SQLite(getApplicationContext());
+//            sqLite.getWritableDatabase();
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
                 navigateFrom = getIntent().getExtras().getString("Origin");

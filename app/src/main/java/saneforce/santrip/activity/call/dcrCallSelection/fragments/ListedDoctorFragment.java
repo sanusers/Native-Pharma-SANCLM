@@ -71,7 +71,7 @@ public class ListedDoctorFragment extends Fragment {
 
 
     ListView lv_spec, lv_cate, lv_terr,lv_class;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     CommonUtilsMethods commonUtilsMethods;
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
@@ -103,7 +103,7 @@ public class ListedDoctorFragment extends Fragment {
         constraintFilter = v.findViewById(R.id.constraint_filter_selection_list);
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());

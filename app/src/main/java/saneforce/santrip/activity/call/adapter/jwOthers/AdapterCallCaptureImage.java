@@ -38,14 +38,14 @@ import saneforce.santrip.storage.SharedPref;
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
     Context context;
     ArrayList<CallCaptureImageList> callCaptureImageLists;
-    SQLite sqLite;
+//    SQLite sqLite;
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
 
     public AdapterCallCaptureImage(Context context, ArrayList<CallCaptureImageList> callCaptureImageLists) {
         this.context = context;
         this.callCaptureImageLists = callCaptureImageLists;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
     }

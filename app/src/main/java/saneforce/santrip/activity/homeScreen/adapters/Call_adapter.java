@@ -69,7 +69,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     ArrayList<CallsModalClass> list;
     ApiInterface apiInterface;
     ProgressDialog progressBar;
-    SQLite sqLite;
+//    SQLite sqLite;
     Dialog dialogTransparent;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB db;
@@ -80,7 +80,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
         this.context = context;
         this.list = list;
         this.apiInterface = apiInterface;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
         db = RoomDB.getDatabase(context);
         masterDataDao =db.masterDataDao();

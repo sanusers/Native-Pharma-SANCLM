@@ -45,7 +45,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     ArrayList<Resourcemodel_class> listeduser;
 
     Context context;
-    SQLite sqLite;
+//    SQLite sqLite;
     HashSet<String> uniqueValues = new HashSet<>();
     HashMap<String, Integer> idCounts = new HashMap<>();
     private RoomDB roomDB;
@@ -71,7 +71,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Resourcemodel_class app_adapt = listeduser.get(position);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
 
         holder.username.setText(app_adapt.getListed_data());
         holder.usercount.setText(app_adapt.getListed_count());

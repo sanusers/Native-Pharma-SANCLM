@@ -116,7 +116,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Uri outputFileUri;
     ApiInterface api_interface;
     Double distanceTag;
-    SQLite sqLite;
+//    SQLite sqLite;
     LocationManager locationManager;
     GPSTrack gpsTrack;
     SQLiteHandler sqLiteHandler;
@@ -198,11 +198,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        sqLiteHandler = new SQLiteHandler(this);
+//        sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(MapsActivity.this);
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
-        sqLite = new SQLite(MapsActivity.this);
+//        sqLite = new SQLite(MapsActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
 

@@ -83,7 +83,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("StaticFieldLeak")
     public static WorkplanFragmentBinding binding;
     ProgressDialog progressDialog;
-    SQLite sqLite;
+//    SQLite sqLite;
     String CheckInOutStatus;
     JSONObject jsonObject = new JSONObject();
 
@@ -138,7 +138,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding = WorkplanFragmentBinding.inflate(inflater);
         View view = binding.getRoot();
         Log.d("ACTIVITY_STATUS","oncreateview");
-        sqLite = new SQLite(getActivity());
+//        sqLite = new SQLite(getActivity());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
@@ -727,7 +727,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                             SharedPref.setCheckInTime(requireContext(), "");
                             SharedPref.setCheckDateTodayPlan(requireContext(), "");
-                            SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
+                            SetupOutBoxAdapter(requireActivity(), requireContext());
                             CallDialogAfterCheckOut();
                         }
                     } else {
@@ -781,7 +781,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //                sqLite.saveWorkPlan(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString());
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString(), "", 0));
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
-                OutboxFragment.SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
+                OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                     SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
                 } else {
@@ -866,7 +866,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
 
-            OutboxFragment.SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
+            OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
             SharedPref.setCheckDateTodayPlan(requireContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
             commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
         } catch (Exception ignored) {

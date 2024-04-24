@@ -51,7 +51,7 @@ public class PreviewActivity extends AppCompatActivity {
     public static String SelectedTab = "Matrix", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
     public static int SelectedPosPlay;
     PreviewTabAdapter viewPagerAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
     String startT, endT, CustomPresentationNeed;
@@ -81,7 +81,7 @@ public class PreviewActivity extends AppCompatActivity {
         previewBinding = saneforce.santrip.databinding.ActivityPreviewBinding.inflate(getLayoutInflater());
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();

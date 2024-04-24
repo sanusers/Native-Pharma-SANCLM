@@ -66,7 +66,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public static ModelClass inputDataArray = new ModelClass();
     public int itemPosition;
     static Context context;
-    SQLite sqLite;
+//    SQLite sqLite;
 
     ApiInterface apiInterface;
     SessionInterface sessionInterface;
@@ -86,7 +86,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         SessionEditAdapter.inputDataArray = inputDataArray;
         this.context = context;
         this.sessionInterface = sessionInterface;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
 

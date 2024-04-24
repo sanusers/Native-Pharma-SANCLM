@@ -32,7 +32,7 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
     Context context;
     ArrayList<remainder_modelclass> listeduser;
     private AlertDialog alertDialog;
-    SQLite sqLite;
+//    SQLite sqLite;
     private boolean isFirstClick = true;
     private static final long LOCK_DURATION = 5000; // Lock clicks for 2 seconds
     private Handler handler = new Handler();
@@ -42,7 +42,7 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
     public remaindercalls_adapter(Context context, ArrayList<remainder_modelclass> listeduser) {
         this.context = context;
         this.listeduser = listeduser;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         callOfflineDataDao = roomDB.callOfflineDataDao();
     }

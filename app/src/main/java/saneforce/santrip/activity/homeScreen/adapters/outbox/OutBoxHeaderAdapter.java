@@ -68,7 +68,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     boolean isCallAvailable;
     ProgressDialog progressDialog;
     ApiInterface apiInterface;
-    SQLite sqLite;
+//    SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
@@ -82,7 +82,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         this.activity = activity;
         this.context = context;
         this.groupModelClasses = groupModelClasses;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         commonUtilsMethods = new CommonUtilsMethods(context);
         db=RoomDB.getDatabase(context);
@@ -269,7 +269,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
             Log.v("SendOutboxCall", "--finallyOut--");
             progressDialog.dismiss();
             if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
-                CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+                CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             }
             CallDataRestClass.resetcallValues(context);
 

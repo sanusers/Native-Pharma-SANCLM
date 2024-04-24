@@ -115,7 +115,7 @@ public class Activity extends AppCompatActivity {
     private static final int PICK_FROM_GALLERY = 101;
 
 
-    SQLite sqLite;
+//    SQLite sqLite;
     ApiInterface apiInterface;
 
     ArrayList<ActivityModelClass> ActivityList=new ArrayList<>();
@@ -141,7 +141,7 @@ public class Activity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);
-        sqLite=new SQLite(this);
+//        sqLite=new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods=new CommonUtilsMethods(this);

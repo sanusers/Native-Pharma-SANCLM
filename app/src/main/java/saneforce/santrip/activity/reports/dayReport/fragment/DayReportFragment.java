@@ -64,7 +64,7 @@ public class DayReportFragment extends Fragment {
 
     FragmentDayReportBinding binding;
     ApiInterface apiInterface;
-    SQLite sqLite;
+//    SQLite sqLite;
     LocalDate localDate;
 
     ProgressDialog progressDialog;
@@ -119,7 +119,7 @@ public class DayReportFragment extends Fragment {
     }
 
     public void initialisation() {
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         localDate = LocalDate.now();
         daysArrayList = daysInMonthArray(localDate);
 

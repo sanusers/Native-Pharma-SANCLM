@@ -27,7 +27,7 @@ import saneforce.santrip.storage.SQLite;
 
 public class weekoff_fragment extends Fragment {
     RecyclerView weekofflist;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<fromsmodelclass> listvalue = new ArrayList<>();
     weekoff_adapter weekoffadapter;
     CommonUtilsMethods commonUtilsMethods;
@@ -41,7 +41,7 @@ public class weekoff_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_weekoff_fragment, container, false);
         weekofflist = v.findViewById(R.id.weekooflist);
-        sqLite = new SQLite(getActivity());
+//        sqLite = new SQLite(getActivity());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());

@@ -35,7 +35,7 @@ public class Holiday_fragment extends Fragment {
 
 
     ArrayList<fromsmodelclass> listvalue = new ArrayList<>();
-    SQLite sqLite;
+//    SQLite sqLite;
     holiday_adapter holidayadapter;
     String current_year;
     CommonUtilsMethods commonUtilsMethods;
@@ -54,7 +54,7 @@ public class Holiday_fragment extends Fragment {
         constraintNoData = v.findViewById(R.id.constraint_no_data);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        sqLite = new SQLite(getActivity());
+//        sqLite = new SQLite(getActivity());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
 

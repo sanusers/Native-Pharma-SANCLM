@@ -46,12 +46,12 @@ public class BrandMatrix extends Fragment {
     public static ArrayList<String> slideIdList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static PreviewAdapter previewAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
 
-    public static void getSelectedMatrix(Context context, SQLite sqLite, String mappedBrands, String mappedSlides, MasterDataDao masterDataDao) {
+    public static void getSelectedMatrix(Context context, String mappedBrands, String mappedSlides, MasterDataDao masterDataDao) {
         try {
             SlideBrandMatrixList.clear();
             brandCodeList.clear();
@@ -145,7 +145,7 @@ public class BrandMatrix extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         brandMatrixBinding = FragmentSpecialityPreviewBinding.inflate(inflater);
         View v = brandMatrixBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -153,7 +153,7 @@ public class BrandMatrix extends Fragment {
         brandMatrixBinding.tvSelectSpeciality.setVisibility(View.GONE);
         if (from_where.equalsIgnoreCase("call")) {
             brandMatrixBinding.tvSelectDoctor.setVisibility(View.GONE);
-            getSelectedMatrix(requireContext(), sqLite, BrandCode, SlideCode, masterDataDao);
+            getSelectedMatrix(requireContext(), BrandCode, SlideCode, masterDataDao);
         } else {
             brandMatrixBinding.constraintNoData.setVisibility(View.VISIBLE);
             brandMatrixBinding.rvBrandList.setVisibility(View.GONE);

@@ -36,7 +36,7 @@ import saneforce.santrip.storage.SharedPref;
 
 public class RemaindercallsActivity extends AppCompatActivity {
     ImageView back_btn;
-    SQLite sqLite;
+//    SQLite sqLite;
     String SfType = "", Sf_code = "";
     LoginResponse loginResponse;
     TextView search_bar, headtext_id;
@@ -82,7 +82,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
         et_Custsearch = findViewById(R.id.et_Custsearch);
         hq_name1 = findViewById(R.id.hq_name1);
 
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         loginDataDao = roomDB.loginDataDao();
         dcrDocDataDao = roomDB.dcrDocDataDao();

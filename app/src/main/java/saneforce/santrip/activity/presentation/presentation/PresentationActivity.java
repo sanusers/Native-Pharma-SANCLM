@@ -23,7 +23,7 @@ public class PresentationActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static ActivityPresentationBinding binding;
     PresentationAdapter presentationAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
@@ -52,7 +52,7 @@ public class PresentationActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         presentationDataDao = roomDB.presentationDataDao();
 //        savedPresentation = sqLite.getPresentationData();

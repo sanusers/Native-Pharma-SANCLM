@@ -58,7 +58,7 @@ public class UnlistedDoctorFragment extends Fragment {
     Dialog dialogFilter;
     ImageButton iv_filter;
     ImageView img_close,img_del;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObjectDob, jsonObjectDow;
     CommonUtilsMethods commonUtilsMethods;
@@ -85,7 +85,7 @@ public class UnlistedDoctorFragment extends Fragment {
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());

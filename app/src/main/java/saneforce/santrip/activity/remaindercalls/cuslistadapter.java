@@ -53,7 +53,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
     Context context;
     ApiInterface api_interface;
     LoginResponse loginResponse;
-    SQLite sqLite;
+//    SQLite sqLite;
     String SfType = "", Vals = "";
     String pos;
 
@@ -71,7 +71,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
         this.listeduser1 = listeduser1;
         this.pos = pos;
 
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         loginDataDao = roomDB.loginDataDao();
         dcrDocDataDao = roomDB.dcrDocDataDao();

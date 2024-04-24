@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
     PackageManager packageManager;
     PackageInfo packageInfo;
     String fcmToken = "";
-    SQLite sqLite;
+//    SQLite sqLite;
     String navigateFrom = "";
     String userId = "", userPwd = "";
     LoginViewModel loginViewModel = new LoginViewModel();
@@ -96,9 +96,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getParent());
-        sqLite.getWritableDatabase();
+//        sqLite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
@@ -202,9 +202,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void DeleteAllFiles() {
-        sqLite.deleteAllTable();
-        masterDataDao.deleteAllMasterData();
-        callTableDao.deleteAllData();
+//        sqLite.deleteAllTable();
+//        masterDataDao.deleteAllMasterData();
+//        callTableDao.deleteAllData();
+        roomDB.loginDataDao().deleteAllData();
+        roomDB.masterDataDao().deleteAllMasterData();
+        roomDB.callTableDao().deleteAllData();
+        roomDB.callOfflineDataDao().deleteAllData();
+        roomDB.callOfflineECDataDao().deleteAllData();
+        roomDB.callOfflineWorkTypeDataDao().deleteAllData();
+        roomDB.offlineCheckInOutDataDao().deleteAllData();
+        roomDB.dcrDocDataDao().deleteAllData();
+        roomDB.presentationDataDao().deleteAllData();
+        roomDB.tourPlanOfflineDataDao().deleteAllData();
+        roomDB.tourPlanOnlineDataDao().deleteAllData();
 
         SharedPref.clearSP(LoginActivity.this);
         SharedPref.saveLoginState(getApplicationContext(), false);
@@ -411,7 +422,7 @@ public class LoginActivity extends AppCompatActivity {
 //            sqLite.saveLoginData(jsonObject.toString());
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             SharedPref.InsertLogInData(LoginActivity.this,jsonObject);
-            openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
+//            openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));

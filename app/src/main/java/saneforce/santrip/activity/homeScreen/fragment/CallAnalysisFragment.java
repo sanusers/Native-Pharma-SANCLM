@@ -54,7 +54,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public static CallAnalysisFagmentBinding callAnalysisBinding;
     public static String key;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
-    SQLite sqLite;
+//    SQLite sqLite;
      public static Context context;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -80,7 +80,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         context = requireContext();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         db = RoomDB.getDatabase(getActivity());
         callTableDao=db.callTableDao();
         masterDataDao = db.masterDataDao();

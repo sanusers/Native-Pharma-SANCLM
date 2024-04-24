@@ -42,7 +42,7 @@ public class ApprovalsActivity extends AppCompatActivity {
     JSONObject jsonGetCount = new JSONObject();
     ApiInterface api_interface;
 
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<AdapterModel> list_approvals = new ArrayList<>();
     AdapterApprovals adapterApprovals;
     ProgressDialog progressDialog = null;
@@ -74,7 +74,7 @@ public class ApprovalsActivity extends AppCompatActivity {
         setContentView(approvalsBinding.getRoot());
 
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);

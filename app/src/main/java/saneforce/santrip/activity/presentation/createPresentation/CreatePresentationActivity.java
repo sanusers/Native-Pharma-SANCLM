@@ -44,7 +44,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
     BrandNameAdapter brandNameAdapter;
     SlideImageAdapter slideImageAdapter;
     SelectedSlidesAdapter selectedSlidesAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
     ArrayList<BrandModelClass.Product> selectedSlideArrayList = new ArrayList<>();
     ArrayList<BrandModelClass.Product> savedPresentation = new ArrayList<>();
@@ -80,7 +80,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        sqLite = new SQLite(CreatePresentationActivity.this);
+//        sqLite = new SQLite(CreatePresentationActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         presentationDataDao = roomDB.presentationDataDao();

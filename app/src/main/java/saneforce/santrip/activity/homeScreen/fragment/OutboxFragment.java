@@ -69,7 +69,7 @@ public class OutboxFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static OutBoxHeaderAdapter outBoxHeaderAdapter;
     static NetworkCheckInterface mCheckNetwork;
-    SQLite sqLite;
+//    SQLite sqLite;
     ApiInterface apiInterface;
     boolean isCallAvailable;
     CommonUtilsMethods commonUtilsMethods;
@@ -95,7 +95,7 @@ public class OutboxFragment extends Fragment {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public static void SetupOutBoxAdapter(Activity activity, SQLite sqLite, Context context) {
+    public static void SetupOutBoxAdapter(Activity activity, Context context) {
 //        listDates = sqLite.getOutBoxDate();
         listDates = callsUtil.getOutBoxDate();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
@@ -109,7 +109,7 @@ public class OutboxFragment extends Fragment {
         Log.v("fragment", "OutBox");
         outBoxBinding = OutboxFragmentBinding.inflate(inflater, container, false);
         View v = outBoxBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         db = RoomDB.getDatabase(requireContext());
@@ -117,7 +117,7 @@ public class OutboxFragment extends Fragment {
         offlineCheckInOutDataDao = db.offlineCheckInOutDataDao();
         callOfflineECDataDao = db.callOfflineECDataDao();
         callsUtil = new CallsUtil(requireContext());
-        SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
+        SetupOutBoxAdapter(requireActivity(), requireContext());
 
         new Handler().postDelayed(this::refreshPendingFunction, 200);
 
@@ -200,7 +200,7 @@ public class OutboxFragment extends Fragment {
         }
 
         if (!isCallAvailable) {
-            SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
+            SetupOutBoxAdapter(requireActivity(), requireContext());
         }
     }
 
@@ -253,7 +253,7 @@ public class OutboxFragment extends Fragment {
 
         if (!isCallAvailable) {
             if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(listDates.get(ParentPos).getGroupName())) {
-                CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+                CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             }
             CallOfflineImage(ParentPos, 3, listDates.get(ParentPos).getChildItems().get(3).getEcModelClasses(), modelClass);
         }

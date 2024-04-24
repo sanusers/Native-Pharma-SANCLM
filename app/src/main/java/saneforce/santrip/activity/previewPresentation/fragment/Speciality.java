@@ -45,12 +45,12 @@ public class Speciality extends Fragment {
     public static ArrayList<String> brandCodeList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static PreviewAdapter previewAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
 
-    public static void getRequiredData(Context context, SQLite sqLite, String specialityName, MasterDataDao masterDataDao) {
+    public static void getRequiredData(Context context, String specialityName, MasterDataDao masterDataDao) {
         try {
             specialityPreviewBinding.tvSelectSpeciality.setText(specialityName);
             SlideSpecialityList.clear();
@@ -110,7 +110,7 @@ public class Speciality extends Fragment {
         }
     }
 
-    public static void getSelectedSpec(Context context, SQLite sqLite, String selectedSpecialityCode, String SpecialityName, MasterDataDao masterDataDao) {
+    public static void getSelectedSpec(Context context, String selectedSpecialityCode, String SpecialityName, MasterDataDao masterDataDao) {
         try {
             specialityPreviewBinding.tvSelectSpeciality.setText(SpecialityName);
             SlideSpecialityList.clear();
@@ -181,7 +181,7 @@ public class Speciality extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         specialityPreviewBinding = FragmentSpecialityPreviewBinding.inflate(inflater);
         View v = specialityPreviewBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -191,9 +191,9 @@ public class Speciality extends Fragment {
             specialityPreviewBinding.tvSelectDoctor.setVisibility(View.GONE);
             specialityPreviewBinding.tvSelectSpeciality.setVisibility(View.VISIBLE);
             if (CusType.equalsIgnoreCase("1")) {
-                getSelectedSpec(requireContext(), sqLite, SpecialityCode, SpecialityName, masterDataDao);
+                getSelectedSpec(requireContext(), SpecialityCode, SpecialityName, masterDataDao);
             } else {
-                getRequiredData(requireContext(), sqLite, SpecialityName, masterDataDao);
+                getRequiredData(requireContext(), SpecialityName, masterDataDao);
             }
         } else {
             specialityPreviewBinding.constraintNoData.setVisibility(View.VISIBLE);
