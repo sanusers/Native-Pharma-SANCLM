@@ -334,7 +334,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
             try{
                 inputcount.clear();
                 String unlist_val="";
-                JSONArray json_input = sqLite.getMasterSyncDataByKey(Constants.INPUT);
+                JSONArray json_input = masterDataDao.getMasterSyncDataByKey(Constants.INPUT).getMasterSyncDataJsonArray();
 
                 if (json_input.length() > 0) {
                     for (int i = 0; i < json_input.length(); i++) {
