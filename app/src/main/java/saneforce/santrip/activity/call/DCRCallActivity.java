@@ -877,7 +877,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void UpdateSampleStock() {
         try {
-            JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
+
+            JSONArray jsonArraySamStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
             for (int i = 0; i < StockSample.size(); i++) {
                 //SampleStockChange
                 for (int j = 0; j < jsonArraySamStk.length(); j++) {
@@ -1961,7 +1962,9 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
             jsonSaveDcr.put("Mod", Constants.APP_MODE);
 
-            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+
+
+            JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArrayWt.length(); i++) {
                 JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
                 if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
@@ -2232,7 +2235,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     } else {
                         TodayPlanSfCode = SharedPref.getHqCode(this);
                         if (TodayPlanSfCode.isEmpty()) {
-                            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                             for (int i = 0; i < 1; i++) {
                                 JSONObject jsonHQList = jsonArray1.getJSONObject(0);
                                 TodayPlanSfCode = jsonHQList.getString("id");

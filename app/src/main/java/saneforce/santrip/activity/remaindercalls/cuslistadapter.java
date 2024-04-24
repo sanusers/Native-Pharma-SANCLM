@@ -39,6 +39,8 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -57,7 +59,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
     ArrayList<remainder_modelclass> listeduser1;
     private RoomDB roomDB;
-    private LoginDataDao loginDataDao;
+
     private DCRDocDataDao dcrDocDataDao;
 
     public cuslistadapter(Context context, ArrayList<remainder_modelclass> listeduser1, String pos) {
@@ -67,9 +69,9 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
 
 //        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
-        loginDataDao = roomDB.loginDataDao();
+
         dcrDocDataDao = roomDB.dcrDocDataDao();
-        loginResponse = loginDataDao.getLoginData().getLoginResponse();
+
 //        loginResponse = sqLite.getLoginData();
         SfType = loginResponse.getSf_type();
     }
@@ -147,7 +149,8 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
             RemaindercallsActivity.listeduser.clear();
             String Town_Name = "";
             Log.d("check_json", hqcode);
-            JSONArray jsonvst_Doc = sqLite.getDcr_datas(hqcode);
+            JSONArray jsonvst_Doc = dcrDocDataDao.getDCRDocData(hqcode).getDCRDocDataJSONArray();
+
 
             if (!jsonvst_Doc.equals("[]") || !jsonvst_Doc.equals("null") && SharedPref.getRemainderGeo(context).equals("0")) {
                 for (int i = 0; i < jsonvst_Doc.length(); i++) {
@@ -262,7 +265,6 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
                                         MainData.setMasterValuse(jsonArray1.toString());
                                         MainData.setSyncstatus(0);*/
 
-                                        sqLite.saveMasterSyncData("Doctor_" +hq_code, jsonArray1.toString(), 0);
 
                                         if (masterFor.equals("Doctor")) {
                                             progressDialog.dismiss();
@@ -312,10 +314,8 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
         try {
             RemaindercallsActivity.sub_list.clear();
             JSONArray jsonvst_Doc = new JSONArray(json.toString());
-            sqLite.insert_docvalues("Joint_Work_" + hq_code, jsonvst_Doc.toString());
-
+            dcrDocDataDao.insertDCRDocValues(new DCRDocDataTable("Joint_Work_" + hq_code, jsonvst_Doc.toString()));
             SharedPref.setDcr_dochqcode(context, hq_code);
-
             if (jsonvst_Doc.length() > 0) {
                 for (int i = 0; i < jsonvst_Doc.length(); i++) {
                     JSONObject jsonObject = jsonvst_Doc.getJSONObject(i);
@@ -338,7 +338,7 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
             SharedPref.setDcr_dochqcode(context, hq_code);
             Log.d("hq_check",hq_code+"-----"+ jsonArray1.toString());
 
-            sqLite.insert_docvalues( hq_code, jsonArray1.toString());
+            dcrDocDataDao.insertDCRDocValues(new DCRDocDataTable("Doctor_" + hq_code, jsonArray1.toString()));
             String Town_Name = "";
             if (jsonArray1.length() > 0) {
                 if (!jsonArray1.equals("[]") || !jsonArray1.equals("null") && SharedPref.getRemainderGeo(context).equals("0")) {

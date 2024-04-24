@@ -164,11 +164,11 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                                 }
                                 MasterDataTable data = new MasterDataTable();
                                 data.setMasterKey(Constants.CALL_SYNC);
-                                data.setMasterValuse(jsonArray.toString());
-                                data.setSyncstatus(0);
+                                data.setMasterValues(jsonArray.toString());
+                                data.setSyncStatus(0);
                                 MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                                 if (mNChecked != null) {
-                                    masterDataDao.updatedata(Constants.CALL_SYNC, jsonArray.toString());
+                                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
                                 } else {
                                     masterDataDao.insert(data);
 

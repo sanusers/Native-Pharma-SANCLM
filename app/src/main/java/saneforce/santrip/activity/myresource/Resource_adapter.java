@@ -38,6 +38,7 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
 public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.ViewHolder> {
@@ -294,7 +295,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         break;
                     case ("8"):
                         rec_val = "P";
-                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.PRODUCT));
                         Valcount = "1";
 
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.PRODUCT);

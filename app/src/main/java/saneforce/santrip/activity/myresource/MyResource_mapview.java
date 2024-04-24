@@ -77,6 +77,7 @@ import saneforce.santrip.databinding.ActivityMyResourceMapviewBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -116,7 +117,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     public String bestProvider;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
-    private LoginDataDao loginDataDao;
+
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +135,7 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 
         roomDB =  RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
-        loginDataDao = roomDB.loginDataDao();
+
 
         Log.e("dcr_doctor", Cust_type + "--" + Cust_name);
 

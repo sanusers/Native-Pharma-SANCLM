@@ -30,6 +30,8 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityRemaindercallsBinding;
 
 import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataTable;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
@@ -58,10 +60,9 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public static String vals_rm = "";
     ApiInterface api_interface;
     private RoomDB roomDB;
-    private LoginDataDao loginDataDao;
     private DCRDocDataDao dcrDocDataDao;
     private MasterDataDao masterDataDao;
-
+  public  static   ActivityRemaindercallsBinding remcallbinding;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         remcallbinding = ActivityRemaindercallsBinding.inflate(getLayoutInflater());

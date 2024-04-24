@@ -117,6 +117,8 @@ import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
 import saneforce.santrip.response.CustomSetupResponse;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -163,7 +165,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     RoomDB roomDB;
 
     MasterDataDao masterDataDao;
-
+    OfflineCheckInOutDataDao offlineCheckInOutDataDao;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -453,8 +455,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 SharedPref.setSkipCheckIn(getApplicationContext(), false);
                 SharedPref.setCheckTodayCheckInOut(getApplicationContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                sqLite.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
-                SetupOutBoxAdapter(this, sqLite, this);
+                offlineCheckInOutDataDao.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                SetupOutBoxAdapter(this, this);
                 CallDialogAfterCheckIn();
             }
         });
@@ -613,7 +615,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         callsatuslist.clear();
         try {
             if (String.valueOf(date.getMonth()).equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("MMMM"))) {
-                JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+
                 if (workTypeArray.length() > 0) {
                     JSONObject jsonObject = workTypeArray.getJSONObject(0);
                     String TPDt = jsonObject.getString("TPDt");
@@ -1274,7 +1277,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                         JsonElement jsonElement = response.body();
                         assert jsonElement != null;
                         JsonArray jsonArray = jsonElement.getAsJsonArray();
-                        sqLite.saveMasterSyncData(Constants.DATE_SYNC, jsonArray.toString(), 0);
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, jsonArray.toString(), 0));
+
                         binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
                         binding.tabLayout.setVisibility(View.VISIBLE);
                         binding.viewPager.setVisibility(View.VISIBLE);
@@ -1369,7 +1373,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void getCallsDataToCalender() {
         callStatusList.clear();
-        JSONArray dcrData = sqLite.getMasterSyncDataByKey("DCR");
+        JSONArray dcrData = masterDataDao.getMasterDataTableOrNew(Constants.DCR).getMasterSyncDataJsonArray();
+
         if (dcrData.length() > 0) {
             for (int i = 0; i < dcrData.length(); i++) {
                 try {

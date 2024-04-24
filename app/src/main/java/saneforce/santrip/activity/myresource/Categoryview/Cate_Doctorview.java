@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import saneforce.santrip.activity.myresource.callstatusview.callstatus_model;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityCateDoctorviewBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class Cate_Doctorview extends Fragment {
@@ -30,12 +32,17 @@ public class Cate_Doctorview extends Fragment {
     Category_adapter cate_adapt;
 
 
-
+    RoomDB roomDB;
+    MasterDataDao masterDataDao;
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bindingDoccate = ActivityCateDoctorviewBinding.inflate(getLayoutInflater());
         View v = bindingDoccate.getRoot();
 
+
+
+        roomDB= RoomDB.getDatabase(requireContext());
+        masterDataDao=roomDB.masterDataDao();
 
         sqLite = new SQLite(getActivity());
         Doctview();
@@ -45,8 +52,7 @@ public class Cate_Doctorview extends Fragment {
 
     public void Doctview() {
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
-
+            JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CATEGORY));
 
 
             String docval = "";
@@ -55,6 +61,7 @@ public class Cate_Doctorview extends Fragment {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (!docval.equals(jsonObject.getString("Code"))) {
                         docval = jsonObject.getString("Code");
+
 //                        "Name":"A",
 //                                "Doc_Cat_Name":"A",
 

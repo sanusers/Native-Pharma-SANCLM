@@ -67,7 +67,7 @@ public class MyResource_Activity extends AppCompatActivity {
     public static ActivityMyResourceBinding binding;
     LocalDate date_n;
     private RoomDB roomDB;
-    private LoginDataDao loginDataDao;
+
     private MasterDataDao masterDataDao;
 
 
@@ -84,7 +84,7 @@ public class MyResource_Activity extends AppCompatActivity {
         appRecyclerView.setVisibility(View.VISIBLE);
 
         roomDB = RoomDB.getDatabase(getApplicationContext());
-        loginDataDao = roomDB.loginDataDao();
+
         masterDataDao = roomDB.masterDataDao();
 
 
@@ -181,8 +181,8 @@ public class MyResource_Activity extends AppCompatActivity {
                     Che_count = "0";
                 }
             }
+            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + synhqval1).getMasterSyncDataJsonArray();
 
-            JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + synhqval1);
             String stockist = String.valueOf(jsonstock);
             if (!stockist.equals("") || !stockist.equals("null")) {
                 count_list.clear();
@@ -199,9 +199,7 @@ public class MyResource_Activity extends AppCompatActivity {
                     Strck_count = "0";
                 }
             }
-
-
-            JSONArray jsonunlisted = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + synhqval1);
+            JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + synhqval1).getMasterSyncDataJsonArray();
             String unlisted = String.valueOf(jsonunlisted);
             if (!unlisted.equals("") || !unlisted.equals("null")) {
                 count_list.clear();
@@ -279,15 +277,17 @@ public class MyResource_Activity extends AppCompatActivity {
                 inputcount.clear();
                 productcount.clear();
                 String input_val="",product_val="";
-                JSONArray jsoninput = sqLite.getMasterSyncDataByKey(Constants.INPUT);
+
+                JSONArray jsoninput = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
                 for (int i = 0; i < jsoninput.length(); i++) {
                     JSONObject jsonObject = jsoninput.getJSONObject(i);
                     if(!input_val.equals(jsonObject.getString("Code"))&& (!jsonObject.getString("Code").equalsIgnoreCase("-1"))) {
                         inputcount.add(jsonObject.getString("Code"));
                     }
                 }
+                JSONArray jsonproduct = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
 
-                JSONArray jsonproduct= (sqLite.getMasterSyncDataByKey(Constants.PRODUCT));
+
                 for (int i = 0; i < jsonproduct.length(); i++) {
                     JSONObject jsonObject = jsonproduct.getJSONObject(i);
                     if(!product_val.equals(jsonObject.getString("Code"))&& (!jsonObject.getString("Code").equalsIgnoreCase("-1"))) {
@@ -304,9 +304,9 @@ public class MyResource_Activity extends AppCompatActivity {
              input_count = String.valueOf(inputcount.size());
             product_count = String.valueOf(productcount.size());
 
-            listed_data.add(new Resourcemodel_class("Input", input_count, "7"));
-            listed_data.add(new Resourcemodel_class("Product", product_count, "8"));
-            listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + synhqval1).length()), "9"));
+            listed_data.add(new Resourcemodel_class("Input", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray().length()), "7"));
+            listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
+            listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", "", "11"));
             listed_data.add(new Resourcemodel_class("Calls Status", "", "12"));
@@ -386,7 +386,8 @@ public class MyResource_Activity extends AppCompatActivity {
                 MasterSyncActivity.HQCODE_SYN.add(SharedPref.getHqCode(MyResource_Activity.this));
                 SharedPref.setsyn_hqcode(this, String.valueOf(MasterSyncActivity.HQCODE_SYN));
             }
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE ).getMasterSyncDataJsonArray();
             headtext_id.setText("Headquarters");
 
             ArrayList<String> list = new ArrayList<>();

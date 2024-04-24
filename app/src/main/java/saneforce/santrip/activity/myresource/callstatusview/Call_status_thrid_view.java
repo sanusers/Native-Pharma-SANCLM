@@ -21,6 +21,8 @@ import java.util.Calendar;
 
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityCallStatusThridViewBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -34,11 +36,16 @@ public class Call_status_thrid_view extends Fragment {
 ActivityCallStatusThridViewBinding Callstatusthridview;
     String previousMonth;
 
+    RoomDB roomDB;
+    MasterDataDao masterDataDao;
     @SuppressLint("ObsoleteSdkInt")
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Callstatusthridview = ActivityCallStatusThridViewBinding.inflate(inflater);
         View v = Callstatusthridview.getRoot();
 
+
+        roomDB= RoomDB.getDatabase(requireContext());
+        masterDataDao=roomDB.masterDataDao();
         sqLite = new SQLite(getActivity());
 
 
@@ -61,8 +68,8 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
             String CustType="",FW_Indicator="",Mnth="",CustName="",town_name="",date_format="",chckflk="";
             String CustCode="",Dcr_dt="",month_name="",town_code="",Dcr_flag="",SF_Code="",Trans_SlNo="",AMSLNo="",  val="";
 
-            JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC);
-            JSONArray jsonvst_wrktype = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+            JSONArray jsonvst_ctl = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+            JSONArray jsonvst_wrktype = new JSONArray(masterDataDao.getDataByKey(Constants.WORK_TYPE));
             Log.d("callstatus", String.valueOf(jsonvst_ctl));
             if (jsonvst_ctl.length() > 0) {
                 for (int i = 0; i < jsonvst_ctl.length(); i++) {
