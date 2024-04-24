@@ -119,7 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //    SQLite sqLite;
     LocationManager locationManager;
     GPSTrack gpsTrack;
-    SQLiteHandler sqLiteHandler;
+//    SQLiteHandler sqLiteHandler;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double lat, lng, limitKm = 0.5;
@@ -1093,7 +1093,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
-        sqLiteHandler.open();
+//        sqLiteHandler.open();
 
         switch (selected) {
             case "D":

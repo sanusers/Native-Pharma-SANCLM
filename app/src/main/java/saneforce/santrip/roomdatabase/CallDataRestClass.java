@@ -92,7 +92,7 @@ public class CallDataRestClass {
          CallAnalysisFragment.SetcallDetailsInLineChart();
 
      }catch (Exception a){
-         throw new  RuntimeException();
+         a.printStackTrace();
      }
     }
 
