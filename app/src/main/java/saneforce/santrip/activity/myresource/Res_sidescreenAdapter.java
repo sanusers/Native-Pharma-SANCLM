@@ -152,11 +152,20 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
             if (split_val.equals("1") || split_val.equals("2")) {
                 holder.Res_Edit.setVisibility(View.GONE);
-//                holder.Res_View.setVisibility(View.GONE);
                 holder.Res_Table2.setVisibility(View.GONE);
             }
 
+  //        input filter_add
 
+            if(split_val.equalsIgnoreCase("11")){
+                if(!app_adapt.getLatitude().equals("") && !app_adapt.getLongtitude().equals("")){
+                    holder.Res_Table1.setVisibility(View.VISIBLE);
+                    holder.Res_category.setVisibility(View.VISIBLE);
+
+                    holder.Res_category.setText("From: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLatitude()));
+                    holder.Res_rx.setText("To: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
+                }
+            }
             holder.listcount.setText(count + " )");
 
             holder.Res_Edit.setOnClickListener(view -> {

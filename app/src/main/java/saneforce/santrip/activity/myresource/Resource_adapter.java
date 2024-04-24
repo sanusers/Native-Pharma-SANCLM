@@ -301,22 +301,27 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         if (jsoninput.length() > 0) {
                             for (int i = 0; i < jsoninput.length(); i++) {
                                 JSONObject jsonObject = jsoninput.getJSONObject(i);
-                                if (!input_val.equals(jsonObject.getString("Code"))) {
-//                                input_val = jsonObject.getString("Code");
+
+                                if (!input_val.equals(jsonObject.getString("Code")) && (!jsonObject.getString("Code").equals("-1"))) {
                                     String custom_name = (jsonObject.getString("Name"));
+                                    JSONObject jsonFDate = new JSONObject(jsonObject.getString("EffF"));
+                                    JSONObject jsonTDate = new JSONObject(jsonObject.getString("EffT"));
 
+                                    String frm_date = jsonFDate.getString("date");
+                                    String[] Frm_val = frm_date.split(" ");
+                                    String to_date = jsonTDate.getString("date");
+                                    String[] Toval = to_date.split(" ");
 
-                                    listresource.add(new Resourcemodel_class("",custom_name, "", "", "", "","", "", "", "",
+                                    listresource.add(new Resourcemodel_class("",custom_name, "", "", "", "","", "", Frm_val[0], Toval[0],
                                             "", "", "","","","","","","","","","",""));
 
-                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "1");
+                                    Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "11");
                                     appRecyclerView.setAdapter(appAdapter3);
                                     appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
                                     appAdapter3.notifyDataSetChanged();
                                 }
                             }
-                        }
-                        break;
+                        }                        break;
                     case ("8"):
                         rec_val="P";
                         Valcount = "1";

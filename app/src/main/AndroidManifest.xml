@@ -77,7 +77,7 @@
             android:name=".activity.Quiz.QuizActivity"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity
             android:name=".activity.previewPresentation.PreviewActivity"
             android:exported="false"
@@ -279,10 +279,9 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <service
-            android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
+        <service android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"/>
     </application>
 
 </manifest>

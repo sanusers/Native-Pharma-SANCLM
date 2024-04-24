@@ -44,6 +44,7 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
     public static ArrayList<Resourcemodel_class> listresource = new ArrayList<>();
     public static ArrayList<Resourcemodel_class> search_list = new ArrayList<>();
     public static ArrayList<String> count_list = new ArrayList<>();
+    ArrayList<String> inputcount = new ArrayList<>();
     public static ArrayList<String> visitcount_list = new ArrayList<>();
     public static DrawerLayout drawerLayout;
     public static RecyclerView appRecyclerView;
@@ -72,10 +73,12 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 //    SQLite sqLite;
 
     TextView hq_head;
-    String navigateFrom = "";
+    String navigateFrom = "",INputs_value="";
     private RoomDB roomDB;
     private LoginDataDao loginDataDao;
     private MasterDataDao masterDataDao;
+
+
 
 
     @Override
@@ -327,10 +330,35 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 listed_data.add(new Resourcemodel_class(loginResponse.getHosp_caption(), Hosp_count, "5"));
             if (loginResponse.getCip_need().equalsIgnoreCase("0"))
                 listed_data.add(new Resourcemodel_class(loginResponse.getCIP_Caption(), Cip_count, "6"));
+
+            try{
+                inputcount.clear();
+                String unlist_val="";
+                JSONArray json_input = sqLite.getMasterSyncDataByKey(Constants.INPUT);
+
+                if (json_input.length() > 0) {
+                    for (int i = 0; i < json_input.length(); i++) {
+                        JSONObject jsonObject = json_input.getJSONObject(i);
+
+                        if (!unlist_val.equals(jsonObject.getString("Code")) &&(!jsonObject.getString("Code").equals("-1")) ) {
+
+                            inputcount.add(jsonObject.getString("Code"));
+                        }
+                    }
+                    INputs_value= String.valueOf(inputcount.size());
+                }
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+
+
+
 //            listed_data.add(new Resourcemodel_class("Input", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.INPUT).length()), "7"));
 //            listed_data.add(new Resourcemodel_class("Product", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length()), "8"));
 //            listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(this)).length()), "9"));
-            listed_data.add(new Resourcemodel_class("Input", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray().length()), "7"));
+            listed_data.add(new Resourcemodel_class("Input", INputs_value, "7"));
             listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
             listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));

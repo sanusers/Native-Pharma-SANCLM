@@ -15,6 +15,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -48,6 +49,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
+import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.homeScreen.modelClass.CallsModalClass;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -133,50 +135,80 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                     if (menuItem.getItemId() == R.id.menuEdit) {
                         CallEditAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocName(), callslist.getDocCode(), callslist.getDocNameID());
                     } else if (menuItem.getItemId() == R.id.menuDelete) {
-                        try {
-                            dialogTransparent.show();
 
-                            CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
-                            String mMdata= masterDataDao.getDataByKey(Constants.CALL_SYNC);
-                            JSONArray jsonArray = new JSONArray(mMdata);
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
-                                    jsonArray.remove(i);
-                                    break;
+
+                        Dialog   dialog = new Dialog(context);
+                        dialog.setContentView(R.layout.dcr_cancel_alert);
+                        dialog.setCancelable(false);
+                        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView btn_yes=dialog.findViewById(R.id.btn_yes);
+                        TextView btn_no=dialog.findViewById(R.id.btn_no);
+                        TextView titte=dialog.findViewById(R.id.ed_alert_msg);
+                        titte.setText("Are You Sure To Delete ?");
+
+                        btn_yes.setOnClickListener(view12 -> {
+                            dialog.dismiss();
+                            try {
+                                dialogTransparent.show();
+
+                                CallDeleteAPI(callslist.getTrans_Slno(), callslist.getADetSLNo(), callslist.getDocNameID(), callslist.getCallsDateTime().substring(0, 10), callslist.getDocCode());
+                                String mMdata= masterDataDao.getDataByKey(Constants.CALL_SYNC);
+                                JSONArray jsonArray = new JSONArray(mMdata);
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(callslist.getCallsDateTime().substring(0, 10)) && jsonObject.getString("CustCode").equalsIgnoreCase(callslist.getDocCode())) {
+                                        jsonArray.remove(i);
+                                        break;
+                                    }
                                 }
+                                MasterDataTable data = new MasterDataTable();
+                                data.setMasterKey(Constants.CALL_SYNC);
+                                data.setMasterValues(jsonArray.toString());
+                                data.setSyncStatus(0);
+                                MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                if (mNChecked != null) {
+                                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
+                                } else {
+                                    masterDataDao.insert(data);
+
+                                }
+                                CallDataRestClass.resetcallValues(context);
+
+
+                                new CountDownTimer(250, 250) {
+                                    public void onTick(long millisUntilFinished) {
+                                    }
+
+                                    public void onFinish() {
+                                        removeAt(holder.getAbsoluteAdapterPosition());
+                                        dialogTransparent.dismiss();
+                                    }
+                                }.start();
+
+                            } catch (Exception e) {
+                                Log.v("DeleteCall", "---" + e);
+                                dialogTransparent.dismiss();
                             }
-                         //   sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
-                            MasterDataTable data = new MasterDataTable();
-                            data.setMasterKey(Constants.CALL_SYNC);
-                            data.setMasterValues(jsonArray.toString());
-                            data.setSyncStatus(0);
-                            MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
-                            if (mNChecked != null) {
-                                masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
-                            } else {
-                                masterDataDao.insert(data);
 
-                            }
-                            CallDataRestClass.resetcallValues(context);
+                        });
 
-                            //masterDataDao.updatedata(users[0].getMasterKey(),users[0].getMasterValuse());
-                            ///   sqLite.deleteLineChart(callslist.getDocCode(), callslist.getCallsDateTime().substring(0, 10));
-                       //     AssignCallAnalysis( SharedPref.getSfType(context), callslist.getDocNameID());
-                            new CountDownTimer(250, 250) {
-                                public void onTick(long millisUntilFinished) {
-                                }
+                        btn_no.setOnClickListener(view12 -> {
+                            dialog.dismiss();
+                        });
 
-                                public void onFinish() {
-                                    removeAt(holder.getAbsoluteAdapterPosition());
-                                    dialogTransparent.dismiss();
-                                }
-                            }.start();
 
-                        } catch (Exception e) {
-                            Log.v("DeleteCall", "---" + e);
-                            dialogTransparent.dismiss();
-                        }
+
+
+
+
+
+
+
+
+
+
+
                     }
                     return true;
                 });
