@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
+    android:background="@drawable/border_white"
     android:layout_gravity="end"
     app:drawerLayoutCornerSize="0dp"
     tools:context=".activity.myresource.MyResource_Activity">
 
     <RelativeLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.google.android.material.appbar.AppBarLayout

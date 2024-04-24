@@ -85,8 +85,7 @@ public class SlideDownloaderAlertBox {
 
         if (Slide_list.size() > 0) {
             if(AleartShowFlag){
-
-            totalcount = Slide_list.size();
+                totalcount = Slide_list.size();
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             View dialogView = LayoutInflater.from(activity).inflate(R.layout.slide_downloader_alert_box, null);
             recyclerView = dialogView.findViewById(R.id.recyelerview123);

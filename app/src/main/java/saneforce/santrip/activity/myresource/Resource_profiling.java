@@ -66,14 +66,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.remaindercalls.cuslistadapter;
-import saneforce.santrip.activity.remaindercalls.remainder_modelclass;
+
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.activity.remaindercalls.cuslistadapter;
+import saneforce.santrip.activity.remaindercalls.remainder_modelclass;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -111,7 +111,6 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     ArrayList<Mapview_modelclass> listed_cust = new ArrayList<>();
     ArrayList<CustomModel> dataList = new ArrayList<>();
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
-    LoginResponse loginResponse;
 
 
     @Override
@@ -150,17 +149,16 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         app_recycler_view.setVisibility(View.VISIBLE);
         Bundle extra = getIntent().getExtras();
         sqLite = new SQLite(this);
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
 
-        Doc_geoneed = loginResponse.getGeoNeed();
-        Che_geoneed = loginResponse.getGEOTagNeedche();
-        Stk_geoneed = loginResponse.getGEOTagNeedstock();
-        Cip_geoneed = loginResponse.getGeoTagNeedcip();
-        Ult_geoneed = loginResponse.getGEOTagNeedunlst();
+
+
+        Doc_geoneed = SharedPref.getGeoNeed(this);
+        Che_geoneed = SharedPref.getGeotagNeedChe(this);
+        Stk_geoneed = SharedPref.getGeotagNeedStock(this);
+        Cip_geoneed = SharedPref.getGeotagNeedCip(this);
+        Ult_geoneed = SharedPref.getGeotagNeedUnlst(this);
 
         if (Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) {
-
             map_layout.setVisibility(View.VISIBLE);
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -368,7 +366,6 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             visit.putExtra("Dcr_name", docname);
             visit.putExtra("pos_name", Dcr_posname);//Town_name
             visit.putExtra("Town_loct", Town_val);
-
             startActivity(visit);
         });
 

@@ -35,7 +35,7 @@
                     tools:layout_editor_absoluteY="0dp">
 
                     <LinearLayout
-                        android:id="@+id/backArrow"
+                        android:id="@+id/leavebackArrow"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:padding="@dimen/_6sdp">

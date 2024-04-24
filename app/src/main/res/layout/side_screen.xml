@@ -12,7 +12,7 @@
         android:id="@+id/appBar"
         android:layout_width="@dimen/_180sdp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@drawable/border_white"
         tools:ignore="DuplicateIncludedIds">
 
         <androidx.appcompat.widget.Toolbar
@@ -116,7 +116,6 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_5sdp"
         android:visibility="gone">
-
     </ListView>
 
 

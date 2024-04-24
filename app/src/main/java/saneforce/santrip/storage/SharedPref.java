@@ -341,8 +341,9 @@ public class SharedPref {
     public static final String UNLIST_SRT_ND = "UnlistSrtNd";
     public static final String RCPA_COMPETITOR_ADD = "RCPA_competitor_add";
     public static final String GEOTAGGING = "GeoTagging";
-
-
+   //myresource
+    public static final String SETSYNHQ = "SETSYNHQ";
+    public static final String SETSYN_HQCODE = "SETSYN_HQCODE";
 
     //Master Sync
     public static final String MASTER_LAST_SYNC = "last_sync";
@@ -2321,6 +2322,14 @@ public class SharedPref {
     public static String getJWKDATE(Context context) {
         return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(JWKDATE, "");
     }
+    public static void setsyn_hqcode(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SETSYN_HQCODE, status).apply();
+    }
 
+    public static String getsyn_hqcode(Context context) {
+        return context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE).getString(SETSYN_HQCODE, "");
+    }
 
 }
