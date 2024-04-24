@@ -15,11 +15,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -377,6 +374,7 @@ public class DCRCallActivity extends AppCompatActivity {
                     viewPagerAdapter.add(new RCPAFragment(), "RCPA");
                 }
             }
+
             viewPagerAdapter.add(new JWOthersFragment(), "JFW/Others");
         } else if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("2")) {
             viewPagerAdapter.add(new ProductFragment(), capPrd);
@@ -602,7 +600,7 @@ public class DCRCallActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (RCPANeed.equalsIgnoreCase("1") && RcpaMandatory.equalsIgnoreCase("0")) {
+                    if (RCPANeed.equalsIgnoreCase("0") && RcpaMandatory.equalsIgnoreCase("0")) {
                         if (RCPASelectCompSide.rcpaAddedProdListArrayList.size() == 0) {
                             commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_rcpa_values));
                             return false;
@@ -677,7 +675,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 break;
             case "2":
                 if (SfType.equalsIgnoreCase("1")) {
-                    if (RCPANeed.equalsIgnoreCase("1") && RcpaMandatory.equalsIgnoreCase("0")) {
+                    if (RCPANeed.equalsIgnoreCase("0") && RcpaMandatory.equalsIgnoreCase("0")) {
                         if (RCPASelectCompSide.rcpaAddedProdListArrayList.size() == 0) {
                             commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.add_rcpa_values));
                             return false;
@@ -2054,7 +2052,7 @@ public class DCRCallActivity extends AppCompatActivity {
 
                     //Need
                     RCPANeed = SharedPref.getRcpaNd(this);
-                    PobNeed = SharedPref.getDocPobCaption(this);
+                    PobNeed = SharedPref.getDocPobNeed(this);
                     OverallFeedbackNeed = SharedPref.getDfNeed(this);
                     EventCaptureNeed = SharedPref.getDeNeed(this);;
                     JwNeed = SharedPref.getDocJointworkNeed(this);

@@ -74,7 +74,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     private ValueFilter valueFilter;
     ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
     ArrayList<DayReportRcpaModelClass> rcpaList = new ArrayList<>();
-     String DcrDetailsCode;
+    String rcpadataid="";
     ApiInterface apiInterface;
     ProgressDialog progressDialog;
 
@@ -115,9 +115,6 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.jointWork.setText(dataModel.getWWith());
         holder.nextVisit.setText(dataModel.getNextVstDate());
         holder.overAllRemark.setText(dataModel.getRemarks());
-        DcrDetailsCode=dataModel.getTrans_Detail_Slno();
-
-
 
         if (checkInOutNeed) {
             holder.checkInOutLayout.setVisibility(View.VISIBLE);
@@ -200,7 +197,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
         holder.EventLayout.setOnClickListener(view -> {
 
-            EvetCapureAPICall();
+            EvetCapureAPICall(position);
         });
 
         holder.rcpaLayoutitle.setOnClickListener(view -> {
@@ -211,9 +208,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             }else {
                 holder.rcpa_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
                 if(rcpaList.size()>0){
-                    holder.rcpaLayout.setVisibility(View.VISIBLE);
+                    if(dataModel.getTrans_Detail_Slno().equalsIgnoreCase(rcpadataid)){
+                        holder.rcpaLayout.setVisibility(View.VISIBLE);
+                    }else {
+                        Rcpagetdata(holder.rvRcpa,holder.rcpaLayout,position);
+                    }
                 }else {
-                    Rcpagetdata(holder.rvRcpa,holder.rcpaLayout);
+                    Rcpagetdata(holder.rvRcpa,holder.rcpaLayout,position);
                 }
 
             }
@@ -390,7 +391,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
 
 
-    public  void EvetCapureAPICall(){
+    public  void EvetCapureAPICall(int position){
 
 
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
@@ -402,7 +403,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "getevent_rpt");
                         jsonObject.put("dcr_cd", acdCode);
-                        jsonObject.put("dcrdetail_cd", DcrDetailsCode);
+                        jsonObject.put("dcrdetail_cd", arrayList.get(position).getTrans_Detail_Slno());
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf", ReportingSfCode);
@@ -480,7 +481,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
 
 
-    public  void Rcpagetdata(RecyclerView recyclerView ,LinearLayout layout){
+    public  void Rcpagetdata(RecyclerView recyclerView ,LinearLayout layout,int position){
 
 
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
@@ -491,7 +492,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "getdcr_rcpa");
-                        jsonObject.put("dcrdetail_cd", DcrDetailsCode);
+                        jsonObject.put("dcrdetail_cd", arrayList.get(position).getTrans_Detail_Slno());
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf",ReportingSfCode);
@@ -522,6 +523,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 commonUtilsMethods.recycleTestWithDivider(recyclerView);
                                                 recyclerView.setAdapter(adapter);
                                                 layout.setVisibility(View.VISIBLE);
+
+                                                rcpadataid=arrayList.get(position).getTrans_Detail_Slno();
                                             }else {
                                                 commonUtilsMethods.showToastMessage(context, " RCPA  Details Not Available");
                                             }

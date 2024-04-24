@@ -180,6 +180,7 @@ public class CallsFragment extends Fragment {
 //                                        binding.recyelerview.setHasFixedSize(true);
 //                                        binding.recyelerview.setLayoutManager(manager);
 //                                        binding.recyelerview.setAdapter(adapter);
+                                        binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
                                         adapter.notifyDataSetChanged();
 
                                         if (isProgressNeed) progressDialog.dismiss();

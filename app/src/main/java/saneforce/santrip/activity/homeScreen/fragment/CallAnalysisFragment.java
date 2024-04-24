@@ -780,9 +780,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     }
 
 
-
-
-
     void setScreenDesign (){
         ViewTreeObserver vto = callAnalysisBinding.callAnalysisLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(() -> {
