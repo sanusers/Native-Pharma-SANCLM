@@ -130,7 +130,8 @@ public class CallsFragment extends Fragment {
 
                                         if (jsonArray.length() > 0) {
 
-                                            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+                                            JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+//                                            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
                                             for (int i = 0; i < jsonArrayWt.length(); i++) {
                                                 JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
                                                 if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
@@ -161,11 +162,11 @@ public class CallsFragment extends Fragment {
 
                                             MasterDataTable data = new MasterDataTable();
                                             data.setMasterKey(Constants.CALL_SYNC);
-                                            data.setMasterValuse(jsonArray2.toString());
-                                            data.setSyncstatus(0);
+                                            data.setMasterValues(jsonArray2.toString());
+                                            data.setSyncStatus(0);
                                             MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                                             if (mNChecked != null) {
-                                                masterDataDao.updatedata(Constants.CALL_SYNC, jsonArray2.toString());
+                                                masterDataDao.updateData(Constants.CALL_SYNC, jsonArray2.toString());
                                             } else {
                                                 masterDataDao.insert(data);
 

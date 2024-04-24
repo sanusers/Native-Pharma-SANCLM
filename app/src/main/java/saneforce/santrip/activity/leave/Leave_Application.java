@@ -35,7 +35,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
@@ -63,6 +62,8 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -102,6 +103,8 @@ public class Leave_Application extends AppCompatActivity {
 
     CardView mtcard;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -125,6 +128,8 @@ public class Leave_Application extends AppCompatActivity {
         setContentView(R.layout.activity_leave_application);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
 
         Fromdate = findViewById(R.id.et_from_date);
         Todate = findViewById(R.id.et_to_date);
@@ -231,7 +236,8 @@ public class Leave_Application extends AppCompatActivity {
     public void leave_applydates() {
         ltypecount.clear();
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             String days = "";
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -264,7 +270,8 @@ public class Leave_Application extends AppCompatActivity {
         leave_typename.clear();
 
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             Log.d("L-type", String.valueOf(jsonArray));
             String days = "";
             if (jsonArray.length() > 0) {
@@ -318,7 +325,8 @@ public class Leave_Application extends AppCompatActivity {
                         L_typename = leave_typename.get(i);
                         Lshortname = leave_type.get(i);
                         try {
-                            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
+                            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
+//                            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
                             for (int d = 0; d < jsonArray1.length(); d++) {
                                 JSONObject jsonobj1 = jsonArray1.getJSONObject(d);
                                 if (Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
@@ -528,8 +536,10 @@ public class Leave_Application extends AppCompatActivity {
 
         try {
             Chart_list.clear();
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
-            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
+            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
+//            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             String lstatus = (jsonArray.get(0).toString());
             if (lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
                 chart_layout.setVisibility(View.GONE);

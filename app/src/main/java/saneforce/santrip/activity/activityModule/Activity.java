@@ -40,8 +40,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -54,7 +52,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -94,7 +91,6 @@ import java.util.Map;
 import id.zelory.compressor.Compressor;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -107,6 +103,8 @@ import saneforce.santrip.databinding.ActivityBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -134,7 +132,8 @@ public class Activity extends AppCompatActivity {
     File file1;
     CommonUtilsMethods commonUtilsMethods;
     public  static TextView FilnameTet;
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @Override public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +142,8 @@ public class Activity extends AppCompatActivity {
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);
         sqLite=new SQLite(this);
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods=new CommonUtilsMethods(this);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
         fontmedium = ResourcesCompat.getFont(this, R.font.satoshi_medium);
@@ -294,7 +295,7 @@ public class Activity extends AppCompatActivity {
             } catch (Exception a) {
                 a.printStackTrace();
             }}else {
-                commonUtilsMethods.showToastMessage(getApplicationContext(), getString(R.string.no_network));
+                commonUtilsMethods.showToastMessage(this, getString(R.string.no_network));
 
         }
     }
@@ -3552,7 +3553,8 @@ public class Activity extends AppCompatActivity {
     void showHQ(){
 
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
             ArrayList<String> list = new ArrayList<>();
 
             if (jsonArray.length() > 0) {

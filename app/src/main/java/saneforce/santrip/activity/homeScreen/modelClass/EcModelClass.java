@@ -6,11 +6,11 @@ public class EcModelClass {
     private String sync_status;
     private int synced;
     private String dates;
-    private String id;
+    private int id;
     private String img_name;
     private String filePath;
     private String json_values;
-    public EcModelClass(String id, String dates, String cusCode, String cusName, String img_name, String filePath, String json_values, String sync_status, int synced) {
+    public EcModelClass(int id, String dates, String cusCode, String cusName, String img_name, String filePath, String json_values, String sync_status, int synced) {
         this.id = id;
         this.dates = dates;
         this.img_name = img_name;
@@ -62,11 +62,11 @@ public class EcModelClass {
         this.dates = dates;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class weekoff_fragment extends Fragment {
@@ -30,7 +32,8 @@ public class weekoff_fragment extends Fragment {
     weekoff_adapter weekoffadapter;
     CommonUtilsMethods commonUtilsMethods;
     String[] backcolr={"#EAFAF1","#E8F5FC","#FCE8EC","#FCF8E8","#FCF6E8","#E8F9FC","#FCEDFB","#FAFAED","#EEE3F7","#FEF8F8","#F2ECF9","#F5F9E9","#FBFBE7"};
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -39,6 +42,8 @@ public class weekoff_fragment extends Fragment {
         View v = inflater.inflate(R.layout.activity_weekoff_fragment, container, false);
         weekofflist = v.findViewById(R.id.weekooflist);
         sqLite = new SQLite(getActivity());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         leave_avalabledetails();
@@ -47,7 +52,8 @@ public class weekoff_fragment extends Fragment {
 
     public void leave_avalabledetails() {
         try {
-            JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF);
+            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray();
+//            JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF);
 
             for (int i = 0; i < jsonstock.length(); i++) {
 

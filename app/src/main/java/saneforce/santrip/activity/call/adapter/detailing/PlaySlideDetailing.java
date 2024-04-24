@@ -65,6 +65,8 @@ import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityPlaySlidePreviewDetailingBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class PlaySlideDetailing extends AppCompatActivity {
@@ -535,11 +537,15 @@ public class PlaySlideDetailing extends AppCompatActivity {
         Context context;
         List<String> arrayListHead;
         SQLite sqLite;
+        private RoomDB roomDB;
+        private MasterDataDao masterDataDao;
 
         public BottomLayoutHeadAdapter(Context context, List<String> arrayListHead, SQLite sqLite) {
             this.context = context;
             this.arrayListHead = arrayListHead;
             this.sqLite = sqLite;
+            roomDB = RoomDB.getDatabase(context);
+            masterDataDao = roomDB.masterDataDao();
         }
 
         @NonNull
@@ -644,8 +650,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
             ArrayList<String> brandCodeList = new ArrayList<>();
             BrandModelClass.Product product;
             try {
-                JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-                JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
+//                JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+//                JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
+                JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+                JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
 
                 for (int i = 0; i < brandSlide.length(); i++) {
                     JSONObject brandObject = brandSlide.getJSONObject(i);

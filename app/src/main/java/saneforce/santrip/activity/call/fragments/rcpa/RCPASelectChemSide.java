@@ -31,6 +31,8 @@ import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectChemistSideBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class RCPASelectChemSide extends Fragment {
@@ -42,6 +44,8 @@ public class RCPASelectChemSide extends Fragment {
     JSONObject jsonObject;
     ChemistAdapter CheAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @Nullable
     @Override
@@ -49,6 +53,8 @@ public class RCPASelectChemSide extends Fragment {
         selectChemistSideBinding = FragmentSelectChemistSideBinding.inflate(inflater);
         View v = selectChemistSideBinding.getRoot();
         sqLite = new SQLite(getContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         AddChemistData();
@@ -81,7 +87,8 @@ public class RCPASelectChemSide extends Fragment {
     private void AddChemistData() {
         try {
             ChemFullList.clear();
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));

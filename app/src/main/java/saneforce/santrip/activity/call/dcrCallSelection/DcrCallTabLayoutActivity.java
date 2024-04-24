@@ -24,6 +24,8 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
 import saneforce.santrip.databinding.CallDcrSelectionBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -38,6 +40,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
     SQLite sqLite;
     GPSTrack gpsTrack;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -57,6 +61,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         sqLite = new SQLite(this);
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
 
         getRequiredData();
 
@@ -103,7 +109,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
                 TodayPlanSfCode = SharedPref.getHqCode(this);
                 TodayPlanSfName = SharedPref.getHqName(this);
                 if (TodayPlanSfCode.equalsIgnoreCase("null") || TodayPlanSfCode.isEmpty()) {
-                    JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                    JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//                    JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                     for (int i = 0; i < 1; i++) {
                         JSONObject jsonHQList = jsonArray1.getJSONObject(0);
                         TodayPlanSfCode = jsonHQList.getString("id");
@@ -113,7 +120,8 @@ public class DcrCallTabLayoutActivity extends AppCompatActivity {
             }
 
             TodayPlanClusterList.clear();
-            JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + TodayPlanSfCode);
+            JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + TodayPlanSfCode).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + TodayPlanSfCode);
             for (int i = 0; i < jsonArray2.length(); i++) {
                 JSONObject jsonClusterList = jsonArray2.getJSONObject(i);
                 if (SharedPref.getTodayDayPlanClusterCode(this).contains(jsonClusterList.getString("Code"))) {

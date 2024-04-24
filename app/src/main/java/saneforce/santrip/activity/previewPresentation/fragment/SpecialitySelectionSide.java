@@ -1,6 +1,5 @@
 package saneforce.santrip.activity.previewPresentation.fragment;
 
-import static saneforce.santrip.activity.previewPresentation.PreviewActivity.SpecialityName;
 import static saneforce.santrip.activity.previewPresentation.PreviewActivity.previewBinding;
 import static saneforce.santrip.activity.previewPresentation.fragment.Speciality.getRequiredData;
 import static saneforce.santrip.activity.previewPresentation.fragment.Speciality.getSelectedSpec;
@@ -34,6 +33,8 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectFbSideBinding;
 import saneforce.santrip.response.SetupResponse;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class SpecialitySelectionSide extends Fragment {
@@ -46,6 +47,8 @@ public class SpecialitySelectionSide extends Fragment {
     ArrayAdapter<String> dataAdapter;
     SetupResponse setUpResponse;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @Nullable
     @Override
@@ -53,6 +56,8 @@ public class SpecialitySelectionSide extends Fragment {
         selectSpecialitySideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectSpecialitySideBinding.getRoot();
         sqLite = new SQLite(getContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
@@ -90,9 +95,9 @@ public class SpecialitySelectionSide extends Fragment {
         selectSpecialitySideBinding.selectListView.setOnItemClickListener((adapterView, view, i, l) -> {
             selectSpecialitySideBinding.searchList.setText("");
             if (list_name.get(i).equalsIgnoreCase("All") && list_code.get(i).isEmpty()) {
-                getRequiredData(requireContext(), sqLite, list_name.get(i));
+                getRequiredData(requireContext(), sqLite, list_name.get(i), masterDataDao);
             } else {
-                getSelectedSpec(requireContext(), sqLite, list_code.get(i), list_name.get(i));
+                getSelectedSpec(requireContext(), sqLite, list_code.get(i), list_name.get(i), masterDataDao);
             }
             previewBinding.btnFinishDet.setVisibility(View.VISIBLE);
             previewBinding.fragmentSelectSpecialistSide.setVisibility(View.GONE);
@@ -106,7 +111,8 @@ public class SpecialitySelectionSide extends Fragment {
         list_name.clear();
         try {
             JSONArray jsonArray;
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
                 setUpResponse = new SetupResponse();
@@ -120,7 +126,8 @@ public class SpecialitySelectionSide extends Fragment {
                 }
             }
 
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 list_name.add(jsonObject.getString("Doc_Special_Name"));

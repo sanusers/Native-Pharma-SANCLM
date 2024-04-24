@@ -21,17 +21,9 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Locale;
 
-import io.reactivex.ObservableTransformer;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.map.MapsActivity;
-import saneforce.santrip.activity.map.custSelection.CustList;
-import saneforce.santrip.activity.map.custSelection.TagCustSelectionList;
 import saneforce.santrip.activity.presentation.createPresentation.brand.BrandNameAdapter;
-import saneforce.santrip.activity.presentation.createPresentation.brand.BrandNameInterFace;
-import saneforce.santrip.activity.presentation.createPresentation.selectedSlide.ItemDragListener;
 import saneforce.santrip.activity.presentation.createPresentation.selectedSlide.ItemTouchHelperCallBack;
 import saneforce.santrip.activity.presentation.createPresentation.selectedSlide.SelectedSlidesAdapter;
 import saneforce.santrip.activity.presentation.createPresentation.slide.ImageSelectionInterface;
@@ -41,6 +33,9 @@ import saneforce.santrip.activity.presentation.presentation.PresentationActivity
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityCreatePresentationBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 
@@ -58,7 +53,9 @@ public class CreatePresentationActivity extends AppCompatActivity {
     ItemTouchHelper itemTouchHelper;
     String oldName = "";
     CommonUtilsMethods commonUtilsMethods;
-
+    private RoomDB roomDB;
+    private PresentationDataDao presentationDataDao;
+    private MasterDataDao masterDataDao;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -84,6 +81,9 @@ public class CreatePresentationActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         sqLite = new SQLite(CreatePresentationActivity.this);
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
+        presentationDataDao = roomDB.presentationDataDao();
         uiInitialisation();
 
         binding.backArrow.setOnClickListener(view -> {
@@ -114,7 +114,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                 if (!name.isEmpty()) {
                     if (!oldName.isEmpty()) {
                         if (!oldName.equalsIgnoreCase(name)) {
-                            if (!sqLite.presentationExists(name)) {
+                            if (!presentationDataDao.presentationExists(name)) {
                                 intentAction(oldName, name);
                             } else {
                                commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.presentation_saved_already));
@@ -123,7 +123,7 @@ public class CreatePresentationActivity extends AppCompatActivity {
                             intentAction(oldName, name);
                         }
                     } else {
-                        if (!sqLite.presentationExists(name)) {
+                        if (!presentationDataDao.presentationExists(name)) {
                             intentAction("", name);
                         } else {
                            commonUtilsMethods.showToastMessage(CreatePresentationActivity.this ,getString(R.string.presentation_saved_already));
@@ -150,8 +150,10 @@ public class CreatePresentationActivity extends AppCompatActivity {
                 savedPresentation = new Gson().fromJson(jsonArray.toString(), type);
             }
 
-            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
+            JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+            JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
+//            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+//            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
 
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
@@ -306,7 +308,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
             presentation.setProducts(selectedSlideArrayList);
             JSONObject jsonObject = new JSONObject(new Gson().toJson(presentation));
 
-            sqLite.savePresentation(oldName, name, jsonObject.toString());
+//            sqLite.savePresentation(oldName, name, jsonObject.toString());
+            presentationDataDao.savePresentation(oldName, name, jsonObject.toString());
             Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

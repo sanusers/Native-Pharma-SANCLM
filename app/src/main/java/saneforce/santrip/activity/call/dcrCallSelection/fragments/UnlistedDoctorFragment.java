@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -45,6 +44,8 @@ import saneforce.santrip.activity.call.dcrCallSelection.adapter.FillteredAdapter
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -71,6 +72,8 @@ public class UnlistedDoctorFragment extends Fragment {
     Button btn_apply, btn_clear;
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +86,8 @@ public class UnlistedDoctorFragment extends Fragment {
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
         sqLite = new SQLite(getContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -117,7 +122,8 @@ public class UnlistedDoctorFragment extends Fragment {
     private void SetupAdapter() {
         custListArrayList.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
 
             Log.v("UNDRCALL", "-UnDr_full_length-" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -386,13 +392,17 @@ public class UnlistedDoctorFragment extends Fragment {
         try {
             JSONArray jsonArray = new JSONArray();
             if (requiredList.equalsIgnoreCase("Speciality")) {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
             } else if (requiredList.equalsIgnoreCase("Category")) {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
             } else if (requiredList.equalsIgnoreCase("Territory")) {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
             }else if(requiredList.equalsIgnoreCase("Class")){
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLASS);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLASS);
             }
             filterSelectionList.clear();
             Log.v("jsonArray", "--" + jsonArray.length());

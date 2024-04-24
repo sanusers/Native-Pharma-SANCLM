@@ -53,6 +53,9 @@ import saneforce.santrip.databinding.ActivityLoginBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
+import saneforce.santrip.roomdatabase.CallsUtil;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
@@ -81,6 +84,9 @@ public class LoginActivity extends AppCompatActivity {
     RoomDB roomDB;
     MasterDataDao masterDataDao;
     CallTableDao callTableDao;
+    private LoginDataDao loginDataDao;
+    private CallsUtil callsUtil;
+
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +102,13 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
+        callsUtil = new CallsUtil(this);
 
         roomDB=RoomDB.getDatabase(getApplicationContext());
 
         masterDataDao=roomDB.masterDataDao();
         callTableDao=roomDB.callTableDao();
+        loginDataDao = roomDB.loginDataDao();
 
         uiInitialisation();
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
@@ -166,7 +174,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.clearData.setOnClickListener(view -> {
-            if (sqLite.isOutBoxDataAvailable()) {
+//            if (sqLite.isOutBoxDataAvailable()) {
+            if (callsUtil.isOutBoxDataAvailable()) {
                 new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
             } else {
                 DeleteAllFiles();
@@ -399,7 +408,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void process(JSONObject jsonObject) {
         try {
-            sqLite.saveLoginData(jsonObject.toString());
+//            sqLite.saveLoginData(jsonObject.toString());
+            loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             SharedPref.InsertLogInData(LoginActivity.this,jsonObject);
             openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);

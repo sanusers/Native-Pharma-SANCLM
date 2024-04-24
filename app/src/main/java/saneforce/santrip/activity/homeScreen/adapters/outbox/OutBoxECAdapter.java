@@ -35,6 +35,9 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHolder> {
@@ -44,6 +47,9 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     CommonUtilsMethods commonUtilsMethods;
     SQLite sqLite;
     Activity activity;
+    private RoomDB roomDB;
+    private CallOfflineECDataDao callOfflineECDataDao;
+    private CallOfflineDataDao callOfflineDataDao;
 
 
     public OutBoxECAdapter(Activity activity, Context context, ArrayList<EcModelClass> ecModelClasses) {
@@ -52,6 +58,9 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         this.ecModelClasses = ecModelClasses;
         commonUtilsMethods = new CommonUtilsMethods(context);
         sqLite = new SQLite(context);
+        roomDB = RoomDB.getDatabase(context);
+        callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        callOfflineDataDao = roomDB.callOfflineDataDao();
     }
 
     @NonNull
@@ -89,7 +98,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     try {
                         JSONObject jsonObject;
-                        jsonObject = new JSONObject(sqLite.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
+//                        jsonObject = new JSONObject(sqLite.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
+                        jsonObject = new JSONObject(callOfflineDataDao.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
                         JSONArray jsonArray = jsonObject.getJSONArray("EventCapture");
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObjectEC = jsonArray.getJSONObject(i);
@@ -117,7 +127,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                             }
                         }
 
-                        sqLite.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
+//                        sqLite.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
+                        callOfflineDataDao.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
                         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
                         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
                         outBoxBinding.rvOutBoxHead.setAdapter(outBoxHeaderAdapter);
@@ -132,7 +143,8 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                             System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
                         }
                     }
-                    sqLite.deleteOfflineEC(ecModelClasses.get(position).getId());
+//                    sqLite.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
+                    callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
                     removeAt(position);
                 }
                 return true;

@@ -17,8 +17,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -86,7 +84,6 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedCompList;
 import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.homeScreen.fragment.OutboxFragment;
 import saneforce.santrip.activity.map.custSelection.CustList;
 
 import saneforce.santrip.activity.remaindercalls.RemaindercallsActivity;
@@ -99,12 +96,14 @@ import saneforce.santrip.databinding.ActivityDcrcallBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
+import saneforce.santrip.roomdatabase.CallsUtil;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
-import saneforce.santrip.utility.NetworkUtil;
 import saneforce.santrip.utility.TimeUtils;
 
 public class DCRCallActivity extends AppCompatActivity {
@@ -144,6 +143,10 @@ public class DCRCallActivity extends AppCompatActivity {
 
     RoomDB roomDB;
     MasterDataDao masterDataDao;
+    private CallOfflineECDataDao callOfflineECDataDao;
+    private CallOfflineDataDao callOfflineDataDao;
+    private CallsUtil callsUtil;
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
@@ -169,6 +172,9 @@ public class DCRCallActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         roomDB=RoomDB.getDatabase(getApplicationContext());
         masterDataDao=roomDB.masterDataDao();
+        callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        callOfflineDataDao = roomDB.callOfflineDataDao();
+        callsUtil = new CallsUtil(this);
         sqLite = new SQLite(this);
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
@@ -210,7 +216,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
         dcrCallBinding.ivBack.setOnClickListener(view -> {
             if (isFromActivity.equalsIgnoreCase("new")) {
-                sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+//                sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                 Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
@@ -240,7 +247,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     finish();
                 }else{
                     if (isFromActivity.equalsIgnoreCase("new")) {
-                        sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+//                        sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                         Intent intent = new Intent(DCRCallActivity.this, DcrCallTabLayoutActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
@@ -295,7 +303,8 @@ public class DCRCallActivity extends AppCompatActivity {
                                     InsertVisitControl();
 
                                 }
-                                sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+//                                sqLite.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
+                                callOfflineDataDao.saveOfflineCallOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("HH:mm:ss"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType(), jsonSaveDcr.toString(), Constants.WAITING_FOR_SYNC);
 //                                if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
 //                                    dialogCheckOut.show();
 //                                } else {
@@ -307,7 +316,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
                                 if (JWOthersFragment.callCaptureImageLists.size() > 0) {
                                     for (int i = 0; i < JWOthersFragment.callCaptureImageLists.size(); i++) {
-                                        sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+//                                        sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
+                                        callOfflineECDataDao.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), JWOthersFragment.callCaptureImageLists.get(i).getSystemImgName(), JWOthersFragment.callCaptureImageLists.get(i).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 0);
                                     }
                                 }
                                 UpdateInputStock();
@@ -474,11 +484,11 @@ public class DCRCallActivity extends AppCompatActivity {
 
             MasterDataTable inputdata =new MasterDataTable();
             inputdata.setMasterKey(Constants.CALL_SYNC);
-            inputdata.setMasterValuse(jsonArray.toString());
-            inputdata.setSyncstatus(0);
+            inputdata.setMasterValues(jsonArray.toString());
+            inputdata.setSyncStatus(0);
             MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
             if(nChecked !=null){
-                masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
             }else {
                 masterDataDao.insert(inputdata);
             }
@@ -505,11 +515,11 @@ public class DCRCallActivity extends AppCompatActivity {
 
                         MasterDataTable mData =new MasterDataTable();
                         mData.setMasterKey(Constants.CALL_SYNC);
-                        mData.setMasterValuse(jsonArray.toString());
-                        mData.setSyncstatus(0);
+                        mData.setMasterValues(jsonArray.toString());
+                        mData.setSyncStatus(0);
                         MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                         if(Checked !=null){
-                            masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                            masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
                         }else {
                             masterDataDao.insert(mData);
                         }
@@ -558,7 +568,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                            sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), callCaptureImageLists.get(finalI1).getSystemImgName(), callCaptureImageLists.get(finalI1).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 1);
+//                            sqLite.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), callCaptureImageLists.get(finalI1).getSystemImgName(), callCaptureImageLists.get(finalI1).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 1);
+                            callOfflineECDataDao.saveOfflineEC(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), callCaptureImageLists.get(finalI1).getSystemImgName(), callCaptureImageLists.get(finalI1).getFilePath(), jsonImage.toString(), Constants.WAITING_FOR_SYNC, 1);
                         }
                     });
                 }
@@ -828,7 +839,8 @@ public class DCRCallActivity extends AppCompatActivity {
                             commonUtilsMethods.showToastMessage(DCRCallActivity.this, getString(R.string.call_failed));
                         }
 
-                        sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+//                        sqLite.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        callsUtil.deleteOfflineCalls(CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
                         progressDialog.dismiss();
                         if (CusCheckInOutNeed.equalsIgnoreCase("0")) {
                             dialogCheckOut.show();
@@ -877,7 +889,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void UpdateSampleStock() {
         try {
-            JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
+            JSONArray jsonArraySamStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
+//            JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
             for (int i = 0; i < StockSample.size(); i++) {
                 //SampleStockChange
                 for (int j = 0; j < jsonArraySamStk.length(); j++) {
@@ -892,7 +905,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
-            sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0);
+//            sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0);
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0));
         } catch (Exception e) {
             Log.v("chkSamStk", "error---" + e);
         }
@@ -900,7 +914,8 @@ public class DCRCallActivity extends AppCompatActivity {
 
     private void UpdateInputStock() {
         try {
-            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
+            JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
+//            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
             for (int i = 0; i < StockInput.size(); i++) {
                 //InputStockChange
                 for (int j = 0; j < jsonArrayInpStk.length(); j++) {
@@ -915,7 +930,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     }
                 }
             }
-            sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0);
+//            sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0);
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0));
         } catch (Exception e) {
             Log.v("chkInpStk", "error---" + e);
         }
@@ -1958,7 +1974,8 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("Appver", getResources().getString(R.string.app_version));
             jsonSaveDcr.put("Mod", Constants.APP_MODE);
 
-            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+            JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+//            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
             for (int i = 0; i < jsonArrayWt.length(); i++) {
                 JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
                 if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
@@ -2229,7 +2246,8 @@ public class DCRCallActivity extends AppCompatActivity {
                     } else {
                         TodayPlanSfCode = SharedPref.getHqCode(this);
                         if (TodayPlanSfCode.isEmpty()) {
-                            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//                            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                             for (int i = 0; i < 1; i++) {
                                 JSONObject jsonHQList = jsonArray1.getJSONObject(0);
                                 TodayPlanSfCode = jsonHQList.getString("id");
@@ -2321,7 +2339,8 @@ public class DCRCallActivity extends AppCompatActivity {
         FinalAdditionalCallAdapter.nestedInput = new ArrayList<>();
 
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + TodayPlanSfCode).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
             Log.v("length", jsonArray.length() + "---" + Constants.DOCTOR + TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -2353,8 +2372,10 @@ public class DCRCallActivity extends AppCompatActivity {
         StockInput.clear();
 
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.INPUT);
-            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.INPUT);
+//            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
+            JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
             InputFragment.checkedInputList.add(new CallCommonCheckedList("No Input" ,"", "", false));
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -2428,8 +2449,10 @@ public class DCRCallActivity extends AppCompatActivity {
         StockSample.clear();
         try {
             int Priority_count = 1;
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
-            JSONArray jsonArrayPrdStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
+//            JSONArray jsonArrayPrdStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
+            JSONArray jsonArrayPrdStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
             Log.v("chkSample", "---size--111----" + jsonArray.length() + "----" + jsonArrayPrdStk.length());
             ProductFragment.checkedPrdList.add(new CallCommonCheckedList("No Product","","",false,"",""));
 

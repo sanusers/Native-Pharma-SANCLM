@@ -29,6 +29,9 @@ import java.util.Map;
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -52,6 +55,9 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
     LoginResponse loginResponse;
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private MasterDataDao masterDataDao;
 
 
     public Res_sidescreenAdapter(Context context, ArrayList<Resourcemodel_class> resList, String split_val) {//
@@ -59,8 +65,11 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         this.resList = resList;
         this.split_val = split_val;
         sqLite = new SQLite(context);
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
+        loginDataDao = roomDB.loginDataDao();
+        loginResponse = loginDataDao.getLoginData().getLoginResponse();
+//        loginResponse = sqLite.getLoginData();
     }
 
     @NonNull
@@ -210,7 +219,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     uniqueValues.clear();
                     duplicateValues.clear();
                     L_cLasses.clear();
-                    JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
+                    JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
+//                    JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
 //                   ==============================
                     String colorText1 = "<font color=\"#F1536E\">" + count + " )" + "</font>";
                     holder.listcount.setText(Html.fromHtml(colorText1));

@@ -41,6 +41,8 @@ import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapter.ViewHolder> {
@@ -58,12 +60,16 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
     double getTotalValue = 0, valueRounded;
     ArrayList<Double> CompQty = new ArrayList<>();
     RCPAChemistAdapter rcpaChemistAdapter;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     public RCPAProductsAdapter(Activity activity,Context context, ArrayList<RCPAAddedProdList> productList, ArrayList<RCPAAddedCompList> CompList) {
         this.activity = activity;
         this.context = context;
         this.ProductList = productList;
         this.CompList = CompList;
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
     }
 
     @NonNull
@@ -192,7 +198,8 @@ public class RCPAProductsAdapter extends RecyclerView.Adapter<RCPAProductsAdapte
 
     private void AddCompetitorValues(int adapterPosition, String ColumnName) {
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(ColumnName);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(ColumnName).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(ColumnName);
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 jsonObject = jsonArray.getJSONObject(i);

@@ -1,7 +1,5 @@
 package saneforce.santrip.activity.remaindercalls;
 
-import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -28,6 +26,11 @@ import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataTable;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -56,6 +59,10 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public static String vals_rm = "";
     ProgressDialog progressDialog = null;
     ApiInterface api_interface;
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private DCRDocDataDao dcrDocDataDao;
+    private MasterDataDao masterDataDao;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -76,8 +83,12 @@ public class RemaindercallsActivity extends AppCompatActivity {
         hq_name1 = findViewById(R.id.hq_name1);
 
         sqLite = new SQLite(this);
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+        roomDB = RoomDB.getDatabase(this);
+        loginDataDao = roomDB.loginDataDao();
+        dcrDocDataDao = roomDB.dcrDocDataDao();
+        masterDataDao = roomDB.masterDataDao();
+        loginResponse = loginDataDao.getLoginData().getLoginResponse();
+//        loginResponse = sqLite.getLoginData();
         SfType = SharedPref.getSfType(this);
         REm_hq_code = SharedPref.getSfCode(this);
 
@@ -152,13 +163,15 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public void show_docdata() {
         try {
             listeduser.clear();
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
 
             String Town_Name = "";
 
             Log.d("jsonlist", jsonvst_Doc.toString());//
 
-            sqLite.insert_docvalues("Doctor_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+//            sqLite.insert_docvalues("Doctor_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+            dcrDocDataDao.insertDCRDocValues(new DCRDocDataTable("Doctor_" + SharedPref.getHqCode(this), jsonvst_Doc.toString()));
 
 
             SharedPref.setDcr_dochqcode(this, "Doctor_" + SharedPref.getHqCode(this));
@@ -224,8 +237,10 @@ public class RemaindercallsActivity extends AppCompatActivity {
         try {
             sub_list.clear();
 //            jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + SharedPref.getHqCode(this));
-            sqLite.insert_docvalues("Joint_Work_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + SharedPref.getHqCode(this));
+//            sqLite.insert_docvalues("Joint_Work_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+            dcrDocDataDao.insertDCRDocValues(new DCRDocDataTable("Joint_Work_" + SharedPref.getHqCode(this), jsonvst_Doc.toString()));
 
             SharedPref.setDcr_dochqcode(this, "Joint_Work_" + SharedPref.getHqCode(this));
 
@@ -269,7 +284,8 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public void show_hq() {
         try {
             hq_view.clear();
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
             if (jsonvst_Doc.length() > 0) {
                 for (int i = 0; i < jsonvst_Doc.length(); i++) {
                     JSONObject jsonObject = jsonvst_Doc.getJSONObject(i);

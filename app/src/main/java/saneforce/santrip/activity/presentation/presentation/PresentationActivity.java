@@ -14,6 +14,8 @@ import saneforce.santrip.activity.presentation.createPresentation.BrandModelClas
 import saneforce.santrip.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityPresentationBinding;
+import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 
@@ -24,6 +26,8 @@ public class PresentationActivity extends AppCompatActivity {
     SQLite sqLite;
     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private PresentationDataDao presentationDataDao;
 
     //To Hide the bottomNavigation When popup
     @Override
@@ -49,7 +53,10 @@ public class PresentationActivity extends AppCompatActivity {
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         sqLite = new SQLite(this);
-        savedPresentation = sqLite.getPresentationData();
+        roomDB = RoomDB.getDatabase(this);
+        presentationDataDao = roomDB.presentationDataDao();
+//        savedPresentation = sqLite.getPresentationData();
+        savedPresentation = presentationDataDao.getPresentations();
         populateAdapter();
 
         binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());

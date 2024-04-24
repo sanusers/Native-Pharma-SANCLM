@@ -33,6 +33,9 @@ import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -70,8 +73,9 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
     TextView hq_head;
     String navigateFrom = "";
-
-
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private MasterDataDao masterDataDao;
 
 
     @Override
@@ -121,12 +125,16 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
         sqLite = new SQLite(getApplicationContext());
         sqLite.getWritableDatabase();
 
+        roomDB = RoomDB.getDatabase(getApplicationContext());
+        loginDataDao = roomDB.loginDataDao();
+        masterDataDao = roomDB.masterDataDao();
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString("Origin");
         }
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+        loginResponse = loginDataDao.getLoginData().getLoginResponse();
+//        loginResponse = sqLite.getLoginData();
 
 
         backArrow.setOnClickListener(v -> {
@@ -175,7 +183,8 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
 
     public void Resource_list() {
         try {
-            JSONArray jsonDoc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonDoc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
 
             String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
             String doctor = String.valueOf(jsonDoc);
@@ -198,7 +207,8 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 }
             }
 
-            JSONArray jsonChm = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
+            JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonChm = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
             String chemist = String.valueOf(jsonChm);
             if (!chemist.equals("") || !chemist.equals("null")) {
                 count_list.clear();
@@ -218,7 +228,8 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 }
             }
 
-            JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
+            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
             String stockist = String.valueOf(jsonstock);
             if (!stockist.equals("") || !stockist.equals("null")) {
                 count_list.clear();
@@ -238,7 +249,8 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
             }
 
 
-            JSONArray jsonunlisted = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonunlisted = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
             String unlisted = String.valueOf(jsonunlisted);
             if (!unlisted.equals("") || !unlisted.equals("null")) {
                 count_list.clear();
@@ -258,7 +270,8 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 }
             }
 
-            JSONArray jsoncip = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(this));
+            JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsoncip = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(this));
             String cip = String.valueOf(jsoncip);
             if (!cip.equals("") || !cip.equals("null")) {
                 count_list.clear();
@@ -278,7 +291,8 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 }
             }
 
-            JSONArray jsonhosp = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(this));
+            JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonhosp = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(this));
             String hosp = String.valueOf(jsonhosp);
             if (!hosp.equals("") || !hosp.equals("null")) {
                 count_list.clear();
@@ -313,9 +327,12 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
                 listed_data.add(new Resourcemodel_class(loginResponse.getHosp_caption(), Hosp_count, "5"));
             if (loginResponse.getCip_need().equalsIgnoreCase("0"))
                 listed_data.add(new Resourcemodel_class(loginResponse.getCIP_Caption(), Cip_count, "6"));
-            listed_data.add(new Resourcemodel_class("Input", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.INPUT).length()), "7"));
-            listed_data.add(new Resourcemodel_class("Product", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length()), "8"));
-            listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(this)).length()), "9"));
+//            listed_data.add(new Resourcemodel_class("Input", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.INPUT).length()), "7"));
+//            listed_data.add(new Resourcemodel_class("Product", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length()), "8"));
+//            listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(this)).length()), "9"));
+            listed_data.add(new Resourcemodel_class("Input", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray().length()), "7"));
+            listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
+            listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
 //               frmlisted_data.add(new Formsmodel_class("Holiday / Weekly off", R.drawable.vacation));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", "", "11"));
@@ -336,8 +353,10 @@ public class MyResource_Activity extends AppCompatActivity implements LocationLi
             count_list.clear();
             visitcount_list.clear();
 
-            JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+//            JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
             // Initialize a HashMap to store counts of custom_id1 values
             String viewlist = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             if (jsonvst_ctl.length() > 0) {

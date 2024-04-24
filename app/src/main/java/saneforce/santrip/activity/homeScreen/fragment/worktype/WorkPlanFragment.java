@@ -5,7 +5,6 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.SetupOutBoxAdapter;
 import static saneforce.santrip.commonClasses.Constants.APP_MODE;
 
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -65,6 +64,12 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.WorkplanFragmentBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
+import saneforce.santrip.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataTable;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -104,7 +109,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     String address;
     JSONObject jsonCheck;
     boolean NeedClusterFlag1 = false, NeedClusterFlag2 = false;
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
+    private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
+    private CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
 
 
     @Override
@@ -112,7 +120,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         Log.d("ACTIVITY_STATUS","OnResume");
         if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-            sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
+//            sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 syncMyDayPlan();
                 SharedPref.setCheckDateTodayPlan(requireContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
@@ -130,6 +139,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         View view = binding.getRoot();
         Log.d("ACTIVITY_STATUS","oncreateview");
         sqLite = new SQLite(getActivity());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
+        offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
+        callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
         gpsTrack = new GPSTrack(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
@@ -168,7 +181,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         binding.llDelete.setOnClickListener(this);
 
         if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
-            sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
+            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
+//            sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 syncMyDayPlan();
                 SharedPref.setCheckDateTodayPlan(requireContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
@@ -413,7 +427,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         HQList.clear();
 
         try {
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject object = workTypeArray.getJSONObject(i);
 
@@ -435,7 +450,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
 
-            JSONArray workTypeArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(requireContext()));
+            JSONArray workTypeArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(requireContext())).getMasterSyncDataJsonArray();
+//            JSONArray workTypeArray2 = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(requireContext()));
             for (int i = 0; i < workTypeArray2.length(); i++) {
                 JSONObject Object1 = workTypeArray2.getJSONObject(i);
 
@@ -450,7 +466,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
-                JSONArray workTypeArray3 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                JSONArray workTypeArray3 = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//                JSONArray workTypeArray3 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                 for (int i = 0; i < workTypeArray3.length(); i++) {
                     JSONObject jsonObject = workTypeArray3.getJSONObject(i);
 
@@ -705,7 +722,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
                             CallCheckOutAPI();
                         } else {
-                            sqLite.saveCheckOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+//                            sqLite.saveCheckOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                            offlineCheckInOutDataDao.saveCheckOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
                             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
                             SharedPref.setCheckInTime(requireContext(), "");
                             SharedPref.setCheckDateTodayPlan(requireContext(), "");
@@ -751,7 +769,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONObject jsonObjectwt = new JSONObject();
 
             if (isWhich.equalsIgnoreCase("1")) {
-                sqLite.saveWorkPlan(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode1, mWTName1, jsonObject.toString());
+//                sqLite.saveWorkPlan(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode1, mWTName1, jsonObject.toString());
+                callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode1, mWTName1, jsonObject.toString(), "", 0));
                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                     SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
                 } else {
@@ -759,7 +778,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
             } else {
-                sqLite.saveWorkPlan(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString());
+//                sqLite.saveWorkPlan(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString());
+                callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString(), "", 0));
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
                 OutboxFragment.SetupOutBoxAdapter(requireActivity(), sqLite, requireContext());
                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
@@ -771,7 +791,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             }
 
             boolean isTodayAvailable = false;
-            JSONArray jsonData = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
+            JSONArray jsonData = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+//            JSONArray jsonData = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
 
             if (jsonData.length() > 0) {
                 for (int i = 0; i < jsonData.length(); i++) {
@@ -802,7 +823,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 jsonObjectwt.put("TP_cluster", "");
                 jsonObjectwt.put("TP_worktype", "");
                 jsonData.put(SecondSeasonObject);
-                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, jsonData.toString(), 0);
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonData.toString(), 0));
+//                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, jsonData.toString(), 0);
             } else {
                 FisrstSeasonObject.put("SFCode", SharedPref.getSfCode(requireContext()));
                 JSONObject TPDtFisrstSeasonObject = new JSONObject();
@@ -839,7 +861,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 SecondSeasonObject.put("TP_cluster", "");
                 SecondSeasonObject.put("TP_worktype", "");
                 MydayPlanDataList.put(SecondSeasonObject);
-                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0);
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0));
+//                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0);
             }
 
 
@@ -1129,7 +1152,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     SecondSeasonObject.put("TP_worktype", "");
                                     MydayPlanDataList.put(SecondSeasonObject);
                                 }
-                                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0);
+                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0));
+//                                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, MydayPlanDataList.toString(), 0);
                             } else {
                                 setUpMyDayplan();
                                 commonUtilsMethods.showToastMessage(requireContext(), json.getString("Msg"));
@@ -1220,12 +1244,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                                 jsonArray.put(jsonObject2);
                                                 success = true;
                                             } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                                sqLite.saveMasterSyncStatus(LocalTableKeyName, 1);
+                                                masterDataDao.saveMasterSyncStatus(LocalTableKeyName, 1);
+//                                                sqLite.saveMasterSyncStatus(LocalTableKeyName, 1);
                                             }
                                         }
 
                                         if (success) {
-                                            sqLite.saveMasterSyncData(LocalTableKeyName, jsonArray.toString(), 0);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(LocalTableKeyName, jsonArray.toString(), 0));
+//                                            sqLite.saveMasterSyncData(LocalTableKeyName, jsonArray.toString(), 0);
 
                                             if (LocalTableKeyName.startsWith(Constants.CLUSTER)) {
                                                 if (DayPlanCount.equalsIgnoreCase("1")) {
@@ -1270,7 +1296,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         cluster.clear();
         multiple_cluster_list.clear();
         try {
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hqCode);
+            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray();
+//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hqCode);
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 multiple_cluster_list.add(new Multicheckclass_clust(jsonObject.getString("Code"), jsonObject.getString("Name"), "", false));
@@ -1286,8 +1313,10 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     public void setUpMyDayplan() {
 
         try {
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
-            JSONArray worktypedata = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.MY_DAY_PLAN);
+//            JSONArray worktypedata = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+            JSONArray worktypedata = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
             SharedPref.MydayPlanStausAndFeildWorkStatus(requireContext(),false,false);
             if (workTypeArray.length() > 0) {
                 SharedPref.setCheckDateTodayPlan(requireContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
@@ -1482,7 +1511,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
 
             } else {
-                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
+                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
+//                sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, "[]", 0);
                 binding.txtWorktype1.setText("");
                 binding.txtCluster1.setText("");
                 binding.txtheadquaters1.setText("");
@@ -1569,12 +1599,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                         jsonArray.put(jsonObject2);
                                         success = true;
                                     } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                        sqLite.saveMasterSyncStatus(Constants.MY_DAY_PLAN, 1);
+                                        masterDataDao.saveMasterSyncStatus(Constants.MY_DAY_PLAN, 1);
+//                                        sqLite.saveMasterSyncStatus(Constants.MY_DAY_PLAN, 1);
                                     }
                                 }
 
                                 if (success) {
-                                    sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, jsonArray.toString(), 0);
+                                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, jsonArray.toString(), 0));
+//                                    sqLite.saveMasterSyncData(Constants.MY_DAY_PLAN, jsonArray.toString(), 0);
                                 }
                             }
 

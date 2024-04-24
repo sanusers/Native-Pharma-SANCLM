@@ -158,11 +158,11 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
 
                 MasterDataTable inputdata =new MasterDataTable();
                 inputdata.setMasterKey(Constants.CALL_SYNC);
-                inputdata.setMasterValuse(jsonArray.toString());
-                inputdata.setSyncstatus(0);
+                inputdata.setMasterValues(jsonArray.toString());
+                inputdata.setSyncStatus(0);
                 MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                 if(nChecked !=null){
-                    masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
                 }else {
                     masterDataDao.insert(inputdata);
                 }

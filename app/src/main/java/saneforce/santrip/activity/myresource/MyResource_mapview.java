@@ -78,6 +78,10 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -114,7 +118,9 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
     Location gps_loc, network_loc, final_loc;
     public Criteria criteria;
     public String bestProvider;
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
+    private LoginDataDao loginDataDao;
 
     @SuppressLint({"MissingInflatedId", "MissingPermission"})
     @Override
@@ -136,10 +142,13 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
         Doc_name = findViewById(R.id.Doc_name);
 
         sqLite = new SQLite(this);
+        roomDB =  RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
+        loginDataDao = roomDB.loginDataDao();
         DCr_icons = new ImageView(this);
         gpsTrack = new GPSTrack(this);
-        loginResponse = new LoginResponse();
-        loginResponse = sqLite.getLoginData();
+        loginResponse = loginDataDao.getLoginData().getLoginResponse();
+//        loginResponse = sqLite.getLoginData();
 
 
         Cust_type = getIntent().getStringExtra("type");
@@ -195,21 +204,30 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
 
 
 
-        String Dcr_list = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this)));
-        String chm_list = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this)));
-        String str_list = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this)));
-        String unlisted = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this)));
+        String Dcr_list = masterDataDao.getDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+        String chm_list = masterDataDao.getDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
+        String str_list = masterDataDao.getDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
+        String unlisted = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
+
+//        String Dcr_list = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this)));
+//        String chm_list = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this)));
+//        String str_list = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this)));
+//        String unlisted = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this)));
         if (pos_name.equals(Dcr_list)) {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
             DCR_VAlues(jsonArray, "1");
         } else if (Cust_name.equals(chm_list)) {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
             DCR_VAlues(jsonArray, "2");
         } else if (Cust_name.equals(str_list)) {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(this));
             DCR_VAlues(jsonArray, "3");
         } else if (Cust_name.equals(unlisted)) {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(this));
             DCR_VAlues(jsonArray, "4");
         } else if (Cust_name.equals("Res_doc")) {//Res_doc
 
@@ -791,15 +809,18 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                                                 jsonArray.put(jsonObject1);
                                                 success = true;
                                             } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
-                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
                                         if (success) {
-                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
+//                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
                                         }
                                     } else {
-                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -810,8 +831,8 @@ public class MyResource_mapview extends FragmentActivity implements OnMapReadyCa
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                            masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
                 }

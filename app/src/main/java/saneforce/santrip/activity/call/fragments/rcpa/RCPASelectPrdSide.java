@@ -32,6 +32,8 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectProductSideBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class RCPASelectPrdSide extends Fragment {
@@ -107,11 +109,15 @@ public class RCPASelectPrdSide extends Fragment {
         JSONObject jsonObject;
         boolean isAvailableCompetitor;
         CommonUtilsMethods commonUtilsMethods;
+        private RoomDB roomDB;
+        private MasterDataDao masterDataDao;
 
         public ProductAdapter(Context context, ArrayList<SaveCallProductList> prdList) {
             this.context = context;
             this.prdList = prdList;
             commonUtilsMethods = new CommonUtilsMethods(context);
+            roomDB = RoomDB.getDatabase(context);
+            masterDataDao = roomDB.masterDataDao();
         }
 
         @NonNull
@@ -152,7 +158,8 @@ public class RCPASelectPrdSide extends Fragment {
                     } catch (Exception ignored) {
                     }
                 } else try {
-                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
+                    jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.MAPPED_COMPETITOR_PROD).getMasterSyncDataJsonArray();
+//                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         if (prdList.get(holder.getBindingAdapterPosition()).getCode().equalsIgnoreCase(jsonObject.getString("Our_prd_code"))) {

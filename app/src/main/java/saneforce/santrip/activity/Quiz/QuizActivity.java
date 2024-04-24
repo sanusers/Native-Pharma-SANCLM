@@ -19,6 +19,8 @@ import java.util.Map;
 
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityQuizBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class QuizActivity extends AppCompatActivity {
@@ -28,7 +30,8 @@ public class QuizActivity extends AppCompatActivity {
     ArrayList<QuizModelClass> mQuizList = new ArrayList<>();
     ArrayList<QuizOptionModelClass> sQuizMainAnswerList = new ArrayList<>();
     ArrayList<QuizOptionModelClass> opitonList = new ArrayList<>();
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     int QuestionNumber = 0;
 
@@ -47,10 +50,13 @@ public class QuizActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         sqLite = new SQLite(this);
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
         mQuizList.clear();
         try {
 
-            JSONArray quizdata = sqLite.getMasterSyncDataByKey(Constants.QUIZ);
+//            JSONArray quizdata = sqLite.getMasterSyncDataByKey(Constants.QUIZ);
+            JSONArray quizdata = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
             if (quizdata.length() > 0) {
                 for (int i = 0; i < quizdata.length(); i++) {
                     JSONObject jsonObject = quizdata.getJSONObject(i);

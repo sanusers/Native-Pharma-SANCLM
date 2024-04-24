@@ -27,7 +27,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +43,7 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.CallAnalysisFagmentBinding;
 import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
@@ -62,6 +62,7 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
 
     static CallTableDao callTableDao;
     RoomDB db;
+    private MasterDataDao masterDataDao;
     @Override
     public void onResume() {
         super.onResume();
@@ -80,9 +81,10 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         commonUtilsMethods.setUpLanguage(requireContext());
         context = requireContext();
         sqLite = new SQLite(requireContext());
-        HiddenVisibleFunctions();
         db = RoomDB.getDatabase(getActivity());
         callTableDao=db.callTableDao();
+        masterDataDao = db.masterDataDao();
+        HiddenVisibleFunctions();
         SetcallDetailsInLineChart();
         return v;
     }
@@ -672,12 +674,19 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.llHosChild.setOnClickListener(this);
         callAnalysisBinding.llCipChild.setOnClickListener(this);
 
-        Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
-        Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context));
-        Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context));
-        unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context));
-        cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(context));
-        hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(context));
+//        Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
+//        Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context));
+//        Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context));
+//        unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context));
+//        cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(context));
+//        hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(context));
+
+        Doctor_list = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        Chemist_list = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        Stockiest_list = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        unlistered_list = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        cip_list = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
+        hos_list = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
     }
 
 

@@ -58,6 +58,12 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityTourPlanBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
+import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
+import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
+import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -67,7 +73,10 @@ public class TourPlanActivity extends AppCompatActivity {
     public static LinearLayout addSaveBtnLayout, clrSaveBtnLayout;
     ApiInterface apiInterface;
     SQLite sqLite;
-
+    private RoomDB roomDB;
+    private TourPlanOfflineDataDao tourPlanOfflineDataDao;
+    private TourPlanOnlineDataDao tourPlanOnlineDataDao;
+    private MasterDataDao masterDataDao;
     CalendarAdapter calendarAdapter = new CalendarAdapter();
     SummaryAdapter summaryAdapter = new SummaryAdapter();
     SessionEditAdapter sessionEditAdapter = new SessionEditAdapter();
@@ -126,6 +135,10 @@ public class TourPlanActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         sqLite = new SQLite(getApplicationContext());
+        roomDB = RoomDB.getDatabase(getApplicationContext());
+        tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
+        tourPlanOnlineDataDao = roomDB.tourPlanOnlineDataDao();
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         addSaveBtnLayout = binding.tpNavigation.addSaveLayout;
@@ -460,8 +473,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
         binding.tpSendToApproval.setOnClickListener(view -> {
 
-            JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-
+//            JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+            JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> arrayList;
             ArrayList<String> dummy = new ArrayList<>();
             Type type = new TypeToken<ArrayList<ModelClass>>() {
@@ -990,7 +1003,8 @@ public class TourPlanActivity extends AppCompatActivity {
         localDate = LocalDate.now();
         try {
 
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP);  //Tour Plan setup
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();  //Tour Plan setup
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP);  //Tour Plan setup
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 drNeed = jsonObject.getString("DrNeed");
@@ -1006,8 +1020,10 @@ public class TourPlanActivity extends AppCompatActivity {
                 binding.tpNavigation.addSession.setVisibility(View.VISIBLE);
             else binding.tpNavigation.addSession.setVisibility(View.GONE);
 
-            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
-            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
+            holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
+            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray(); // Weekly Off data
+//            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
+//            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
             for (int i = 0; i < weeklyOff.length(); i++) {
                 JSONObject jsonObject = weeklyOff.getJSONObject(i);
                 holidayMode = jsonObject.getString("Holiday_Mode");
@@ -1050,7 +1066,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
 
-            JSONArray workTypeArray1 = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
+            JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
+//            JSONArray workTypeArray1 = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i < workTypeArray1.length(); i++) {
                 JSONObject jsonObject = workTypeArray1.getJSONObject(i);
                 if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
@@ -1166,7 +1183,8 @@ public class TourPlanActivity extends AppCompatActivity {
         try {
             //Data from Tour Plan table
             Log.v("getTp", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1)));
-            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
+//            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
+            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).getTpDataJSONArray();
 
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
                 Type type = new TypeToken<ArrayList<ModelClass>>() {
@@ -1374,8 +1392,15 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
             }
         }
-        String status = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)), "status");
-        String reason = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)), "reason");
+//        String status = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)), "status");
+//        String reason = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)), "reason");
+        String status = "";
+        String reason = "";
+        TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+        if(tourPlanOfflineDataTable != null) {
+            status = tourPlanOfflineDataTable.getTpMonthSyncedOrEmpty();
+            reason = tourPlanOfflineDataTable.getTpRejectionReasonOrEmpty();
+        }
 
         switch (status) {
             case "1":  // when waiting for approval
@@ -1579,7 +1604,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
             }
 
-            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
+//            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
+            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
                 Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
@@ -1594,7 +1620,8 @@ public class TourPlanActivity extends AppCompatActivity {
             if (listArray.length() > 0) {
                 String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
                 String status = listArray.getJSONObject(0).getString("Change_Status");
-                sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
+//                sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
+                tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
@@ -1654,7 +1681,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
 
-                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+//                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
                 for (String day : days) {
@@ -2125,7 +2153,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                 JSONArray jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
                                 if (jsonArray.length() > 0) {
                                     String status = jsonArray.getJSONObject(0).getString("Change_Status");
-                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status);
+//                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status);
+                                    tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status);
 
                                     switch (status) {
                                         case "0": {
@@ -2199,11 +2228,13 @@ public class TourPlanActivity extends AppCompatActivity {
                                     try {
                                         JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
                                         if (jsonObject1.has("success") && jsonObject1.getBoolean("success")) {
-                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0"); // "0" - success
+//                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0"); // "0" - success
+                                            tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0");
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.send_approved_successfully));
                                             get1MonthRemoteTPData(localDate1);
                                         } else {
-                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+//                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+                                            tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                         }
                                     } catch (JSONException e) {
@@ -2212,14 +2243,16 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     binding.progressBar.setVisibility(View.GONE);
-                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+//                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+                                    tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                 }
                             }
 
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 binding.progressBar.setVisibility(View.GONE);
-                                sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+//                                sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+                                tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                             }
                         });
                     } catch (JSONException e) {
@@ -2228,7 +2261,8 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 } else {
                     binding.progressBar.setVisibility(View.GONE);
-                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+//                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
+                    tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                 }
             }
         });
@@ -2237,7 +2271,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public String findTerrSlFlag(String code) {
         try {
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
+            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
+//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 if (code.equals(jsonObject.getString("Code")))
@@ -2464,7 +2499,8 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (jsonObject1.getBoolean("success")) {
                             saveTpLocal(modelClassArrayList, date, month, "0");// Sync Success
                             if (statusOffline) {
-                                JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+//                                JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                                JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
 
                                 ArrayList<ModelClass> arrayList;
                                 Type type = new TypeToken<ArrayList<ModelClass>>() {
@@ -2480,7 +2516,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+//                                jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
+                                jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
                                 arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
                                 boolean allDateSynced = false;
                                 for (ModelClass modelClass : arrayList) {
@@ -2535,7 +2572,8 @@ public class TourPlanActivity extends AppCompatActivity {
                 break;
             }
         }
-        sqLite.saveTPData(month, new Gson().toJson(arrayList));
+//        sqLite.saveTPData(month, new Gson().toJson(arrayList));
+        tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
 
 }
