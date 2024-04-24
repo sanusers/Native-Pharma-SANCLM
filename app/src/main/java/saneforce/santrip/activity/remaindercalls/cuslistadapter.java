@@ -38,14 +38,15 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-
+import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHolder> {
     Context context;
     ApiInterface api_interface;
-
+    LoginResponse loginResponse;
     SQLite sqLite;
     String SfType = "", Vals = "";
     String pos;
@@ -55,14 +56,22 @@ public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHold
     ArrayList<remainder_modelclass> JwList;
 
     ArrayList<remainder_modelclass> listeduser1;
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private DCRDocDataDao dcrDocDataDao;
 
     public cuslistadapter(Context context, ArrayList<remainder_modelclass> listeduser1, String pos) {
         this.context = context;
         this.listeduser1 = listeduser1;
         this.pos = pos;
-        sqLite = new SQLite(context);
 
-        SfType = SharedPref.getSfType(context);
+//        sqLite = new SQLite(context);
+        roomDB = RoomDB.getDatabase(context);
+        loginDataDao = roomDB.loginDataDao();
+        dcrDocDataDao = roomDB.dcrDocDataDao();
+        loginResponse = loginDataDao.getLoginData().getLoginResponse();
+//        loginResponse = sqLite.getLoginData();
+        SfType = loginResponse.getSf_type();
     }
 
     @NonNull

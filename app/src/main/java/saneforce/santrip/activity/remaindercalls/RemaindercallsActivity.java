@@ -19,26 +19,25 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.navigation.NavigationView;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityRemaindercallsBinding;
 
+import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class RemaindercallsActivity extends AppCompatActivity {
 
-    SQLite sqLite;
+   // SQLite sqLite;
     String SfType = "";
 
     TextView headtext_id;
@@ -57,18 +56,13 @@ public class RemaindercallsActivity extends AppCompatActivity {
     ArrayList<remainder_modelclass> hq_view = new ArrayList<>();
     ArrayList<remainder_modelclass> filterd_hqname = new ArrayList<>();
     public static String vals_rm = "";
+    ApiInterface api_interface;
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private DCRDocDataDao dcrDocDataDao;
+    private MasterDataDao masterDataDao;
 
-//    @SuppressLint("MissingInflatedId")
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//        setContentView(R.layout.activity_remaindercalls);
-
-
-    public static ActivityRemaindercallsBinding remcallbinding;
-
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         remcallbinding = ActivityRemaindercallsBinding.inflate(getLayoutInflater());
         setContentView(remcallbinding.getRoot());
@@ -81,7 +75,7 @@ public class RemaindercallsActivity extends AppCompatActivity {
         close_sideview = findViewById(R.id.close_sideview);
         et_Custsearch = findViewById(R.id.et_Custsearch);
         hq_name1 = findViewById(R.id.hq_name1);
-        sqLite = new SQLite(this);
+      //  sqLite = new SQLite(this);
         SfType = SharedPref.getSfType(this);
         REm_hq_code = SharedPref.getSfCode(this);
 
@@ -146,12 +140,16 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public void show_docdata() {
         try {
             listeduser.clear();
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+
             String Town_Name = "";
 
             Log.d("jsonlist", "Doctor_" + SharedPref.getHqCode(this) + "--" + jsonvst_Doc.toString());
+            Log.d("jsonlist", jsonvst_Doc.toString());//
 
-            sqLite.saveMasterSyncData("Doctor_" + SharedPref.getHqCode(this), jsonvst_Doc.toString(), 0);
+//            sqLite.insert_docvalues("Doctor_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+            dcrDocDataDao.insertDCRDocValues(new DCRDocDataTable("Doctor_" + SharedPref.getHqCode(this), jsonvst_Doc.toString()));
             SharedPref.setDcr_dochqcode(this, "Doctor_" + SharedPref.getHqCode(this));
             if (jsonvst_Doc.length() > 0) {
                 for (int i = 0; i < jsonvst_Doc.length(); i++) {
@@ -201,8 +199,10 @@ public class RemaindercallsActivity extends AppCompatActivity {
         try {
             sub_list.clear();
 //            jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + SharedPref.getHqCode(this));
-            sqLite.insert_docvalues("Joint_Work_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + SharedPref.getHqCode(this));
+//            sqLite.insert_docvalues("Joint_Work_" + SharedPref.getHqCode(this), jsonvst_Doc.toString());
+            dcrDocDataDao.insertDCRDocValues(new DCRDocDataTable("Joint_Work_" + SharedPref.getHqCode(this), jsonvst_Doc.toString()));
 
             SharedPref.setDcr_dochqcode(this, "Joint_Work_" + SharedPref.getHqCode(this));
 
@@ -244,7 +244,8 @@ public class RemaindercallsActivity extends AppCompatActivity {
     public void show_hq() {
         try {
             hq_view.clear();
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
             if (jsonvst_Doc.length() > 0) {
                 for (int i = 0; i < jsonvst_Doc.length(); i++) {
                     JSONObject jsonObject = jsonvst_Doc.getJSONObject(i);

@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -57,6 +58,7 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
@@ -69,20 +71,22 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
     ArrayList<CallsModalClass> list;
     ApiInterface apiInterface;
     ProgressDialog progressBar;
-    SQLite sqLite;
+//    SQLite sqLite;
     Dialog dialogTransparent;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB db;
     private static MasterDataDao masterDataDao;
+    private static CallTableDao callTableDao;
 
     public Call_adapter(Context context, ArrayList<CallsModalClass> list, ApiInterface apiInterface) {
         this.context = context;
         this.list = list;
         this.apiInterface = apiInterface;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         commonUtilsMethods = new CommonUtilsMethods(context);
         db = RoomDB.getDatabase(context);
         masterDataDao =db.masterDataDao();
+        callTableDao = db.callTableDao();
         dialogTransparent = new Dialog(context, android.R.style.Theme_Black);
         View view = LayoutInflater.from(context).inflate(R.layout.remove_border_progress, null);
         dialogTransparent.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -217,9 +221,12 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
     @SuppressLint("DefaultLocale")
     private void AssignCallAnalysis(String sfType, String docNameID) {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
         switch (docNameID) {
             case "1":
-                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("1"));
+                String doc_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "1"));
+//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("1"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", doc_current_callcount, Doctor_list.length()));
                 } else {
@@ -227,7 +234,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 }
                 break;
             case "2":
-                String che_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("2"));
+                String che_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"2"));
+//                String che_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("2"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", che_current_callcount, Chemist_list.length()));
                 } else {
@@ -235,7 +243,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 }
                 break;
             case "3":
-                String stockiest_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("3"));
+                String stockiest_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"3"));
+//                String stockiest_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("3"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtStockCount.setText(String.format("%s / %d", stockiest_current_callcount, Stockiest_list.length()));
                 } else {
@@ -243,7 +252,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 }
                 break;
             case "4":
-                String unlistered_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("4"));
+                String unlistered_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"4"));
+//                String unlistered_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("4"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtUnlistCount.setText(String.format("%s / %d", unlistered_current_callcount, unlistered_list.length()));
                 } else {
@@ -251,7 +261,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 }
                 break;
             case "5":
-                String cip_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("5"));
+                String cip_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"5"));
+//                String cip_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("5"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtCipCount.setText(String.format("%s / %d", cip_current_callcount, cip_list.length()));
                 } else {
@@ -259,7 +270,8 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                 }
                 break;
             case "6":
-                String hos_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("6"));
+                String hos_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"6"));
+//                String hos_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("6"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtHosCount.setText(String.format("%s / %d", hos_current_callcount, hos_list.length()));
                 } else {

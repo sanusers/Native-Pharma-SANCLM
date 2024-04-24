@@ -38,6 +38,8 @@ import saneforce.santrip.activity.presentation.SupportClass;
 import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
 import saneforce.santrip.activity.presentation.createPresentation.CreatePresentationActivity;
 import saneforce.santrip.activity.presentation.playPreview.PlaySlidePreviewActivity;
+import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapter.MyViewHolder> {
@@ -45,14 +47,18 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
     ArrayList<BrandModelClass.Presentation> arrayList = new ArrayList<>();
     PopupWindow mypopupWindow;
     Menu menu;
-    SQLite sqLite;
+//    SQLite sqLite;
     String isClickedFrom;
     Intent intent;
+    private RoomDB roomDB;
+    private PresentationDataDao presentationDataDao;
 
     public PresentationAdapter(Context context, ArrayList<BrandModelClass.Presentation> arrayList, String isClickedFrom) {
         this.context = context;
         this.arrayList = arrayList;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
+        roomDB = RoomDB.getDatabase(context);
+        presentationDataDao = roomDB.presentationDataDao();
         this.isClickedFrom = isClickedFrom;
     }
 
@@ -147,9 +153,11 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     removeAt(position);
-                    sqLite.presentationDelete(presentation.getPresentationName());
-                    ArrayList<BrandModelClass.Presentation> savedPresentation;
-                    savedPresentation = sqLite.getPresentationData();
+//                    sqLite.presentationDelete(presentation.getPresentationName());
+                    presentationDataDao.deletePresentation(presentation.getPresentationName());
+                    ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
+//                    savedPresentation = sqLite.getPresentationData();
+                    savedPresentation = presentationDataDao.getPresentations();
                     if (savedPresentation.size() > 0) {
                         binding.constraintNoData.setVisibility(View.GONE);
                         binding.presentationRecView.setVisibility(View.VISIBLE);

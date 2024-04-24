@@ -39,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +57,9 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.roomdatabase.CallDataRestClass;
+import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
+import saneforce.santrip.roomdatabase.CallsUtil;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
@@ -65,7 +69,7 @@ import saneforce.santrip.storage.SharedPref;
 public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.ViewHolder> {
     Context context;
     ArrayList<OutBoxCallList> outBoxCallLists;
-    SQLite sqLite;
+//    SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
@@ -74,16 +78,22 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
     RoomDB roomDB;
 
     MasterDataDao masterDataDao;
+    private CallOfflineECDataDao callOfflineECDataDao;
+    private CallTableDao callTableDao;
+    private CallsUtil callsUtil;
 
     public OutBoxCallAdapter(Activity activity, Context context, ArrayList<OutBoxCallList> outBoxCallLists, ApiInterface apiInterface) {
         this.context = context;
         this.activity = activity;
         this.outBoxCallLists = outBoxCallLists;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         this.apiInterface = apiInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
+        callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        callTableDao = roomDB.callTableDao();
+        callsUtil = new CallsUtil(context);
     }
 
     @NonNull
@@ -155,7 +165,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     UpdateInputSample(outBoxCallLists.get(position).getJsonData());
-                    sqLite.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
+//                    sqLite.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
+                    callsUtil.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                     try {
                         if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {
                             JSONArray jsonArray = new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
@@ -170,11 +181,11 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 
                             MasterDataTable mData =new MasterDataTable();
                             mData.setMasterKey(Constants.CALL_SYNC);
-                            mData.setMasterValuse(jsonArray.toString());
-                            mData.setSyncstatus(0);
+                            mData.setMasterValues(jsonArray.toString());
+                            mData.setSyncStatus(0);
                             MasterDataTable Checked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                             if(Checked !=null){
-                                masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                                masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
                             }else {
                                 masterDataDao.insert(mData);
                             }
@@ -202,7 +213,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     } catch (Exception ignored) {
 
                     }
-                    if (sqLite.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
+//                    if (sqLite.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
+                    if (callOfflineECDataDao.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
                         for (int i = 0; i < listDates.size(); i++) {
                             if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
                                 for (int j = 0; j < listDates.get(i).getChildItems().get(3).getEcModelClasses().size(); j++) {
@@ -226,9 +238,12 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 
     @SuppressLint("DefaultLocale")
     private void AssignCallAnalysis(String sfType, String docNameID) {
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
         switch (docNameID) {
             case "1":
-                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("1"));
+                String doc_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"1"));
+//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("1"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", doc_current_callcount, Doctor_list.length()));
                 } else {
@@ -236,7 +251,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 }
                 break;
             case "2":
-                String che_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("2"));
+                String che_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "2"));
+//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("2"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", che_current_callcount, Chemist_list.length()));
                 } else {
@@ -244,7 +260,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 }
                 break;
             case "3":
-                String stockiest_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("3"));
+                String stockiest_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "3"));
+//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("3"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtStockCount.setText(String.format("%s / %d", stockiest_current_callcount, Stockiest_list.length()));
                 } else {
@@ -252,7 +269,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 }
                 break;
             case "4":
-                String unlistered_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("4"));
+                String unlistered_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "4"));
+//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("4"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtUnlistCount.setText(String.format("%s / %d", unlistered_current_callcount, unlistered_list.length()));
                 } else {
@@ -260,7 +278,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 }
                 break;
             case "5":
-                String cip_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("5"));
+                String cip_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "5"));
+//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("5"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtCipCount.setText(String.format("%s / %d", cip_current_callcount, cip_list.length()));
                 } else {
@@ -268,7 +287,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 }
                 break;
             case "6":
-                String hos_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("6"));
+                String hos_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "6"));
+//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("6"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtHosCount.setText(String.format("%s / %d", hos_current_callcount, hos_list.length()));
                 } else {
@@ -294,19 +314,22 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-                                sqLite.deleteOfflineCalls(cusCode, cusName, date);
+//                                sqLite.deleteOfflineCalls(cusCode, cusName, date);
+                                callsUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 removeAt(pos);
-                                CallsFragment.CallTodayCallsAPI(context, apiInterface, sqLite, false);
+                                CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully));
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-                                sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
+//                                sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
+                                callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_already_exist));
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
-                            sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.EXCEPTION_ERROR, 0);
+//                            sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.EXCEPTION_ERROR, 0);
+                            callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
                             Log.v("SendOutboxCall", "---" + e);
@@ -318,7 +341,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(syncCount + 1), Constants.CALL_FAILED, 1);
+//                    sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(syncCount + 1), Constants.CALL_FAILED, 1);
+                    callsUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(syncCount + 1);
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_failed));
@@ -337,7 +361,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             JSONObject json = new JSONObject(jsonArray);
             //Input
             if (SharedPref.getInputValidation(context).equalsIgnoreCase("1")) {
-                JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
+                JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
+//                JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
                 JSONArray jsonInput = json.getJSONArray("Inputs");
                 Log.v("input_wrk", String.valueOf(jsonInput));
                 if (jsonInput.length() > 0) {
@@ -357,13 +382,15 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                         }
                     }
-                    sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0);
+//                    sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0);
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0));
                 }
             }
 
             //Sample
             if (SharedPref.getSampleValidation(context).equalsIgnoreCase("1")) {
-                JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
+                JSONArray jsonArraySamStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
+//                JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
                 JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
                 Log.v("sample_wrk", String.valueOf(jsonPrdArray));
                 if (jsonPrdArray.length() > 0) {
@@ -384,7 +411,8 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                         }
                     }
-                    sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0);
+                    masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0));
+//                    sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0);
                 }
             }
 

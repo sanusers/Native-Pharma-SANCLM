@@ -48,7 +48,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
     ArrayList<CallCommonCheckedList> checked_arrayList;
     FinalAdditionalCallAdapter AdapterSaveAdditionalCall;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     RoomDB roomDB;
     MasterDataDao masterDataDao;
 
@@ -58,7 +58,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         this.checked_arrayList = checked_arrayList;
         AdditionalCusListAdapter.saveAdditionalCallArrayList = saveAdditionalCallArrayList;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB=RoomDB.getDatabase(context);
         masterDataDao= roomDB.masterDataDao();
     }
@@ -69,7 +69,7 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
         this.context = context;
         this.checked_arrayList = checked_arrayList;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
         roomDB=RoomDB.getDatabase(context);
         masterDataDao= roomDB.masterDataDao();
     }
@@ -158,11 +158,11 @@ public class AdditionalCusListAdapter extends RecyclerView.Adapter<AdditionalCus
 
                 MasterDataTable inputdata =new MasterDataTable();
                 inputdata.setMasterKey(Constants.CALL_SYNC);
-                inputdata.setMasterValuse(jsonArray.toString());
-                inputdata.setSyncstatus(0);
+                inputdata.setMasterValues(jsonArray.toString());
+                inputdata.setSyncStatus(0);
                 MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                 if(nChecked !=null){
-                    masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
                 }else {
                     masterDataDao.insert(inputdata);
                 }

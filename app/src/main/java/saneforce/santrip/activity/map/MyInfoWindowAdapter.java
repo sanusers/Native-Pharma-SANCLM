@@ -52,7 +52,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View getInfoContents(final Marker marker) {
-        db = new SQLiteHandler(context);
+//        db = new SQLiteHandler(context);
         img_tag = customView.findViewById(R.id.img_tag);
         txtView = customView.findViewById(R.id.txt_drName);
         txtAdd = customView.findViewById(R.id.txt_address);

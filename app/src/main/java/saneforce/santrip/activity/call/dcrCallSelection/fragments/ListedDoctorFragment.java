@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,7 +38,6 @@ import java.util.Objects;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.dcrCallSelection.DCRFillteredModelClass;
 import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.santrip.activity.call.dcrCallSelection.FillteredInterfacce;
 import saneforce.santrip.activity.call.dcrCallSelection.adapter.AdapterDCRCallSelection;
 import saneforce.santrip.activity.call.dcrCallSelection.adapter.FillteredAdapter;
 import saneforce.santrip.activity.map.custSelection.CustList;
@@ -47,6 +45,8 @@ import saneforce.santrip.activity.masterSync.MasterSyncItemModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.network.ApiInterface;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -71,7 +71,7 @@ public class ListedDoctorFragment extends Fragment {
 
 
     ListView lv_spec, lv_cate, lv_terr,lv_class;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     CommonUtilsMethods commonUtilsMethods;
     ArrayList<DCRFillteredModelClass> filterSelectionList = new ArrayList<>();
@@ -81,7 +81,8 @@ public class ListedDoctorFragment extends Fragment {
     ApiInterface apiInterface;
     ConstraintLayout constraintLayout ;
     int count = 0;
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
 
     @Override
@@ -102,7 +103,9 @@ public class ListedDoctorFragment extends Fragment {
         constraintFilter = v.findViewById(R.id.constraint_filter_selection_list);
         tv_filterCount = v.findViewById(R.id.tv_filter_count);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -307,13 +310,17 @@ public class ListedDoctorFragment extends Fragment {
         try {
             JSONArray jsonArray = new JSONArray();
             if (requiredList.equalsIgnoreCase("Speciality")) {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
             } else if (requiredList.equalsIgnoreCase("Category")) {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
             } else if (requiredList.equalsIgnoreCase("Territory")) {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
             }else if(requiredList.equalsIgnoreCase("Class")){
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLASS);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLASS);
             }
             filterSelectionList.clear();
             Log.v("jsonArray", "--" + jsonArray.length());
@@ -331,7 +338,8 @@ public class ListedDoctorFragment extends Fragment {
 
     private void SetupAdapter() {
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + DcrCallTabLayoutActivity.TodayPlanSfCode);
 
             Log.d("hqSfcoe",DcrCallTabLayoutActivity.TodayPlanSfCode);
 

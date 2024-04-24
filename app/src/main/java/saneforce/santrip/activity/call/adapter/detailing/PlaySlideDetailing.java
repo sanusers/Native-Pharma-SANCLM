@@ -65,6 +65,8 @@ import saneforce.santrip.commonClasses.CommonSharedPreference;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityPlaySlidePreviewDetailingBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class PlaySlideDetailing extends AppCompatActivity {
@@ -89,7 +91,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
     int scribblePos;
     int val = 0;
     CommonSharedPreference mCommonSharedPreference;
-    SQLite sqLite;
+//    SQLite sqLite;
     Dialog dialogPopUp;
     String defaultTime = "00:00:00";
 
@@ -151,7 +153,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         mCommonSharedPreference = new CommonSharedPreference(this);
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
         context = this;
         initialisation();
 
@@ -485,7 +487,7 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
         binding.bottomLayout.setVisibility(View.GONE);
 
-        bottomPreviewDetailedHeadAdapter = new BottomLayoutHeadAdapter(PlaySlideDetailing.this, headingData, sqLite);
+        bottomPreviewDetailedHeadAdapter = new BottomLayoutHeadAdapter(PlaySlideDetailing.this, headingData);
         LinearLayoutManager layoutManager11 = new LinearLayoutManager(PlaySlideDetailing.this, LinearLayoutManager.HORIZONTAL, false);
         binding.recViewHead.setLayoutManager(layoutManager11);
         binding.recViewHead.setAdapter(bottomPreviewDetailedHeadAdapter);
@@ -534,12 +536,16 @@ public class PlaySlideDetailing extends AppCompatActivity {
     public static class BottomLayoutHeadAdapter extends RecyclerView.Adapter<BottomLayoutHeadAdapter.MyViewHolder> {
         Context context;
         List<String> arrayListHead;
-        SQLite sqLite;
+//        SQLite sqLite;
+        private RoomDB roomDB;
+        private MasterDataDao masterDataDao;
 
-        public BottomLayoutHeadAdapter(Context context, List<String> arrayListHead, SQLite sqLite) {
+        public BottomLayoutHeadAdapter(Context context, List<String> arrayListHead) {
             this.context = context;
             this.arrayListHead = arrayListHead;
-            this.sqLite = sqLite;
+//            this.sqLite = sqLite;
+            roomDB = RoomDB.getDatabase(context);
+            masterDataDao = roomDB.masterDataDao();
         }
 
         @NonNull
@@ -644,8 +650,10 @@ public class PlaySlideDetailing extends AppCompatActivity {
             ArrayList<String> brandCodeList = new ArrayList<>();
             BrandModelClass.Product product;
             try {
-                JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-                JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
+//                JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+//                JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
+                JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+                JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
 
                 for (int i = 0; i < brandSlide.length(); i++) {
                     JSONObject brandObject = brandSlide.getJSONObject(i);

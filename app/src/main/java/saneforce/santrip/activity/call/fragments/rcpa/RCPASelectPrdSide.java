@@ -32,13 +32,15 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectProductSideBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class RCPASelectPrdSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectProductSideBinding selectProductSideBinding;
     public static ArrayList<SaveCallProductList> PrdFullList;
-    SQLite sqLite;
+//    SQLite sqLite;
     ProductAdapter PrdAdapter;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -47,7 +49,7 @@ public class RCPASelectPrdSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectProductSideBinding = FragmentSelectProductSideBinding.inflate(inflater);
         View v = selectProductSideBinding.getRoot();
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         AddProductsData();
@@ -103,15 +105,19 @@ public class RCPASelectPrdSide extends Fragment {
         Context context;
         ArrayList<SaveCallProductList> prdList;
         JSONArray jsonArray;
-        SQLite sqLite;
+//        SQLite sqLite;
         JSONObject jsonObject;
         boolean isAvailableCompetitor;
         CommonUtilsMethods commonUtilsMethods;
+        private RoomDB roomDB;
+        private MasterDataDao masterDataDao;
 
         public ProductAdapter(Context context, ArrayList<SaveCallProductList> prdList) {
             this.context = context;
             this.prdList = prdList;
             commonUtilsMethods = new CommonUtilsMethods(context);
+            roomDB = RoomDB.getDatabase(context);
+            masterDataDao = roomDB.masterDataDao();
         }
 
         @NonNull
@@ -123,7 +129,7 @@ public class RCPASelectPrdSide extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
-            sqLite = new SQLite(context);
+//            sqLite = new SQLite(context);
             holder.tv_name.setText(prdList.get(position).getName());
             holder.tv_name.setOnClickListener(view -> {
 
@@ -152,7 +158,8 @@ public class RCPASelectPrdSide extends Fragment {
                     } catch (Exception ignored) {
                     }
                 } else try {
-                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
+                    jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.MAPPED_COMPETITOR_PROD).getMasterSyncDataJsonArray();
+//                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         if (prdList.get(holder.getBindingAdapterPosition()).getCode().equalsIgnoreCase(jsonObject.getString("Our_prd_code"))) {

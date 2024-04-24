@@ -53,6 +53,9 @@ import saneforce.santrip.databinding.ActivityLoginBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
+import saneforce.santrip.roomdatabase.CallsUtil;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
@@ -69,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
     PackageManager packageManager;
     PackageInfo packageInfo;
     String fcmToken = "";
-    SQLite sqLite;
+//    SQLite sqLite;
     String navigateFrom = "";
     String userId = "", userPwd = "";
     LoginViewModel loginViewModel = new LoginViewModel();
@@ -81,6 +84,9 @@ public class LoginActivity extends AppCompatActivity {
     RoomDB roomDB;
     MasterDataDao masterDataDao;
     CallTableDao callTableDao;
+    private LoginDataDao loginDataDao;
+    private CallsUtil callsUtil;
+
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,17 +96,19 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getParent());
-        sqLite.getWritableDatabase();
+//        sqLite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
+        callsUtil = new CallsUtil(this);
 
         roomDB=RoomDB.getDatabase(getApplicationContext());
 
         masterDataDao=roomDB.masterDataDao();
         callTableDao=roomDB.callTableDao();
+        loginDataDao = roomDB.loginDataDao();
 
         uiInitialisation();
         binding.versionNoTxt.setText(String.format("%s%s", getString(R.string.version), getResources().getString(R.string.app_version)));
@@ -166,7 +174,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.clearData.setOnClickListener(view -> {
-            if (sqLite.isOutBoxDataAvailable()) {
+//            if (sqLite.isOutBoxDataAvailable()) {
+            if (callsUtil.isOutBoxDataAvailable()) {
                 new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
             } else {
                 DeleteAllFiles();
@@ -193,9 +202,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void DeleteAllFiles() {
-        sqLite.deleteAllTable();
-        masterDataDao.deleteAllMasterData();
-        callTableDao.deleteAllData();
+//        sqLite.deleteAllTable();
+//        masterDataDao.deleteAllMasterData();
+//        callTableDao.deleteAllData();
+        roomDB.loginDataDao().deleteAllData();
+        roomDB.masterDataDao().deleteAllMasterData();
+        roomDB.callTableDao().deleteAllData();
+        roomDB.callOfflineDataDao().deleteAllData();
+        roomDB.callOfflineECDataDao().deleteAllData();
+        roomDB.callOfflineWorkTypeDataDao().deleteAllData();
+        roomDB.offlineCheckInOutDataDao().deleteAllData();
+        roomDB.dcrDocDataDao().deleteAllData();
+        roomDB.presentationDataDao().deleteAllData();
+        roomDB.tourPlanOfflineDataDao().deleteAllData();
+        roomDB.tourPlanOnlineDataDao().deleteAllData();
 
         SharedPref.clearSP(LoginActivity.this);
         SharedPref.saveLoginState(getApplicationContext(), false);
@@ -399,9 +419,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public void process(JSONObject jsonObject) {
         try {
-            sqLite.saveLoginData(jsonObject.toString());
+//            sqLite.saveLoginData(jsonObject.toString());
+            loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             SharedPref.InsertLogInData(LoginActivity.this,jsonObject);
-            openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
+//            openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));

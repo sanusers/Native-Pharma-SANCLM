@@ -58,7 +58,7 @@ public class DayReportDetailFragment extends Fragment {
     DayReportModel dayReportModel;
     DataViewModel dataViewModel;
     ApiInterface apiInterface;
-    SQLite sqLite;
+//    SQLite sqLite;
 
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
@@ -150,7 +150,7 @@ public class DayReportDetailFragment extends Fragment {
     }
 
     public void initialisation() {
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
 
         Type type = new TypeToken<DayReportModel>() {
         }.getType();

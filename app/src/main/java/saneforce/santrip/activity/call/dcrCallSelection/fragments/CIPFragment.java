@@ -40,6 +40,8 @@ import saneforce.santrip.activity.call.dcrCallSelection.adapter.AdapterDCRCallSe
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -52,11 +54,12 @@ public class CIPFragment extends Fragment {
     ImageButton iv_filter;
     ImageView img_close;
     Button btn_apply;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName;
     CommonUtilsMethods commonUtilsMethods;
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +70,9 @@ public class CIPFragment extends Fragment {
         iv_filter = v.findViewById(R.id.iv_filter);
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -116,7 +121,8 @@ public class CIPFragment extends Fragment {
     private void SetupAdapter() {
         custListArrayList.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CIP + DcrCallTabLayoutActivity.TodayPlanSfCode);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CIP + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CIP + DcrCallTabLayoutActivity.TodayPlanSfCode);
             Log.v("call", "-cip_full_length-" + jsonArray.length());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);

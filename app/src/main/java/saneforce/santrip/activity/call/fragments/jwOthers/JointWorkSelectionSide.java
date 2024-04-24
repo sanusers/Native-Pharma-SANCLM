@@ -35,6 +35,9 @@ import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectJwSideBinding;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class JointWorkSelectionSide extends Fragment {
@@ -43,18 +46,25 @@ public class JointWorkSelectionSide extends Fragment {
     public static ArrayList<CallCommonCheckedList> JwList;
     @SuppressLint("StaticFieldLeak")
     public static JwAdapter jwAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
     AdapterCallJointWorkList adapterCallJointWorkList;
     CommonUtilsMethods commonUtilsMethods;
+
+    private RoomDB roomDB;
+    private DCRDocDataDao dcrDocDataDao;
+    private MasterDataDao masterDataDao;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectJwSideBinding = FragmentSelectJwSideBinding.inflate(inflater);
         View v = selectJwSideBinding.getRoot();
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        dcrDocDataDao = roomDB.dcrDocDataDao();
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -128,7 +138,8 @@ public class JointWorkSelectionSide extends Fragment {
         JwList.clear();
         try {
             if(DCRCallActivity.save_valid.equals("1")){
-                jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
+//                jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
+                jsonArray = dcrDocDataDao.getDCRDocData(DCRCallActivity.hqcode).getDCRDocDataJSONArray();
 
                 Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -136,7 +147,8 @@ public class JointWorkSelectionSide extends Fragment {
                     JwList.add(new CallCommonCheckedList(jsonObject.getString("Name"), jsonObject.getString("Code"), false));
                 }
             }else{
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + TodayPlanSfCode).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
                 Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = jsonArray.getJSONObject(i);

@@ -24,6 +24,8 @@ import saneforce.santrip.activity.call.profile.preCallAnalysis.PreCallAnalysisFr
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
+import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 
@@ -36,8 +38,10 @@ public class CustomerProfile extends AppCompatActivity {
     ImageView img_back;
     CommonUtilsMethods commonUtilsMethods;
     CustTabLayoutAdapter viewPagerAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     TextView cusName;
+    private RoomDB roomDB;
+    private CallOfflineDataDao callOfflineDataDao;
 
     @Override
     public void onBackPressed() {
@@ -64,7 +68,9 @@ public class CustomerProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cust_profile);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        sqLite = new SQLite(this);
+//        sqLite = new SQLite(this);
+        roomDB = RoomDB.getDatabase(this);
+        callOfflineDataDao = roomDB.callOfflineDataDao();
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         btn_skip = findViewById(R.id.btn_skip);
@@ -119,7 +125,8 @@ public class CustomerProfile extends AppCompatActivity {
 
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+//            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+            callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
 

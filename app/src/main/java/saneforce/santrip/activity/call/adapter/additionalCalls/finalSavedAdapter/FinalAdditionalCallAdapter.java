@@ -51,7 +51,6 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 
 
 public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditionalCallAdapter.ViewHolder> {
@@ -220,11 +219,11 @@ public class FinalAdditionalCallAdapter extends RecyclerView.Adapter<FinalAdditi
 
                     MasterDataTable inputdata =new MasterDataTable();
                     inputdata.setMasterKey(Constants.CALL_SYNC);
-                    inputdata.setMasterValuse(jsonArray.toString());
-                    inputdata.setSyncstatus(0);
+                    inputdata.setMasterValues(jsonArray.toString());
+                    inputdata.setSyncStatus(0);
                     MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                     if(nChecked !=null){
-                        masterDataDao.updatedata(Constants.CALL_SYNC,jsonArray.toString());
+                        masterDataDao.updateData(Constants.CALL_SYNC, jsonArray.toString());
                     }else {
                         masterDataDao.insert(inputdata);
                     }

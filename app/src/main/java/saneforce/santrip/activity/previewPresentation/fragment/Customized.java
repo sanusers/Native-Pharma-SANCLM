@@ -16,25 +16,32 @@ import saneforce.santrip.activity.presentation.createPresentation.BrandModelClas
 import saneforce.santrip.activity.presentation.presentation.PresentationAdapter;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentHomePreviewBinding;
+import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class Customized extends Fragment {
     FragmentHomePreviewBinding customizedBinding;
-    SQLite sqLite;
+//    SQLite sqLite;
     PresentationAdapter presentationAdapter;
 
     public static ArrayList<BrandModelClass.Presentation> SlideCustomizedList = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private PresentationDataDao presentationDataDao;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         customizedBinding = FragmentHomePreviewBinding.inflate(inflater);
         View v = customizedBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        presentationDataDao = roomDB.presentationDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        SlideCustomizedList = sqLite.getPresentationData();
+//        SlideCustomizedList = sqLite.getPresentationData();
+        SlideCustomizedList = presentationDataDao.getPresentations();
 
         populateAdapter();
 

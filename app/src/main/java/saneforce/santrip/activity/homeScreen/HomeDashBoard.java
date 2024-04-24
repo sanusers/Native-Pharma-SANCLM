@@ -275,6 +275,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
+        roomDB=RoomDB.getDatabase(context);
+        masterDataDao=roomDB.masterDataDao();
+        offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 
         binding.toolbarTitle.setText(SharedPref.getDivisionName(this));
 
@@ -319,8 +322,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
-        sqLite = new SQLite(HomeDashBoard.this);
-        sqLite.getWritableDatabase();
+//        sqLite = new SQLite(HomeDashBoard.this);
+//        sqLite.getWritableDatabase();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         getRequiredData();
@@ -527,7 +530,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void getRequiredData() {
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
                 customSetupResponse = new CustomSetupResponse();
@@ -555,8 +559,10 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void SetUpHolidayWeekEndData() {
         try {
-            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
-            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
+//            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
+//            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
+            holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
+            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray(); // Weekly Off data
             for (int i = 0; i < weeklyOff.length(); i++) {
                 JSONObject jsonObject = weeklyOff.getJSONObject(i);
                 holidayMode = jsonObject.getString("Holiday_Mode");
@@ -729,8 +735,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 }
 
+                JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
 
-                JSONArray dateSync = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
+             //   JSONArray dateSync = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
                 if (dateSync.length() > 0) {
                     for (int i = 0; i < dateSync.length(); i++) {
 
@@ -922,6 +929,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         String password = SharedPref.getSfPassword(this);
         old_view.setOnClickListener(v -> {
             if (!old_password.getText().toString().equals("")) {
+
                 if (passwordNotVisible == 1) {
                     old_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     old_view.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.eye_hide));
@@ -1159,7 +1167,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 callAPIDateSync();
                 break;
             case R.id.rl_date_layoout:
-                SetUpHolidayWeekEndData();
+                    SetUpHolidayWeekEndData();
                 if (binding.viewCalerderLayout.getRoot().getVisibility() == View.GONE) {
                     getCallsDataToCalender();
                     selectedDate = LocalDate.now();
@@ -1225,7 +1233,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
             case R.id.img_sync:
 
-                Intent intent1 = new Intent(HomeDashBoard.this, MasterSyncActivity.class);
+                Intent intent1=new Intent(HomeDashBoard.this,MasterSyncActivity.class);
                 startActivity(intent1);
                 break;
 
@@ -1250,7 +1258,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             jj.put("Designation", SharedPref.getDesig(this));
             jj.put("state_code", SharedPref.getStateCode(this));
             jj.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-            Log.d("object", "" + jj.toString());
+            Log.d("object",""+jj.toString());
         } catch (Exception ignored) {
         }
 
@@ -1385,7 +1393,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     public void AppIdentify() {
 
-        Menu menu = binding.navView.getMenu();
+        Menu menu=binding.navView.getMenu();
         if (SharedPref.getTpNeed(this).equalsIgnoreCase("0"))
             menu.findItem(R.id.tp).setVisible(true);
         else

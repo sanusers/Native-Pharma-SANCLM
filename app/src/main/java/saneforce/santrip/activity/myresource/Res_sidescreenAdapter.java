@@ -23,10 +23,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -48,6 +56,11 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
+    LoginResponse loginResponse;
+
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private MasterDataDao masterDataDao;
 
     Resource_adapter resourceAdapter;
     private OnItemClickListener onItemClickListener;
@@ -57,7 +70,10 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         this.context = context;
         this.resList = resList;
         this.split_val = split_val;
-        sqLite = new SQLite(context);
+
+//        sqLite = new SQLite(context);
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
 
     }
 
@@ -239,7 +255,8 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     uniqueValues.clear();
                     duplicateValues.clear();
                     L_cLasses.clear();
-                    JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
+                    JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
+//                    JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
 //                   ==============================
                     String colorText1 = "<font color=\"#F1536E\">" + count + " )" + "</font>";
                     holder.listcount.setText(Html.fromHtml(colorText1));
@@ -287,6 +304,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         }
     }
 
+    //    <Resourcemodel_class> L_cLasses
     @SuppressLint("NotifyDataSetChanged")
     public void filterList(ArrayList<Resourcemodel_class> filterdNames) {
         this.resList = filterdNames;

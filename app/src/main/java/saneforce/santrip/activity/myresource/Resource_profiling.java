@@ -74,6 +74,10 @@ import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.activity.remaindercalls.cuslistadapter;
 import saneforce.santrip.activity.remaindercalls.remainder_modelclass;
+import saneforce.santrip.response.LoginResponse;
+import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -101,7 +105,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     String dob_dt, dow_dt;
     Date dateBefore;
     EditText main_address, RP_mobile, RP_phone, district, city;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<remainder_modelclass> hq_view = new ArrayList<>();
     String qualif, cate, spec, dob, dow, address, mobile, phone, email, docname, docsex, doc_code, Dcr_posname, Lat, Long, Town_val;
     public static String profil_val = "";
@@ -112,6 +116,10 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     ArrayList<CustomModel> dataList = new ArrayList<>();
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
 
+    LoginResponse loginResponse;
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private MasterDataDao masterDataDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,8 +156,14 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         gpsTrack = new GPSTrack(this);
         app_recycler_view.setVisibility(View.VISIBLE);
         Bundle extra = getIntent().getExtras();
-        sqLite = new SQLite(this);
+       // sqLite = new SQLite(this);
 
+//        sqLite = new SQLite(this);
+        roomDB = RoomDB.getDatabase(this);
+        loginDataDao = roomDB.loginDataDao();
+        masterDataDao = roomDB.masterDataDao();
+        loginResponse = loginDataDao.getLoginData().getLoginResponse();
+//        loginResponse = sqLite.getLoginData();
 
 
         Doc_geoneed = SharedPref.getGeoNeed(this);
@@ -366,6 +380,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             visit.putExtra("Dcr_name", docname);
             visit.putExtra("pos_name", Dcr_posname);//Town_name
             visit.putExtra("Town_loct", Town_val);
+
             startActivity(visit);
         });
 
@@ -428,12 +443,14 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
             JSONArray jsonspc_Doc = null;
 
             if (pos.equals("Q")) {
-                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION);
+                jsonspc_Doc = masterDataDao.getMasterDataTableOrNew(Constants.QUALIFICATION).getMasterSyncDataJsonArray();
+//                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION);
             } else if (pos.equals("S")) {
-                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
-
+                jsonspc_Doc = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
+//                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
             } else if (pos.equals("C")) {
-                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
+                jsonspc_Doc = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
+//                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
             }
 
             if (jsonspc_Doc.length() > 0) {
@@ -571,7 +588,8 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         String latitude = "", longtitue = "", address = "";
 
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);

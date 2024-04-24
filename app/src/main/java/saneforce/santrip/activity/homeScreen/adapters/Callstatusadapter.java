@@ -29,6 +29,8 @@ import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.modelClass.EventCalenderModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -38,9 +40,11 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
     private final Context context;
     LocalDate selectedMonth;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     ArrayList<String> dateStrings = new ArrayList<>();
     String selectedDate;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
 
     public Callstatusadapter(ArrayList<EventCalenderModelClass> days, Context context, LocalDate selectedMonth) {
@@ -48,11 +52,14 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         this.context = context;
         this.selectedMonth = selectedMonth;
         commonUtilsMethods = new CommonUtilsMethods(context);
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
+        roomDB = RoomDB.getDatabase(context);
+        masterDataDao = roomDB.masterDataDao();
         dateStrings.clear();
         selectedDate = SharedPref.getSelectedDateCal(context);
         try {
-            JSONArray getMissedDates = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
+            JSONArray getMissedDates = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+//            JSONArray getMissedDates = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
             for (int i = 0; i < getMissedDates.length(); i++) {
                 JSONObject jsonObject = getMissedDates.getJSONObject(i);
                 if (jsonObject.getString("tbname").equalsIgnoreCase("missed") || jsonObject.getString("tbname").equalsIgnoreCase("dcr")) {

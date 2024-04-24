@@ -9,11 +9,8 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,20 +32,18 @@ import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.call.pojo.detailing.StoreImageTypeUrl;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix;
 import saneforce.santrip.activity.previewPresentation.fragment.Customized;
 import saneforce.santrip.activity.previewPresentation.fragment.HomeBrands;
 import saneforce.santrip.activity.previewPresentation.fragment.Speciality;
-import saneforce.santrip.activity.setting.SettingsActivity;
-import saneforce.santrip.activity.splash.SplashScreen;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.response.CustomSetupResponse;
+import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
-import saneforce.santrip.storage.SharedPref;
 
 public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
@@ -56,13 +51,15 @@ public class PreviewActivity extends AppCompatActivity {
     public static String SelectedTab = "Matrix", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
     public static int SelectedPosPlay;
     PreviewTabAdapter viewPagerAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
     String startT, endT, CustomPresentationNeed;
     CommonUtilsMethods commonUtilsMethods;
     CustomSetupResponse customSetupResponse;
-
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
+    private CallOfflineDataDao callOfflineDataDao;
     ProgressDialog progressDialog;
     @SuppressLint("MissingSuperCall")
     @Override
@@ -84,7 +81,10 @@ public class PreviewActivity extends AppCompatActivity {
         previewBinding = saneforce.santrip.databinding.ActivityPreviewBinding.inflate(getLayoutInflater());
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
+        callOfflineDataDao = roomDB.callOfflineDataDao();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         callDetailingLists = new ArrayList<>();
@@ -203,7 +203,8 @@ public class PreviewActivity extends AppCompatActivity {
             intent1.putExtra("hq_code", "" );
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
-                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+//                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+                callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             }
             startActivity(intent1);
         });
@@ -211,7 +212,8 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void getRequiredData() {
         try {
-            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
+//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
                 customSetupResponse = new CustomSetupResponse();

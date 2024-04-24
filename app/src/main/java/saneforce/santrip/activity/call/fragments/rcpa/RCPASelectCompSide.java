@@ -40,6 +40,9 @@ import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentAddRcpaSideBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class RCPASelectCompSide extends Fragment {
@@ -54,12 +57,15 @@ public class RCPASelectCompSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static RCPAChemistAdapter rcpaChemistAdapter;
     CommonUtilsMethods commonUtilsMethods;
-    SQLite sqLite;
+//    SQLite sqLite;
     double getTotalValue = 0, valueRounded;
     ArrayList<Double> CompQty = new ArrayList<>();
     JSONArray jsonArray;
     JSONObject jsonObject, jsonObject1;
     ArrayList<String> SelectedChk = new ArrayList<>();
+
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @SuppressLint({"ResourceType", "NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
     @Nullable
@@ -69,8 +75,9 @@ public class RCPASelectCompSide extends Fragment {
         View v = rcpaSideBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        sqLite = new SQLite(requireContext());
-
+//        sqLite = new SQLite(requireContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         SetupAdapter();
 
         if (DCRCallActivity.RcpaCompetitorAdd.equalsIgnoreCase("0")) {
@@ -200,8 +207,10 @@ public class RCPASelectCompSide extends Fragment {
                  commonUtilsMethods.showToastMessage(requireContext(),getString(R.string.enter_company));
             } else {
                 try {
-                    if (sqLite.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
-                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.LOCAL_MAPPED_COMPETITOR_PROD);
+                    if (masterDataDao.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
+//                    if (sqLite.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
+                        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LOCAL_MAPPED_COMPETITOR_PROD).getMasterSyncDataJsonArray();
+//                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.LOCAL_MAPPED_COMPETITOR_PROD);
                         jsonObject = new JSONObject();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             jsonObject = jsonArray.getJSONObject(i);
@@ -222,7 +231,8 @@ public class RCPASelectCompSide extends Fragment {
                             jsonObject.put("Our_prd_name", addCompListDummy.get(0).getPrd_name());
                             jsonObject.put("Competitor_Prd_bulk", finalCount + "#" + rcpaSideBinding.edCompPrd.getText().toString() + "~" + finalCount + "$" + rcpaSideBinding.edCompCompany.getText().toString() + "/");
                             jsonArray.put(jsonObject);
-                            sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0);
+//                            sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0);
+                            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0));
 
                             addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), String.valueOf(finalCount), rcpaSideBinding.edCompPrd.getText().toString(), String.valueOf(finalCount), addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
 
@@ -252,7 +262,8 @@ public class RCPASelectCompSide extends Fragment {
                         jsonObject.put("Our_prd_name", RCPAFragment.PrdName);
                         jsonObject.put("Competitor_Prd_bulk", "-1#" + rcpaSideBinding.edCompPrd.getText().toString() + "~" + "-1" + "$" + rcpaSideBinding.edCompCompany.getText().toString() + "/");
                         jsonArray.put(jsonObject);
-                        sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0);
+//                        sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0);
+                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0));
 
                         addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), "-1", rcpaSideBinding.edCompPrd.getText().toString(), "-1", addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
 

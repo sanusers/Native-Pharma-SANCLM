@@ -18,7 +18,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -51,7 +49,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
@@ -63,6 +60,9 @@ import saneforce.santrip.activity.camera.CameraActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentJwothersBinding;
+import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -79,11 +79,14 @@ public class JWOthersFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallJointWorkList adapterCallJointWorkList;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
-    SQLite sqLite;
+//    SQLite sqLite;
    public static ArrayList<String> JWKCodeList =new ArrayList<>();
    Gson gson;
     CommonUtilsMethods commonUtilsMethods;
     private String destinationFilePath;
+    private RoomDB roomDB;
+    private DCRDocDataDao dcrDocDataDao;
+    private MasterDataDao masterDataDao;
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
@@ -115,7 +118,10 @@ public class JWOthersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jwOthersBinding = FragmentJwothersBinding.inflate(inflater);
         View v = jwOthersBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        dcrDocDataDao = roomDB.dcrDocDataDao();
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         gson = new Gson();
@@ -133,7 +139,8 @@ public class JWOthersFragment extends Fragment {
 
                     try {
                         if (DCRCallActivity.save_valid.equals("1")) {
-                            JSONArray jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
+//                            JSONArray jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
+                            JSONArray jsonArray = dcrDocDataDao.getDCRDocData(DCRCallActivity.hqcode).getDCRDocDataJSONArray();
 
                             Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
                             for (int i = 0; i < jsonArray.length(); i++) {
@@ -143,7 +150,8 @@ public class JWOthersFragment extends Fragment {
                                 }
                             }
                         } else {
-                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
+                            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + TodayPlanSfCode).getMasterSyncDataJsonArray();
+//                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
                             Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);

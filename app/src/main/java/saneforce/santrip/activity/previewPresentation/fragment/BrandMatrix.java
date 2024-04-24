@@ -34,6 +34,8 @@ import saneforce.santrip.activity.previewPresentation.adapter.PreviewAdapter;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSpecialityPreviewBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class BrandMatrix extends Fragment {
@@ -44,16 +46,20 @@ public class BrandMatrix extends Fragment {
     public static ArrayList<String> slideIdList = new ArrayList<>();
     @SuppressLint("StaticFieldLeak")
     public static PreviewAdapter previewAdapter;
-    SQLite sqLite;
+//    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
-    public static void getSelectedMatrix(Context context, SQLite sqLite, String mappedBrands, String mappedSlides) {
+    public static void getSelectedMatrix(Context context, String mappedBrands, String mappedSlides, MasterDataDao masterDataDao) {
         try {
             SlideBrandMatrixList.clear();
             brandCodeList.clear();
             slideIdList.clear();
-            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
+            JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
+            JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
+//            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
+//            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
             Log.v("Brand", mappedBrands + "---" + mappedSlides);
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
@@ -139,13 +145,15 @@ public class BrandMatrix extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         brandMatrixBinding = FragmentSpecialityPreviewBinding.inflate(inflater);
         View v = brandMatrixBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         brandMatrixBinding.tvSelectSpeciality.setVisibility(View.GONE);
         if (from_where.equalsIgnoreCase("call")) {
             brandMatrixBinding.tvSelectDoctor.setVisibility(View.GONE);
-            getSelectedMatrix(requireContext(), sqLite, BrandCode, SlideCode);
+            getSelectedMatrix(requireContext(), BrandCode, SlideCode, masterDataDao);
         } else {
             brandMatrixBinding.constraintNoData.setVisibility(View.VISIBLE);
             brandMatrixBinding.rvBrandList.setVisibility(View.GONE);

@@ -52,6 +52,9 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.FragmentDrSelectionSideBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -64,19 +67,23 @@ public class DrSelectionSide extends Fragment {
     ApiInterface apiInterface;
     JSONArray jsonArray;
     JSONObject jsonObject;
-    SQLite sqLite;
+//    SQLite sqLite;
     SelectDoctorAdapter selectDoctorAdapter;
 
     String TodayPlanSfCode;
     String brands;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         drSelectionSideBinding = FragmentDrSelectionSideBinding.inflate(inflater);
         View v = drSelectionSideBinding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetDrAdapter();
@@ -141,7 +148,8 @@ public class DrSelectionSide extends Fragment {
                 TodayPlanSfCode = SharedPref.getSfCode(requireContext());
             } else {
                 if (SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
+//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                     for (int i = 0; i < 1; i++) {
                         JSONObject jsonHQList = jsonArray.getJSONObject(0);
                         TodayPlanSfCode = jsonHQList.getString("id");
@@ -151,10 +159,12 @@ public class DrSelectionSide extends Fragment {
                 }
             }
 
-            if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
+            if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
+//            if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
                 prepareMasterToSync(TodayPlanSfCode);
             } else {
-                jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
+                jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + TodayPlanSfCode).getMasterSyncDataJsonArray();
+//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
             }
 
           /*  if (jsonArray.length() == 0) {
@@ -266,15 +276,18 @@ public class DrSelectionSide extends Fragment {
                                                 jsonArray.put(jsonObject1);
                                                 success = true;
                                             } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
-                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
                                         if (success) {
-                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
+//                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
                                         }
                                     } else {
-                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -285,8 +298,8 @@ public class DrSelectionSide extends Fragment {
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                            masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
                 }
@@ -306,11 +319,15 @@ public class DrSelectionSide extends Fragment {
     public static class SelectDoctorAdapter extends RecyclerView.Adapter<SelectDoctorAdapter.ViewHolder> {
         Context context;
         ArrayList<CustList> callDrList;
-        SQLite sqLite;
+//        SQLite sqLite;
+        private RoomDB roomDB;
+        private MasterDataDao masterDataDao;
 
         public SelectDoctorAdapter(Context context, ArrayList<CustList> callDrList) {
             this.context = context;
             this.callDrList = callDrList;
+            roomDB = RoomDB.getDatabase(context);
+            masterDataDao = roomDB.masterDataDao();
         }
 
         @NonNull
@@ -322,7 +339,7 @@ public class DrSelectionSide extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull SelectDoctorAdapter.ViewHolder holder, int position) {
-            sqLite = new SQLite(context);
+//            sqLite = new SQLite(context);
             holder.tvName.setText(callDrList.get(position).getName());
 
             if (SelectedTab.equalsIgnoreCase("Spec")) {
@@ -342,10 +359,10 @@ public class DrSelectionSide extends Fragment {
             holder.tvName.setOnClickListener(v -> {
                 if (SelectedTab.equalsIgnoreCase("Spec")) {
                     specialityPreviewBinding.tvSelectDoctor.setText(String.format("%s - %s", callDrList.get(position).getName(), callDrList.get(position).getSpecialist()));
-                    getSelectedSpec(context, sqLite, callDrList.get(position).getSpecialistCode(), callDrList.get(position).getSpecialist());
+                    getSelectedSpec(context, callDrList.get(position).getSpecialistCode(), callDrList.get(position).getSpecialist(), masterDataDao);
                 } else if (SelectedTab.equalsIgnoreCase("Matrix")) {
                     brandMatrixBinding.tvSelectDoctor.setText(callDrList.get(position).getName());
-                    getSelectedMatrix(context, sqLite, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides());
+                    getSelectedMatrix(context, callDrList.get(position).getMappedBrands(), callDrList.get(position).getMappedSlides(), masterDataDao);
                 }
                 drSelectionSideBinding.searchList.setText("");
                 drSelectionSideBinding.selectListView.scrollToPosition(0);

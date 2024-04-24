@@ -4,7 +4,6 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 import static saneforce.santrip.activity.approvals.geotagging.GeoTaggingAdapter.geoTagViewList;
-import static saneforce.santrip.activity.call.DCRCallActivity.SfCode;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -40,7 +39,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -82,7 +80,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.camera.CameraActivity;
 import saneforce.santrip.activity.map.custSelection.CustListAdapter;
 import saneforce.santrip.activity.map.custSelection.TagCustSelectionList;
@@ -94,6 +91,9 @@ import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMapsBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SQLiteHandler;
 import saneforce.santrip.storage.SharedPref;
@@ -116,7 +116,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Uri outputFileUri;
     ApiInterface api_interface;
     Double distanceTag;
-    SQLite sqLite;
+//    SQLite sqLite;
     LocationManager locationManager;
     GPSTrack gpsTrack;
     SQLiteHandler sqLiteHandler;
@@ -126,6 +126,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Dialog dialogTagCust;
     CommonUtilsMethods commonUtilsMethods;
     private String destinationFilePath;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
+
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @SuppressLint("SuspiciousIndentation")
         @Override
@@ -195,12 +198,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        sqLiteHandler = new SQLiteHandler(this);
+//        sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(MapsActivity.this);
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
-        sqLite = new SQLite(MapsActivity.this);
-
+//        sqLite = new SQLite(MapsActivity.this);
+        roomDB = RoomDB.getDatabase(this);
+        masterDataDao = roomDB.masterDataDao();
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -412,7 +416,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (SelectedHqCode.isEmpty()) {
             try {
-                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+//                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                 for (int i = 0; i < 1; i++) {
                     JSONObject jsonHQList = jsonArray.getJSONObject(0);
                     SelectedHqCode = jsonHQList.getString("id");
@@ -859,15 +864,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                 jsonArray.put(jsonObject1);
                                                 success = true;
                                             } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
-                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                                masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
                                         if (success) {
-                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
+                                            masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
+//                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
                                         }
                                     } else {
-                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                                        masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -878,8 +886,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+                            masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
+//                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
                 }
@@ -1090,7 +1098,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (selected) {
             case "D":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + sfCode);
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + sfCode).getMasterSyncDataJsonArray();
+//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("Addrs");
@@ -1113,7 +1122,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "C":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + sfCode);
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + sfCode).getMasterSyncDataJsonArray();
+//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -1136,7 +1146,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "S":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + sfCode);
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + sfCode).getMasterSyncDataJsonArray();
+//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -1159,7 +1170,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case "U":
                 try {
-                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + sfCode);
+                    JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + sfCode).getMasterSyncDataJsonArray();
+//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addr");

@@ -27,7 +27,7 @@ public class ReportWebActivity extends AppCompatActivity {
     ActivityWebReportsBinding binding;
 
     String url;
-    SQLite sqLite;
+//    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
     private ValueCallback<Uri[]> mUploadMessage;
 
@@ -46,7 +46,7 @@ public class ReportWebActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityWebReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        sqLite = new SQLite(ReportWebActivity.this);
+//        sqLite = new SQLite(ReportWebActivity.this);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 

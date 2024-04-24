@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -33,10 +35,12 @@ public class Holiday_fragment extends Fragment {
 
 
     ArrayList<fromsmodelclass> listvalue = new ArrayList<>();
-    SQLite sqLite;
+//    SQLite sqLite;
     holiday_adapter holidayadapter;
     String current_year;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
     String[] colr = {"#000000", "#00C689", "#3DA5F4", "#F1536E", "#FEB91A", "#FF7F50", "#09F1E3", "#F65EF8", "#C1BF16", "#934CD3", "#B92727", "#6A28BA", "#85A523", "#DBDB32"};
     String[] backcolr = {"#000000", "#EAFAF1", "#E8F5FC", "#FCE8EC", "#FCF8E8", "#FCF6E8", "#E8F9FC", "#FCEDFB", "#FAFAED", "#EEE3F7", "#FEF8F8", "#F2ECF9", "#F5F9E9", "#FBFBE7"};
 
@@ -50,7 +54,9 @@ public class Holiday_fragment extends Fragment {
         constraintNoData = v.findViewById(R.id.constraint_no_data);
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-        sqLite = new SQLite(getActivity());
+//        sqLite = new SQLite(getActivity());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
 
         holiday_avalabledetails();
         return v;
@@ -62,7 +68,8 @@ public class Holiday_fragment extends Fragment {
 
             String dub_colrline = "", month_name1 = "", monthname = "", colorline = "", backgrd_clr = "", holiy = "";
             int datapos = 0, datapos1 = 0;
-            JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY);
+            JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray();
+//            JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY);
 
             if (jsonstock.length() > 0) {
                 weeklist.setVisibility(View.VISIBLE);

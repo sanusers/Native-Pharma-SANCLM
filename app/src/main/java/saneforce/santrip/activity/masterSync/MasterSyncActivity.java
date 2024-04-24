@@ -60,6 +60,10 @@ import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
+import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
+import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
+import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
@@ -70,7 +74,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
    public static ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
-    SQLite sqLite;
+//    SQLite sqLite;
     public static Dialog dialog1;
     String rsf="";
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
@@ -126,6 +130,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
    static   Context context;
     private MasterDataDao masterDataDao;
+    private TourPlanOfflineDataDao tourPlanOfflineDataDao;
+    private TourPlanOnlineDataDao tourPlanOnlineDataDao;
 
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
@@ -140,10 +146,10 @@ public class    MasterSyncActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         context=getApplicationContext();
-        sqLite = new SQLite(getApplicationContext());
+//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-        sqLite.getWritableDatabase();
+//        sqLite.getWritableDatabase();
         sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -153,7 +159,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
         binding.imgDownloading.startAnimation(blinkAnimation);
         db = RoomDB.getDatabase(this);
         masterDataDao=db.masterDataDao();
-
+        tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
+        tourPlanOnlineDataDao = db.tourPlanOnlineDataDao();
 
         //Initializing all the data array
         uiInitialization();
@@ -216,7 +223,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
         binding.hq.setOnClickListener(view -> {
 
             try {
-                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+//                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                 ArrayList<String> list = new ArrayList<>();
 
                 if (jsonArray.length() > 0) {
@@ -553,93 +561,181 @@ public class    MasterSyncActivity extends AppCompatActivity {
         binding.hospital.setText(SharedPref.getHospCaption(this));
         binding.cip.setText(SharedPref.getCipCaption(this));
 
-        doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
-        specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
-        qualificationCount = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION).length();
-        categoryCount = sqLite.getMasterSyncDataByKey(Constants.CATEGORY).length();
-        departmentCount = sqLite.getMasterSyncDataByKey(Constants.DEPARTMENT).length();
-        classCount = sqLite.getMasterSyncDataByKey(Constants.CLASS).length();
-        feedbackCount = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK).length();
-        unlistedDrCount = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + rsf).length();
-        chemistCount = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + rsf).length();
-        stockiestCount = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + rsf).length();
-        hospitalCount = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
-        cipCount = sqLite.getMasterSyncDataByKey(Constants.CIP + rsf).length();
-        inputCount = sqLite.getMasterSyncDataByKey(Constants.INPUT).length();
-        leaveCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE).length();
-        leaveStatusCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS).length();
-        callSyncCount = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC).length();
-        visitControlCount = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL).length();
-        dateSyncCount = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC).length();
+        doctorCount = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + rsf).getMasterSyncDataJsonArray().length();
+        specialityCount = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray().length();
+        qualificationCount = masterDataDao.getMasterDataTableOrNew(Constants.QUALIFICATION).getMasterSyncDataJsonArray().length();
+        categoryCount = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length();
+        departmentCount = masterDataDao.getMasterDataTableOrNew(Constants.DEPARTMENT).getMasterSyncDataJsonArray().length();
+        classCount = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray().length();
+        feedbackCount = masterDataDao.getMasterDataTableOrNew(Constants.FEEDBACK).getMasterSyncDataJsonArray().length();
+        unlistedDrCount = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + rsf).getMasterSyncDataJsonArray().length();
+        chemistCount = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + rsf).getMasterSyncDataJsonArray().length();
+        stockiestCount = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + rsf).getMasterSyncDataJsonArray().length();
+        hospitalCount = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + rsf).getMasterSyncDataJsonArray().length();
+        cipCount = masterDataDao.getMasterDataTableOrNew(Constants.CIP + rsf).getMasterSyncDataJsonArray().length();
+        inputCount = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray().length();
+        leaveCount = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray().length();
+        leaveStatusCount = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray().length();
+        callSyncCount = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray().length();
+        visitControlCount = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray().length();
+        dateSyncCount = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray().length();
 
-        workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
-        holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
-        weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
-        tpSetupCount = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP).length();
-        productCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length();
-        proCatCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT_CATEGORY).length();
-        brandCount = sqLite.getMasterSyncDataByKey(Constants.BRAND).length();
-        compProCount = sqLite.getMasterSyncDataByKey(Constants.COMPETITOR_PROD).length();
-        mapComPrdCount = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD).length();
-        clusterCount = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + rsf).length();
-        proSlideCount = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length();
-        proSpeSlideCount = sqLite.getMasterSyncDataByKey(Constants.SPL_SLIDE).length();
-        brandSlideCount = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE).length();
-        therapticCount = sqLite.getMasterSyncDataByKey(Constants.THERAPTIC_SLIDE).length();
-        subordinateCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE).length();
-        subMgrCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE_MGR).length();
-        jWorkCount = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + rsf).length();
-        Quixcount = sqLite.getMasterSyncDataByKey(Constants.QUIZ).length();
-        setupCount = sqLite.getMasterSyncDataByKey(Constants.SETUP).length();
-        customSetupCount = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP).length();
+        workTypeCount = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length();
+        holidayCount = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray().length();
+        weeklyOfCount = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray().length();
+        tpSetupCount = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray().length();
+        productCount = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length();
+        proCatCount = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT_CATEGORY).getMasterSyncDataJsonArray().length();
+        brandCount = masterDataDao.getMasterDataTableOrNew(Constants.BRAND).getMasterSyncDataJsonArray().length();
+        compProCount = masterDataDao.getMasterDataTableOrNew(Constants.COMPETITOR_PROD).getMasterSyncDataJsonArray().length();
+        mapComPrdCount = masterDataDao.getMasterDataTableOrNew(Constants.MAPPED_COMPETITOR_PROD).getMasterSyncDataJsonArray().length();
+        clusterCount = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + rsf).getMasterSyncDataJsonArray().length();
+        proSlideCount = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length();
+        proSpeSlideCount = masterDataDao.getMasterDataTableOrNew(Constants.SPL_SLIDE).getMasterSyncDataJsonArray().length();
+        brandSlideCount = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray().length();
+        therapticCount = masterDataDao.getMasterDataTableOrNew(Constants.THERAPTIC_SLIDE).getMasterSyncDataJsonArray().length();
+        subordinateCount = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray().length();
+        subMgrCount = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE_MGR).getMasterSyncDataJsonArray().length();
+        jWorkCount = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + rsf).getMasterSyncDataJsonArray().length();
+        Quixcount = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray().length();
+        setupCount = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray().length();
+        customSetupCount = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray().length();
 
-        doctorStatus = sqLite.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
-        specialityStatus = sqLite.getMasterSyncStatusByKey(Constants.SPECIALITY);
-        qualificationStatus = sqLite.getMasterSyncStatusByKey(Constants.QUALIFICATION);
-        categoryStatus = sqLite.getMasterSyncStatusByKey(Constants.CATEGORY);
-        departmentStatus = sqLite.getMasterSyncStatusByKey(Constants.DEPARTMENT);
-        classStatus = sqLite.getMasterSyncStatusByKey(Constants.CLASS);
-        feedbackStatus = sqLite.getMasterSyncStatusByKey(Constants.FEEDBACK);
-        unlistedDrStatus = sqLite.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
-        chemistStatus = sqLite.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
-        stockiestStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
-        hospitalStatus = sqLite.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf); //sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
-        cipStatus = sqLite.getMasterSyncStatusByKey(Constants.CIP + rsf);
-        inputStatus = sqLite.getMasterSyncStatusByKey(Constants.INPUT);
-        leaveStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE);
-        leaveStatusStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+//        doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
+//        specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
+//        qualificationCount = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION).length();
+//        categoryCount = sqLite.getMasterSyncDataByKey(Constants.CATEGORY).length();
+//        departmentCount = sqLite.getMasterSyncDataByKey(Constants.DEPARTMENT).length();
+//        classCount = sqLite.getMasterSyncDataByKey(Constants.CLASS).length();
+//        feedbackCount = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK).length();
+//        unlistedDrCount = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + rsf).length();
+//        chemistCount = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + rsf).length();
+//        stockiestCount = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + rsf).length();
+//        hospitalCount = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
+//        cipCount = sqLite.getMasterSyncDataByKey(Constants.CIP + rsf).length();
+//        inputCount = sqLite.getMasterSyncDataByKey(Constants.INPUT).length();
+//        leaveCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE).length();
+//        leaveStatusCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS).length();
+//        callSyncCount = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC).length();
+//        visitControlCount = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL).length();
+//        dateSyncCount = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC).length();
+//
+//        workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
+//        holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
+//        weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
+//        tpSetupCount = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP).length();
+//        productCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length();
+//        proCatCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT_CATEGORY).length();
+//        brandCount = sqLite.getMasterSyncDataByKey(Constants.BRAND).length();
+//        compProCount = sqLite.getMasterSyncDataByKey(Constants.COMPETITOR_PROD).length();
+//        mapComPrdCount = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD).length();
+//        clusterCount = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + rsf).length();
+//        proSlideCount = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length();
+//        proSpeSlideCount = sqLite.getMasterSyncDataByKey(Constants.SPL_SLIDE).length();
+//        brandSlideCount = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE).length();
+//        therapticCount = sqLite.getMasterSyncDataByKey(Constants.THERAPTIC_SLIDE).length();
+//        subordinateCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE).length();
+//        subMgrCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE_MGR).length();
+//        jWorkCount = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + rsf).length();
+//        Quixcount = sqLite.getMasterSyncDataByKey(Constants.QUIZ).length();
+//        setupCount = sqLite.getMasterSyncDataByKey(Constants.SETUP).length();
+//        customSetupCount = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP).length();
 
-        callSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.CALL_SYNC);
-        myDayPlanStatus = sqLite.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
-        visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
-        dateSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.DATE_SYNC);
-        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
-        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
-        calenderEventStaus=sqLite.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
+        doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
+        specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
+        qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
+        categoryStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CATEGORY);
+        departmentStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DEPARTMENT);
+        classStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLASS);
+        feedbackStatus = masterDataDao.getMasterSyncStatusByKey(Constants.FEEDBACK);
+        unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
+        chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
+        stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
+        hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf); //sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
+        cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
+        inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
+        leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
+        leaveStatusStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+
+        callSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CALL_SYNC);
+        myDayPlanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
+        visitControlStatus = masterDataDao.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
+        dateSyncStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+        stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
+        stockBalanceStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
+        calenderEventStaus=masterDataDao.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
 
 
 
-        workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
-        holidayStatus = sqLite.getMasterSyncStatusByKey(Constants.HOLIDAY);
-        weeklyOfStatus = sqLite.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
-        tpSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.TP_SETUP);
-        tourPLanStatus = sqLite.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
-        productStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT);
-        proCatStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
-        brandStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND);
-        compProStatus = sqLite.getMasterSyncStatusByKey(Constants.COMPETITOR_PROD);
-        mapCompPrdStatus = sqLite.getMasterSyncStatusByKey(Constants.MAPPED_COMPETITOR_PROD);
-        clusterStatus = sqLite.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
-        proSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
-        proSpeSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
-        brandSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
-        therapticStatus = sqLite.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
-        subordinateStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE);
-        subMgrStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
-        jWorkStatus = sqLite.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
-        QuizStatus = sqLite.getMasterSyncStatusByKey(Constants.QUIZ);
-        setupStatus = sqLite.getMasterSyncStatusByKey(Constants.SETUP);
-        customSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
+        workTypeStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WORK_TYPE);
+        holidayStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOLIDAY);
+        weeklyOfStatus = masterDataDao.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
+        tpSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TP_SETUP);
+        tourPLanStatus = masterDataDao.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
+        productStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT);
+        proCatStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
+        brandStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND);
+        compProStatus = masterDataDao.getMasterSyncStatusByKey(Constants.COMPETITOR_PROD);
+        mapCompPrdStatus = masterDataDao.getMasterSyncStatusByKey(Constants.MAPPED_COMPETITOR_PROD);
+        clusterStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
+        proSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
+        proSpeSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
+        brandSlideStatus = masterDataDao.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
+        therapticStatus = masterDataDao.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
+        subordinateStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE);
+        subMgrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
+        jWorkStatus = masterDataDao.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
+        QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
+        setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
+        customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
+
+//        doctorStatus = sqLite.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
+//        specialityStatus = sqLite.getMasterSyncStatusByKey(Constants.SPECIALITY);
+//        qualificationStatus = sqLite.getMasterSyncStatusByKey(Constants.QUALIFICATION);
+//        categoryStatus = sqLite.getMasterSyncStatusByKey(Constants.CATEGORY);
+//        departmentStatus = sqLite.getMasterSyncStatusByKey(Constants.DEPARTMENT);
+//        classStatus = sqLite.getMasterSyncStatusByKey(Constants.CLASS);
+//        feedbackStatus = sqLite.getMasterSyncStatusByKey(Constants.FEEDBACK);
+//        unlistedDrStatus = sqLite.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
+//        chemistStatus = sqLite.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
+//        stockiestStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
+//        hospitalStatus = sqLite.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf); //sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
+//        cipStatus = sqLite.getMasterSyncStatusByKey(Constants.CIP + rsf);
+//        inputStatus = sqLite.getMasterSyncStatusByKey(Constants.INPUT);
+//        leaveStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE);
+//        leaveStatusStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
+//
+//        callSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.CALL_SYNC);
+//        myDayPlanStatus = sqLite.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
+//        visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
+//        dateSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.DATE_SYNC);
+//        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
+//        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
+//        calenderEventStaus=sqLite.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
+//
+//
+//
+//        workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
+//        holidayStatus = sqLite.getMasterSyncStatusByKey(Constants.HOLIDAY);
+//        weeklyOfStatus = sqLite.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
+//        tpSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.TP_SETUP);
+//        tourPLanStatus = sqLite.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
+//        productStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT);
+//        proCatStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
+//        brandStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND);
+//        compProStatus = sqLite.getMasterSyncStatusByKey(Constants.COMPETITOR_PROD);
+//        mapCompPrdStatus = sqLite.getMasterSyncStatusByKey(Constants.MAPPED_COMPETITOR_PROD);
+//        clusterStatus = sqLite.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
+//        proSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
+//        proSpeSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
+//        brandSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
+//        therapticStatus = sqLite.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
+//        subordinateStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE);
+//        subMgrStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
+//        jWorkStatus = sqLite.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
+//        QuizStatus = sqLite.getMasterSyncStatusByKey(Constants.QUIZ);
+//        setupStatus = sqLite.getMasterSyncStatusByKey(Constants.SETUP);
+//        customSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
         binding.listedDr.setSelected(true);
         prepareArray(rsf);
@@ -1083,7 +1179,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                             jsonArray.put(jsonObject2);
                                             success = true;
                                         } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
-                                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
+                                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
+//                                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
                                             masterSyncItemModels.get(position).setSyncSuccess(1);
                                         }
                                     }
@@ -1096,14 +1193,15 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                         String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                         binding.lastSyncTime.setText(dateAndTime);
                                         SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
-                                        sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0);
+                                        masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0));
+//                                        sqLite.saveMasterSyncData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0);
                                         MasterDataTable MainData =new MasterDataTable();
                                         MainData.setMasterKey(masterSyncItemModels.get(position).getLocalTableKeyName());
-                                        MainData.setMasterValuse(jsonArray.toString());
-                                        MainData.setSyncstatus(0);
+                                        MainData.setMasterValues(jsonArray.toString());
+                                        MainData.setSyncStatus(0);
                                         MasterDataTable mNChecked= masterDataDao.getMasterSyncDataByKey(masterSyncItemModels.get(position).getLocalTableKeyName());
                                         if(mNChecked!=null){
-                                            masterDataDao.updatedata(masterSyncItemModels.get(position).getLocalTableKeyName(),jsonArray.toString());
+                                            masterDataDao.updateData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString());
                                         }else {
                                             masterDataDao.insert(MainData);
                                         }
@@ -1119,28 +1217,30 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 JSONObject jsonObject1 = jsonArray.getJSONObject(0);
                                                 JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
                                                 JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
-                                                sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
-                                                sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0));
+//                                                sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
+                                                masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0));
+//                                                sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
 
                                                 MasterDataTable stockdata =new MasterDataTable();
                                                 stockdata.setMasterKey(Constants.STOCK_BALANCE);
-                                                stockdata.setMasterValuse( stockBalanceArray.toString());
-                                                stockdata.setSyncstatus(0);
+                                                stockdata.setMasterValues(stockBalanceArray.toString());
+                                                stockdata.setSyncStatus(0);
 
                                                 MasterDataTable mChecked= masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
                                                 if(mChecked!=null){
-                                                    masterDataDao.updatedata(Constants.STOCK_BALANCE,stockBalanceArray.toString());
+                                                    masterDataDao.updateData(Constants.STOCK_BALANCE, stockBalanceArray.toString());
                                                 }else {
                                                     masterDataDao.insert(stockdata);
                                                 }
 
                                                 MasterDataTable inputdata =new MasterDataTable();
                                                 inputdata.setMasterKey(Constants.INPUT_BALANCE);
-                                                inputdata.setMasterValuse(inputBalanceArray.toString());
-                                                inputdata.setSyncstatus(0);
+                                                inputdata.setMasterValues(inputBalanceArray.toString());
+                                                inputdata.setSyncStatus(0);
                                                 MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
                                                 if(nChecked !=null){
-                                                    masterDataDao.updatedata(Constants.INPUT_BALANCE,inputBalanceArray.toString());
+                                                    masterDataDao.updateData(Constants.INPUT_BALANCE, inputBalanceArray.toString());
                                                 }else {
                                                     masterDataDao.insert(inputdata);
                                                 }
@@ -1159,7 +1259,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);
-                                    sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                                    masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+//                                    sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                                 }
 
                             } catch (JSONException e) {
@@ -1167,12 +1268,14 @@ public class    MasterSyncActivity extends AppCompatActivity {
                             }
                         } else {
                             masterSyncItemModels.get(position).setSyncSuccess(1);
-                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                            masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+//                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                         }
 
                         // when all the masters are synced and intent from Login Activity
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
-                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) {
+//                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) {
+                            if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
                                 // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
@@ -1197,7 +1300,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         Log.e("test", "failed : " + t);
                         ++apiSuccessCount;
                         Log.e("test", "success count at error : " + apiSuccessCount);
-                        sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+                        masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
+//                        sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         masterSyncItemModels.get(position).setSyncSuccess(1);
                         masterSyncAdapter.notifyDataSetChanged();
@@ -1205,7 +1309,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                             binding.backArrow.setVisibility(View.VISIBLE);
                             SharedPref.putAutomassync(getApplicationContext(), true);
                             SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+//                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+                            if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
                             } else {
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
@@ -1227,8 +1332,10 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
     private void InitializeTpNeededData() {
         try {
-            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
-            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
+//            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
+//            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
+            holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
+            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray(); // Weekly Off data
             for (int i = 0; i < weeklyOff.length(); i++) {
                 JSONObject jsonObject = weeklyOff.getJSONObject(i);
                 holidayMode = jsonObject.getString("Holiday_Mode");
@@ -1269,7 +1376,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 }
             }
 
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
+//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
+            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
@@ -1357,7 +1465,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
     public String findTerrSlFlag(String code) {
         try {
-            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
+            JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
+//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 if (code.equals(jsonObject.getString("Code")))
@@ -1424,7 +1533,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
             }
 
-            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
+//            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
+            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
                 Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
@@ -1439,7 +1549,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
             if (listArray.length() > 0) {
                 String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
                 String status = listArray.getJSONObject(0).getString("Change_Status");
-                sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
+//                sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
+                tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
@@ -1496,7 +1607,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     }
                 }
 
-                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+//                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
                 for (String day : days) {
@@ -1647,7 +1759,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 break;
             }
         }
-        sqLite.saveTPData(month, new Gson().toJson(arrayList));
+//        sqLite.saveTPData(month, new Gson().toJson(arrayList));
+        tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month,  new Gson().toJson(arrayList)));
     }
 
     private ModelClass.SessionList prepareSessionListForAdapterEmpty() {

@@ -59,7 +59,7 @@ public class CallsFragment extends Fragment {
     public static ProgressDialog progressDialog;
     ApiInterface apiInterface;
 
-    SQLite sqLite;
+//    SQLite sqLite;
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
@@ -67,7 +67,7 @@ public class CallsFragment extends Fragment {
 
     public static  Context Mcontext;
 
-    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, SQLite sqLite, boolean isProgressNeed) {
+    public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
         if (UtilityClass.isNetworkAvailable(context)) {
             CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
             apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
@@ -130,7 +130,8 @@ public class CallsFragment extends Fragment {
 
                                         if (jsonArray.length() > 0) {
 
-                                            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
+                                            JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+//                                            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
                                             for (int i = 0; i < jsonArrayWt.length(); i++) {
                                                 JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
                                                 if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
@@ -161,11 +162,11 @@ public class CallsFragment extends Fragment {
 
                                             MasterDataTable data = new MasterDataTable();
                                             data.setMasterKey(Constants.CALL_SYNC);
-                                            data.setMasterValuse(jsonArray2.toString());
-                                            data.setSyncstatus(0);
+                                            data.setMasterValues(jsonArray2.toString());
+                                            data.setSyncStatus(0);
                                             MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
                                             if (mNChecked != null) {
-                                                masterDataDao.updatedata(Constants.CALL_SYNC, jsonArray2.toString());
+                                                masterDataDao.updateData(Constants.CALL_SYNC, jsonArray2.toString());
                                             } else {
                                                 masterDataDao.insert(data);
 
@@ -280,14 +281,14 @@ public class CallsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
-        sqLite = new SQLite(requireContext());
+//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         Mcontext=requireContext();
 
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
         getFromLocal(requireContext(), apiInterface);
-        CallTodayCallsAPI(requireContext(), apiInterface, sqLite, false);
+        CallTodayCallsAPI(requireContext(), apiInterface, false);
         db = RoomDB.getDatabase(requireContext());
         masterDataDao =db.masterDataDao();
 
@@ -311,7 +312,7 @@ public class CallsFragment extends Fragment {
         binding.rlSyncCall.setOnClickListener(v12 -> {
             if (UtilityClass.isNetworkAvailable(requireContext())) {
                 binding.rlSyncCall.setEnabled(false);
-                CallTodayCallsAPI(requireContext(), apiInterface, sqLite, true);
+                CallTodayCallsAPI(requireContext(), apiInterface, true);
             } else {
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.no_network));
             }

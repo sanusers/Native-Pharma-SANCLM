@@ -33,6 +33,8 @@ import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityMyResourceBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -64,6 +66,9 @@ public class MyResource_Activity extends AppCompatActivity {
     String navigateFrom = "", input_count="",product_count="";
     public static ActivityMyResourceBinding binding;
     LocalDate date_n;
+    private RoomDB roomDB;
+    private LoginDataDao loginDataDao;
+    private MasterDataDao masterDataDao;
 
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,9 +82,10 @@ public class MyResource_Activity extends AppCompatActivity {
         et_Custsearch = findViewById(R.id.et_Custsearch);
         appRecyclerView = findViewById(R.id.app_recycler_view);
         appRecyclerView.setVisibility(View.VISIBLE);
-        sqLite = new SQLite(this);
-        sqLite = new SQLite(getApplicationContext());
-        sqLite.getWritableDatabase();
+
+        roomDB = RoomDB.getDatabase(getApplicationContext());
+        loginDataDao = roomDB.loginDataDao();
+        masterDataDao = roomDB.masterDataDao();
 
 
         Bundle bundle = getIntent().getExtras();
@@ -136,7 +142,8 @@ public class MyResource_Activity extends AppCompatActivity {
 
     public void Resource_list(String synhqval1) {
         try {
-            JSONArray jsonDoc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + synhqval1);
+            JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonDoc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
 
             String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
             String doctor = String.valueOf(jsonDoc);
@@ -156,7 +163,8 @@ public class MyResource_Activity extends AppCompatActivity {
                 }
             }
 
-            JSONArray jsonChm = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + synhqval1);
+            JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsonChm = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
             String chemist = String.valueOf(jsonChm);
             if (!chemist.equals("") || !chemist.equals("null")) {
                 count_list.clear();
@@ -211,7 +219,9 @@ public class MyResource_Activity extends AppCompatActivity {
                 }
             }
 
-            JSONArray jsoncip = sqLite.getMasterSyncDataByKey(Constants.CIP + synhqval1);
+
+            JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+//            JSONArray jsoncip = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(this));
             String cip = String.valueOf(jsoncip);
             if (!cip.equals("") || !cip.equals("null")) {
                 count_list.clear();
@@ -228,9 +238,9 @@ public class MyResource_Activity extends AppCompatActivity {
                     Cip_count = "0";
                 }
             }
-
-            JSONArray jsonhosp = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + synhqval1);
+            JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
             String hosp = String.valueOf(jsonhosp);
+//            JSONArray jsonhosp = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(this));
             if (!hosp.equals("") || !hosp.equals("null")) {
                 count_list.clear();
                 if (jsonhosp.length() > 0) {
@@ -321,8 +331,10 @@ public class MyResource_Activity extends AppCompatActivity {
             count_list.clear();
             visitcount_list.clear();
 
-            JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
-            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+//            JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
+//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
+            JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
+            JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
             // Initialize a HashMap to store counts of custom_id1 values
             String viewlist = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
             if (jsonvst_ctl.length() > 0) {

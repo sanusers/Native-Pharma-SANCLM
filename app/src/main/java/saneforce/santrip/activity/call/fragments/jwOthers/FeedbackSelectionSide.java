@@ -27,26 +27,32 @@ import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentSelectFbSideBinding;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class FeedbackSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectFbSideBinding selectFbSideBinding;
     public static String feedbackName = "", feedbackCode = "";
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
     ArrayList<String> list_name = new ArrayList<>();
     ArrayList<String> list_code = new ArrayList<>();
     ArrayAdapter<String> dataAdapter;
     CommonUtilsMethods commonUtilsMethods;
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectFbSideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectFbSideBinding.getRoot();
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         SetupAdapter();
@@ -94,7 +100,8 @@ public class FeedbackSelectionSide extends Fragment {
         list_code.clear();
         list_name.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.FEEDBACK).getMasterSyncDataJsonArray();
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 list_name.add(jsonObject.getString("name"));

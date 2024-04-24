@@ -67,7 +67,7 @@ public class CommonUtilsMethods {
     public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
         Geocoder geocoder;
         List<Address> addresses;
-        String address = "";
+        String address = "No Address Found";
         geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             addresses = geocoder.getFromLocation(la, ln, 1);

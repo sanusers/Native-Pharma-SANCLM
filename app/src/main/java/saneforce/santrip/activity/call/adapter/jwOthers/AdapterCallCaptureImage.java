@@ -30,18 +30,24 @@ import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.pojo.CallCaptureImageList;
+import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
     Context context;
     ArrayList<CallCaptureImageList> callCaptureImageLists;
-    SQLite sqLite;
+//    SQLite sqLite;
+    private RoomDB roomDB;
+    private CallOfflineECDataDao callOfflineECDataDao;
 
     public AdapterCallCaptureImage(Context context, ArrayList<CallCaptureImageList> callCaptureImageLists) {
         this.context = context;
         this.callCaptureImageLists = callCaptureImageLists;
-        sqLite = new SQLite(context);
+//        sqLite = new SQLite(context);
+        roomDB = RoomDB.getDatabase(context);
+        callOfflineECDataDao = roomDB.callOfflineECDataDao();
     }
 
     @NonNull
@@ -82,7 +88,8 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     System.out.println("file not Deleted :" + callCaptureImageLists.get(position).getFilePath());
                 }
             }
-            sqLite.deleteOfflineECImage(callCaptureImageLists.get(position).getSystemImgName());
+//            sqLite.deleteOfflineECImage(callCaptureImageLists.get(position).getSystemImgName());
+            callOfflineECDataDao.deleteOfflineECImage(callCaptureImageLists.get(position).getSystemImgName());
             removeAt(holder.getBindingAdapterPosition());
         });
 

@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -44,6 +43,8 @@ import saneforce.santrip.activity.call.dcrCallSelection.adapter.FillteredAdapter
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
+import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
@@ -57,7 +58,7 @@ public class ChemistFragment extends Fragment {
     ImageButton iv_filter;
     ImageView img_close;
     Button btn_apply;
-    SQLite sqLite;
+//    SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName,tvTerritory,tv_filter_count;
     CommonUtilsMethods commonUtilsMethods;
@@ -68,6 +69,9 @@ public class ChemistFragment extends Fragment {
     ListView lv_terr;
 
     ArrayList<CustList> FilltercustArraList = new ArrayList<>();
+    private RoomDB roomDB;
+    private MasterDataDao masterDataDao;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.v("fragment", "---" + "chemist");
@@ -79,9 +83,11 @@ public class ChemistFragment extends Fragment {
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
 
-        sqLite = new SQLite(getContext());
+//        sqLite = new SQLite(getContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
+        roomDB = RoomDB.getDatabase(requireContext());
+        masterDataDao = roomDB.masterDataDao();
 
         SetupAdapter();
 
@@ -116,7 +122,8 @@ public class ChemistFragment extends Fragment {
     private void SetupAdapter() {
         cusListArrayList.clear();
         try {
-            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
+//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
+            jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
             Log.v("CheCall", "-che_full_length-" + jsonArray.length());
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -236,7 +243,8 @@ public class ChemistFragment extends Fragment {
                 filterSelectionList.clear();
                 try {
                     JSONArray jsonArray = new JSONArray();
-                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
+                    jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
+//                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
                     Log.v("jsonArray", "--" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);

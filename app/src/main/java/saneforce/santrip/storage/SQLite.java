@@ -179,6 +179,7 @@ public class SQLite extends SQLiteOpenHelper {
 
     }
     //------------------------ Login ------------------------------------
+/*  --- Has been moved to room database. -> LoginDataDao, LoginDataTable
     public void saveLoginData(String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -209,6 +210,7 @@ public class SQLite extends SQLiteOpenHelper {
         return loginResponse;
     }
 
+    --- Has been moved to room database. -> MasterDataDao, MasterDataTable
     //-------------------------- Master ----------------------------------------
     public void saveMasterSyncData(String key, String values, int syncStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -281,7 +283,7 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     //    -----------------Remainder------------------------
-
+  --- Has been moved to room database. -> DCRDocDataDao, DCRDocDataTable
     public void insert_docvalues(String hqcode, String values) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -316,6 +318,7 @@ public class SQLite extends SQLiteOpenHelper {
 
     //----------------------------offline----------------------
     //WorkType Table
+    --- Has been moved to room database. -> CallOfflineWorkTypeDataDao, CallOfflineWorkTypeDataTable
     public void saveWorkPlan(String date, String wtCode, String wtName, String jsonValues) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -329,7 +332,21 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
+    private String getListOfflineWt(String date, SQLiteDatabase db) {
+        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_WORKTYPE_TABLE + " where " + CALL_OFFLINE_WORKTYPE_DATE + "='" + date + "';", null);
+        StringBuilder fieldWork = new StringBuilder();
+        while (cursor.moveToNext()) {
+            if (fieldWork.toString().isEmpty()) {
+                fieldWork.append(cursor.getString(2));
+            } else {
+                fieldWork.append(",").append(cursor.getString(2));
+            }
+        }
+        return fieldWork.toString();
+    }
+
     //Check In Out table
+    --- Has been moved to room database. -> OfflineCheckInOutDataDao, OfflineCheckInOutDataTable
     public void saveCheckIn(String date, String checkInTime, String jsonValues) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from " + OFFLINE_CHECKINOUT_TABLE + " where " + OFFLINE_DATE_CHECKINOUT + "='" + date + "';", null);
@@ -389,7 +406,7 @@ public class SQLite extends SQLiteOpenHelper {
             CheckCount = cursor.getString(6);
             checkStatus = cursor.getInt(7);
             if (dates != null) {
-                list.add(new CheckInOutModelClass(id, dates, CheckInTime, CheckOutTime, jsonInData, jsonOutData, CheckCount, checkStatus));
+                list.add(new CheckInOutModelClass(Integer.parseInt(id), dates, CheckInTime, CheckOutTime, jsonInData, jsonOutData, Integer.parseInt(CheckCount), checkStatus));
             }
         }
         return list;
@@ -410,7 +427,7 @@ public class SQLite extends SQLiteOpenHelper {
         return Count;
     }
 
-
+    --- Has been moved to room database. -> CallOfflineECDataDao, CallOfflineECDataTable
     //Event Capture table
     public void saveOfflineEC(String date, String cusCode, String cusName, String img_name, String filepath, String jsonValues, String status, Integer sync) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -462,7 +479,7 @@ public class SQLite extends SQLiteOpenHelper {
             status = cursor.getString(7);
             synced = cursor.getInt(8);
             if (dates != null) {
-                list.add(new EcModelClass(id, dates, cusCode, cusName, imgName, file, jsonData, status, synced));
+                list.add(new EcModelClass(Integer.parseInt(id), dates, cusCode, cusName, imgName, file, jsonData, status, synced));
             }
         }
         return list;
@@ -485,7 +502,7 @@ public class SQLite extends SQLiteOpenHelper {
             status = cursor.getString(7);
             synced = cursor.getInt(8);
             if (dates != null) {
-                list.add(new EcModelClass(id, dates, cusCode, cusName, imgName, file, jsonData, status, synced));
+                list.add(new EcModelClass(Integer.parseInt(id), dates, cusCode, cusName, imgName, file, jsonData, status, synced));
             }
         }
         db.close();
@@ -506,6 +523,7 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     //Offline call table
+    --- Has been moved to room database. -> CallOfflineDataDao, CallOfflineDataTable
     public void saveOfflineCallIN(String date, String inTime, String cusCode, String cusName, String cusType) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -552,6 +570,19 @@ public class SQLite extends SQLiteOpenHelper {
         db.close();
     }
 
+    public String getJsonCallList(String date, String cusCode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String jsonData = "";
+        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE + " where " + CALL_DATE + "='" + date + "' AND " + CALL_CUS_CODE + "='" + cusCode + "';", null);
+        while (cursor.moveToNext()) {
+            jsonData = cursor.getString(7);
+        }
+        db.close();
+        return jsonData;
+    }
+
+    --- Has been moved to room database. -> CallUtil
+
     public void updateOfflineUpdateStatusEC(String date, String custCode, String count, String status, int EcSynced) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -568,17 +599,6 @@ public class SQLite extends SQLiteOpenHelper {
             db.update(CALL_OFFLINE_EC_TABLE, contentValuesEC, CALL_DATE_EC + "=? and " + CALL_CUS_CODE_EC + "=?", new String[]{date, custCode});
         }
         db.close();
-    }
-
-    public String getJsonCallList(String date, String cusCode) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String jsonData = "";
-        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE + " where " + CALL_DATE + "='" + date + "' AND " + CALL_CUS_CODE + "='" + cusCode + "';", null);
-        while (cursor.moveToNext()) {
-            jsonData = cursor.getString(7);
-        }
-        db.close();
-        return jsonData;
     }
 
     public void deleteOfflineCalls() {
@@ -765,20 +785,6 @@ public class SQLite extends SQLiteOpenHelper {
         return listData;
     }
 
-    private String getListOfflineWt(String date, SQLiteDatabase db) {
-        Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_WORKTYPE_TABLE + " where " + CALL_OFFLINE_WORKTYPE_DATE + "='" + date + "';", null);
-        StringBuilder fieldWork = new StringBuilder();
-        while (cursor.moveToNext()) {
-            if (fieldWork.toString().isEmpty()) {
-                fieldWork.append(cursor.getString(2));
-            } else {
-                fieldWork.append(",").append(cursor.getString(2));
-            }
-        }
-        return fieldWork.toString();
-    }
-
-
     public ArrayList<OutBoxCallList> getOutBoxCallsList(String date, SQLiteDatabase db) {
         Cursor cursor = db.rawQuery("select * from " + CALL_OFFLINE_TABLE + " where " + CALL_DATE + "='" + date + "';", null);
         String dates = "", time = "", inTime = "", outTime = "", cusName = "", cusType = "", cusCode = "", jsonData = "", syncStatus = "";
@@ -876,6 +882,8 @@ public class SQLite extends SQLiteOpenHelper {
     //----------------------------Tour Plan----------------------
 
     //Offline table
+  --- Has been moved to room database. -> TourPlanOfflineDataDao, TourPlanOfflineDataTable
+
     public void saveTPData(String month, String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -967,6 +975,7 @@ public class SQLite extends SQLiteOpenHelper {
         return data;
     }
 
+    --- Has been moved to room database. -> TourPlanOnlineDataDao, TourPlanOnlineDataTable
     //Online table
     public void saveTPDataOnlineTable(String month, String data, String status, String rejectionReason) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1003,6 +1012,7 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     //--------------Presentation Table-------------------
+    --- Has been moved to room database. -> PresentationDataDao, PresentationDataTable
     public void savePresentation(String oldName, String newName, String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -1052,15 +1062,13 @@ public class SQLite extends SQLiteOpenHelper {
     }
 
     //---------------------------------------------
-
+    --- Has been moved to room database. -> CallTableDao, CallsLinechartTable
 
     public void deleteLineChart(String cusCode, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + LINE_CHAT_DATA_TABLE + " WHERE " + LINECHAR_CUSTCODE + " = '" + cusCode + "' " + " AND " + LINECHAR_DCR_DT + "='" + date + "';");
         db.close();
     }
-
-
 
     public int getcurrentmonth_calls_count(String CustType) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1100,5 +1108,5 @@ public class SQLite extends SQLiteOpenHelper {
         return count;
     }
 
-
+*/
 }
