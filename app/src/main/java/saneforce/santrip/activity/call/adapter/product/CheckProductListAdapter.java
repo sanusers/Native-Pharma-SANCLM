@@ -71,7 +71,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
         holder.tv_category.setVisibility(View.VISIBLE);
         holder.tv_category.setText(callCommonCheckedListArrayList.get(position).getCategory());
 
-        if(callCommonCheckedListArrayList.get(position).getName().equalsIgnoreCase("No Product")){
+        if(callCommonCheckedListArrayList.get(position).getCode().equalsIgnoreCase("-10")){
             noProductHolder = holder;
             checkAndSetNoProductCheckedOrUnchecked();
         }

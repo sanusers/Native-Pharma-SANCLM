@@ -98,7 +98,7 @@ public class JWOthersFragment extends Fragment {
 //                    filePath = Objects.requireNonNull(filePath).substring(1);
 //                    filePath = finalPath + filePath.substring(filePath.indexOf("/"));
                     Bitmap photo = BitmapFactory.decodeFile(destinationFilePath);
-                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, destinationFilePath, imageName, true));
+                    callCaptureImageLists.add(0, new CallCaptureImageList("", "", photo, destinationFilePath, imageName, true, true));
                     adapterCallCaptureImage = new AdapterCallCaptureImage(getActivity(), callCaptureImageLists);
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                     jwOthersBinding.rvImgCapture.setLayoutManager(mLayoutManager);

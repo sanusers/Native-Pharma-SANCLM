@@ -9,6 +9,7 @@ public class CallCaptureImageList {
     String SystemImgName;
     Bitmap img_view;
     boolean isNewlyAdded;
+    boolean showPreview;
 
     public boolean isNewlyAdded() {
         return isNewlyAdded;
@@ -27,7 +28,15 @@ public class CallCaptureImageList {
         this.isNewlyAdded = isNewlyAdded;
     }
 
-
+    public  CallCaptureImageList(String img_name, String img_description, Bitmap img_view, String filePath, String SystemImgName,boolean isNewlyAdded, boolean showPreview) {
+        this.img_name = img_name;
+        this.img_description = img_description;
+        this.img_view = img_view;
+        this.filePath = filePath;
+        this.SystemImgName = SystemImgName;
+        this.isNewlyAdded = isNewlyAdded;
+        this.showPreview = showPreview;
+    }
 
     public String getFilePath() {
         return filePath;
@@ -67,5 +76,13 @@ public class CallCaptureImageList {
 
     public void setImg_view(Bitmap img_view) {
         this.img_view = img_view;
+    }
+
+    public boolean isShowPreview() {
+        return showPreview;
+    }
+
+    public void setShowPreview(boolean showPreview) {
+        this.showPreview = showPreview;
     }
 }

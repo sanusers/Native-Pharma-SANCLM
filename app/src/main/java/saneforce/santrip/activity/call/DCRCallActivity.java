@@ -1278,7 +1278,7 @@ public class DCRCallActivity extends AppCompatActivity {
                 JSONArray jsonArrayEC = new JSONArray(json.getString("event_capture"));
                 for (int i = 0; i < jsonArrayEC.length(); i++) {
                     JSONObject jsonEC = jsonArrayEC.getJSONObject(i);
-                    callCaptureImageLists.add(new CallCaptureImageList(jsonEC.getString("title"), jsonEC.getString("remarks"), null, "", jsonEC.getString("imgurl"), false));
+                    callCaptureImageLists.add(new CallCaptureImageList(jsonEC.getString("title"), jsonEC.getString("remarks"), null, "", jsonEC.getString("imgurl"), false, false));
                 }
             }
 
@@ -2367,7 +2367,7 @@ public class DCRCallActivity extends AppCompatActivity {
 //            JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
             JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
-            InputFragment.checkedInputList.add(new CallCommonCheckedList("No Input" ,"", "", false));
+            InputFragment.checkedInputList.add(new CallCommonCheckedList("No Input" ,"-10", "", false));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -2445,7 +2445,7 @@ public class DCRCallActivity extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
             JSONArray jsonArrayPrdStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
             Log.v("chkSample", "---size--111----" + jsonArray.length() + "----" + jsonArrayPrdStk.length());
-            ProductFragment.checkedPrdList.add(new CallCommonCheckedList("No Product","","",false,"",""));
+            ProductFragment.checkedPrdList.add(new CallCommonCheckedList("No Product","-10","",false,"",""));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);

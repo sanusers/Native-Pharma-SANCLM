@@ -29,11 +29,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.santrip.activity.call.pojo.CallCaptureImageList;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkUtil;
 
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
     Context context;
@@ -59,37 +62,44 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tv_image_name.setText(callCaptureImageLists.get(position).getImg_name());
-        holder.ed_img_desc.setText(callCaptureImageLists.get(position).getImg_description());
+        CallCaptureImageList callCaptureImageList = callCaptureImageLists.get(position);
+        holder.tv_image_name.setText(callCaptureImageList.getImg_name());
+        holder.ed_img_desc.setText(callCaptureImageList.getImg_description());
 
         switch (isFromActivity) {
             case "new":
-                holder.img_view.setImageBitmap(callCaptureImageLists.get(position).getImg_view());
+                holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
                 break;
             case "edit_local":
-                File imgFile = new File(callCaptureImageLists.get(position).getFilePath());
+                File imgFile = new File(callCaptureImageList.getFilePath());
                 if (imgFile.exists()) {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     holder.img_view.setImageBitmap(myBitmap);
                 }
                 break;
             case "edit_online":
-
+                if(callCaptureImageList.isShowPreview()) {
+                    if(callCaptureImageList.isNewlyAdded()) {
+                        holder.img_view.setImageBitmap(callCaptureImageList.getImg_view());
+                    } else {
+                        Glide.with(context).load(SharedPref.getTagImageUrl(context) + "photos/" + callCaptureImageList.getSystemImgName()).fitCenter().into(holder.img_view);
+                    }
+                }
                 break;
         }
 
 
         holder.img_del_img.setOnClickListener(v -> {
-            File fileDelete = new File(callCaptureImageLists.get(position).getFilePath());
+            File fileDelete = new File(callCaptureImageList.getFilePath());
             if (fileDelete.exists()) {
                 if (fileDelete.delete()) {
-                    System.out.println("file Deleted :" + callCaptureImageLists.get(position).getFilePath());
+                    System.out.println("file Deleted :" + callCaptureImageList.getFilePath());
                 } else {
-                    System.out.println("file not Deleted :" + callCaptureImageLists.get(position).getFilePath());
+                    System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
                 }
             }
-//            sqLite.deleteOfflineECImage(callCaptureImageLists.get(position).getSystemImgName());
-            callOfflineECDataDao.deleteOfflineECImage(callCaptureImageLists.get(position).getSystemImgName());
+//            sqLite.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
+            callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
             removeAt(holder.getBindingAdapterPosition());
         });
 
@@ -103,7 +113,15 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
                     break;
                 case "edit_online":
-                    ShowImageEdit(callCaptureImageLists.get(position).getSystemImgName());
+                    if(NetworkUtil.getConnectivityStatus(context) != 0) {
+                        if(!callCaptureImageList.isShowPreview()) {
+                            callCaptureImageList.setShowPreview(true);
+                            notifyItemChanged(position);
+                        }
+                        if(callCaptureImageList.isNewlyAdded())
+                            showImage(callCaptureImageList.getImg_view());
+                        else ShowImageEdit(callCaptureImageList.getSystemImgName());
+                    } else new CommonUtilsMethods(context).showToastMessage(context, "No network available!");
                     break;
             }
         });

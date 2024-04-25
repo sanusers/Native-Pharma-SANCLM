@@ -56,7 +56,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
     private CameraCaptureSession cameraCaptureSession;
     private Handler backgroundHandler;
     private HandlerThread backgroundThread;
-    private static boolean isImageCaptured = false;
+    private boolean isImageCaptured = false;
     private int width, height;
     private CameraManager cameraManager;
     private boolean isBackCameraOpen = true;
@@ -140,6 +140,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         });
 
         activityCameraBinding.close.setOnClickListener(view -> {
+            isImageCaptured = false;
             finish();
         });
 
@@ -173,6 +174,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             activityCameraBinding.options.setVisibility(View.GONE);
             new Handler().postDelayed(() -> {
                 captureImageWithLocation();
+                isImageCaptured = false;
                 setResult(RESULT_OK);
                 finish();
             }, 1000);

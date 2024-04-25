@@ -88,7 +88,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
-                if(!checked_arrayList.get(position).getName().equalsIgnoreCase("No Input")){
+                if(!checked_arrayList.get(position).getName().equalsIgnoreCase("-10")){
                     if (DCRCallActivity.InputValidation.equalsIgnoreCase("1")) {
                     for (int i = 0; i < StockInput.size(); i++) {
                         if (StockInput.get(i).getStockCode().equalsIgnoreCase(checked_arrayList.get(position).getCode())) {
