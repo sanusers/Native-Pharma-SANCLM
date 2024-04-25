@@ -65,7 +65,6 @@ public class MasterDataTable {
     public JSONArray getMasterSyncDataJsonArray() {
         JSONArray jsonArray = new JSONArray();
         try {
-            Log.e("TAG table", "getMasterSyncDataJsonArray: " + masterValues);
             if(masterValues != null && !masterValues.isEmpty()) return jsonArray = new JSONArray(masterValues);
         } catch (Exception e) {
             e.printStackTrace();

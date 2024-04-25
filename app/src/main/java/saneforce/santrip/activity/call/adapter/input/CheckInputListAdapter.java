@@ -38,6 +38,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
     FinalInputCallAdapter finalInputCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
+    private ViewHolder noInputHolder;
 
     public CheckInputListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> checked_arrayList) {
         this.activity = activity;
@@ -66,6 +67,11 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
         commonUtilsMethods = new CommonUtilsMethods(context);
         holder.tv_name.setText(checked_arrayList.get(position).getName());
         holder.checkBox.setChecked(checked_arrayList.get(position).isCheckedItem());
+
+        if(checked_arrayList.get(position).getName().equalsIgnoreCase("No Input")){
+            noInputHolder = holder;
+            checkAndSetNoInputCheckedOrUnchecked();
+        }
 
         if (checked_arrayList.get(position).isCheckedItem()) {
             holder.checkBox.setChecked(true);
@@ -121,6 +127,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
             isCheckedInp = false;
             checked_arrayList.get(adapterPosition).setCheckedItem(true);
+            checkAndSetNoInputCheckedOrUnchecked();
             saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
             AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
         } else {
@@ -138,6 +145,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             isCheckedInp = true;
             UnSelectedInpCode = checked_arrayList.get(adapterPosition).getCode();
             checked_arrayList.get(adapterPosition).setCheckedItem(false);
+            checkAndSetNoInputCheckedOrUnchecked();
             AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
             finalInputCallAdapter.notifyDataSetChanged();
         }
@@ -168,6 +176,27 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             super(itemView);
             tv_name = itemView.findViewById(R.id.tv_data_name);
             checkBox = itemView.findViewById(R.id.chk_box);
+        }
+    }
+
+    private void checkAndSetNoInputCheckedOrUnchecked() {
+        boolean isProductSelected = false;
+        for (CallCommonCheckedList callCommonCheckedList : checked_arrayList) {
+            if(callCommonCheckedList.isCheckedItem() && !callCommonCheckedList.getName().equalsIgnoreCase("No Input")) {
+                isProductSelected = true;
+                break;
+            }
+        }
+        if(!isProductSelected) {
+            checked_arrayList.get(0).setCheckedItem(true);
+            noInputHolder.checkBox.setChecked(true);
+            noInputHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+            noInputHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+        }else {
+            checked_arrayList.get(0).setCheckedItem(false);
+            noInputHolder.checkBox.setChecked(false);
+            noInputHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+            noInputHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
         }
     }
 }
