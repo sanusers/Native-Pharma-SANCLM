@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.call.adapter.additionalCalls.sideView;
 
 
+import static saneforce.santrip.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.call.DCRCallActivity.PrdSamNeed;
 import static saneforce.santrip.activity.call.DCRCallActivity.SamQtyRestrictValue;
 import static saneforce.santrip.activity.call.DCRCallActivity.SamQtyRestriction;
@@ -58,7 +59,17 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
 
         holder.tv_select_sample.setText(addedProductList.get(position).getPrd_name());
 
-        if (PrdSamNeed.equalsIgnoreCase("1")) {
+        boolean isSampleNeed = false;
+        if(CallActivityCustDetails.get(position).getType().equalsIgnoreCase("1")) {
+            if(PrdSamNeed.equalsIgnoreCase("1")) {
+                isSampleNeed = true;
+            }
+        }else {
+            if(PrdSamNeed.equalsIgnoreCase("0")) {
+                isSampleNeed = true;
+            }
+        }
+        if (isSampleNeed) {
             holder.edt_sam_qty.setVisibility(View.VISIBLE);
             holder.edt_sam_qty.setText(addedProductList.get(position).getSample_qty());
         }

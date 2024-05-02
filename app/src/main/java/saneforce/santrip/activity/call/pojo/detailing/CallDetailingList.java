@@ -48,6 +48,7 @@ public class CallDetailingList implements Comparable<CallDetailingList> {
     String error;
     String slideType;
     String startTime;
+    String duration;
 
     public String getStartTime() {
         return startTime;
@@ -69,7 +70,7 @@ public class CallDetailingList implements Comparable<CallDetailingList> {
         return prodFb;
     }
 
-    public CallDetailingList(String brandName, String brandCode, String slideName, String slideType, String slideUrl, String timing, String startTime, int rating, String feedback, String currentDate) {
+    public CallDetailingList(String brandName, String brandCode, String slideName, String slideType, String slideUrl, String timing, String startTime, int rating, String feedback, String currentDate, String duration) {
         this.brandName = brandName;
         this.brandCode = brandCode;
         this.slideName = slideName;
@@ -80,6 +81,7 @@ public class CallDetailingList implements Comparable<CallDetailingList> {
         this.rating = rating;
         this.feedback = feedback;
         this.date = currentDate;
+        this.duration = duration;
     }
 
     @Override
@@ -230,6 +232,14 @@ public class CallDetailingList implements Comparable<CallDetailingList> {
 
     public void setStk_name(String stk_name) {
         this.stk_name = stk_name;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }
 

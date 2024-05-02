@@ -2,6 +2,7 @@ package saneforce.santrip.roomdatabase.MasterTableDetails;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -11,8 +12,10 @@ import org.json.JSONArray;
 
 @Entity(tableName = "master_table")
 public class MasterDataTable {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
+    @NonNull
+//            (autoGenerate = true)
+//    private int id;
     @ColumnInfo(name = "key")
     private String masterKey;
     @ColumnInfo(name = "values")
@@ -24,7 +27,7 @@ public class MasterDataTable {
     }
 
     @Ignore
-    public MasterDataTable(String masterKey, String masterValues, int syncStatus) {
+    public MasterDataTable(@NonNull String masterKey, String masterValues, int syncStatus) {
         this.masterKey = masterKey;
         this.masterValues = masterValues;
         this.syncStatus = syncStatus;
@@ -38,6 +41,7 @@ public class MasterDataTable {
         this.syncStatus = syncStatus;
     }
 
+    @NonNull
     public String getMasterKey() {
         return masterKey;
     }
@@ -54,13 +58,13 @@ public class MasterDataTable {
         this.masterValues = masterValues;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
 
     public JSONArray getMasterSyncDataJsonArray() {
         JSONArray jsonArray = new JSONArray();

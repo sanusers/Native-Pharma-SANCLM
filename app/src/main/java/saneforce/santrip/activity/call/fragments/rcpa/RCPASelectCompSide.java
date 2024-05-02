@@ -46,7 +46,6 @@ import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 
 public class RCPASelectCompSide extends Fragment {
-    public static ArrayList<RCPAAddedProdList> rcpaAddedProdListArrayList;
     public static ArrayList<RCPAAddedCompList> rcpa_comp_list;
     @SuppressLint("StaticFieldLeak")
     public static FragmentAddRcpaSideBinding rcpaSideBinding;

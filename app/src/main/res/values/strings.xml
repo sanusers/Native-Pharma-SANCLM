@@ -382,4 +382,5 @@
     <string name="dashboard">DashBoard</string>
     <string name="close_preview">Close Preview</string>
     <string name="title">Title</string>
+    <string name="duration">Duration</string>
 </resources>

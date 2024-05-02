@@ -5,10 +5,13 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class TimeUtils {
     private static final String TAG = TimeUtils.class.getSimpleName();
@@ -44,6 +47,8 @@ public class TimeUtils {
     public static final String FORMAT_29 = "HH:mm";
     public static final String FORMAT_30 = "dd-MM-yyyy HH:mm";
     public static final String FORMAT_31 = "m";
+    public static final String FORMAT_32 = "HH:mm:ss";
+    public static final String FORMAT_33 = "hh:mm:ss a";
 
 
     public static String getCurrentDateTime(String format) {
@@ -120,4 +125,47 @@ public class TimeUtils {
         }
         return false;
     }
+
+    public static String timeDifference(String startTime, String endTime) {
+        try {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_32);
+            long differenceInMillis = simpleDateFormat.parse(endTime).getTime() - simpleDateFormat.parse(startTime).getTime();
+            long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis);
+            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis)%60;
+            return String.format("%02d:%02d",mins, secs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String addTime(String oldTime, String newTime) {
+        try {
+            if(!oldTime.isEmpty() && !newTime.isEmpty()) {
+                LocalTime oldLocalTime = LocalTime.parse(oldTime);
+                LocalTime newLocalTime = LocalTime.parse(newTime);
+                LocalTime resultTime = oldLocalTime.plusHours(newLocalTime.getHour()).plusMinutes(newLocalTime.getMinute()).plusSeconds(newLocalTime.getSecond());
+                return resultTime.format(DateTimeFormatter.ofPattern(FORMAT_32));
+            }else if(!newTime.isEmpty()) return newTime;
+            else if(!oldTime.isEmpty()) return oldTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String timeDurationHMS(String startTime, String endTime) {
+        try {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_32);
+            long differenceInMillis = simpleDateFormat.parse(endTime).getTime() - simpleDateFormat.parse(startTime).getTime();
+            long hrs = TimeUnit.MILLISECONDS.toHours(differenceInMillis);
+            long mins = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)%60;
+            long secs = TimeUnit.MILLISECONDS.toSeconds(differenceInMillis)%60;
+            return String.format("%02d:%02d:%02d", hrs, mins, secs);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "time";
+    }
+
 }

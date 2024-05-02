@@ -385,8 +385,9 @@ public class SharedPref {
     public static final String JWKCODE= "JWKCODE";
     public static final String JWKDATE = "JWKDATE";
 
-
-
+    public static final String DR_ADD_CALL_NEED = "DrAdditionalCallNeed";
+    public static final String POB_STOCKIST_NEED = "Pob_Stockist_Nd";
+    public static final String POB_UNLISTED_DR_NEED = "Pob_Unlstdr_Nd";
 
 
 
@@ -1876,10 +1877,15 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE).getString(GEOTAGGING, "");
     }
 
+    public static String getDrAddCallNeed(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DR_ADD_CALL_NEED, "");
+    }
 
-
-
-
+    public static void setDrAddCallNeed(Context context, String drAddCallNeed) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DR_ADD_CALL_NEED, drAddCallNeed).apply();
+    }
 
 
     public static void saveSlideDownloadingList(Context context, String Downloadcount, ArrayList<SlideModelClass> List,ArrayList<String>IdList) {
