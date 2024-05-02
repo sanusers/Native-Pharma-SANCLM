@@ -214,7 +214,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             }else {
-                commonUtilsMethods.showToastMessage(this, "Camera permission needed!");
+                commonUtilsMethods.showToastMessage(this, getString(R.string.camera_permission_needed));
             }
         }
     }
@@ -250,7 +250,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
             activityCameraBinding.switchCamera.setVisibility(View.GONE);
             openCamera(frontCameraId);
         }else {
-            commonUtilsMethods.showToastMessage(this, "No Camera Detected");
+            commonUtilsMethods.showToastMessage(this, getString(R.string.no_camera_detected));
             finish();
         }
     }
@@ -290,7 +290,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(filePath);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-            commonUtilsMethods.showToastMessage(this, "Image has been saved");
+            commonUtilsMethods.showToastMessage(this, getString(R.string.image_saved));
             fileOutputStream.close();
         } catch (Exception e) {
             e.printStackTrace();

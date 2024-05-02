@@ -383,4 +383,7 @@
     <string name="close_preview">Close Preview</string>
     <string name="title">Title</string>
     <string name="duration">Duration</string>
+    <string name="camera_permission_needed">Camera permission needed!</string>
+    <string name="no_camera_detected">No Camera Detected</string>
+    <string name="image_saved">Image has been saved</string>
 </resources>
