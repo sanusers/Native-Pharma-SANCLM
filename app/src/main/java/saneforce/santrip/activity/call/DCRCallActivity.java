@@ -672,7 +672,7 @@ public class DCRCallActivity extends AppCompatActivity {
                             return false;
                         }else {
                             for (int i = 0; i<CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
-                                if(!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sale") && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty() || CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().equalsIgnoreCase("0"))) {
+                                if(!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sale") && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getSample_qty().isEmpty())) {
                                     commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapSamQty, getString(R.string.value)));
                                     moveToPage(capPrd);
                                     return false;
@@ -688,7 +688,7 @@ public class DCRCallActivity extends AppCompatActivity {
                             return false;
                         }else {
                             for (int i = 0; i<CheckProductListAdapter.saveCallProductListArrayList.size(); i++) {
-                                if(!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sample") && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty() || CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().equalsIgnoreCase("0"))) {
+                                if(!CheckProductListAdapter.saveCallProductListArrayList.get(i).getCategory().equalsIgnoreCase("Sample") && (CheckProductListAdapter.saveCallProductListArrayList.get(i).getRx_qty().isEmpty())) {
                                     commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), CapRxQty, getString(R.string.value)));
                                     moveToPage(capPrd);
                                     return false;
