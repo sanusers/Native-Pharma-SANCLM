@@ -176,7 +176,7 @@ public class RCPACompListAdapter extends RecyclerView.Adapter<RCPACompListAdapte
 
         holder.img_remarks.setOnClickListener(view -> {
             dialogRemarks = new Dialog(context);
-            dialogRemarks.setContentView(R.layout.popup_rcpa_remarks);
+            dialogRemarks.setContentView(R.layout.popup_remarks);
             Objects.requireNonNull(dialogRemarks.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialogRemarks.setCancelable(false);
 

@@ -74,7 +74,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
 
         if(callCommonCheckedListArrayList.get(position).getCode().equalsIgnoreCase("-10")){
             noProductHolder = holder;
-            if(DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
+            if(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
                 noProductHolder.checkBox.setChecked(false);
             }else {
                 checkAndSetNoProductCheckedOrUnchecked();
@@ -239,7 +239,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
     }
 
     private void checkAndSetNoProductCheckedOrUnchecked() {
-        if(!DCRCallActivity.PrdMandatory.equals("1")) {
+        if(!(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equals("1"))) {
             if(!checkAnyProductSelected()) {
                 callCommonCheckedListArrayList.get(0).setCheckedItem(true);
                 noProductHolder.checkBox.setChecked(true);

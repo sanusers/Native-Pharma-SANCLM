@@ -74,7 +74,6 @@ public class CustomSetupResponse implements Serializable {
     private String StockistPobMandatory;
     @SerializedName("Pob_Unlstdr_Mandatory_Need")
     private String UndrPobMandatory;
-
     @SerializedName("Additional_Call")
     private String AdditionalCall;
 

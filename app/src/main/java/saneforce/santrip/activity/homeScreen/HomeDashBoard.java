@@ -54,6 +54,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.android.material.navigation.NavigationView;
@@ -110,6 +111,7 @@ import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.GPSTrack;
+import saneforce.santrip.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
 import saneforce.santrip.network.ApiInterface;
@@ -132,7 +134,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static int DeviceWith;
     public static Dialog dialog;
     public static Dialog dialogCheckInOut, dialogAfterCheckIn, dialogPwdChange;
-    public static String CustomPresentationNeed, PresentationNeed;
+    public static String CustomPresentationNeed, PresentationNeed, SequentialEntry;
     public static LocalDate selectedDate;
     final ArrayList<CallStatusModelClass> callStatusList = new ArrayList<>();
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -147,7 +149,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     IntentFilter intentFilter;
     NetworkChangeReceiver receiver;
     Callstatusadapter callstatusadapter;
-    TabLayoutAdapter leftViewPagerAdapter;
+    static TabLayoutAdapter leftViewPagerAdapter;
     ArrayList<EventCalenderModelClass> calendarDays = new ArrayList<>();
     DrawerLayout.LayoutParams layoutParams;
     TextView tvDateTime, tvName, tvDateTimeAfter, tvLat, tvLong, tvAddress, tvHeading;
@@ -159,13 +161,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     ArrayList<EventCalenderModelClass> callsatuslist = new ArrayList<>();
     ArrayList<String> weeklyOffDays = new ArrayList<>();
     JSONArray holidayJSONArray = new JSONArray();
+    public static JSONArray dateSync = new JSONArray();
     String holidayMode = "", weeklyOffCaption = "";
     public static CustomPagerAdapter adapter;
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     RoomDB roomDB;
 
-    MasterDataDao masterDataDao;
+    static MasterDataDao masterDataDao;
     OfflineCheckInOutDataDao offlineCheckInOutDataDao;
+
+    private static FragmentManager fragmentManager;
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -266,14 +271,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
         actionBarDrawerToggle.syncState();
         binding.backArrow.setBackgroundResource(R.drawable.bars_sort_img);
-        leftViewPagerAdapter = new TabLayoutAdapter(getSupportFragmentManager());
-        leftViewPagerAdapter.add(new WorkPlanFragment(), "Work Plan");
-        leftViewPagerAdapter.add(new CallsFragment(), "Calls");
-        leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
-        binding.viewPager.setAdapter(leftViewPagerAdapter);
-        binding.viewPager.setCurrentItem(Integer.parseInt(SharedPref.getSetUpClickedTab(getApplicationContext())));
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
-        binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
+        fragmentManager = getSupportFragmentManager();
 
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
@@ -337,6 +335,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         } else {
             SharedPref.setSkipCheckIn(getApplicationContext(), false);
         }
+        checkAndSetEntryDate(this);
 
         binding.rlDateLayoout.setOnClickListener(this);
         binding.viewCalerderLayout.rlCalenderSyn.setOnClickListener(this);
@@ -397,6 +396,16 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         //   new Handler().postDelayed(this::refreshPendingFunction, 200);
     }
 
+    private static void setupLeftViewPager(Context context, FragmentManager fragmentManager) {
+        leftViewPagerAdapter = new TabLayoutAdapter(fragmentManager);
+        leftViewPagerAdapter.add(new WorkPlanFragment(), "Work Plan");
+        leftViewPagerAdapter.add(new CallsFragment(), "Calls");
+        leftViewPagerAdapter.add(new OutboxFragment(), "Outbox");
+        binding.viewPager.setAdapter(leftViewPagerAdapter);
+        binding.viewPager.setCurrentItem(Integer.parseInt(SharedPref.getSetUpClickedTab(context)));
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        binding.viewPager.setOffscreenPageLimit(leftViewPagerAdapter.getCount());
+    }
 
     private void CheckInOutDate() {
         dialogCheckInOut = new Dialog(this);
@@ -543,8 +552,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 PresentationNeed = customSetupResponse.getPresentationNeed();
                 CustomPresentationNeed = customSetupResponse.getCustomizationPrsNeed();
             }
-            if (PresentationNeed.equalsIgnoreCase("0")) {
-                if (CustomPresentationNeed.equalsIgnoreCase("0")) {
+            if (PresentationNeed != null && PresentationNeed.equalsIgnoreCase("0")) {
+                if (CustomPresentationNeed != null && CustomPresentationNeed.equalsIgnoreCase("0")) {
                     binding.llPresentation.setVisibility(View.VISIBLE);
                 } else {
                     binding.llPresentation.setVisibility(View.GONE);
@@ -554,8 +563,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 binding.llPresentation.setVisibility(View.GONE);
                 binding.llSlide.setVisibility(View.GONE);
             }
+            SequentialEntry = SharedPref.getDcrSequential(this);
         } catch (Exception ignored) {
-
+            ignored.printStackTrace();
         }
     }
 
@@ -1161,6 +1171,85 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         }
     }
 
+    public static void checkAndSetEntryDate(Context context){
+        if(SequentialEntry.equalsIgnoreCase("0")){
+//            dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+            binding.viewPagerProgress.setVisibility(View.VISIBLE);
+            MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(context, true, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
+                @Override
+                public void onComplete() {
+                    if(!SharedPref.getSelectedDateCal(context).isEmpty()){
+//                    binding.rlDateLayoout.setEnabled(false);
+//                try {
+//                    String sfCode = dateSync.getJSONObject(0).getString("Sf_Code");
+//                    JSONObject dt = new JSONObject(dateSync.getJSONObject(0).getString("dt"));
+//                    String date = dt.getString("date");
+//                    String flg = dateSync.getJSONObject(0).getString("flg");
+//                    String tableName = dateSync.getJSONObject(0).getString("tbname");
+////                    String editFlag = dateSync.getJSONObject(0).getString("edit_flag");
+//                    if(flg.equalsIgnoreCase("2")) {
+//                        String dateRequired = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1, TimeUtils.FORMAT_34, date);
+                        String dateRequired = SharedPref.getSelectedDateCal(context);
+                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, dateRequired);
+                        selectedDate = LocalDate.parse(dateRequired, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                        binding.textDate.setText(monthDateYear);
+                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, dateRequired));
+                        Log.e("TAG change 0", "checkAndSetEntryDate: " + selectedDate);
+//                        getCallsDataToCalender();
+//                        setUpCalendar();
+//                    }
+//                } catch (Exception e){
+//                    e.printStackTrace();
+//                }
+                    } else {
+                        String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
+                        String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+                        selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                        SharedPref.setSelectedDateCal(context, currentDate);
+                        SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+                        binding.textDate.setText(monthDateYear);
+                        Log.e("TAG new 0", "checkAndSetEntryDate: " + selectedDate);
+                    }
+                    binding.viewPagerProgress.setVisibility(View.GONE);
+                    setupLeftViewPager(context, fragmentManager);
+                }
+
+                @Override
+                public void onFailed() {
+                    binding.viewPagerProgress.setVisibility(View.GONE);
+                    String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
+                    String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+                    selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                    SharedPref.setSelectedDateCal(context, currentDate);
+                    SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+                    binding.textDate.setText(monthDateYear);
+                    Log.e("TAG new 0", "checkAndSetEntryDate: " + selectedDate);
+                    setupLeftViewPager(context, fragmentManager);
+                }
+            });
+
+        }else {
+            if(selectedDate == null || SharedPref.getSelectedDateCal(context).isEmpty()) {
+                String currentDate = CommonUtilsMethods.getCurrentInstance(TimeUtils.FORMAT_34);
+                String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+                selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                SharedPref.setSelectedDateCal(context, currentDate);
+                SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+                binding.textDate.setText(monthDateYear);
+                Log.e("TAG new 1", "checkAndSetSequentialEntry: " + selectedDate);
+            }else if(!selectedDate.equals(LocalDate.parse(SharedPref.getSelectedDateCal(context), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34)))) {
+                String currentDate = SharedPref.getSelectedDateCal(context);
+                String monthDateYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_12, currentDate);
+                selectedDate = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34));
+                SharedPref.setSelectedDateCal(context, currentDate);
+                SharedPref.setCheckDateTodayPlan(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, currentDate));
+                binding.textDate.setText(monthDateYear);
+                Log.e("TAG change 1", "checkAndSetSequentialEntry: " + selectedDate);
+            }
+            binding.viewPagerProgress.setVisibility(View.GONE);
+            setupLeftViewPager(context, fragmentManager);
+        }
+    }
 
     @SuppressLint({"NonConstantResourceId", "NotifyDataSetChanged"})
     @Override
@@ -1170,26 +1259,30 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 callAPIDateSync();
                 break;
             case R.id.rl_date_layoout:
-                    SetUpHolidayWeekEndData();
-                if (binding.viewCalerderLayout.getRoot().getVisibility() == View.GONE) {
-                    getCallsDataToCalender();
-                    selectedDate = LocalDate.now();
-                    binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
-                    calendarDays.clear();
-                    calendarDays = daysInMonthArray(selectedDate);
-                    callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
-                    binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
-                    binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
-
-                    binding.viewCalerderLayout.getRoot().setVisibility(View.VISIBLE);
-                    //   binding.tabLayout.getRoot().setVisibility(View.GONE);
-                    binding.tabLayout.setVisibility(View.GONE);
-                    binding.viewPager.setVisibility(View.GONE);
+                if(SequentialEntry.equalsIgnoreCase("0") && dateSync.length() > 0){
+                    commonUtilsMethods.showToastMessage(this, getString(R.string.sequential_entry_cannot_change_date));
                 } else {
-                    binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
-                    //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
-                    binding.tabLayout.setVisibility(View.VISIBLE);
-                    binding.viewPager.setVisibility(View.VISIBLE);
+                    SetUpHolidayWeekEndData();
+                    if(binding.viewCalerderLayout.getRoot().getVisibility() == View.GONE) {
+                        getCallsDataToCalender();
+//                        selectedDate = LocalDate.now();
+                        binding.viewCalerderLayout.monthYearTV.setText(monthYearFromDate(selectedDate));
+                        calendarDays.clear();
+                        calendarDays = daysInMonthArray(selectedDate);
+                        callstatusadapter = new Callstatusadapter(calendarDays, HomeDashBoard.this, selectedDate);
+                        binding.viewCalerderLayout.calendarRecyclerView.setLayoutManager(new GridLayoutManager(this, 7));
+                        binding.viewCalerderLayout.calendarRecyclerView.setAdapter(callstatusadapter);
+
+                        binding.viewCalerderLayout.getRoot().setVisibility(View.VISIBLE);
+                        //   binding.tabLayout.getRoot().setVisibility(View.GONE);
+                        binding.tabLayout.setVisibility(View.GONE);
+                        binding.viewPager.setVisibility(View.GONE);
+                    }else {
+                        binding.viewCalerderLayout.getRoot().setVisibility(View.GONE);
+                        //  binding.tabLayout.getRoot().setVisibility(View.VISIBLE);
+                        binding.tabLayout.setVisibility(View.VISIBLE);
+                        binding.viewPager.setVisibility(View.VISIBLE);
+                    }
                 }
                 break;
 

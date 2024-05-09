@@ -386,4 +386,8 @@
     <string name="camera_permission_needed">Camera permission needed!</string>
     <string name="no_camera_detected">No Camera Detected</string>
     <string name="image_saved">Image has been saved</string>
+    <string name="sequential_entry_cannot_change_date">Since in Sequential Entry, cannot change the date!</string>
+    <string name="kindly_submit_field_work">Kindly Submit Field Work</string>
+    <string name="unable_to_add_call_for_non_field_work">Unable to add call for non field work</string>
+    <string name="please_enter_the_remarks">Please enter the remarks!</string>
 </resources>

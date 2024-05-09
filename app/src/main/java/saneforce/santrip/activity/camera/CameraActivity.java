@@ -290,7 +290,7 @@ public class CameraActivity extends AppCompatActivity implements ImageReader.OnI
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(filePath);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-            commonUtilsMethods.showToastMessage(this, getString(R.string.image_saved));
+//            commonUtilsMethods.showToastMessage(this, getString(R.string.image_saved));
             fileOutputStream.close();
         } catch (Exception e) {
             e.printStackTrace();

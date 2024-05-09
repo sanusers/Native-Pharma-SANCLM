@@ -32,6 +32,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.santrip.activity.call.pojo.CallCaptureImageList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
@@ -113,7 +114,7 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     showImageLocal(callCaptureImageLists.get(holder.getBindingAdapterPosition()).getFilePath());
                     break;
                 case "edit_online":
-                    if(NetworkUtil.getConnectivityStatus(context) != 0) {
+                    if(UtilityClass.isNetworkAvailable(context)) {
                         if(!callCaptureImageList.isShowPreview()) {
                             callCaptureImageList.setShowPreview(true);
                             notifyItemChanged(position);

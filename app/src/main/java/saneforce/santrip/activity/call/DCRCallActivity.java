@@ -2107,10 +2107,11 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("town_code", CallActivityCustDetails.get(0).getTown_code());
             jsonSaveDcr.put("town_name", CallActivityCustDetails.get(0).getTown_name());
             jsonSaveDcr.put("ModTime", CurrentDate + " " + CurrentTime);
-            jsonSaveDcr.put("ReqDt", CurrentDate + " " + CurrentTime);
+            jsonSaveDcr.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
+            jsonSaveDcr.put("day_flag", "0");
 
             if (isFromActivity.equalsIgnoreCase("new")) {
-                jsonSaveDcr.put("vstTime", CurrentDate + " " + CurrentTime);
+                jsonSaveDcr.put("vstTime", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString()) + " " + CurrentTime);
             } else {
                 jsonSaveDcr.put("vstTime", VistTime);
             }

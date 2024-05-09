@@ -52,6 +52,7 @@ import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMasterSyncBinding;
 import saneforce.santrip.network.ApiInterface;
@@ -838,9 +839,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
 
         dcrModelArray.add(callSyncModel);
+        dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(myDayPlanModel);
         dcrModelArray.add(visitControlModel);
-        dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(stockBalanceModel);
 
 
@@ -1121,6 +1122,23 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
+                case "getmydayplan": {
+                    MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(this, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
+                        @Override
+                        public void onComplete() {
+                            try {
+                                jsonObject.put("ReqDt", SharedPref.getSelectedDateCal(MasterSyncActivity.this));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!" );
+                        }
+                    });
+                }
             }
 
             Map<String, String> mapString = new HashMap<>();
@@ -1326,6 +1344,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             Log.v("masterCheck", "--error-" + e);
+            e.printStackTrace();
         }
 
     }

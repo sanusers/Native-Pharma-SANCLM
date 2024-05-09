@@ -388,6 +388,7 @@ public class SharedPref {
     public static final String DR_ADD_CALL_NEED = "DrAdditionalCallNeed";
     public static final String POB_STOCKIST_NEED = "Pob_Stockist_Nd";
     public static final String POB_UNLISTED_DR_NEED = "Pob_Unlstdr_Nd";
+    public static final String DCR_SEQUENTIAL = "dcr_sequential";
 
 
 
@@ -701,6 +702,7 @@ public class SharedPref {
         editor.putString(UNLIST_SRT_ND, jsonObject.getString("UnlistSrtNd"));
         editor.putString(RCPA_COMPETITOR_ADD, jsonObject.getString("RCPA_competitor_add"));
         editor.putString(GEOTAGGING, jsonObject.getString("GeoTagging"));
+        editor.putString(DCR_SEQUENTIAL, jsonObject.getString("dcr_sequential"));
         editor.apply();
 
     }catch (Exception ignore){
@@ -2336,6 +2338,16 @@ public class SharedPref {
 
     public static String getsyn_hqcode(Context context) {
         return context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE).getString(SETSYN_HQCODE, "");
+    }
+
+    public static void setDcrSequential(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DCR_SEQUENTIAL, status).apply();
+    }
+
+    public static String getDcrSequential(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DCR_SEQUENTIAL, "");
     }
 
 }

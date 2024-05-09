@@ -70,7 +70,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
 
         if(checked_arrayList.get(position).getCode().equalsIgnoreCase("-10")){
             noInputHolder = holder;
-            if(DCRCallActivity.InpMandatory.equalsIgnoreCase("1")){
+            if(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equalsIgnoreCase("1")){
                 noInputHolder.checkBox.setChecked(false);
             }else {
                 checkAndSetNoInputCheckedOrUnchecked();
@@ -109,7 +109,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                     CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                 }
             }else {
-                    if(DCRCallActivity.InpMandatory.equalsIgnoreCase("1")) {
+                    if(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equalsIgnoreCase("1")) {
                         noInputHolder.checkBox.setChecked(false);
                         commonUtilsMethods.showToastMessage(context, "Input selection is mandatory!");
                     }else {
@@ -203,7 +203,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
     }
 
     private void checkAndSetNoInputCheckedOrUnchecked() {
-        if(!DCRCallActivity.InpMandatory.equals("1")) {
+        if(!(DCRCallActivity.InpMandatory != null && DCRCallActivity.InpMandatory.equals("1"))) {
             if(!checkAnyInputSelected()) {
                 checked_arrayList.get(0).setCheckedItem(true);
                 noInputHolder.checkBox.setChecked(true);

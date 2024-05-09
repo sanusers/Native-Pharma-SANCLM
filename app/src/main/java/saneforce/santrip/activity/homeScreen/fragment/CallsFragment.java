@@ -20,8 +20,12 @@ import com.google.gson.JsonElement;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -46,6 +50,7 @@ import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
+import saneforce.santrip.utility.TimeUtils;
 
 
 public class CallsFragment extends Fragment {
@@ -80,7 +85,8 @@ public class CallsFragment extends Fragment {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "gettodycalls");
                         jsonObject.put("sfcode",  SharedPref.getSfCode(context));
-                        jsonObject.put("ReqDt", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
+                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
+                        jsonObject.put("day_flag", "0");
                         jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf",  SharedPref.getHqCode(context));
                         jsonObject.put("sf_type", SharedPref.getSfType(context));
@@ -108,8 +114,8 @@ public class CallsFragment extends Fragment {
 
 
 
-                                        JSONArray jsonArray1 =new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
-                                        JSONArray jsonArray2 =new JSONArray(masterDataDao.getDataByKey(Constants.CALL_SYNC));
+                                        JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                                        JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
                                         ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
                                         ArrayList<CallsModalClass> TodayCallListTwo = new ArrayList<>();
                                         TodayCallList.clear();
@@ -188,6 +194,7 @@ public class CallsFragment extends Fragment {
                                     } catch (Exception e) {
                                         if (isProgressNeed) progressDialog.dismiss();
                                         Log.v("TodayCalls", "--error--" + e);
+                                        e.printStackTrace();
                                     }
                                 } else {
                                     if (isProgressNeed) progressDialog.dismiss();
@@ -336,12 +343,31 @@ public class CallsFragment extends Fragment {
                     }
                 }
             } else {
-                if (!SharedPref.getMydayPlanStatus(requireContext()))
-                    commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
-                else if (!SharedPref.getFeildWorkStatus(requireContext()))
-                    commonUtilsMethods.showToastMessage(requireContext(), "Kindly Submit Feild Work");
-                else startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.MY_DAY_PLAN).getMasterSyncDataJsonArray();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
+                try {
+                    if(workTypeArray.length() > 0) {
+                        JSONObject FirstSeasonDayPlanObject = workTypeArray.getJSONObject(0);
+                        String DayPlanDate = FirstSeasonDayPlanObject.getJSONObject("TPDt").getString("date");
+                        String FWFlg = FirstSeasonDayPlanObject.getString("FWFlg");
+                        String CurrentDate = HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4));
+                        Date FirstPlanDate = sdf.parse(DayPlanDate);
+                        Date CurentDate = sdf.parse(CurrentDate);
+                        if(FirstPlanDate.equals(CurentDate)) {
+                            if(!FWFlg.equalsIgnoreCase("F"))
+                                commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.unable_to_add_call_for_non_field_work));
+                            else
+                                startActivity(new Intent(getContext(), DcrCallTabLayoutActivity.class));
+                        }else {
+                            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_mydayplan));
+                        }
+                    }else{
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.kindly_submit_field_work));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
