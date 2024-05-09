@@ -21,10 +21,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -32,6 +34,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -126,7 +129,6 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         });
 
         holder.info.setOnClickListener(view -> {
-            StringBuilder stringBuilder = new StringBuilder();
             TreeMap<String, String> timeline = new TreeMap<>();
             try {
                 for(StoreImageTypeUrl storeImageTypeUrl : arrayStore) {
@@ -136,21 +138,19 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
                             for (int i = 0; i<jsonArray.length() - 1; i++) {
                                 String startTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("sT")),
                                         endTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(i).getString("eT"));
-                                timeline.put(jsonArray.getJSONObject(i).getString("sT"), String.format("%s : %s - %s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
+                                timeline.put(jsonArray.getJSONObject(i).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
                             }
                             String startTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT")),
                                     endTime = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_32, TimeUtils.FORMAT_33, jsonArray.getJSONObject(jsonArray.length() - 1).getString("eT"));
-                            timeline.put(jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT"), String.format("%s : %s - %s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
-                        } else {
-                            stringBuilder.append("Timeline not found!");
+                            timeline.put(jsonArray.getJSONObject(jsonArray.length() - 1).getString("sT"), String.format("%s~%s~%s", storeImageTypeUrl.getSlideNam(), startTime, endTime));
                         }
                     }
                 }
-                for (String key: timeline.keySet()) {
-                    stringBuilder.append(timeline.get(key));
-                    if(!key.equalsIgnoreCase(timeline.lastKey())) stringBuilder.append("\n");
-                }
-                showTimelinePopUp(view, stringBuilder.toString());
+//                for (String key: timeline.keySet()) {
+//                    stringBuilder.append(timeline.get(key));
+//                    if(!key.equalsIgnoreCase(timeline.lastKey())) stringBuilder.append("\n");
+//                }
+                showTimelinePopUp(view, new ArrayList<>(timeline.values()));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -162,11 +162,19 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         return !stringBuilder.toString().isEmpty() && !stringBuilder.toString().endsWith("\n");
     }
 
-    private void showTimelinePopUp(View view, String timeline) {
+    private void showTimelinePopUp(View view, List<String> timeline) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.timeline_popup, null);
-        TextView timelineTV = popupView.findViewById(R.id.timeline);
-        timelineTV.setText(timeline);
+        TimelineAdapter timelineAdapter = new TimelineAdapter(context, timeline);
+        RecyclerView timeLineRecyclerview = popupView.findViewById(R.id.timeline_recyclerview);
+        int recyclerHeight = 150;
+        if(timeline.size() < 4) recyclerHeight = WindowManager.LayoutParams.WRAP_CONTENT;
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        ViewGroup.LayoutParams layoutParams = timeLineRecyclerview.getLayoutParams();
+        layoutParams.height = recyclerHeight;
+        timeLineRecyclerview.setLayoutParams(layoutParams);
+        timeLineRecyclerview.setLayoutManager(layoutManager);
+        timeLineRecyclerview.setAdapter(timelineAdapter);
         PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, false);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -176,7 +184,7 @@ public class DetailedFinalCallAdapter extends RecyclerView.Adapter<DetailedFinal
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int width = popupView.getMeasuredWidth();
         int height = popupView.getMeasuredHeight();
-        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - width + 15, location[1] - height);
+        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] - width + 25, location[1] - height + 5);
     }
 
     @Override

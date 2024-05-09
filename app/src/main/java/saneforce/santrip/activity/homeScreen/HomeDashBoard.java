@@ -1172,7 +1172,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     }
 
     public static void checkAndSetEntryDate(Context context){
-        if(SequentialEntry.equalsIgnoreCase("0")){
+        if(SequentialEntry != null && SequentialEntry.equalsIgnoreCase("0")){
 //            dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             binding.viewPagerProgress.setVisibility(View.VISIBLE);
             MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(context, true, new MyDayPlanEntriesNeeded.SyncTaskStatus() {

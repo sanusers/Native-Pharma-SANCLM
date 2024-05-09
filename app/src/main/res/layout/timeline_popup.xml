@@ -39,7 +39,7 @@
                 android:layout_height="@dimen/_15sdp"
                 android:layout_alignTop="@id/tv_head"
                 android:layout_alignBottom="@id/tv_head"
-                android:layout_alignEnd="@id/timeline"
+                android:layout_alignEnd="@id/timeline_recyclerview"
                 android:padding="@dimen/_2sdp"
                 app:tint="@color/white"
                 android:src="@drawable/img_close"
@@ -50,8 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_below="@id/tv_head"
-                android:layout_alignStart="@id/timeline"
-                android:layout_alignEnd="@id/timeline"
+                android:layout_alignStart="@id/timeline_recyclerview"
+                android:layout_alignEnd="@id/timeline_recyclerview"
                 android:background="@color/light_grey" />
 
             <TextView
@@ -66,9 +66,24 @@
                 android:paddingHorizontal="@dimen/_4sdp"
                 android:textAlignment="textStart"
                 android:paddingVertical="@dimen/_3sdp"
+                android:visibility="gone"
                 android:text="12:34:56 - 01:23:45\n12:13:14 - 04:44:44"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_5ssp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/view_dummy"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:scrollbars="horizontal"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:layout_marginHorizontal="@dimen/_4sdp"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                tools:listitem="@layout/item_timeline"
+                android:id="@+id/timeline_recyclerview"/>
         </RelativeLayout>
 
         <ImageView

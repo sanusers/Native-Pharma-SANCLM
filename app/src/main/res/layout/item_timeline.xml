@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/dark_purple"
+    android:paddingVertical="@dimen/_3sdp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/slide_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/satoshi_bold"
+        android:text="@string/no_slides_available"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_5ssp" />
+
+    <TextView
+        android:layout_width="@dimen/_5sdp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:layout_marginHorizontal="@dimen/_3sdp"
+        android:text=" : "
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_5ssp" />
+
+    <TextView
+        android:id="@+id/start_time"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:text="02:34:56 AM"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_5ssp" />
+
+    <TextView
+        android:layout_width="@dimen/_5sdp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:text=" - "
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_5ssp" />
+
+    <TextView
+        android:id="@+id/end_time"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/satoshi_bold"
+        android:text="02:34:56 AM"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_5ssp" />
+</LinearLayout>
