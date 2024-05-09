@@ -60,7 +60,7 @@ public class AdapterSampleAdditionalCall extends RecyclerView.Adapter<AdapterSam
         holder.tv_select_sample.setText(addedProductList.get(position).getPrd_name());
 
         boolean isSampleNeed = false;
-        if(CallActivityCustDetails.get(position).getType().equalsIgnoreCase("1")) {
+        if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
             if(PrdSamNeed.equalsIgnoreCase("1")) {
                 isSampleNeed = true;
             }

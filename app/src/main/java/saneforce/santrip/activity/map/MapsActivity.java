@@ -375,9 +375,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SfCode = SharedPref.getSfCode(this);
         SfName = SharedPref.getSfName(this);
         DivCode = SharedPref.getDivisionCode(this);
-        SubDivisionCode = SharedPref.getSubdivisionCode(this);;
-        Designation = SharedPref.getDesig(this);;
-        StateCode = SharedPref.getStateCode(this);;
+        SubDivisionCode = SharedPref.getSubdivisionCode(this);
+        Designation = SharedPref.getDesig(this);
+        StateCode = SharedPref.getStateCode(this);
 
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvDoctor.setVisibility(View.VISIBLE);
@@ -1042,7 +1042,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 mapsBinding.tvTaggedAddress.setText(CustListAdapter.getCustListNew.get(0).getAddress());
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 10.0f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 16.2f));
                 double getDistance = getDistanceMeters(lat, lng, parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude()));
                 if (getDistance > 1000) {
                     getDistance = getDistance / 1000;

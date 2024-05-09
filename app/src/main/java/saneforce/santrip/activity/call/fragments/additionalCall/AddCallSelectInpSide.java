@@ -59,7 +59,7 @@ public class AddCallSelectInpSide extends Fragment {
         selectInputSideBinding.btnOk.setOnClickListener(view -> {
             for (int i = 0; i < SelectACInputAdapter.callInputListAdapter.size(); i++) {
                 if (SelectACInputAdapter.callInputListAdapter.get(i).isCheckedItem()) {
-                    addedInpList.add(new AddInputAdditionalCall(Selected_name, Selected_code, SelectACInputAdapter.callInputListAdapter.get(i).getName(), SelectACInputAdapter.callInputListAdapter.get(i).getCode(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), ""));
+                    addedInpList.add(new AddInputAdditionalCall(Selected_name, Selected_code, SelectACInputAdapter.callInputListAdapter.get(i).getName(), SelectACInputAdapter.callInputListAdapter.get(i).getCode(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), SelectACInputAdapter.callInputListAdapter.get(i).getStock_balance(), "1"));
                 }
             }
             commonUtilsMethods.recycleTestWithoutDivider(callDetailsSideBinding.rvAddInputsAdditional);

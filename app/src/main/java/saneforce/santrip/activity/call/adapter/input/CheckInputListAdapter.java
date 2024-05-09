@@ -99,7 +99,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
                             checked_arrayList.set(position, new CallCommonCheckedList(checked_arrayList.get(position).getName(), checked_arrayList.get(position).getCode(), StockInput.get(i).getCurrentStock(), false));
                         }
                     }
-                    if (Integer.parseInt(checked_arrayList.get(position).getStock_balance()) > 0) {
+                    if (Integer.parseInt(checked_arrayList.get(position).getStock_balance()) > 1) {
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     } else {
                         holder.checkBox.setChecked(false);
@@ -142,7 +142,7 @@ public class CheckInputListAdapter extends RecyclerView.Adapter<CheckInputListAd
             isCheckedInp = false;
             checked_arrayList.get(adapterPosition).setCheckedItem(true);
             checkAndSetNoInputCheckedOrUnchecked();
-            saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
+            saveCallInputListArrayList.add(new SaveCallInputList(checked_arrayList.get(adapterPosition).getName(), checked_arrayList.get(adapterPosition).getCode(), "1", checked_arrayList.get(adapterPosition).getStock_balance(), checked_arrayList.get(adapterPosition).getStock_balance()));
             AssignRecyclerView(activity, context, saveCallInputListArrayList, checked_arrayList);
         } else {
             new CountDownTimer(80, 80) {

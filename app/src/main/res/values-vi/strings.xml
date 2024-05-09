@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="str_app_name">SAN TRIP</string>
+    <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Gắn thẻ</string>
     <string name="txt_doctor">Bác sĩ</string>

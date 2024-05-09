@@ -704,15 +704,14 @@ public class DCRCallActivity extends AppCompatActivity {
                             commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s", getString(R.string.enter_the).trim(), capInp));
                             moveToPage(capInp);
                             return false;
-                        }else {
-                            for (int i = 0; i<CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
-                                if(CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty() || CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().equalsIgnoreCase("0")) {
-                                    commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), "Input Qty", getString(R.string.value)));
-                                    moveToPage(capInp);
-                                    return false;
-                                }
-                            }
                         }
+                    }
+                }
+                for (int i = 0; i<CheckInputListAdapter.saveCallInputListArrayList.size(); i++) {
+                    if(CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().isEmpty() || CheckInputListAdapter.saveCallInputListArrayList.get(i).getInp_qty().equalsIgnoreCase("0")) {
+                        commonUtilsMethods.showToastMessage(DCRCallActivity.this, String.format("%s %s %s", getString(R.string.enter_the).trim(), "Input Qty", getString(R.string.value)));
+                        moveToPage(capInp);
+                        return false;
                     }
                 }
 
@@ -2070,7 +2069,13 @@ public class DCRCallActivity extends AppCompatActivity {
             jsonSaveDcr.put("CustCode", CallActivityCustDetails.get(0).getCode());
             jsonSaveDcr.put("CustName", CallActivityCustDetails.get(0).getName());
             if (isFromActivity.equalsIgnoreCase("new")) {
-                jsonSaveDcr.put("Entry_location", lat + ":" + lng);
+                if(lat == 0.0 || lng == 0.0){
+                    commonUtilsMethods.showToastMessage(this, "Gathering location information failed, Please try again!");
+                    isCreateJsonSuccess = false;
+                    return;
+                }else {
+                    jsonSaveDcr.put("Entry_location", lat + ":" + lng);
+                }
             } else {
                 jsonSaveDcr.put("Entry_location", latEdit + ":" + lngEdit);
             }
