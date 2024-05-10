@@ -209,7 +209,7 @@
                 android:id="@+id/constraint_list_comp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@id/rv_comp_added_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -309,9 +309,9 @@
 
                 <TextView
                     android:id="@+id/tag_remarks"
-                    android:layout_width="@dimen/_24sdp"
+                    android:layout_width="@dimen/_26sdp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    android:layout_marginHorizontal="@dimen/_1sdp"
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:fontFamily="@font/satoshi_regular"
                     android:padding="@dimen/_2sdp"

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -44,6 +45,7 @@ import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
+import saneforce.santrip.utility.TimeUtils;
 
 public class PreviewActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
@@ -176,25 +178,54 @@ public class PreviewActivity extends AppCompatActivity {
 
         previewBinding.btnFinishDet.setOnClickListener(v -> {
             Collections.sort(arrayStore, new StoreImageTypeUrl.StoreImageComparator());
+            String totalDuration = "";
             for (int j = 0; j < arrayStore.size(); j++) {
                 if (j == 0) {
                     gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j);
                     finalPrdNam = arrayStore.get(j).getBrdName();
                 } else if (finalPrdNam.equalsIgnoreCase(arrayStore.get(j).getBrdName())) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(arrayStore.get(j-1).getRemTime());
+                        for (int i = 0; i<jsonArray.length(); i++) {
+                            String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
+                            totalDuration = TimeUtils.addTime(totalDuration, duration);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     String time = gettingProductStartEndTime(arrayStore.get(j).getRemTime(), j) + " " + gettingProductTiming(arrayStore.get(j - 1).getBrdName());
                     if (time.contains("00:00:00")) {
                         time = time.replace("00:00:00", time.substring(0, 8));
                     }
                     Log.v("printing_all_time", time);
-                    callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
+                    try {
+                        JSONArray jsonArray = new JSONArray(arrayStore.get(j-1).getRemTime());
+                        for (int i = 0; i<jsonArray.length(); i++) {
+                            String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
+                            totalDuration = TimeUtils.addTime(totalDuration, duration);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    callDetailingLists.add(new CallDetailingList(arrayStore.get(j - 1).getBrdName(), arrayStore.get(j - 1).getBrdCode(), arrayStore.get(j - 1).getSlideNam(), arrayStore.get(j - 1).getSlideTyp(), arrayStore.get(j - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
                     finalPrdNam = arrayStore.get(j).getBrdName();
+                    totalDuration = "";
                 }
             }
 
             if (arrayStore.size() > 0) {
+                try {
+                    JSONArray jsonArray = new JSONArray(arrayStore.get(arrayStore.size()-1).getRemTime());
+                    for (int i = 0; i<jsonArray.length(); i++) {
+                        String duration = TimeUtils.timeDurationHMS(jsonArray.getJSONObject(i).getString("sT"), jsonArray.getJSONObject(i).getString("eT"));
+                        totalDuration = TimeUtils.addTime(totalDuration, duration);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 String time = gettingProductStartEndTime1(arrayStore.get(arrayStore.size() - 1).getRemTime(), arrayStore.size() - 1) + " " + gettingProductTiming(arrayStore.get(arrayStore.size() - 1).getBrdName());
-                callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")));
+                callDetailingLists.add(new CallDetailingList(arrayStore.get(arrayStore.size() - 1).getBrdName(), arrayStore.get(arrayStore.size() - 1).getBrdCode(), arrayStore.get(arrayStore.size() - 1).getSlideNam(), arrayStore.get(arrayStore.size() - 1).getSlideTyp(), arrayStore.get(arrayStore.size() - 1).getSlideUrl(), time, time.substring(0, 8), 0, "", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), totalDuration));
             }
             Intent intent1 = new Intent(PreviewActivity.this, DCRCallActivity.class);
             intent1.putExtra(Constants.DETAILING_REQUIRED, "true");

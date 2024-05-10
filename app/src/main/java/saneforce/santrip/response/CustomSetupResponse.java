@@ -74,6 +74,8 @@ public class CustomSetupResponse implements Serializable {
     private String StockistPobMandatory;
     @SerializedName("Pob_Unlstdr_Mandatory_Need")
     private String UndrPobMandatory;
+    @SerializedName("Additional_Call")
+    private String AdditionalCall;
 
     public String getAddDoctor() {
         return AddDoctor;
@@ -306,4 +308,13 @@ public class CustomSetupResponse implements Serializable {
     public void setHospNeed(String hospNeed) {
         this.HospNeed = hospNeed;
     }
+
+    public String getAdditionalCall() {
+        return AdditionalCall;
+    }
+
+    public void setAdditionalCall(String additionalCall) {
+        AdditionalCall = additionalCall;
+    }
+
 }

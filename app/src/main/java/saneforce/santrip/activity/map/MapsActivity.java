@@ -119,7 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //    SQLite sqLite;
     LocationManager locationManager;
     GPSTrack gpsTrack;
-    SQLiteHandler sqLiteHandler;
+//    SQLiteHandler sqLiteHandler;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double lat, lng, limitKm = 0.5;
@@ -202,6 +202,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(MapsActivity.this);
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
+//        sqLite = new SQLite(MapsActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
 
@@ -374,9 +375,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SfCode = SharedPref.getSfCode(this);
         SfName = SharedPref.getSfName(this);
         DivCode = SharedPref.getDivisionCode(this);
-        SubDivisionCode = SharedPref.getSubdivisionCode(this);;
-        Designation = SharedPref.getDesig(this);;
-        StateCode = SharedPref.getStateCode(this);;
+        SubDivisionCode = SharedPref.getSubdivisionCode(this);
+        Designation = SharedPref.getDesig(this);
+        StateCode = SharedPref.getStateCode(this);
 
         if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
             mapsBinding.tagTvDoctor.setVisibility(View.VISIBLE);
@@ -1041,7 +1042,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 mapsBinding.tvTaggedAddress.setText(CustListAdapter.getCustListNew.get(0).getAddress());
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 10.0f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude())), 16.2f));
                 double getDistance = getDistanceMeters(lat, lng, parseDouble(CustListAdapter.getCustListNew.get(getCount).getLatitude()), parseDouble(CustListAdapter.getCustListNew.get(getCount).getLongitude()));
                 if (getDistance > 1000) {
                     getDistance = getDistance / 1000;
@@ -1092,7 +1093,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
-         //sqLiteHandler.open();
+//        sqLiteHandler.open();
 
         switch (selected) {
             case "D":

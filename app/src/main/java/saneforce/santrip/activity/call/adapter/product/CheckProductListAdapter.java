@@ -25,6 +25,7 @@ import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.storage.SharedPref;
 
 public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductListAdapter.ViewHolder> {
     public static int pos;
@@ -36,6 +37,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
     FinalProductCallAdapter finalProductCallAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
+    private ViewHolder noProductHolder;
 
 
     public CheckProductListAdapter(Activity activity, Context context, ArrayList<CallCommonCheckedList> callCommonCheckedListArrayList) {
@@ -69,6 +71,15 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
         holder.tv_name.setText(callCommonCheckedListArrayList.get(position).getName());
         holder.tv_category.setVisibility(View.VISIBLE);
         holder.tv_category.setText(callCommonCheckedListArrayList.get(position).getCategory());
+
+        if(callCommonCheckedListArrayList.get(position).getCode().equalsIgnoreCase("-10")){
+            noProductHolder = holder;
+            if(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
+                noProductHolder.checkBox.setChecked(false);
+            }else {
+                checkAndSetNoProductCheckedOrUnchecked();
+            }
+        }
 
         if (callCommonCheckedListArrayList.get(position).getCategory().equalsIgnoreCase("Sale")) {
             holder.tv_category.setText("SL");
@@ -113,7 +124,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
 
         holder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
             if (holder.checkBox.isPressed()) {
-                if (!callCommonCheckedListArrayList.get(position).getName().equalsIgnoreCase("No Product")) {
+                if (!callCommonCheckedListArrayList.get(position).getCode().equalsIgnoreCase("-10")) {
                     if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
                         for (int i = 0; i < StockSample.size(); i++) {
                             if (StockSample.get(i).getStockCode().equalsIgnoreCase(callCommonCheckedListArrayList.get(position).getCode())) {
@@ -134,12 +145,23 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
                         CheckBoxContents(holder.checkBox, holder.tv_name, holder.getBindingAdapterPosition());
                     }
                 }else {
-                    if(holder.checkBox.isChecked()){
-                        holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
-                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                    if(DCRCallActivity.PrdMandatory.equalsIgnoreCase("1")) {
+                        noProductHolder.checkBox.setChecked(false);
+                        commonUtilsMethods.showToastMessage(context, "Product selection is mandatory!");
                     }else {
-                        holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
-                        holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+                        if(holder.checkBox.isChecked() && checkAnyProductSelected()) {
+                            holder.checkBox.setChecked(false);
+                            commonUtilsMethods.showToastMessage(context, "Please deselect the selected Products!");
+//                            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+//                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+                        }else {
+                            holder.checkBox.setChecked(true);
+                            commonUtilsMethods.showToastMessage(context, "Cannot deselect No Product!");
+                        }
+//                        else {
+//                            holder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+//                            holder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+//                        }
                     }
                 }
             }
@@ -153,6 +175,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
             isCheckedPrd = false;
             callCommonCheckedListArrayList.get(adapterPosition).setCheckedItem(true);
+            checkAndSetNoProductCheckedOrUnchecked();
             saveCallProductListArrayList.add(new SaveCallProductList(callCommonCheckedListArrayList.get(adapterPosition).getName(), callCommonCheckedListArrayList.get(adapterPosition).getCode(), callCommonCheckedListArrayList.get(adapterPosition).getCategoryExtra(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), callCommonCheckedListArrayList.get(adapterPosition).getStock_balance(), "", "", "", "1", true));
             AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
         } else {
@@ -170,6 +193,7 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             isCheckedPrd = true;
             UnSelectedPrdCode = callCommonCheckedListArrayList.get(adapterPosition).getCode();
             callCommonCheckedListArrayList.get(adapterPosition).setCheckedItem(false);
+            checkAndSetNoProductCheckedOrUnchecked();
             commonUtilsMethods.recycleTestWithDivider(ProductFragment.productsBinding.rvListPrd);
             AssignRecyclerView(activity, context, saveCallProductListArrayList, callCommonCheckedListArrayList);
             finalProductCallAdapter.notifyDataSetChanged();
@@ -202,6 +226,31 @@ public class CheckProductListAdapter extends RecyclerView.Adapter<CheckProductLi
             tv_name = itemView.findViewById(R.id.tv_data_name);
             tv_category = itemView.findViewById(R.id.tv_tag_category);
             checkBox = itemView.findViewById(R.id.chk_box);
+        }
+    }
+
+    private boolean checkAnyProductSelected() {
+        for (CallCommonCheckedList callCommonCheckedList : callCommonCheckedListArrayList) {
+            if(callCommonCheckedList.isCheckedItem() && !callCommonCheckedList.getCode().equalsIgnoreCase("-10")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void checkAndSetNoProductCheckedOrUnchecked() {
+        if(!(DCRCallActivity.PrdMandatory != null && DCRCallActivity.PrdMandatory.equals("1"))) {
+            if(!checkAnyProductSelected()) {
+                callCommonCheckedListArrayList.get(0).setCheckedItem(true);
+                noProductHolder.checkBox.setChecked(true);
+                noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.cheked_txt_color));
+                noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_2)));
+            }else {
+                callCommonCheckedListArrayList.get(0).setCheckedItem(false);
+                noProductHolder.checkBox.setChecked(false);
+                noProductHolder.tv_name.setTextColor(ContextCompat.getColor(context, R.color.bg_txt_color));
+                noProductHolder.checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bg_txt_color)));
+            }
         }
     }
 }

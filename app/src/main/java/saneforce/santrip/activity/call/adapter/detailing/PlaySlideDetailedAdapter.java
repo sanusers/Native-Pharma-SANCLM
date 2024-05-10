@@ -582,7 +582,7 @@ public class PlaySlideDetailedAdapter extends PagerAdapter {
 
     public String findingEndTime(int k) {
         if (checkForLastSlide(k)) {
-            return defaultTime;
+            return CommonUtilsMethods.getCurrentInstance("HH:mm:ss");
         } else {
             int j = k + 1;
             return mCommonSharedPreference.getValueFromPreferenceFeed("timeVal" + j);

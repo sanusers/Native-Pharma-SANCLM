@@ -82,7 +82,7 @@
                 android:fontFamily="@font/satoshi_bold"
                 android:paddingHorizontal="@dimen/_4sdp"
                 android:paddingVertical="@dimen/_3sdp"
-                android:text="@string/timeline"
+                android:text="@string/duration"
                 android:textColor="@color/dark_purple"
                 android:textSize="@dimen/_7ssp"
                 app:layout_constraintBottom_toBottomOf="parent"

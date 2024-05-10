@@ -31,7 +31,6 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 
@@ -143,7 +142,6 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
             if (!list.getDateID().equalsIgnoreCase("")) {
 
                 boolean isApplicableDate = false;
-                boolean isSequential = false;
                 String monthConverted = "";
                 if (!list.getMonth().isEmpty()) {
                     monthConverted = list.getMonth();
@@ -164,7 +162,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 if (selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
                     isApplicableDate = true;
                 } else {
-                    if (isSequential) {
+                    if (HomeDashBoard.SequentialEntry.equalsIgnoreCase("0")) {
                         if (selectedDate.equalsIgnoreCase(dateStrings.get(0))) {
                             isApplicableDate = true;
                         }
@@ -186,6 +184,9 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                     HomeDashBoard.binding.viewPager.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.viewDummy.setVisibility(View.VISIBLE);
                     HomeDashBoard.binding.imgDoubleVecer.setImageDrawable(context.getDrawable(R.drawable.arrow_bot_top_img));
+//                    if (HomeDashBoard.SequentialEntry.equalsIgnoreCase("0")) {
+                        HomeDashBoard.checkAndSetEntryDate(context);
+//                    }
                 } else {
                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 }

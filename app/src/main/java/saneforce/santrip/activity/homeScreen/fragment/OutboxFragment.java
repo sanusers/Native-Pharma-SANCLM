@@ -103,6 +103,7 @@ public class OutboxFragment extends Fragment {
 
     @SuppressLint("NotifyDataSetChanged")
     public static void SetupOutBoxAdapter(Activity activity, Context context) {
+//        SQLite sq=new SQLite(context);
 //        listDates = sqLite.getOutBoxDate();
         listDates = callsUtil.getOutBoxDate();
         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);

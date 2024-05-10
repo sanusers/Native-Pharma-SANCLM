@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">Test.H.2</string>
+    <string name="app_version" translatable="false">Version.H1</string>
     <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
@@ -382,4 +382,12 @@
     <string name="dashboard">DashBoard</string>
     <string name="close_preview">Close Preview</string>
     <string name="title">Title</string>
+    <string name="duration">Duration</string>
+    <string name="camera_permission_needed">Camera permission needed!</string>
+    <string name="no_camera_detected">No Camera Detected</string>
+    <string name="image_saved">Image has been saved</string>
+    <string name="sequential_entry_cannot_change_date">Since in Sequential Entry, cannot change the date!</string>
+    <string name="kindly_submit_field_work">Kindly Submit Field Work</string>
+    <string name="unable_to_add_call_for_non_field_work">Unable to add call for non field work</string>
+    <string name="please_enter_the_remarks">Please enter the remarks!</string>
 </resources>

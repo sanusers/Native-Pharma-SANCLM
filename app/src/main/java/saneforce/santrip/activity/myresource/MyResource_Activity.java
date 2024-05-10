@@ -62,7 +62,7 @@ public class MyResource_Activity extends AppCompatActivity {
     Resource_adapter resourceAdapter;
     HashMap<String, Integer> idCounts = new HashMap<>();
     String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
-    SQLite sqLite;
+//    SQLite sqLite;
     String navigateFrom = "", input_count="",product_count="";
     public static ActivityMyResourceBinding binding;
     LocalDate date_n;

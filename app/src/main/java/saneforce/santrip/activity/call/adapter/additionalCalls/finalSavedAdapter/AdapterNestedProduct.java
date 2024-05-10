@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.call.adapter.additionalCalls.finalSavedAdapter;
 
+import static saneforce.santrip.activity.call.DCRCallActivity.CallActivityCustDetails;
 import static saneforce.santrip.activity.call.DCRCallActivity.PrdSamNeed;
 
 import android.app.Activity;
@@ -46,12 +47,21 @@ public class AdapterNestedProduct extends RecyclerView.Adapter<AdapterNestedProd
 
         holder.tv_sam_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, nestedProduct.get(position).getPrd_name()));
 
-
-        if (PrdSamNeed.equalsIgnoreCase("1")) {
+        boolean isSampleNeed = false;
+        if(CallActivityCustDetails.get(position).getType().equalsIgnoreCase("1")) {
+            if(PrdSamNeed.equalsIgnoreCase("1")) {
+                isSampleNeed = true;
+            }
+        }else {
+            if(PrdSamNeed.equalsIgnoreCase("0")) {
+                isSampleNeed = true;
+            }
+        }
+        if(isSampleNeed){
             holder.tv_sam_qty.setVisibility(View.VISIBLE);
-            if (nestedProduct.get(position).getSample_qty().isEmpty()) {
+            if(nestedProduct.get(position).getSample_qty().isEmpty()) {
                 holder.tv_sam_qty.setText("0");
-            } else {
+            }else {
                 holder.tv_sam_qty.setText(nestedProduct.get(position).getSample_qty());
             }
         }

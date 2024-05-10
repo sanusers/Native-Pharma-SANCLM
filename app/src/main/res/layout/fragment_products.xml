@@ -108,7 +108,7 @@
 
                 <TextView
                     android:id="@+id/tagPromoted"
-                    android:layout_width="@dimen/_42sdp"
+                    android:layout_width="@dimen/_50sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="@dimen/_1sdp"
                     android:fontFamily="@font/satoshi_bold"

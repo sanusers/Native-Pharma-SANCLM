@@ -28,7 +28,7 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     Context context;
     ViewTagModel viewTagModels;
-    SQLiteHandler db;
+//    SQLiteHandler db;
     TextView txtView;
     TextView txtAdd, txtImage;
     ImageView img_tag;
