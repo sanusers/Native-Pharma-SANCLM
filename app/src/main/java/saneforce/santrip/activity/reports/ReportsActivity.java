@@ -69,8 +69,6 @@ public class ReportsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityReportsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-//        sqLite = new SQLite(ReportsActivity.this);
-
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
 
@@ -112,18 +110,7 @@ public class ReportsActivity extends AppCompatActivity {
                         jsonObject.put("rptDt", date);
                         if (report.equalsIgnoreCase("DAY REPORT")) {
                             jsonObject.put("tableName", "getdayrpt");
-//                case "MONTHLY REPORT" : {
-//                    break;
-//                }
-//                case "DAY CHECK IN REPORT" : {
-//                    break;
-//                }
-//                case "CUSTOMER CHECK IN REPORT" : {
-//                    break;
-//                }
-//                case "VISIT MONITOR" : {
-//                    break;
-//                }
+
                         }
 
                         Map<String, String> mapString = new HashMap<>();

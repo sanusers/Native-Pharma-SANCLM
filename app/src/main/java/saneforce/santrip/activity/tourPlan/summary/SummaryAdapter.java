@@ -99,7 +99,7 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
 
                 boolean onlyHoliday = false;
                 for (String workType : holder.workTypeNames){ // to find the work types among sessions are only holiday/weeklyOff are combinations of any other work types
-                    if (workType.equalsIgnoreCase("Holiday") || workType.equalsIgnoreCase("Weekly Off")){
+                    if (workType.equalsIgnoreCase("Holiday") || workType.equalsIgnoreCase("Weekly Off") || workType.equalsIgnoreCase("Not Available")){
                         onlyHoliday = true;
                     } else {
                         onlyHoliday = false;
@@ -164,7 +164,10 @@ public class SummaryAdapter extends RecyclerView.Adapter<SummaryAdapter.MyViewHo
             @Override
             public void onClick (View view) {
                 ModelClass modelClass = new ModelClass(arrayList.get(holder.getAbsoluteAdapterPosition()));
-                summaryInterface.onClick(modelClass,holder.getAbsoluteAdapterPosition());
+
+                    summaryInterface.onClick(modelClass,holder.getAbsoluteAdapterPosition());
+
+
             }
         });
 

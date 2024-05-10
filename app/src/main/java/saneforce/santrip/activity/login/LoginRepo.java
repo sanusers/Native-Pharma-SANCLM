@@ -3,6 +3,8 @@ package saneforce.santrip.activity.login;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -15,6 +17,7 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.storage.SharedPref;
@@ -40,6 +43,9 @@ public class LoginRepo {
             @Override
             public void onFailure (@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                 Log.e("test","login failed : " + t);
+                LoginActivity.binding.progressBar.setVisibility(View.GONE);
+                Toast.makeText(context.getApplicationContext(), "Please Try Again !",Toast.LENGTH_SHORT).show();
+
             }
         });
 

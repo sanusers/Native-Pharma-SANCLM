@@ -1,8 +1,8 @@
 <resources>
 
     <string name="app_mode" translatable="false">Android-Edet</string>
-    <string name="app_version" translatable="false">Version.H1</string>
-    <string name="str_app_name">SAN TRIP</string>
+    <string name="app_version" translatable="false">Test.H.2</string>
+    <string name="str_app_name">SAN ZEN</string>
     <string name="preference_name">saneforce.santrip.preferencefile</string>
     <string name="txt_tagging">Tagging</string>
     <string name="txt_doctor">Doctor</string>

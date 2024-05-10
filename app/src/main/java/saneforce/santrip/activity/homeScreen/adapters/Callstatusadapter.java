@@ -59,7 +59,6 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         selectedDate = SharedPref.getSelectedDateCal(context);
         try {
             JSONArray getMissedDates = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
-//            JSONArray getMissedDates = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
             for (int i = 0; i < getMissedDates.length(); i++) {
                 JSONObject jsonObject = getMissedDates.getJSONObject(i);
                 if (jsonObject.getString("tbname").equalsIgnoreCase("missed") || jsonObject.getString("tbname").equalsIgnoreCase("dcr")) {

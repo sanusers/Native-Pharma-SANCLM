@@ -1,34 +1,12 @@
 package saneforce.santrip.storage;
 
-import android.annotation.SuppressLint;
-import android.content.ContentValues;
+
 import android.content.Context;
-import android.database.Cursor;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-
-import saneforce.santrip.activity.homeScreen.modelClass.CheckInOutModelClass;
-import saneforce.santrip.activity.homeScreen.modelClass.ChildListModelClass;
-import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
-import saneforce.santrip.activity.homeScreen.modelClass.GroupModelClass;
-import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
-import saneforce.santrip.activity.presentation.createPresentation.BrandModelClass;
-import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.response.LoginResponse;
-
 
 public class SQLite extends SQLiteOpenHelper {
 

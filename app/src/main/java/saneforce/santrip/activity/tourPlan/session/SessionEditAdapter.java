@@ -847,10 +847,10 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 else
                     holder.stockiestLayout.setVisibility(View.GONE);
 
-                if (unListedDrNeed.equalsIgnoreCase("0"))
-                    holder.unListedDrLayout.setVisibility(View.VISIBLE);
-                else
-                    holder.unListedDrLayout.setVisibility(View.GONE);
+//                if (unListedDrNeed.equalsIgnoreCase("0"))
+//                    holder.unListedDrLayout.setVisibility(View.VISIBLE);
+//                else
+//                    holder.unListedDrLayout.setVisibility(View.GONE);
 
                 if (cipNeed.equalsIgnoreCase("0"))
                     holder.cipLayout.setVisibility(View.VISIBLE);
@@ -1179,7 +1179,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (inputDataArray.getSessionList().size() > 1) {
                         for (int i = 0; i < inputDataArray.getSessionList().size(); i++) {
                             if (i != holder.getAbsoluteAdapterPosition()) {
-                                if (inputDataArray.getSessionList().get(i).getWorkType().getFWFlg().equalsIgnoreCase(jsonObject.getFWFlg())) {
+                                if (inputDataArray.getSessionList().get(i).getWorkType().getCode().equalsIgnoreCase(jsonObject.getCode())) {
                                     switch (jsonObject.getFWFlg().toUpperCase()) {
                                         case "W":
                                         case "H": {

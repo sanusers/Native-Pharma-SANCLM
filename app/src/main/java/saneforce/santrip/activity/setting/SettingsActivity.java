@@ -39,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
@@ -76,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
         deviceId = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         binding.tvDeviceId.setText(deviceId);
         SharedPref.saveDeviceId(getApplicationContext(), deviceId);
-        SetUpLanguage();
+        binding.btnSaveSettings.setEnabled(true);
 
         if (!SharedPref.getSaveUrlSetting(getApplicationContext()).equalsIgnoreCase("")) {
             binding.etWebUrl.setText(SharedPref.getSaveUrlSetting(getApplicationContext()));
@@ -84,6 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         binding.btnSaveSettings.setOnClickListener(view -> {
+
             UtilityClass.hideKeyboard(SettingsActivity.this);
             url = binding.etWebUrl.getText().toString().trim().replaceAll("\\s", "");
             licenseKey = binding.etLicenseKey.getText().toString().trim();
@@ -112,99 +114,99 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    private void SetUpLanguage() {
-        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drop_down_spinner_layout, languages);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinnerLanguage.setAdapter(adapter);
-
-        commonUtilsMethods.setUpLanguage(getApplicationContext());
-        language = SharedPref.getSelectedLanguage(this);
-
-        if (!language.equalsIgnoreCase("")) {
-            String languageData = SharedPref.getSelectedLanguage(getApplicationContext());
-            SelectedLanguage(languageData);
-            switch (languageData) {
-                case "pt":
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "PORTUGUESE");
-                    break;
-                case "fr":
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "FRENCH");
-                    break;
-                case "my":
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "BURMESE");
-                    break;
-                case "vi":
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "VIETNAMESE");
-                    break;
-                case "zh":
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "MANDARIN");
-                    break;
-                case "es":
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "SPANISH");
-                    break;
-                case "th":
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "THAILAND");
-                    break;
-                default:
-                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "ENGLISH");
-                    break;
-            }
-        } else {
-            SelectedLanguage("en");
-            commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "ENGLISH");
-        }
-
-        binding.spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView textView = (TextView) view;
-                String selectedLanguage = "";
-                switch (textView.getText().toString().toUpperCase()) {
-                    case "ENGLISH": {
-                        selectedLanguage = "en";
-                        break;
-                    }
-                    case "BURMESE": {
-                        selectedLanguage = "my";
-                        break;
-                    }
-                    case "FRENCH": {
-                        selectedLanguage = "fr";
-                        break;
-                    }
-                    case "MANDARIN": {
-                        selectedLanguage = "zh";
-                        break;
-                    }
-                    case "PORTUGUESE": {
-                        selectedLanguage = "pt";
-                        break;
-                    }
-                    case "SPANISH": {
-                        selectedLanguage = "es";
-                        break;
-                    }
-                    case "THAILAND": {
-                        selectedLanguage = "th";
-                        break;
-                    }
-                    case "VIETNAMESE": {
-                        selectedLanguage = "vi";
-                        break;
-                    }
-
-                }
-                SelectedLanguage(selectedLanguage);
-                SharedPref.saveSelectedLanguage(SettingsActivity.this, selectedLanguage);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
+//    private void SetUpLanguage() {
+//        String[] languages = {"ENGLISH", "BURMESE", "FRENCH", "MANDARIN", "THAILAND", "PORTUGUESE", "SPANISH", "VIETNAMESE"};
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drop_down_spinner_layout, languages);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        binding.spinnerLanguage.setAdapter(adapter);
+//
+//        commonUtilsMethods.setUpLanguage(getApplicationContext());
+//        language = SharedPref.getSelectedLanguage(this);
+//
+//        if (!language.equalsIgnoreCase("")) {
+//            String languageData = SharedPref.getSelectedLanguage(getApplicationContext());
+//            SelectedLanguage(languageData);
+//            switch (languageData) {
+//                case "pt":
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "PORTUGUESE");
+//                    break;
+//                case "fr":
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "FRENCH");
+//                    break;
+//                case "my":
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "BURMESE");
+//                    break;
+//                case "vi":
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "VIETNAMESE");
+//                    break;
+//                case "zh":
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "MANDARIN");
+//                    break;
+//                case "es":
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "SPANISH");
+//                    break;
+//                case "th":
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "THAILAND");
+//                    break;
+//                default:
+//                    commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "ENGLISH");
+//                    break;
+//            }
+//        } else {
+//            SelectedLanguage("en");
+//            commonUtilsMethods.setSpinnerText(binding.spinnerLanguage, "ENGLISH");
+//        }
+//
+//        binding.spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                TextView textView = (TextView) view;
+//                String selectedLanguage = "";
+//                switch (textView.getText().toString().toUpperCase()) {
+//                    case "ENGLISH": {
+//                        selectedLanguage = "en";
+//                        break;
+//                    }
+//                    case "BURMESE": {
+//                        selectedLanguage = "my";
+//                        break;
+//                    }
+//                    case "FRENCH": {
+//                        selectedLanguage = "fr";
+//                        break;
+//                    }
+//                    case "MANDARIN": {
+//                        selectedLanguage = "zh";
+//                        break;
+//                    }
+//                    case "PORTUGUESE": {
+//                        selectedLanguage = "pt";
+//                        break;
+//                    }
+//                    case "SPANISH": {
+//                        selectedLanguage = "es";
+//                        break;
+//                    }
+//                    case "THAILAND": {
+//                        selectedLanguage = "th";
+//                        break;
+//                    }
+//                    case "VIETNAMESE": {
+//                        selectedLanguage = "vi";
+//                        break;
+//                    }
+//
+//                }
+//                SelectedLanguage(selectedLanguage);
+//                SharedPref.saveSelectedLanguage(SettingsActivity.this, selectedLanguage);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
+//    }
 
     public void selectLanguage() {
         final String[] Language = {"ENGLISH", "FRENCH", "PORTUGUESE", "BURMESE", "VIETNAMESE", "MANDARIN", "SPANISH"};
@@ -255,6 +257,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void configuration(String enteredUrl) {
+        binding.btnSaveSettings.setEnabled(false);
         binding.configurationPB.setVisibility(View.VISIBLE);
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
 
@@ -305,7 +308,9 @@ public class SettingsActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         SharedPref.Loginsite(getApplicationContext(), url);
+                        binding.btnSaveSettings.setEnabled(true);
                     } else {
+                        binding.btnSaveSettings.setEnabled(true);
                         commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
                     }
                 }
@@ -313,6 +318,7 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
                     Log.e("test", "failed : " + t.toString());
+                    binding.btnSaveSettings.setEnabled(true);
                     hitCount++;
                     if (hitCount < 2) {
                         configuration("http://" + url + "/apps/");
@@ -356,8 +362,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void navigate() {
-        runOnUiThread(() -> commonUtilsMethods.showToastMessage(SettingsActivity.this,getString(R.string.login_successfully)));
-        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+        runOnUiThread(() -> commonUtilsMethods.showToastMessage(SettingsActivity.this,getString(R.string.configure_success)));
+        Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
         intent.putExtra(Constants.NAVIGATE_FROM, "Setting");
         startActivity(intent);
         finish();

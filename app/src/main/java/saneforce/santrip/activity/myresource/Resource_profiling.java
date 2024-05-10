@@ -74,11 +74,9 @@ import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.activity.remaindercalls.cuslistadapter;
 import saneforce.santrip.activity.remaindercalls.remainder_modelclass;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -116,7 +114,7 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     ArrayList<CustomModel> dataList = new ArrayList<>();
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
 
-    LoginResponse loginResponse;
+
     private RoomDB roomDB;
     private LoginDataDao loginDataDao;
     private MasterDataDao masterDataDao;
@@ -156,14 +154,10 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
         gpsTrack = new GPSTrack(this);
         app_recycler_view.setVisibility(View.VISIBLE);
         Bundle extra = getIntent().getExtras();
-       // sqLite = new SQLite(this);
 
-//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         loginDataDao = roomDB.loginDataDao();
         masterDataDao = roomDB.masterDataDao();
-        loginResponse = loginDataDao.getLoginData().getLoginResponse();
-//        loginResponse = sqLite.getLoginData();
 
 
         Doc_geoneed = SharedPref.getGeoNeed(this);

@@ -64,6 +64,21 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:supportsRtl"
         tools:targetApi="31">
+
+        <activity
+            android:name=".activity.reports.dayReport.MapViewActvity"
+            android:exported="false"
+            android:screenOrientation="landscape">
+
+        </activity>
+
+        <activity
+            android:name=".activity.PrivacyPolicyActvity.PrivacyPolicyActivity"
+            android:exported="false"
+            android:screenOrientation="landscape">
+
+        </activity>
+
         <activity
             android:name=".activity.camera.CameraActivity"
             android:exported="false"

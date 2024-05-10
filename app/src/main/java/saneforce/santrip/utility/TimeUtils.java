@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class TimeUtils {
     private static final String TAG = TimeUtils.class.getSimpleName();
+
     public static final String FORMAT_1 = "yyyy-MM-dd HH:mm:ss";
     public static final String FORMAT_2 = "dd-MM-yyyy HH:mm:ss";
     public static final String FORMAT_3 = "dd/MM/yyyy HH:mm:ss";

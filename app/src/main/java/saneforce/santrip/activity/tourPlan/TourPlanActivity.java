@@ -4,6 +4,8 @@ package saneforce.santrip.activity.tourPlan;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.tourPlan.session.SessionEditAdapter.inputDataArray;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -44,10 +46,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
-import saneforce.santrip.activity.tourPlan.model.ReceiveModelNew;
 import saneforce.santrip.activity.tourPlan.session.SessionEditAdapter;
 import saneforce.santrip.activity.tourPlan.session.SessionInterface;
 import saneforce.santrip.activity.tourPlan.session.SessionViewAdapter;
@@ -64,7 +67,6 @@ import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflin
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
 import saneforce.santrip.utility.TimeUtils;
@@ -72,7 +74,6 @@ import saneforce.santrip.utility.TimeUtils;
 public class TourPlanActivity extends AppCompatActivity {
     public static LinearLayout addSaveBtnLayout, clrSaveBtnLayout;
     ApiInterface apiInterface;
-//    SQLite sqLite;
     private RoomDB roomDB;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
@@ -93,7 +94,10 @@ public class TourPlanActivity extends AppCompatActivity {
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
     boolean isDataAvailable;
     CommonUtilsMethods commonUtilsMethods;
-    private ActivityTourPlanBinding binding;
+    public static ActivityTourPlanBinding binding;
+
+    public static   String isFrom="",SFTP_Date_sp="",SFTP_Date="";
+    public static  int JoningDate,JoiningMonth, JoinYear;
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
@@ -134,7 +138,6 @@ public class TourPlanActivity extends AppCompatActivity {
         binding = ActivityTourPlanBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        sqLite = new SQLite(getApplicationContext());
         roomDB = RoomDB.getDatabase(getApplicationContext());
         tourPlanOfflineDataDao = roomDB.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = roomDB.tourPlanOnlineDataDao();
@@ -144,7 +147,25 @@ public class TourPlanActivity extends AppCompatActivity {
         addSaveBtnLayout = binding.tpNavigation.addSaveLayout;
         clrSaveBtnLayout = binding.tpNavigation.clrSaveBtnLayout;
 
+
+        try {
+            SFTP_Date_sp = SharedPref.getSftpDate(TourPlanActivity.this);
+            JSONObject obj = new JSONObject(SFTP_Date_sp);
+            SFTP_Date = obj.getString("date");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        JoningDate=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_7,SFTP_Date));
+        JoiningMonth=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_8,SFTP_Date));
+        JoinYear=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_10,SFTP_Date));
+
+
+
         uiInitialization();
+        isFrom=getIntent().getStringExtra("isFrom");
+
 
         dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
         populateCalendarAdapter(dayWiseArrayCurrentMonth);
@@ -167,25 +188,40 @@ public class TourPlanActivity extends AppCompatActivity {
         });
 
         binding.tvSync.setOnClickListener(v -> {
-            Log.v("ssdasd", "000");
-            binding.tvSync.setEnabled(false);
-            binding.progressBar.setVisibility(View.VISIBLE);
 
-            LocalDate localDate1 = LocalDate.now();
-            if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
-                // SetUpOneMonthAPI(localDate1.minusMonths(1), "prev");
-                get3MonthRemoteTPData("prev");
-            } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
-                //SetUpOneMonthAPI(localDate1, "current");
-                get3MonthRemoteTPData("current");
-            } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
-                //SetUpOneMonthAPI(localDate1.plusMonths(1), "next");
-                get3MonthRemoteTPData("next");
-            }
+
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(TourPlanActivity.this, new NetworkStatusTask.NetworkStatusInterface() {
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void isNetworkAvailable(Boolean status) {
+                    if(status){
+                        binding.tvSync.setEnabled(false);
+                        binding.progressBar.setVisibility(View.VISIBLE);
+
+                        LocalDate localDate1 = LocalDate.now();
+                        if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.minusMonths(1)))) {
+                            get3MonthRemoteTPData("prev");
+                        } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1))) {
+                            get3MonthRemoteTPData("current");
+                        } else if (binding.monthYear.getText().toString().equalsIgnoreCase(monthYearFromDate(localDate1.plusMonths(1)))) {
+                            get3MonthRemoteTPData("next");
+                        }
+                    }
+                    else{
+                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+                    }
+
+                }
+            });
+            networkStatusTask.execute();
         });
 
-        binding.backArrow.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
+        binding.backArrow.setOnClickListener(view -> {
+            getOnBackPressedDispatcher().onBackPressed();
+            HomeDashBoard.tpRangeCheck=true;
+            finish();
+        });
         binding.calendarNextButton.setOnClickListener(view -> {
             binding.calendarPrevButton.setEnabled(true);
             binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
@@ -217,7 +253,11 @@ public class TourPlanActivity extends AppCompatActivity {
             if (LocalDate.now().minusMonths(1).isEqual(localDate)) {
                 binding.calendarPrevButton.setEnabled(false);
                 binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
-            } else binding.calendarPrevButton.setEnabled(true);
+            }else if(localDate.getMonthValue()==JoiningMonth&& localDate.getYear()==JoinYear){
+                binding.calendarPrevButton.setEnabled(false);
+                binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_gray, null));
+            }
+            else binding.calendarPrevButton.setEnabled(true);
 
             if (localDate.getMonth().toString().equalsIgnoreCase(LocalDate.now().getMonth().toString())) {
                 monthInAdapterFlag = 0;
@@ -232,6 +272,32 @@ public class TourPlanActivity extends AppCompatActivity {
                 }
                 populateCalendarAdapter(dayWiseArrayPrevMonth);
             }
+        });
+
+
+        if (isFrom.equalsIgnoreCase("isHome")) {
+            if (SharedPref.getskipstatus(TourPlanActivity.this)){
+                binding.txtSkip.setVisibility(View.VISIBLE);
+                binding.txtLogout.setVisibility(View.GONE);
+            }
+            else{
+                binding.txtLogout.setVisibility(View.VISIBLE);
+                binding.txtSkip.setVisibility(View.GONE);}
+        } else {
+            binding.txtLogout.setVisibility(View.GONE);
+            binding.txtSkip.setVisibility(View.GONE);
+        }
+
+        binding.txtSkip.setOnClickListener(view -> {
+            HomeDashBoard.tpRangeCheck=true;
+            SharedPref.setSKIPDate(TourPlanActivity.this,TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+            getOnBackPressedDispatcher().onBackPressed();
+        });
+
+        binding.txtLogout.setOnClickListener(view -> {
+            SharedPref.saveLoginState(TourPlanActivity.this, false);
+            startActivity(new Intent(TourPlanActivity.this, LoginActivity.class));
+            finish();
         });
 
         binding.tpNavigation.tpDrawerCloseIcon.setOnClickListener(new View.OnClickListener() {
@@ -473,7 +539,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
         binding.tpSendToApproval.setOnClickListener(view -> {
 
-//            JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
             JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> arrayList;
             ArrayList<String> dummy = new ArrayList<>();
@@ -501,474 +566,6 @@ public class TourPlanActivity extends AppCompatActivity {
     }
 
 
-   /* private void SetUpOneMonthAPI(LocalDate localDate, String arrayName) {
-        NetworkStatusTask networkStatusTask = new NetworkStatusTask(this, status -> {
-            if (status) {
-                try {
-
-                    apiInterface = RetrofitClient.getRetrofit(TourPlanActivity.this, SharedPref.getCallApiUrl(TourPlanActivity.this));
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("tableName", "gettpdetail");
-                    jsonObject.put("sfcode", loginResponse.getSF_Code());
-                    jsonObject.put("division_code", loginResponse.getDivision_Code());
-                    jsonObject.put("Rsf", SharedPref.getHqCode(TourPlanActivity.this));
-                    jsonObject.put("sf_type", loginResponse.getSf_type());
-                    jsonObject.put("Designation", loginResponse.getDesig());
-                    jsonObject.put("state_code", loginResponse.getState_Code());
-                    jsonObject.put("subdivision_code", loginResponse.getSubdivision_code());
-                    jsonObject.put("Month", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_25, TimeUtils.FORMAT_8, localDate.getMonth().toString()));
-                    jsonObject.put("Year", localDate.getYear());
-                    Log.v("GetTpOneMonth", jsonObject.toString());
-
-                    Call<JsonArray> callData = apiInterface.getTPMonthWise(jsonObject.toString());
-                    callData.enqueue(new Callback<JsonArray>() {
-                        @Override
-                        public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                            Log.v("getTpOneMonth", "response---" + response.body());
-                            if (response.isSuccessful() && response.body() != null) {
-                                try {
-                                    SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-                                    ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
-
-                                    String monthYear = monthYearFromDate(localDate);
-                                    String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
-                                    String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-                                    String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-                                    ArrayList<ModelClass> modelClasses = new ArrayList<>();
-                                    if (arrayName.equalsIgnoreCase("prev")) {
-                                        dayWiseArrayPrevMonth = new ArrayList<>();
-                                    } else if (arrayName.equalsIgnoreCase("current")) {
-                                        dayWiseArrayCurrentMonth = new ArrayList<>();
-                                    } else if (arrayName.equalsIgnoreCase("next")) {
-                                        dayWiseArrayNextMonth = new ArrayList<>();
-                                    }
-
-                                    ArrayList<String> holidayDateArray = new ArrayList<>();
-                                    for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                                        if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue())))
-                                            holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-                                    }
-
-                                    JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
-                                    ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
-                                    if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-                                        Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
-                                        }.getType();
-                                        modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
-                                    }
-
-
-                                    JSONArray listArray = new JSONArray(response.body().toString());
-
-                                    Log.v("GetTpOneMonth", listArray.toString());
-                                    Type type = new TypeToken<ArrayList<ReceiveModelNew>>() {
-                                    }.getType();
-                                    ArrayList<ReceiveModelNew> arrayList = new Gson().fromJson(listArray.toString(), type);
-
-                                    if (listArray.length() > 0) {
-                                        String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
-                                        String status = listArray.getJSONObject(0).getString("Change_Status");
-                                        sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
-                                        for (String day : days) {
-                                            if (!day.isEmpty()) {
-                                                String date = day + " " + monthYear;
-                                                String dayName = formatter.format(new Date(date));
-                                                isDataAvailable = false;
-
-                                                if (modelClassLocal.size() > 0) {
-                                                    for (int j = 0; j < modelClassLocal.size(); j++) {
-                                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                                                modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
-
-                                                            for (int i = 0; i < listArray.length(); i++) {
-                                                                ReceiveModelNew receiveModel = arrayList.get(i);
-                                                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-                                                                    SaveTpLocalMonthWise(receiveModel, modelClasses, arrayName, day, monthName, date, dayName, monthNo, year);
-                                                                }
-                                                            }
-                                                        } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                                                modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-                                                            isDataAvailable = true;
-                                                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
-                                                            modelClasses.add(modelClass);
-                                                            SaveData(arrayName, modelClasses, day, monthName, "1");
-                                                        }
-                                                    }
-                                                } else {
-                                                    for (int i = 0; i < arrayList.size(); i++) {
-                                                        ReceiveModelNew receiveModel = arrayList.get(i);
-                                                        if (day.equalsIgnoreCase(receiveModel.getDayno())) {
-                                                            SaveTpLocalMonthWise(receiveModel, modelClasses, arrayName, day, monthName, date, dayName, monthNo, year);
-                                                        }
-                                                    }
-                                                }
-
-                                                if (!isDataAvailable) {
-                                                    ModelClass.SessionList sessionList = new ModelClass.SessionList();
-                                                    sessionList = prepareSessionListForAdapterEmpty();
-
-                                                    if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                                                        sessionList.setWorkType(weeklyOffWorkTypeModel);
-
-                                                    if (holidayDateArray.contains(day))
-                                                        sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
-
-                                                    ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                                    sessionLists.add(sessionList);
-                                                    ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                                                    modelClasses.add(modelClass);
-                                                    SaveData(arrayName, modelClasses, day, monthName, "0");
-                                                }
-                                            } else {
-                                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                                ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                                                modelClasses.add(modelClass);
-                                                SaveData(arrayName, modelClasses, day, monthName, "");
-                                            }
-                                        }
-
-                                        sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
-                                    } else {  //If tour plan table has no data
-                                        for (String day : days) {
-                                            if (!day.isEmpty()) {
-                                                String date = day + " " + monthYear;
-                                                String dayName = formatter.format(new Date(date));
-                                                ModelClass.SessionList sessionList = new ModelClass.SessionList();
-                                                sessionList = prepareSessionListForAdapterEmpty();
-
-                                                if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
-
-                                                if (holidayDateArray.contains(day))
-                                                    sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
-
-                                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                                sessionLists.add(sessionList);
-                                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                                                modelClasses.add(modelClass);
-                                                SaveData(arrayName, modelClasses, day, monthName, "0");
-                                            } else {
-                                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                                ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                                                modelClasses.add(modelClass);
-                                                SaveData(arrayName, modelClasses, day, monthName, "");
-                                            }
-                                        }
-                                    }
-                                    binding.tvSync.setEnabled(true);
-                                    binding.progressBar.setVisibility(View.GONE);
-                                    if (arrayName.equalsIgnoreCase("prev")) {
-                                        Log.v("getTpOneMonth", "prev");
-                                        populateCalendarAdapter(dayWiseArrayPrevMonth);
-                                        // populateSummaryAdapter(dayWiseArrayPrevMonth);
-                                    } else if (arrayName.equalsIgnoreCase("current")) {
-                                        Log.v("getTpOneMonth", "current");
-                                        populateCalendarAdapter(dayWiseArrayCurrentMonth);
-                                        // populateSummaryAdapter(dayWiseArrayCurrentMonth);
-                                    } else if (arrayName.equalsIgnoreCase("next")) {
-                                        Log.v("getTpOneMonth", "next");
-                                        populateCalendarAdapter(dayWiseArrayNextMonth);
-                                        // populateSummaryAdapter(dayWiseArrayNextMonth);
-                                    }
-
-                                } catch (Exception e) {
-                                    Log.v("getTpOneMonth", "error--222-" + e);
-                                    binding.progressBar.setVisibility(View.GONE);
-                                    binding.tvSync.setEnabled(true);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<JsonArray> call, Throwable t) {
-                            Log.v("getTpOneMonth", "failure--222-" + t);
-                            binding.progressBar.setVisibility(View.GONE);
-                            binding.tvSync.setEnabled(true);
-                        }
-                    });
-
-
-          *//*  Call<JsonElement> call = apiInterface.getTP(jsonObject.toString());
-
-            call.enqueue(new Callback<JsonElement>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        if (response.body().isJsonArray()) {
-                            try {
-                                SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-                                ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
-
-                                String monthYear = monthYearFromDate(localDate);
-                                String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
-                                String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-                                String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-                                ArrayList<ModelClass> modelClasses = new ArrayList<>();
-                                if (arrayName.equalsIgnoreCase("prev")) {
-                                    dayWiseArrayPrevMonth = new ArrayList<>();
-                                } else if (arrayName.equalsIgnoreCase("current")) {
-                                    dayWiseArrayCurrentMonth = new ArrayList<>();
-                                } else if (arrayName.equalsIgnoreCase("next")) {
-                                    dayWiseArrayNextMonth = new ArrayList<>();
-                                }
-
-                                ArrayList<String> holidayDateArray = new ArrayList<>();
-                                for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                                    if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue())))
-                                        holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-                                }
-
-                                JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
-                                ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
-                                if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-                                    Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
-                                    }.getType();
-                                    modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
-                                }
-
-
-                                JSONArray listArray = new JSONArray(response.body().toString());
-
-                                Type type = new TypeToken<ArrayList<ReceiveModel>>() {
-                                }.getType();
-                                ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
-                                Log.v("GetTpOneMonth", "---" + listArray.toString());
-                                if (listArray.length() > 0) {
-                                    String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
-                                    String status = listArray.getJSONObject(0).getString("Change_Status");
-                                    sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
-                                    for (String day : days) {
-                                        if (!day.isEmpty()) {
-                                            String date = day + " " + monthYear;
-                                            String dayName = formatter.format(new Date(date));
-                                            isDataAvailable = false;
-
-                                            if (modelClassLocal.size() > 0) {
-                                                for (int j = 0; j < modelClassLocal.size(); j++) {
-                                                    if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                                            modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
-
-                                                        for (int i = 0; i < arrayList.size(); i++) {
-                                                            ReceiveModel receiveModel = arrayList.get(i);
-                                                            if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-                                                                SaveTpLocal(receiveModel, modelClasses, arrayName, day, monthName, date, dayName, monthNo, year);
-                                                            }
-                                                        }
-                                                    } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                                            modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-                                                        isDataAvailable = true;
-                                                        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
-                                                        modelClasses.add(modelClass);
-                                                        SaveData(arrayName, modelClasses, day, monthName, "1");
-                                                    }
-                                                }
-                                            } else {
-                                                for (int i = 0; i < arrayList.size(); i++) {
-                                                    ReceiveModel receiveModel = arrayList.get(i);
-                                                    if (day.equalsIgnoreCase(receiveModel.getDayno())) {
-                                                        SaveTpLocal(receiveModel, modelClasses, arrayName, day, monthName, date, dayName, monthNo, year);
-                                                    }
-                                                }
-                                            }
-
-                                            if (!isDataAvailable) {
-                                                ModelClass.SessionList sessionList = new ModelClass.SessionList();
-                                                sessionList = prepareSessionListForAdapterEmpty();
-
-                                                if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
-
-                                                if (holidayDateArray.contains(day))
-                                                    sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
-
-                                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                                sessionLists.add(sessionList);
-                                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                                                modelClasses.add(modelClass);
-                                                SaveData(arrayName, modelClasses, day, monthName, "0");
-                                            }
-                                        } else {
-                                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                            ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                                            modelClasses.add(modelClass);
-                                            SaveData(arrayName, modelClasses, day, monthName, "");
-                                        }
-                                    }
-
-                                    sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
-                                } else {  //If tour plan table has no data
-                                    for (String day : days) {
-                                        if (!day.isEmpty()) {
-                                            String date = day + " " + monthYear;
-                                            String dayName = formatter.format(new Date(date));
-                                            ModelClass.SessionList sessionList = new ModelClass.SessionList();
-                                            sessionList = prepareSessionListForAdapterEmpty();
-
-                                            if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                                                sessionList.setWorkType(weeklyOffWorkTypeModel);
-
-                                            if (holidayDateArray.contains(day))
-                                                sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
-
-                                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                            sessionLists.add(sessionList);
-                                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                                            modelClasses.add(modelClass);
-                                            SaveData(arrayName, modelClasses, day, monthName, "0");
-                                        } else {
-                                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                                            ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                                            modelClasses.add(modelClass);
-                                            SaveData(arrayName, modelClasses, day, monthName, "");
-                                        }
-                                    }
-                                }
-                                binding.progressBar.setVisibility(View.GONE);
-                                if (arrayName.equalsIgnoreCase("prev")) {
-                                    populateCalendarAdapter(dayWiseArrayPrevMonth);
-                                } else if (arrayName.equalsIgnoreCase("current")) {
-                                    populateCalendarAdapter(dayWiseArrayCurrentMonth);
-                                } else if (arrayName.equalsIgnoreCase("next")) {
-                                    populateCalendarAdapter(dayWiseArrayNextMonth);
-                                }
-
-                            } catch (JSONException e) {
-                                binding.progressBar.setVisibility(View.GONE);
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                    binding.progressBar.setVisibility(View.GONE);
-                }
-            });*//*
-
-                } catch (Exception e) {
-                    Log.v("getTpOneMonth", "error--111-" + e);
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.tvSync.setEnabled(true);
-                }
-
-            }
-        });
-        networkStatusTask.execute();
-    }*/
-
-    private void SaveTpLocalMonthWise(ReceiveModelNew receiveModel, ArrayList<ModelClass> modelClasses, String arrayName, String day, String monthName, String date, String dayName, String monthNo, String year) {
-        ModelClass.SessionList sessionList = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
-
-        isDataAvailable = true;
-        boolean session2 = false;
-        boolean session3 = false;
-
-        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-        String remarks = receiveModel.getDayRemarks();
-        String submittedTime = receiveModel.getSubmitted_time_dt();
-
-        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
-        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
-
-        if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-            if (!receiveModel.getClusterName().isEmpty())
-                clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
-            if (!receiveModel.getJWNames().isEmpty())
-                jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
-            if (!receiveModel.getDr_Name().isEmpty())
-                drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-            if (!receiveModel.getChem_Name().isEmpty())
-                chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-            if (!receiveModel.getStockist_Name().isEmpty())
-                stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-        }
-        sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
-
-        if (!receiveModel.getWTName2().isEmpty()) {
-            session2 = true;
-            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
-            String remarks2 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-                if (!receiveModel.getJWNames2().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-                if (!receiveModel.getDr_two_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                if (!receiveModel.getChem_Name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-                if (!receiveModel.getStockist_two_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
-            }
-            sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
-
-        }
-
-        if (!receiveModel.getWTName3().isEmpty()) {
-            session3 = true;
-            String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
-            String remarks3 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName3().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-                if (!receiveModel.getJWNames3().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-                if (!receiveModel.getDr_three_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-                if (!receiveModel.getChem_three_name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-                if (!receiveModel.getStockist_three_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-            }
-            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
-        }
-
-        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-        sessionLists.add(sessionList);
-        if (session2) sessionLists.add(sessionList2);
-        if (session3) sessionLists.add(sessionList3);
-        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-        modelClass.setSubmittedTime(submittedTime);
-        modelClasses.add(modelClass);
-        Log.v("getTpOneMonth", "444");
-        SaveData(arrayName, modelClasses, day, monthName, "0");
-    }
 
     private ModelClass.SessionList prepareSessionListForAdapterEmpty() {
         ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType("", "", "", "");
@@ -986,25 +583,13 @@ public class TourPlanActivity extends AppCompatActivity {
         return new ModelClass.SessionList("", true, "", workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
 
-    private void SaveData(String arrayName, ArrayList<ModelClass> modelClasses, String day, String monthName, String status) {
-        if (arrayName.equalsIgnoreCase("prev")) {
-            dayWiseArrayPrevMonth = modelClasses;
-            saveTpLocal(dayWiseArrayPrevMonth, day, monthName, status);
-        } else if (arrayName.equalsIgnoreCase("current")) {
-            dayWiseArrayCurrentMonth = modelClasses;
-            saveTpLocal(dayWiseArrayCurrentMonth, day, monthName, status);
-        } else if (arrayName.equalsIgnoreCase("next")) {
-            dayWiseArrayNextMonth = modelClasses;
-            saveTpLocal(dayWiseArrayNextMonth, day, monthName, status);
-        }
-    }
+
 
     public void uiInitialization() {
         localDate = LocalDate.now();
         try {
 
-            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();  //Tour Plan setup
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP);  //Tour Plan setup
+            JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 drNeed = jsonObject.getString("DrNeed");
@@ -1022,8 +607,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
             holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
             JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray(); // Weekly Off data
-//            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
-//            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
+
             for (int i = 0; i < weeklyOff.length(); i++) {
                 JSONObject jsonObject = weeklyOff.getJSONObject(i);
                 holidayMode = jsonObject.getString("Holiday_Mode");
@@ -1067,7 +651,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
 
             JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
-//            JSONArray workTypeArray1 = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i < workTypeArray1.length(); i++) {
                 JSONObject jsonObject = workTypeArray1.getJSONObject(i);
                 if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
@@ -1090,36 +673,6 @@ public class TourPlanActivity extends AppCompatActivity {
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
         if(dayOfWeek == 7) dayOfWeek = 1;
         else dayOfWeek++;
-//        switch (dayOfWeek) {
-//            case 1: {
-//                dayOfWeek = 2;
-//                break;
-//            }
-//            case 2: {
-//                dayOfWeek = 3;
-//                break;
-//            }
-//            case 3: {
-//                dayOfWeek = 4;
-//                break;
-//            }
-//            case 4: {
-//                dayOfWeek = 5;
-//                break;
-//            }
-//            case 5: {
-//                dayOfWeek = 6;
-//                break;
-//            }
-//            case 6: {
-//                dayOfWeek = 7;
-//                break;
-//            }
-//            case 7: {
-//                dayOfWeek = 1;
-//                break;
-//            }
-//        }
 
         int trailingNumOfDaysEmpty = 7 - ((daysInMonth + dayOfWeek -1) % 7);
         for (int i = 1; i< dayOfWeek + daysInMonth + trailingNumOfDaysEmpty; i++) {
@@ -1127,39 +680,6 @@ public class TourPlanActivity extends AppCompatActivity {
                 daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
             else daysInMonthArray.add("");
         }
-
-//        for (int i = 1; i <= 42; i++) {
-//            if (i < dayOfWeek) {
-//                daysInMonthArray.add("");
-//            } else {
-//                if (i < daysInMonth + dayOfWeek) {
-//                    daysInMonthArray.add(String.valueOf((i + 1) - dayOfWeek));
-//                }
-//            }
-//        }
-
-//        for(int i = 1; i <= 42; i++) {
-//            if(i <= dayOfWeek || i > daysInMonth + dayOfWeek) {
-//                daysInMonthArray.add("");
-//            } else {
-//                daysInMonthArray.add(String.valueOf(i - dayOfWeek));
-//            }
-//        }
-
-        //To eliminate the excess empty dates which comes with the LocalDate library
-//        if (daysInMonthArray.size() >= 22 && daysInMonthArray.size() <= 28) {
-//            for (int i = daysInMonthArray.size(); i < 28; i++) {
-//                daysInMonthArray.add("");
-//            }
-//        } else if (daysInMonthArray.size() >= 29 && daysInMonthArray.size() <= 35) {
-//            for (int i = daysInMonthArray.size(); i < 35; i++) {
-//                daysInMonthArray.add("");
-//            }
-//        } else if (daysInMonthArray.size() >= 36 && daysInMonthArray.size() <= 42) {
-//            for (int i = daysInMonthArray.size(); i < 42; i++) {
-//                daysInMonthArray.add("");
-//            }
-//        }
 
         return daysInMonthArray;
     }
@@ -1183,7 +703,7 @@ public class TourPlanActivity extends AppCompatActivity {
         try {
             //Data from Tour Plan table
             Log.v("getTp", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1)));
-//            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).toString());
+
             JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate1))).getTpDataJSONArray();
 
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
@@ -1203,23 +723,46 @@ public class TourPlanActivity extends AppCompatActivity {
                         holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
                 }
 
+        boolean LocalWeelyHolidayFlag;
+
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
                         String dayName = formatter.format(new Date(date));
                         ModelClass.SessionList sessionList = new ModelClass.SessionList();
                         sessionList = prepareSessionListForAdapter();
-                        //  Log.v("getTp","--222--" + day + "---" + dayName);
-                        if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                            sessionList.setWorkType(weeklyOffWorkTypeModel);
-                        if (holidayDateArray.contains(day))
-                            sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
 
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        sessionLists.add(sessionList);
-                        ModelClass modelClass = new ModelClass(day, date, dayName, month, year, true, sessionLists);
-                        modelClasses.add(modelClass);
-                    } else {
+
+                        if (Integer.valueOf(month) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            ModelClass modelClass = new ModelClass(day, date, dayName, month, year, false, sessionLists);
+                            modelClasses.add(modelClass);
+                            LocalWeelyHolidayFlag =false;
+                        } else {
+                            if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                LocalWeelyHolidayFlag =true;
+                            }
+                            else if (holidayDateArray.contains(day)) {
+                                sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
+                                LocalWeelyHolidayFlag =true;
+                            }else {
+                                LocalWeelyHolidayFlag =false;
+                            }
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            ModelClass modelClass = new ModelClass(day, date, dayName, month, year, false, sessionLists);
+                            modelClasses.add(modelClass);
+                        }
+
+                        if(LocalWeelyHolidayFlag){
+                            saveTpLocal(modelClasses, day, monthYear, "1");
+                        }else {
+                            saveTpLocal(modelClasses, day, monthYear, "0");
+                        }
+                    }
+                    else {
                         //  Log.v("getTp","--333--" + day);
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                         ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
@@ -1350,7 +893,7 @@ public class TourPlanActivity extends AppCompatActivity {
             if (holidayEditable.equals("0")) {
                 binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
             }
-        } else {
+        }else {
             binding.tpNavigation.editLayout.setVisibility(View.VISIBLE);
         }
     }
@@ -1364,6 +907,7 @@ public class TourPlanActivity extends AppCompatActivity {
             }
 
             summaryAdapter = new SummaryAdapter(modelClasses, TourPlanActivity.this, (modelClass, position) -> {
+
                 populateSessionViewAdapter(modelClass);
                 binding.tpNavigation.addEditViewTxt.setText("View Plan");
                 binding.tpNavigation.planDate.setText(modelClass.getDate());
@@ -1387,13 +931,15 @@ public class TourPlanActivity extends AppCompatActivity {
                 if (!workType.getName().isEmpty()) {
                     wholeMonthTpCompleted = true;
                 } else {
-                    wholeMonthTpCompleted = false;
-                    break;
+                    if(Integer.valueOf(arrayList.get(i).getDayNo())< TourPlanActivity.JoningDate &&Integer.valueOf(arrayList.get(i).getMonth())==TourPlanActivity.JoiningMonth  && Integer.valueOf(arrayList.get(i).getYear())==TourPlanActivity.JoinYear ) {
+                        wholeMonthTpCompleted = true;
+                    }else {
+                        wholeMonthTpCompleted = false;
+                        break;
+                    }
                 }
             }
         }
-//        String status = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)), "status");
-//        String reason = sqLite.getMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)), "reason");
         String status = "";
         String reason = "";
         TourPlanOfflineDataTable tourPlanOfflineDataTable = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
@@ -1508,10 +1054,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                     binding.progressBar.setVisibility(View.GONE);
                                     binding.tvSync.setEnabled(true);
+                                    HomeDashBoard.tpRangeCheck=true;
                                     switch (isClickedName) {
                                         case "prev":
                                             Log.v("tpGetPlan", "--prev--" + dayWiseArrayPrevMonth.size());
                                             localDate = localDate.minusMonths(1);
+
                                             populateCalendarAdapter(dayWiseArrayPrevMonth);
                                             break;
                                         case "current":
@@ -1525,18 +1073,15 @@ public class TourPlanActivity extends AppCompatActivity {
                                             populateCalendarAdapter(dayWiseArrayNextMonth);
                                             break;
                                     }
-                                  /*  if (isClickedName.equalsIgnoreCase("prev")) {
-                                        Log.v("tpGetPlan", "--prev--" + dayWiseArrayPrevMonth.size());
-                                        localDate = localDate.minusMonths(1);
-                                        populateCalendarAdapter(dayWiseArrayPrevMonth);
-                                    } else if (isClickedName.equalsIgnoreCase("current")) {
-                                        Log.v("tpGetPlan", "--current--" + dayWiseArrayCurrentMonth.size());
-                                        populateCalendarAdapter(dayWiseArrayCurrentMonth);
-                                    } else if (isClickedName.equalsIgnoreCase("next")) {
-                                        Log.v("tpGetPlan", "--next--" + dayWiseArrayNextMonth.size());
-                                        localDate = localDate.plusMonths(1);
-                                        populateCalendarAdapter(dayWiseArrayNextMonth);
-                                    }*/
+
+
+                                    Intent intent = getIntent();
+                                    overridePendingTransition(0, 0);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    finish();
+                                    overridePendingTransition(0, 0);
+                                    startActivity(intent);
+
                                 }
                             } catch (JSONException e) {
                                 binding.progressBar.setVisibility(View.GONE);
@@ -1604,7 +1149,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
             }
 
-//            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
+
             JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
@@ -1620,8 +1165,8 @@ public class TourPlanActivity extends AppCompatActivity {
             if (listArray.length() > 0) {
                 String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
                 String status = listArray.getJSONObject(0).getString("Change_Status");
-//                sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
                 tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
+                boolean LocalWeelyHolidayFlag;
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
@@ -1659,18 +1204,38 @@ public class TourPlanActivity extends AppCompatActivity {
                             ModelClass.SessionList sessionList = new ModelClass.SessionList();
                             sessionList = prepareSessionListForAdapterEmpty();
 
-                            if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                                sessionList.setWorkType(weeklyOffWorkTypeModel);
+                            if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                sessionLists.add(sessionList);
+                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
+                                modelClasses.add(modelClass);
+                                LocalWeelyHolidayFlag =false;
+                            }
+                            else {
+                                if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                    LocalWeelyHolidayFlag =true;
+                                }
+                                else if (holidayDateArray.contains(day)) {
+                                    sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
+                                    LocalWeelyHolidayFlag =true;
+                                }else {
+                                    LocalWeelyHolidayFlag =false;
+                                }
 
-                            if (holidayDateArray.contains(day))
-                                sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
+                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                sessionLists.add(sessionList);
+                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                                modelClasses.add(modelClass);
 
-                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                            sessionLists.add(sessionList);
-                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                            modelClasses.add(modelClass);
-                            dayWiseSaveTp = modelClasses;
-                            saveTpLocal(dayWiseSaveTp, day, monthName, "0");
+                            }
+                                dayWiseSaveTp = modelClasses;
+
+                            if(LocalWeelyHolidayFlag){
+                                saveTpLocal(dayWiseSaveTp, day, monthYear, "1");
+                            }else {
+                                saveTpLocal(dayWiseSaveTp, day, monthYear, "0");
+                            }
                         }
                     } else {
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
@@ -1685,6 +1250,9 @@ public class TourPlanActivity extends AppCompatActivity {
                 tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
+
+                boolean LocalWeelyHolidayFlag;
+
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
@@ -1692,18 +1260,36 @@ public class TourPlanActivity extends AppCompatActivity {
                         ModelClass.SessionList sessionList = new ModelClass.SessionList();
                         sessionList = prepareSessionListForAdapterEmpty();
 
-                        if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                            sessionList.setWorkType(weeklyOffWorkTypeModel);
 
-                        if (holidayDateArray.contains(day))
-                            sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
+                        if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
+                            modelClasses.add(modelClass);
+                            LocalWeelyHolidayFlag =false;
+                        }else {
+                            if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                LocalWeelyHolidayFlag =true;
+                            }
+                            else if (holidayDateArray.contains(day)) {
+                                sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
+                                LocalWeelyHolidayFlag =true;
+                            }else {
+                                LocalWeelyHolidayFlag =false;
+                            }
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                            modelClasses.add(modelClass);
+                        }
 
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        sessionLists.add(sessionList);
-                        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                        modelClasses.add(modelClass);
                         dayWiseSaveTp = modelClasses;
-                        saveTpLocal(dayWiseSaveTp, day, monthName, "0");
+                        if(LocalWeelyHolidayFlag){
+                            saveTpLocal(dayWiseSaveTp, day, monthYear, "1");
+                        }else {
+                            saveTpLocal(dayWiseSaveTp, day, monthYear, "0");
+                        }
                     } else {
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                         ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
@@ -1717,141 +1303,6 @@ public class TourPlanActivity extends AppCompatActivity {
 
         }
 
-      /*  try {
-            switch (isClickedName) {
-                case "prev":
-                    dayWiseArrayPrevMonth.clear();
-                    break;
-                case "current":
-                    dayWiseArrayCurrentMonth.clear();
-                    break;
-                case "next":
-                    this.dayWiseArrayNextMonth.clear();
-                    break;
-
-            }
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
-
-            String monthYear = monthYearFromDate(localDate);
-            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
-            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-            ArrayList<ModelClass> modelClasses = new ArrayList<>();
-
-            ArrayList<String> holidayDateArray = new ArrayList<>();
-            for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-                if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue())))
-                    holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-            }
-
-            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
-            ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
-            if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-                Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
-                }.getType();
-                modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
-            }
-
-            Type type = new TypeToken<ArrayList<ReceiveModel>>() {
-            }.getType();
-            ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
-
-            if (listArray.length() > 0) {
-                String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
-                String status = listArray.getJSONObject(0).getString("Change_Status");
-                sqLite.saveTPDataOnlineTable(monthName, listArray.toString(), status, rejectionReason);
-                for (String day : days) {
-                    if (!day.isEmpty()) {
-                        String date = day + " " + monthYear;
-                        String dayName = formatter.format(new Date(date));
-                        isDataAvailable = false;
-
-                        if (modelClassLocal.size() > 0) {
-                            for (int j = 0; j < modelClassLocal.size(); j++) {
-                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                        modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
-
-                                    for (int i = 0; i < arrayList.size(); i++) {
-                                        ReceiveModel receiveModel = arrayList.get(i);
-                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-                                            SaveTpLocalFull(receiveModel, modelClasses, isClickedName, day, monthName, date, dayName, monthNo, year);
-                                        }
-                                    }
-                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) &&
-                                        modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-                                    isDataAvailable = true;
-                                    ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
-                                    modelClasses.add(modelClass);
-                                    SaveTpData(modelClasses, isClickedName, day, monthName, "1");
-                                }
-                            }
-                        } else {
-                            for (int i = 0; i < arrayList.size(); i++) {
-                                ReceiveModel receiveModel = arrayList.get(i);
-                                if (day.equalsIgnoreCase(receiveModel.getDayno())) {
-                                    SaveTpLocalFull(receiveModel, modelClasses, isClickedName, day, monthName, date, dayName, monthNo, year);
-                                }
-                            }
-                        }
-
-                        if (!isDataAvailable) {
-                            ModelClass.SessionList sessionList = new ModelClass.SessionList();
-                            sessionList = prepareSessionListForAdapterEmpty();
-
-                            if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                                sessionList.setWorkType(weeklyOffWorkTypeModel);
-
-                            if (holidayDateArray.contains(day))
-                                sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
-
-                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                            sessionLists.add(sessionList);
-                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                            modelClasses.add(modelClass);
-                            SaveTpData(modelClasses, isClickedName, day, monthName, "0");
-                        }
-                    } else {
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                        modelClasses.add(modelClass);
-                        SaveTpData(modelClasses, isClickedName, day, monthName, "");
-                    }
-                }
-
-                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-
-            } else {  //If tour plan table has no data
-                for (String day : days) {
-                    if (!day.isEmpty()) {
-                        String date = day + " " + monthYear;
-                        String dayName = formatter.format(new Date(date));
-                        ModelClass.SessionList sessionList = new ModelClass.SessionList();
-                        sessionList = prepareSessionListForAdapterEmpty();
-
-                        if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                            sessionList.setWorkType(weeklyOffWorkTypeModel);
-
-                        if (holidayDateArray.contains(day))
-                            sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
-
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        sessionLists.add(sessionList);
-                        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                        modelClasses.add(modelClass);
-                        SaveTpData(modelClasses, isClickedName, day, monthName, "0");
-                    } else {
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-                        modelClasses.add(modelClass);
-                        SaveTpData(modelClasses, isClickedName, day, monthName, "");
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-            binding.tvSync.setEnabled(true);
-            binding.progressBar.setVisibility(View.GONE);
-        }*/
     }
 
     private void SaveTpData(ArrayList<ModelClass> modelClasses, String isClickedName, String day, String monthName, String status) {
@@ -1871,16 +1322,6 @@ public class TourPlanActivity extends AppCompatActivity {
                 dayWiseArrayNextMonth = modelClasses;
                 saveTpLocal(dayWiseArrayNextMonth, day, monthName, status);
                 break;
-       /* if (isClickedName.equalsIgnoreCase("prev")) {
-            dayWiseArrayPrevMonth = modelClasses;
-            saveTpLocal(dayWiseArrayPrevMonth, day, monthName, status);
-        } else if (isClickedName.equalsIgnoreCase("current")) {
-            dayWiseArrayCurrentMonth = modelClasses;
-            saveTpLocal(dayWiseArrayCurrentMonth, day, monthName, status);
-        } else if (isClickedName.equalsIgnoreCase("next")) {
-            dayWiseArrayNextMonth = modelClasses;
-            saveTpLocal(dayWiseArrayNextMonth, day, monthName, status);
-        }*/
         }
     }
 
@@ -1996,119 +1437,6 @@ public class TourPlanActivity extends AppCompatActivity {
         saveTpLocal(dayWiseSaveTp, day, monthName, "0");
     }
 
-   /* private void SaveTpLocalFull(ReceiveModel receiveModel, ArrayList<ModelClass> modelClasses, String isClickedName, String day, String monthName, String date, String dayName, String monthNo, String year) {
-        ModelClass.SessionList sessionList = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList2 = new ModelClass.SessionList();
-        ModelClass.SessionList sessionList3 = new ModelClass.SessionList();
-
-        isDataAvailable = true;
-        boolean session2 = false;
-        boolean session3 = false;
-
-        String terrSlFlag = findTerrSlFlag(receiveModel.getWTCode());
-        String remarks = receiveModel.getDayRemarks();
-        String submittedTime = receiveModel.getSubmitted_time_dt();
-
-        ArrayList<ModelClass.SessionList.SubClass> clusterArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> jcArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> drArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> chemArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> stkArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> unListedDrArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> cipArray = new ArrayList<>();
-        ArrayList<ModelClass.SessionList.SubClass> hospArray = new ArrayList<>();
-
-        ModelClass.SessionList.WorkType workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg(), receiveModel.getWTName(), terrSlFlag, receiveModel.getWTCode());
-        ModelClass.SessionList.SubClass hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames(), receiveModel.getHQCodes());
-
-        if (receiveModel.getFWFlg().equalsIgnoreCase("F")) {
-            if (!receiveModel.getClusterName().isEmpty())
-                clusterArray = addExtraData(receiveModel.getClusterName(), receiveModel.getClusterCode());
-            if (!receiveModel.getJWNames().isEmpty())
-                jcArray = addExtraData(receiveModel.getJWNames(), receiveModel.getJWCodes());
-            if (!receiveModel.getDr_Name().isEmpty())
-                drArray = addExtraData(receiveModel.getDr_Name(), receiveModel.getDr_Code());
-            if (!receiveModel.getChem_Name().isEmpty())
-                chemArray = addExtraData(receiveModel.getChem_Name(), receiveModel.getChem_Code());
-            if (!receiveModel.getStockist_Name().isEmpty())
-                stkArray = addExtraData(receiveModel.getStockist_Name(), receiveModel.getStockist_Code());
-        }
-        sessionList = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks);
-
-        if (!receiveModel.getWTName2().isEmpty()) {
-            session2 = true;
-            String terrSlFlag2 = findTerrSlFlag(receiveModel.getWTCode2());
-            String remarks2 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg2(), receiveModel.getWTName2(), terrSlFlag2, receiveModel.getWTCode2());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames2(), receiveModel.getHQCodes2());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
-                if (!receiveModel.getJWNames2().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
-                if (!receiveModel.getDr_two_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                if (!receiveModel.getChem_Name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
-                if (!receiveModel.getStockist_two_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
-            }
-            sessionList2 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks2);
-
-        }
-
-        if (!receiveModel.getWTName3().isEmpty()) {
-            session3 = true;
-            String terrSlFlag3 = findTerrSlFlag(receiveModel.getWTCode3());
-            String remarks3 = receiveModel.getDayRemarks2();
-            workType = new ModelClass.SessionList.WorkType(receiveModel.getFWFlg3(), receiveModel.getWTName3(), terrSlFlag3, receiveModel.getWTCode3());
-            hq = new ModelClass.SessionList.SubClass(receiveModel.getHQNames3(), receiveModel.getHQCodes3());
-            clusterArray = new ArrayList<>();
-            jcArray = new ArrayList<>();
-            drArray = new ArrayList<>();
-            chemArray = new ArrayList<>();
-            stkArray = new ArrayList<>();
-            unListedDrArray = new ArrayList<>();
-            cipArray = new ArrayList<>();
-            hospArray = new ArrayList<>();
-
-            if (receiveModel.getFWFlg3().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName3().isEmpty())
-                    clusterArray = addExtraData(receiveModel.getClusterName3(), receiveModel.getClusterCode3());
-                if (!receiveModel.getJWNames3().isEmpty())
-                    jcArray = addExtraData(receiveModel.getJWNames3(), receiveModel.getJWCodes3());
-                if (!receiveModel.getDr_three_name().isEmpty())
-                    drArray = addExtraData(receiveModel.getDr_three_name(), receiveModel.getDr_three_code());
-                if (!receiveModel.getChem_three_name().isEmpty())
-                    chemArray = addExtraData(receiveModel.getChem_three_name(), receiveModel.getChem_three_code());
-                if (!receiveModel.getStockist_three_name().isEmpty())
-                    stkArray = addExtraData(receiveModel.getStockist_three_name(), receiveModel.getStockist_three_code());
-            }
-            sessionList3 = prepareSessionListForAdapter(clusterArray, jcArray, drArray, chemArray, stkArray, unListedDrArray, cipArray, hospArray, workType, hq, remarks3);
-        }
-
-        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-        sessionLists.add(sessionList);
-        if (session2)
-            sessionLists.add(sessionList2);
-        if (session3)
-            sessionLists.add(sessionList3);
-        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-        modelClass.setSubmittedTime(submittedTime);
-        modelClasses.add(modelClass);
-        SaveTpData(modelClasses, isClickedName, day, monthName, "0");
-    }*/
-
-
     private ArrayList<ModelClass.SessionList.SubClass> addExtraData(String Name, String Code) {
         String[] arrName = Name.split(",");
         String[] arrCode = Code.split(",");
@@ -2153,7 +1481,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                 JSONArray jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
                                 if (jsonArray.length() > 0) {
                                     String status = jsonArray.getJSONObject(0).getString("Change_Status");
-//                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status);
                                     tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), status);
 
                                     switch (status) {
@@ -2180,7 +1507,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 }
 
                             } catch (JSONException e) {
-                                throw new RuntimeException(e);
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -2292,7 +1619,7 @@ public class TourPlanActivity extends AppCompatActivity {
                     try {
                         JSONArray jsonArray = new JSONArray();
                         for (ModelClass modelClass : arrayList) {
-                            if (!modelClass.getDayNo().isEmpty()) {
+                            if (!modelClass.getDayNo().isEmpty()&&!modelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) {
                                 if (modelClass.getDayNo().equals(dateForApproval)) {
                                     JSONObject jsonObject = new JSONObject();
 
@@ -2389,8 +1716,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("FWFlg", FWFlg);
                                     jsonObject.put("HQCodes", HQCodes);
                                     jsonObject.put("HQNames", HQNames);
-                                    jsonObject.put("clusterCode", clusterCodes);
-                                    jsonObject.put("clusterName", clusterNames);
+                                    jsonObject.put("ClusterCode", clusterCodes);
+                                    jsonObject.put("ClusterName", clusterNames);
                                     jsonObject.put("JWCodes", JWCodes);
                                     jsonObject.put("JWNames", JWNames);
                                     jsonObject.put("Dr_Code", Dr_Code);
@@ -2410,8 +1737,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("FWFlg2", FWFlg2);
                                     jsonObject.put("HQCodes2", HQCodes2);
                                     jsonObject.put("HQNames2", HQNames2);
-                                    jsonObject.put("clusterCode2", clusterCode2);
-                                    jsonObject.put("clusterName2", clusterName2);
+                                    jsonObject.put("ClusterCode2", clusterCode2);
+                                    jsonObject.put("ClusterName2", clusterName2);
                                     jsonObject.put("JWCodes2", JWCodes2);
                                     jsonObject.put("JWNames2", JWNames2);
                                     jsonObject.put("Dr_two_code", Dr_two_code);
@@ -2431,8 +1758,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("FWFlg3", FWFlg3);
                                     jsonObject.put("HQCodes3", HQCodes3);
                                     jsonObject.put("HQNames3", HQNames3);
-                                    jsonObject.put("clusterCode3", clusterCode3);
-                                    jsonObject.put("clusterName3", clusterName3);
+                                    jsonObject.put("ClusterCode3", clusterCode3);
+                                    jsonObject.put("ClusterName3", clusterName3);
                                     jsonObject.put("JWCodes3", JWCodes3);
                                     jsonObject.put("JWNames3", JWNames3);
                                     jsonObject.put("Dr_three_code", Dr_three_code);
@@ -2499,7 +1826,6 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (jsonObject1.getBoolean("success")) {
                             saveTpLocal(modelClassArrayList, date, month, "0");// Sync Success
                             if (statusOffline) {
-//                                JSONArray jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                                 JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
 
                                 ArrayList<ModelClass> arrayList;
@@ -2572,7 +1898,7 @@ public class TourPlanActivity extends AppCompatActivity {
                 break;
             }
         }
-//        sqLite.saveTPData(month, new Gson().toJson(arrayList));
+
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
 

@@ -29,10 +29,7 @@ import java.util.Map;
 
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
-import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
-import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SQLite;
@@ -56,7 +53,7 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
 
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
-    LoginResponse loginResponse;
+
 
     private RoomDB roomDB;
     private LoginDataDao loginDataDao;

@@ -31,7 +31,6 @@ public class ModelClass implements Serializable {
 
 
 
-
   public ModelClass (ModelClass modelClass) {
     this.dayNo = modelClass.getDayNo();
     this.date = modelClass.getDate();

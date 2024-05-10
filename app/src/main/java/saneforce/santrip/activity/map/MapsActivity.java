@@ -202,7 +202,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(MapsActivity.this);
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
-//        sqLite = new SQLite(MapsActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
 
@@ -1093,7 +1092,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
-        sqLiteHandler.open();
+         //sqLiteHandler.open();
 
         switch (selected) {
             case "D":

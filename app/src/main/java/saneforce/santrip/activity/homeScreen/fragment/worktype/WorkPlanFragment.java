@@ -713,8 +713,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             jsonCheck.put("sfname", SharedPref.getSfName(requireContext()));
                             jsonCheck.put("Employee_Id", "");
                             jsonCheck.put("Check_In", SharedPref.getCheckInTime(requireContext()));
-                            jsonCheck.put("Check_Out", CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
-                            jsonCheck.put("DateTime", CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd") + " " + CommonUtilsMethods.getCurrentInstance("HH:mm:ss"));
+                            jsonCheck.put("Check_Out", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
+                            jsonCheck.put("DateTime", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_1));
                             Log.v("CheckInOut", "--json--" + jsonCheck);
                         } catch (JSONException ignored) {
                         }
@@ -735,13 +735,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     }
                 }
 
-//                if (mSubmitflag.equalsIgnoreCase("S1")) {
-//                    AletboxRemarks();
-//                } else if (mSubmitflag.equalsIgnoreCase("S2")) {
-//                    MyDayPlanSubmit();
-//                } else {
-//                    Toast.makeText(getActivity(), "Save Workday Plan", Toast.LENGTH_SHORT).show();
-//                }
                 break;
 
 
@@ -769,7 +762,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONObject jsonObjectwt = new JSONObject();
 
             if (isWhich.equalsIgnoreCase("1")) {
-//                sqLite.saveWorkPlan(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode1, mWTName1, jsonObject.toString());
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode1, mWTName1, jsonObject.toString(), "", 0));
                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                     SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
@@ -778,7 +770,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
             } else {
-//                sqLite.saveWorkPlan(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString());
                 callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString(), "", 0));
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
                 OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());

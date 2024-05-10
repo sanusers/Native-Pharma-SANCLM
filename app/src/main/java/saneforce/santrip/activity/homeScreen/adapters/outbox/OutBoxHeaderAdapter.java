@@ -257,6 +257,9 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
                 if (ecModelClass.getSynced() == 0) {
                     isCallAvailable = true;
                     Log.v("SendOutboxCall", "--image--" + ecModelClass.getDates() + "---" + ecModelClass.getImg_name());
+                    Log.v("SendOutboxCall_______", "--image--" + ecModelClass.getJson_values());
+
+
                     CallSendAPIImage(groupModelClass, ecModelClass, childPos, i, ecModelClass.getJson_values(), ecModelClass.getFilePath(), String.valueOf(ecModelClass.getId()));
                     break;
                 }

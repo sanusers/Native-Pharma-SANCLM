@@ -67,7 +67,7 @@ import saneforce.santrip.utility.LocaleHelper;
 
 public class LoginActivity extends AppCompatActivity {
 
-    ActivityLoginBinding binding;
+   public static ActivityLoginBinding binding;
     ApiInterface apiInterface;
     PackageManager packageManager;
     PackageInfo packageInfo;
