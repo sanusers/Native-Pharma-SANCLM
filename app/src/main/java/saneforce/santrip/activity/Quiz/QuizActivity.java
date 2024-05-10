@@ -21,7 +21,7 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityQuizBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 
 public class QuizActivity extends AppCompatActivity {
     ActivityQuizBinding binding;

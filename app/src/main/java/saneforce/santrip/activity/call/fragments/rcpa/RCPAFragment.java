@@ -28,7 +28,7 @@ import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentRcpaBinding;
-import saneforce.santrip.storage.SQLite;
+
 
 
 public class RCPAFragment extends Fragment {

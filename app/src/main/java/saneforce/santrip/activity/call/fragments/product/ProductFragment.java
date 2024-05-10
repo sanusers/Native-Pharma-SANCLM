@@ -26,7 +26,7 @@ import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.santrip.databinding.FragmentProductsBinding;
-import saneforce.santrip.storage.SQLite;
+
 
 public class ProductFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")

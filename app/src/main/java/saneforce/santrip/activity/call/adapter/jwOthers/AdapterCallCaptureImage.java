@@ -22,22 +22,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import saneforce.santrip.R;
-import saneforce.santrip.activity.call.fragments.jwOthers.JWOthersFragment;
 import saneforce.santrip.activity.call.pojo.CallCaptureImageList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 import saneforce.santrip.storage.SharedPref;
-import saneforce.santrip.utility.NetworkUtil;
+
 
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
     Context context;

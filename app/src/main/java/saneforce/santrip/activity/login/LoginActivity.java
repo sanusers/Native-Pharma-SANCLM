@@ -58,7 +58,6 @@ import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.DownloaderClass;
 import saneforce.santrip.utility.ImageStorage;

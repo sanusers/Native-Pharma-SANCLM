@@ -63,7 +63,6 @@ import saneforce.santrip.databinding.FragmentJwothersBinding;
 import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 

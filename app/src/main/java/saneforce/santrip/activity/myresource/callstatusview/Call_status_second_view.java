@@ -23,12 +23,11 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityCallStatusSecondViewBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
 public class Call_status_second_view extends Fragment {
 
-    SQLite sqLite;
+
 
     call_statusadapter call_statusadap;
     ArrayList<callstatus_model> call_list = new ArrayList<>();
@@ -44,18 +43,8 @@ public class Call_status_second_view extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Callstatussecondview = ActivityCallStatusSecondViewBinding.inflate(inflater);
         View v = Callstatussecondview.getRoot();
-
         roomDB=RoomDB.getDatabase(requireContext());
         masterDataDao=roomDB.masterDataDao();
-  /*  @SuppressLint("MissingInflatedId")
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_call_status_second_view, container, false);*/
-
-        sqLite = new SQLite(getActivity());
-
-
-
-
 
         Calendar c = Calendar.getInstance();
 

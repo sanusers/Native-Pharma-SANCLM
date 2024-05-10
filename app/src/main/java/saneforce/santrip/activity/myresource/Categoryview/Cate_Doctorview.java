@@ -22,10 +22,8 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityCateDoctorviewBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
-
 public class Cate_Doctorview extends Fragment {
-    SQLite sqLite;
+
     ArrayList<callstatus_model> cate_list = new ArrayList<>();
     ActivityCateDoctorviewBinding bindingDoccate;
 
@@ -43,8 +41,6 @@ public class Cate_Doctorview extends Fragment {
 
         roomDB= RoomDB.getDatabase(requireContext());
         masterDataDao=roomDB.masterDataDao();
-
-        sqLite = new SQLite(getActivity());
         Doctview();
 
         return v;

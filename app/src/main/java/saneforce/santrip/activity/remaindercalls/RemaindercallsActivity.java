@@ -34,7 +34,6 @@ import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataTable;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class RemaindercallsActivity extends AppCompatActivity {

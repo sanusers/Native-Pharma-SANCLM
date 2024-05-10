@@ -25,11 +25,10 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityCallStatusfristViewBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
 public class Call_statusfrist_view extends Fragment {
-    SQLite sqLite;
+
     call_statusadapter call_statusadap;
     ActivityCallStatusfristViewBinding Callstatusfristview;
     String previousMonth;
@@ -42,7 +41,6 @@ public class Call_statusfrist_view extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Callstatusfristview = ActivityCallStatusfristViewBinding.inflate(inflater);
         View v = Callstatusfristview.getRoot();
-        sqLite = new SQLite(getActivity());
         roomDB=RoomDB.getDatabase(requireContext());
         masterDataDao=roomDB.masterDataDao();
         

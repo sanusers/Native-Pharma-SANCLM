@@ -38,7 +38,7 @@ import saneforce.santrip.databinding.FragmentSelectJwSideBinding;
 import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 
 public class JointWorkSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")

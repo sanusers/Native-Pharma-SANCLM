@@ -65,7 +65,7 @@ import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflin
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
-import saneforce.santrip.storage.SQLite;
+
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
 import saneforce.santrip.utility.TimeUtils;
@@ -75,7 +75,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
    public static ActivityMasterSyncBinding binding;
     ApiInterface apiInterface;
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
-//    SQLite sqLite;
     public static Dialog dialog1;
     String rsf="";
     int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;

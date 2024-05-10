@@ -35,7 +35,7 @@ import saneforce.santrip.databinding.FragmentSelectFbSideBinding;
 import saneforce.santrip.response.SetupResponse;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 
 public class SpecialitySelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")

@@ -10,18 +10,15 @@ import androidx.fragment.app.Fragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+
 import saneforce.santrip.activity.homeScreen.fragment.CallAnalysisFragment;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.santrip.roomdatabase.CallTableDetails.CallsLinechartTable;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
-import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
-import saneforce.santrip.storage.SQLite;
+
 
 public class CallDataRestClass {
 

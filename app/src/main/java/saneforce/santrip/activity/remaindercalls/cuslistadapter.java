@@ -42,14 +42,12 @@ import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class cuslistadapter extends RecyclerView.Adapter<cuslistadapter.ViewHolder> {
     Context context;
     ApiInterface api_interface;
 
-    SQLite sqLite;
     String SfType = "", Vals = "";
     String pos;
 

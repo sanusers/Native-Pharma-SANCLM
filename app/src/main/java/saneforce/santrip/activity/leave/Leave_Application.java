@@ -67,7 +67,6 @@ import saneforce.santrip.network.RetrofitClient;
 
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -77,7 +76,7 @@ public class Leave_Application extends AppCompatActivity {
 
     ApiInterface apiInterface;
     ImageView close_sideview;
-    SQLite sqLite;
+
     String navigateFrom = "";
 
     ArrayAdapter<String> adapter;
@@ -138,9 +137,8 @@ public class Leave_Application extends AppCompatActivity {
 
         dailog_list.setVisibility(View.VISIBLE);
         leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
-        sqLite = new SQLite(this);
+
 //        l_sideview.closeDrawer(Gravity.RIGHT);
-//        sqLite = new SQLite(this);
 
         leavebinding.leavebackArrow.setOnClickListener(v -> {
             //  onBackPressed();

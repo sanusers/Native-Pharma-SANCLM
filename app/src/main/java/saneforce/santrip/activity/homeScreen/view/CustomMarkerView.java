@@ -10,10 +10,8 @@ import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
-
 import saneforce.santrip.R;
 import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
-import saneforce.santrip.storage.SQLite;
 
 public class CustomMarkerView extends MarkerView {
 

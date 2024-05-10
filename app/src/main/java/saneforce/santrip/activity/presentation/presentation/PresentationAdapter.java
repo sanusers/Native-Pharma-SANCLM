@@ -40,7 +40,7 @@ import saneforce.santrip.activity.presentation.createPresentation.CreatePresenta
 import saneforce.santrip.activity.presentation.playPreview.PlaySlidePreviewActivity;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 
 public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapter.MyViewHolder> {
     Context context;

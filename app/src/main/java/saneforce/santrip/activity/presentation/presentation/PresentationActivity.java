@@ -16,14 +16,13 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityPresentationBinding;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 
 
 public class PresentationActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static ActivityPresentationBinding binding;
     PresentationAdapter presentationAdapter;
-//    SQLite sqLite;
     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB roomDB;

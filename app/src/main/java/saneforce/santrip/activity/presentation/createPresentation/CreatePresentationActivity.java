@@ -36,7 +36,6 @@ import saneforce.santrip.databinding.ActivityCreatePresentationBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 
 
 public class CreatePresentationActivity extends AppCompatActivity {
