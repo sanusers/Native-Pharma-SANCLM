@@ -38,7 +38,6 @@ public class CustomerProfile extends AppCompatActivity {
     ImageView img_back;
     CommonUtilsMethods commonUtilsMethods;
     CustTabLayoutAdapter viewPagerAdapter;
-//    SQLite sqLite;
     TextView cusName;
     private RoomDB roomDB;
     private CallOfflineDataDao callOfflineDataDao;

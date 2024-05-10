@@ -63,7 +63,6 @@ public class CallsFragment extends Fragment {
     public static ProgressDialog progressDialog;
     ApiInterface apiInterface;
 
-//    SQLite sqLite;
     private RoomDB db;
     private static MasterDataDao masterDataDao;
     CommonUtilsMethods commonUtilsMethods;
@@ -136,7 +135,6 @@ public class CallsFragment extends Fragment {
                                         if (jsonArray.length() > 0) {
 
                                             JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
-//                                            JSONArray jsonArrayWt = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE);
                                             for (int i = 0; i < jsonArrayWt.length(); i++) {
                                                 JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
                                                 if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
@@ -287,7 +285,6 @@ public class CallsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = CallsFragmentBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
-//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         Mcontext=requireContext();
