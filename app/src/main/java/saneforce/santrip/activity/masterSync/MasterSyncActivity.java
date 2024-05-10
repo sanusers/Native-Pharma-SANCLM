@@ -170,11 +170,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
         if (navigateFrom.equalsIgnoreCase("Login")) {
             binding.backArrow.setVisibility(View.GONE);
-            if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
+            if (!SharedPref.getDesig(this).equalsIgnoreCase("MR")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
-                    sync(Constants.DOCTOR, "getmydayplan", dcrModelArray, 1);
+                    sync(Constants.DOCTOR, "getmydayplan", dcrModelArray, 2);
                     // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
                 } else {
@@ -223,7 +223,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
         binding.hq.setOnClickListener(view -> {
 
             try {
-//                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                 JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                 ArrayList<String> list = new ArrayList<>();
 
@@ -1197,7 +1196,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                             success = true;
                                         } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
                                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
-//                                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
+
                                             masterSyncItemModels.get(position).setSyncSuccess(1);
                                         }
                                     }
@@ -1227,7 +1226,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                             CallDataRestClass.resetcallValues(context);
                                         }
 
-                                        // sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, "[]", 0);
 
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {
@@ -1235,9 +1233,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
                                                 JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0));
-//                                                sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0);
+
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0));
-//                                                sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0);
+
 
                                                 MasterDataTable stockdata =new MasterDataTable();
                                                 stockdata.setMasterKey(Constants.STOCK_BALANCE);
@@ -1273,12 +1271,18 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
                                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, false);
                                         }
+                                    }else {
+
                                     }
                                 } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);
                                     masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-//                                    sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-                                }
+                                    if (navigateFrom.equalsIgnoreCase("Login")) {
+                                        masterSyncAll(false);
+                                        }
+                                    }
+
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -1286,14 +1290,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         } else {
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-//                            sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                         }
 
                         // when all the masters are synced and intent from Login Activity
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
-//                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) {
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
-                                // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
@@ -1318,7 +1319,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         ++apiSuccessCount;
                         Log.e("test", "success count at error : " + apiSuccessCount);
                         masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-//                        sqLite.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                         masterSyncItemModels.get(position).setPBarVisibility(false);
                         masterSyncItemModels.get(position).setSyncSuccess(1);
                         masterSyncAdapter.notifyDataSetChanged();
@@ -1326,7 +1326,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                             binding.backArrow.setVisibility(View.VISIBLE);
                             SharedPref.putAutomassync(getApplicationContext(), true);
                             SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-//                            if (sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
+
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
                             } else {
@@ -1350,8 +1350,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
     private void InitializeTpNeededData() {
         try {
-//            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
-//            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
             holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
             JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray(); // Weekly Off data
             for (int i = 0; i < weeklyOff.length(); i++) {
@@ -1394,7 +1392,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 }
             }
 
-//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
@@ -1551,7 +1548,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
             }
 
-//            JSONArray savedDataArray = new JSONArray(sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).toString());
+
             JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
             if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
@@ -1625,7 +1622,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     }
                 }
 
-//                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
+
                 tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
@@ -1777,7 +1774,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 break;
             }
         }
-//        sqLite.saveTPData(month, new Gson().toJson(arrayList));
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month,  new Gson().toJson(arrayList)));
     }
 
@@ -1818,11 +1814,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         HqName=  secondObject.getString("HQNm");
                     }
                 }
-           //     SharedPref.saveHq(MasterSyncActivity.this, HqName, Hqcode);
+
 
                 binding.hqName.setText(HqName);
                 rsf = Hqcode;
-               // SharedPref.saveHq(MasterSyncActivity.this, jsonArray.getJSONObject(0).getString("name"), rsf);
+
                 prepareArray(rsf);// to replace the new rsf values
                 masterSyncAll(false);
             } catch (JSONException e) {
@@ -1844,70 +1840,5 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
 
 
-public void  MydayplanSync(){
-  try {
-      JSONObject jsonObject=new JSONObject();
-      jsonObject.put("tableName","getmydayplan");
-      jsonObject.put("sfcode",SharedPref.getSfType(this));
-      jsonObject.put("division_code",SharedPref.getDivisionCode(this));
-      jsonObject.put("Rsf",SharedPref.getSfCode(this));
-      jsonObject.put("sf_type",SharedPref.getSfType(this));
-      jsonObject.put("ReqDt",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-      jsonObject.put("Designation",SharedPref.getDesig(this));
-      jsonObject.put("state_code",SharedPref.getStateCode(this));
-      jsonObject.put("subdivision_code",SharedPref.getSubdivisionCode(this));
-      Map<String, String> mapString = new HashMap<>();
-      mapString.put("axn", "table/dcrmasterdata");
-      apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-      Call<JsonElement>  call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-
-      call.enqueue(new Callback<JsonElement>() {
-          @Override
-          public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-              try {
-
-                  if (response.code() == 200 || response.code() == 201) {
-                      JsonElement jsonElement = response.body();
-                      if (!jsonElement.isJsonNull()) {
-                          if (jsonElement.isJsonArray()) {
-                              JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-
-                              String HqName = "", HqCode = "";
-                              if (jsonArray.length() > 0) {
-                                  JSONObject firstObject = jsonArray.getJSONObject(0);
-                                  if (firstObject.getString("FWFlg").equalsIgnoreCase("F")) {
-                                      HqName = firstObject.getString("HQNm");
-                                      HqCode = firstObject.getString("SFMem");
-                                  }
-                                  if (jsonArray.length() == 2) {
-                                      JSONObject secondObject = jsonArray.getJSONObject(1);
-                                      if (secondObject.getString("FWFlg").equalsIgnoreCase("F")) {
-                                          HqName = secondObject.getString("HQNm");
-                                          HqCode = secondObject.getString("SFMem");
-                                      }
-                                  }
-                                  SharedPref.saveHq(MasterSyncActivity.this, HqName, HqCode);
-                              }
-                          }
-                      }
-                  }else {
-                      SharedPref.saveHq(MasterSyncActivity.this, "", "");
-                  }
-              } catch (Exception ignore) {
-              }
-
-
-          }
-
-          @Override
-          public void onFailure(Call<JsonElement> call, Throwable t) {
-
-          }
-      });
-
-  }catch (Exception ignore){
-  }
-
-    }
 
 }

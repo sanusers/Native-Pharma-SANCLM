@@ -266,7 +266,7 @@ public class SettingsActivity extends AppCompatActivity {
             call.enqueue(new Callback<JsonArray>() {
                 @Override
                 public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-                    binding.configurationPB.setVisibility(View.GONE);
+
                     if (response.isSuccessful()) {
                         Log.e("test", "success : " + response.body().toString());
                         JSONArray jsonArray = null;
@@ -308,11 +308,16 @@ public class SettingsActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         SharedPref.Loginsite(getApplicationContext(), url);
+                        binding.configurationPB.setVisibility(View.GONE);
                         binding.btnSaveSettings.setEnabled(true);
                     } else {
                         binding.btnSaveSettings.setEnabled(true);
                         commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                        binding.configurationPB.setVisibility(View.GONE);
                     }
+
+
+
                 }
 
                 @Override
