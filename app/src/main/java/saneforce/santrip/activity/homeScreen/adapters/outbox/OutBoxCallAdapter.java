@@ -63,13 +63,12 @@ import saneforce.santrip.roomdatabase.CallsUtil;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 import saneforce.santrip.storage.SharedPref;
 
 public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.ViewHolder> {
     Context context;
     ArrayList<OutBoxCallList> outBoxCallLists;
-//    SQLite sqLite;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
     Activity activity;
@@ -86,7 +85,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         this.context = context;
         this.activity = activity;
         this.outBoxCallLists = outBoxCallLists;
-//        sqLite = new SQLite(context);
         this.apiInterface = apiInterface;
         commonUtilsMethods = new CommonUtilsMethods(context);
         roomDB=RoomDB.getDatabase(context);
@@ -165,7 +163,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     UpdateInputSample(outBoxCallLists.get(position).getJsonData());
-//                    sqLite.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                     callsUtil.deleteOfflineCalls(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getCusName(), outBoxCallLists.get(position).getDates());
                     try {
                         if (!outBoxCallLists.get(position).getStatus().equalsIgnoreCase(Constants.DUPLICATE_CALL)) {

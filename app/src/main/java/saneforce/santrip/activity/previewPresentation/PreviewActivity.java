@@ -44,7 +44,6 @@ import saneforce.santrip.response.CustomSetupResponse;
 import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
 public class PreviewActivity extends AppCompatActivity {

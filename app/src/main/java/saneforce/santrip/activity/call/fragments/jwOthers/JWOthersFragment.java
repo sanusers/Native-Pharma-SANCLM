@@ -63,7 +63,6 @@ import saneforce.santrip.databinding.FragmentJwothersBinding;
 import saneforce.santrip.roomdatabase.DCRDocDataTableDetails.DCRDocDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -79,7 +78,6 @@ public class JWOthersFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static AdapterCallJointWorkList adapterCallJointWorkList;
     public static ArrayList<CallCommonCheckedList> callAddedJointList;
-//    SQLite sqLite;
    public static ArrayList<String> JWKCodeList =new ArrayList<>();
    Gson gson;
     CommonUtilsMethods commonUtilsMethods;
@@ -118,7 +116,6 @@ public class JWOthersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jwOthersBinding = FragmentJwothersBinding.inflate(inflater);
         View v = jwOthersBinding.getRoot();
-//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         dcrDocDataDao = roomDB.dcrDocDataDao();
         masterDataDao = roomDB.masterDataDao();
@@ -139,7 +136,6 @@ public class JWOthersFragment extends Fragment {
 
                     try {
                         if (DCRCallActivity.save_valid.equals("1")) {
-//                            JSONArray jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
                             JSONArray jsonArray = dcrDocDataDao.getDCRDocData(DCRCallActivity.hqcode).getDCRDocDataJSONArray();
 
                             Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
@@ -151,7 +147,6 @@ public class JWOthersFragment extends Fragment {
                             }
                         } else {
                             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + TodayPlanSfCode).getMasterSyncDataJsonArray();
-//                            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
                             Log.d("jw_data", jsonArray.toString() + "====" + TodayPlanSfCode);
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);

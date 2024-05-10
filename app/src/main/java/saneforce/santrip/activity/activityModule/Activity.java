@@ -105,7 +105,6 @@ import saneforce.santrip.network.RetrofitClient;
 
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -115,7 +114,6 @@ public class Activity extends AppCompatActivity {
     private static final int PICK_FROM_GALLERY = 101;
 
 
-//    SQLite sqLite;
     ApiInterface apiInterface;
 
     ArrayList<ActivityModelClass> ActivityList=new ArrayList<>();
@@ -141,7 +139,6 @@ public class Activity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(binding.getRoot());
         gpsTrack = new GPSTrack(this);
-//        sqLite=new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods=new CommonUtilsMethods(this);
@@ -3554,7 +3551,6 @@ public class Activity extends AppCompatActivity {
 
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
             ArrayList<String> list = new ArrayList<>();
 
             if (jsonArray.length() > 0) {

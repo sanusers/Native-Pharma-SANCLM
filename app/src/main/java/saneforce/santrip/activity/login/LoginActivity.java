@@ -58,7 +58,6 @@ import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataTable;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.DownloaderClass;
 import saneforce.santrip.utility.ImageStorage;
@@ -72,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
     PackageManager packageManager;
     PackageInfo packageInfo;
     String fcmToken = "";
-//    SQLite sqLite;
     String navigateFrom = "";
     String userId = "", userPwd = "";
     LoginViewModel loginViewModel = new LoginViewModel();
@@ -96,9 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getParent());
-//        sqLite.getWritableDatabase();
         FirebaseApp.initializeApp(LoginActivity.this);
         fcmToken = SharedPref.getFcmToken(getApplicationContext());
 
@@ -174,7 +170,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.clearData.setOnClickListener(view -> {
-//            if (sqLite.isOutBoxDataAvailable()) {
             if (callsUtil.isOutBoxDataAvailable()) {
                 new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
             } else {
@@ -202,9 +197,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void DeleteAllFiles() {
-//        sqLite.deleteAllTable();
-//        masterDataDao.deleteAllMasterData();
-//        callTableDao.deleteAllData();
         roomDB.loginDataDao().deleteAllData();
         roomDB.masterDataDao().deleteAllMasterData();
         roomDB.callTableDao().deleteAllData();
@@ -419,10 +411,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void process(JSONObject jsonObject) {
         try {
-//            sqLite.saveLoginData(jsonObject.toString());
             loginDataDao.saveLoginData(new LoginDataTable(jsonObject.toString()));
             SharedPref.InsertLogInData(LoginActivity.this,jsonObject);
-//            openOrCreateDatabase(SQLite.DATA_BASE_NAME, MODE_PRIVATE, null);
             SharedPref.saveLoginId(LoginActivity.this, userId, userPwd);
             SharedPref.saveLoginState(getApplicationContext(), true);
             SharedPref.saveSfType(LoginActivity.this, jsonObject.getString("sf_type"), jsonObject.getString("SF_Code"));

@@ -35,14 +35,12 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkUtil;
 
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
     Context context;
     ArrayList<CallCaptureImageList> callCaptureImageLists;
-//    SQLite sqLite;
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
 

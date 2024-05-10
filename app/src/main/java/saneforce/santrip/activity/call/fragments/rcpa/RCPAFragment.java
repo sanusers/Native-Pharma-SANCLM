@@ -28,7 +28,6 @@ import saneforce.santrip.activity.call.pojo.rcpa.RCPAAddedProdList;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentRcpaBinding;
-import saneforce.santrip.storage.SQLite;
 
 
 public class RCPAFragment extends Fragment {
@@ -37,7 +36,6 @@ public class RCPAFragment extends Fragment {
     public static String PrdName, PrdCode, cheName, CheCode;
     public static ArrayList<CustList> ChemistSelectedList = new ArrayList<>();
     public static ArrayList<RCPAAddedProdList> ProductSelectedList = new ArrayList<>();
-//    SQLite sqLite;
     double getQty;
     RCPAChemistAdapter rcpaChemistAdapter;
     CommonUtilsMethods commonUtilsMethods;
@@ -48,7 +46,6 @@ public class RCPAFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rcpaBinding = FragmentRcpaBinding.inflate(getLayoutInflater());
         View v = rcpaBinding.getRoot();
-//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 

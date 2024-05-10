@@ -35,12 +35,10 @@ import saneforce.santrip.databinding.FragmentSelectFbSideBinding;
 import saneforce.santrip.response.SetupResponse;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 
 public class SpecialitySelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectFbSideBinding selectSpecialitySideBinding;
-//    SQLite sqLite;
     JSONObject jsonObject;
     ArrayList<String> list_name = new ArrayList<>();
     ArrayList<String> list_code = new ArrayList<>();
@@ -55,7 +53,6 @@ public class SpecialitySelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectSpecialitySideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectSpecialitySideBinding.getRoot();
-//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());

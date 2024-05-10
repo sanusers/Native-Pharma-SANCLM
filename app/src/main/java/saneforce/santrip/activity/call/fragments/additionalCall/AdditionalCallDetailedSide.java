@@ -42,7 +42,6 @@ import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentAddCallDetailsSideBinding;
-import saneforce.santrip.storage.SQLite;
 
 public class AdditionalCallDetailedSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -59,7 +58,6 @@ public class AdditionalCallDetailedSide extends Fragment {
     FinalAdditionalCallAdapter finalAdditionalCallAdapter;
     FinalInputCallAdapter finalInputCallAdapter;
     FinalProductCallAdapter finalProductCallAdapter;
-//    SQLite sqLite;
     int lastPos;
 
     @SuppressLint("NotifyDataSetChanged")
@@ -69,7 +67,6 @@ public class AdditionalCallDetailedSide extends Fragment {
         callDetailsSideBinding = FragmentAddCallDetailsSideBinding.inflate(getLayoutInflater());
         View v = callDetailsSideBinding.getRoot();
 
-//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 

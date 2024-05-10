@@ -122,7 +122,6 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkChangeReceiver;
 import saneforce.santrip.utility.TimeUtils;
@@ -142,7 +141,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     GPSTrack gpsTrack;
     CommonUtilsMethods commonUtilsMethods;
     LocationManager locationManager;
-    SQLite sqLite;
     ApiInterface apiInterface;
 
     CustomSetupResponse customSetupResponse;
@@ -322,8 +320,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
-//        sqLite = new SQLite(HomeDashBoard.this);
-//        sqLite.getWritableDatabase();
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         getRequiredData();
@@ -542,7 +538,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     private void getRequiredData() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
                 customSetupResponse = new CustomSetupResponse();
@@ -571,8 +566,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     private void SetUpHolidayWeekEndData() {
         try {
-//            holidayJSONArray = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY); //Holiday data
-//            JSONArray weeklyOff = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF); // Weekly Off data
             holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
             JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray(); // Weekly Off data
             for (int i = 0; i < weeklyOff.length(); i++) {
@@ -750,7 +743,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
 
-             //   JSONArray dateSync = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
                 if (dateSync.length() > 0) {
                     for (int i = 0; i < dateSync.length(); i++) {
 

@@ -26,7 +26,6 @@ import saneforce.santrip.activity.call.pojo.CallCommonCheckedList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.WrapContentLinearLayoutManager;
 import saneforce.santrip.databinding.FragmentProductsBinding;
-import saneforce.santrip.storage.SQLite;
 
 public class ProductFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
@@ -34,7 +33,6 @@ public class ProductFragment extends Fragment {
     public static ArrayList<CallCommonCheckedList> checkedPrdList;
     CheckProductListAdapter checkProductListAdapter;
     FinalProductCallAdapter finalProductCallAdapter;
-//    SQLite sqLite;
     CommonUtilsMethods commonUtilsMethods;
 
     @Nullable
@@ -42,7 +40,6 @@ public class ProductFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         productsBinding = FragmentProductsBinding.inflate(inflater);
         View v = productsBinding.getRoot();
-//        sqLite = new SQLite(getContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         if (DCRCallActivity.SampleValidation.equalsIgnoreCase("1")) {
