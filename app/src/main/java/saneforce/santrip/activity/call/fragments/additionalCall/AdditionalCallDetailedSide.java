@@ -163,9 +163,27 @@ public class AdditionalCallDetailedSide extends Fragment {
             assert tab != null;
             tab.select();
             if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("New")) {
+                if (!addInputAdditionalCallArrayList.isEmpty()) {
+                    for (int i = 0; i<addInputAdditionalCallArrayList.size(); i++) {
+                        if(addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
+                            commonUtilsMethods.showToastMessage(requireContext(), "Qty cannot be empty!");
+                            callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
+                            return;
+                        }
+                    }
+                }
                 AddSampleInputData();
 
             } else if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("Edit")) {
+                if(!addInputAdditionalCallArrayList.isEmpty()) {
+                    for (int i = 0; i<addInputAdditionalCallArrayList.size(); i++) {
+                        if(addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
+                            commonUtilsMethods.showToastMessage(requireContext(), "Qty cannot be empty!");
+                            callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
+                            return;
+                        }
+                    }
+                }
                 for (int j = 0; j < FinalAdditionalCallAdapter.nestedInput.size(); j++) {
                     if (FinalAdditionalCallAdapter.nestedInput.get(j).getCust_code().equalsIgnoreCase(FinalAdditionalCallAdapter.Selected_code)) {
                         FinalAdditionalCallAdapter.nestedInput.remove(j);
