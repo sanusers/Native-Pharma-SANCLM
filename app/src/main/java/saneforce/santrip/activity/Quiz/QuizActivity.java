@@ -25,7 +25,6 @@ import saneforce.santrip.roomdatabase.RoomDB;
 
 public class QuizActivity extends AppCompatActivity {
     ActivityQuizBinding binding;
-//    SQLite sqLite;
     JSONArray QuesttionjsonArray, AnswerjsonArray;
     ArrayList<QuizModelClass> mQuizList = new ArrayList<>();
     ArrayList<QuizOptionModelClass> sQuizMainAnswerList = new ArrayList<>();
@@ -49,13 +48,11 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         mQuizList.clear();
         try {
 
-//            JSONArray quizdata = sqLite.getMasterSyncDataByKey(Constants.QUIZ);
             JSONArray quizdata = masterDataDao.getMasterDataTableOrNew(Constants.QUIZ).getMasterSyncDataJsonArray();
             if (quizdata.length() > 0) {
                 for (int i = 0; i < quizdata.length(); i++) {

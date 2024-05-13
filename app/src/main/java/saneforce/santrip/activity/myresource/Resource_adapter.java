@@ -74,7 +74,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Resourcemodel_class app_adapt = listeduser.get(position);
-//        sqLite = new SQLite(context);
 
         holder.username.setText(app_adapt.getListed_data());
         holder.usercount.setText(app_adapt.getListed_count());
@@ -99,8 +98,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         rec_val="D";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
                         JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context)));
-//                        JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
                         Valcount = "";
                         String docval = "";
                         pos_check = "";
@@ -143,8 +140,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         rec_val="C";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context));
                         JSONArray jsonchemist = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context)));
-//                        JSONArray jsonchemist = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context));
                         String chmval = "";
                         Valcount = "";
                         if (jsonchemist.length() > 0) {
@@ -177,8 +172,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         rec_val="S";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context));
                         JSONArray jsonstock = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context)));
-//                        JSONArray jsonstock = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context));
                         String strck_val = "";
                         Valcount = "";
                         if (jsonstock.length() > 0) {
@@ -213,8 +206,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         rec_val="U";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context));
                         JSONArray jsonunlisted = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context)));
-//                        JSONArray jsonunlisted = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context));
                         String unlist_val = "";
                         Valcount = "";
                         if (jsonunlisted.length() > 0) {
@@ -261,8 +252,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         rec_val="I";
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.INPUT);
                         JSONArray jsoninput = masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.INPUT));
-//                        JSONArray jsoninput = sqLite.getMasterSyncDataByKey(Constants.INPUT);
                         String input_val = "";
                         Valcount = "1";
 
@@ -298,8 +287,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.PRODUCT);
                         JSONArray jsonproduct = masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.PRODUCT));
-//                        JSONArray jsonproduct = sqLite.getMasterSyncDataByKey(Constants.PRODUCT);
                         Log.d("listedpro", String.valueOf(jsonproduct));
                         String product_val = "";
                         if (jsonproduct.length() > 0) {
@@ -319,8 +306,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                     case ("9"):
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context);
                         JSONArray jsonculst = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = sqLite.getMasterSyncDataByKey(Constants.CLUSTER) + SharedPref.getHqCode(context);
-//                        JSONArray jsonculst = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + SharedPref.getHqCode(context));
                         String culst_val = "";
                         Valcount = "";
                         Valcount = "1";
@@ -343,9 +328,6 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.VISIT_CONTROL);
                         JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
                         JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
-//                        MyResource_Activity.Key = String.valueOf(sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL));
-//                        JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
-//                        JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
                         uniqueValues.clear();
                         idCounts.clear();
                         Valcount = "2";

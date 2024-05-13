@@ -766,7 +766,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
                 JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
 
-             //   JSONArray dateSync = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC);
                 if (dateSync.length() > 0) {
                     for (int i = 0; i < dateSync.length(); i++) {
 

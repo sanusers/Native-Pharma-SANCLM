@@ -45,7 +45,6 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
     ArrayList<EcModelClass> ecModelClasses;
     OutBoxHeaderAdapter outBoxHeaderAdapter;
     CommonUtilsMethods commonUtilsMethods;
-//    SQLite sqLite;
     Activity activity;
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
@@ -57,7 +56,6 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
         this.context = context;
         this.ecModelClasses = ecModelClasses;
         commonUtilsMethods = new CommonUtilsMethods(context);
-//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
@@ -98,7 +96,6 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     try {
                         JSONObject jsonObject;
-//                        jsonObject = new JSONObject(sqLite.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
                         jsonObject = new JSONObject(callOfflineDataDao.getJsonCallList(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode()));
                         JSONArray jsonArray = jsonObject.getJSONArray("EventCapture");
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -127,7 +124,6 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                             }
                         }
 
-//                        sqLite.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
                         callOfflineDataDao.saveOfflineUpdateJson(ecModelClasses.get(position).getDates(), ecModelClasses.get(position).getCusCode(), jsonObject.toString());
                         outBoxHeaderAdapter = new OutBoxHeaderAdapter(activity, context, listDates);
                         commonUtilsMethods.recycleTestWithDivider(outBoxBinding.rvOutBoxHead);
@@ -143,7 +139,6 @@ public class OutBoxECAdapter extends RecyclerView.Adapter<OutBoxECAdapter.ViewHo
                             System.out.println("file not Deleted :" + ecModelClasses.get(position).getFilePath());
                         }
                     }
-//                    sqLite.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
                     callOfflineECDataDao.deleteOfflineEC(String.valueOf(ecModelClasses.get(position).getId()));
                     removeAt(position);
                 }

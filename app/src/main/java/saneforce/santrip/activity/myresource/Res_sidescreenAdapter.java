@@ -68,7 +68,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         this.resList = resList;
         this.split_val = split_val;
 
-//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
 
@@ -253,7 +252,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     duplicateValues.clear();
                     L_cLasses.clear();
                     JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
-//                    JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
 //                   ==============================
                     String colorText1 = "<font color=\"#F1536E\">" + count + " )" + "</font>";
                     holder.listcount.setText(Html.fromHtml(colorText1));

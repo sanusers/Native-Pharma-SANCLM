@@ -109,7 +109,6 @@ public class SpecialitySelectionSide extends Fragment {
         try {
             JSONArray jsonArray;
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
                 setUpResponse = new SetupResponse();
@@ -124,7 +123,6 @@ public class SpecialitySelectionSide extends Fragment {
             }
 
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 list_name.add(jsonObject.getString("Doc_Special_Name"));

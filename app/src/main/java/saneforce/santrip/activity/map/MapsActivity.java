@@ -194,7 +194,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(MapsActivity.this);
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
@@ -1080,7 +1079,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
-//        sqLiteHandler.open();
 
         switch (selected) {
             case "D":
@@ -1109,7 +1107,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "C":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + sfCode).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -1133,7 +1130,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "S":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + sfCode).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -1157,7 +1153,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "U":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + sfCode).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addr");

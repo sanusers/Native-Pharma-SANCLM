@@ -78,7 +78,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     public ProgressDialog progressDialog = null;
     public ApiInterface api_interface;
 
-//    SQLite sqLite;
     JSONObject jsonDcrList = new JSONObject();
     JSONObject jsonAccept = new JSONObject();
     JSONObject jsonReject = new JSONObject();
@@ -277,7 +276,6 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
         dcrCallApprovalBinding = saneforce.santrip.databinding.ActivityDcrCallApprovalBinding.inflate(getLayoutInflater());
         setContentView(dcrCallApprovalBinding.getRoot());
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-//        sqLite = new SQLite(getApplicationContext());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());

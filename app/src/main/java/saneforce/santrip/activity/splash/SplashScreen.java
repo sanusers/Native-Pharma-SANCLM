@@ -24,7 +24,6 @@ public class SplashScreen extends AppCompatActivity {
 
   ActivitySplashScreenBinding binding ;
 
-//    SQLite sqLite;
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -34,8 +33,6 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(binding.getRoot());
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        sqLite = new SQLite(getApplicationContext());
-//        sqLite.getWritableDatabase();
 
         new Handler().postDelayed(() -> {
             if (SharedPref.getSettingState(getApplicationContext())){

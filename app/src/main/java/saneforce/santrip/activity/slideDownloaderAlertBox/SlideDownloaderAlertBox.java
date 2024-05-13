@@ -49,7 +49,6 @@ public class SlideDownloaderAlertBox {
         try {
         ArrayList<SlideModelClass> Slide_list = new ArrayList<>();
         ArrayList<String> slideIdList = new ArrayList<>();
-//        SQLite sqLite=new SQLite(activity);
             MasterDataDao masterDataDao = RoomDB.getDatabase(activity).masterDataDao();
         boolean AleartShowFlag=false;
         MoveMainFlag = MoveFlag;
@@ -68,7 +67,6 @@ public class SlideDownloaderAlertBox {
         slideIdList = new Gson().fromJson(slideids, listType);
         SlideDownloaderAlertBox.downloading_count = Integer.valueOf(slideIdList.size());
         JSONArray slidedata = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
-//        JSONArray slidedata = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
         if (slidedata.length() > 0) {
                 for (int i = 0; i < slidedata.length(); i++) {
                     JSONObject jsonObject = slidedata.getJSONObject(i);

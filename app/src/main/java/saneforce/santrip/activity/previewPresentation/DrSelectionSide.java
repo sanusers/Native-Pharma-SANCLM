@@ -66,7 +66,6 @@ public class DrSelectionSide extends Fragment {
     ApiInterface apiInterface;
     JSONArray jsonArray;
     JSONObject jsonObject;
-//    SQLite sqLite;
     SelectDoctorAdapter selectDoctorAdapter;
 
     String TodayPlanSfCode;
@@ -80,7 +79,6 @@ public class DrSelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         drSelectionSideBinding = FragmentDrSelectionSideBinding.inflate(inflater);
         View v = drSelectionSideBinding.getRoot();
-//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -148,7 +146,6 @@ public class DrSelectionSide extends Fragment {
             } else {
                 if (SharedPref.getTodayDayPlanSfCode(requireContext()).isEmpty()) {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                     for (int i = 0; i < 1; i++) {
                         JSONObject jsonHQList = jsonArray.getJSONObject(0);
                         TodayPlanSfCode = jsonHQList.getString("id");
@@ -159,11 +156,9 @@ public class DrSelectionSide extends Fragment {
             }
 
             if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
-//            if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + TodayPlanSfCode)) {
                 prepareMasterToSync(TodayPlanSfCode);
             } else {
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + TodayPlanSfCode).getMasterSyncDataJsonArray();
-//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + TodayPlanSfCode);
             }
 
           /*  if (jsonArray.length() == 0) {
@@ -276,17 +271,14 @@ public class DrSelectionSide extends Fragment {
                                                 success = true;
                                             } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
                                                 masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
                                         if (success) {
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
-//                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -298,7 +290,6 @@ public class DrSelectionSide extends Fragment {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
                 }
@@ -318,7 +309,6 @@ public class DrSelectionSide extends Fragment {
     public static class SelectDoctorAdapter extends RecyclerView.Adapter<SelectDoctorAdapter.ViewHolder> {
         Context context;
         ArrayList<CustList> callDrList;
-//        SQLite sqLite;
         private RoomDB roomDB;
         private MasterDataDao masterDataDao;
 
@@ -338,7 +328,6 @@ public class DrSelectionSide extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull SelectDoctorAdapter.ViewHolder holder, int position) {
-//            sqLite = new SQLite(context);
             holder.tvName.setText(callDrList.get(position).getName());
 
             if (SelectedTab.equalsIgnoreCase("Spec")) {

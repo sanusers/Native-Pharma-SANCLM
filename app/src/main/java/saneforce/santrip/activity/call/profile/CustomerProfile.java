@@ -67,7 +67,6 @@ public class CustomerProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cust_profile);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         callOfflineDataDao = roomDB.callOfflineDataDao();
         tabLayout = findViewById(R.id.tab_layout);
@@ -124,7 +123,6 @@ public class CustomerProfile extends AppCompatActivity {
 
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });

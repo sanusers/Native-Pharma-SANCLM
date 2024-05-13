@@ -64,7 +64,6 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     ArrayList<TpDetailedModel> tpDetailedModelsList = new ArrayList<>();
     TpApprovalDetailedAdapter tpApprovalDetailedAdapter;
 
-//    SQLite sqLite;
     Dialog dialogReject;
     ApiInterface api_interface;
     ArrayList<TpModelList> tpModelLists = new ArrayList<>();
@@ -95,7 +94,6 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
         super.onCreate(savedInstanceState);
         tpApprovalBinding = ActivityTpApprovalBinding.inflate(getLayoutInflater());
         setContentView(tpApprovalBinding.getRoot());
-//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         api_interface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
@@ -367,7 +365,6 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
     private void getRequiredData() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray(); //Tour Plan setup
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP); //Tour Plan setup
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 TpClusterNeed = jsonObject.getString("ClusterNeed");

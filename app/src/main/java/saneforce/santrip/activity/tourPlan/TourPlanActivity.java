@@ -1246,7 +1246,6 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 }
 
-//                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
                 tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
@@ -1555,12 +1554,10 @@ public class TourPlanActivity extends AppCompatActivity {
                                     try {
                                         JSONObject jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
                                         if (jsonObject1.has("success") && jsonObject1.getBoolean("success")) {
-//                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0"); // "0" - success
                                             tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "0");
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.send_approved_successfully));
                                             get1MonthRemoteTPData(localDate1);
                                         } else {
-//                                            sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                                             tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                             commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.failed_to_send_approval));
                                         }
@@ -1570,7 +1567,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     binding.progressBar.setVisibility(View.GONE);
-//                                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                                     tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                                 }
                             }
@@ -1578,7 +1574,6 @@ public class TourPlanActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                                 binding.progressBar.setVisibility(View.GONE);
-//                                sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                                 tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                             }
                         });
@@ -1588,7 +1583,6 @@ public class TourPlanActivity extends AppCompatActivity {
                     }
                 } else {
                     binding.progressBar.setVisibility(View.GONE);
-//                    sqLite.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1"); // "-1" - failed
                     tourPlanOfflineDataDao.saveMonthlySyncStatus(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate1.toString()), "-1");
                 }
             }
@@ -1599,7 +1593,6 @@ public class TourPlanActivity extends AppCompatActivity {
     public String findTerrSlFlag(String code) {
         try {
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
-//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 if (code.equals(jsonObject.getString("Code")))
@@ -1842,7 +1835,6 @@ public class TourPlanActivity extends AppCompatActivity {
                                     }
                                 }
 
-//                                jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
                                 jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
                                 arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
                                 boolean allDateSynced = false;

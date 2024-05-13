@@ -46,7 +46,6 @@ public class JointWorkSelectionSide extends Fragment {
     public static ArrayList<CallCommonCheckedList> JwList;
     @SuppressLint("StaticFieldLeak")
     public static JwAdapter jwAdapter;
-//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
     AdapterCallJointWorkList adapterCallJointWorkList;
@@ -61,7 +60,6 @@ public class JointWorkSelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectJwSideBinding = FragmentSelectJwSideBinding.inflate(inflater);
         View v = selectJwSideBinding.getRoot();
-//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         dcrDocDataDao = roomDB.dcrDocDataDao();
         masterDataDao = roomDB.masterDataDao();
@@ -138,7 +136,6 @@ public class JointWorkSelectionSide extends Fragment {
         JwList.clear();
         try {
             if(DCRCallActivity.save_valid.equals("1")){
-//                jsonArray = sqLite.getDcr_datas(DCRCallActivity.hqcode);
                 jsonArray = dcrDocDataDao.getDCRDocData(DCRCallActivity.hqcode).getDCRDocDataJSONArray();
 
                 Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
@@ -148,7 +145,6 @@ public class JointWorkSelectionSide extends Fragment {
                 }
             }else{
                 jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + TodayPlanSfCode).getMasterSyncDataJsonArray();
-//                jsonArray = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + TodayPlanSfCode);
                 Log.d("jw_data",jsonArray.toString()+"===="+TodayPlanSfCode);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = jsonArray.getJSONObject(i);
