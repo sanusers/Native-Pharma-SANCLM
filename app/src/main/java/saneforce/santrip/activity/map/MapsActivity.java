@@ -94,7 +94,6 @@ import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLiteHandler;
 import saneforce.santrip.storage.SharedPref;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {

@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
-import saneforce.santrip.storage.SQLiteHandler;
+
 
 public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 

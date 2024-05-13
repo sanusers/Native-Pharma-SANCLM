@@ -23,12 +23,11 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityCallStatusThridViewBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.utility.TimeUtils;
 
 public class Call_status_thrid_view extends Fragment {
 
-    SQLite sqLite;
+
 
     call_statusadapter call_statusadap;
     ArrayList<callstatus_model> call_list = new ArrayList<>();
@@ -46,9 +45,6 @@ ActivityCallStatusThridViewBinding Callstatusthridview;
 
         roomDB= RoomDB.getDatabase(requireContext());
         masterDataDao=roomDB.masterDataDao();
-        sqLite = new SQLite(getActivity());
-
-
         Calendar c = Calendar.getInstance();
         // Go back one month
         // Format the previous month in "MM" format

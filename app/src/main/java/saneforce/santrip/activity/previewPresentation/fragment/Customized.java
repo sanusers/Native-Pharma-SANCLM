@@ -18,7 +18,6 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentHomePreviewBinding;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 
 public class Customized extends Fragment {
     FragmentHomePreviewBinding customizedBinding;

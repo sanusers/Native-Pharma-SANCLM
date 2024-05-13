@@ -54,7 +54,6 @@ import saneforce.santrip.network.RetrofitClient;
 
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class TpApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
@@ -450,6 +449,9 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                                     totalPlannedDays++;
                                 }
                             }
+                              String jointdate=jsonArray.getJSONObject(0).getString("sf_TP_Active_Dt");
+                            tpApprovalBinding.constraintSelectedDetails.setVisibility(View.VISIBLE);
+                            tpApprovalBinding.tvJoiningdate.setText(jointdate);
                             tpApprovalBinding.tvTotalPlannedDays.setText(String.valueOf(totalPlannedDays));
                             tpApprovalBinding.tvWeekOffDays.setText(totalWeekOffDays + " / " + totalHolidays);
                             tpApprovalDetailedAdapter = new TpApprovalDetailedAdapter(TpApprovalActivity.this, tpDetailedModelsList);

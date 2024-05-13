@@ -45,7 +45,6 @@ import saneforce.santrip.databinding.CallAnalysisFagmentBinding;
 import saneforce.santrip.roomdatabase.CallTableDetails.CallTableDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 

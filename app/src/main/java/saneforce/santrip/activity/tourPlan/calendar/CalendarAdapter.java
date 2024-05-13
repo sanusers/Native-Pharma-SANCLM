@@ -1,6 +1,7 @@
 package saneforce.santrip.activity.tourPlan.calendar;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import retrofit2.http.POST;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
@@ -45,8 +48,18 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         holder.dateNo.setText(date);
         if (!date.isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) //if work type is not empty means tour plan added for the date
             holder.cornerImage.setVisibility(View.VISIBLE);
+        if(!date.isEmpty()){
+            if(Integer.valueOf(date)< TourPlanActivity.JoningDate &&Integer.valueOf(modelClass.getMonth())==TourPlanActivity.JoiningMonth  &&Integer.valueOf(modelClass.getYear())==TourPlanActivity.JoinYear ) {
+                TourPlanActivity.binding.calendarPrevButton.setEnabled(false);
+                TourPlanActivity.binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.less_than_gray, null));
+                holder.itemView.setEnabled(false);
+            }else {
+                holder.itemView.setEnabled(true);
+            }
+        }
 
         holder.itemView.setOnClickListener(v -> onDayClickInterface.onDayClicked(holder.getAbsoluteAdapterPosition(), date, inputData.get(holder.getAbsoluteAdapterPosition())));
+
     }
 
     @Override

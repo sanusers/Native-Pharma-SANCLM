@@ -29,14 +29,13 @@ import java.util.Objects;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
-import saneforce.santrip.activity.call.dcrCallSelection.fragments.ListedDoctorFragment;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.call.profile.CustomerProfile;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 import saneforce.santrip.storage.SharedPref;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {

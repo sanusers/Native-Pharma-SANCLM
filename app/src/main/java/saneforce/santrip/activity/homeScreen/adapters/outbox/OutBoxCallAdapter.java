@@ -63,7 +63,6 @@ import saneforce.santrip.roomdatabase.CallsUtil;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
-
 import saneforce.santrip.storage.SharedPref;
 
 public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.ViewHolder> {

@@ -1,6 +1,5 @@
 package saneforce.santrip.activity.call.pojo.rcpa;
 
-import saneforce.santrip.response.SetupResponse;
 
 public class RCPAAddedProdList {
     String prd_name;

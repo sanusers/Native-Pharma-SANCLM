@@ -25,7 +25,7 @@ import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 
 
 public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_adapter.ViewHolder> {

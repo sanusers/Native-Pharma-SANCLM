@@ -2,6 +2,7 @@ package saneforce.santrip.activity.reports.dayReport.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +17,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
-
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.santrip.activity.map.MapsActivity;
 import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
+import saneforce.santrip.activity.reports.dayReport.MapViewActvity;
 import saneforce.santrip.activity.reports.dayReport.fragment.DayReportDetailFragment;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportModel;
 import saneforce.santrip.storage.SharedPref;
@@ -133,23 +129,26 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         }
 
         holder.checkInMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapsActivity.class);
-            intent.putExtra("from", "view_tag_day_report");
-            //   DayReportMapList.clear();
-            //   DayReportMapList.add(new GeoTaggingModelList(dayReportModel.getSF_Name(), dayReportModel.getWtype(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getInaddress()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent intent = new Intent(context, MapViewActvity.class);
+            Bundle bundle = new Bundle();
+
+            bundle.putString("INLat", "12.976810");
+            bundle.putString("INLong", "80.221489");
+            bundle.putString("OUTLat", "13.011760");
+            bundle.putString("OUTLong", "80.221481");
+            intent.putExtras(bundle);
             context.startActivity(intent);
-            context.startActivity(new Intent(context, MapsActivity.class));
         });
 
         holder.checkOutMarker.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MapsActivity.class);
-            intent.putExtra("from", "view_tag_day_report");
-            //   DayReportMapList.clear();
-            //   DayReportMapList.add(new GeoTaggingModelList(dayReportModel.getSF_Name(), dayReportModel.getWtype(), geoTaggingModelLists.get(position).getLongitude(), geoTaggingModelLists.get(position).getInaddress()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent(context, MapViewActvity.class);
+            bundle.putString("INLat", "12.976810");
+            bundle.putString("INLong", "80.221489");
+            bundle.putString("OUTLat", "13.011760");
+            bundle.putString("OUTLong", "80.221481");
+            intent.putExtras(bundle);
             context.startActivity(intent);
-            context.startActivity(new Intent(context, MapsActivity.class));
         });
 
         holder.arrow.setOnClickListener(view -> {

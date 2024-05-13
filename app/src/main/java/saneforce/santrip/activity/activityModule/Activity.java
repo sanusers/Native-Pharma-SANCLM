@@ -270,7 +270,6 @@ public class Activity extends AppCompatActivity {
                                     binding.llMainLayout.setVisibility(View.GONE);
                                     CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
                                     commonUtilsMethods.showToastMessage(getApplicationContext(), "No Activity");
-
                                 }
                                 adapter.notifyDataSetChanged();
 
@@ -335,9 +334,9 @@ public class Activity extends AppCompatActivity {
                                binding.btnsumit.setVisibility(View.VISIBLE);
                                binding.rlNoData.setVisibility(View.GONE);
                                for(int i=0;i<jsonArray.length();i++){
-                                       JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                          String Control_Id = jsonObject1.getString("Control_Id");
-                                          String Field_Name = jsonObject1.getString("Field_Name");
+                                           JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                           String Control_Id = jsonObject1.getString("Control_Id");
+                                           String Field_Name = jsonObject1.getString("Field_Name");
                                            String Creation_Id = jsonObject1.getString("Creation_Id");
                                            String input = jsonObject1.getString("input");
                                            String madantaory = jsonObject1.getString("Mandatory");

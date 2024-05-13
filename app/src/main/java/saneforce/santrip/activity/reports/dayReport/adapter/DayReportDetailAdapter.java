@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +33,6 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +43,13 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.approvals.dcr.detailView.adapter.InputAdapter;
 import saneforce.santrip.activity.approvals.dcr.detailView.adapter.ProductAdapter;
+import saneforce.santrip.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
 import saneforce.santrip.activity.call.pojo.product.SaveCallProductList;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportDetailModel;
 import saneforce.santrip.activity.reports.dayReport.model.DayReportRcpaModelClass;
 import saneforce.santrip.activity.reports.dayReport.model.EventCaptureModelClass;
+import saneforce.santrip.activity.reports.dayReport.model.SlideRatingDetalisModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -74,13 +74,13 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     private ValueFilter valueFilter;
     ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
     ArrayList<DayReportRcpaModelClass> rcpaList = new ArrayList<>();
-    String rcpadataid="";
+    String rcpadataid="",Slededataid;
     ApiInterface apiInterface;
     ProgressDialog progressDialog;
 
     String acdCode;
     String ReportingSfCode;
-
+    ArrayList<SlideRatingDetalisModelClass> callDetailingLists=new ArrayList<>();
 
 
     public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode) {
@@ -115,6 +115,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         holder.jointWork.setText(dataModel.getWWith());
         holder.nextVisit.setText(dataModel.getNextVstDate());
         holder.overAllRemark.setText(dataModel.getRemarks());
+
 
         if (checkInOutNeed) {
             holder.checkInOutLayout.setVisibility(View.VISIBLE);
@@ -189,9 +190,15 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
 
         holder.checkInMarker.setOnClickListener(view -> {
 
+
+
+
+
+
         });
 
         holder.checkOutMarker.setOnClickListener(view -> {
+
 
         });
 
@@ -216,6 +223,30 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 }else {
                     Rcpagetdata(holder.rvRcpa,holder.rcpaLayout,position);
                 }
+
+            }
+        });
+
+
+
+
+        holder.SlidercpaLayoutitle.setOnClickListener(view -> {
+
+            if(holder.slideDetailsLayout.getVisibility()==View.VISIBLE){
+                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                holder.slideDetailsLayout.setVisibility(View.GONE);
+            }else {
+                holder.slide_arrow.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                if(callDetailingLists.size()>0){
+                    if(dataModel.getTrans_Detail_Slno().equalsIgnoreCase(Slededataid)){
+                        holder.slideDetailsLayout.setVisibility(View.VISIBLE);
+                    }else {
+                        SldeDetails(holder.rvSlideDetails,holder.slideDetailsLayout,position);
+                    }
+                }else {
+                    SldeDetails(holder.rvSlideDetails,holder.slideDetailsLayout,position);
+                }
+
 
             }
         });
@@ -309,14 +340,14 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, visitTime, modifiedTime, cluster, pob, feedback, jointWork, nextVisit, checkInTime, checkInAddress, checkInMarker;
         TextView checkOutTime, checkOutAddress, checkOutMarker, overAllRemark, viewMoreTxt;
-        ImageView nameIcon, viewMoreArrow,rcpa_arrow;
-        LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle;
+        ImageView nameIcon, viewMoreArrow,rcpa_arrow,slide_arrow;
+        LinearLayout viewMore, checkInOutLayout,EventLayout,rcpaLayout,rcpaLayoutitle, slideDetailsLayout,SlidercpaLayoutitle;
         RelativeLayout rlNextVisit;
         ConstraintLayout PrdLayout, InpLayout, expandLayout;
 
 
 
-        RecyclerView rvPrd, rvInput,rvRcpa;
+        RecyclerView rvPrd, rvInput,rvRcpa,rvSlideDetails;
         View viewNextVisit;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -353,6 +384,12 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
             rvInput = itemView.findViewById(R.id.rv_input);
             InpLayout = itemView.findViewById(R.id.inputLayout);
             checkInOutLayout = itemView.findViewById(R.id.checkInOutLayout);
+
+            slideDetailsLayout = itemView.findViewById(R.id.SlideLayout);
+            rvSlideDetails = itemView.findViewById(R.id.Sliderecyelerview);
+            slide_arrow = itemView.findViewById(R.id.slide_arrow);
+            SlidercpaLayoutitle = itemView.findViewById(R.id.SlideLayoutitle);
+
         }
     }
 
@@ -529,6 +566,84 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                                                 commonUtilsMethods.showToastMessage(context, " RCPA  Details Not Available");
                                             }
 
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
+                                progressDialog.dismiss();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    progressDialog.dismiss();
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                }
+            });
+            networkStatusTask.execute();
+        } else {
+            progressDialog.dismiss();
+            commonUtilsMethods.showToastMessage(context, context.getString(R.string.no_network));
+        }
+
+    }
+
+
+    public  void SldeDetails(RecyclerView recyclerView ,LinearLayout layout,int position){
+
+        progressDialog = CommonUtilsMethods.createProgressDialog(context);
+        if (UtilityClass.isNetworkAvailable(context)) {
+            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                if (status) {
+                    try {
+                        apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("tableName", "getslidedet");
+                        jsonObject.put("ACd", acdCode);
+                        jsonObject.put("Mslcd", arrayList.get(position).getCode());
+                        jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                        jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                        jsonObject.put("Rsf",ReportingSfCode);
+                        jsonObject.put("sf_type", SharedPref.getSfType(context));
+                        jsonObject.put("Designation", SharedPref.getDesig(context));
+                        jsonObject.put("state_code", SharedPref.getStateCode(context));
+                        jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                        jsonObject.put("app_version", context.getResources().getString(R.string.app_version));
+                        jsonObject.put("Mode", context.getResources().getString(R.string.app_mode));
+                        Log.d("paramObject",jsonObject.toString());
+                        Map<String, String> mapString = new HashMap<>();
+                        mapString.put("axn", "get/reports");
+                        Call<JsonElement> call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                        call.enqueue(new Callback<JsonElement>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                Log.e("test", "res : " + response.body());
+                                progressDialog.dismiss();
+                                try {
+                                    if (response.body() != null && response.isSuccessful()) {
+                                        JSONArray jsonArray = new JSONArray();
+                                        if (response.body().isJsonArray()) {
+                                            jsonArray = new JSONArray(response.body().getAsJsonArray().toString());
+                                            Type typeToken = new TypeToken<ArrayList<SlideRatingDetalisModelClass>>() {
+                                            }.getType();
+                                            callDetailingLists = new Gson().fromJson(String.valueOf(jsonArray), typeToken);
+                                            if(callDetailingLists.size()>0){
+                                                DayReportSlideDetailsAdapter adapter=new DayReportSlideDetailsAdapter(callDetailingLists,context);
+                                                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                                commonUtilsMethods.recycleTestWithDivider(recyclerView);
+                                                recyclerView.setAdapter(adapter);
+                                                layout.setVisibility(View.VISIBLE);
+                                                Slededataid=arrayList.get(position).getTrans_Detail_Slno();
+                                            }else {
+                                                commonUtilsMethods.showToastMessage(context, " Slides   Details Not Available");
+                                            }
                                         }
                                     }
                                 } catch (JSONException e) {

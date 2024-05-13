@@ -34,7 +34,6 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentPrecallAnalysisBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 

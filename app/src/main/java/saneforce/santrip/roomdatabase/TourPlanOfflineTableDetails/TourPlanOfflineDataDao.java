@@ -33,6 +33,12 @@ public interface TourPlanOfflineDataDao {
     @Query("UPDATE `TOUR_PLAN_OFFLINE_TABLE` SET `TP_MONTH_SYNCED` = :status, `TP_REJECTION_REASON` = :rejectionReason WHERE `TP_MONTH` = :month")
     void saveMonthlySyncStatusMaster(String month, String status, String rejectionReason);
 
+
+
+    @Query("SELECT tp_month_synced FROM tour_plan_offline_table WHERE tp_month = :month")
+    String getApprovalStatusByMonth(String month);
+
+
     default TourPlanOfflineDataTable getTpDataOfMonthOrNew(String month) {
         TourPlanOfflineDataTable tourPlanOfflineDataTable = getTpDataOfMonth(month);
         if(tourPlanOfflineDataTable == null) tourPlanOfflineDataTable = new TourPlanOfflineDataTable();

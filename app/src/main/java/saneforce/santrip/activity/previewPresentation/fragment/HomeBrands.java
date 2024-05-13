@@ -22,7 +22,7 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.FragmentHomePreviewBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 
 
 public class HomeBrands extends Fragment {

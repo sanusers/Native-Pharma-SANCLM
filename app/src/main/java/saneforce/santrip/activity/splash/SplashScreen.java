@@ -11,12 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.PrivacyPolicyActvity.PrivacyPolicyActivity;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.activity.setting.SettingsActivity;
-import saneforce.santrip.databinding.ActivityHomeDashBoardBinding;
 import saneforce.santrip.databinding.ActivitySplashScreenBinding;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 
@@ -46,8 +45,15 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }else{
+
+                if(SharedPref.getPolicy(getApplicationContext())){
                     startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                     finish();
+                    }else {
+                    startActivity(new Intent(SplashScreen.this, PrivacyPolicyActivity.class));
+                    finish();
+                }
+
                 }
             }else{
                 startActivity(new Intent(SplashScreen.this, SettingsActivity.class));

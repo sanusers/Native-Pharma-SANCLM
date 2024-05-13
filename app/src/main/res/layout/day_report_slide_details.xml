@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="@dimen/_2sdp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:weightSum="4"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/txt_brandName"
+            android:layout_width="0dp"
+            android:gravity="left|center"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/satoshi_medium"
+            android:layout_weight="1"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6sdp" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txt_duration"
+                android:layout_width="@dimen/_20sdp"
+                android:gravity="left|center"
+                android:text="Demo"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/satoshi_medium"
+                android:textColor="@color/blue_45"
+                android:textSize="@dimen/_6sdp" />
+
+            <ImageView
+                android:layout_toRightOf="@id/txt_duration"
+                android:layout_width="@dimen/_7sdp"
+                android:src="@drawable/info_icon_purple"
+                android:id="@+id/img_duration"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_centerHorizontal="true"
+                android:layout_height="@dimen/_7sdp"></ImageView>
+
+        </RelativeLayout>
+
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            android:layout_width="0dp"
+            android:gravity="left"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:numStars="5"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:stepSize="1"
+            android:theme="@style/RatingBar" />
+
+        <TextView
+            android:id="@+id/txt_feedback"
+            android:layout_width="0dp"
+            android:gravity="left|center"
+
+             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/satoshi_medium"
+            android:textColor="@color/dark_purple"
+            android:textSize="@dimen/_6sdp"
+
+            />
+
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

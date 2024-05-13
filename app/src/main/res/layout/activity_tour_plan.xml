@@ -53,6 +53,33 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_7sdp"
                     tools:ignore="SpUsage" />
+                <TextView
+                    android:id="@+id/txt_skip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_gravity="center|end"
+                    android:fontFamily="@font/satoshi_variable"
+                    android:text="Logout"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_7sdp"
+                    tools:ignore="SpUsage" />
+
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/txt_Logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_gravity="center|end"
+                    android:fontFamily="@font/satoshi_variable"
+                    android:text="Skip"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_7sdp"
+                    tools:ignore="SpUsage" />
+
 
             </androidx.appcompat.widget.Toolbar>
 

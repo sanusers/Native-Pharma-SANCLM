@@ -385,6 +385,14 @@ public class SharedPref {
     public static final String JWKCODE= "JWKCODE";
     public static final String JWKDATE = "JWKDATE";
 
+
+
+    public static final String SKIPSTATUS= "SKIPSTATUS";
+    public static final String SKIPDATE = "SKIPDATE";
+
+    public static final String POLICY_STAUS = "POLICYSTATUS";
+
+
     public static final String DR_ADD_CALL_NEED = "DrAdditionalCallNeed";
     public static final String POB_STOCKIST_NEED = "Pob_Stockist_Nd";
     public static final String POB_UNLISTED_DR_NEED = "Pob_Unlstdr_Nd";
@@ -706,7 +714,7 @@ public class SharedPref {
         editor.apply();
 
     }catch (Exception ignore){
-       throw new RuntimeException();
+       ignore.printStackTrace();
         }
 
     }
@@ -2339,6 +2347,44 @@ public class SharedPref {
     public static String getsyn_hqcode(Context context) {
         return context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE).getString(SETSYN_HQCODE, "");
     }
+
+
+
+    public static void setSKIP(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(SKIPSTATUS, status).apply();
+    }
+
+    public static boolean getskipstatus(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SKIPSTATUS, false);
+    }
+
+
+    public static void setSKIPDate(Context context, String status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(SKIPDATE, status).apply();
+    }
+
+    public static String getskipDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SKIPDATE, "");
+    }
+
+
+    public static void setPolicyStaus(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(POLICY_STAUS, status).apply();
+    }
+
+    public static boolean getPolicy(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(POLICY_STAUS, false);
+    }
+
+
+
+
 
     public static void setDcrSequential(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);

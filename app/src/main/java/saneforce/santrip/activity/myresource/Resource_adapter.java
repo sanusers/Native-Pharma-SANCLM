@@ -37,7 +37,6 @@ import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -47,7 +46,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
     ArrayList<Resourcemodel_class> listeduser;
 
     Context context;
-    SQLite sqLite;
+
     HashSet<String> uniqueValues = new HashSet<>();
     HashMap<String, Integer> idCounts = new HashMap<>();
     private RoomDB roomDB;

@@ -5,12 +5,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-
-import saneforce.santrip.response.LoginResponse;
 
 @Entity(tableName = "login_table")
 public class LoginDataTable {
@@ -42,14 +36,5 @@ public class LoginDataTable {
     public LoginDataTable(String loginData){
         this.loginData = loginData;
     }
-    public LoginResponse getLoginResponse() {
-        LoginResponse loginResponse = new LoginResponse();
-        if(!loginData.equals("")) {
-            Type type = new TypeToken<LoginResponse>() {
-            }.getType();
-            loginResponse = new Gson().fromJson(loginData, type);
-            return loginResponse;
-        }
-        return loginResponse;
-    }
+
 }

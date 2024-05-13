@@ -27,13 +27,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.ActivityApprovalsBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 
-import saneforce.santrip.storage.SQLite;
+
 import saneforce.santrip.storage.SharedPref;
 
 public class ApprovalsActivity extends AppCompatActivity {

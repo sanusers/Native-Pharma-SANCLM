@@ -35,7 +35,6 @@ import saneforce.santrip.databinding.ActivityTpDeviationApprovalBinding;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 
-import saneforce.santrip.storage.SQLite;
 import saneforce.santrip.storage.SharedPref;
 
 public class TpDeviationApprovalActivity extends AppCompatActivity {

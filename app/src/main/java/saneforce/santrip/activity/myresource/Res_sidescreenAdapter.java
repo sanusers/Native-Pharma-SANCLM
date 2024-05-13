@@ -29,13 +29,10 @@ import java.util.Map;
 
 import saneforce.santrip.R;
 import saneforce.santrip.commonClasses.Constants;
-import saneforce.santrip.response.LoginResponse;
 import saneforce.santrip.roomdatabase.LoginTableDetails.LoginDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
-import saneforce.santrip.roomdatabase.RoomDB;
-import saneforce.santrip.storage.SQLite;
+
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
 
@@ -49,14 +46,14 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
     Context context;
     String split_val;
     String cdate2 = "";
-    SQLite sqLite;
+
     String Doc_geoneed, Che_geoneed, Stk_geoneed, Cip_geoneed, Ult_geoneed;
 
     ArrayList<Resourcemodel_class> L_cLasses = new ArrayList<>();
 
     HashSet<String> uniqueValues = new HashSet<>();
     ArrayList<String> duplicateValues = new ArrayList<>();
-    LoginResponse loginResponse;
+
 
     private RoomDB roomDB;
     private LoginDataDao loginDataDao;
