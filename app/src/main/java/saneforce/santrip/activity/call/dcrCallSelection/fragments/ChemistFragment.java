@@ -57,7 +57,6 @@ public class ChemistFragment extends Fragment {
     ImageButton iv_filter;
     ImageView img_close;
     Button btn_apply;
-//    SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName,tvTerritory,tv_filter_count;
     CommonUtilsMethods commonUtilsMethods;
@@ -82,7 +81,6 @@ public class ChemistFragment extends Fragment {
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
 
-//        sqLite = new SQLite(getContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
@@ -121,7 +119,6 @@ public class ChemistFragment extends Fragment {
     private void SetupAdapter() {
         cusListArrayList.clear();
         try {
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode);
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
             Log.v("CheCall", "-che_full_length-" + jsonArray.length());
 
@@ -243,7 +240,6 @@ public class ChemistFragment extends Fragment {
                 try {
                     JSONArray jsonArray = new JSONArray();
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-//                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
                     Log.v("jsonArray", "--" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);

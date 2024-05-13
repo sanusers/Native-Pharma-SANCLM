@@ -48,7 +48,6 @@ public class PreCallAnalysisFragment extends Fragment {
     static DCRLastVisitDetails.VstDate vstDate;
 
     CommonUtilsMethods commonUtilsMethods;
-//    SQLite sqLite;
 
     public static void CallPreCallAPI(Context context, Activity activity) {
         JSONObject json = new JSONObject();
@@ -280,7 +279,6 @@ public class PreCallAnalysisFragment extends Fragment {
         preCallAnalysisBinding = FragmentPrecallAnalysisBinding.inflate(inflater);
         View v = preCallAnalysisBinding.getRoot();
         apiInterface = RetrofitClient.getRetrofit(requireContext(), SharedPref.getCallApiUrl(requireContext()));
-//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         getRequiredData();

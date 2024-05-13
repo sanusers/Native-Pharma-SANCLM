@@ -61,7 +61,6 @@ public class MyResource_Activity extends AppCompatActivity {
     Resource_adapter resourceAdapter;
     HashMap<String, Integer> idCounts = new HashMap<>();
     String Doc_count = "", Che_count = "", Strck_count = "", Unlist_count = "", Cip_count = "", Hosp_count = "";
-//    SQLite sqLite;
     String navigateFrom = "", input_count="",product_count="";
     public static ActivityMyResourceBinding binding;
     LocalDate date_n;
@@ -142,7 +141,6 @@ public class MyResource_Activity extends AppCompatActivity {
     public void Resource_list(String synhqval1) {
         try {
             JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
-//            JSONArray jsonDoc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
 
             String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
             String doctor = String.valueOf(jsonDoc);
@@ -163,7 +161,6 @@ public class MyResource_Activity extends AppCompatActivity {
             }
 
             JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
-//            JSONArray jsonChm = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(this));
             String chemist = String.valueOf(jsonChm);
             if (!chemist.equals("") || !chemist.equals("null")) {
                 count_list.clear();
@@ -218,7 +215,6 @@ public class MyResource_Activity extends AppCompatActivity {
 
 
             JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
-//            JSONArray jsoncip = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(this));
             String cip = String.valueOf(jsoncip);
             if (!cip.equals("") || !cip.equals("null")) {
                 count_list.clear();
@@ -237,7 +233,6 @@ public class MyResource_Activity extends AppCompatActivity {
             }
             JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
             String hosp = String.valueOf(jsonhosp);
-//            JSONArray jsonhosp = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(this));
             if (!hosp.equals("") || !hosp.equals("null")) {
                 count_list.clear();
                 if (jsonhosp.length() > 0) {
@@ -330,8 +325,6 @@ public class MyResource_Activity extends AppCompatActivity {
             count_list.clear();
             visitcount_list.clear();
 
-//            JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
-//            JSONArray jsonvst_Doc = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
             JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
             JSONArray jsonvst_Doc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
             // Initialize a HashMap to store counts of custom_id1 values

@@ -55,7 +55,6 @@ public class TagCustSelectionList extends AppCompatActivity {
     List<String> HqCodeList = new ArrayList<>();
     CustListAdapter custListAdapter;
     CommonUtilsMethods commonUtilsMethods;
-//    SQLite sqLite;
     ArrayList<CustList> custListArrayList = new ArrayList<>();
     ArrayList<CustList> custListArrayNew = new ArrayList<>();
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
@@ -118,7 +117,6 @@ public class TagCustSelectionList extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
-//        sqLite = new SQLite(getApplicationContext());
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         SelectedTab = MapsActivity.SelectedTab;
@@ -225,7 +223,6 @@ public class TagCustSelectionList extends AppCompatActivity {
         Log.v("dddd", "-1sds-" + SelectedHqCode + "---" + SelectedHqName);
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew("Subordinate").getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey("Subordinate");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonHQList = jsonArray.getJSONObject(i);
                 if (SelectedHqCode.equalsIgnoreCase(jsonHQList.getString("id"))) {
@@ -331,17 +328,14 @@ public class TagCustSelectionList extends AppCompatActivity {
                                                 success = true;
                                             } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
                                                 masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
                                         if (success) {
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
-//                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -353,7 +347,6 @@ public class TagCustSelectionList extends AppCompatActivity {
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
                 }
@@ -376,11 +369,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                 try {
                     binding.tagSelection.setText(SharedPref.getDrCap(this));
                     if (!masterDataDao.getMasterSyncDataOfHQ(Constants.DOCTOR + selectedHqCode)) {
-//                    if (!sqLite.getMasterSyncDataOfHQ(Constants.DOCTOR + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
                         jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + selectedHqCode).getMasterSyncDataJsonArray();
-//                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
@@ -406,11 +397,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                 try {
                     binding.tagSelection.setText(SharedPref.getChmCap(this));
                     if (!masterDataDao.getMasterSyncDataOfHQ(Constants.CHEMIST + selectedHqCode)) {
-//                    if (!sqLite.getMasterSyncDataOfHQ(Constants.CHEMIST + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
                         jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + selectedHqCode).getMasterSyncDataJsonArray();
-//                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
@@ -433,11 +422,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                 try {
                     binding.tagSelection.setText(SharedPref.getStkCap(this));
                     if (!masterDataDao.getMasterSyncDataOfHQ(Constants.STOCKIEST + selectedHqCode)) {
-//                    if (!sqLite.getMasterSyncDataOfHQ(Constants.STOCKIEST + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
                         jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + selectedHqCode).getMasterSyncDataJsonArray();
-//                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
@@ -460,11 +447,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                 try {
                     binding.tagSelection.setText(SharedPref.getUNLcap(this));
                     if (!masterDataDao.getMasterSyncDataOfHQ(Constants.UNLISTED_DOCTOR + selectedHqCode)) {
-//                    if (!sqLite.getMasterSyncDataOfHQ(Constants.UNLISTED_DOCTOR + selectedHqCode)) {
                         prepareMasterToSync(selectedHqCode);
                     } else {
                         jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + selectedHqCode).getMasterSyncDataJsonArray();
-//                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + selectedHqCode);
                     }
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));

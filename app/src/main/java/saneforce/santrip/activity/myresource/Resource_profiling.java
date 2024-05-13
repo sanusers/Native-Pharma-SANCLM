@@ -103,7 +103,6 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
     String dob_dt, dow_dt;
     Date dateBefore;
     EditText main_address, RP_mobile, RP_phone, district, city;
-//    SQLite sqLite;
     ArrayList<remainder_modelclass> hq_view = new ArrayList<>();
     String qualif, cate, spec, dob, dow, address, mobile, phone, email, docname, docsex, doc_code, Dcr_posname, Lat, Long, Town_val;
     public static String profil_val = "";
@@ -438,13 +437,10 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
 
             if (pos.equals("Q")) {
                 jsonspc_Doc = masterDataDao.getMasterDataTableOrNew(Constants.QUALIFICATION).getMasterSyncDataJsonArray();
-//                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION);
             } else if (pos.equals("S")) {
                 jsonspc_Doc = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
-//                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
             } else if (pos.equals("C")) {
                 jsonspc_Doc = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray();
-//                jsonspc_Doc = sqLite.getMasterSyncDataByKey(Constants.CATEGORY);
             }
 
             if (jsonspc_Doc.length() > 0) {
@@ -583,7 +579,6 @@ public class Resource_profiling extends AppCompatActivity implements OnMapReadyC
 
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(this));
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);

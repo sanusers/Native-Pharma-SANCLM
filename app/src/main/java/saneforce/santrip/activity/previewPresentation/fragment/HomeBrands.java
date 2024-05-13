@@ -27,7 +27,6 @@ import saneforce.santrip.roomdatabase.RoomDB;
 
 public class HomeBrands extends Fragment {
     FragmentHomePreviewBinding homePreviewBinding;
-//    SQLite sqLite;
     public static ArrayList<BrandModelClass> SlideHomeBrandList = new ArrayList<>();
     ArrayList<String> brandCodeList = new ArrayList<>();
     PreviewAdapter previewAdapter;
@@ -42,7 +41,6 @@ public class HomeBrands extends Fragment {
         View v = homePreviewBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         getRequiredData();
@@ -56,8 +54,6 @@ public class HomeBrands extends Fragment {
             brandCodeList.clear();
             JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
             JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
-//            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-//            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
 
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);

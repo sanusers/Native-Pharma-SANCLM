@@ -57,7 +57,6 @@ public class StockiestFragment extends Fragment {
     ImageButton iv_filter;
     ImageView img_close;
     Button btn_apply;
-//    SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName,tvTerritory,tv_filter_count;
     CommonUtilsMethods commonUtilsMethods;
@@ -81,7 +80,6 @@ public class StockiestFragment extends Fragment {
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
 
-//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -117,7 +115,6 @@ public class StockiestFragment extends Fragment {
     private void SetupAdapter() {
         custListArrayList.clear();
         try {
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + DcrCallTabLayoutActivity.TodayPlanSfCode);
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
 
             Log.v("STKCALL", "-stk_full_length-" + jsonArray.length());
@@ -237,7 +234,6 @@ public class StockiestFragment extends Fragment {
                 try {
                     JSONArray jsonArray = new JSONArray();
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-//                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + DcrCallTabLayoutActivity.TodayPlanSfCode);
                     Log.v("jsonArray", "--" + jsonArray.length());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);

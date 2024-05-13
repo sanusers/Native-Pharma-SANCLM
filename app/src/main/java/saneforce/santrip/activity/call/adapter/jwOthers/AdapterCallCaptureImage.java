@@ -46,7 +46,6 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
     public AdapterCallCaptureImage(Context context, ArrayList<CallCaptureImageList> callCaptureImageLists) {
         this.context = context;
         this.callCaptureImageLists = callCaptureImageLists;
-//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
     }
@@ -96,7 +95,6 @@ public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCap
                     System.out.println("file not Deleted :" + callCaptureImageList.getFilePath());
                 }
             }
-//            sqLite.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
             callOfflineECDataDao.deleteOfflineECImage(callCaptureImageList.getSystemImgName());
             removeAt(holder.getBindingAdapterPosition());
         });

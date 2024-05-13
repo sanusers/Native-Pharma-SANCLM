@@ -51,10 +51,8 @@ public class PresentationActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-//        sqLite = new SQLite(this);
         roomDB = RoomDB.getDatabase(this);
         presentationDataDao = roomDB.presentationDataDao();
-//        savedPresentation = sqLite.getPresentationData();
         savedPresentation = presentationDataDao.getPresentations();
         populateAdapter();
 

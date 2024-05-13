@@ -85,7 +85,6 @@ public class RCPASelectChemSide extends Fragment {
         try {
             ChemFullList.clear();
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));

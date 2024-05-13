@@ -45,7 +45,6 @@ public class ReportsActivity extends AppCompatActivity {
     public static ActivityReportsBinding binding;
     ReportsAdapter reportsAdapter;
     ApiInterface apiInterface;
-//    SQLite sqLite;
 
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;

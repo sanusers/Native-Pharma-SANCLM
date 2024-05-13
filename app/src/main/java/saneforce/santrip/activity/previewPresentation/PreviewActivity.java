@@ -52,7 +52,6 @@ public class PreviewActivity extends AppCompatActivity {
     public static String SelectedTab = "Matrix", from_where = "", cus_name = "", SpecialityCode = "", SpecialityName = "", BrandCode = "", SlideCode = "", CusType = "";
     public static int SelectedPosPlay;
     PreviewTabAdapter viewPagerAdapter;
-//    SQLite sqLite;
     String finalPrdNam;
     ArrayList<StoreImageTypeUrl> dummyArr = new ArrayList<>();
     String startT, endT, CustomPresentationNeed;
@@ -82,7 +81,6 @@ public class PreviewActivity extends AppCompatActivity {
         previewBinding = saneforce.santrip.databinding.ActivityPreviewBinding.inflate(getLayoutInflater());
         setContentView(previewBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        sqLite = new SQLite(getApplicationContext());
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         callOfflineDataDao = roomDB.callOfflineDataDao();
@@ -233,7 +231,6 @@ public class PreviewActivity extends AppCompatActivity {
             intent1.putExtra("hq_code", "" );
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
-//                sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
                 callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             }
             startActivity(intent1);
@@ -243,7 +240,6 @@ public class PreviewActivity extends AppCompatActivity {
     private void getRequiredData() {
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
                 customSetupResponse = new CustomSetupResponse();

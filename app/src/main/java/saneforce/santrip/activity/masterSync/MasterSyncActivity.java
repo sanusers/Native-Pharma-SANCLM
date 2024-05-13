@@ -607,7 +607,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
         chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
         stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
-        hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf); //sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
+        hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf);
         cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
         inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
         leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);

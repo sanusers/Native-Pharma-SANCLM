@@ -21,7 +21,6 @@ import saneforce.santrip.roomdatabase.RoomDB;
 
 public class Customized extends Fragment {
     FragmentHomePreviewBinding customizedBinding;
-//    SQLite sqLite;
     PresentationAdapter presentationAdapter;
 
     public static ArrayList<BrandModelClass.Presentation> SlideCustomizedList = new ArrayList<>();
@@ -34,12 +33,10 @@ public class Customized extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         customizedBinding = FragmentHomePreviewBinding.inflate(inflater);
         View v = customizedBinding.getRoot();
-//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         presentationDataDao = roomDB.presentationDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-//        SlideCustomizedList = sqLite.getPresentationData();
         SlideCustomizedList = presentationDataDao.getPresentations();
 
         populateAdapter();
