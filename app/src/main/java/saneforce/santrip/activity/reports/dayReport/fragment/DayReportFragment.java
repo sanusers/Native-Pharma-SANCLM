@@ -48,6 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.santrip.activity.reports.CalendarAdapter;
 import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
@@ -90,10 +91,11 @@ public class DayReportFragment extends Fragment {
         commonUtilsMethods.setUpLanguage(requireContext());
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
-        dataViewModel.getDate().observe(getViewLifecycleOwner(), s -> binding.date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s)));
+        dataViewModel.getDate().observe(getViewLifecycleOwner(), s -> binding.calender.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s)));
 
         initialisation();
         populateAdapter();
+        onClickListener();
 
         binding.calender.setOnClickListener(view -> calendarDialog());
 
@@ -133,7 +135,7 @@ public class DayReportFragment extends Fragment {
         Type type = new TypeToken<ArrayList<DayReportModel>>() {
         }.getType();
         arrayListOfReportData = new Gson().fromJson(dataViewModel.getSummaryData().getValue(), type);
-        onClickListener();
+
     }
 
     private ArrayList<String> daysInMonthArray(LocalDate date) {
@@ -222,8 +224,8 @@ public class DayReportFragment extends Fragment {
             ImageView prevArrow = view.findViewById(R.id.calendar_prev_button);
             ImageView nextArrow = view.findViewById(R.id.calendar_next_button);
 
-            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_23, binding.date.getText().toString()));
-            localDate = LocalDate.parse(binding.date.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
+            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_23, binding.calender.getText().toString()));
+            localDate = LocalDate.parse(binding.calender.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
             nextArrow.setEnabled(false);
             nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
             prevArrow.setOnClickListener(view1 -> {
