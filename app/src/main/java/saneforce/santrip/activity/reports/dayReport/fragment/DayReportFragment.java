@@ -4,14 +4,18 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +39,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,6 +76,8 @@ public class DayReportFragment extends Fragment {
     CalendarAdapter calendarAdapter;
     AlertDialog calendarDialog;
     ArrayList<DayReportModel> arrayListOfReportData = new ArrayList<>();
+    ArrayList<DayReportModel> arrayListOfReportDataShort = new ArrayList<>();
+
     ArrayList<String> daysArrayList = new ArrayList<>();
     DataViewModel dataViewModel;
     AlertDialog.Builder alertDialog;
@@ -125,7 +133,7 @@ public class DayReportFragment extends Fragment {
         Type type = new TypeToken<ArrayList<DayReportModel>>() {
         }.getType();
         arrayListOfReportData = new Gson().fromJson(dataViewModel.getSummaryData().getValue(), type);
-
+        onClickListener();
     }
 
     private ArrayList<String> daysInMonthArray(LocalDate date) {
@@ -336,5 +344,51 @@ public class DayReportFragment extends Fragment {
         binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportRecView.setAdapter(dayReportAdapter);
     }
+    private void onClickListener(){
+        binding.sortIcon.setOnClickListener(v -> {
+            System.out.println("onClickListener");
+            Context wrapper = new ContextThemeWrapper(getContext(), R.style.popupMenuStyle);
+            final PopupMenu popup = new PopupMenu(wrapper, binding.sortIcon, Gravity.END);
+            popup.getMenu().add(1, 1, 1, "By Name      A - Z");
+            popup.getMenu().add(2, 2, 2, "By Name      Z - A");
+            popup.setOnMenuItemClickListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case 1:
+                        SortTable("By Name      A - Z");
+                        break;
+                    case 2:
+                        SortTable("By Name      Z - A");
+                        break;
+                }
+                return true;
+            });
+            popup.show();
+        });
+    }
+    private void SortTable(String Mode) {
+        arrayListOfReportDataShort.clear();
+        for (int i = 0; i < arrayListOfReportData.size(); i++) {
+            if (Mode.equalsIgnoreCase("All") || Mode.equalsIgnoreCase("By Name      A - Z") || Mode.equalsIgnoreCase("By Name      Z - A") || Mode.equalsIgnoreCase("By Date      Newer - Older") || Mode.equalsIgnoreCase("By Date      Older - Newer")) {
+                arrayListOfReportDataShort.add(new DayReportModel(arrayListOfReportData.get(i).getUdr(), arrayListOfReportData.get(i).getIntime(), arrayListOfReportData.get(i).getDrs(), arrayListOfReportData.get(i).getInaddress(), arrayListOfReportData.get(i).getHalfDay_FW_Type(), arrayListOfReportData.get(i).getOuttime(), arrayListOfReportData.get(i).getChm(), arrayListOfReportData.get(i).getDesig_Code(), arrayListOfReportData.get(i).getSF_Code(), arrayListOfReportData.get(i).getStk(), arrayListOfReportData.get(i).getCip(),arrayListOfReportData.get(i).getAdate(),arrayListOfReportData.get(i).getHos(),arrayListOfReportData.get(i).getSF_Name(),arrayListOfReportData.get(i).getRmdr(),arrayListOfReportData.get(i).getRptdate(),arrayListOfReportData.get(i).getWtype(),arrayListOfReportData.get(i).getFWFlg(),arrayListOfReportData.get(i).getActivity_Date(),arrayListOfReportData.get(i).getOutaddress(),arrayListOfReportData.get(i).getACode(),arrayListOfReportData.get(i).getRemarks(),arrayListOfReportData.get(i).getTerrWrk(),arrayListOfReportData.get(i).getTyp(),arrayListOfReportData.get(i).getConfirmed()));
+            }
+        }
 
+        dayReportAdapter = new DayReportAdapter( arrayListOfReportDataShort,requireContext());
+        binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.dayReportRecView.setAdapter(dayReportAdapter);
+        switch (Mode) {
+            case "By Name      A - Z":
+                Collections.sort(arrayListOfReportDataShort, Comparator.comparing(DayReportModel::getSF_Name));
+                break;
+            case "By Name      Z - A":
+                Collections.sort(arrayListOfReportDataShort, Collections.reverseOrder(new SortByName()));
+                break;
+        }
+    }
+    static class SortByName implements Comparator<DayReportModel> {
+        @Override
+        public int compare(DayReportModel a, DayReportModel b) {
+            return a.getSF_Name().compareTo(b.getSF_Name());
+        }
+    }
 }

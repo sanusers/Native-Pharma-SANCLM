@@ -58,7 +58,6 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
         holder.workType.setText(dayReportModel.getWtype());
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
-
         if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")) {
             holder.rlCheckIn.setVisibility(View.VISIBLE);
             holder.rlCheckOut.setVisibility(View.VISIBLE);
@@ -66,6 +65,9 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.checkInAddress.setText(dayReportModel.getInaddress());
             holder.checkOutTime.setText(dayReportModel.getOuttime());
             holder.checkOutAddress.setText(dayReportModel.getOutaddress());
+        } else{
+            holder.rlCheckIn.setVisibility(View.GONE);
+            holder.rlCheckOut.setVisibility(View.GONE);
         }
 
         if (SharedPref.getDrNeed(context).equalsIgnoreCase("0")) {
@@ -107,7 +109,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.DcrIconLayout.setVisibility(View.GONE);
         }
 
-        int status = dayReportModel.getTyp();
+       /* int status = dayReportModel.getTyp();
         switch (status) {
             case 0: {
                 holder.status.setText(R.string.pending);
@@ -126,7 +128,24 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
                 holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
                 break;
             }
+        }*/
+        int status = dayReportModel.getTyp();
+        String confirmStatus1 = dayReportModel.getConfirmed();
+        int confirmStatus = Integer.parseInt(confirmStatus1);
+        if (status==0 && confirmStatus==0) {
+            holder.status.setText("Draft");
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.text_dark_15)));
+        } else if ((status==0 || status==1) && confirmStatus==1) {
+            holder.status.setText("Finished");
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_priority)));
+        } else if ((status==0 || status==1) && confirmStatus==2) {
+            holder.status.setText("Rejected");
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
+        } else if ((status==0 || status==1) && confirmStatus==3) {
+            holder.status.setText("ReEntry");
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.blue_60)));
         }
+
 
         holder.checkInMarker.setOnClickListener(view -> {
             Intent intent = new Intent(context, MapViewActvity.class);

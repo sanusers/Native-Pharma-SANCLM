@@ -1017,6 +1017,7 @@
                     app:layout_constraintTop_toBottomOf="@id/SlideLayout">
 
                     <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/rcpaLayoutitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -1047,8 +1048,6 @@
 
                 </androidx.cardview.widget.CardView>
 
-
-
                 <LinearLayout
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -1070,7 +1069,7 @@
                         android:padding="@dimen/_5sdp"
                         android:background="@drawable/bg_light_grey_1"
                         android:orientation="horizontal"
-                        android:weightSum="5">
+                        android:weightSum="6">
 
                         <TextView
                             android:fontFamily="@font/satoshi_bold"
@@ -1089,7 +1088,14 @@
                             android:textSize="@dimen/_6sdp"
                             android:layout_weight="0.5"
                             android:text="Qty" />
-
+                        <TextView
+                            android:layout_width="0dp"
+                            android:textColor="@color/dark_purple"
+                            android:textSize="@dimen/_6sdp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/satoshi_bold"
+                            android:layout_weight="1"
+                            android:text="@string/chemist_name" />
                         <TextView
                             android:layout_width="0dp"
                             android:textColor="@color/dark_purple"
@@ -1104,7 +1110,7 @@
                             android:fontFamily="@font/satoshi_bold"
                             android:textColor="@color/dark_purple"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1.5"
+                            android:layout_weight="1.45"
                             android:textSize="@dimen/_6sdp"
                             android:text="Competitor Productname" />
 
@@ -1115,6 +1121,7 @@
                             android:textColor="@color/dark_purple"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
+                            android:paddingEnd="15dp"
                             android:text="Qty" />
 
                     </LinearLayout>
@@ -1158,6 +1165,7 @@
 
 
                     <LinearLayout
+                        android:visibility="gone"
                         android:layout_marginBottom="@dimen/_2sdp"
                         android:id="@+id/eventcaptureLayout"
                         android:layout_width="match_parent"
