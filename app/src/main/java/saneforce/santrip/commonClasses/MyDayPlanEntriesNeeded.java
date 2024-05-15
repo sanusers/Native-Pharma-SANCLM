@@ -12,12 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -25,7 +22,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
-import saneforce.santrip.activity.slideDownloaderAlertBox.TaskCallback;
 import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
@@ -123,54 +119,65 @@ public class MyDayPlanEntriesNeeded {
 
     private static void setupMyDayPlanEntriesNeeded(Context context) {
         datesNeeded.clear();
+        TreeMap<String, String> dates = new TreeMap<>();
         try {
             JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if(dcrdatas.length()>0) {
-                TreeMap<String, String> dates = new TreeMap<>();
                 for (int i = 0; i<dcrdatas.length(); i++) {
                     JSONObject jsonObject = dcrdatas.getJSONObject(i);
                     String CustType = jsonObject.optString("CustType");
                     String worktypeFlog = jsonObject.optString("FW_Indicator");
                     String date = jsonObject.optString("Dcr_dt");
-                    dates.put(date, CustType+worktypeFlog);
+                    dates.put(date, CustType + worktypeFlog);
                 }
-                Log.e("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(dates.keySet().toArray()));
+                Log.v("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(dates.keySet().toArray()));
                 for (String date : dates.keySet()) {
                     if(dates.get(date).equalsIgnoreCase("0F")) {
                         datesNeeded.add(date);
                     }
                 }
-                Log.e("TAG 1.1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
-                JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
-                if(dateSync.length()>0) {
-                    for (int i = 0; i<dateSync.length(); i++) {
-                        JSONObject jsonObject = dateSync.getJSONObject(i);
-                        String flag = jsonObject.optString("flg");
-                        String tbName = jsonObject.optString("tbname");
-                        String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
-                        if(tbName.equalsIgnoreCase("missed") ||
-                                (tbName.equalsIgnoreCase("dcr") && (flag.equalsIgnoreCase("2") || (flag.equalsIgnoreCase("3")))) ||
-                                flag.equalsIgnoreCase("0")) {
-                            datesNeeded.add(date);
-                        }
+                Log.v("TAG 1.1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
+            }
+            JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+            if(dateSync.length()>0) {
+                for (int i = 0; i<dateSync.length(); i++) {
+                    JSONObject jsonObject = dateSync.getJSONObject(i);
+                    String flag = jsonObject.optString("flg");
+                    String tbName = jsonObject.optString("tbname");
+                    String date = jsonObject.getJSONObject("dt").getString("date").substring(0, 10);
+                    if(tbName.equalsIgnoreCase("missed") ||
+                            (tbName.equalsIgnoreCase("dcr") && (flag.equalsIgnoreCase("2") || (flag.equalsIgnoreCase("3")))) ||
+                            flag.equalsIgnoreCase("0")) {
+                        datesNeeded.add(date);
                     }
                 }
-                Log.e("TAG 2", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
+            Log.v("TAG 2", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
-        if(!datesNeeded.isEmpty()) {
+        Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
+        if(!SharedPref.getSelectedDateCal(context).isEmpty() && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
+            Log.e("set date switched", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
+            syncTaskStatus.datesFound();
+        }else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && datesNeeded.isEmpty()) {
+            SharedPref.setSelectedDateCal(context, "");
+            Log.e("set date today finished", "setupMyDayPlanEntriesNeeded: dates empty");
+            syncTaskStatus.noDatesFound();
+        }else if(!datesNeeded.isEmpty()) {
             SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first()));
-            syncTaskStatus.onComplete();
+            Log.e("set date", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
+            syncTaskStatus.datesFound();
         }else {
-            syncTaskStatus.onFailed();
+            SharedPref.setSelectedDateCal(context, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_34));
+            Log.e("set date today", "setupMyDayPlanEntriesNeeded: dates empty");
+            syncTaskStatus.datesFound();
         }
     }
 
-    public interface SyncTaskStatus{
-        void onComplete();
-        void onFailed();
+    public interface SyncTaskStatus {
+        void datesFound();
+
+        void noDatesFound();
     }
 }

@@ -1032,7 +1032,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 case "gettodaydcr": {
                     MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(this, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
                         @Override
-                        public void onComplete() {
+                        public void datesFound() {
                             try {
                                 jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
                             } catch (Exception e) {
@@ -1041,7 +1041,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailed() {
+                        public void noDatesFound() {
                             Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!" );
                         }
                     });

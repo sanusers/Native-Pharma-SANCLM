@@ -71,111 +71,112 @@ public class CallsFragment extends Fragment {
     public static  Context Mcontext;
 
     public static void CallTodayCallsAPI(Context context, ApiInterface apiInterface, boolean isProgressNeed) {
-        if (UtilityClass.isNetworkAvailable(context)) {
-            CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
-            apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
-            ApiInterface finalApiInterface1 = apiInterface;
-            if (isProgressNeed) progressDialog = CommonUtilsMethods.createProgressDialog(context);
-            NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
-                if (status) {
-                    SharedPref.setTodayCallList(context, "");
-                    try {
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("tableName", "gettodycalls");
-                        jsonObject.put("sfcode",  SharedPref.getSfCode(context));
-                        jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
-                        jsonObject.put("day_flag", "0");
-                        jsonObject.put("division_code",  SharedPref.getDivisionCode(context));
-                        jsonObject.put("Rsf",  SharedPref.getHqCode(context));
-                        jsonObject.put("sf_type", SharedPref.getSfType(context));
-                        jsonObject.put("Designation",  SharedPref.getDesig(context));
-                        jsonObject.put("state_code",  SharedPref.getStateCode(context));
-                        jsonObject.put("subdivision_code",  SharedPref.getSubdivisionCode(context));
-                        Log.v("TodayCalls", "--json--" + jsonObject);
+        if(HomeDashBoard.selectedDate != null) {
+            if(UtilityClass.isNetworkAvailable(context)) {
+                CommonUtilsMethods commonUtilsMethods = new CommonUtilsMethods(context);
+                apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
+                ApiInterface finalApiInterface1 = apiInterface;
+                if(isProgressNeed)
+                    progressDialog = CommonUtilsMethods.createProgressDialog(context);
+                NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
+                    if(status) {
+                        SharedPref.setTodayCallList(context, "");
+                        try {
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("tableName", "gettodycalls");
+                            jsonObject.put("sfcode", SharedPref.getSfCode(context));
+                            jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
+                            jsonObject.put("day_flag", "0");
+                            jsonObject.put("division_code", SharedPref.getDivisionCode(context));
+                            jsonObject.put("Rsf", SharedPref.getHqCode(context));
+                            jsonObject.put("sf_type", SharedPref.getSfType(context));
+                            jsonObject.put("Designation", SharedPref.getDesig(context));
+                            jsonObject.put("state_code", SharedPref.getStateCode(context));
+                            jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(context));
+                            Log.v("TodayCalls", "--json--" + jsonObject);
 
-                        Map<String, String> mapString = new HashMap<>();
-                        mapString.put("axn", "table/additionaldcrmasterdata");
-                        Call<JsonElement> getTodayCalls = finalApiInterface1.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
+                            Map<String, String> mapString = new HashMap<>();
+                            mapString.put("axn", "table/additionaldcrmasterdata");
+                            Call<JsonElement> getTodayCalls = finalApiInterface1.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonObject.toString());
 
-                        ApiInterface finalApiInterface = finalApiInterface1;
-                        getTodayCalls.enqueue(new Callback<JsonElement>() {
-                            @SuppressLint("NotifyDataSetChanged")
-                            @Override
-                            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
-                                binding.rlSyncCall.setEnabled(true);
-                                if (response.isSuccessful()) {
+                            ApiInterface finalApiInterface = finalApiInterface1;
+                            getTodayCalls.enqueue(new Callback<JsonElement>() {
+                                @SuppressLint("NotifyDataSetChanged")
+                                @Override
+                                public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                                    binding.rlSyncCall.setEnabled(true);
+                                    if(response.isSuccessful()) {
 
-                                    try {
-                                        assert response.body() != null;
-                                        SharedPref.setTodayCallList(context, response.body().toString());
-                                        JSONArray jsonArray = new JSONArray(response.body().toString());
+                                        try {
+                                            assert response.body() != null;
+                                            SharedPref.setTodayCallList(context, response.body().toString());
+                                            JSONArray jsonArray = new JSONArray(response.body().toString());
 
 
+                                            JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                                            JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
+                                            ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
+                                            ArrayList<CallsModalClass> TodayCallListTwo = new ArrayList<>();
+                                            TodayCallList.clear();
+                                            for (int i = 0; i<jsonArray.length(); i++) {
+                                                JSONObject json = jsonArray.getJSONObject(i);
+                                                TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                                                TodayCallListTwo.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
 
-                                        JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
-                                        JSONArray jsonArray2 = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
-                                        ArrayList<CallsModalClass> TodayCallListOne = new ArrayList<>();
-                                        ArrayList<CallsModalClass> TodayCallListTwo = new ArrayList<>();
-                                        TodayCallList.clear();
-                                        for (int i = 0; i < jsonArray.length(); i++) {
-                                            JSONObject json = jsonArray.getJSONObject(i);
-                                            TodayCallList.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
-                                            TodayCallListTwo.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
-
-                                            for (int j = 0; j < jsonArray1.length(); j++) {
-                                                JSONObject jsonObject = jsonArray1.getJSONObject(j);
-                                                if (json.getString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
-                                                    TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
-                                                    jsonArray1.remove(j);
-                                                    break;
-                                                }
-                                            }
-                                        }
-
-                                        if (jsonArray.length() > 0) {
-
-                                            JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
-                                            for (int i = 0; i < jsonArrayWt.length(); i++) {
-                                                JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
-                                                if (workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
-                                                    FwFlag = workTypeData.getString("FWFlg");
+                                                for (int j = 0; j<jsonArray1.length(); j++) {
+                                                    JSONObject jsonObject = jsonArray1.getJSONObject(j);
+                                                    if(json.getString("vstTime").substring(0, 10).equalsIgnoreCase(jsonObject.getString("Dcr_dt")) && jsonObject.getString("CustCode").equalsIgnoreCase(json.getString("CustCode"))) {
+                                                        TodayCallListOne.add(new CallsModalClass(json.getString("Trans_SlNo"), json.getString("ADetSLNo"), json.getString("CustName"), json.getString("CustCode"), json.getString("vstTime"), json.getString("CustType")));
+                                                        jsonArray1.remove(j);
+                                                        break;
+                                                    }
                                                 }
                                             }
 
-                                            if (TodayCallListTwo.size() != TodayCallListOne.size()) {
-                                                for (int i = 0; i < TodayCallListTwo.size(); i++) {
-                                                    if (TodayCallListOne.size() > 0) {
-                                                        isNeedtoAdd = true;
-                                                        for (int j = 0; j < TodayCallListOne.size(); j++) {
-                                                            if (TodayCallListTwo.get(i).getDocCode().equalsIgnoreCase(TodayCallListOne.get(j).getDocCode())) {
-                                                                TodayCallListTwo.remove(i);
+                                            if(jsonArray.length()>0) {
+
+                                                JSONArray jsonArrayWt = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                                                for (int i = 0; i<jsonArrayWt.length(); i++) {
+                                                    JSONObject workTypeData = jsonArrayWt.getJSONObject(i);
+                                                    if(workTypeData.getString("FWFlg").equalsIgnoreCase("F")) {
+                                                        FwFlag = workTypeData.getString("FWFlg");
+                                                    }
+                                                }
+
+                                                if(TodayCallListTwo.size() != TodayCallListOne.size()) {
+                                                    for (int i = 0; i<TodayCallListTwo.size(); i++) {
+                                                        if(TodayCallListOne.size()>0) {
+                                                            isNeedtoAdd = true;
+                                                            for (int j = 0; j<TodayCallListOne.size(); j++) {
+                                                                if(TodayCallListTwo.get(i).getDocCode().equalsIgnoreCase(TodayCallListOne.get(j).getDocCode())) {
+                                                                    TodayCallListTwo.remove(i);
+                                                                }
                                                             }
+                                                        }else {
+                                                            isNeedtoAdd = false;
+                                                            SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
                                                         }
-                                                    } else {
-                                                        isNeedtoAdd = false;
-                                                        SaveDCRData(context,TodayCallListTwo, i, jsonArray2);
+                                                    }
+                                                    if(isNeedtoAdd && TodayCallListTwo.size()>0) {
+                                                        for (int i = 0; i<TodayCallListTwo.size(); i++) {
+                                                            SaveDCRData(context, TodayCallListTwo, i, jsonArray2);
+                                                        }
                                                     }
                                                 }
-                                                if (isNeedtoAdd && TodayCallListTwo.size() > 0) {
-                                                    for (int i = 0; i < TodayCallListTwo.size(); i++) {
-                                                        SaveDCRData(context,TodayCallListTwo, i, jsonArray2);
-                                                    }
+
+                                                MasterDataTable data = new MasterDataTable();
+                                                data.setMasterKey(Constants.CALL_SYNC);
+                                                data.setMasterValues(jsonArray2.toString());
+                                                data.setSyncStatus(0);
+                                                MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
+                                                if(mNChecked != null) {
+                                                    masterDataDao.updateData(Constants.CALL_SYNC, jsonArray2.toString());
+                                                }else {
+                                                    masterDataDao.insert(data);
+
                                                 }
+                                                CallDataRestClass.resetcallValues(context);
                                             }
-
-                                            MasterDataTable data = new MasterDataTable();
-                                            data.setMasterKey(Constants.CALL_SYNC);
-                                            data.setMasterValues(jsonArray2.toString());
-                                            data.setSyncStatus(0);
-                                            MasterDataTable mNChecked = masterDataDao.getMasterSyncDataByKey(Constants.CALL_SYNC);
-                                            if (mNChecked != null) {
-                                                masterDataDao.updateData(Constants.CALL_SYNC, jsonArray2.toString());
-                                            } else {
-                                                masterDataDao.insert(data);
-
-                                            }
-                                            CallDataRestClass.resetcallValues(context);
-                                        }
 
 //                                        binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
 //                                        adapter = new Call_adapter(context, TodayCallList, finalApiInterface);
@@ -184,44 +185,45 @@ public class CallsFragment extends Fragment {
 //                                        binding.recyelerview.setHasFixedSize(true);
 //                                        binding.recyelerview.setLayoutManager(manager);
 //                                        binding.recyelerview.setAdapter(adapter);
-                                        binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
-                                        adapter.notifyDataSetChanged();
+                                            binding.txtCallcount.setText(String.valueOf(TodayCallList.size()));
+                                            adapter.notifyDataSetChanged();
 
-                                        if (isProgressNeed) progressDialog.dismiss();
-                                    } catch (Exception e) {
-                                        if (isProgressNeed) progressDialog.dismiss();
-                                        Log.v("TodayCalls", "--error--" + e);
-                                        e.printStackTrace();
+                                            if(isProgressNeed) progressDialog.dismiss();
+                                        } catch (Exception e) {
+                                            if(isProgressNeed) progressDialog.dismiss();
+                                            Log.v("TodayCalls", "--error--" + e);
+                                            e.printStackTrace();
+                                        }
+                                    }else {
+                                        if(isProgressNeed) progressDialog.dismiss();
+                                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                                     }
-                                } else {
-                                    if (isProgressNeed) progressDialog.dismiss();
+                                }
+
+                                @Override
+                                public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                                    binding.rlSyncCall.setEnabled(true);
+                                    if(isProgressNeed) progressDialog.dismiss();
                                     commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
                                 }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-                                binding.rlSyncCall.setEnabled(true);
-                                if (isProgressNeed) progressDialog.dismiss();
-                                commonUtilsMethods.showToastMessage(context, context.getString(R.string.toast_response_failed));
-                            }
-                        });
-                    } catch (Exception e) {
-                        if (isProgressNeed) progressDialog.dismiss();
-                        Log.v("TodayCalls", "--error--2--" + e);
+                            });
+                        } catch (Exception e) {
+                            if(isProgressNeed) progressDialog.dismiss();
+                            Log.v("TodayCalls", "--error--2--" + e);
+                        }
+                    }else {
+                        if(isProgressNeed) {
+                            binding.rlSyncCall.setEnabled(true);
+                            progressDialog.dismiss();
+                            commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
+                        }
                     }
-                } else {
-                    if (isProgressNeed) {
-                        binding.rlSyncCall.setEnabled(true);
-                        progressDialog.dismiss();
-                        commonUtilsMethods.showToastMessage(context, context.getString(R.string.poor_connection));
-                    }
-                }
-            });
-            networkStatusTask.execute();
-        } else {
-            binding.rlSyncCall.setEnabled(true);
-            getFromLocal(context, apiInterface);
+                });
+                networkStatusTask.execute();
+            }else {
+                binding.rlSyncCall.setEnabled(true);
+                getFromLocal(context, apiInterface);
+            }
         }
     }
 

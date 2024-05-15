@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/_300sdp"
+    android:layout_width="@dimen/_150sdp"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_2sdp">
@@ -73,6 +73,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_dummy" />
 
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
+            android:fontFamily="@font/satoshi_medium"
+            android:text="@string/workplan_submit_ack"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:padding="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:visibility="gone"
+            android:textSize="@dimen/_6ssp"
+            app:layout_constraintBottom_toTopOf="@id/rl_btns"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_dummy" />
 
         <RelativeLayout
             android:id="@+id/rl_btns"

@@ -15,8 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tooltip.Tooltip;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,7 +78,6 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         RatingBar rating_bar;
 
         ImageView imgView;
-        Tooltip mTooltip;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
