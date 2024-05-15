@@ -68,7 +68,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         this.resList = resList;
         this.split_val = split_val;
 
-//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
 
@@ -190,6 +189,14 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     holder.Res_rx.setText("To: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
                 }
             }
+            //workType
+            if (app_adapt.getType().equals("workType")){
+                holder.Res_Name.setText(app_adapt.getWorkType());
+                holder.Res_Table1.setVisibility(View.VISIBLE);
+                holder.Res_category.setVisibility(View.VISIBLE);
+                holder.Res_category.setText(app_adapt.getTP_DCR());
+            }
+
             holder.listcount.setText(count + " )");
 
             holder.Res_Edit.setOnClickListener(view -> {
@@ -253,7 +260,6 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     duplicateValues.clear();
                     L_cLasses.clear();
                     JSONArray jsonvst_ctl = masterDataDao.getMasterDataTableOrNew(Constants.VISIT_CONTROL).getMasterSyncDataJsonArray();
-//                    JSONArray jsonvst_ctl = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL);
 //                   ==============================
                     String colorText1 = "<font color=\"#F1536E\">" + count + " )" + "</font>";
                     holder.listcount.setText(Html.fromHtml(colorText1));

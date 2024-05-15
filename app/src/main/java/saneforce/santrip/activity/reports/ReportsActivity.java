@@ -45,7 +45,6 @@ public class ReportsActivity extends AppCompatActivity {
     public static ActivityReportsBinding binding;
     ReportsAdapter reportsAdapter;
     ApiInterface apiInterface;
-//    SQLite sqLite;
 
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
@@ -77,10 +76,10 @@ public class ReportsActivity extends AppCompatActivity {
     public void populateAdapter() {
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Day Report");
-        arrayList.add("Monthly Report");
+       /* arrayList.add("Monthly Report");
         arrayList.add("Day Check In Report");
         arrayList.add("Customer Check In Report");
-        arrayList.add("Visit Monitor");
+        arrayList.add("Visit Monitor");*/
         arrayList.add("Dash Board");
 
         reportsAdapter = new ReportsAdapter(arrayList, ReportsActivity.this);

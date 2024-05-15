@@ -48,12 +48,12 @@ public class AdapterNestedProduct extends RecyclerView.Adapter<AdapterNestedProd
         holder.tv_sam_name.setOnClickListener(view -> commonUtilsMethods.displayPopupWindow(activity, context, view, nestedProduct.get(position).getPrd_name()));
 
         boolean isSampleNeed = false;
-        if(CallActivityCustDetails.get(position).getType().equalsIgnoreCase("1")) {
-            if(PrdSamNeed.equalsIgnoreCase("1")) {
+        if(CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1")) {
+            if(PrdSamNeed != null && PrdSamNeed.equalsIgnoreCase("1")) {
                 isSampleNeed = true;
             }
         }else {
-            if(PrdSamNeed.equalsIgnoreCase("0")) {
+            if(PrdSamNeed != null && PrdSamNeed.equalsIgnoreCase("0")) {
                 isSampleNeed = true;
             }
         }

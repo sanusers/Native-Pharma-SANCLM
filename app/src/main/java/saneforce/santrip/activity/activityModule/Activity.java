@@ -190,7 +190,6 @@ public class Activity extends AppCompatActivity {
 
 //    public void showHQ() {
 //
-//        JSONArray workTypeArray3 = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
 //              if(workTypeArray3.length()>0){
 //
 //

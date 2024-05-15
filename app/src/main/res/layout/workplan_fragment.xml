@@ -543,7 +543,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:indeterminateTint="@color/dark_purple"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
 
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>

@@ -43,7 +43,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
     BrandNameAdapter brandNameAdapter;
     SlideImageAdapter slideImageAdapter;
     SelectedSlidesAdapter selectedSlidesAdapter;
-//    SQLite sqLite;
     ArrayList<BrandModelClass> brandProductArrayList = new ArrayList<>();
     ArrayList<BrandModelClass.Product> selectedSlideArrayList = new ArrayList<>();
     ArrayList<BrandModelClass.Product> savedPresentation = new ArrayList<>();
@@ -79,7 +78,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-//        sqLite = new SQLite(CreatePresentationActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
         presentationDataDao = roomDB.presentationDataDao();
@@ -151,8 +149,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
 
             JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
             JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
-//            JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-//            JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
 
             for (int i = 0; i < brandSlide.length(); i++) {
                 JSONObject brandObject = brandSlide.getJSONObject(i);
@@ -307,7 +303,6 @@ public class CreatePresentationActivity extends AppCompatActivity {
             presentation.setProducts(selectedSlideArrayList);
             JSONObject jsonObject = new JSONObject(new Gson().toJson(presentation));
 
-//            sqLite.savePresentation(oldName, name, jsonObject.toString());
             presentationDataDao.savePresentation(oldName, name, jsonObject.toString());
             Intent intent = new Intent(CreatePresentationActivity.this, PresentationActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

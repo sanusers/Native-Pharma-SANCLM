@@ -35,7 +35,6 @@ public class FeedbackSelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectFbSideBinding selectFbSideBinding;
     public static String feedbackName = "", feedbackCode = "";
-//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
     ArrayList<String> list_name = new ArrayList<>();
@@ -50,7 +49,6 @@ public class FeedbackSelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectFbSideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectFbSideBinding.getRoot();
-//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -101,7 +99,6 @@ public class FeedbackSelectionSide extends Fragment {
         list_name.clear();
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.FEEDBACK).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 list_name.add(jsonObject.getString("name"));

@@ -4,14 +4,18 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +39,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.approvals.geotagging.GeoTaggingModelList;
 import saneforce.santrip.activity.reports.CalendarAdapter;
 import saneforce.santrip.activity.reports.ReportFragContainerActivity;
 import saneforce.santrip.activity.reports.dayReport.DataViewModel;
@@ -63,7 +70,6 @@ public class DayReportFragment extends Fragment {
 
     FragmentDayReportBinding binding;
     ApiInterface apiInterface;
-//    SQLite sqLite;
     LocalDate localDate;
 
     ProgressDialog progressDialog;
@@ -71,6 +77,8 @@ public class DayReportFragment extends Fragment {
     CalendarAdapter calendarAdapter;
     AlertDialog calendarDialog;
     ArrayList<DayReportModel> arrayListOfReportData = new ArrayList<>();
+    ArrayList<DayReportModel> arrayListOfReportDataShort = new ArrayList<>();
+
     ArrayList<String> daysArrayList = new ArrayList<>();
     DataViewModel dataViewModel;
     AlertDialog.Builder alertDialog;
@@ -83,10 +91,11 @@ public class DayReportFragment extends Fragment {
         commonUtilsMethods.setUpLanguage(requireContext());
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
-        dataViewModel.getDate().observe(getViewLifecycleOwner(), s -> binding.date.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s)));
+        dataViewModel.getDate().observe(getViewLifecycleOwner(), s -> binding.calender.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_19, s)));
 
         initialisation();
         populateAdapter();
+        onClickListener();
 
         binding.calender.setOnClickListener(view -> calendarDialog());
 
@@ -118,7 +127,6 @@ public class DayReportFragment extends Fragment {
     }
 
     public void initialisation() {
-//        sqLite = new SQLite(getContext());
         localDate = LocalDate.now();
         daysArrayList = daysInMonthArray(localDate);
 
@@ -216,8 +224,8 @@ public class DayReportFragment extends Fragment {
             ImageView prevArrow = view.findViewById(R.id.calendar_prev_button);
             ImageView nextArrow = view.findViewById(R.id.calendar_next_button);
 
-            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_23, binding.date.getText().toString()));
-            localDate = LocalDate.parse(binding.date.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
+            monthYear.setText(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_19, TimeUtils.FORMAT_23, binding.calender.getText().toString()));
+            localDate = LocalDate.parse(binding.calender.getText().toString(), DateTimeFormatter.ofPattern(TimeUtils.FORMAT_19));
             nextArrow.setEnabled(false);
             nextArrow.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
             prevArrow.setOnClickListener(view1 -> {
@@ -338,5 +346,51 @@ public class DayReportFragment extends Fragment {
         binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportRecView.setAdapter(dayReportAdapter);
     }
+    private void onClickListener(){
+        binding.sortIcon.setOnClickListener(v -> {
+            System.out.println("onClickListener");
+            Context wrapper = new ContextThemeWrapper(getContext(), R.style.popupMenuStyle);
+            final PopupMenu popup = new PopupMenu(wrapper, binding.sortIcon, Gravity.END);
+            popup.getMenu().add(1, 1, 1, "By Name      A - Z");
+            popup.getMenu().add(2, 2, 2, "By Name      Z - A");
+            popup.setOnMenuItemClickListener(menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case 1:
+                        SortTable("By Name      A - Z");
+                        break;
+                    case 2:
+                        SortTable("By Name      Z - A");
+                        break;
+                }
+                return true;
+            });
+            popup.show();
+        });
+    }
+    private void SortTable(String Mode) {
+        arrayListOfReportDataShort.clear();
+        for (int i = 0; i < arrayListOfReportData.size(); i++) {
+            if (Mode.equalsIgnoreCase("All") || Mode.equalsIgnoreCase("By Name      A - Z") || Mode.equalsIgnoreCase("By Name      Z - A") || Mode.equalsIgnoreCase("By Date      Newer - Older") || Mode.equalsIgnoreCase("By Date      Older - Newer")) {
+                arrayListOfReportDataShort.add(new DayReportModel(arrayListOfReportData.get(i).getUdr(), arrayListOfReportData.get(i).getIntime(), arrayListOfReportData.get(i).getDrs(), arrayListOfReportData.get(i).getInaddress(), arrayListOfReportData.get(i).getHalfDay_FW_Type(), arrayListOfReportData.get(i).getOuttime(), arrayListOfReportData.get(i).getChm(), arrayListOfReportData.get(i).getDesig_Code(), arrayListOfReportData.get(i).getSF_Code(), arrayListOfReportData.get(i).getStk(), arrayListOfReportData.get(i).getCip(),arrayListOfReportData.get(i).getAdate(),arrayListOfReportData.get(i).getHos(),arrayListOfReportData.get(i).getSF_Name(),arrayListOfReportData.get(i).getRmdr(),arrayListOfReportData.get(i).getRptdate(),arrayListOfReportData.get(i).getWtype(),arrayListOfReportData.get(i).getFWFlg(),arrayListOfReportData.get(i).getActivity_Date(),arrayListOfReportData.get(i).getOutaddress(),arrayListOfReportData.get(i).getACode(),arrayListOfReportData.get(i).getRemarks(),arrayListOfReportData.get(i).getTerrWrk(),arrayListOfReportData.get(i).getTyp(),arrayListOfReportData.get(i).getConfirmed()));
+            }
+        }
 
+        dayReportAdapter = new DayReportAdapter( arrayListOfReportDataShort,requireContext());
+        binding.dayReportRecView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.dayReportRecView.setAdapter(dayReportAdapter);
+        switch (Mode) {
+            case "By Name      A - Z":
+                Collections.sort(arrayListOfReportDataShort, Comparator.comparing(DayReportModel::getSF_Name));
+                break;
+            case "By Name      Z - A":
+                Collections.sort(arrayListOfReportDataShort, Collections.reverseOrder(new SortByName()));
+                break;
+        }
+    }
+    static class SortByName implements Comparator<DayReportModel> {
+        @Override
+        public int compare(DayReportModel a, DayReportModel b) {
+            return a.getSF_Name().compareTo(b.getSF_Name());
+        }
+    }
 }

@@ -67,7 +67,6 @@ import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflin
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
-
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkStatusTask;
 import saneforce.santrip.utility.TimeUtils;
@@ -155,16 +154,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         context=getApplicationContext();
-//        sqLite = new SQLite(getApplicationContext());
         commonUtilsMethods = new CommonUtilsMethods(getApplicationContext());
         commonUtilsMethods.setUpLanguage(getApplicationContext());
-//        sqLite.getWritableDatabase();
         sharedpreferences = getSharedPreferences("SLIDES", MODE_PRIVATE);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
-
         Animation blinkAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.downloading);
         binding.imgDownloading.startAnimation(blinkAnimation);
         db = RoomDB.getDatabase(this);
@@ -189,7 +185,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
 
         //Initializing all the data array
-
         uiInitialization();
         arrayForAdapter.clear();
         arrayForAdapter.addAll(doctorModelArray);
@@ -201,7 +196,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
-                    sync(Constants.DOCTOR, "getmydayplan", dcrModelArray, 2);
+                    sync(Constants.DOCTOR, "gettodaydcr", dcrModelArray, 2);
                     // to get all the HQ list initially only for MGR
 // to get all the HQ list initially only for MGR
                 } else {
@@ -627,46 +622,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
         setupCount = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray().length();
         customSetupCount = masterDataDao.getMasterDataTableOrNew(Constants.CUSTOM_SETUP).getMasterSyncDataJsonArray().length();
 
-//        doctorCount = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + rsf).length();
-//        specialityCount = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY).length();
-//        qualificationCount = sqLite.getMasterSyncDataByKey(Constants.QUALIFICATION).length();
-//        categoryCount = sqLite.getMasterSyncDataByKey(Constants.CATEGORY).length();
-//        departmentCount = sqLite.getMasterSyncDataByKey(Constants.DEPARTMENT).length();
-//        classCount = sqLite.getMasterSyncDataByKey(Constants.CLASS).length();
-//        feedbackCount = sqLite.getMasterSyncDataByKey(Constants.FEEDBACK).length();
-//        unlistedDrCount = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + rsf).length();
-//        chemistCount = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + rsf).length();
-//        stockiestCount = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + rsf).length();
-//        hospitalCount = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
-//        cipCount = sqLite.getMasterSyncDataByKey(Constants.CIP + rsf).length();
-//        inputCount = sqLite.getMasterSyncDataByKey(Constants.INPUT).length();
-//        leaveCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE).length();
-//        leaveStatusCount = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS).length();
-//        callSyncCount = sqLite.getMasterSyncDataByKey(Constants.CALL_SYNC).length();
-//        visitControlCount = sqLite.getMasterSyncDataByKey(Constants.VISIT_CONTROL).length();
-//        dateSyncCount = sqLite.getMasterSyncDataByKey(Constants.DATE_SYNC).length();
-//
-//        workTypeCount = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE).length();
-//        holidayCount = sqLite.getMasterSyncDataByKey(Constants.HOLIDAY).length();
-//        weeklyOfCount = sqLite.getMasterSyncDataByKey(Constants.WEEKLY_OFF).length();
-//        tpSetupCount = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP).length();
-//        productCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT).length();
-//        proCatCount = sqLite.getMasterSyncDataByKey(Constants.PRODUCT_CATEGORY).length();
-//        brandCount = sqLite.getMasterSyncDataByKey(Constants.BRAND).length();
-//        compProCount = sqLite.getMasterSyncDataByKey(Constants.COMPETITOR_PROD).length();
-//        mapComPrdCount = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD).length();
-//        clusterCount = sqLite.getMasterSyncDataByKey(Constants.CLUSTER + rsf).length();
-//        proSlideCount = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE).length();
-//        proSpeSlideCount = sqLite.getMasterSyncDataByKey(Constants.SPL_SLIDE).length();
-//        brandSlideCount = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE).length();
-//        therapticCount = sqLite.getMasterSyncDataByKey(Constants.THERAPTIC_SLIDE).length();
-//        subordinateCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE).length();
-//        subMgrCount = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE_MGR).length();
-//        jWorkCount = sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + rsf).length();
-//        Quixcount = sqLite.getMasterSyncDataByKey(Constants.QUIZ).length();
-//        setupCount = sqLite.getMasterSyncDataByKey(Constants.SETUP).length();
-//        customSetupCount = sqLite.getMasterSyncDataByKey(Constants.CUSTOM_SETUP).length();
-
         doctorStatus = masterDataDao.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
         specialityStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SPECIALITY);
         qualificationStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUALIFICATION);
@@ -677,7 +632,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         unlistedDrStatus = masterDataDao.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
         chemistStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
         stockiestStatus = masterDataDao.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
-        hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf); //sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
+        hospitalStatus = masterDataDao.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf);
         cipStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CIP + rsf);
         inputStatus = masterDataDao.getMasterSyncStatusByKey(Constants.INPUT);
         leaveStatus = masterDataDao.getMasterSyncStatusByKey(Constants.LEAVE);
@@ -714,54 +669,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
         QuizStatus = masterDataDao.getMasterSyncStatusByKey(Constants.QUIZ);
         setupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.SETUP);
         customSetupStatus = masterDataDao.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
-
-//        doctorStatus = sqLite.getMasterSyncStatusByKey(Constants.DOCTOR + rsf);
-//        specialityStatus = sqLite.getMasterSyncStatusByKey(Constants.SPECIALITY);
-//        qualificationStatus = sqLite.getMasterSyncStatusByKey(Constants.QUALIFICATION);
-//        categoryStatus = sqLite.getMasterSyncStatusByKey(Constants.CATEGORY);
-//        departmentStatus = sqLite.getMasterSyncStatusByKey(Constants.DEPARTMENT);
-//        classStatus = sqLite.getMasterSyncStatusByKey(Constants.CLASS);
-//        feedbackStatus = sqLite.getMasterSyncStatusByKey(Constants.FEEDBACK);
-//        unlistedDrStatus = sqLite.getMasterSyncStatusByKey(Constants.UNLISTED_DOCTOR + rsf);
-//        chemistStatus = sqLite.getMasterSyncStatusByKey(Constants.CHEMIST + rsf);
-//        stockiestStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCKIEST + rsf);
-//        hospitalStatus = sqLite.getMasterSyncStatusByKey(Constants.HOSPITAL + rsf); //sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + rsf).length();
-//        cipStatus = sqLite.getMasterSyncStatusByKey(Constants.CIP + rsf);
-//        inputStatus = sqLite.getMasterSyncStatusByKey(Constants.INPUT);
-//        leaveStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE);
-//        leaveStatusStatus = sqLite.getMasterSyncStatusByKey(Constants.LEAVE_STATUS);
-//
-//        callSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.CALL_SYNC);
-//        myDayPlanStatus = sqLite.getMasterSyncStatusByKey(Constants.MY_DAY_PLAN);
-//        visitControlStatus = sqLite.getMasterSyncStatusByKey(Constants.VISIT_CONTROL);
-//        dateSyncStatus = sqLite.getMasterSyncStatusByKey(Constants.DATE_SYNC);
-//        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
-//        stockBalanceStatus = sqLite.getMasterSyncStatusByKey(Constants.STOCK_BALANCE_MASTER);
-//        calenderEventStaus=sqLite.getMasterSyncStatusByKey(Constants.CALENDER_EVENT_STATUS);
-//
-//
-//
-//        workTypeStatus = sqLite.getMasterSyncStatusByKey(Constants.WORK_TYPE);
-//        holidayStatus = sqLite.getMasterSyncStatusByKey(Constants.HOLIDAY);
-//        weeklyOfStatus = sqLite.getMasterSyncStatusByKey(Constants.WEEKLY_OFF);
-//        tpSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.TP_SETUP);
-//        tourPLanStatus = sqLite.getMasterSyncStatusByKey(Constants.TOUR_PLAN);
-//        productStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT);
-//        proCatStatus = sqLite.getMasterSyncStatusByKey(Constants.PRODUCT_CATEGORY);
-//        brandStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND);
-//        compProStatus = sqLite.getMasterSyncStatusByKey(Constants.COMPETITOR_PROD);
-//        mapCompPrdStatus = sqLite.getMasterSyncStatusByKey(Constants.MAPPED_COMPETITOR_PROD);
-//        clusterStatus = sqLite.getMasterSyncStatusByKey(Constants.CLUSTER + rsf);
-//        proSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.PROD_SLIDE);
-//        proSpeSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.SPL_SLIDE);
-//        brandSlideStatus = sqLite.getMasterSyncStatusByKey(Constants.BRAND_SLIDE);
-//        therapticStatus = sqLite.getMasterSyncStatusByKey(Constants.THERAPTIC_SLIDE);
-//        subordinateStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE);
-//        subMgrStatus = sqLite.getMasterSyncStatusByKey(Constants.SUBORDINATE_MGR);
-//        jWorkStatus = sqLite.getMasterSyncStatusByKey(Constants.JOINT_WORK + rsf);
-//        QuizStatus = sqLite.getMasterSyncStatusByKey(Constants.QUIZ);
-//        setupStatus = sqLite.getMasterSyncStatusByKey(Constants.SETUP);
-//        customSetupStatus = sqLite.getMasterSyncStatusByKey(Constants.CUSTOM_SETUP);
 
         binding.listedDr.setSelected(true);
         prepareArray(rsf);
@@ -856,7 +763,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, callSyncCount, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN, -1, Constants.DOCTOR, "getmydayplan", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN, -1, Constants.DOCTOR, "gettodaydcr", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
         MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, visitControlCount, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, dateSyncCount, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, -1, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
@@ -1078,15 +985,15 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     masterSyncAllModel.add(subordinateModelArray);
 
                     if (!hqChanged) {
-                        masterSyncAllModel.add(workTypeModelArray);
                         masterSyncAllModel.add(inputModelArray);
                         masterSyncAllModel.add(productModelArray);
                         masterSyncAllModel.add(leaveModelArray);
                         masterSyncAllModel.add(dcrModelArray);
+                        masterSyncAllModel.add(workTypeModelArray);
+                        masterSyncAllModel.add(tpModelArray);
                         masterSyncAllModel.add(slideModelArray);
                         masterSyncAllModel.add(otherModelArray);
                         masterSyncAllModel.add(setupModelArray);
-                        masterSyncAllModel.add(tpModelArray);
                     }
 
                     for (int i = 0; i < masterSyncAllModel.size(); i++) {
@@ -1147,19 +1054,19 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     jsonObject.put("tp_year", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_5, TimeUtils.FORMAT_10, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5)));
                     break;
                 }
-                case "getmydayplan": {
+                case "gettodaydcr": {
                     MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(this, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
                         @Override
-                        public void onComplete() {
+                        public void datesFound() {
                             try {
-                                jsonObject.put("ReqDt", SharedPref.getSelectedDateCal(MasterSyncActivity.this));
+                                jsonObject.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_1, SharedPref.getSelectedDateCal(MasterSyncActivity.this)));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
 
                         @Override
-                        public void onFailed() {
+                        public void noDatesFound() {
                             Log.e("Master Sync", "Get MyDayPlan Call and Date Sync failed!" );
                         }
                     });
@@ -1218,7 +1125,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                         jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                         success = true;
                                     } else if (jsonElement.isJsonObject()) {
-
                                         jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
                                         if (!jsonObject2.has("success")) {
                                            // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
@@ -1226,7 +1132,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                             success = true;
                                         } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
                                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1); // only update sync status and no need to overwrite previously saved data when failed
-
                                             masterSyncItemModels.get(position).setSyncSuccess(1);
                                         }
                                     }
@@ -1261,9 +1166,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 JSONArray stockBalanceArray = jsonObject1.getJSONArray("Sample_Stock");
                                                 JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0));
-
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0));
-
 
                                                 MasterDataTable stockdata =new MasterDataTable();
                                                 stockdata.setMasterKey(Constants.STOCK_BALANCE);
@@ -1298,19 +1201,15 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 SharedPref.setTpSyncStaus(MasterSyncActivity.this,true);
                                             }
                                         }
-                                        else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmydayplan")) {
+                                        else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
                                             }
-
-                                        }  else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
                                             if (jsonArray.length() > 0)
-
                                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, false);
                                         }
-                                    }else {
-
                                     }
                                 } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);
@@ -1323,7 +1222,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
 
                             } catch (JSONException e) {
-                                throw new RuntimeException(e);
+                                e.printStackTrace();
                             }
                         } else {
                             if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
@@ -1349,8 +1248,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                 finish();
                             }
                         }
-
-
                         masterSyncAdapter.notifyDataSetChanged();
                         Log.e("test", "success count : " + apiSuccessCount);
                     }
@@ -1373,7 +1270,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                             binding.backArrow.setVisibility(View.VISIBLE);
                             SharedPref.putAutomassync(getApplicationContext(), true);
                             SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
                             } else {
@@ -1447,8 +1343,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
                     holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
             }
-
-
         } catch (Exception ignored) {
 
         }
@@ -1599,7 +1493,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
     public String findTerrSlFlag(String code) {
         try {
             JSONArray workTypeArray = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
-//            JSONArray workTypeArray = sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE); //List of Work Types
             for (int i = 0; i < workTypeArray.length(); i++) {
                 JSONObject jsonObject = workTypeArray.getJSONObject(i);
                 if (code.equals(jsonObject.getString("Code")))
@@ -1647,14 +1540,12 @@ public class    MasterSyncActivity extends AppCompatActivity {
             }
 
         } catch (Exception e) {
-           throw new RuntimeException();
+            Log.v("getTp", "----error---" + e);
         }
     }
 
-
     private void SaveLocalOnlineTable(LocalDate localDate, JSONArray listArray) {
         try {
-
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
             ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
 
@@ -1669,8 +1560,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue())))
                     holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
             }
-
-
 
             JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
             ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
@@ -1762,12 +1651,10 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                         ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
                         modelClasses.add(modelClass);
-
                         saveTpLocal(modelClasses, day, monthName, "");
                     }
                 }
 
-//                sqLite.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
                 tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
@@ -1817,7 +1704,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                         ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
                         modelClasses.add(modelClass);
-
                         saveTpLocal(modelClasses, day, monthName, "");
                     }
                 }
@@ -1825,180 +1711,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         } catch (Exception ignored) {
 
         }
-
     }
-
-//    private void SaveLocalOnlineTable(LocalDate localDate, JSONArray listArray) {
-//        try {
-//            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-//            ArrayList<String> days = new ArrayList<>(daysInMonthArray(localDate));
-//
-//            String monthYear = monthYearFromDate(localDate);
-//            String monthNo = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_8, monthYear);
-//            String year = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_23, TimeUtils.FORMAT_10, monthYear);
-//            String monthName = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate));
-//            ArrayList<ModelClass> modelClasses = new ArrayList<>();
-//
-//            ArrayList<String> holidayDateArray = new ArrayList<>();
-//            for (int i = 0; i < holidayJSONArray.length(); i++) { //Getting Holiday dates from Holiday master data for the selected month
-//                if (holidayJSONArray.getJSONObject(i).getString("Holiday_month").equalsIgnoreCase(String.valueOf(localDate.getMonthValue())))
-//                    holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
-//            }
-//
-//
-//            JSONArray savedDataArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-//            ArrayList<ModelClass> modelClassLocal = new ArrayList<>();
-//            if (savedDataArray.length() > 0) { //Use the saved data if Tour Plan table has data of a selected month
-//                Type typeLocal = new TypeToken<ArrayList<ModelClass>>() {
-//                }.getType();
-//                modelClassLocal = new Gson().fromJson(savedDataArray.toString(), typeLocal);
-//            }
-//
-//            Type type = new TypeToken<ArrayList<ReceiveModel>>() {
-//            }.getType();
-//            ArrayList<ReceiveModel> arrayList = new Gson().fromJson(listArray.toString(), type);
-//
-//            if (listArray.length() > 0) {
-//                String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
-//                String status = listArray.getJSONObject(0).getString("Change_Status");
-//                tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
-//                boolean LocalWeelyHolidayFlag;
-//                for (String day : days) {
-//                    if (!day.isEmpty()) {
-//                        String date = day + " " + monthYear;
-//                        String dayName = formatter.format(new Date(date));
-//                        isDataAvailable = false;
-//
-//                        if (modelClassLocal.size() > 0) {
-//                            for (int j = 0; j < modelClassLocal.size(); j++) {
-//                                if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("0")) {
-//
-//                                    for (int i = 0; i < arrayList.size(); i++) {
-//                                        ReceiveModel receiveModel = arrayList.get(i);
-//                                        if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(receiveModel.getDayno())) {
-//                                            SaveTpLocalFull(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year);
-//                                        }
-//                                    }
-//                                } else if (modelClassLocal.get(j).getDayNo().equalsIgnoreCase(day) && modelClassLocal.get(j).getSyncStatus().equalsIgnoreCase("1")) {
-//                                    isDataAvailable = true;
-//                                    ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, modelClassLocal.get(j).getSessionList());
-//                                    modelClasses.add(modelClass);
-//                                    saveTpLocal(modelClasses, day, monthName, "1");
-//                                }
-//                            }
-//                        } else {
-//                            for (int i = 0; i < arrayList.size(); i++) {
-//                                ReceiveModel receiveModel = arrayList.get(i);
-//                                if (day.equalsIgnoreCase(receiveModel.getDayno())) {
-//                                    SaveTpLocalFull(receiveModel, modelClasses, day, monthName, date, dayName, monthNo, year);
-//                                }
-//                            }
-//                        }
-//
-//                        if (!isDataAvailable) {
-//                            ModelClass.SessionList sessionList;
-//                            sessionList = prepareSessionListForAdapterEmpty();
-//
-//                            if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
-//                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-//                                sessionLists.add(sessionList);
-//                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
-//                                modelClasses.add(modelClass);
-//                                LocalWeelyHolidayFlag =false;
-//                            }
-//                            else {
-//
-//                                Log.e("weeklyOffDays",""+weeklyOffDays.get(0).toString()+weeklyOffDays+"  "+ dayName);
-//                                if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
-//                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
-//                                    LocalWeelyHolidayFlag =true;
-//                                }
-//                                else if (holidayDateArray.contains(day)) {
-//                                    sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
-//                                    LocalWeelyHolidayFlag =true;
-//                                }else {
-//                                    LocalWeelyHolidayFlag =false;
-//                                }
-//
-//                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-//                                sessionLists.add(sessionList);
-//                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-//                                modelClasses.add(modelClass);
-//
-//                            }
-//
-//                            if(LocalWeelyHolidayFlag){
-//                                saveTpLocal(modelClasses, day, monthYear, "1");
-//                            }else {
-//                                saveTpLocal(modelClasses, day, monthYear, "0");
-//                            }
-//                        }
-//                    } else {
-//                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-//                        ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-//                        modelClasses.add(modelClass);
-//                        saveTpLocal(modelClasses, day, monthName, "");
-//                    }
-//                }
-//
-//                tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
-//
-//            } else {  //If tour plan table has no data
-//                boolean LocalWeelyHolidayFlag;
-//
-//                for (String day : days) {
-//                    if (!day.isEmpty()) {
-//                        String date = day + " " + monthYear;
-//                        String dayName = formatter.format(new Date(date));
-//                        ModelClass.SessionList sessionList = new ModelClass.SessionList();
-//                        sessionList = prepareSessionListForAdapterEmpty();
-//
-//                        if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
-//                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-//                            sessionLists.add(sessionList);
-//                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
-//                            modelClasses.add(modelClass);
-//                            LocalWeelyHolidayFlag =false;
-//                        }
-//                        else {
-//                            Log.e("weeklyOffDaysssss",""+weeklyOffDays.get(0).toString()+weeklyOffDays+"  "+ dayName);
-//                            if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
-//                                sessionList.setWorkType(weeklyOffWorkTypeModel);
-//                                LocalWeelyHolidayFlag =true;
-//                            }
-//                            else if (holidayDateArray.contains(day)) {
-//                                sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
-//                                LocalWeelyHolidayFlag =true;
-//                            }else {
-//                                LocalWeelyHolidayFlag =false;
-//                            }
-//
-//                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-//                            sessionLists.add(sessionList);
-//                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-//                            modelClasses.add(modelClass);
-//
-//                        }
-//
-//                        if(LocalWeelyHolidayFlag){
-//                            saveTpLocal(modelClasses, day, monthYear, "1");
-//                        }else {
-//                            saveTpLocal(modelClasses, day, monthYear, "0");
-//                        }
-//
-//
-//                    } else {
-//                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-//                        ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
-//                        modelClasses.add(modelClass);
-//                        saveTpLocal(modelClasses, day, monthName, "");
-//                    }
-//                }
-//            }
-//        } catch (Exception ignored) {
-//
-//        }
-//    }
 
     private void SaveTpLocalFull(ReceiveModel receiveModel, ArrayList<ModelClass> modelClasses, String day, String monthName, String date, String dayName, String monthNo, String year) {
         ModelClass.SessionList sessionList = new ModelClass.SessionList();
@@ -2157,11 +1870,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         HqName=  secondObject.getString("HQNm");
                     }
                 }
-
-
                 binding.hqName.setText(HqName);
                 rsf = Hqcode;
-
                 prepareArray(rsf);// to replace the new rsf values
                 masterSyncAll(false);
             } catch (JSONException e) {
@@ -2180,8 +1890,5 @@ public class    MasterSyncActivity extends AppCompatActivity {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
-
-
 
 }

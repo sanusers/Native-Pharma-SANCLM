@@ -52,7 +52,6 @@ public class HospitalFragment extends Fragment {
     ImageButton iv_filter;
     ImageView img_close;
     Button btn_apply;
-//    SQLite sqLite;
     JSONArray jsonArray;
     TextView tv_hqName;
     CommonUtilsMethods commonUtilsMethods;
@@ -68,7 +67,6 @@ public class HospitalFragment extends Fragment {
         iv_filter = v.findViewById(R.id.iv_filter);
         tv_hqName = v.findViewById(R.id.tv_hq_name);
         tv_hqName.setText(DcrCallTabLayoutActivity.TodayPlanSfName);
-//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -120,7 +118,6 @@ public class HospitalFragment extends Fragment {
         custListArrayList.clear();
         try {
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + DcrCallTabLayoutActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + DcrCallTabLayoutActivity.TodayPlanSfCode);
             Log.v("call", "-hos_full_length-" + jsonArray.length());
 
 

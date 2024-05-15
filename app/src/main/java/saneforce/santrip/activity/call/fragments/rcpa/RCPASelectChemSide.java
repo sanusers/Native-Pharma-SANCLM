@@ -34,12 +34,10 @@ import saneforce.santrip.databinding.FragmentSelectChemistSideBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 
-
 public class RCPASelectChemSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectChemistSideBinding selectChemistSideBinding;
     ArrayList<CustList> ChemFullList = new ArrayList<>();
-//    SQLite sqLite;
     JSONArray jsonArray;
     JSONObject jsonObject;
     ChemistAdapter CheAdapter;
@@ -52,7 +50,6 @@ public class RCPASelectChemSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectChemistSideBinding = FragmentSelectChemistSideBinding.inflate(inflater);
         View v = selectChemistSideBinding.getRoot();
-//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -88,7 +85,6 @@ public class RCPASelectChemSide extends Fragment {
         try {
             ChemFullList.clear();
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + DCRCallActivity.TodayPlanSfCode);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 ChemFullList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code")));

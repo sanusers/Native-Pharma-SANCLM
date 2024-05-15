@@ -68,7 +68,6 @@ import saneforce.santrip.databinding.ActivityPlaySlidePreviewDetailingBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 
-
 public class PlaySlideDetailing extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
@@ -91,7 +90,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
     int scribblePos;
     int val = 0;
     CommonSharedPreference mCommonSharedPreference;
-//    SQLite sqLite;
     Dialog dialogPopUp;
     String defaultTime = "00:00:00";
 
@@ -153,7 +151,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         mCommonSharedPreference = new CommonSharedPreference(this);
-//        sqLite = new SQLite(this);
         context = this;
         initialisation();
 
@@ -536,14 +533,12 @@ public class PlaySlideDetailing extends AppCompatActivity {
     public static class BottomLayoutHeadAdapter extends RecyclerView.Adapter<BottomLayoutHeadAdapter.MyViewHolder> {
         Context context;
         List<String> arrayListHead;
-//        SQLite sqLite;
         private RoomDB roomDB;
         private MasterDataDao masterDataDao;
 
         public BottomLayoutHeadAdapter(Context context, List<String> arrayListHead) {
             this.context = context;
             this.arrayListHead = arrayListHead;
-//            this.sqLite = sqLite;
             roomDB = RoomDB.getDatabase(context);
             masterDataDao = roomDB.masterDataDao();
         }
@@ -624,7 +619,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
 
         private void populateLocalSavedData(ArrayList<BrandModelClass.Presentation> savedPresentation) {
             try {
-                // ArrayList<BrandModelClass.Presentation> savedPresentation = sqLite.getPresentationData();
                 ArrayList<BrandModelClass.Product> productsList = new ArrayList<>();
                 for (int i = 0; i < savedPresentation.size(); i++) {
                     for (int j = 0; j < savedPresentation.get(i).getProducts().size(); j++) {
@@ -650,8 +644,6 @@ public class PlaySlideDetailing extends AppCompatActivity {
             ArrayList<String> brandCodeList = new ArrayList<>();
             BrandModelClass.Product product;
             try {
-//                JSONArray prodSlide = sqLite.getMasterSyncDataByKey(Constants.PROD_SLIDE);
-//                JSONArray brandSlide = sqLite.getMasterSyncDataByKey(Constants.BRAND_SLIDE);
                 JSONArray prodSlide = masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray();
                 JSONArray brandSlide = masterDataDao.getMasterDataTableOrNew(Constants.BRAND_SLIDE).getMasterSyncDataJsonArray();
 

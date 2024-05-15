@@ -36,11 +36,9 @@ import saneforce.santrip.response.SetupResponse;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 
-
 public class SpecialitySelectionSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectFbSideBinding selectSpecialitySideBinding;
-//    SQLite sqLite;
     JSONObject jsonObject;
     ArrayList<String> list_name = new ArrayList<>();
     ArrayList<String> list_code = new ArrayList<>();
@@ -55,7 +53,6 @@ public class SpecialitySelectionSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectSpecialitySideBinding = FragmentSelectFbSideBinding.inflate(inflater);
         View v = selectSpecialitySideBinding.getRoot();
-//        sqLite = new SQLite(getContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
@@ -112,7 +109,6 @@ public class SpecialitySelectionSide extends Fragment {
         try {
             JSONArray jsonArray;
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SETUP).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject setupData = jsonArray.getJSONObject(0);
                 setUpResponse = new SetupResponse();
@@ -127,7 +123,6 @@ public class SpecialitySelectionSide extends Fragment {
             }
 
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.SPECIALITY);
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 list_name.add(jsonObject.getString("Doc_Special_Name"));

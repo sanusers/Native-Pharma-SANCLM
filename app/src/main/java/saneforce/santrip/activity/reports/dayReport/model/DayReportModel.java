@@ -53,6 +53,43 @@ public class DayReportModel implements Serializable {
   private String TerrWrk="";
 
   private int Typ = -1;
+  private String Confirmed = "";
+
+  public DayReportModel(String udr, String intime, String drs, String inaddress, String halfDay_FW_Type, String outtime, String chm, String desig_Code, String SF_Code, String stk, String cip, String adate, String hos, String SF_Name, String rmdr, String rptdate, String wtype, String FWFlg, DayReportModel.Activity_Date activity_Date, String outaddress, String ACode, String remarks, String terrWrk, int typ, String confirmed) {
+    Udr = udr;
+    this.intime = intime;
+    Drs = drs;
+    this.inaddress = inaddress;
+    HalfDay_FW_Type = halfDay_FW_Type;
+    this.outtime = outtime;
+    Chm = chm;
+    Desig_Code = desig_Code;
+    this.SF_Code = SF_Code;
+    Stk = stk;
+    Cip = cip;
+    Adate = adate;
+    Hos = hos;
+    this.SF_Name = SF_Name;
+    Rmdr = rmdr;
+    this.rptdate = rptdate;
+    this.wtype = wtype;
+    this.FWFlg = FWFlg;
+    Activity_Date = activity_Date;
+    this.outaddress = outaddress;
+    this.ACode = ACode;
+    this.remarks = remarks;
+    TerrWrk = terrWrk;
+    Typ = typ;
+    Confirmed = confirmed;
+  }
+
+  public String getConfirmed() {
+    return Confirmed;
+  }
+
+  public void setConfirmed(String confirmed) {
+    Confirmed = confirmed;
+  }
 
   public String getUdr() {
     return this.Udr;

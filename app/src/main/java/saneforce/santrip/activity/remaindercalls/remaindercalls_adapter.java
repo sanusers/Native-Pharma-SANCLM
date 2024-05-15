@@ -32,7 +32,6 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
     Context context;
     ArrayList<remainder_modelclass> listeduser;
     private AlertDialog alertDialog;
-//    SQLite sqLite;
     private boolean isFirstClick = true;
     private static final long LOCK_DURATION = 5000; // Lock clicks for 2 seconds
     private Handler handler = new Handler();
@@ -42,7 +41,6 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
     public remaindercalls_adapter(Context context, ArrayList<remainder_modelclass> listeduser) {
         this.context = context;
         this.listeduser = listeduser;
-//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         callOfflineDataDao = roomDB.callOfflineDataDao();
     }
@@ -86,7 +84,6 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
                                 listeduser.get(position).getDoc_spec(), listeduser.get(position).getDoc_speccode(), listeduser.get(position).getDoc_town(), listeduser.get(position).getDoc_towncode(), "", "", "", "",
                                 "", "", "", "", "", "", "", "", "", "", ""));
 
-//                        sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"),  CommonUtilsMethods.getCurrentInstance("hh:mm aa"), listeduser.get(0).getDoc_code(), listeduser.get(0).getDoc_name(), "1");
                         callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"),  CommonUtilsMethods.getCurrentInstance("hh:mm aa"), listeduser.get(0).getDoc_code(), listeduser.get(0).getDoc_name(), "1");
 
                         intent12.putExtra("isDetailingRequired", "false");
@@ -95,7 +92,6 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
                         intent12.putExtra("hq_code", RemaindercallsActivity.REm_hq_code );
                         Log.d("REm_hq_code", RemaindercallsActivity.REm_hq_code);
                         intent12.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        sqLite.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
                         callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
                         v.getContext().startActivity(intent12);
 

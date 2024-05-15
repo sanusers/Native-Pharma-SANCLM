@@ -57,11 +57,11 @@ public class DayReportDetailFragment extends Fragment {
     DayReportModel dayReportModel;
     DataViewModel dataViewModel;
     ApiInterface apiInterface;
-//    SQLite sqLite;
 
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
+    String rcpaItem, eventCaptureItem = "";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -149,7 +149,6 @@ public class DayReportDetailFragment extends Fragment {
     }
 
     public void initialisation() {
-//        sqLite = new SQLite(getContext());
 
         Type type = new TypeToken<DayReportModel>() {
         }.getType();
@@ -190,6 +189,11 @@ public class DayReportDetailFragment extends Fragment {
             binding.hospLayout.setVisibility(View.VISIBLE);
             hosCount = Integer.parseInt(dayReportModel.getCip());
             binding.hospCount.setText(dayReportModel.getHos());
+        }
+        if ((dayReportModel.getTyp()==0 || dayReportModel.getTyp()==1) && Integer.parseInt(dayReportModel.getConfirmed())==2){
+            binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
+        }else {
+            binding.rejectionReasonLayout.setVisibility(View.GONE);
         }
 
         binding.name.setText(dayReportModel.getSF_Name());
@@ -280,26 +284,37 @@ public class DayReportDetailFragment extends Fragment {
         if (arrayList.size() > 0) binding.noReportFoundTxt.setVisibility(View.GONE);
         else binding.noReportFoundTxt.setVisibility(View.VISIBLE);
 
-
         switch (type) {
             case "1":
                 callCheckInOutNeed = SharedPref.getCustSrtNd(requireContext());
+                rcpaItem = SharedPref.getSepRcpaNd(context);
+                eventCaptureItem = SharedPref.getDeNeed(context);
                 break;
             case "2":
                 callCheckInOutNeed = SharedPref.getChmSrtNd(requireContext());
+                rcpaItem = SharedPref.getChmRcpaMd(requireContext());
+                eventCaptureItem = SharedPref.getCeNeed(requireContext());
+                break;
+            case "3":
+                rcpaItem = "1";
+                eventCaptureItem = SharedPref.getSeNeed(requireContext());
                 break;
             case "4":
+                rcpaItem = "1";
                 callCheckInOutNeed = SharedPref.getUnlistSrtNd(requireContext());
+                eventCaptureItem = SharedPref.getNeNeed(requireContext());
                 break;
             case "5":
                 callCheckInOutNeed = SharedPref.getCipSrtNd(requireContext());
                 break;
             default:
                 callCheckInOutNeed = "1";
+                rcpaItem = "1";
+                eventCaptureItem = "1";
                 break;
         }
 
-        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()),dayReportModel.getACode(),dayReportModel.getSF_Code());
+        adapter = new DayReportDetailAdapter(getContext(), arrayList, reportOf, callCheckInOutNeed, SharedPref.getNextVst(requireContext()),dayReportModel.getACode(),dayReportModel.getSF_Code(),rcpaItem,eventCaptureItem);
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }

@@ -217,7 +217,6 @@ public class Leave_Application extends AppCompatActivity {
         ltypecount.clear();
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             String days = "";
             if (jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -251,7 +250,6 @@ public class Leave_Application extends AppCompatActivity {
 
         try {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             Log.d("L-type", String.valueOf(jsonArray));
             String days = "";
             if (jsonArray.length() > 0) {
@@ -306,7 +304,6 @@ public class Leave_Application extends AppCompatActivity {
                         Lshortname = leave_type.get(i);
                         try {
                             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
-//                            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
                             for (int d = 0; d < jsonArray1.length(); d++) {
                                 JSONObject jsonobj1 = jsonArray1.getJSONObject(d);
                                 if (Ltype_id.equals(jsonobj1.getString("Leave_code"))) {
@@ -335,9 +332,6 @@ public class Leave_Application extends AppCompatActivity {
     public void leave_avalabledetails() {
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-
-//            sqLite = new SQLite(getApplicationContext());
-//            sqLite.getWritableDatabase();
 
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
@@ -518,8 +512,6 @@ public class Leave_Application extends AppCompatActivity {
             Chart_list.clear();
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE_STATUS).getMasterSyncDataJsonArray();
             JSONArray jsonArray1 = masterDataDao.getMasterDataTableOrNew(Constants.LEAVE).getMasterSyncDataJsonArray();
-//            JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.LEAVE_STATUS);
-//            JSONArray jsonArray1 = sqLite.getMasterSyncDataByKey(Constants.LEAVE);
             String lstatus = (jsonArray.get(0).toString());
             if (lstatus.equals(Constants.NO_DATA_AVAILABLE)) {
                 leavebinding.chartLayout.setVisibility(View.GONE);
@@ -568,8 +560,6 @@ public class Leave_Application extends AppCompatActivity {
             String replacedUrl = pathUrl.replaceAll("\\?.*", "/");
             Log.e("test", "login url : " + baseUrl + replacedUrl);
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), baseUrl + replacedUrl);
-//            sqLite = new SQLite(getApplicationContext());
-//            sqLite.getWritableDatabase();
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
                 navigateFrom = getIntent().getExtras().getString("Origin");

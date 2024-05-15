@@ -439,8 +439,6 @@ public class OutboxFragment extends Fragment {
             CallDataRestClass.resetcallValues(context);
 
 
-//            sqLite.saveMasterSyncData(Constants.CALL_SYNC, jsonArray.toString(), 0);
-//            sqLite.deleteLineChart(cusCode, date);
 //            switch (cusType) {
 //                case "1":
 //                    int doc_current_callcount = sqLite.getcurrentmonth_calls_count("1");

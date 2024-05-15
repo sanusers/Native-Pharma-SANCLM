@@ -44,7 +44,6 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 
-
 public class RCPASelectCompSide extends Fragment {
     public static ArrayList<RCPAAddedCompList> rcpa_comp_list;
     @SuppressLint("StaticFieldLeak")
@@ -56,7 +55,6 @@ public class RCPASelectCompSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static RCPAChemistAdapter rcpaChemistAdapter;
     CommonUtilsMethods commonUtilsMethods;
-//    SQLite sqLite;
     double getTotalValue = 0, valueRounded;
     ArrayList<Double> CompQty = new ArrayList<>();
     JSONArray jsonArray;
@@ -74,7 +72,6 @@ public class RCPASelectCompSide extends Fragment {
         View v = rcpaSideBinding.getRoot();
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
-//        sqLite = new SQLite(requireContext());
         roomDB = RoomDB.getDatabase(requireContext());
         masterDataDao = roomDB.masterDataDao();
         SetupAdapter();
@@ -207,9 +204,7 @@ public class RCPASelectCompSide extends Fragment {
             } else {
                 try {
                     if (masterDataDao.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
-//                    if (sqLite.getMasterSyncDataOfHQ(Constants.LOCAL_MAPPED_COMPETITOR_PROD)) {
                         jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.LOCAL_MAPPED_COMPETITOR_PROD).getMasterSyncDataJsonArray();
-//                        jsonArray = sqLite.getMasterSyncDataByKey(Constants.LOCAL_MAPPED_COMPETITOR_PROD);
                         jsonObject = new JSONObject();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             jsonObject = jsonArray.getJSONObject(i);
@@ -230,7 +225,6 @@ public class RCPASelectCompSide extends Fragment {
                             jsonObject.put("Our_prd_name", addCompListDummy.get(0).getPrd_name());
                             jsonObject.put("Competitor_Prd_bulk", finalCount + "#" + rcpaSideBinding.edCompPrd.getText().toString() + "~" + finalCount + "$" + rcpaSideBinding.edCompCompany.getText().toString() + "/");
                             jsonArray.put(jsonObject);
-//                            sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0);
                             masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0));
 
                             addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), String.valueOf(finalCount), rcpaSideBinding.edCompPrd.getText().toString(), String.valueOf(finalCount), addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));
@@ -261,7 +255,6 @@ public class RCPASelectCompSide extends Fragment {
                         jsonObject.put("Our_prd_name", RCPAFragment.PrdName);
                         jsonObject.put("Competitor_Prd_bulk", "-1#" + rcpaSideBinding.edCompPrd.getText().toString() + "~" + "-1" + "$" + rcpaSideBinding.edCompCompany.getText().toString() + "/");
                         jsonArray.put(jsonObject);
-//                        sqLite.saveMasterSyncData(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0);
                         masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.LOCAL_MAPPED_COMPETITOR_PROD, jsonArray.toString(), 0));
 
                         addCompList.add(new RCPAAddedCompList(addCompListDummy.get(0).getPrd_name(), addCompListDummy.get(0).getPrd_code(), addCompListDummy.get(0).getChem_names(), addCompListDummy.get(0).getChem_Code(), rcpaSideBinding.edCompCompany.getText().toString(), "-1", rcpaSideBinding.edCompPrd.getText().toString(), "-1", addCompListDummy.get(0).getRate(), false, addCompListDummy.get(0).getTotalPrdValue()));

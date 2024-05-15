@@ -47,7 +47,6 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
     ArrayList<BrandModelClass.Presentation> arrayList = new ArrayList<>();
     PopupWindow mypopupWindow;
     Menu menu;
-//    SQLite sqLite;
     String isClickedFrom;
     Intent intent;
     private RoomDB roomDB;
@@ -56,7 +55,6 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
     public PresentationAdapter(Context context, ArrayList<BrandModelClass.Presentation> arrayList, String isClickedFrom) {
         this.context = context;
         this.arrayList = arrayList;
-//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         presentationDataDao = roomDB.presentationDataDao();
         this.isClickedFrom = isClickedFrom;
@@ -153,10 +151,8 @@ public class PresentationAdapter extends RecyclerView.Adapter<PresentationAdapte
                     context.startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.menuDelete) {
                     removeAt(position);
-//                    sqLite.presentationDelete(presentation.getPresentationName());
                     presentationDataDao.deletePresentation(presentation.getPresentationName());
                     ArrayList<BrandModelClass.Presentation> savedPresentation = new ArrayList<>();
-//                    savedPresentation = sqLite.getPresentationData();
                     savedPresentation = presentationDataDao.getPresentations();
                     if (savedPresentation.size() > 0) {
                         binding.constraintNoData.setVisibility(View.GONE);

@@ -94,7 +94,6 @@ import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
-
 import saneforce.santrip.storage.SharedPref;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -115,10 +114,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Uri outputFileUri;
     ApiInterface api_interface;
     Double distanceTag;
-//    SQLite sqLite;
     LocationManager locationManager;
     GPSTrack gpsTrack;
-//    SQLiteHandler sqLiteHandler;
     ArrayList<MasterSyncItemModel> masterSyncArray = new ArrayList<>();
     String cust_name, town_code, town_name, SfName, SfType, img_url, cust_address, SfCode, DivCode, Designation, StateCode, SubDivisionCode, cust_code, filePath = "", imageName = "", taggedTime = "";
     double lat, lng, limitKm = 0.5;
@@ -197,11 +194,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapsBinding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(mapsBinding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-//        sqLiteHandler = new SQLiteHandler(this);
         gpsTrack = new GPSTrack(this);
         commonUtilsMethods = new CommonUtilsMethods(MapsActivity.this);
         commonUtilsMethods.setUpLanguage(MapsActivity.this);
-//        sqLite = new SQLite(MapsActivity.this);
         roomDB = RoomDB.getDatabase(this);
         masterDataDao = roomDB.masterDataDao();
 
@@ -415,7 +410,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (SelectedHqCode.isEmpty()) {
             try {
-//                JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE);
                 JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray();
                 for (int i = 0; i < 1; i++) {
                     JSONObject jsonHQList = jsonArray.getJSONObject(0);
@@ -864,17 +858,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                 success = true;
                                             } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
                                                 masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
                                         if (success) {
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
-//                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -886,7 +877,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
                 }
@@ -908,16 +898,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         if (CustSelected.equalsIgnoreCase("D")) {
             prepareMasterToSync(sfCode, "D");
-            //    MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Doctor", "getdoctors", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         } else if (CustSelected.equalsIgnoreCase("C")) {
             prepareMasterToSync(sfCode, "C");
-            //   MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Chemist", "getchemist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         } else if (CustSelected.equalsIgnoreCase("S")) {
             prepareMasterToSync(sfCode, "S");
-            //   MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Stockiest", "getstockist", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         } else if (CustSelected.equalsIgnoreCase("U")) {
             prepareMasterToSync(sfCode, "U");
-            // MasterSyncActivity.callList(sqLite, api_interface, getApplicationContext(), "Unlisted_Doctor", "getunlisteddr", SfCode, DivCode, sfCode, SfType, Designation, StateCode, SubDivisionCode);
         }
     }
 
@@ -1092,13 +1078,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         gpsTrack = new GPSTrack(this);
         lat = gpsTrack.getLatitude();
         lng = gpsTrack.getLongitude();
-//        sqLiteHandler.open();
 
         switch (selected) {
             case "D":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + sfCode).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("Addrs");
@@ -1122,7 +1106,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "C":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + sfCode).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -1146,7 +1129,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "S":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + sfCode).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addrs");
@@ -1170,7 +1152,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "U":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + sfCode).getMasterSyncDataJsonArray();
-//                    JSONArray jsonArray = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + sfCode);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         cust_address = jsonObject.getString("addr");

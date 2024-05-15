@@ -35,12 +35,10 @@ import saneforce.santrip.databinding.FragmentSelectProductSideBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 
-
 public class RCPASelectPrdSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentSelectProductSideBinding selectProductSideBinding;
     public static ArrayList<SaveCallProductList> PrdFullList;
-//    SQLite sqLite;
     ProductAdapter PrdAdapter;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -49,7 +47,6 @@ public class RCPASelectPrdSide extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         selectProductSideBinding = FragmentSelectProductSideBinding.inflate(inflater);
         View v = selectProductSideBinding.getRoot();
-//        sqLite = new SQLite(getContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         AddProductsData();
@@ -105,7 +102,6 @@ public class RCPASelectPrdSide extends Fragment {
         Context context;
         ArrayList<SaveCallProductList> prdList;
         JSONArray jsonArray;
-//        SQLite sqLite;
         JSONObject jsonObject;
         boolean isAvailableCompetitor;
         CommonUtilsMethods commonUtilsMethods;
@@ -129,7 +125,6 @@ public class RCPASelectPrdSide extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
-//            sqLite = new SQLite(context);
             holder.tv_name.setText(prdList.get(position).getName());
             holder.tv_name.setOnClickListener(view -> {
 
@@ -159,7 +154,6 @@ public class RCPASelectPrdSide extends Fragment {
                     }
                 } else try {
                     jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.MAPPED_COMPETITOR_PROD).getMasterSyncDataJsonArray();
-//                    jsonArray = sqLite.getMasterSyncDataByKey(Constants.MAPPED_COMPETITOR_PROD);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         if (prdList.get(holder.getBindingAdapterPosition()).getCode().equalsIgnoreCase(jsonObject.getString("Our_prd_code"))) {

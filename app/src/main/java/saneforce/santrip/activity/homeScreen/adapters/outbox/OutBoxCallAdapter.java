@@ -191,14 +191,12 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
 
                             CallDataRestClass.resetcallValues(context);
 
-                         //   sqLite.deleteLineChart(outBoxCallLists.get(position).getCusCode(), outBoxCallLists.get(position).getDates());
 
                             if (outBoxCallLists.get(position).getCusType().equalsIgnoreCase("1")) {
                                 JSONObject json = new JSONObject(outBoxCallLists.get(position).getJsonData());
                                 JSONArray jsonAdditional = json.getJSONArray("AdCuss");
                                 for (int aw = 0; aw < jsonAdditional.length(); aw++) {
                                     JSONObject jsAw = jsonAdditional.getJSONObject(aw);
-                                  //  sqLite.deleteLineChart(jsAw.getString("Code"), outBoxCallLists.get(position).getDates());
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                                         if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(outBoxCallLists.get(position).getDates()) && jsonObject.getString("CustCode").equalsIgnoreCase(jsAw.getString("Code"))) {
@@ -212,7 +210,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                     } catch (Exception ignored) {
 
                     }
-//                    if (sqLite.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
                     if (callOfflineECDataDao.isAvailableEc(outBoxCallLists.get(position).getDates(), outBoxCallLists.get(position).getCusCode())) {
                         for (int i = 0; i < listDates.size(); i++) {
                             if (listDates.get(i).getGroupName().equalsIgnoreCase(outBoxCallLists.get(position).getDates())) {
@@ -242,7 +239,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
         switch (docNameID) {
             case "1":
                 String doc_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth),"1"));
-//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("1"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", doc_current_callcount, Doctor_list.length()));
                 } else {
@@ -251,7 +247,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 break;
             case "2":
                 String che_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "2"));
-//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("2"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtDocCount.setText(String.format("%s / %d", che_current_callcount, Chemist_list.length()));
                 } else {
@@ -260,7 +255,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 break;
             case "3":
                 String stockiest_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "3"));
-//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("3"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtStockCount.setText(String.format("%s / %d", stockiest_current_callcount, Stockiest_list.length()));
                 } else {
@@ -269,7 +263,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 break;
             case "4":
                 String unlistered_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "4"));
-//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("4"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtUnlistCount.setText(String.format("%s / %d", unlistered_current_callcount, unlistered_list.length()));
                 } else {
@@ -278,7 +271,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 break;
             case "5":
                 String cip_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "5"));
-//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("5"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtCipCount.setText(String.format("%s / %d", cip_current_callcount, cip_list.length()));
                 } else {
@@ -287,7 +279,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 break;
             case "6":
                 String hos_current_callcount = String.valueOf(callTableDao.getCurrentMonthCallsCount(String.valueOf(currentMonth), "6"));
-//                String doc_current_callcount = String.valueOf(sqLite.getcurrentmonth_calls_count("6"));
                 if (sfType.equalsIgnoreCase("1")) {
                     callAnalysisBinding.txtHosCount.setText(String.format("%s / %d", hos_current_callcount, hos_list.length()));
                 } else {
@@ -313,13 +304,11 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         try {
                             JSONObject jsonSaveRes = new JSONObject(String.valueOf(response.body()));
                             if (jsonSaveRes.getString("success").equalsIgnoreCase("true") && jsonSaveRes.getString("msg").isEmpty()) {
-//                                sqLite.deleteOfflineCalls(cusCode, cusName, date);
                                 callsUtil.deleteOfflineCalls(cusCode, cusName, date);
                                 removeAt(pos);
                                 CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
                                 commonUtilsMethods.showToastMessage(context, context.getString(R.string.call_saved_successfully));
                             } else if (jsonSaveRes.getString("success").equalsIgnoreCase("false") && jsonSaveRes.getString("msg").equalsIgnoreCase("Call Already Exists")) {
-//                                sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.DUPLICATE_CALL, 1);
                                 callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.DUPLICATE_CALL, 1);
                                 outBoxCallList.setStatus(Constants.DUPLICATE_CALL);
                                 outBoxCallList.setSyncCount(5);
@@ -327,7 +316,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                             progressDialog.dismiss();
                         } catch (Exception e) {
-//                            sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(5), Constants.EXCEPTION_ERROR, 0);
                             callsUtil.updateOfflineUpdateStatusEC(date, cusCode, 5, Constants.EXCEPTION_ERROR, 0);
                             outBoxCallList.setStatus(Constants.EXCEPTION_ERROR);
                             outBoxCallList.setSyncCount(5);
@@ -340,7 +328,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
-//                    sqLite.updateOfflineUpdateStatusEC(date, cusCode, String.valueOf(syncCount + 1), Constants.CALL_FAILED, 1);
                     callsUtil.updateOfflineUpdateStatusEC(date, cusCode, syncCount + 1, Constants.CALL_FAILED, 1);
                     outBoxCallList.setStatus(Constants.CALL_FAILED);
                     outBoxCallList.setSyncCount(syncCount + 1);
@@ -361,7 +348,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             //Input
             if (SharedPref.getInputValidation(context).equalsIgnoreCase("1")) {
                 JSONArray jsonArrayInpStk = masterDataDao.getMasterDataTableOrNew(Constants.INPUT_BALANCE).getMasterSyncDataJsonArray();
-//                JSONArray jsonArrayInpStk = sqLite.getMasterSyncDataByKey(Constants.INPUT_BALANCE);
                 JSONArray jsonInput = json.getJSONArray("Inputs");
                 Log.v("input_wrk", String.valueOf(jsonInput));
                 if (jsonInput.length() > 0) {
@@ -381,7 +367,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                             }
                         }
                     }
-//                    sqLite.saveMasterSyncData(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0);
                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, jsonArrayInpStk.toString(), 0));
                 }
             }
@@ -389,7 +374,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
             //Sample
             if (SharedPref.getSampleValidation(context).equalsIgnoreCase("1")) {
                 JSONArray jsonArraySamStk = masterDataDao.getMasterDataTableOrNew(Constants.STOCK_BALANCE).getMasterSyncDataJsonArray();
-//                JSONArray jsonArraySamStk = sqLite.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
                 JSONArray jsonPrdArray = new JSONArray(json.getString("Products"));
                 Log.v("sample_wrk", String.valueOf(jsonPrdArray));
                 if (jsonPrdArray.length() > 0) {
@@ -411,7 +395,6 @@ public class OutBoxCallAdapter extends RecyclerView.Adapter<OutBoxCallAdapter.Vi
                         }
                     }
                     masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0));
-//                    sqLite.saveMasterSyncData(Constants.STOCK_BALANCE, jsonArraySamStk.toString(), 0);
                 }
             }
 

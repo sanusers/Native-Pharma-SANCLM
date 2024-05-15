@@ -53,7 +53,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
     public static CallAnalysisFagmentBinding callAnalysisBinding;
     public static String key;
     public static JSONArray Doctor_list, Chemist_list, Stockiest_list, unlistered_list, cip_list, hos_list;
-//    SQLite sqLite;
      public static Context context;
     CommonUtilsMethods commonUtilsMethods;
 
@@ -79,7 +78,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
         context = requireContext();
-//        sqLite = new SQLite(requireContext());
         db = RoomDB.getDatabase(getActivity());
         callTableDao=db.callTableDao();
         masterDataDao = db.masterDataDao();
@@ -672,13 +670,6 @@ public class CallAnalysisFragment extends Fragment implements View.OnClickListen
         callAnalysisBinding.llUnliChild.setOnClickListener(this);
         callAnalysisBinding.llHosChild.setOnClickListener(this);
         callAnalysisBinding.llCipChild.setOnClickListener(this);
-
-//        Doctor_list = sqLite.getMasterSyncDataByKey(Constants.DOCTOR + SharedPref.getHqCode(context));
-//        Chemist_list = sqLite.getMasterSyncDataByKey(Constants.CHEMIST + SharedPref.getHqCode(context));
-//        Stockiest_list = sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + SharedPref.getHqCode(context));
-//        unlistered_list = sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + SharedPref.getHqCode(context));
-//        cip_list = sqLite.getMasterSyncDataByKey(Constants.CIP + SharedPref.getHqCode(context));
-//        hos_list = sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + SharedPref.getHqCode(context));
 
         Doctor_list = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();
         Chemist_list = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(context)).getMasterSyncDataJsonArray();

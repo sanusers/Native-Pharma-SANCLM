@@ -65,7 +65,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public static ModelClass inputDataArray = new ModelClass();
     public int itemPosition;
     static Context context;
-//    SQLite sqLite;
 
     ApiInterface apiInterface;
     SessionInterface sessionInterface;
@@ -85,7 +84,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         SessionEditAdapter.inputDataArray = inputDataArray;
         this.context = context;
         this.sessionInterface = sessionInterface;
-//        sqLite = new SQLite(context);
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
         sfType=SharedPref.getSfType(context);
@@ -96,7 +94,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         try {
             JSONArray jsonArray = new JSONArray();
             jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();
-//            jsonArray = sqLite.getMasterSyncDataByKey(Constants.TP_SETUP);
             for (int i = 0; i < jsonArray.length(); i++) {
                 drNeed = jsonArray.getJSONObject(i).getString("DrNeed");
                 chemistNeed = jsonArray.getJSONObject(i).getString("ChmNeed");
@@ -434,7 +431,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                 if (!holder.fieldSelected) {
                     if (holder.workTypeArray.size() == 0) {
                         holder.workTypeArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray());
-//                        holder.workTypeArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.WORK_TYPE));
                     }
                     ArrayList<EditModelClass> filteredArray = new ArrayList<>();
                     for (int i = 0; i < holder.workTypeArray.size(); i++) {
@@ -466,7 +462,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.hqArray.size() == 0) {
                             holder.hqArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.SUBORDINATE).getMasterSyncDataJsonArray());
-//                            holder.hqArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.SUBORDINATE));
                         }
                         holder.sessionItemAdapterArray = holder.hqArray;
                         populateSessionItemAdapter(holder, false);
@@ -496,7 +491,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         if (!holder.fieldSelected) {
                             if (holder.clusterArray.size() == 0) {
                                 holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + holder.selectedHq).getMasterSyncDataJsonArray());
-//                                holder.clusterArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + holder.selectedHq));
                                 TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                             } else {
                                 setSelectedCount(holder, holder.clusterArray, false, holder.clusterField, holder.clusterCount);
@@ -532,7 +526,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.jointCallArray.size() == 0) {
                             holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + holder.selectedHq).getMasterSyncDataJsonArray());
-//                            holder.jointCallArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.jointCallArray, false, holder.jcField, holder.jcCount);
@@ -568,7 +561,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.listedDrArray.size() == 0) {
                             holder.listedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
-//                            holder.listedDrArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.DOCTOR + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.listedDrArray, false, holder.drField, holder.drCount);
@@ -604,7 +596,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.chemistArray.size() == 0) {
                             holder.chemistArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + holder.selectedHq).getMasterSyncDataJsonArray());
-//                            holder.chemistArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.chemistArray, false, holder.chemistField, holder.chemistCount);
@@ -640,7 +631,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.stockiestArray.size() == 0) {
                             holder.stockiestArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.STOCKIEST + holder.selectedHq).getMasterSyncDataJsonArray());
-//                            holder.stockiestArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.stockiestArray, false, holder.stockiestField, holder.stockiestCount);
@@ -676,7 +666,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.unListedDrArray.size() == 0) {
                             holder.unListedDrArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.UNLISTED_DOCTOR + holder.selectedHq).getMasterSyncDataJsonArray());
-//                            holder.unListedDrArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.unListedDrArray, false, holder.unListedDrField, holder.unListedDrCount);
@@ -712,7 +701,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.cipArray.size() == 0) {
                             holder.cipArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CIP + holder.selectedHq).getMasterSyncDataJsonArray());
-//                            holder.cipArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CIP + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.cipArray, false, holder.cipField, holder.cipCount);
@@ -747,7 +735,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                     if (!holder.fieldSelected) {
                         if (holder.hospArray.size() == 0) {
                             holder.hospArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + holder.selectedHq).getMasterSyncDataJsonArray());
-//                            holder.hospArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + holder.selectedHq));
                             TourPlanActivity.clrSaveBtnLayout.setVisibility(View.VISIBLE);
                         } else {
                             setSelectedCount(holder, holder.hospArray, false, holder.hospField, holder.hospCount);
@@ -1006,18 +993,8 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     public void getDataFromLocal(MyViewHolder holder, String hqCode) {
 
         if (!masterDataDao.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)) {
-//        if (!sqLite.getMasterSyncDataOfHQ(Constants.CLUSTER + hqCode)) {
             prepareMasterToSync(hqCode);
         }
-
-//        holder.clusterArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CLUSTER + hqCode));
-//        holder.jointCallArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.JOINT_WORK + hqCode));
-//        holder.listedDrArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.DOCTOR + hqCode));
-//        holder.chemistArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CHEMIST + hqCode));
-//        holder.stockiestArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.STOCKIEST + hqCode));
-//        holder.unListedDrArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.UNLISTED_DOCTOR + hqCode));
-//        holder.cipArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.CIP + hqCode));
-//        holder.hospArray = convertJSONToModel(sqLite.getMasterSyncDataByKey(Constants.HOSPITAL + hqCode));
 
         holder.clusterArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + hqCode).getMasterSyncDataJsonArray());
         holder.jointCallArray = convertJSONToModel(masterDataDao.getMasterDataTableOrNew(Constants.JOINT_WORK + hqCode).getMasterSyncDataJsonArray());
@@ -1125,17 +1102,14 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                                                 success = true;
                                             } else if (jsonObject1.has("success") && !jsonObject1.getBoolean("success")) {
                                                 masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                                sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                             }
                                         }
 
                                         if (success) {
                                             masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0));
-//                                            sqLite.saveMasterSyncData(masterSyncItemModel.getLocalTableKeyName(), jsonArray.toString(), 0);
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                                        sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -1147,7 +1121,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
                             Log.e("test", "failed : " + t);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-//                            sqLite.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
                         }
                     });
                 }
@@ -1594,7 +1567,6 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         public LinearLayout sessionDelete, workTypeLayout, hqLayout, clusterLayout, jcLayout, drLayout, chemistLayout, stockiestLayout, unListedDrLayout, cipLayout, hospLayout, remarksLayout;
         public ImageView workTypeArrow, hqArrow, clusterArrow, jcArrow, drArrow, chemistArrow, stockiestArrow, unListedDrArrow, cipArrow, hospArrow;
         public ModelClass.SessionList sessionData = new ModelClass.SessionList();
-        // Data from sqLite storage
         public ArrayList<EditModelClass> workTypeArray = new ArrayList<>();
         public ArrayList<EditModelClass> hqArray = new ArrayList<>();
         public ArrayList<EditModelClass> clusterArray = new ArrayList<>();

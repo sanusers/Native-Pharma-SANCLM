@@ -43,7 +43,6 @@ import saneforce.santrip.activity.call.pojo.input.SaveCallInputList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.databinding.FragmentAddCallDetailsSideBinding;
 
-
 public class AdditionalCallDetailedSide extends Fragment {
     @SuppressLint("StaticFieldLeak")
     public static FragmentAddCallDetailsSideBinding callDetailsSideBinding;
@@ -59,7 +58,6 @@ public class AdditionalCallDetailedSide extends Fragment {
     FinalAdditionalCallAdapter finalAdditionalCallAdapter;
     FinalInputCallAdapter finalInputCallAdapter;
     FinalProductCallAdapter finalProductCallAdapter;
-//    SQLite sqLite;
     int lastPos;
 
     @SuppressLint("NotifyDataSetChanged")
@@ -69,7 +67,6 @@ public class AdditionalCallDetailedSide extends Fragment {
         callDetailsSideBinding = FragmentAddCallDetailsSideBinding.inflate(getLayoutInflater());
         View v = callDetailsSideBinding.getRoot();
 
-//        sqLite = new SQLite(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
 
@@ -166,9 +163,27 @@ public class AdditionalCallDetailedSide extends Fragment {
             assert tab != null;
             tab.select();
             if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("New")) {
+                if (!addInputAdditionalCallArrayList.isEmpty()) {
+                    for (int i = 0; i<addInputAdditionalCallArrayList.size(); i++) {
+                        if(addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
+                            commonUtilsMethods.showToastMessage(requireContext(), "Qty cannot be empty!");
+                            callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
+                            return;
+                        }
+                    }
+                }
                 AddSampleInputData();
 
             } else if (FinalAdditionalCallAdapter.New_Edit.equalsIgnoreCase("Edit")) {
+                if(!addInputAdditionalCallArrayList.isEmpty()) {
+                    for (int i = 0; i<addInputAdditionalCallArrayList.size(); i++) {
+                        if(addInputAdditionalCallArrayList.get(i).getInp_qty().isEmpty()) {
+                            commonUtilsMethods.showToastMessage(requireContext(), "Qty cannot be empty!");
+                            callDetailsSideBinding.tabLayout.selectTab(callDetailsSideBinding.tabLayout.getTabAt(1));
+                            return;
+                        }
+                    }
+                }
                 for (int j = 0; j < FinalAdditionalCallAdapter.nestedInput.size(); j++) {
                     if (FinalAdditionalCallAdapter.nestedInput.get(j).getCust_code().equalsIgnoreCase(FinalAdditionalCallAdapter.Selected_code)) {
                         FinalAdditionalCallAdapter.nestedInput.remove(j);
