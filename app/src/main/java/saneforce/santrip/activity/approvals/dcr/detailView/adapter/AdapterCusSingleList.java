@@ -3,6 +3,7 @@ package saneforce.santrip.activity.approvals.dcr.detailView.adapter;
 import static saneforce.santrip.activity.approvals.dcr.detailView.DcrDetailViewActivity.dcrDetailViewBinding;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -70,6 +71,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     OnItemClickListenerApproval listenerApproval;
     ProgressDialog progressDialog;
     ApiInterface apiInterface;
+
 
     public AdapterCusSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames, OnItemClickListenerApproval listenerApproval) {
         this.context = context;
@@ -291,7 +293,6 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
 
     public  void Rcpagetdata(RecyclerView recyclerView , LinearLayout layout,int position){
-
 
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {

@@ -1092,6 +1092,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             double lng = gpsTrack.getLongitude();
             CommonUtilsMethods.gettingAddress(HomeDashBoard.this, Double.parseDouble(String.valueOf(lat)), Double.parseDouble(String.valueOf(lng)), true);
             binding.myDrawerLayout.closeDrawer(GravityCompat.START);
+            if (CommonUtilsMethods.isLocationFounded){
+                binding.imgLocation.setImageResource(R.drawable.location_img);
+                binding.tvLdot.setVisibility(View.VISIBLE);
+            }else{
+                binding.imgLocation.setImageResource(R.drawable.locationget_img);
+                binding.tvLdot.setVisibility(View.GONE);
+            }
         }
 
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.presentation))) {
@@ -1626,6 +1633,9 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             binding.tvLdot.setVisibility(View.VISIBLE);
+            binding.imgLocation.setImageResource(R.drawable.location_img);
+        }else{
+            binding.imgLocation.setImageResource(R.drawable.locationget_img);
         }
         if (SharedPref.getGeotagNeed(this).equalsIgnoreCase("1")) {
             binding.tvDdot.setVisibility(View.VISIBLE);

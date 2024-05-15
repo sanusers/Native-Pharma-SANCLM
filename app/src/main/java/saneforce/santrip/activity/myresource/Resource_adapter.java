@@ -128,7 +128,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     Log.e("dcr_doctorTown_Name", Town_Name);
 
                                     listresource.add(new Resourcemodel_class(docval, custom_name, cluster, category, CategoryCode, "Rx", SpecialtyCode, specialty, Lat, Long, docval, MyResource_Activity.Key, Qual,
-                                            Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D"));
+                                            Addrs, DOB, DOW, Mobile, Phone, DrEmail, ListedDr_Sex, Town_Code, Town_Name, "D","","",""));
 
 
                                 }
@@ -161,7 +161,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
 
                                     listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, chmval,
-                                            MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C"));
+                                            MyResource_Activity.Key, "", addrs, "", "", Chemists_Mobile, Chemists_Phone, Chemists_Email, "", "", cluster, "C","","",""));
 
                                 }
                             }
@@ -193,7 +193,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 
 
                                     listresource.add(new Resourcemodel_class(Code, custom_name, cluster, "", "", "", "", "", Lat, Long, strck_val,
-                                            MyResource_Activity.Key, "", Addr, "", "", Stockiest_Mobile, Stockiest_Phone, Stockiest_Email, "", "", "", "S"));
+                                            MyResource_Activity.Key, "", Addr, "", "", Stockiest_Mobile, Stockiest_Phone, Stockiest_Email, "", "", "", "S","","",""));
 
 
                                 }
@@ -234,7 +234,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String addr = (jsonObject.getString("addr"));
 
                                     listresource.add(new Resourcemodel_class(Code, custom_name, cluster, category, Category, "", Specialty, specialty, Lat, Long, unlist_val,
-                                            MyResource_Activity.Key, Qual, addr, "", "", Mobile, Phone, Email, "", "", cluster, "U"));
+                                            MyResource_Activity.Key, Qual, addr, "", "", Mobile, Phone, Email, "", "", cluster, "U","","",""));
                                 }
                             }
                         }
@@ -270,7 +270,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String[] Toval = to_date.split(" ");
 
                                     listresource.add(new Resourcemodel_class("",custom_name, "", "", "", "","", "", Frm_val[0], Toval[0],
-                                            "", "", "","","","","","","","","","",""));
+                                            "", "", "","","","","","","","","","","","","",""));
 
                                     Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "11");
                                     appRecyclerView.setAdapter(appAdapter3);
@@ -297,7 +297,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                     String product_type = (jsonObject.getString("Product_Mode"));
 
                                     listresource.add(new Resourcemodel_class("", custom_name, "", product_type, "", "", "", "", "", "",
-                                            "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                            "", "", "", "", "", "", "", "", "", "", "", "", "","","",""));
                                 }
                             }
                         }
@@ -316,7 +316,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
 //                                culst_val = jsonObject.getString("Code");
                                     String custom_name = (jsonObject.getString("Name"));
                                     listresource.add(new Resourcemodel_class("", custom_name, "", "", "", "", "", "", "", "",
-                                            "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                                            "", "", "", "", "", "", "", "", "", "", "", "", "","","",""));
                                 }
                             }
                         }
@@ -355,7 +355,7 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                                             Log.d("doc_list", result);
 
                                             listresource.add(new Resourcemodel_class("", custom_name, custom_id, town_name, "", Vist_Date, "", Dcr_count, listed, "",
-                                                    max_vistcount, "", "", "", "", "", "", "", "", "", "", "", ""));
+                                                    max_vistcount, "", "", "", "", "", "", "", "", "", "", "", "","","",""));
 
 
                                         }
@@ -391,6 +391,32 @@ public class Resource_adapter extends RecyclerView.Adapter<Resource_adapter.View
                         MyResource_Activity.binding.layoutScrn.closeDrawer(Gravity.END);
                         MyResource_Activity.binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
+                        break;
+                    case ("14") :
+                        MyResource_Activity.Key = masterDataDao.getDataByKey(Constants.WORK_TYPE);
+                        JSONArray jsonWorkType = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray();
+                        String workType_al = "";
+                        String TPDCR = "";
+                        Valcount = "1";
+                        if (jsonWorkType.length()>0){
+                            for (int bean = 0;bean<jsonWorkType.length();bean++){
+                                JSONObject jsonObject = jsonWorkType.getJSONObject(bean);
+                                String workType = jsonObject.getString("Name");
+                                String tpDcr = jsonObject.getString("TP_DCR");
+                                if (tpDcr.equals("T")){
+                                    TPDCR = "TP";
+                                }else {
+                                    TPDCR = "TP , DCR";
+                                }
+                                System.out.println("jsonObjectWorkType--->"+jsonObject);
+                                listresource.add(new Resourcemodel_class("","", "", "", "", "","", "", "", "",
+                                        "", "", "","","","","","","","","","","",workType,TPDCR,"workType"));
+                                Res_sidescreenAdapter appAdapter3 = new Res_sidescreenAdapter(context, listresource, "");
+                                appRecyclerView.setAdapter(appAdapter3);
+                                appRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                appAdapter3.notifyDataSetChanged();
+                            }
+                        }
                         break;
 
                     default:

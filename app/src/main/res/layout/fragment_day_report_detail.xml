@@ -77,11 +77,11 @@
             android:padding="@dimen/_5sdp">
 
             <ImageView
-                android:layout_width="@dimen/_8sdp"
+                android:layout_width="@dimen/_10sdp"
                 android:layout_height="@dimen/_8sdp"
                 android:layout_gravity="center"
                 android:scaleType="centerInside"
-                android:src="@drawable/report_sort_icon"
+                android:src="@drawable/search_logo"
                 app:tint="@color/white" />
 
         </LinearLayout>

@@ -3,6 +3,7 @@ package saneforce.santrip.activity.reports.dayReport.adapter;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -69,7 +70,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     CommonUtilsMethods commonUtilsMethods;
     ProductAdapter productAdapter;
     InputAdapter inputAdapter;
-    boolean checkInOutNeed, VisitNeed;
+    boolean checkInOutNeed, VisitNeed,isRcpaRequested,isCaptureRequested;
     ArrayList productPromoted = new ArrayList();
     private ValueFilter valueFilter;
     ArrayList<EventCaptureModelClass> EventCaptureData = new ArrayList<>();
@@ -82,8 +83,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
     String ReportingSfCode;
     ArrayList<SlideRatingDetalisModelClass> callDetailingLists=new ArrayList<>();
 
-
-    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode) {
+    public DayReportDetailAdapter(Context context, ArrayList<DayReportDetailModel> arrayList, String reportOf, String callCheckInOutNeed, String nextVst,String ActCode,String ReportingSfCode,String rcpaItem,String eventCaptureItem) {
         this.context = context;
         this.arrayList = arrayList;
         this.supportModelArray = arrayList;
@@ -93,6 +93,8 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         commonUtilsMethods = new CommonUtilsMethods(context);
         checkInOutNeed = callCheckInOutNeed.equalsIgnoreCase("0");
         VisitNeed = nextVst.equalsIgnoreCase("0");
+        isRcpaRequested = rcpaItem.equals("0");
+        isCaptureRequested = eventCaptureItem.equals("0");
     }
 
     @NonNull
@@ -120,15 +122,22 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
         if (checkInOutNeed) {
             holder.checkInOutLayout.setVisibility(View.VISIBLE);
         }
+        if (isRcpaRequested){
+            holder.rcpaLayoutitle.setVisibility(View.VISIBLE);
+        }
+        if (isCaptureRequested){
+            holder.EventLayout.setVisibility(View.VISIBLE);
+        }
 
-        if (VisitNeed) {
+       /* if (VisitNeed) {
             holder.viewNextVisit.setVisibility(View.VISIBLE);
             holder.rlNextVisit.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         switch (reportOf) {
             case Constants.DOCTOR: {
                 holder.nameIcon.setImageDrawable(context.getDrawable(R.drawable.tp_dr_icon));
+
                 break;
             }
             case Constants.CHEMIST: {
@@ -158,6 +167,7 @@ public class DayReportDetailAdapter extends RecyclerView.Adapter<DayReportDetail
                 holder.viewMoreTxt.setText(R.string.view_more);
                 holder.viewMoreArrow.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
                 holder.expandLayout.setVisibility(View.GONE);
+
             } else {
                 if (!dataModel.getProducts().isEmpty()) {
                     holder.rvPrd.setVisibility(View.VISIBLE);

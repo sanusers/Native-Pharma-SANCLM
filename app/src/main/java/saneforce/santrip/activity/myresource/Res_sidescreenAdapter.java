@@ -189,6 +189,14 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
                     holder.Res_rx.setText("To: "+TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_6, app_adapt.getLongtitude()));
                 }
             }
+            //workType
+            if (app_adapt.getType().equals("workType")){
+                holder.Res_Name.setText(app_adapt.getWorkType());
+                holder.Res_Table1.setVisibility(View.VISIBLE);
+                holder.Res_category.setVisibility(View.VISIBLE);
+                holder.Res_category.setText(app_adapt.getTP_DCR());
+            }
+
             holder.listcount.setText(count + " )");
 
             holder.Res_Edit.setOnClickListener(view -> {

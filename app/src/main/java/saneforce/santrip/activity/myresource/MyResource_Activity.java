@@ -295,17 +295,18 @@ public class MyResource_Activity extends AppCompatActivity {
             }
 
 
-             input_count = String.valueOf(inputcount.size());
+            input_count = String.valueOf(inputcount.size());
             product_count = String.valueOf(productcount.size());
-
             listed_data.add(new Resourcemodel_class("Input", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.INPUT).getMasterSyncDataJsonArray().length()), "7"));
             listed_data.add(new Resourcemodel_class("Product", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.PRODUCT).getMasterSyncDataJsonArray().length()), "8"));
-            listed_data.add(new Resourcemodel_class("Cluster", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray().length()), "9"));
-            listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
+            if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0")) {
+                listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
+            }
+            listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", "", "11"));
             listed_data.add(new Resourcemodel_class("Calls Status", "", "12"));
             listed_data.add(new Resourcemodel_class("Category", "", "13"));
-
+            listed_data.add(new Resourcemodel_class("WorkType", String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray().length()), "14"));
             Log.d("counts_data", Doc_count + "--" + Che_count + "--" + Strck_count + "--" + Unlist_count + "---" + Cip_count + "--" + Hosp_count);
 
             resourceAdapter = new Resource_adapter(MyResource_Activity.this, listed_data, synhqval1);//13
@@ -313,6 +314,7 @@ public class MyResource_Activity extends AppCompatActivity {
             binding.resourceId.setLayoutManager(new GridLayoutManager(MyResource_Activity.this, 4, GridLayoutManager.VERTICAL, false));
             binding.resourceId.setAdapter(resourceAdapter);
             resourceAdapter.notifyDataSetChanged();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -393,7 +395,7 @@ public class MyResource_Activity extends AppCompatActivity {
                             dup_hq = jsonObject.getString("id");
 
                             listresource.add(new Resourcemodel_class(jsonObject.getString("id"), jsonObject.getString("name"), "", "", "", "", "", "", "", "", "", "", "",
-                                    "", "", "", "", "", "", "", "", "", ""));
+                                    "", "", "", "", "", "", "", "", "", "","","",""));
                         }
                     }
 
@@ -421,7 +423,7 @@ public class MyResource_Activity extends AppCompatActivity {
     private void filter(String text) {
         ArrayList<Resourcemodel_class> filterdNames = new ArrayList<>();
         for (Resourcemodel_class s : listresource) {
-            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
+            if (s.getDcr_name().toLowerCase().contains(text.toLowerCase()) || s.getRes_custname().toLowerCase().contains(text.toLowerCase()) || s.getRes_Specialty().toLowerCase().contains(text.toLowerCase()) || s.getRes_Category().toLowerCase().contains(text.toLowerCase()) ||s.getWorkType().toLowerCase().contains(text.toLowerCase())) {//getRes_Category
                 filterdNames.add(s);
             }
         }

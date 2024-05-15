@@ -53,6 +53,7 @@ import saneforce.santrip.utility.LocaleHelper;
 public class CommonUtilsMethods {
     Context context;
     Activity activity;
+    public static boolean isLocationFounded = false;
 
     public CommonUtilsMethods(Activity activity) {
         this.activity = activity;
@@ -65,6 +66,7 @@ public class CommonUtilsMethods {
 
 
     public static String gettingAddress(Activity activity, double la, double ln, boolean toastMsg) {
+
         Geocoder geocoder;
         List<Address> addresses;
         String address = "No Address Found";
@@ -88,12 +90,12 @@ public class CommonUtilsMethods {
                 View layout = inflater.inflate(R.layout.toast_layout, activity.findViewById(R.id.toast_layout_root));
                 TextView text = layout.findViewById(R.id.text);
                 text.setText("Location Captured:" + address);
-
                 Toast toast = new Toast(activity);
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
+                isLocationFounded= true;
                /* Toast toast = Toast.makeText(activity, "Location Captured:" + address, Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
                 toast.show();*/
@@ -112,6 +114,8 @@ public class CommonUtilsMethods {
                 toast.setDuration(Toast.LENGTH_LONG);
                 toast.setView(layout);
                 toast.show();
+                isLocationFounded= false;
+
                /* Toast toast = Toast.makeText(activity, address + " Try Again!", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
                 toast.show();*/

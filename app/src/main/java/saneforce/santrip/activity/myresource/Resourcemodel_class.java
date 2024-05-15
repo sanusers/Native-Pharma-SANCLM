@@ -7,7 +7,7 @@ public class Resourcemodel_class {
     String Dcr_code, Dcr_name, Res_custname, Res_Category, Res_rx, Res_Specialty, Latitude, Longtitude, Res_id, Custoum_name, val_pos, Res_Qualifiey, Res_adds, Res_Dob, Res_Dow, Res_mob,
             Res_phn, Res_Email, Res_listeddoc_sex, Res_Categorycode, Res_Specialtycode, Town_code, Town_name,Pos_name;
 
-    String cust_name, visit_date, max_count, cust_id, custcode;
+    String cust_name, visit_date, max_count, cust_id, custcode,workType,TP_DCR,type;
     int visit_count;
 
     public Resourcemodel_class(String listed_data, String listed_count, String val_pos) {
@@ -25,8 +25,32 @@ public class Resourcemodel_class {
     }
 
 
+    public String getWorkType() {
+        return workType;
+    }
+
+    public void setWorkType(String workType) {
+        this.workType = workType;
+    }
+
+    public String getTP_DCR() {
+        return TP_DCR;
+    }
+
+    public void setTP_DCR(String TP_DCR) {
+        this.TP_DCR = TP_DCR;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Resourcemodel_class(String dcr_code, String dcr_name, String res_custname, String res_Category, String res_Categorycode, String res_rx, String res_Specialtycode, String res_Specialty, String Latitude, String Longtitude, String Res_id,
-                               String Custoum_name, String res_Qualifiey, String Res_adds, String Res_Dob, String Res_Dow, String Res_mob, String Res_phn, String Res_Email, String Res_listeddoc_sex,String Town_code,String Town_name,String Pos_name) {
+                               String Custoum_name, String res_Qualifiey, String Res_adds, String Res_Dob, String Res_Dow, String Res_mob, String Res_phn, String Res_Email, String Res_listeddoc_sex, String Town_code, String Town_name, String Pos_name, String workType, String TP_DCR, String type) {
         Dcr_code = dcr_code;
         Dcr_name = dcr_name;
         Res_custname = res_custname;
@@ -50,6 +74,9 @@ public class Resourcemodel_class {
         this.Town_code = Town_code;
         this.Town_name = Town_name;
         this.Pos_name = Pos_name;
+        this.workType = workType;
+        this.TP_DCR = TP_DCR;
+        this.type = type;
 
     }
 
