@@ -199,6 +199,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+
+        getLocalData();
 //        if (!SharedPref.getCheckDateTodayPlan(requireContext()).equalsIgnoreCase(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))) {
 //            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.MY_DAY_PLAN, "[]", 0));
         if(toSync) {
@@ -214,10 +216,6 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 //        } else {
 //            setUpMyDayplan();
 //        }
-
-        getLocalData();
-
-
         return view;
     }
 
