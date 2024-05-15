@@ -40,6 +40,7 @@ import saneforce.santrip.storage.SharedPref;
 public class AdapterCallCaptureImage extends RecyclerView.Adapter<AdapterCallCaptureImage.ViewHolder> {
     Context context;
     ArrayList<CallCaptureImageList> callCaptureImageLists;
+//    SQLite sqLite;
     private RoomDB roomDB;
     private CallOfflineECDataDao callOfflineECDataDao;
 

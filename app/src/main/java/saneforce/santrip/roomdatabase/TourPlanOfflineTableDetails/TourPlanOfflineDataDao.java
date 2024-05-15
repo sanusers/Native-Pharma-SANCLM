@@ -35,7 +35,7 @@ public interface TourPlanOfflineDataDao {
 
 
 
-    @Query("SELECT tp_month_synced FROM tour_plan_offline_table WHERE tp_month = :month")
+    @Query("SELECT COALESCE(tp_month_synced, '') FROM tour_plan_offline_table WHERE tp_month = :month")
     String getApprovalStatusByMonth(String month);
 
 

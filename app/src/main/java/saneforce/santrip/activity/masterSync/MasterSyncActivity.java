@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -48,6 +49,7 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
+import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -133,6 +135,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
 
 
+
+
+    public    String isFrom="",SFTP_Date_sp="",SFTP_Date="";
+    public   int JoningDate,JoiningMonth, JoinYear;
+
+
+
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
         return new ModelClass.SessionList("", true, remarks, workType, hq, clusterArray, jcArray, drArray, chemistArray, stockArray, unListedDrArray, cipArray, hospArray);
     }
@@ -159,6 +168,22 @@ public class    MasterSyncActivity extends AppCompatActivity {
         tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = db.tourPlanOnlineDataDao();
 
+        try {
+            SFTP_Date_sp = SharedPref.getSftpDate(MasterSyncActivity.this);
+            JSONObject obj = new JSONObject(SFTP_Date_sp);
+            SFTP_Date = obj.getString("date");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        JoningDate=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_7,SFTP_Date));
+        JoiningMonth=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_8,SFTP_Date));
+        JoinYear=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_10,SFTP_Date));
+
+
+
+
         //Initializing all the data array
         uiInitialization();
         arrayForAdapter.clear();
@@ -167,7 +192,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
         if (navigateFrom.equalsIgnoreCase("Login")) {
             binding.backArrow.setVisibility(View.GONE);
-            if (SharedPref.getSfType(this).equalsIgnoreCase("2")) { //MGR
+            if (!SharedPref.getDesig(this).equalsIgnoreCase("MR")) { //MGR
                 mgrInitialSync = true;
                 if (UtilityClass.isNetworkAvailable(MasterSyncActivity.this)) {
                    /// sync(Constants.SUBORDINATE, "getsubordinate", subordinateModelArray, 0);
@@ -1090,6 +1115,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
                         boolean success = false;
                         JSONArray jsonArray = new JSONArray();
+                        JSONObject jsonObject2=new JSONObject();
                         if (response.isSuccessful()) {
                             Log.e("test", "response : " + masterOf + " -- " + remoteTableName + " : " + response.body().toString());
                             try {
@@ -1099,8 +1125,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                         jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
                                         success = true;
                                     } else if (jsonElement.isJsonObject()) {
-                                        JSONObject jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
-                                        if (!jsonObject2.has("success")) { // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
+                                        jsonObject2 = new JSONObject(jsonElement.getAsJsonObject().toString());
+                                        if (!jsonObject2.has("success")) {
+                                           // response as jsonObject with {"success" : "fail" } will be received only when there are unformed object passed or there are no data in back end.
                                             jsonArray.put(jsonObject2);
                                             success = true;
                                         } else if (jsonObject2.has("success") && !jsonObject2.getBoolean("success")) {
@@ -1110,7 +1137,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                     }
 
                                     if (success) {
-
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(0);
 
@@ -1166,7 +1192,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 }
 
                                             }
-                                        } else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
+                                        }
+                                        else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
+                                            SaveTourPlan(jsonArray.getJSONObject(0));
+                                        }
+                                        else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
@@ -1179,12 +1209,20 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                 } else {
                                     masterSyncItemModels.get(position).setSyncSuccess(1);
                                     masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
-                                }
+                                    if (navigateFrom.equalsIgnoreCase("Login")) {
+                                        masterSyncAll(false);
+                                        }
+                                    }
+
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         } else {
+                            if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
+                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
+                            }
                             masterSyncItemModels.get(position).setSyncSuccess(1);
                             masterDataDao.saveMasterSyncStatus(masterSyncItemModels.get(position).getLocalTableKeyName(), 1);
                         }
@@ -1192,7 +1230,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         // when all the masters are synced and intent from Login Activity
                         if (apiSuccessCount >= itemCount && navigateFrom.equalsIgnoreCase("Login")) {
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) {
-                                // If product slide quantity is 0 then no need to display a dialog of Downloader
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
@@ -1213,6 +1250,10 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+
+                        if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
+                            SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
+                        }
                         Log.e("test", "failed : " + t);
                         ++apiSuccessCount;
                         Log.e("test", "success count at error : " + apiSuccessCount);
@@ -1301,6 +1342,75 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
         }
     }
+
+
+
+    public void uiInitialization1() {
+        localDate = LocalDate.now();
+        try {
+            holidayJSONArray = masterDataDao.getMasterDataTableOrNew(Constants.HOLIDAY).getMasterSyncDataJsonArray(); //Holiday data
+            JSONArray weeklyOff = masterDataDao.getMasterDataTableOrNew(Constants.WEEKLY_OFF).getMasterSyncDataJsonArray(); // Weekly Off data
+
+            for (int i = 0; i < weeklyOff.length(); i++) {
+                JSONObject jsonObject = weeklyOff.getJSONObject(i);
+                holidayMode = jsonObject.getString("Holiday_Mode");
+                weeklyOffCaption = jsonObject.getString("WTname");
+            }
+            String[] holidayModeArray = holidayMode.split(",");
+            weeklyOffDays = new ArrayList<>();
+            for (String str : holidayModeArray) {
+                switch (str) {
+                    case "0": {
+                        weeklyOffDays.add("Sunday");
+                        break;
+                    }
+                    case "1": {
+                        weeklyOffDays.add("Monday");
+                        break;
+                    }
+                    case "2": {
+                        weeklyOffDays.add("Tuesday");
+                        break;
+                    }
+                    case "3": {
+                        weeklyOffDays.add("Wednesday");
+                        break;
+                    }
+                    case "4": {
+                        weeklyOffDays.add("Thursday");
+                        break;
+                    }
+                    case "5": {
+                        weeklyOffDays.add("Friday");
+                        break;
+                    }
+                    case "6": {
+                        weeklyOffDays.add("Saturday");
+                        break;
+                    }
+                }
+            }
+
+
+
+            JSONArray workTypeArray1 = masterDataDao.getMasterDataTableOrNew(Constants.WORK_TYPE).getMasterSyncDataJsonArray(); //List of Work Types
+            for (int i = 0; i < workTypeArray1.length(); i++) {
+                JSONObject jsonObject = workTypeArray1.getJSONObject(i);
+                if (jsonObject.getString("Name").equalsIgnoreCase("Weekly Off"))
+                    weeklyOffWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
+                else if (jsonObject.getString("Name").equalsIgnoreCase("Holiday"))
+                    holidayWorkTypeModel = new ModelClass.SessionList.WorkType(jsonObject.getString("FWFlg"), jsonObject.getString("Name"), jsonObject.getString("TerrSlFlg"), jsonObject.getString("Code"));
+            }
+
+            Log.e("weeklyOffWorkTypeModel",""+weeklyOffWorkTypeModel.getName());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     private String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = null;
@@ -1405,6 +1515,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
     }
 
     private void SaveTourPlan(JSONObject jsonObject1) {
+
+        uiInitialization1();
         try {
             localDate = LocalDate.now();
             if (jsonObject1.has("previous")) {
@@ -1460,6 +1572,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 String rejectionReason = listArray.getJSONObject(0).getString("Rejection_Reason");
                 String status = listArray.getJSONObject(0).getString("Change_Status");
                 tourPlanOnlineDataDao.saveTpData(new TourPlanOnlineDataTable(monthName, listArray.toString(), status, rejectionReason));
+                boolean LocalWeelyHolidayFlag;
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
@@ -1493,20 +1606,41 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         }
 
                         if (!isDataAvailable) {
-                            ModelClass.SessionList sessionList;
+                            ModelClass.SessionList sessionList = new ModelClass.SessionList();
                             sessionList = prepareSessionListForAdapterEmpty();
 
-                            if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                                sessionList.setWorkType(weeklyOffWorkTypeModel);
+                            if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                sessionLists.add(sessionList);
+                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
+                                modelClasses.add(modelClass);
+                                LocalWeelyHolidayFlag =false;
+                            }
+                            else {
+                                Log.e("weeklyOffDays",""+weeklyOffDays.size()+"  "+weeklyOffWorkTypeModel.getName());
+                                if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                    sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                    LocalWeelyHolidayFlag =true;
+                                }
+                                else if (holidayDateArray.contains(day)) {
+                                    sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
+                                    LocalWeelyHolidayFlag =true;
+                                }else {
+                                    LocalWeelyHolidayFlag =false;
+                                }
 
-                            if (holidayDateArray.contains(day))
-                                sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
+                                ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                                sessionLists.add(sessionList);
+                                ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                                modelClasses.add(modelClass);
 
-                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                            sessionLists.add(sessionList);
-                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                            modelClasses.add(modelClass);
-                            saveTpLocal(modelClasses, day, monthName, "0");
+                            }
+
+                            if(LocalWeelyHolidayFlag){
+                                saveTpLocal(modelClasses, day, monthYear, "1");
+                            }else {
+                                saveTpLocal(modelClasses, day, monthYear, "0");
+                            }
                         }
                     } else {
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
@@ -1519,6 +1653,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
                 tourPlanOfflineDataDao.saveMonthlySyncStatusMaster(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, localDate.toString()), status, rejectionReason);
 
             } else {  //If tour plan table has no data
+
+                boolean LocalWeelyHolidayFlag;
+
                 for (String day : days) {
                     if (!day.isEmpty()) {
                         String date = day + " " + monthYear;
@@ -1526,17 +1663,38 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         ModelClass.SessionList sessionList = new ModelClass.SessionList();
                         sessionList = prepareSessionListForAdapterEmpty();
 
-                        if (weeklyOffDays.contains(dayName)) // add weekly off object when the day is declared as Weekly Off
-                            sessionList.setWorkType(weeklyOffWorkTypeModel);
 
-                        if (holidayDateArray.contains(day))
-                            sessionList.setWorkType(holidayWorkTypeModel); // add holiday work type model object when current date is declared as holiday
+                        if (Integer.valueOf(monthNo) == JoiningMonth && Integer.valueOf(year) == JoinYear && Integer.valueOf(day) < JoningDate) {
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, false, sessionLists);
+                            modelClasses.add(modelClass);
+                            LocalWeelyHolidayFlag =false;
+                        }else {
+                            Log.e("weeklyOffDays",""+weeklyOffDays+"  "+weeklyOffWorkTypeModel);
 
-                        ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
-                        sessionLists.add(sessionList);
-                        ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
-                        modelClasses.add(modelClass);
-                        saveTpLocal(modelClasses, day, monthName, "0");
+                            if (weeklyOffDays.contains(dayName)) {// add weekly off object when the day is declared as Weekly Off
+                                sessionList.setWorkType(weeklyOffWorkTypeModel);
+                                LocalWeelyHolidayFlag =true;
+                            }
+                            else if (holidayDateArray.contains(day)) {
+                                sessionList.setWorkType(holidayWorkTypeModel);  // add holiday work type model object when current date is declared as holiday
+                                LocalWeelyHolidayFlag =true;
+                            }else {
+                                LocalWeelyHolidayFlag =false;
+                            }
+                            ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
+                            sessionLists.add(sessionList);
+                            ModelClass modelClass = new ModelClass(day, date, dayName, monthNo, year, true, sessionLists);
+                            modelClasses.add(modelClass);
+                        }
+
+
+                        if(LocalWeelyHolidayFlag){
+                            saveTpLocal(modelClasses, day, monthYear, "1");
+                        }else {
+                            saveTpLocal(modelClasses, day, monthYear, "0");
+                        }
                     } else {
                         ArrayList<ModelClass.SessionList> sessionLists = new ArrayList<>();
                         ModelClass modelClass = new ModelClass(day, "", "", "", "", true, sessionLists);
@@ -1707,11 +1865,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         HqName=  secondObject.getString("HQNm");
                     }
                 }
-           //     SharedPref.saveHq(MasterSyncActivity.this, HqName, Hqcode);
-
                 binding.hqName.setText(HqName);
                 rsf = Hqcode;
-               // SharedPref.saveHq(MasterSyncActivity.this, jsonArray.getJSONObject(0).getString("name"), rsf);
                 prepareArray(rsf);// to replace the new rsf values
                 masterSyncAll(false);
             } catch (JSONException e) {
@@ -1729,74 +1884,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
         if (hasFocus) {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
-    }
-
-
-
-public void  MydayplanSync(){
-  try {
-      JSONObject jsonObject=new JSONObject();
-      jsonObject.put("tableName","gettodaydcr");
-      jsonObject.put("sfcode",SharedPref.getSfType(this));
-      jsonObject.put("division_code",SharedPref.getDivisionCode(this));
-      jsonObject.put("Rsf",SharedPref.getSfCode(this));
-      jsonObject.put("sf_type",SharedPref.getSfType(this));
-      jsonObject.put("ReqDt",TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_22));
-      jsonObject.put("Designation",SharedPref.getDesig(this));
-      jsonObject.put("state_code",SharedPref.getStateCode(this));
-      jsonObject.put("subdivision_code",SharedPref.getSubdivisionCode(this));
-      Map<String, String> mapString = new HashMap<>();
-      mapString.put("axn", "table/dcrmasterdata");
-      apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-      Call<JsonElement>  call = apiInterface.getJSONElement(SharedPref.getCallApiUrl(getApplicationContext()), mapString, jsonObject.toString());
-
-      call.enqueue(new Callback<JsonElement>() {
-          @Override
-          public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-              try {
-
-                  if (response.code() == 200 || response.code() == 201) {
-                      JsonElement jsonElement = response.body();
-                      if (!jsonElement.isJsonNull()) {
-                          if (jsonElement.isJsonArray()) {
-                              JSONArray jsonArray = new JSONArray(jsonElement.getAsJsonArray().toString());
-
-                              String HqName = "", HqCode = "";
-                              if (jsonArray.length() > 0) {
-                                  JSONObject firstObject = jsonArray.getJSONObject(0);
-                                  if (firstObject.getString("FWFlg").equalsIgnoreCase("F")) {
-                                      HqName = firstObject.getString("HQNm");
-                                      HqCode = firstObject.getString("SFMem");
-                                  }
-                                  if (jsonArray.length() == 2) {
-                                      JSONObject secondObject = jsonArray.getJSONObject(1);
-                                      if (secondObject.getString("FWFlg").equalsIgnoreCase("F")) {
-                                          HqName = secondObject.getString("HQNm");
-                                          HqCode = secondObject.getString("SFMem");
-                                      }
-                                  }
-                                  SharedPref.saveHq(MasterSyncActivity.this, HqName, HqCode);
-                              }
-                          }
-                      }
-                  }else {
-                      SharedPref.saveHq(MasterSyncActivity.this, "", "");
-                  }
-              } catch (Exception ignore) {
-              }
-
-
-          }
-
-          @Override
-          public void onFailure(Call<JsonElement> call, Throwable t) {
-
-          }
-      });
-
-  }catch (Exception ignore){
-  }
-
     }
 
 }

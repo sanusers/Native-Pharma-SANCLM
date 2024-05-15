@@ -86,6 +86,7 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
         this.sessionInterface = sessionInterface;
         roomDB = RoomDB.getDatabase(context);
         masterDataDao = roomDB.masterDataDao();
+        sfType=SharedPref.getSfType(context);
 
 //        hq_code = SharedPref.getHqCode(context); // Selected HQ code in master sync ,it will be changed if any other HQ selected in Add Plan
 

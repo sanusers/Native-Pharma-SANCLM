@@ -866,7 +866,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         }
                                     } else {
                                         masterDataDao.saveMasterSyncStatus(masterSyncItemModel.getLocalTableKeyName(), 1);
-
                                     }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);

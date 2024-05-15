@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -116,6 +117,8 @@ public class SlideDownloaderAlertBox {
                 if (!downloadStatus) {
                     SharedPref.putSlidestatus(activity.getApplicationContext(),false);
                     String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + imageName;
+
+                    Log.v("DownloadingUrl"," "+ url);
                     new DownloadTask(activity, url, imageName, progressValue, downloadStatus, img_size_status, slide, () -> new ThumbnailTask(activity.getApplicationContext(), imageName, null));
                 }
             }

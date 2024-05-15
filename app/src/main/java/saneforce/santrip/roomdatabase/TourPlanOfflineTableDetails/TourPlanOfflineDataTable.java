@@ -20,7 +20,7 @@ public class TourPlanOfflineDataTable {
     private String tpData;
 
     @ColumnInfo(name = "tp_month_synced")
-    private String tpMonthSynced;
+    private String tpMonthSynced="0";
 
     @ColumnInfo(name = "tp_approval_status")
     private String tpApprovalStatus;  // 0 - Planning, 1 - Pending, 2 - Rejected, 3 - Approved

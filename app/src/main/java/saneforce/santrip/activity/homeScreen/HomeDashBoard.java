@@ -1109,6 +1109,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         if (item.getTitle().toString().equalsIgnoreCase(getString(R.string.tour_plan))) {
             Intent intent=new Intent(getApplicationContext(), TourPlanActivity.class);
             intent.putExtra("isFrom","isNav");
+            intent.putExtra("Month","3");
             startActivity(intent);
 
             return true;
@@ -1664,7 +1665,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
     void CheckedTpRange(){
 
-
         if (!SharedPref.getskipDate(HomeDashBoard.this).equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) {
             if (SharedPref.getTpMandatoryNeed(context).equalsIgnoreCase("0") && SharedPref.getTpNeed(context).equalsIgnoreCase("0") &&
                     !SharedPref.getTpStartDate(context).equalsIgnoreCase("1") && !SharedPref.getTpStartDate(context).equalsIgnoreCase("-1") &&
@@ -1673,37 +1673,43 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
                 SimpleDateFormat date = new SimpleDateFormat("dd", Locale.ENGLISH);
                 String mCurrDate = date.format(calendar.getTime());
+                String currentDate = sdf.format(calendar.getTime());
                 calendar.add(Calendar.MONTH, 1);
                 String nextMonthDate = sdf.format(calendar.getTime());
-                String currentDate = sdf.format(calendar.getTime());
 
 
-                if (tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) == null || !tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
+                Log.e("currentStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate));
+                Log.e("NextMonthStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate));
+
+
+
+                if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan....");
                     SharedPref.setSKIP(HomeDashBoard.this, false);
-
                     Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
                     intent.putExtra("isFrom", "isHome");
+                    intent.putExtra("Month", "0");
                     startActivity(intent);
 
 
-                } else if (tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate) == null || !tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")) {
+                } else if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate).equalsIgnoreCase("3")) {
                     String tp_start = SharedPref.getTpStartDate(context);
                     String tp_end = SharedPref.getTpEndDate(context);
                     int Start_Date = Integer.parseInt(tp_start);
                     int End_Date = Integer.parseInt(tp_end);
 
                     int mCurrentDate = Integer.parseInt(mCurrDate);
-                    if (((mCurrentDate >= Start_Date) && (mCurrentDate < End_Date)) || (mCurrentDate > End_Date)) {
+                    if (((mCurrentDate >= Start_Date) && (mCurrentDate <= End_Date))) {
                         commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan...");
-                        if (End_Date > mCurrentDate) {
-                            SharedPref.setSKIP(HomeDashBoard.this, false);
-                        } else {
+                        if (End_Date >= mCurrentDate) {
                             SharedPref.setSKIP(HomeDashBoard.this, true);
+                        } else {
+                            SharedPref.setSKIP(HomeDashBoard.this, false);
                         }
 
                         Intent intent = new Intent(getApplicationContext(), TourPlanActivity.class);
                         intent.putExtra("isFrom", "isHome");
+                        intent.putExtra("Month", "1");
                         startActivity(intent);
 
                     }

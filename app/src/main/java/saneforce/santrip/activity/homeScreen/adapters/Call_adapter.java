@@ -196,16 +196,6 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
 
 
 
-
-
-
-
-
-
-
-
-
-
                     }
                     return true;
                 });
