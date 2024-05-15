@@ -1555,7 +1555,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             api_interface = RetrofitClient.getRetrofit(getActivity(), SharedPref.getCallApiUrl(requireContext()));
 
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("tableName", "gettodaydcr");
+            jsonObject.put("tableName", "getmydayplan");
             jsonObject.put("sfcode", SharedPref.getSfCode(requireContext()));
             jsonObject.put("division_code", SharedPref.getDivisionCode(requireContext()));
             jsonObject.put("Rsf", SharedPref.getHqCode(requireContext()));

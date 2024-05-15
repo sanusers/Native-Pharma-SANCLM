@@ -48,6 +48,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
         holder.dateNo.setText(date);
         if (!date.isEmpty() && !modelClass.getSessionList().get(0).getWorkType().getName().isEmpty()) //if work type is not empty means tour plan added for the date
             holder.cornerImage.setVisibility(View.VISIBLE);
+
+        else holder.cornerImage.setVisibility(View.GONE);
         if(!date.isEmpty()){
             if(Integer.valueOf(date)< TourPlanActivity.JoningDate &&Integer.valueOf(modelClass.getMonth())==TourPlanActivity.JoiningMonth  &&Integer.valueOf(modelClass.getYear())==TourPlanActivity.JoinYear ) {
                 TourPlanActivity.binding.calendarPrevButton.setEnabled(false);

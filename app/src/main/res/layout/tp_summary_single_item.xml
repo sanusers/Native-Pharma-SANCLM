@@ -72,6 +72,7 @@
                 tools:ignore="SpUsage"/>
 
             <View
+                android:id="@+id/view_fdummy"
                 android:layout_width="@dimen/_1sdp"
                 android:layout_height="@dimen/_6sdp"
                 android:background="#4D282A3C"
@@ -114,6 +115,8 @@
                 tools:ignore="SpUsage"/>
 
             <View
+                android:id="@+id/view_fdummy2"
+
                 android:layout_width="@dimen/_1sdp"
                 android:layout_height="@dimen/_6sdp"
                 android:background="#4D282A3C"
@@ -156,6 +159,7 @@
                 tools:ignore="SpUsage"/>
 
             <View
+                android:id="@+id/view_fdummy3"
                 android:layout_width="@dimen/_1sdp"
                 android:layout_height="@dimen/_6sdp"
                 android:background="#4D282A3C"

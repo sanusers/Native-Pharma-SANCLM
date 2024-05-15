@@ -51,6 +51,8 @@ public class EventCaptureAdapter extends RecyclerView.Adapter<EventCaptureAdapte
         holder.Remarks.setText(EventList.get(position).getRemarks());
 
         String url = SharedPref.getTagImageUrl(context) +EventList.get(position).getEventimg();
+
+        Log.e("Inmge",url);
         Picasso.get()
                 .load(url)
                 .into(holder.imageView);

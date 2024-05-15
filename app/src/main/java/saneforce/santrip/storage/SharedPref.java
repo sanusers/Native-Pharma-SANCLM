@@ -391,6 +391,7 @@ public class SharedPref {
     public static final String SKIPDATE = "SKIPDATE";
 
     public static final String POLICY_STAUS = "POLICYSTATUS";
+    public static final String TPSYNC_STAUS = "TPSYNC_STAUS";
 
 
     public static final String DR_ADD_CALL_NEED = "DrAdditionalCallNeed";
@@ -2381,6 +2382,23 @@ public class SharedPref {
     public static boolean getPolicy(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(POLICY_STAUS, false);
     }
+
+
+
+    public static void setTpSyncStaus(Context context, boolean status) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putBoolean(TPSYNC_STAUS, status).apply();
+    }
+
+    public static boolean getTpSyncPolicy(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(TPSYNC_STAUS, false);
+    }
+
+
+
+
+
 
 
 

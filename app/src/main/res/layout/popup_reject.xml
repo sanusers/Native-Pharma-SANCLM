@@ -54,6 +54,7 @@
             android:fontFamily="@font/satoshi_medium"
             android:gravity="start|top"
             android:hint="Reject Reason"
+            android:maxLength="250"
             android:padding="@dimen/_4sdp"
             android:paddingVertical="@dimen/_3sdp"
             android:textSize="@dimen/_6ssp"

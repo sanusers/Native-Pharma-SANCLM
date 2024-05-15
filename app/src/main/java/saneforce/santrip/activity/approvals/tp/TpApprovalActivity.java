@@ -55,6 +55,7 @@ import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.TimeUtils;
 
 public class TpApprovalActivity extends AppCompatActivity implements OnItemClickListenerApproval {
     public static String  SelectedSfCode, SelectedMonthYear, SelectedMonth, SelectedYear, SelectedDay = "", TpDrNeed, TpChemNeed, TpClusterNeed, TpJwNeed, TpStockistNeed, TpUnDrNeed, TpCipNeed, TpHospNeed;
@@ -221,7 +222,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
 
     private void tpReject(String reason) {
-        progressDialog = CommonUtilsMethods.createProgressDialog(getApplicationContext());
+        progressDialog = CommonUtilsMethods.createProgressDialog(TpApprovalActivity.this);
         try {
             jsonTp = new JSONObject();
             jsonTp.put("tableName", "savetpreject");
@@ -326,6 +327,8 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                         tpModelLists.clear();
                         JSONArray jsonArray = new JSONArray(response.body().toString());
                         if (jsonArray.length() > 0) {
+                            tpApprovalBinding.constraintSelectedDetails.setVisibility(View.VISIBLE);
+
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject json = jsonArray.getJSONObject(i);
                                 tpModelLists.add(new TpModelList(json.getString("Sf_Code"), json.getString("SFName"), json.getString("Mnth"), json.getString("Yr"), json.getString("Mn")));
@@ -335,12 +338,14 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                             tpApprovalBinding.rvTpList.setLayoutManager(mLayoutManager);
                             tpApprovalBinding.rvTpList.setAdapter(tpApprovalAdapter);
                         } else {
+                            tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                             commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.no_data_found));
                         }
                     } catch (Exception ignored) {
 
                     }
                 } else {
+                    tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                     progressDialog.dismiss();
                     commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
                 }
@@ -348,6 +353,7 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
 
             @Override
             public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                tpApprovalBinding.constraintSelectedDetails.setVisibility(View.GONE);
                 progressDialog.dismiss();
                 commonUtilsMethods.showToastMessage(TpApprovalActivity.this,getString(R.string.toast_response_failed));
             }
@@ -449,9 +455,21 @@ public class TpApprovalActivity extends AppCompatActivity implements OnItemClick
                                     totalPlannedDays++;
                                 }
                             }
-                              String jointdate=jsonArray.getJSONObject(0).getString("sf_TP_Active_Dt");
+
+                            String joiningDate = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_17, jsonArray.getJSONObject(0).getString("sf_TP_Active_Dt"));
+                            String joiningMonth = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_8, jsonArray.getJSONObject(0).getString("sf_TP_Active_Dt"));
+                            String joiningYear = TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_26, jsonArray.getJSONObject(0).getString("sf_TP_Active_Dt"));
+
+
+                            if (joiningMonth.contains(SelectedMonth) && joiningYear.equalsIgnoreCase(SelectedYear)) {
+                                tpApprovalBinding.tvJoiningdate.setText(joiningDate);
+                                tpApprovalBinding.llJoningdate.setVisibility(View.VISIBLE);
+                            } else {
+                                tpApprovalBinding.llJoningdate.setVisibility(View.INVISIBLE);
+                            }
+
+
                             tpApprovalBinding.constraintSelectedDetails.setVisibility(View.VISIBLE);
-                            tpApprovalBinding.tvJoiningdate.setText(jointdate);
                             tpApprovalBinding.tvTotalPlannedDays.setText(String.valueOf(totalPlannedDays));
                             tpApprovalBinding.tvWeekOffDays.setText(totalWeekOffDays + " / " + totalHolidays);
                             tpApprovalDetailedAdapter = new TpApprovalDetailedAdapter(TpApprovalActivity.this, tpDetailedModelsList);

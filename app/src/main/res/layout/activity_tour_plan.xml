@@ -54,7 +54,6 @@
                     android:textSize="@dimen/_7sdp"
                     tools:ignore="SpUsage" />
                 <TextView
-                    android:id="@+id/txt_skip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
@@ -69,7 +68,7 @@
 
                 <TextView
                     android:visibility="gone"
-                    android:id="@+id/txt_Logout"
+                    android:id="@+id/txt_skip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_10sdp"

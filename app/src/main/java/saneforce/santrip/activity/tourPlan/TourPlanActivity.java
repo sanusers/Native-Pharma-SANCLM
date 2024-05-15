@@ -48,6 +48,7 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.login.LoginActivity;
+import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
@@ -92,11 +93,11 @@ public class TourPlanActivity extends AppCompatActivity {
     LocalDate localDate;
     String drNeed = "", maxDrCount = "", addSessionNeed = "", addSessionCountLimit = "", FW_meetup_mandatory = "", holidayMode = "", weeklyOffCaption = "", holidayEditable = "", weeklyOffEditable = "";
     int monthInAdapterFlag = 0; // 0 -> current month , 1 -> next month , -1 -> previous month
-    boolean isDataAvailable;
+    boolean isDataAvailable,isEdited;
     CommonUtilsMethods commonUtilsMethods;
     public static ActivityTourPlanBinding binding;
 
-    public static   String isFrom="",SFTP_Date_sp="",SFTP_Date="";
+    public static   String isFrom="",SFTP_Date_sp="",SFTP_Date="",MonthFlag="";
     public static  int JoningDate,JoiningMonth, JoinYear;
 
     public static ModelClass.SessionList prepareSessionListForAdapter(ArrayList<ModelClass.SessionList.SubClass> clusterArray, ArrayList<ModelClass.SessionList.SubClass> jcArray, ArrayList<ModelClass.SessionList.SubClass> drArray, ArrayList<ModelClass.SessionList.SubClass> chemistArray, ArrayList<ModelClass.SessionList.SubClass> stockArray, ArrayList<ModelClass.SessionList.SubClass> unListedDrArray, ArrayList<ModelClass.SessionList.SubClass> cipArray, ArrayList<ModelClass.SessionList.SubClass> hospArray, ModelClass.SessionList.WorkType workType, ModelClass.SessionList.SubClass hq, String remarks) {
@@ -146,7 +147,8 @@ public class TourPlanActivity extends AppCompatActivity {
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         addSaveBtnLayout = binding.tpNavigation.addSaveLayout;
         clrSaveBtnLayout = binding.tpNavigation.clrSaveBtnLayout;
-
+        isFrom=getIntent().getStringExtra("isFrom");
+        MonthFlag=getIntent().getStringExtra("Month");
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(TourPlanActivity.this);
@@ -156,19 +158,38 @@ public class TourPlanActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+        isEdited=false;
         JoningDate=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_7,SFTP_Date));
         JoiningMonth=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_8,SFTP_Date));
         JoinYear=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_10,SFTP_Date));
 
 
 
+
+
         uiInitialization();
-        isFrom=getIntent().getStringExtra("isFrom");
+
+        if (MonthFlag.equalsIgnoreCase("1")){
+            binding.calendarPrevButton.setEnabled(true);
+            binding.calendarPrevButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.less_than_black, null));
+            localDate = localDate.plusMonths(1);
+            if (LocalDate.now().plusMonths(1).isEqual(localDate)) {
+                binding.calendarNextButton.setEnabled(false);
+                binding.calendarNextButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.greater_than_gray, null));
+            }
+                monthInAdapterFlag = 1;
+                if (dayWiseArrayNextMonth.size() == 0) {
+                    dayWiseArrayNextMonth = prepareModelClassForMonth(localDate);
+                }
+                populateCalendarAdapter(dayWiseArrayNextMonth);
+
+        }else {
+            dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
+            populateCalendarAdapter(dayWiseArrayCurrentMonth);
+        }
 
 
-        dayWiseArrayCurrentMonth = prepareModelClassForMonth(localDate);
-        populateCalendarAdapter(dayWiseArrayCurrentMonth);
+
 
 
         binding.tpDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -219,7 +240,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
         binding.backArrow.setOnClickListener(view -> {
             getOnBackPressedDispatcher().onBackPressed();
-            HomeDashBoard.tpRangeCheck=true;
+            HomeDashBoard.tpRangeCheck=false;
             finish();
         });
         binding.calendarNextButton.setOnClickListener(view -> {
@@ -278,13 +299,10 @@ public class TourPlanActivity extends AppCompatActivity {
         if (isFrom.equalsIgnoreCase("isHome")) {
             if (SharedPref.getskipstatus(TourPlanActivity.this)){
                 binding.txtSkip.setVisibility(View.VISIBLE);
-                binding.txtLogout.setVisibility(View.GONE);
             }
             else{
-                binding.txtLogout.setVisibility(View.VISIBLE);
                 binding.txtSkip.setVisibility(View.GONE);}
         } else {
-            binding.txtLogout.setVisibility(View.GONE);
             binding.txtSkip.setVisibility(View.GONE);
         }
 
@@ -294,11 +312,6 @@ public class TourPlanActivity extends AppCompatActivity {
             getOnBackPressedDispatcher().onBackPressed();
         });
 
-        binding.txtLogout.setOnClickListener(view -> {
-            SharedPref.saveLoginState(TourPlanActivity.this, false);
-            startActivity(new Intent(TourPlanActivity.this, LoginActivity.class));
-            finish();
-        });
 
         binding.tpNavigation.tpDrawerCloseIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -525,6 +538,14 @@ public class TourPlanActivity extends AppCompatActivity {
                     //  saveTpLocal(dayWiseArrayPrevMonth, dayNo, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), "1");
                     prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, dataModel.getDate()), dayNo, dayWiseArrayPrevMonth, false);
                 }
+
+
+                if(isEdited){
+                    commonUtilsMethods.showToastMessage(TourPlanActivity.this,"Updated Successfully");
+                    isEdited=false;
+                }else {
+                    commonUtilsMethods.showToastMessage(TourPlanActivity.this,"Saved Successfully");
+                }
                 calendarAdapter.notifyDataSetChanged();
             } else {
                 scrollToPosition(position, true);
@@ -533,34 +554,51 @@ public class TourPlanActivity extends AppCompatActivity {
         });
 
         binding.tpNavigation.sessionEdit.setOnClickListener(view -> {
+            isEdited=true;
             binding.tpNavigation.addEditViewTxt.setText("Edit Plan");
             populateSessionEditAdapter(sessionViewAdapter.inputDataModel);
         });
 
         binding.tpSendToApproval.setOnClickListener(view -> {
 
-            JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-            ArrayList<ModelClass> arrayList;
-            ArrayList<String> dummy = new ArrayList<>();
-            Type type = new TypeToken<ArrayList<ModelClass>>() {
-            }.getType();
-            if (jsonArray.length() > 0) {
-                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                for (ModelClass modelClass : arrayList) {
-                    if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                        dummy.add(modelClass.getDayNo());
-                        Log.v("tpApproval", "---" + modelClass.getDayNo());
-                        binding.progressBar.setVisibility(View.VISIBLE);
-                        prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
-                        break;
-                    }
-                }
-            }
 
-            if (dummy.size() == 0) {
-                binding.progressBar.setVisibility(View.VISIBLE);
-                sendWholeMonthStatus(localDate);
-            }
+            NetworkStatusTask networkStatusTask=new NetworkStatusTask(TourPlanActivity.this,status -> {
+
+                if(status){
+                    binding.tpSendToApproval.setEnabled(false);
+                    JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
+                    ArrayList<ModelClass> arrayList;
+                    ArrayList<String> dummy = new ArrayList<>();
+                    Type type = new TypeToken<ArrayList<ModelClass>>() {
+                    }.getType();
+                    if (jsonArray.length() > 0) {
+                        arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
+
+                        for (ModelClass modelClass : arrayList) {
+                            if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
+
+                                commonUtilsMethods.showToastMessage(TourPlanActivity.this, "TP Offline Values Sending... ");
+                                dummy.add(modelClass.getDayNo());
+                                Log.v("tpApproval", "---" + modelClass.getDayNo());
+                                binding.progressBar.setVisibility(View.VISIBLE);
+
+                                prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (dummy.size() == 0) {
+                        binding.progressBar.setVisibility(View.VISIBLE);
+                        sendWholeMonthStatus(localDate);
+                    }
+                }else {
+                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.no_network));
+
+                }
+            }); networkStatusTask.execute();
+
+
         });
 
     }
@@ -587,6 +625,8 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void uiInitialization() {
         localDate = LocalDate.now();
+
+
         try {
 
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.TP_SETUP).getMasterSyncDataJsonArray();
@@ -723,7 +763,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         holidayDateArray.add(holidayJSONArray.getJSONObject(i).getString("Hday"));
                 }
 
-        boolean LocalWeelyHolidayFlag;
+                boolean LocalWeelyHolidayFlag;
 
                 for (String day : days) {
                     if (!day.isEmpty()) {
@@ -780,6 +820,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateCalendarAdapter(ArrayList<ModelClass> arrayList) {
         binding.monthYear.setText(monthYearFromDate(localDate));
+
         calendarAdapter = new CalendarAdapter(arrayList, TourPlanActivity.this, (position, date, modelClass) -> {
 
             if (!date.equals("")) {
@@ -798,7 +839,7 @@ public class TourPlanActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 7);
         binding.calendarRecView.setLayoutManager(layoutManager);
         binding.calendarRecView.setAdapter(calendarAdapter);
-
+        calendarAdapter.notifyDataSetChanged();
         populateSummaryAdapter(arrayList);
     }
 
@@ -1055,32 +1096,28 @@ public class TourPlanActivity extends AppCompatActivity {
                                     binding.progressBar.setVisibility(View.GONE);
                                     binding.tvSync.setEnabled(true);
                                     HomeDashBoard.tpRangeCheck=true;
+
+
+                                    dayWiseArrayPrevMonth = prepareModelClassForMonth(localDate.minusMonths(1));
+                                    dayWiseArrayCurrentMonth = prepareModelClassForMonth(LocalDate.now());
+                                    dayWiseArrayNextMonth = prepareModelClassForMonth( localDate.plusMonths(1));
+
                                     switch (isClickedName) {
                                         case "prev":
-                                            Log.v("tpGetPlan", "--prev--" + dayWiseArrayPrevMonth.size());
                                             localDate = localDate.minusMonths(1);
-
                                             populateCalendarAdapter(dayWiseArrayPrevMonth);
                                             break;
                                         case "current":
-                                            Log.v("tpGetPlan", "--current--" + dayWiseArrayCurrentMonth.size());
                                             localDate = LocalDate.now();
                                             populateCalendarAdapter(dayWiseArrayCurrentMonth);
                                             break;
                                         case "next":
-                                            Log.v("tpGetPlan", "--next--" + dayWiseArrayNextMonth.size());
                                             localDate = localDate.plusMonths(1);
                                             populateCalendarAdapter(dayWiseArrayNextMonth);
                                             break;
                                     }
 
 
-                                    Intent intent = getIntent();
-                                    overridePendingTransition(0, 0);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                    finish();
-                                    overridePendingTransition(0, 0);
-                                    startActivity(intent);
 
                                 }
                             } catch (JSONException e) {
@@ -1229,7 +1266,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                 modelClasses.add(modelClass);
 
                             }
-                                dayWiseSaveTp = modelClasses;
+                            dayWiseSaveTp = modelClasses;
 
                             if(LocalWeelyHolidayFlag){
                                 saveTpLocal(dayWiseSaveTp, day, monthYear, "1");
@@ -1486,18 +1523,26 @@ public class TourPlanActivity extends AppCompatActivity {
                                     switch (status) {
                                         case "0": {
                                             binding.tpStatusTxt.setText(Constants.STATUS_0);
+                                            binding.rejectionReasonLayout.setVisibility(View.GONE);
+                                            binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
+
                                             break;
                                         }
                                         case "1": {
                                             binding.tpStatusTxt.setText(Constants.STATUS_1);
+                                            binding.rejectionReasonLayout.setVisibility(View.GONE);
+                                            binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             break;
                                         }
                                         case "2": {
                                             binding.tpStatusTxt.setText(Constants.STATUS_2);
                                             binding.rejectionReasonLayout.setVisibility(View.VISIBLE);
+                                            binding.tpStatusTxt.setTextColor(getColor(R.color.green_2));
                                             break;
                                         }
                                         case "3": {
+                                            binding.tpStatusTxt.setTextColor(getColor(R.color.pink));
+                                            binding.rejectionReasonLayout.setVisibility(View.GONE);
                                             binding.tpStatusTxt.setText(Constants.STATUS_3);
                                             break;
                                         }
@@ -1827,39 +1872,24 @@ public class TourPlanActivity extends AppCompatActivity {
                             saveTpLocal(modelClassArrayList, date, month, "0");// Sync Success
                             if (statusOffline) {
                                 JSONArray jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-
                                 ArrayList<ModelClass> arrayList;
+                                ArrayList<String> dummy=new ArrayList<>();
                                 Type type = new TypeToken<ArrayList<ModelClass>>() {
                                 }.getType();
                                 if (jsonArray.length() > 0) {
                                     arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
                                     for (ModelClass modelClass : arrayList) {
                                         if (!modelClass.getDate().equals("") && !modelClass.getSyncStatus().equals("0")) {
-                                            Log.v("tpApproval", "--11--" + modelClass.getDayNo());
+                                            dummy.add(modelClass.getDayNo());
                                             prepareObjectToSendForApproval(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_17, TimeUtils.FORMAT_23, modelClass.getDate()), modelClass.getDayNo(), arrayList, true);
                                             break;
                                         }
                                     }
-                                }
-
-//                                jsonArray = sqLite.getTPDataOfMonth(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate)));
-                                jsonArray = tourPlanOfflineDataDao.getTpDataOfMonthOrNew(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_23, String.valueOf(localDate))).getTpDataJSONArray();
-                                arrayList = new Gson().fromJson(String.valueOf(jsonArray), type);
-                                boolean allDateSynced = false;
-                                for (ModelClass modelClass : arrayList) {
-                                    if (!modelClass.getDate().isEmpty()) {
-                                        if (modelClass.getSyncStatus().equals("0")) {
-                                            allDateSynced = true;
-                                        } else {
-                                            allDateSynced = false;
-                                            break;
-                                        }
+                                    if (dummy.size() == 0) {
+                                        binding.progressBar.setVisibility(View.GONE);
+                                        changeApprovalBtnState(arrayList);
                                     }
-                                }
 
-                                if (allDateSynced) {
-                                    Log.v("tpApproval", "--8888--");
-                                    sendWholeMonthStatus(localDate);
                                 }
                             }
                         } else {
