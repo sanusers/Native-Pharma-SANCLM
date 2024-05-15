@@ -165,6 +165,10 @@ public class MyDayPlanEntriesNeeded {
             Log.e("set date today finished", "setupMyDayPlanEntriesNeeded: dates empty");
             syncTaskStatus.noDatesFound();
         }else if(!datesNeeded.isEmpty()) {
+            if(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_34).equalsIgnoreCase(SharedPref.getSelectedDateCal(context))) {
+                new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.not_chose_after_date));
+                Log.e("TAG", "setupMyDayPlanEntriesNeeded: today" );
+            }
             SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first()));
             Log.e("set date", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
             syncTaskStatus.datesFound();

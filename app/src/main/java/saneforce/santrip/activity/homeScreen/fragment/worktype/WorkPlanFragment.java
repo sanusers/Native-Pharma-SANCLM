@@ -1374,6 +1374,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }
                         }
 
+                        if(!HQList.isEmpty()) {
+                            for(JSONObject hqJsonObject: HQList){
+                                if((mHQCode1).equalsIgnoreCase(hqJsonObject.getString("id"))){
+                                    mHQName1 = hqJsonObject.getString("name");
+                                    break;
+                                }
+                            }
+                        }
 
                         if(TerritoryFlag1.equalsIgnoreCase("N")) {
                             binding.rlheadquates1.setVisibility(View.GONE);
@@ -1470,6 +1478,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                                     JSONObject mJsonObject = worktypedata.getJSONObject(i);
                                     if(mJsonObject.getString("Code").equalsIgnoreCase(mWTCode2)) {
                                         TerritoryFlag2 = mJsonObject.getString("TerrSlFlg");
+                                    }
+                                }
+                            }
+
+                            if(!HQList.isEmpty()) {
+                                for(JSONObject hqJsonObject: HQList){
+                                    if((mHQCode2).equalsIgnoreCase(hqJsonObject.getString("id"))){
+                                        mHQName2 = hqJsonObject.getString("name");
+                                        break;
                                     }
                                 }
                             }

@@ -1358,7 +1358,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             case R.id.rl_date_layoout:
                 if(SequentialEntry.equalsIgnoreCase("0")){
                     commonUtilsMethods.showToastMessage(this, getString(R.string.sequential_entry_cannot_change_date));
-                } else if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty()) {
+                } else if(!MyDayPlanEntriesNeeded.datesNeeded.isEmpty() || !SharedPref.getSelectedDateCal(this).isEmpty()) {
                     SetUpHolidayWeekEndData();
                     if(binding.viewCalerderLayout.getRoot().getVisibility() == View.GONE) {
                         getCallsDataToCalender();
