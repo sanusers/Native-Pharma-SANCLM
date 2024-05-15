@@ -5,6 +5,7 @@ import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.tourPlan.session.SessionEditAdapter.inputDataArray;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
@@ -47,8 +49,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.login.LoginActivity;
-import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.activity.tourPlan.calendar.CalendarAdapter;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
@@ -150,6 +150,10 @@ public class TourPlanActivity extends AppCompatActivity {
         isFrom=getIntent().getStringExtra("isFrom");
         MonthFlag=getIntent().getStringExtra("Month");
 
+        checkTpApiStaus();
+
+
+
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(TourPlanActivity.this);
             JSONObject obj = new JSONObject(SFTP_Date_sp);
@@ -162,9 +166,6 @@ public class TourPlanActivity extends AppCompatActivity {
         JoningDate=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_7,SFTP_Date));
         JoiningMonth=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_8,SFTP_Date));
         JoinYear=Integer.valueOf(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_1,TimeUtils.FORMAT_10,SFTP_Date));
-
-
-
 
 
         uiInitialization();
@@ -351,7 +352,7 @@ public class TourPlanActivity extends AppCompatActivity {
                         if (modelClass1.getWorkType().getName().isEmpty()) {
                             isEmpty = true;
                             position = i;
-                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session) + (i + 1));
+                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.complete_session)+(i + 1));
                             break;
                         } else if (modelClass1.getWorkType().getTerrSlFlg().equalsIgnoreCase("Y")) {
                             if (modelClass1.getHQ().getName().isEmpty()) {
@@ -370,12 +371,12 @@ public class TourPlanActivity extends AppCompatActivity {
                                         if (modelClass1.getListedDr().size() == 0) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select)+" " + SharedPref.getDrCap(TourPlanActivity.this)+" "+ getString(R.string.in_session) +" "+ (i + 1));
                                             break;
                                         } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                             isEmpty = true;
                                             position = i;
-                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + (i + 1));
+                                            commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select)+ " "+SharedPref.getDrCap(TourPlanActivity.this) +getString(R.string.more_than_limit)+" "+(i + 1));
                                             break;
                                         }
                                     }
@@ -383,7 +384,7 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select_any_masters)+" "+ (i + 1));
                                         break;
                                     }
                                 }
@@ -394,19 +395,19 @@ public class TourPlanActivity extends AppCompatActivity {
                                     if (modelClass1.getListedDr().size() == 0) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.in_session) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.select) + " "+SharedPref.getDrCap(TourPlanActivity.this) +" "+ getString(R.string.in_session) + (i + 1));
                                         break;
                                     } else if (modelClass1.getListedDr().size() > Integer.parseInt(maxDrCount)) {
                                         isEmpty = true;
                                         position = i;
-                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + (i + 1));
+                                        commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + " "+ SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + " "+ (i + 1));
                                         break;
                                     }
                                 }
                                 if (modelClass1.getListedDr().size() == 0 && modelClass1.getChemist().size() == 0 && modelClass1.getStockiest().size() == 0 && modelClass1.getUnListedDr().size() == 0 && modelClass1.getCip().size() == 0 && modelClass1.getHospital().size() == 0) {
                                     isEmpty = true;
                                     position = i;
-                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select) + SharedPref.getDrCap(TourPlanActivity.this) + getString(R.string.more_than_limit) + (i + 1));
+                                    commonUtilsMethods.showToastMessage(TourPlanActivity.this, getString(R.string.you_have_select)+ " " + SharedPref.getDrCap(TourPlanActivity.this) + " "+ getString(R.string.more_than_limit) + (i + 1));
                                     break;
                                 }
                             }
@@ -919,7 +920,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
     public void populateSessionViewAdapter(ModelClass modelClass) {
         binding.tpDrawer.openDrawer(GravityCompat.END);
-        sessionViewAdapter = new SessionViewAdapter(modelClass);
+        sessionViewAdapter = new SessionViewAdapter(modelClass,TourPlanActivity.this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(TourPlanActivity.this);
         binding.tpNavigation.tpSessionRecView.setLayoutManager(layoutManager);
         binding.tpNavigation.tpSessionRecView.setAdapter(sessionViewAdapter);
@@ -1088,6 +1089,7 @@ public class TourPlanActivity extends AppCompatActivity {
                             try {
                                 Log.v("tpGetPlan", "----" + response.body());
                                 if (response.body() != null && !response.body().isJsonNull()) {
+                                    SharedPref.setTpSyncStaus(TourPlanActivity.this,true);
                                     JSONObject jsonObject1;
                                     if (response.body().isJsonObject()) {
                                         jsonObject1 = new JSONObject(response.body().getAsJsonObject().toString());
@@ -1116,11 +1118,14 @@ public class TourPlanActivity extends AppCompatActivity {
                                             populateCalendarAdapter(dayWiseArrayNextMonth);
                                             break;
                                     }
-
-
-
+                                    checkTpApiStaus();
+                                }else {
+                                    SharedPref.setTpSyncStaus(TourPlanActivity.this,false);
+                                    checkTpApiStaus();
                                 }
                             } catch (JSONException e) {
+                                SharedPref.setTpSyncStaus(TourPlanActivity.this,false);
+                                checkTpApiStaus();
                                 binding.progressBar.setVisibility(View.GONE);
                                 binding.tvSync.setEnabled(true);
                                 Log.v("tpGetPlan", "--error--2--" + e);
@@ -1129,6 +1134,7 @@ public class TourPlanActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                            SharedPref.setTpSyncStaus(TourPlanActivity.this,false);
                             binding.progressBar.setVisibility(View.GONE);
                             Log.e("tpGetPlan", "error getTp : " + t);
                         }
@@ -1418,13 +1424,13 @@ public class TourPlanActivity extends AppCompatActivity {
             hospArray = new ArrayList<>();
 
             if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName().isEmpty())
+                if (!receiveModel.getClusterName2().isEmpty())
                     clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
                 if (!receiveModel.getJWNames2().isEmpty())
                     jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
                 if (!receiveModel.getDr_two_name().isEmpty())
                     drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                if (!receiveModel.getChem_Name().isEmpty())
+                if (!receiveModel.getChem_two_name().isEmpty())
                     chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
                 if (!receiveModel.getStockist_two_name().isEmpty())
                     stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
@@ -1790,8 +1796,8 @@ public class TourPlanActivity extends AppCompatActivity {
                                     jsonObject.put("Dr_two_name", Dr_two_name);
                                     jsonObject.put("Chem_two_code", Chem_two_code);
                                     jsonObject.put("Chem_two_name", Chem_two_name);
-                                    jsonObject.put("Stockist_two_code", Stockist_two_code);
-                                    jsonObject.put("Stockist_Name2", Stockist_two_name);
+                                    jsonObject.put("Stockist_two_code", Stockist_two_code);  //Stockist_two_name
+                                    jsonObject.put("Stockist_two_name", Stockist_two_name);
                                     jsonObject.put("cip_code2", cip_code2);
                                     jsonObject.put("cip_name2", cip_name2);
                                     jsonObject.put("hosp_code2", hosp_code2);
@@ -1931,5 +1937,16 @@ public class TourPlanActivity extends AppCompatActivity {
 
         tourPlanOfflineDataDao.saveTpData(new TourPlanOfflineDataTable(month, new Gson().toJson(arrayList)));
     }
+    public void checkTpApiStaus(){
 
-}
+        if(!SharedPref.getTpSyncStaus(TourPlanActivity.this)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Warning!")
+                    .setMessage("Tour plan Not sync properly. once sync again...").setCancelable(false).setIcon(getDrawable(R.drawable.icon_sync_failed)).setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton("Sync", (dialog, which) -> get3MonthRemoteTPData("current"))
+                    .setNegativeButton(android.R.string.no, (dialog, which) -> getOnBackPressedDispatcher().onBackPressed());
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+    }
+    }

@@ -2391,7 +2391,7 @@ public class SharedPref {
         editor.putBoolean(TPSYNC_STAUS, status).apply();
     }
 
-    public static boolean getTpSyncPolicy(Context context) {
+    public static boolean getTpSyncStaus(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(TPSYNC_STAUS, false);
     }
 

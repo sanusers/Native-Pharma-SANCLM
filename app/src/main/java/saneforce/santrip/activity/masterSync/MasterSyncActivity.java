@@ -1291,7 +1291,12 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                             }
                                         }
                                         else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
-                                            SaveTourPlan(jsonArray.getJSONObject(0));
+                                            if(jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")){
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
+                                            }else {
+                                                SaveTourPlan(jsonArray.getJSONObject(0));
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,true);
+                                            }
                                         }
                                         else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getmydayplan")) {
                                             if (mgrInitialSync) {
@@ -2050,13 +2055,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
             hospArray = new ArrayList<>();
 
             if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName().isEmpty())
+                if (!receiveModel.getClusterName2().isEmpty())
                     clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
                 if (!receiveModel.getJWNames2().isEmpty())
                     jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
                 if (!receiveModel.getDr_two_name().isEmpty())
                     drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                if (!receiveModel.getChem_Name().isEmpty())
+                if (!receiveModel.getChem_two_name().isEmpty())
                     chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
                 if (!receiveModel.getStockist_two_name().isEmpty())
                     stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());

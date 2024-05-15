@@ -1032,9 +1032,19 @@ public class SessionEditAdapter extends RecyclerView.Adapter<SessionEditAdapter.
     }
 
     public ArrayList<EditModelClass> convertJSONToModel(JSONArray jsonArray) {
+        ArrayList<String> IDs=new ArrayList<>();
+        ArrayList<EditModelClass> MainList=new ArrayList<>();
         Type type = new TypeToken<ArrayList<EditModelClass>>() {
         }.getType();
-        return new Gson().fromJson(String.valueOf(jsonArray), type);
+        ArrayList<EditModelClass>  Lister=new Gson().fromJson(String.valueOf(jsonArray), type);
+
+        for (EditModelClass list: Lister){
+            if(!IDs.contains(list.getCode())){
+                IDs.add(list.getCode());
+                MainList.add(list);
+            }}
+
+        return MainList;
     }
 
     public void prepareMasterToSync(String hqCode) {
