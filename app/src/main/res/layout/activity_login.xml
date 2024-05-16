@@ -229,7 +229,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_8sdp"
-                        android:background="@drawable/edittext_stroke"
+                        android:background="@drawable/tp_btn_select_state"
                         android:fontFamily="@font/satoshi_bold"
                         android:padding="@dimen/_3sdp"
                         android:text="@string/login"

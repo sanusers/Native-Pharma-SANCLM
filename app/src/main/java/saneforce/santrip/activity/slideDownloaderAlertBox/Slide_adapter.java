@@ -18,16 +18,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.setting.SettingsActivity;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkStatusTask;
+import saneforce.santrip.utility.TimeUtils;
 
 public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataViewholider> {
     Activity activity;
     ArrayList<SlideModelClass> list ;
-
+    CommonUtilsMethods commonUtilsMethods;
 
     public Slide_adapter(Activity activity, ArrayList<SlideModelClass> list) {
         this.activity = activity;
         this.list = list;
+        commonUtilsMethods=new CommonUtilsMethods(activity);
     }
 
     @NonNull
@@ -78,9 +84,12 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
            @Override
            public void onClick(View v) {
 
-               String url= "https://"+ SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+list.get(position).getImageName();
-               new DownloadTask(activity,url,list.get(position).getImageName(),list.get(position).getProgressValue(),list.get(position).getDownloadStatus(),list.get(position).getDownloadSizeStatus(),list.get(position), ()-> new ThumbnailTask(activity.getApplicationContext(), list.get(position).getImageName(), null));
-
+               if (UtilityClass.isNetworkAvailable(activity)) {
+                   String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getImageName();
+                   new DownloadTask(activity, url, list.get(position).getImageName(), list.get(position).getProgressValue(), list.get(position).getDownloadStatus(), list.get(position).getDownloadSizeStatus(), list.get(position), () -> new ThumbnailTask(activity.getApplicationContext(), list.get(position).getImageName(), null));
+               }else {
+                   commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+               }
            }
        });
 

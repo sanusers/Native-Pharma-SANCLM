@@ -31,9 +31,8 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-
         binding.submitPrivacy.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.bg_grey)));
-        binding.privacyWebview.loadUrl("http://sansfe.info/privacy.html");
+        binding.privacyWebview.loadUrl("https://sansfe.info/sanzen_privacy.html");
 
 
 

@@ -37,7 +37,8 @@ public interface ApiInterface {
     @POST("?axn=save/image")
     Call<JsonObject> SaveImg(@PartMap() HashMap<String, RequestBody> values, @Part MultipartBody.Part file);
 
-
+    @GET
+    Call<ResponseBody> downloadFile(@Url String fileUrl);
 
 
  /*   @FormUrlEncoded

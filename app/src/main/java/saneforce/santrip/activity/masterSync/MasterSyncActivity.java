@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -49,7 +48,6 @@ import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
-import saneforce.santrip.activity.tourPlan.TourPlanActivity;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -63,6 +61,8 @@ import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesDao;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
@@ -133,6 +133,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
     private MasterDataDao masterDataDao;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
+    private SlidesDao SlidesDao;
 
 
 
@@ -167,6 +168,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         masterDataDao=db.masterDataDao();
         tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = db.tourPlanOnlineDataDao();
+        SlidesDao = db.slidesDao();
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(MasterSyncActivity.this);
@@ -1139,27 +1141,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                     if (success) {
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(0);
-
                                         String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                         binding.lastSyncTime.setText(dateAndTime);
                                         SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0));
-                                        MasterDataTable MainData =new MasterDataTable();
-                                        MainData.setMasterKey(masterSyncItemModels.get(position).getLocalTableKeyName());
-                                        MainData.setMasterValues(jsonArray.toString());
-                                        MainData.setSyncStatus(0);
-                                        MasterDataTable mNChecked= masterDataDao.getMasterSyncDataByKey(masterSyncItemModels.get(position).getLocalTableKeyName());
-                                        if(mNChecked!=null){
-                                            masterDataDao.updateData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString());
-                                        }else {
-                                            masterDataDao.insert(MainData);
-                                        }
-
                                         if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
                                             CallDataRestClass.resetcallValues(context);
                                         }
-
-
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {
                                                 JSONObject jsonObject1 = jsonArray.getJSONObject(0);
@@ -1167,30 +1155,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0));
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0));
-
-                                                MasterDataTable stockdata =new MasterDataTable();
-                                                stockdata.setMasterKey(Constants.STOCK_BALANCE);
-                                                stockdata.setMasterValues(stockBalanceArray.toString());
-                                                stockdata.setSyncStatus(0);
-
-                                                MasterDataTable mChecked= masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
-                                                if(mChecked!=null){
-                                                    masterDataDao.updateData(Constants.STOCK_BALANCE, stockBalanceArray.toString());
-                                                }else {
-                                                    masterDataDao.insert(stockdata);
-                                                }
-
-                                                MasterDataTable inputdata =new MasterDataTable();
-                                                inputdata.setMasterKey(Constants.INPUT_BALANCE);
-                                                inputdata.setMasterValues(inputBalanceArray.toString());
-                                                inputdata.setSyncStatus(0);
-                                                MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
-                                                if(nChecked !=null){
-                                                    masterDataDao.updateData(Constants.INPUT_BALANCE, inputBalanceArray.toString());
-                                                }else {
-                                                    masterDataDao.insert(inputdata);
-                                                }
-
                                             }
                                         }
                                         else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
@@ -1209,6 +1173,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
                                             if (jsonArray.length() > 0)
                                                 SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, false);
+                                        }else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
+                                            insertSlide(jsonArray);
+
                                         }
                                     }
                                 } else {
@@ -1889,6 +1856,25 @@ public class    MasterSyncActivity extends AppCompatActivity {
         if (hasFocus) {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
+    }
+
+
+
+    public  void insertSlide(JSONArray jsonArray){
+        try {
+            if(jsonArray.length()>0){
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String FilePath = jsonObject.optString("FilePath");
+                    String id = jsonObject.optString("SlideId");
+                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"0MB","1"));
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 }

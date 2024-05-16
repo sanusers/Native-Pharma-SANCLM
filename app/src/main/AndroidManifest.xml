@@ -306,6 +306,14 @@
         <service android:name=".activity.slideDownloaderAlertBox.HTMLThumbnailGeneratorService"
             android:enabled="true"
             android:exported="false"/>
+
+
+        <service android:name=".activity.SlideDownloadNew.SlideServices"
+            android:enabled="true"
+            android:exported="false">
+
+        </service>
+
     </application>
 
 </manifest>

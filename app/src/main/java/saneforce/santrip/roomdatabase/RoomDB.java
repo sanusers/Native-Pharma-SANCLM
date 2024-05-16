@@ -24,12 +24,14 @@ import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheck
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataTable;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataTable;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesDao;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class}, version = 1, exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, SlidesTableDeatils.class}, version = 1, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
     private static final String DATABASE_NAME = "sanclmroom.dp";
@@ -42,6 +44,9 @@ public abstract class RoomDB extends RoomDatabase {
         }
         return database;
     }
+
+
+    public abstract SlidesDao slidesDao();
 
     public abstract MasterDataDao masterDataDao();
 

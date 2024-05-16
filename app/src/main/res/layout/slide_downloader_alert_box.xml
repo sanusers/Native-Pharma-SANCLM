@@ -44,6 +44,7 @@
          android:layout_height="@dimen/_25sdp"
          android:layout_marginTop="@dimen/_2sdp"
          android:layout_marginEnd="@dimen/_5sdp"
+         android:visibility="gone"
          android:background="@color/white"
          android:layout_alignParentTop="true"
          android:layout_alignParentEnd="true"

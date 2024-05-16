@@ -147,10 +147,50 @@
                         android:orientation="horizontal"
                         android:weightSum="2">
 
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/str_language"
+                                android:textColor="@color/text_dark"
+                                android:textSize="@dimen/_7sdp"
+                                android:fontFamily="@font/satoshi_bold"
+                                tools:ignore="RelativeOverlap,SpUsage" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_4sdp">
+
+                                <Spinner
+                                    android:id="@+id/spinnerLanguage"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/edittext_stroke"
+                                    android:gravity="center|start" />
+
+                                <ImageView
+                                    android:layout_width="@dimen/_7sdp"
+                                    android:layout_height="@dimen/_4sdp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerInParent="true"
+                                    android:layout_marginEnd="@dimen/_6sdp"
+                                    android:background="@drawable/arrow_down"
+                                    tools:ignore="ContentDescription" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/_12sdp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
@@ -186,12 +226,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/ll_language_layout"
-                        android:background="@drawable/edittext_stroke"
+                        android:background="@drawable/tp_btn_select_state"
                         android:text="@string/str_save_settings"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_7sdp"
-                        app:backgroundTint="@color/text_dark"
                         android:fontFamily="@font/satoshi_bold"
                         android:padding="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_12sdp"
