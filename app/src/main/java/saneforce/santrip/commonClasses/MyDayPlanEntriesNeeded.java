@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -26,6 +27,7 @@ import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -34,12 +36,14 @@ public class MyDayPlanEntriesNeeded {
 
     public static TreeSet<String> datesNeeded = new TreeSet<>();
     private static MasterDataDao masterDataDao;
+    private static OfflineDaySubmitDao offlineDaySubmitDao;
     private static ApiInterface apiInterface;
     private static int callSyncSuccess = 0, dateSyncSuccess = 0;
     private static SyncTaskStatus syncTaskStatus;
 
     public static void updateMyDayPlanEntriesNeeded(Context context, boolean shouldSync, SyncTaskStatus syncTaskStatus) {
         masterDataDao = RoomDB.getDatabase(context).masterDataDao();
+        offlineDaySubmitDao = RoomDB.getDatabase(context).offlineDaySubmitDao();
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
         MyDayPlanEntriesNeeded.syncTaskStatus = syncTaskStatus;
         if(shouldSync) {
@@ -153,6 +157,13 @@ public class MyDayPlanEntriesNeeded {
                 }
             }
             Log.v("TAG 2", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
+            List<String> offlineDaySubmitDates = offlineDaySubmitDao.getAllOfflineDaySubmitDates();
+            if(!offlineDaySubmitDates.isEmpty()) {
+                for (String date : offlineDaySubmitDates) {
+                    datesNeeded.remove(date);
+                }
+                Log.v("TAG 3", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -181,7 +192,6 @@ public class MyDayPlanEntriesNeeded {
 
     public interface SyncTaskStatus {
         void datesFound();
-
         void noDatesFound();
     }
 }

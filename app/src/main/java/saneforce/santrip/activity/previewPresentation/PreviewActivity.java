@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Stream;
@@ -33,6 +34,7 @@ import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
 import saneforce.santrip.activity.call.pojo.detailing.CallDetailingList;
 import saneforce.santrip.activity.call.pojo.detailing.StoreImageTypeUrl;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.previewPresentation.fragment.BrandMatrix;
 import saneforce.santrip.activity.previewPresentation.fragment.Customized;
 import saneforce.santrip.activity.previewPresentation.fragment.HomeBrands;
@@ -231,7 +233,7 @@ public class PreviewActivity extends AppCompatActivity {
             intent1.putExtra("hq_code", "" );
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (!UtilityClass.isNetworkAvailable(this)) {
-                callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+                callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             }
             startActivity(intent1);
         });

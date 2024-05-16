@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
@@ -29,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +43,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CheckInOutModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
+import saneforce.santrip.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -53,12 +58,15 @@ import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.santrip.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.santrip.roomdatabase.CallsUtil;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.TimeUtils;
 
 public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapter.listDataViewholider> {
     Context context;
@@ -72,9 +80,11 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     Activity activity;
      RoomDB db;
      MasterDataDao masterDataDao;
-     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
-     private CallOfflineECDataDao callOfflineECDataDao;
-     private CallsUtil callsUtil;
+     private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
+     private final CallOfflineECDataDao callOfflineECDataDao;
+     private final CallOfflineWorkTypeDataDao offlineWorkTypeDataDao;
+     private final OfflineDaySubmitDao offlineDaySubmitDao;
+     private final CallsUtil callsUtil;
 
     public OutBoxHeaderAdapter(Activity activity, Context context, ArrayList<GroupModelClass> groupModelClasses) {
         this.activity = activity;
@@ -86,6 +96,8 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         masterDataDao=db.masterDataDao();
         offlineCheckInOutDataDao = db.offlineCheckInOutDataDao();
         callOfflineECDataDao = db.callOfflineECDataDao();
+        offlineWorkTypeDataDao = db.callOfflineWorkTypeDataDao();
+        offlineDaySubmitDao = db.offlineDaySubmitDao();
         callsUtil = new CallsUtil(context);
     }
 
@@ -132,7 +144,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
     }
 
     private void CallOfflineData(GroupModelClass groupModelClass, int childPos) {
-        if (groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().size() > 0) {
+        if (!groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().isEmpty()) {
             isCallAvailable = false;
             for (int i = 0; i < groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().size(); i++) {
                 CheckInOutModelClass checkInOutModelClass = groupModelClass.getChildItems().get(childPos).getCheckInOutModelClasses().get(i);
@@ -152,7 +164,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         }
 
         if (!isCallAvailable) {
-            CallAPIOfflineCalls(groupModelClass, 2);
+            CallAPIWorkPlan(groupModelClass, 1);
         }
     }
 
@@ -218,8 +230,72 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         });
     }
 
+    private void CallAPIWorkPlan(GroupModelClass groupModelClass, int childPos) {
+        if(groupModelClass.getChildItems().get(childPos).getWorkPlanModelClass() != null) {
+            isCallAvailable = false;
+            WorkPlanModelClass workPlanModelClass = groupModelClass.getChildItems().get(childPos).getWorkPlanModelClass();
+            if(workPlanModelClass.getSyncStatus() == 0) {
+                isCallAvailable = true;
+                Log.v("SendOutboxCall", "--WorkPlan--" + workPlanModelClass.getDate() + "---" + workPlanModelClass.getWtName() + "---" + workPlanModelClass.getWtCode());
+                if(!workPlanModelClass.getJsonValues().isEmpty()) {
+                    CallSendWorkPlan(groupModelClass, workPlanModelClass, childPos, workPlanModelClass.getJsonValues());
+                }
+            }
+        }else {
+            isCallAvailable = false;
+        }
+
+        if(!isCallAvailable) {
+            CallAPIOfflineCalls(groupModelClass, 2);
+        }
+    }
+
+    private void CallSendWorkPlan(GroupModelClass groupModelClass, WorkPlanModelClass workPlanModelClass, int childPos, String jsonValues) {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "edetsave/dayplan");
+        Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonValues);
+        saveMyDayPlan.enqueue(new Callback<JsonElement>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                Log.v("DayPlan", response.body() + "--" + response.isSuccessful());
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
+                        if(json.getString("success").equalsIgnoreCase("true")) {
+                            offlineWorkTypeDataDao.delete(workPlanModelClass.getDate());
+                            groupModelClass.getChildItems().get(childPos).setWorkPlanModelClass(null);
+                        }else {
+                            offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                            workPlanModelClass.setSyncStatus(1);
+                        }
+                        CallAPIWorkPlan(groupModelClass, childPos);
+                        notifyDataSetChanged();
+                    } catch (Exception ignored) {
+                        offlineWorkTypeDataDao.delete(workPlanModelClass.getDate());
+                        groupModelClass.getChildItems().get(childPos).setWorkPlanModelClass(null);
+                        CallAPIWorkPlan(groupModelClass, childPos);
+                        notifyDataSetChanged();
+                    }
+                }else {
+                    workPlanModelClass.setSyncStatus(1);
+                    CallAPIWorkPlan(groupModelClass, childPos);
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                Log.e("VALUES", String.valueOf(t));
+                offlineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                workPlanModelClass.setSyncStatus(1);
+                CallAPIWorkPlan(groupModelClass, childPos);
+            }
+        });
+    }
+
     private void CallAPIOfflineCalls(GroupModelClass groupModelClass, int childPos) {
-        if (groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().size() > 0) {
+        if (!groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().isEmpty()) {
             isCallAvailable = false;
             for (int i = 0; i < groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().size(); i++) {
                 OutBoxCallList outBoxCallList = groupModelClass.getChildItems().get(childPos).getOutBoxCallLists().get(i);
@@ -243,7 +319,7 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
 
     @SuppressLint("NotifyDataSetChanged")
     private void CallAPIListImage(GroupModelClass groupModelClass, int childPos) {
-        if (groupModelClass.getChildItems().get(childPos).getEcModelClasses().size() > 0) {
+        if (!groupModelClass.getChildItems().get(childPos).getEcModelClasses().isEmpty()) {
             isCallAvailable = true;
             for (int i = 0; i < groupModelClass.getChildItems().get(childPos).getEcModelClasses().size(); i++) {
                 EcModelClass ecModelClass = groupModelClass.getChildItems().get(childPos).getEcModelClasses().get(i);
@@ -262,16 +338,78 @@ public class OutBoxHeaderAdapter extends RecyclerView.Adapter<OutBoxHeaderAdapte
         }
 
         if (!isCallAvailable) {
+            CallAPIDaySubmit(groupModelClass, 4);
+        }
+    }
+
+    private void CallAPIDaySubmit(GroupModelClass groupModelClass, int childPos) {
+        if(groupModelClass.getChildItems().get(childPos).getDaySubmitModelClass() != null) {
+            isCallAvailable = false;
+            DaySubmitModelClass daySubmitModelClass = groupModelClass.getChildItems().get(childPos).getDaySubmitModelClass();
+            if(daySubmitModelClass.getSyncStatus() == 0) {
+                isCallAvailable = true;
+                Log.v("SendOutboxCall", "--Day Submit--" + daySubmitModelClass.getDate() + "---" + daySubmitModelClass.getJsonValues());
+                if(!daySubmitModelClass.getJsonValues().isEmpty()) {
+                    CallSendDaySubmit(groupModelClass, daySubmitModelClass, childPos, daySubmitModelClass.getJsonValues());
+                }
+            }
+        }else {
+            isCallAvailable = false;
+        }
+
+        if (!isCallAvailable) {
             Log.v("SendOutboxCall", "--finallyOut--");
             progressDialog.dismiss();
             if (CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd").equalsIgnoreCase(groupModelClass.getGroupName())) {
                 CallsFragment.CallTodayCallsAPI(context, apiInterface, false);
             }
             CallDataRestClass.resetcallValues(context);
-
-
             RefreshAdapter();
         }
+    }
+
+    private void CallSendDaySubmit(GroupModelClass groupModelClass, DaySubmitModelClass daySubmitModelClass, int childPos, String jsonValues) {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/daysubmit");
+        Call<JsonElement> callFinalSubmit = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonValues);
+        callFinalSubmit.enqueue(new Callback<JsonElement>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                assert response.body() != null;
+                Log.v("FinalSubmit", response.body() + "--" + response.isSuccessful());
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().toString());
+                        if(jsonObject.getString("success").equalsIgnoreCase("true")) {
+                            offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
+                            groupModelClass.getChildItems().get(childPos).setDaySubmitModelClass(null);
+                        }else {
+                            offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
+                            daySubmitModelClass.setSyncStatus(1);
+                        }
+                        CallAPIDaySubmit(groupModelClass, childPos);
+                        notifyDataSetChanged();
+                    } catch (Exception ignored) {
+                        offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
+                        offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
+                        CallAPIDaySubmit(groupModelClass, childPos);
+                        notifyDataSetChanged();
+                    }
+                }else {
+                    daySubmitModelClass.setSyncStatus(1);
+                    CallAPIDaySubmit(groupModelClass, childPos);
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
+                daySubmitModelClass.setSyncStatus(1);
+                CallAPIDaySubmit(groupModelClass, childPos);
+            }
+        });
     }
 
     @SuppressLint("NotifyDataSetChanged")

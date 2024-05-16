@@ -22,6 +22,8 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataTable;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDataTable;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataDao;
 import saneforce.santrip.roomdatabase.PresentationTableDetails.PresentationDataTable;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
@@ -29,7 +31,7 @@ import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflin
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataTable;
 
-@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class}, version = 1, exportSchema = false)
+@Database(entities = {MasterDataTable.class, CallsLinechartTable.class, LoginDataTable.class, TourPlanOfflineDataTable.class, TourPlanOnlineDataTable.class, DCRDocDataTable.class, PresentationDataTable.class, OfflineCheckInOutDataTable.class, CallOfflineWorkTypeDataTable.class, CallOfflineECDataTable.class, CallOfflineDataTable.class, OfflineDaySubmitDataTable.class}, version = 1, exportSchema = false)
 public abstract class RoomDB extends RoomDatabase {
     private static RoomDB database;
     private static final String DATABASE_NAME = "sanclmroom.dp";
@@ -64,5 +66,7 @@ public abstract class RoomDB extends RoomDatabase {
     public abstract CallOfflineECDataDao callOfflineECDataDao();
 
     public abstract CallOfflineDataDao callOfflineDataDao();
+
+    public abstract OfflineDaySubmitDao offlineDaySubmitDao();
 
 }

@@ -16,9 +16,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.time.format.DateTimeFormatter;
+
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
 import saneforce.santrip.activity.call.adapter.detailing.PlaySlideDetailing;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.previewPresentation.PreviewActivity;
 import saneforce.santrip.activity.call.profile.preCallAnalysis.PreCallAnalysisFragment;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -26,7 +29,7 @@ import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-
+import saneforce.santrip.utility.TimeUtils;
 
 
 public class CustomerProfile extends AppCompatActivity {
@@ -123,7 +126,7 @@ public class CustomerProfile extends AppCompatActivity {
 
             //  intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+            callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
             startActivity(intent1);
         });
 

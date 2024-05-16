@@ -9,6 +9,8 @@ public class ChildListModelClass {
     private ArrayList<OutBoxCallList> outBoxCallLists;
     private ArrayList<EcModelClass> ecModelClasses;
     private ArrayList<CheckInOutModelClass> checkInOutModelClasses;
+    private WorkPlanModelClass workPlanModelClass;
+    private DaySubmitModelClass daySubmitModelClass;
     private boolean isAvailableList;
     private boolean isExpanded;
     private int Counts;
@@ -38,10 +40,18 @@ public class ChildListModelClass {
         this.checkInOutModelClasses = checkInOutModelClasses;
     }
 
-    public ChildListModelClass(String childName, int childId, boolean isAvailableList) {
+    public ChildListModelClass(String childName, int childId, boolean isAvailableList, WorkPlanModelClass workPlanModelClass) {
         this.childName = childName;
         this.childId = childId;
         this.isAvailableList = isAvailableList;
+        this.workPlanModelClass = workPlanModelClass;
+    }
+
+    public ChildListModelClass(String childName, int childId, boolean isAvailableList, DaySubmitModelClass daySubmitModelClass) {
+        this.childName = childName;
+        this.childId = childId;
+        this.isAvailableList = isAvailableList;
+        this.daySubmitModelClass = daySubmitModelClass;
     }
 
     public ChildListModelClass(String childName, int childId) {
@@ -127,5 +137,21 @@ public class ChildListModelClass {
 
     public void setChildId(int childId) {
         this.childId = childId;
+    }
+
+    public WorkPlanModelClass getWorkPlanModelClass() {
+        return workPlanModelClass;
+    }
+
+    public void setWorkPlanModelClass(WorkPlanModelClass workPlanModelClass) {
+        this.workPlanModelClass = workPlanModelClass;
+    }
+
+    public DaySubmitModelClass getDaySubmitModelClass() {
+        return daySubmitModelClass;
+    }
+
+    public void setDaySubmitModelClass(DaySubmitModelClass daySubmitModelClass) {
+        this.daySubmitModelClass = daySubmitModelClass;
     }
 }

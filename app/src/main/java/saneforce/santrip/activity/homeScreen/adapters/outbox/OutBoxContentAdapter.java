@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.homeScreen.adapters.outbox;
 
+import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.listDates;
 import static saneforce.santrip.activity.homeScreen.fragment.OutboxFragment.outBoxBinding;
 
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,11 +43,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.homeScreen.fragment.CallsFragment;
 import saneforce.santrip.activity.homeScreen.modelClass.CheckInOutModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.ChildListModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.DaySubmitModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.EcModelClass;
+import saneforce.santrip.activity.homeScreen.modelClass.GroupModelClass;
 import saneforce.santrip.activity.homeScreen.modelClass.OutBoxCallList;
+import saneforce.santrip.activity.homeScreen.modelClass.WorkPlanModelClass;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.commonClasses.UtilityClass;
@@ -53,10 +59,12 @@ import saneforce.santrip.network.ApiInterface;
 import saneforce.santrip.network.RetrofitClient;
 import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.CallOfflineECTableDetails.CallOfflineECDataDao;
+import saneforce.santrip.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.santrip.roomdatabase.CallsUtil;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SharedPref;
 
@@ -75,9 +83,11 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     RoomDB roomDB;
 
     MasterDataDao masterDataDao;
-    private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
-    private CallOfflineECDataDao callOfflineECDataDao;
-    private CallsUtil callsUtil;
+    private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
+    private final CallOfflineECDataDao callOfflineECDataDao;
+    private final OfflineDaySubmitDao offlineDaySubmitDao;
+    private final CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
+    private final CallsUtil callsUtil;
 
     public OutBoxContentAdapter(Activity activity, Context context, ArrayList<ChildListModelClass> groupModelClasses) {
         this.activity = activity;
@@ -90,6 +100,8 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         masterDataDao=roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         callOfflineECDataDao = roomDB.callOfflineECDataDao();
+        callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
+        offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         callsUtil = new CallsUtil(context);
     }
 
@@ -119,42 +131,50 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
             holder.tvCount.setVisibility(View.GONE);
         }
 
-        if (contentList.getChildId() == 0) {
-            holder.tvCount.setText(String.valueOf(contentList.getCheckInOutModelClasses().size()));
-            if (contentList.isExpanded() && contentList.getCheckInOutModelClasses().size() > 0) {
-                SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
-            } else {
-                holder.constraintRv.setVisibility(View.GONE);
-                holder.img_expand_child.setImageResource(R.drawable.down_arrow);
-            }
-        }
-
-        if (contentList.getChildId() == 1) {
-            if (contentList.getChildName().isEmpty()) {
-                holder.expandContentView.setVisibility(View.GONE);
-            } else {
-                holder.expandContentView.setVisibility(View.VISIBLE);
-            }
-        }
-
-        if (contentList.getChildId() == 2) {
-            holder.tvCount.setText(String.valueOf(contentList.getOutBoxCallLists().size()));
-            if (contentList.isExpanded() && contentList.getOutBoxCallLists().size() > 0) {
-                SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
-            } else {
-                holder.constraintRv.setVisibility(View.GONE);
-                holder.img_expand_child.setImageResource(R.drawable.down_arrow);
-            }
-        }
-
-        if (contentList.getChildId() == 3) {
-            holder.tvCount.setText(String.valueOf(contentList.getEcModelClasses().size()));
-            if (contentList.isExpanded() && contentList.getEcModelClasses().size() > 0) {
-                SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
-            } else {
-                holder.constraintRv.setVisibility(View.GONE);
-                holder.img_expand_child.setImageResource(R.drawable.down_arrow);
-            }
+        switch (contentList.getChildId()) {
+            case 0:
+                holder.tvCount.setText(String.valueOf(contentList.getCheckInOutModelClasses().size()));
+                if (contentList.isExpanded() && !contentList.getCheckInOutModelClasses().isEmpty()) {
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
+                } else {
+                    holder.constraintRv.setVisibility(View.GONE);
+                    holder.img_expand_child.setImageResource(R.drawable.down_arrow);
+                }
+                break;
+            case 1:
+                if (contentList.getWorkPlanModelClass() == null) {
+                    holder.expandContentView.setVisibility(View.GONE);
+                } else {
+                    holder.expandContentView.setVisibility(View.VISIBLE);
+                }
+                break;
+            case 2:
+                holder.tvCount.setText(String.valueOf(contentList.getOutBoxCallLists().size()));
+                if (contentList.isExpanded() && !contentList.getOutBoxCallLists().isEmpty()) {
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
+                } else {
+                    holder.constraintRv.setVisibility(View.GONE);
+                    holder.img_expand_child.setImageResource(R.drawable.down_arrow);
+                }
+                break;
+            case 3:
+                holder.tvCount.setText(String.valueOf(contentList.getEcModelClasses().size()));
+                if (contentList.isExpanded() && !contentList.getEcModelClasses().isEmpty()) {
+                    SetupVisibleData(holder.constraintRv, contentList.getChildId(), holder.rv_outbox_list, holder.img_expand_child, contentList.getOutBoxCallLists(), contentList.getCheckInOutModelClasses(), contentList.getEcModelClasses());
+                } else {
+                    holder.constraintRv.setVisibility(View.GONE);
+                    holder.img_expand_child.setImageResource(R.drawable.down_arrow);
+                }
+                break;
+            case 4:
+                if (contentList.getDaySubmitModelClass() == null) {
+                    holder.expandContentView.setVisibility(View.GONE);
+                } else {
+                    holder.expandContentView.setVisibility(View.VISIBLE);
+                }
+                break;
+            default:
+                break;
         }
 
         if (holder.tvCount.getText().toString().equalsIgnoreCase("0")) {
@@ -170,11 +190,17 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                     case 0:
                         CallAPICheckInOut(position);
                         break;
+                    case 1:
+                        CallAPIWorkPlan(position);
+                        break;
                     case 2:
                         CallAPIList(position);
                         break;
                     case 3:
                         CallAPIListImage(position);
+                        break;
+                    case 4:
+                        CallAPIDaySubmit(position);
                         break;
                 }
             } else {
@@ -194,7 +220,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         switch (childId) {
             case 0:
                 outBoxCheckInOutAdapter = new OutBoxCheckInOutAdapter(activity, context, checkInOutModelClasses);
-                mLayoutManager = new LinearLayoutManager(context);
+                mLayoutManager = new GridLayoutManager(context, 2);
                 rvOutboxList.setLayoutManager(mLayoutManager);
                 rvOutboxList.setAdapter(outBoxCheckInOutAdapter);
                 break;
@@ -215,7 +241,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
     }
 
     private void CallAPICheckInOut(int position) {
-        if (childListModelClasses.get(position).getCheckInOutModelClasses().size() > 0) {
+        if (!childListModelClasses.get(position).getCheckInOutModelClasses().isEmpty()) {
             isCallAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getCheckInOutModelClasses().size(); i++) {
                 CheckInOutModelClass checkInOutModelClass = childListModelClasses.get(position).getCheckInOutModelClasses().get(i);
@@ -298,9 +324,135 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
         });
     }
 
+    private void CallAPIWorkPlan(int childPos) {
+        if(childListModelClasses.get(childPos).getWorkPlanModelClass() != null) {
+            isCallAvailable = false;
+            WorkPlanModelClass workPlanModelClass = childListModelClasses.get(childPos).getWorkPlanModelClass();
+            if(workPlanModelClass.getSyncStatus() == 0) {
+                isCallAvailable = true;
+                Log.v("SendOutboxCall", "--WorkPlan--" + workPlanModelClass.getDate() + "---" + workPlanModelClass.getWtName() + "---" + workPlanModelClass.getWtCode());
+                if(!workPlanModelClass.getJsonValues().isEmpty()) {
+                    CallSendWorkPlan(workPlanModelClass, childPos, workPlanModelClass.getJsonValues());
+                }
+            }
+        }else {
+            isCallAvailable = false;
+        }
+
+        if(!isCallAvailable) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void CallSendWorkPlan(WorkPlanModelClass workPlanModelClass, int childPos, String jsonValues) {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "edetsave/dayplan");
+        Call<JsonElement> saveMyDayPlan = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonValues);
+        saveMyDayPlan.enqueue(new Callback<JsonElement>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                Log.v("DayPlan", response.body() + "--" + response.isSuccessful());
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject json = new JSONObject(Objects.requireNonNull(response.body()).toString());
+                        if(json.getString("success").equalsIgnoreCase("true")) {
+                            callOfflineWorkTypeDataDao.delete(workPlanModelClass.getDate());
+                            childListModelClasses.get(childPos).setWorkPlanModelClass(null);
+                        }else {
+                            callOfflineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                            workPlanModelClass.setSyncStatus(1);
+                        }
+                        CallAPIWorkPlan(childPos);
+                        notifyDataSetChanged();
+                    } catch (Exception ignored) {
+                        callOfflineWorkTypeDataDao.delete(workPlanModelClass.getDate());
+                        childListModelClasses.get(childPos).setWorkPlanModelClass(null);
+                        CallAPIWorkPlan(childPos);
+                        notifyDataSetChanged();
+                    }
+                }else {
+                    workPlanModelClass.setSyncStatus(1);
+                    CallAPIWorkPlan(childPos);
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                callOfflineWorkTypeDataDao.updateWorkTypeStatus(workPlanModelClass.getId(), 1);
+                workPlanModelClass.setSyncStatus(1);
+                CallAPIWorkPlan(childPos);
+            }
+        });
+    }
+
+    private void CallAPIDaySubmit(int childPos) {
+        if(childListModelClasses.get(childPos).getDaySubmitModelClass() != null) {
+            isCallAvailable = false;
+            DaySubmitModelClass daySubmitModelClass = childListModelClasses.get(childPos).getDaySubmitModelClass();
+            if(daySubmitModelClass.getSyncStatus() == 0) {
+                isCallAvailable = true;
+                Log.v("SendOutboxCall", "--Day Submit--" + daySubmitModelClass.getDate() + "---" + daySubmitModelClass.getJsonValues());
+                if(!daySubmitModelClass.getJsonValues().isEmpty()) {
+                    CallSendDaySubmit(daySubmitModelClass, childPos, daySubmitModelClass.getJsonValues());
+                }
+            }
+        }else {
+            isCallAvailable = false;
+        }
+        if (!isCallAvailable) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void CallSendDaySubmit(DaySubmitModelClass daySubmitModelClass, int childPos, String jsonValues) {
+        Map<String, String> mapString = new HashMap<>();
+        mapString.put("axn", "save/daysubmit");
+        Call<JsonElement> callFinalSubmit = apiInterface.getJSONElement(SharedPref.getCallApiUrl(context), mapString, jsonValues);
+        callFinalSubmit.enqueue(new Callback<JsonElement>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
+                assert response.body() != null;
+                Log.v("FinalSubmit", response.body() + "--" + response.isSuccessful());
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().toString());
+                        if(jsonObject.getString("success").equalsIgnoreCase("true")) {
+                            offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
+                            childListModelClasses.get(childPos).setDaySubmitModelClass(null);
+                        }else {
+                            offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
+                            daySubmitModelClass.setSyncStatus(1);
+                        }
+                        CallAPIDaySubmit(childPos);
+                        notifyDataSetChanged();
+                    } catch (Exception ignored) {
+                        offlineDaySubmitDao.delete(daySubmitModelClass.getDate());
+                        offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
+                        CallAPIDaySubmit(childPos);
+                        notifyDataSetChanged();
+                    }
+                }else {
+                    daySubmitModelClass.setSyncStatus(1);
+                    CallAPIDaySubmit(childPos);
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonElement> call, @NonNull Throwable t) {
+                offlineDaySubmitDao.updateDaySubmitStatus(daySubmitModelClass.getDate(), 1);
+                daySubmitModelClass.setSyncStatus(1);
+                CallAPIDaySubmit(childPos);
+            }
+        });
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private void CallAPIListImage(int position) {
-        if (childListModelClasses.get(position).getEcModelClasses().size() > 0) {
+        if (!childListModelClasses.get(position).getEcModelClasses().isEmpty()) {
             isCallAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getEcModelClasses().size(); i++) {
                 EcModelClass ecModelClass = childListModelClasses.get(position).getEcModelClasses().get(i);
@@ -352,7 +504,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
                             callOfflineECDataDao.updateECStatus(id, Constants.DUPLICATE_CALL, 1);
                             CallAPIListImage(position);
                         }
-                        if (childListModelClasses.get(position).getEcModelClasses().size() > 0) {
+                        if (!childListModelClasses.get(position).getEcModelClasses().isEmpty()) {
                             RefreshAdapter();
                         }
                     } catch (Exception e) {
@@ -422,7 +574,7 @@ public class OutBoxContentAdapter extends RecyclerView.Adapter<OutBoxContentAdap
 
     @SuppressLint("NotifyDataSetChanged")
     private void CallAPIList(int position) {
-        if (childListModelClasses.get(position).getOutBoxCallLists().size() > 0) {
+        if (!childListModelClasses.get(position).getOutBoxCallLists().isEmpty()) {
             isCallAvailable = false;
             for (int i = 0; i < childListModelClasses.get(position).getOutBoxCallLists().size(); i++) {
                 OutBoxCallList outBoxCallList = childListModelClasses.get(position).getOutBoxCallLists().get(i);

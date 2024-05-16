@@ -6,9 +6,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
+
+import saneforce.santrip.activity.homeScreen.modelClass.WorkPlanModelClass;
 
 @Dao
 public interface CallOfflineWorkTypeDataDao {
@@ -24,6 +24,9 @@ public interface CallOfflineWorkTypeDataDao {
     @Query("DELETE FROM `CALL_OFFLINE_WORK_TYPE_TABLE`")
     void deleteAllData();
 
+    @Query("DELETE FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_DATE` = :date")
+    void delete(String date);
+
     @Query("SELECT EXISTS(SELECT 1 FROM `CALL_OFFLINE_WORK_TYPE_TABLE`)")
     boolean isAvailableWT();
 
@@ -32,6 +35,12 @@ public interface CallOfflineWorkTypeDataDao {
 
     @Query("SELECT `CALL_OFFLINE_WT_DATE` FROM `CALL_OFFLINE_WORK_TYPE_TABLE`")
     List<String> getAllCallOfflineWTDates();
+
+    @Query("SELECT * FROM `CALL_OFFLINE_WORK_TYPE_TABLE` WHERE `CALL_OFFLINE_WT_DATE` = :date")
+    CallOfflineWorkTypeDataTable getCallOfflineWorkTypeDataTable(String date);
+
+    @Query("UPDATE `CALL_OFFLINE_WORK_TYPE_TABLE` SET `CALL_OFFLINE_WT_SYNC_STATUS` = :syncStatus WHERE `ID` = :id")
+    void updateWorkTypeStatus(int id, int syncStatus);
 
     default String getListOfflineWT(String date) {
         List<String> list = getListOfflineWTNames(date);
@@ -44,6 +53,15 @@ public interface CallOfflineWorkTypeDataDao {
             }
         }
         return fieldWork.toString();
+    }
+
+    default WorkPlanModelClass getWorkPlanModelClass(String date) {
+        WorkPlanModelClass workPlanModelClass = null;
+        CallOfflineWorkTypeDataTable callOfflineWorkTypeDataTable = getCallOfflineWorkTypeDataTable(date);
+        if(callOfflineWorkTypeDataTable != null) {
+            workPlanModelClass = new WorkPlanModelClass(callOfflineWorkTypeDataTable.getId(), callOfflineWorkTypeDataTable.getCallOfflineWTDate(), callOfflineWorkTypeDataTable.getCallOfflineWTName(), callOfflineWorkTypeDataTable.getCallOfflineWTCode(), callOfflineWorkTypeDataTable.getCallOfflineWTJson(), callOfflineWorkTypeDataTable.getCallOfflineWTStatus(), callOfflineWorkTypeDataTable.getCallOfflineWTSyncStatus());
+        }
+        return workPlanModelClass;
     }
 
 }

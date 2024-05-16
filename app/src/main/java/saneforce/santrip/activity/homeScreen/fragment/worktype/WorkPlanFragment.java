@@ -70,6 +70,8 @@ import saneforce.santrip.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflin
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.TimeUtils;
@@ -113,6 +115,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     private MasterDataDao masterDataDao;
     private OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     private CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
+    private OfflineDaySubmitDao offlineDaySubmitDao;
 
 
     @Override
@@ -143,6 +146,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         masterDataDao = roomDB.masterDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
         callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
+        offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
         gpsTrack = new GPSTrack(requireContext());
         commonUtilsMethods = new CommonUtilsMethods(requireContext());
         commonUtilsMethods.setUpLanguage(requireContext());
@@ -705,18 +709,15 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btnsumit:
-//                if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
-//                    if (!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
-                if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
-                    remarksAlertBox();
+                if (SharedPref.getSrtNd(requireContext()).equalsIgnoreCase("0")) {
+                    if(!SharedPref.getCheckInTime(requireContext()).isEmpty()) {
+                        if(HomeDashBoard.selectedDate != null && !HomeDashBoard.selectedDate.toString().isEmpty()) {
+                            remarksAlertBox();
+                        }
+                    }else {
+                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
+                    }
                 }
-//                    } else {
-//                        commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.submit_checkin));
-//                        masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, HomeDashBoard.dateSync.toString(), 0));
-//                        MyDayPlanEntriesNeeded.deleteDate(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
-//                        HomeDashBoard.checkAndSetEntryDate(requireContext());
-//                    }
-//                }
 
 //                if (mSubmitflag.equalsIgnoreCase("S1")) {
 //                    AletboxRemarks();
@@ -752,7 +753,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
             JSONObject jsonObjectwt = new JSONObject();
 
             if (isWhich.equalsIgnoreCase("1")) {
-                callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode1, mWTName1, jsonObject.toString(), "", 0));
+                callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), mWTName1, mWTCode1, jsonObject.toString(), "", 0));
                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                     SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
                 } else {
@@ -760,7 +761,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 }
                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
             } else {
-                callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), mWTCode2, mWTName2, jsonObject.toString(), "", 0));
+                callOfflineWorkTypeDataDao.insert(new CallOfflineWorkTypeDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), mWTName2, mWTCode2, jsonObject.toString(), "", 0));
                 commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.save_wt_locally));
                 OutboxFragment.SetupOutBoxAdapter(requireActivity(), requireContext());
                 if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
@@ -1713,16 +1714,14 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
         if (UtilityClass.isNetworkAvailable(requireContext())) {
             progressDialog = CommonUtilsMethods.createProgressDialog(requireContext());
             CallFinalSubmitAPI();
-//                            MyDayPlanEntriesNeeded.deleteDate(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
-//                            HomeDashBoard.checkAndSetEntryDate(requireContext());
-//                            CallCheckOutAPI();
+            CallCheckOutAPI();
         } else {
-            offlineCheckInOutDataDao.saveCheckOut(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+            offlineCheckInOutDataDao.saveCheckOut(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+            offlineDaySubmitDao.insert(new OfflineDaySubmitDataTable(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), finalSubmitJSONObject.toString()));
+            commonUtilsMethods.showToastMessage(requireContext(), getString(R.string.day_submit_saved_locally));
             SharedPref.setCheckTodayCheckInOut(requireContext(), "");
             SharedPref.setCheckInTime(requireContext(), "");
             SharedPref.setCheckDateTodayPlan(requireContext(), "");
-//            masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.DATE_SYNC, HomeDashBoard.dateSync.toString(), 0));
-            MyDayPlanEntriesNeeded.deleteDate(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_34))));
             HomeDashBoard.checkAndSetEntryDate(requireContext());
             SetupOutBoxAdapter(requireActivity(), requireContext());
             CallDialogAfterCheckOut();

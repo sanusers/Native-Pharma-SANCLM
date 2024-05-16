@@ -17,15 +17,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.call.DCRCallActivity;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
-
+import saneforce.santrip.utility.TimeUtils;
 
 
 public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_adapter.ViewHolder> {
@@ -84,7 +86,7 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
                                 listeduser.get(position).getDoc_spec(), listeduser.get(position).getDoc_speccode(), listeduser.get(position).getDoc_town(), listeduser.get(position).getDoc_towncode(), "", "", "", "",
                                 "", "", "", "", "", "", "", "", "", "", ""));
 
-                        callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"),  CommonUtilsMethods.getCurrentInstance("hh:mm aa"), listeduser.get(0).getDoc_code(), listeduser.get(0).getDoc_name(), "1");
+                        callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), listeduser.get(0).getDoc_code(), listeduser.get(0).getDoc_name(), "1");
 
                         intent12.putExtra("isDetailingRequired", "false");
                         intent12.putExtra("dcr_from_activity", "");
@@ -92,7 +94,7 @@ public class remaindercalls_adapter extends RecyclerView.Adapter<remaindercalls_
                         intent12.putExtra("hq_code", RemaindercallsActivity.REm_hq_code );
                         Log.d("REm_hq_code", RemaindercallsActivity.REm_hq_code);
                         intent12.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        callOfflineDataDao.saveOfflineCallIN(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
+                        callOfflineDataDao.saveOfflineCallIN(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), CallActivityCustDetails.get(0).getCode(), CallActivityCustDetails.get(0).getName(), CallActivityCustDetails.get(0).getType());
                         v.getContext().startActivity(intent12);
 
 

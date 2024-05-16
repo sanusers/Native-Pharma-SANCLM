@@ -17,12 +17,14 @@ import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataDao
 import saneforce.santrip.roomdatabase.CallOfflineTableDetails.CallOfflineDataTable;
 import saneforce.santrip.roomdatabase.CallOfflineWorkTypeTableDetails.CallOfflineWorkTypeDataDao;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
+import saneforce.santrip.roomdatabase.OfflineDaySubmit.OfflineDaySubmitDao;
 
 public class CallsUtil {
     private final CallOfflineECDataDao callOfflineECDataDao;
     private final CallOfflineDataDao callOfflineDataDao;
     private final CallOfflineWorkTypeDataDao callOfflineWorkTypeDataDao;
     private final OfflineCheckInOutDataDao offlineCheckInOutDataDao;
+    private final OfflineDaySubmitDao offlineDaySubmitDao;
 
     public CallsUtil(Context context) {
         RoomDB roomDB = RoomDB.getDatabase(context);
@@ -30,6 +32,7 @@ public class CallsUtil {
         callOfflineDataDao = roomDB.callOfflineDataDao();
         callOfflineWorkTypeDataDao = roomDB.callOfflineWorkTypeDataDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
+        offlineDaySubmitDao = roomDB.offlineDaySubmitDao();
     }
 
     public void deleteOfflineCalls() {
@@ -37,6 +40,7 @@ public class CallsUtil {
         callOfflineECDataDao.deleteAllData();
         callOfflineWorkTypeDataDao.deleteAllData();
         offlineCheckInOutDataDao.deleteAllData();
+        offlineDaySubmitDao.deleteAllData();
     }
 
     public void deleteOfflineCalls(String cusCode, String cusName, String date) {
@@ -69,15 +73,17 @@ public class CallsUtil {
         dates.addAll(callOfflineECDataDao.getAllCallOfflineECDates());
         dates.addAll(callOfflineWorkTypeDataDao.getAllCallOfflineWTDates());
         dates.addAll(offlineCheckInOutDataDao.getAllOfflineCheckInOutDates());
+        dates.addAll(offlineDaySubmitDao.getAllOfflineDaySubmitDates());
         ArrayList<GroupModelClass> listData = new ArrayList<>();
         ArrayList<ChildListModelClass> groupNamesList;
-        if (dates.size() > 0) {
+        if (!dates.isEmpty()) {
             for (String date : dates) {
                 groupNamesList = new ArrayList<>();
                 groupNamesList.add(new ChildListModelClass("Checking In/Out", 0, false, true, offlineCheckInOutDataDao.getCheckInOutTime(date), "", ""));
-                groupNamesList.add(new ChildListModelClass(callOfflineWorkTypeDataDao.getListOfflineWT(date), 1, false));
+                groupNamesList.add(new ChildListModelClass("Work Plan", 1, false, callOfflineWorkTypeDataDao.getWorkPlanModelClass(date)));
                 groupNamesList.add(new ChildListModelClass("Calls", 2, false, true, getOutBoxCallsList(date), ""));
                 groupNamesList.add(new ChildListModelClass("Event Captured", 3, false, true, callOfflineECDataDao.getEcList(date)));
+                groupNamesList.add(new ChildListModelClass("Day Submit", 4, false, offlineDaySubmitDao.getDaySubmitModelClass(date)));
                 listData.add(new GroupModelClass(date, groupNamesList, false, 0));
             }
         }

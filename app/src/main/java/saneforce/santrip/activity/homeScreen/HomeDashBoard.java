@@ -483,7 +483,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
             } else {
                 SharedPref.setSkipCheckIn(getApplicationContext(), false);
                 SharedPref.setCheckTodayCheckInOut(getApplicationContext(), CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"));
-                offlineCheckInOutDataDao.saveCheckIn(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
+                offlineCheckInOutDataDao.saveCheckIn(HomeDashBoard.selectedDate.format(DateTimeFormatter.ofPattern(TimeUtils.FORMAT_4)), CommonUtilsMethods.getCurrentInstance("hh:mm aa"), jsonCheck.toString());
                 SetupOutBoxAdapter(this, this);
                 CallDialogAfterCheckIn();
             }
