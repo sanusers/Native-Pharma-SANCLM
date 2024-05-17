@@ -1,10 +1,10 @@
 package saneforce.santrip.activity.SlideDownloadNew;
 
-import static saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.downloading_count;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -22,26 +22,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import io.reactivex.Scheduler;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import saneforce.santrip.activity.homeScreen.HomeDashBoard;
-import saneforce.santrip.activity.masterSync.MasterSyncActivity;
-import saneforce.santrip.activity.slideDownloaderAlertBox.DownloadTask;
-import saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
-import saneforce.santrip.commonClasses.CommonUtilsMethods;
-import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.activity.presentation.SupportClass;
+import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesDao;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesTableDeatils;
 
 public class FileDownloadWorker extends Worker {
-    public   String url1 ;
-    public String fileName;
-    public String fileId;
 
+
+    RoomDB roomDB;
+    SlidesDao slidesDao;
     String TAG="Downloading Task";
     public FileDownloadWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -52,15 +46,95 @@ public class FileDownloadWorker extends Worker {
     @Override
     public Result doWork() {
 
-        url1 = getInputData().getString("file_url");
-        fileId = getInputData().getString("Slide_id");
-        fileName = getInputData().getString("Slide_name");
+        File apkStorage = null;
+        File outputFile = null;
+        int totalSize;
+        int downloadedSize = 0;
+        int Progress = 0;
 
+        roomDB=RoomDB.getDatabase(getApplicationContext());
+        slidesDao=roomDB.slidesDao();
 
+     String    url1 = getInputData().getString("file_url");
+     String    fileId = getInputData().getString("Slide_id");
+     String  downloadFileName = getInputData().getString("Slide_name");
+     String  Flag = getInputData().getString("Flag");
 
+     try {
+            URL url = new URL(url1);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
 
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.e(TAG, "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage());
+               return Result.failure();
+            }
 
-        return Result.success();
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                apkStorage = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/");
+            } else {
+                return Result.failure();
+            }
+
+            if (!apkStorage.exists()) {
+                if (!apkStorage.mkdirs()) {
+                    Log.e(TAG, "Directory Creation Failed.");
+                    return    Result.failure();
+                }
+            }
+
+            outputFile = new File(apkStorage, downloadFileName);
+
+            if (outputFile.exists()) {
+                if (outputFile.delete()) {
+                    Log.e(TAG, "Old file deleted.");
+                } else {
+                    Log.e(TAG, "Failed to delete old file.");
+                }
+            }
+
+            if (!outputFile.createNewFile()) {
+                Log.e(TAG, "File Creation Failed.");
+                return  Result.failure();            }
+
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            InputStream is = connection.getInputStream();
+            totalSize = connection.getContentLength();
+         String progressTex="";
+            byte[] buffer = new byte[1024];
+            int len1;
+            while ((len1 = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, len1);
+                downloadedSize += len1;
+                Progress=((int) (downloadedSize * 100 / totalSize));
+                progressTex = String.format("%.1f MB of %.1f MB", downloadedSize / (1024.0 * 1024), totalSize / (1024.0 * 1024));
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,progressTex,"2",String.valueOf(Progress)));
+
+            }
+
+            if (downloadFileName.contains("zip")) {
+                String filePath = outputFile.getAbsolutePath();
+                File unzipDir = new File(getApplicationContext().getExternalFilesDir(null), "/Slides/");
+                unzip(filePath, unzipDir);
+            }
+          slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,String.valueOf(progressTex),"3","100"));
+            fos.close();
+            is.close();
+            Thumbnail(downloadFileName);
+            if(Flag.equalsIgnoreCase("1")){
+                ServicesRestarmehtod();}
+
+     return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0"));
+         if(Flag.equalsIgnoreCase("1")){
+             ServicesRestarmehtod();
+         }
+            Log.e(TAG, "Download Error Exception " + e.getMessage());
+         return Result.failure();
+        }
     }
 
 
@@ -94,5 +168,59 @@ public class FileDownloadWorker extends Worker {
         } finally {
             zis.close();
         }
+    }
+
+
+
+    boolean Thumbnail(String fileName){
+
+        String fileFormat = SupportClass.getFileExtension(fileName);
+        File sourceFile = new File(getApplicationContext().getExternalFilesDir(null) + "/Slides/", fileName);
+        File thumbnailStorage;
+        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            thumbnailStorage = new File(getApplicationContext().getExternalFilesDir(null) + "/Thumbnails/");
+        }else {
+            return false;
+        }
+        if(!thumbnailStorage.exists()) {
+            if(!thumbnailStorage.mkdirs()) {
+                Log.e("Thumbnail Conversion", "Directory Creation Failed.");
+                return false;
+            }
+        }
+        File destinationFile = new File(thumbnailStorage, fileName.replace(fileFormat, "jpeg"));
+        String destinationFilePath = destinationFile.getAbsolutePath();
+        if(sourceFile.exists()) {
+            Bitmap bitmap = SupportClass.generateBitmap(getApplicationContext(), sourceFile, fileFormat);
+            if(bitmap != null) {
+                try {
+                    if (destinationFile.exists()) {
+                        if (destinationFile.delete()) {
+                            Log.d("Thumbnail Conversion", "Old thumbnail(" + fileName + ") deleted.");
+                        } else {
+                            Log.e("Thumbnail Conversion", "Failed to delete old thumbnail(" + fileName + ").");
+                        }
+                    }
+                    if(!destinationFile.createNewFile()) {
+                        Log.e("Thumbnail Conversion", "Destination File Creation Failed.");
+                        return false;
+                    }
+                    FileOutputStream fileOutputStream = new FileOutputStream(destinationFile);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 75, fileOutputStream);
+                    fileOutputStream.close();
+                    return true;
+                } catch (IOException e) {
+                    Log.e("Thumbnail Conversion", Objects.requireNonNull(e.getMessage()));
+                }
+            }else Log.e("Thumbnail Creation", "Bitmap not generated");
+        }
+        return false;
+    }
+
+    void ServicesRestarmehtod(){
+        Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
+        getApplicationContext().stopService(Intent);
+        Intent Intent1 = new Intent(getApplicationContext(), SlideServices.class);
+        getApplicationContext().startService(Intent1);
     }
 }

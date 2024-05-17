@@ -12,6 +12,7 @@ import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 
+import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.roomdatabase.RoomDB;
 import saneforce.santrip.roomdatabase.SlideTable.SlidesDao;
 import saneforce.santrip.roomdatabase.SlideTable.SlidesTableDeatils;
@@ -38,22 +39,24 @@ public class SlideServices extends Service {
         ArrayList<SlidesTableDeatils> List= SlidesDao.cursorToArrayList();
 
         for (SlidesTableDeatils mList:List){
-           if (!mList.getDownloadingStaus().equalsIgnoreCase("2")){
-               String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
+           if (mList.getDownloadingStaus().equalsIgnoreCase("1")||mList.getDownloadingStaus().equalsIgnoreCase("0")){
+               if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
+                   String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
+                   Data inputData = new Data.Builder()
+                           .putString("Flag", "1")
+                           .putString("file_url", url)
+                           .putString("Slide_id", mList.getSlideId())
+                           .putString("Slide_name", mList.getSlideName())
+                           .build();
 
-
-               Data inputData = new Data.Builder()
-                       .putString("file_url", url)
-                       .putString("Slide_id", mList.getSlideId())
-                       .putString("Slide_name", mList.getSlideName())
-                       .build();
-
-               OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
-                       .setInputData(inputData)
-                       .build();
-
-               WorkManager workManager = WorkManager.getInstance(this);
-               workManager.enqueue(fileDownloadRequest);
+                   OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
+                           .setInputData(inputData)
+                           .build();
+                   WorkManager workManager = WorkManager.getInstance(this);
+                   workManager.enqueue(fileDownloadRequest);
+                   MasterSyncActivity.SlideIds.add(mList.getSlideId());
+                   break;
+               }
 
 
            }

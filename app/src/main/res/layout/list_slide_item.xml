@@ -60,6 +60,7 @@
             android:id="@+id/img_download_progress"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:progressTint="@color/Green_45"
+            android:max="100"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_3sdp"

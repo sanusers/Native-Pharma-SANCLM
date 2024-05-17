@@ -1727,5 +1727,12 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent=new Intent(HomeDashBoard.this, SlideServices.class);
+        stopService(intent);
+    }
 }
 

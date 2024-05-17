@@ -20,18 +20,29 @@ public class SlidesTableDeatils {
 
     private String SlideSize;
     @ColumnInfo(name = "DownloadingStaus")
-
     private String DownloadingStaus;
 
-    public SlidesTableDeatils( String slideId, String slideName, String slideSize, String downloadingStaus) {
+
+    @ColumnInfo(name = "Progress")
+    private String Progress;
+
+    public SlidesTableDeatils( String slideId, String slideName, String slideSize, String downloadingStaus,String Progress) {
         SlideId = slideId;
         SlideName = slideName;
         SlideSize = slideSize;
         DownloadingStaus = downloadingStaus;
+        this.Progress = Progress;
     }
     public SlidesTableDeatils() {
     }
 
+    public String getProgress() {
+        return Progress;
+    }
+
+    public void setProgress(String progress) {
+        Progress = progress;
+    }
 
     @NonNull
     public String getSlideId() {

@@ -22,21 +22,41 @@
          android:textColor="@color/black_45"
          android:textStyle="bold" />
 
-     <TextView
-         android:id="@+id/txt_downloadcount"
+     <LinearLayout
          android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="@dimen/_5sdp"
+         android:orientation="horizontal"
          android:layout_centerHorizontal="true"
          android:layout_toLeftOf="@id/cancel_img"
-         android:gravity="center"
-         android:textSize="@dimen/_9sdp"
-         android:text="55/55"
-         android:layout_marginEnd="@dimen/_20sdp"
-         android:textColor="@color/black_45"
-         android:textStyle="bold">
+         android:layout_height="wrap_content">
 
-     </TextView>
+         <TextView
+             android:id="@+id/txt_downloadcount"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="@dimen/_5sdp"
+             android:gravity="center"
+             android:textSize="@dimen/_9sdp"
+             android:text="0 /"
+             android:textColor="@color/black_45"
+             android:textStyle="bold">
+         </TextView>
+
+
+         <TextView
+             android:id="@+id/txt_totaldownloadcount"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="@dimen/_5sdp"
+             android:gravity="center"
+             android:textSize="@dimen/_9sdp"
+             android:text="0"
+             android:textColor="@color/black_45"
+             android:textStyle="bold">
+         </TextView>
+
+     </LinearLayout>
+
+>
 
      <ImageView
          android:id="@+id/cancel_img"
@@ -44,7 +64,7 @@
          android:layout_height="@dimen/_25sdp"
          android:layout_marginTop="@dimen/_2sdp"
          android:layout_marginEnd="@dimen/_5sdp"
-         android:visibility="gone"
+         android:visibility="visible"
          android:background="@color/white"
          android:layout_alignParentTop="true"
          android:layout_alignParentEnd="true"

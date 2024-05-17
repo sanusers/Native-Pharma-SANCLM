@@ -30,6 +30,7 @@ public class ThumbnailTask {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+
             String fileFormat = SupportClass.getFileExtension(fileName);
             File sourceFile = new File(context.getExternalFilesDir(null) + "/Slides/", fileName);
             File thumbnailStorage;

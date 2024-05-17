@@ -1,5 +1,7 @@
 package saneforce.santrip.activity.masterSync;
 
+import static saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.downloading_count;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,14 +14,19 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -38,16 +45,23 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.SlideDownloadNew.SlideServices;
+import saneforce.santrip.activity.SlideDownloadNew.SlidesViewModel;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
+import saneforce.santrip.activity.slideDownloaderAlertBox.Slide_adapter;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -118,6 +132,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     public static ArrayList<String> HQCODE_SYN = new ArrayList<>();
+    public static ArrayList<String> SlideIds = new ArrayList<>();
     SharedPreferences sharedpreferences;
     LocalDate localDate;
     ArrayList<String> weeklyOffDays = new ArrayList<>();
@@ -162,8 +177,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
-        Animation blinkAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.downloading);
-        binding.imgDownloading.startAnimation(blinkAnimation);
         db = RoomDB.getDatabase(this);
         masterDataDao=db.masterDataDao();
         tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
@@ -216,7 +229,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
             if(SharedPref.getSlideDowloadingStatus(this)){
                 binding.imgDownloading.setVisibility(View.GONE);
             }else {
-                binding.imgDownloading.setVisibility(View.GONE);
+                binding.imgDownloading.setVisibility(View.VISIBLE);
             }
         }
 //        else {
@@ -239,7 +252,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         binding.imgDownloading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SlideDownloaderAlertBox.dialog.show();
+                SlideAlertbox(false);
             }
         });
 
@@ -1170,12 +1183,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 setHq(jsonArray);
                                                 return;
                                             }
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
-                                            if (jsonArray.length() > 0)
-                                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, false);
-                                        }else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
-                                            insertSlide(jsonArray);
-
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
+                                            if (jsonArray.length() > 0){
+                                                insertSlide(jsonArray);
+                                                SlideAlertbox(true);
+                                            }
                                         }
                                     }
                                 } else {
@@ -1205,8 +1217,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
-                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                SlideAlertbox(true);
                             } else {
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                binding.backArrow.setVisibility(View.VISIBLE);
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
@@ -1238,8 +1253,12 @@ public class    MasterSyncActivity extends AppCompatActivity {
                             SharedPref.putAutomassync(getApplicationContext(), true);
                             SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                SlideAlertbox(true);
                             } else {
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
@@ -1862,12 +1881,14 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
     public  void insertSlide(JSONArray jsonArray){
         try {
+
             if(jsonArray.length()>0){
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String FilePath = jsonObject.optString("FilePath");
                     String id = jsonObject.optString("SlideId");
-                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"0MB","1"));
+                    Log.v("AAAA","1111");
+                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0"));
                 }
             }
         } catch (JSONException e) {
@@ -1876,5 +1897,74 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
 
     }
+
+
+  public void SlideAlertbox(boolean servesflag){
+      MasterSyncActivity.SlideIds.clear();
+        if(servesflag){
+            Intent intent1=new Intent(MasterSyncActivity.this, SlideServices.class);
+            stopService(intent1);
+            Intent intent=new Intent(MasterSyncActivity.this, SlideServices.class);
+            startService(intent);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+        TextView txt_downloadcount = dialogView.findViewById(R.id.txt_downloadcount);
+        TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
+        ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
+        Slide_adapter adapter = new Slide_adapter(this);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+        builder.setView(dialogView);
+        Dialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+
+
+      cancel_img.setOnClickListener(view -> {
+          dialog.dismiss();
+          navigateFrom="Slide";
+      });
+
+     SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
+    slidesViewModel.getAllSlides().observe(this, slides -> {
+        Collections.sort(slides, (s1, s2) -> Integer.compare(Integer.valueOf(s2.getDownloadingStaus()),Integer.valueOf(s1.getDownloadingStaus())));
+
+        adapter.setSlides(slides);
+    });
+
+
+    slidesViewModel.GetDowloaingCount().observe(this,integer -> {
+            recyclerView.getLayoutManager().scrollToPosition(integer);
+            txt_downloadcount.setText(String.valueOf(integer)+" / ");
+
+                if(Integer.valueOf(txt_total.getText().toString())!=0){
+                    if(integer==(Integer.valueOf(txt_total.getText().toString()))){
+                        if (navigateFrom.equalsIgnoreCase("Login")) {
+                           dialog.dismiss();
+                            commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
+                            Intent intent = new Intent(context, HomeDashBoard.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
+                        }
+                    }
+           }
+        });
+        slidesViewModel.SlideTotalCount().observe(this,integer -> {
+            txt_total.setText(String.valueOf(integer));
+
+        });
+
+
+    }
+
+
 
 }
