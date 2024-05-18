@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.clearData.setOnClickListener(view -> {
-            if (callsUtil.isOutBoxDataAvailable()) {
+            if (!callsUtil.isOutBoxDataAvailable()) {
                 new AlertDialog.Builder(this).setTitle("Warning!").setIcon(getDrawable(R.drawable.icon_sync_failed)).setMessage("Outbox Data Calls will be deleted, Do you want to Continue?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.yes, (dialog, whichButton) -> DeleteAllFiles()).setNegativeButton(android.R.string.no, null).show();
             } else {
                 DeleteAllFiles();
