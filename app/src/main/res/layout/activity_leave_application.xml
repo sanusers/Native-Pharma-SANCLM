@@ -286,9 +286,9 @@
                                         android:layout_weight="0.06" />
 
                                     <RelativeLayout
+                                        android:visibility="invisible"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-
                                         android:layout_weight="1">
 
                                         <TextView
@@ -360,11 +360,13 @@
                                     </RelativeLayout>
 
                                     <RelativeLayout
+                                        android:visibility="invisible"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="0.07" />
 
                                     <RelativeLayout
+                                        android:visibility="invisible"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"

@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.map.custSelection;
 
+import static androidx.camera.core.impl.utils.ContextUtil.getApplicationContext;
 import static saneforce.santrip.activity.map.MapsActivity.GeoTagApprovalNeed;
 
 import android.annotation.SuppressLint;
@@ -19,8 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.homeScreen.HomeDashBoard;
 import saneforce.santrip.activity.map.MapsActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.UtilityClass;
 
 public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHolder> {
     public static ArrayList<CustList> getCustListNew = new ArrayList<>();
@@ -48,11 +51,16 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tv_name.setText(custListArrayList.get(position).getName());
-        holder.tv_category.setText(custListArrayList.get(position).getCategory());
         holder.tv_specialist.setText(custListArrayList.get(position).getSpecialist());
         holder.tv_area.setText(custListArrayList.get(position).getTown_name());
+        String selectedTap = custListArrayList.get(position).getType();
+        System.out.println("custListArrayList--->"+selectedTap);
         holder.tv_count.setText(String.format("%s/%s", custListArrayList.get(position).getTag(), custListArrayList.get(position).getMaxTag()));
-
+          if (custListArrayList.get(position).getCategory().equals("")){
+              holder.tv_category.setVisibility(View.GONE);
+          }else {
+              holder.tv_category.setText(custListArrayList.get(position).getCategory());
+          }
         if (GeoTagApprovalNeed.equalsIgnoreCase("0")) {
             for (int m = 0; m < custListArrayListNew.size(); m++) {
                 if (custListArrayListNew.get(m).getCode().equalsIgnoreCase(custListArrayList.get(position).getCode())) {
@@ -100,20 +108,25 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
             commonUtilsMethods.displayPopupWindow(activity, context, view, custListArrayList.get(position).getName());
         });
 
+
         holder.constraint_main.setOnClickListener(view -> {
-            if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
-                Intent intent = new Intent(context, MapsActivity.class);
-                intent.putExtra("from", "tagging");
-                intent.putExtra("cus_name", custListArrayList.get(position).getName());
-                intent.putExtra("cus_code", custListArrayList.get(position).getCode());
-                intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
-                intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                TagCustSelectionList.SelectedCustPos = custListArrayList.get(position).getPosition();
-                //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
-                context.startActivity(intent);
-            } else {
-                 commonUtilsMethods.showToastMessage(context,context.getString(R.string.exceed_tag_limit));
+            if (UtilityClass.isNetworkAvailable(context)) {
+                if (Integer.parseInt(custListArrayList.get(position).getMaxTag()) > Integer.parseInt(custListArrayList.get(position).getTag())) {
+                    Intent intent = new Intent(context, MapsActivity.class);
+                    intent.putExtra("from", "tagging");
+                    intent.putExtra("cus_name", custListArrayList.get(position).getName());
+                    intent.putExtra("cus_code", custListArrayList.get(position).getCode());
+                    intent.putExtra("town_name", custListArrayList.get(position).getTown_name());
+                    intent.putExtra("town_code", custListArrayList.get(position).getTown_code());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    TagCustSelectionList.SelectedCustPos = custListArrayList.get(position).getPosition();
+                    //  SharedPref.setCustomerPosition(context, custListArrayList.get(position).getPosition());
+                    context.startActivity(intent);
+                } else {
+                    commonUtilsMethods.showToastMessage(context, context.getString(R.string.exceed_tag_limit));
+                }
+            }else {
+                commonUtilsMethods.showToastMessage(context,context.getString(R.string.no_network));
             }
         });
 
@@ -140,6 +153,7 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
                 context.startActivity(intent);
             }
         });
+        setVisibility(selectedTap,holder);
     }
 
     @Override
@@ -151,6 +165,16 @@ public class CustListAdapter extends RecyclerView.Adapter<CustListAdapter.ViewHo
     public void filterList(ArrayList<CustList> filteredNames) {
         this.custListArrayList = filteredNames;
         notifyDataSetChanged();
+    }
+    private void setVisibility(String selectedTap, ViewHolder holder){
+        switch (selectedTap){
+            case "C":
+                holder.tv_specialist.setVisibility(View.GONE);
+                break;
+            case "S":
+                holder.tv_category.setVisibility(View.GONE);
+                holder.tv_specialist.setVisibility(View.GONE);
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

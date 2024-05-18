@@ -93,7 +93,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
     MasterSyncAdapter masterSyncAdapter = new MasterSyncAdapter();
     public static Dialog dialog1;
     String rsf="";
-    int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0, departmentCount = 0, classCount = 0, feedbackCount = 0;
+    int doctorCount = 0, specialityCount = 0, qualificationCount = 0, categoryCount = 0,chemistCategoryCount=0, departmentCount = 0, classCount = 0, feedbackCount = 0;
     int unlistedDrCount = 0, chemistCount = 0, stockiestCount = 0, hospitalCount = 0, cipCount = 0, inputCount = 0, leaveCount = 0, leaveStatusCount = 0, tpSetupCount = 0, clusterCount = 0;
     int callSyncCount = 0, visitControlCount = 0, dateSyncCount = 0;
     int productCount = 0, proCatCount = 0, brandCount = 0, compProCount = 0, mapComPrdCount = 0;
@@ -603,6 +603,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         specialityCount = masterDataDao.getMasterDataTableOrNew(Constants.SPECIALITY).getMasterSyncDataJsonArray().length();
         qualificationCount = masterDataDao.getMasterDataTableOrNew(Constants.QUALIFICATION).getMasterSyncDataJsonArray().length();
         categoryCount = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY).getMasterSyncDataJsonArray().length();
+        chemistCategoryCount = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray().length();
         departmentCount = masterDataDao.getMasterDataTableOrNew(Constants.DEPARTMENT).getMasterSyncDataJsonArray().length();
         classCount = masterDataDao.getMasterDataTableOrNew(Constants.CLASS).getMasterSyncDataJsonArray().length();
         feedbackCount = masterDataDao.getMasterDataTableOrNew(Constants.FEEDBACK).getMasterSyncDataJsonArray().length();
@@ -714,7 +715,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
         chemistModelArray.clear();
         if (SharedPref.getChmNeed(this).equalsIgnoreCase("0")) {
             MasterSyncItemModel cheModel = new MasterSyncItemModel(SharedPref.getChmCap(this), chemistCount, Constants.DOCTOR, "getchemist", Constants.CHEMIST + hqCode, chemistStatus, false);
+            MasterSyncItemModel chemistCategory = new MasterSyncItemModel(Constants.CATEGORY, chemistCategoryCount, Constants.DOCTOR, "getchem_categorys", Constants.CATEGORY_CHEMIST, categoryStatus, false);
             chemistModelArray.add(cheModel);
+            chemistModelArray.add(chemistCategory);
         } else binding.chemist.setVisibility(View.GONE);
 
         //Stockiest
@@ -1044,7 +1047,6 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
         try {
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
-           System.out.println("baseUrl-->");
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("tableName", remoteTableName);
             jsonObject.put("sfcode", SharedPref.getSfCode(this));
@@ -1055,7 +1057,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
             jsonObject.put("Designation", SharedPref.getDesig(this));
             jsonObject.put("state_code", SharedPref.getStateCode(this));
             jsonObject.put("subdivision_code", SharedPref.getSubdivisionCode(this));
-
+            apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
             switch (remoteTableName) {
                 case "getholiday":
                 case "getweeklyoff": {

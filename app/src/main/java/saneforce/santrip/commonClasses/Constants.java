@@ -16,6 +16,8 @@ public class Constants {
     public static final String SPECIALITY = "Speciality";
     public static final String QUALIFICATION = "Qualification";
     public static final String CATEGORY = "Category";
+    public static final String CATEGORY_CHEMIST = "ChemistCategory";
+
     public static final String DEPARTMENT = "Department";
     public static final String CLASS = "Class";
     public static final String FEEDBACK = "Feedback";

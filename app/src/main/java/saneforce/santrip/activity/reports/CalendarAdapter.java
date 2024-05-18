@@ -1,19 +1,30 @@
 package saneforce.santrip.activity.reports;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.tourPlan.calendar.OnDayClickInterface;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
+import saneforce.santrip.utility.TimeUtils;
 
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyViewHolder> {
@@ -21,11 +32,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
     ArrayList<String> arrayList = new ArrayList<>();
     Context context;
     OnDayClickInterface onDayClickInterface;
+    LocalDate localDate;
 
-    public CalendarAdapter(ArrayList<String> arrayList, Context context,OnDayClickInterface onDayClickInterface) {
+    public CalendarAdapter(ArrayList<String> arrayList, Context context,LocalDate localDate,OnDayClickInterface onDayClickInterface) {
         this.arrayList = arrayList;
         this.context = context;
         this.onDayClickInterface = onDayClickInterface;
+        this.localDate = localDate;
+        localDate = LocalDate.now();
+
     }
 
     @NonNull
@@ -37,7 +52,26 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull CalendarAdapter.MyViewHolder holder, int position) {
-        holder.dateNo.setText(arrayList.get(holder.getAbsoluteAdapterPosition()));
+        String dateString = arrayList.get(position);
+        holder.dateNo.setText(dateString);
+        if (!TextUtils.isEmpty(dateString)) {
+            String myDate = monthYearFromDate(localDate, TimeUtils.FORMAT_24) + "-" + dateString;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            try {
+                LocalDate parsedMyDate = LocalDate.parse(myDate, formatter);
+                LocalDate currentDate = LocalDate.now();
+                int comparisonResult = parsedMyDate.compareTo(currentDate);
+                if (comparisonResult < 0) {
+                    holder.itemView.setEnabled(true);
+                } else if (comparisonResult > 0) {
+                    holder.itemView.setEnabled(false);
+                } else {
+                    holder.itemView.setEnabled(true);
+                }
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+            }
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,5 +94,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.MyView
             super(itemView);
             dateNo = itemView.findViewById(R.id.dateNo);
         }
+    }
+    private String monthYearFromDate(LocalDate date, String requiredFormat) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(requiredFormat);
+        return date.format(formatter);
     }
 }

@@ -122,6 +122,6 @@ public class DayReportSlideDetailsAdapter extends RecyclerView.Adapter<DayReport
         close.setOnClickListener(closeView -> {
             popupWindow.dismiss();
         });
-        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] , location[1]-200);
+        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, location[0] , location[1]-120);
     }
 }

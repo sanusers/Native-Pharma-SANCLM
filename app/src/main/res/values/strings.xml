@@ -151,7 +151,7 @@
     <string name="no_feedback">No Feedback</string>
     <string name="no_cluster">No Cluster</string>
     <string name="no_select_date">Not Select Date</string>
-    <string name="select_from_date">Not Select Date</string>
+    <string name="select_from_date">Select From Date</string>
     <string name="toast_response_failed">Response Failed! Please Try Again</string>
     <string name="access_denied">Access Denied! Contact Administrator</string>
     <string name="login_successfully">Login successfully!</string>
@@ -306,6 +306,7 @@
     <string name="enter_new_pwd">Enter new password</string>
     <string name="enter_repeat_pwd">Enter repeat password</string>
     <string name="chg_new_pwd"> change new password</string>
+    <string name="change_new_password"> Old password and new password both are the same, change to something else</string>
     <string name="chk_old_pwd">Old password is wrong! Enter again</string>
     <string name="pwd_not_match">Password mismatch</string>
     <string name="pwd_changed_successfully">Password changed successfully</string>
