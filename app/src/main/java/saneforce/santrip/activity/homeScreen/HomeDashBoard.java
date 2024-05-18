@@ -125,6 +125,7 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesDao;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkChangeReceiver;
@@ -167,7 +168,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static CustomPagerAdapter adapter;
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     RoomDB roomDB;
-
+   SlidesDao slidesDao;
     static MasterDataDao masterDataDao;
     OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     TourPlanOfflineDataDao tourPlanOfflineDataDao;
@@ -289,6 +290,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         masterDataDao = roomDB.masterDataDao();
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
+        slidesDao=roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 
         tourPlanOfflineDataDao=roomDB.tourPlanOfflineDataDao();
@@ -1731,8 +1733,8 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent intent=new Intent(HomeDashBoard.this, SlideServices.class);
-        stopService(intent);
+        slidesDao.Changestatus("0","1");
+
     }
 }
 

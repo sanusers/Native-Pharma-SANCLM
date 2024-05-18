@@ -538,7 +538,7 @@ public class DcrApprovalActivity extends AppCompatActivity implements OnItemClic
     @Override
     public void onClick(DCRApprovalList dcrApprovalList, int pos) {
         dcrCallApprovalBinding.tvName.setText(dcrApprovalList.getSf_name());
-        dcrCallApprovalBinding.tvWt.setText(dcrApprovalList.getWorkType_name());
+        dcrCallApprovalBinding.tvWorktype1.setText(dcrApprovalList.getWorkType_name());
         dcrCallApprovalBinding.tvRemark1.setText(dcrApprovalList.getRemarks());
         dcrCallApprovalBinding.tvActivityDate.setText(dcrApprovalList.getActivity_date());
         dcrCallApprovalBinding.tvSubmittedDate.setText(dcrApprovalList.getSubmission_date_sub());

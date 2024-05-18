@@ -21,6 +21,7 @@ public class SlidesViewModel extends AndroidViewModel {
 
     private LiveData<Integer>  DownlaodindCount;
     private LiveData<Integer>  SlidTotalCount;
+    private LiveData<Integer>  StatusNewCount;
 
     public SlidesViewModel(@NonNull Application application) {
         super(application);
@@ -29,6 +30,7 @@ public class SlidesViewModel extends AndroidViewModel {
         allSlides = slidesDao.getAllSlides1();
         DownlaodindCount = slidesDao.getCountOfSlidesWithDownloadingStatus();
         SlidTotalCount=slidesDao.TotalSlidecount();
+        StatusNewCount=slidesDao.getCountNewStatus();
     }
 
     public LiveData<List<SlidesTableDeatils>> getAllSlides() {
@@ -40,4 +42,8 @@ public class SlidesViewModel extends AndroidViewModel {
     public LiveData<Integer> SlideTotalCount() {
         return SlidTotalCount;
     }
+    public LiveData<Integer> SlideNewCount() {
+        return StatusNewCount;
+    }
+
 }

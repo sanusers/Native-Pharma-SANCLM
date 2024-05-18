@@ -26,12 +26,15 @@ public class SlidesTableDeatils {
     @ColumnInfo(name = "Progress")
     private String Progress;
 
-    public SlidesTableDeatils( String slideId, String slideName, String slideSize, String downloadingStaus,String Progress) {
+    @ColumnInfo(name = "Background task")
+    private String Backgroundtask;
+    public SlidesTableDeatils( String slideId, String slideName, String slideSize, String downloadingStaus,String Progress,String Backgroundtask) {
         SlideId = slideId;
         SlideName = slideName;
         SlideSize = slideSize;
         DownloadingStaus = downloadingStaus;
         this.Progress = Progress;
+        this.Backgroundtask = Backgroundtask;
     }
     public SlidesTableDeatils() {
     }
@@ -42,6 +45,14 @@ public class SlidesTableDeatils {
 
     public void setProgress(String progress) {
         Progress = progress;
+    }
+
+    public String getBackgroundtask() {
+        return Backgroundtask;
+    }
+
+    public void setBackgroundtask(String backgroundtask) {
+        Backgroundtask = backgroundtask;
     }
 
     @NonNull

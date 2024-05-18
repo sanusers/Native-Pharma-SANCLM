@@ -72,6 +72,7 @@ public class AdapterCusMainList extends RecyclerView.Adapter<AdapterCusMainList.
             }
             DcrDetailViewActivity.SelectedCode = dcrApprovalLists.get(position).getCode();
             Intent intent = new Intent(context, DcrDetailViewActivity.class);
+            intent.putExtra("cut_name", dcrApprovalLists.get(position).getName());
             intent.putExtra("hq_name", dcrApprovalLists.get(position).getHq_name());
             intent.putExtra("cus_cluster", dcrApprovalLists.get(position).getSdp_name());
             intent.putExtra("cus_pob", dcrApprovalLists.get(position).getPob());
@@ -81,6 +82,9 @@ public class AdapterCusMainList extends RecyclerView.Adapter<AdapterCusMainList.
             intent.putExtra("cus_remark", dcrApprovalLists.get(position).getRemark());
             intent.putExtra("cus_mod_time", dcrApprovalLists.get(position).getModTime());
             intent.putExtra("cus_visit_time", dcrApprovalLists.get(position).getVisitTime());
+            intent.putExtra("dcr_id", dcrApprovalLists.get(position).getDct_id());
+            intent.putExtra("Details_id", dcrApprovalLists.get(position).getDcr_detial_id());
+
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             AdapterCusSingleList.ProductList = new ArrayList<>();

@@ -368,7 +368,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void navigate() {
 
-        runOnUiThread(() -> {binding.configurationPB.setVisibility(View.GONE);binding.btnSaveSettings.setEnabled(true);
+        runOnUiThread(() -> {binding.configurationPB.setVisibility(View.GONE);binding.btnSaveSettings.setEnabled(false);
             commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.configure_success));});
         Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
         intent.putExtra(Constants.NAVIGATE_FROM, "Setting");

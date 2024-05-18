@@ -42,8 +42,15 @@ public interface SlidesDao {
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '3'")
     LiveData<Integer> getCountOfSlidesWithDownloadingStatus();
 
+    @Query("SELECT COUNT(*) FROM SlidesTableDeatils WHERE DownloadingStaus = '1'")
+    LiveData<Integer> getCountNewStatus();
+
     @Query("SELECT COUNT(*) FROM SlidesTableDeatils")
     LiveData<Integer> TotalSlidecount();
+
+
+      @Query("Update SlidesTableDeatils set `Background task`=:New WHERE `Background task` = :old")
+     void Changestatus(String New,String old);
 
 
 
@@ -57,7 +64,8 @@ public interface SlidesDao {
                 @SuppressLint("Range") String slideSize = cursor.getString(cursor.getColumnIndex("SlideSize"));
                 @SuppressLint("Range") String downloadingStatus = cursor.getString(cursor.getColumnIndex("DownloadingStaus")); // Corrected column name
                 @SuppressLint("Range") String Progress = cursor.getString(cursor.getColumnIndex("Progress"));
-                SlidesTableDeatils slide = new SlidesTableDeatils(slideId, slideName, slideSize, downloadingStatus,Progress);
+                @SuppressLint("Range") String Backgroundtask = cursor.getString(cursor.getColumnIndex("Background task"));
+                SlidesTableDeatils slide = new SlidesTableDeatils(slideId, slideName, slideSize, downloadingStatus,Progress,Backgroundtask);
                 slides.add(slide);
             } while (cursor.moveToNext());
             cursor.close();

@@ -20,17 +20,22 @@ import saneforce.santrip.storage.SharedPref;
 
 public class SlideServices extends Service {
 
+
+    private static boolean isServiceRunning = false;
+
     RoomDB roomDB;
-  SlidesDao SlidesDao;
+    SlidesDao SlidesDao;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+
     @Override
     public void onCreate() {
         super.onCreate();
+        isServiceRunning = true;
 
         Log.v("Creating","Created Srvices");
         roomDB = RoomDB.getDatabase(getApplicationContext());
@@ -39,6 +44,7 @@ public class SlideServices extends Service {
         ArrayList<SlidesTableDeatils> List= SlidesDao.cursorToArrayList();
 
         for (SlidesTableDeatils mList:List){
+            if(mList.getBackgroundtask().equalsIgnoreCase("1")){
            if (mList.getDownloadingStaus().equalsIgnoreCase("1")||mList.getDownloadingStaus().equalsIgnoreCase("0")){
                if(!MasterSyncActivity.SlideIds.contains(mList.getSlideId())) {
                    String url = "https://" + SharedPref.getLogInsite(getApplicationContext()) + "/" + SharedPref.getSlideUrl(getApplicationContext()) + mList.getSlideName();
@@ -60,7 +66,26 @@ public class SlideServices extends Service {
 
 
            }
+        }else {
+               stopSelf();
+            }
         }
 
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        isServiceRunning = false;
+    }
+
+    public static boolean isRunning() {
+        return isServiceRunning;
     }
 }

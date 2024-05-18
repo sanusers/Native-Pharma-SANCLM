@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -227,7 +228,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         } else {
             binding.backArrow.setVisibility(View.VISIBLE);
             if(SharedPref.getSlideDowloadingStatus(this)){
-                binding.imgDownloading.setVisibility(View.GONE);
+                binding.imgDownloading.setVisibility(View.VISIBLE);
             }else {
                 binding.imgDownloading.setVisibility(View.VISIBLE);
             }
@@ -239,7 +240,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
         //binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
 
         binding.backArrow.setOnClickListener(view -> {
-            if (navigateFrom.equalsIgnoreCase("Login")) {
+
+            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -1186,7 +1188,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                         } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
                                             if (jsonArray.length() > 0){
                                                 insertSlide(jsonArray);
-                                                SlideAlertbox(true);
+                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                    SlideAlertbox(true);}
                                             }
                                         }
                                     }
@@ -1888,7 +1891,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     String FilePath = jsonObject.optString("FilePath");
                     String id = jsonObject.optString("SlideId");
                     Log.v("AAAA","1111");
-                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0"));
+                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0","1"));
                 }
             }
         } catch (JSONException e) {
@@ -1900,12 +1903,15 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
 
   public void SlideAlertbox(boolean servesflag){
+      SlidesDao.Changestatus("1","0");
       MasterSyncActivity.SlideIds.clear();
         if(servesflag){
-            Intent intent1=new Intent(MasterSyncActivity.this, SlideServices.class);
+            Intent intent1 = new Intent(MasterSyncActivity.this, SlideServices.class);
             stopService(intent1);
-            Intent intent=new Intent(MasterSyncActivity.this, SlideServices.class);
-            startService(intent);
+
+            Intent startIntent = new Intent(getApplicationContext(), SlideServices.class);
+            startService(startIntent);
+
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
@@ -1947,10 +1953,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         if (navigateFrom.equalsIgnoreCase("Login")) {
                            dialog.dismiss();
                             commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
-                            Intent intent = new Intent(context, HomeDashBoard.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
+
                         }else {
                             commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
                         }
@@ -1961,8 +1964,17 @@ public class    MasterSyncActivity extends AppCompatActivity {
             txt_total.setText(String.valueOf(integer));
 
         });
+      slidesViewModel.SlideNewCount().observe(this,integer -> {
+          if (navigateFrom.equalsIgnoreCase("Login")) {
+              if (integer == 0) {
+                  Intent intent = new Intent(context, HomeDashBoard.class);
+                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                  startActivity(intent);
+                  finish();
+              }
+          }
 
-
+      });
     }
 
 

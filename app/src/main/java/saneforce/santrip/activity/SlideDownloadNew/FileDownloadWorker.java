@@ -109,7 +109,7 @@ public class FileDownloadWorker extends Worker {
                 downloadedSize += len1;
                 Progress=((int) (downloadedSize * 100 / totalSize));
                 progressTex = String.format("%.1f MB of %.1f MB", downloadedSize / (1024.0 * 1024), totalSize / (1024.0 * 1024));
-                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,progressTex,"2",String.valueOf(Progress)));
+                slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,progressTex,"2",String.valueOf(Progress),"1"));
 
             }
 
@@ -118,7 +118,7 @@ public class FileDownloadWorker extends Worker {
                 File unzipDir = new File(getApplicationContext().getExternalFilesDir(null), "/Slides/");
                 unzip(filePath, unzipDir);
             }
-          slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,String.valueOf(progressTex),"3","100"));
+          slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,String.valueOf(progressTex),"3","100","1"));
             fos.close();
             is.close();
             Thumbnail(downloadFileName);
@@ -128,7 +128,7 @@ public class FileDownloadWorker extends Worker {
      return Result.success();
         } catch (Exception e) {
             e.printStackTrace();
-            slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0"));
+            slidesDao.saveSlideData(new SlidesTableDeatils(fileId,downloadFileName,"Downlaoding Failure","0","0","1"));
          if(Flag.equalsIgnoreCase("1")){
              ServicesRestarmehtod();
          }
@@ -218,9 +218,12 @@ public class FileDownloadWorker extends Worker {
     }
 
     void ServicesRestarmehtod(){
-        Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
-        getApplicationContext().stopService(Intent);
-        Intent Intent1 = new Intent(getApplicationContext(), SlideServices.class);
-        getApplicationContext().startService(Intent1);
+
+           Intent Intent = new Intent(getApplicationContext(), SlideServices.class);
+           getApplicationContext().stopService(Intent);
+
+            Intent Intent1 = new Intent(getApplicationContext(), SlideServices.class);
+            getApplicationContext().startService(Intent1);
+
     }
 }
