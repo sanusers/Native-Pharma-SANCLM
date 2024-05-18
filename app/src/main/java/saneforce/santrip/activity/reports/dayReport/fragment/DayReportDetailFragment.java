@@ -3,6 +3,7 @@ package saneforce.santrip.activity.reports.dayReport.fragment;
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +28,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +61,8 @@ public class DayReportDetailFragment extends Fragment {
     ApiInterface apiInterface;
 
     ArrayList<DayReportDetailModel> arrayOfReportData = new ArrayList<>();
+    ArrayList<DayReportDetailModel> arrayOfReportData1 = new ArrayList<>();
+
     CommonUtilsMethods commonUtilsMethods;
     ProgressDialog progressDialog;
     String rcpaItem, eventCaptureItem = "";
@@ -143,7 +147,6 @@ public class DayReportDetailFragment extends Fragment {
             }
         });
 
-
         return binding.getRoot();
 
     }
@@ -211,6 +214,7 @@ public class DayReportDetailFragment extends Fragment {
         binding.unDr.setSelected(false);
         binding.cip.setSelected(false);
         binding.hosp.setSelected(false);
+        binding.all.setSelected(false);
 
         linearLayout.setSelected(true);
     }
@@ -318,4 +322,6 @@ public class DayReportDetailFragment extends Fragment {
         binding.dayReportDetailRecView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.dayReportDetailRecView.setAdapter(adapter);
     }
+
+
 }

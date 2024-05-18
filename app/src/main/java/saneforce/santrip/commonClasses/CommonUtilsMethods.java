@@ -46,6 +46,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.login.LoginActivity;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.LocaleHelper;
 
@@ -162,13 +163,27 @@ public class CommonUtilsMethods {
 
         // if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
         new android.app.AlertDialog.Builder(activity).setTitle("Alert")  // GPS not found
-                .setCancelable(false).setMessage("Activate the Gps to proceed further") // Want to enable?
+                .setCancelable(false).setMessage("Enable the location of Gps to proceed further") // Want to enable?
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
                     activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     dialogInterface.dismiss();
                 }).show();
     }
-
+    public void loginNavigation(Activity activity,String password) {
+        new android.app.AlertDialog.Builder(activity)
+                .setTitle("Alert")
+                .setCancelable(false)
+                .setMessage("Would you go to Login Page?")
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    Intent intent = new Intent(activity, LoginActivity.class);
+                    activity.startActivity(intent);
+                    dialogInterface.dismiss();
+                })
+                .setNegativeButton("No", (dialogInterface, i) -> {
+                    dialogInterface.cancel();
+                })
+                .show();
+    }
     public static void RequestPermissions(Activity activity, String[] Permissions, boolean isRefresh) {
         PermissionListener permissionlistener = new PermissionListener() {
             @SuppressLint("UnsafeIntentLaunch")

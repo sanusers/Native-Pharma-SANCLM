@@ -672,12 +672,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         btn_confirm.setOnClickListener(view -> {
-            if (GeoTagImageNeed.equalsIgnoreCase("0")) {
-                CallImageAPI(jsonImage.toString(), jsonObject.toString());
-            } else {
-                progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
-                CallAPIGeo(jsonObject.toString());
+            if (UtilityClass.isNetworkAvailable(this)){
+                if (GeoTagImageNeed.equalsIgnoreCase("0")) {
+                    CallImageAPI(jsonImage.toString(), jsonObject.toString());
+                } else {
+                    progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
+                    CallAPIGeo(jsonObject.toString());
+                }
+            }else {
+                commonUtilsMethods.showToastMessage(this,getString(R.string.no_network));
             }
+
         });
 
         btn_cancel.setOnClickListener(view -> {
@@ -926,7 +931,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             JSONObject jsonImgRes;
                             jsonImgRes = new JSONObject(response.body().toString());
                             Log.v("img_tag", jsonImgRes.getString("success"));
-                            if (jsonImgRes.getString("success").equalsIgnoreCase("true") && jsonImgRes.getString("msg").equalsIgnoreCase("Photo Has Been Updated")) {
+                            if (jsonImgRes.getString("success").equalsIgnoreCase("true")) {
                                 progressDialog = CommonUtilsMethods.createProgressDialog(MapsActivity.this);
                                 CallAPIGeo(jsonTag);
                             } else {
@@ -1104,6 +1109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.v("map_camera_tt", "error---dr-" + e);
                 }
                 break;
+
             case "C":
                 try {
                     JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + sfCode).getMasterSyncDataJsonArray();

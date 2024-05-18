@@ -25,9 +25,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     public LiveData<JsonElement> loginProcess(Context context, String url, String object) {
-        if(mutableLiveData==null){
             mutableLiveData = loginRepo.requestLogin(context,url,object);
-        }
         return mutableLiveData;
     }
 }

@@ -54,17 +54,26 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull DayReportAdapter.MyViewHolder holder, int position) {
         DayReportModel dayReportModel = arrayList.get(holder.getAbsoluteAdapterPosition());
+        String address = dayReportModel.getInaddress();
         holder.name.setText(dayReportModel.getSF_Name());
         holder.workType.setText(dayReportModel.getWtype());
         holder.submitDate.setText(dayReportModel.getRptdate());
         holder.remarks.setText(dayReportModel.getRemarks());
-        if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")) {
-            holder.rlCheckIn.setVisibility(View.VISIBLE);
-            holder.rlCheckOut.setVisibility(View.VISIBLE);
-            holder.checkInTime.setText(dayReportModel.getIntime());
-            holder.checkInAddress.setText(dayReportModel.getInaddress());
-            holder.checkOutTime.setText(dayReportModel.getOuttime());
-            holder.checkOutAddress.setText(dayReportModel.getOutaddress());
+        if (SharedPref.getSrtNd(context).equalsIgnoreCase("0")){
+            if (dayReportModel.getInaddress().equals("")){
+                holder.rlCheckIn.setVisibility(View.GONE);
+            }else{
+                holder.rlCheckIn.setVisibility(View.VISIBLE);
+                holder.checkInTime.setText(dayReportModel.getIntime());
+                holder.checkInAddress.setText(dayReportModel.getInaddress());
+            }
+            if (dayReportModel.getOutaddress().equals("")){
+                holder.rlCheckOut.setVisibility(View.GONE);
+            }else{
+                holder.rlCheckOut.setVisibility(View.VISIBLE);
+                holder.checkOutTime.setText(dayReportModel.getOuttime());
+                holder.checkOutAddress.setText(dayReportModel.getOutaddress());
+            }
         } else{
             holder.rlCheckIn.setVisibility(View.GONE);
             holder.rlCheckOut.setVisibility(View.GONE);
@@ -108,7 +117,10 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.arrow.setVisibility(View.GONE);
             holder.DcrIconLayout.setVisibility(View.GONE);
         }
-
+       /* if(dayReportModel.getRemarks().equals("")){
+           holder.remarksTxt.setVisibility(View.GONE);
+           holder.remarks.setVisibility(View.GONE);
+        }*/
        /* int status = dayReportModel.getTyp();
         switch (status) {
             case 0: {
@@ -143,7 +155,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.pink_15)));
         } else if ((status==0 || status==1) && confirmStatus==3) {
             holder.status.setText("ReEntry");
-            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.blue_60)));
+            holder.status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.bg_lite_blue)));
         }
 
 
@@ -192,7 +204,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
 //    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name, workType, checkInTime, checkInAddress, checkInMarker, checkOutTime, checkOutAddress, checkOutMarker, submitDate, remarks, status;
+        TextView name, workType, checkInTime, checkInAddress, checkInMarker, checkOutTime, checkOutAddress, checkOutMarker, submitDate, remarks, status,remarksTxt;
         TextView drCount, chemCount, stockCount, unDrCount, cipCount, hospCount;
         ConstraintLayout drIcon, cheIcon, stockIcon, cipIcon, unDrIcon, hospIcon;
         LinearLayout arrow, statusLayout, DcrIconLayout;
@@ -232,7 +244,7 @@ public class DayReportAdapter extends RecyclerView.Adapter<DayReportAdapter.MyVi
             arrow = itemView.findViewById(R.id.arrow);
             rlCheckIn = itemView.findViewById(R.id.rl_checkIn);
             rlCheckOut = itemView.findViewById(R.id.rl_checkOut);
-
+            remarksTxt = itemView.findViewById(R.id.remarksTxt);
         }
     }
 

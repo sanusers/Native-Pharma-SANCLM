@@ -30,7 +30,7 @@
    <ImageView
        android:layout_width="50dp"
        android:layout_height="0dp"
-       android:padding="@dimen/_3sdp"
+       android:padding="@dimen/_4sdp"
        android:src="@drawable/calendar_img"
        app:layout_constraintTop_toTopOf="@+id/calender"
        app:layout_constraintEnd_toEndOf="@+id/calender"
@@ -108,7 +108,7 @@
         android:layout_height="0dp"
         android:src="@drawable/report_sort_icon"
         app:tint="@color/white"
-        android:padding="@dimen/_4sdp"
+        android:padding="@dimen/_6sdp"
         app:layout_constraintStart_toStartOf="@+id/sortIcon"
         app:layout_constraintEnd_toEndOf="@+id/sortIcon"
         app:layout_constraintTop_toTopOf="@+id/sortIcon"

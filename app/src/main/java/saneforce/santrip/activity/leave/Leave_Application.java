@@ -2,13 +2,18 @@ package saneforce.santrip.activity.leave;
 
 
 import static com.gun0912.tedpermission.provider.TedPermissionProvider.context;
+import static saneforce.santrip.activity.call.DCRCallActivity.SfCode;
 import static saneforce.santrip.commonClasses.UtilityClass.hideKeyboard;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
@@ -27,10 +32,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +54,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,6 +72,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.call.DCRCallActivity;
+import saneforce.santrip.activity.camera.CameraActivity;
+import saneforce.santrip.activity.map.MapsActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
 import saneforce.santrip.databinding.ActivityLeaveApplicationBinding;
@@ -93,12 +109,13 @@ public class Leave_Application extends AppCompatActivity {
     int totalval = 0, val = 0;
 
     public static ListView dailog_list;
-    String l_address = "", l_reason = "";
+    String l_address = "", l_reason = "",imageName = "";
 
     CommonUtilsMethods commonUtilsMethods;
    public static ActivityLeaveApplicationBinding leavebinding;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
+    private String destinationFilePath;
 
     //To Hide the bottomNavigation When popup
 
@@ -139,7 +156,6 @@ public class Leave_Application extends AppCompatActivity {
         leavebinding.edReason.setFilters(new InputFilter[]{CommonUtilsMethods.FilterSpaceEditText(leavebinding.edReason)});
 
 //        l_sideview.closeDrawer(Gravity.RIGHT);
-
         leavebinding.leavebackArrow.setOnClickListener(v -> {
             //  onBackPressed();
             getOnBackPressedDispatcher().onBackPressed();
@@ -626,7 +642,7 @@ public class Leave_Application extends AppCompatActivity {
                         public void onResponse(@NonNull Call<JsonElement> call, @NonNull Response<JsonElement> response) {
                             if (response.isSuccessful()) {
                                 Log.e("test", "response : " + " : " + Objects.requireNonNull(response.body()).toString());
-                                commonUtilsMethods.showToastMessage(Leave_Application.this,"Leave submit successfully");
+                                commonUtilsMethods.showToastMessage(Leave_Application.this,"Leave Submitted Successfully");
                                 finish();
                             }
                         }
@@ -668,4 +684,5 @@ public class Leave_Application extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) Leave_Application.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
 }

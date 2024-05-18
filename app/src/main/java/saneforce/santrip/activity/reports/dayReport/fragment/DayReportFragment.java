@@ -256,7 +256,7 @@ public class DayReportFragment extends Fragment {
     }
 
     public void populateCalendarAdapter(RecyclerView recyclerView) {
-        calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), new OnDayClickInterface() {
+        calendarAdapter = new CalendarAdapter(daysArrayList, getContext(), localDate,new OnDayClickInterface() {
             @Override
             public void onDayClicked(int position, String date, ModelClass modelClass) {
                 calendarDialog.cancel();

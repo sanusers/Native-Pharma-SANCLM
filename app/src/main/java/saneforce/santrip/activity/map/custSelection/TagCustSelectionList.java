@@ -11,10 +11,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionBarPolicy;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -68,6 +71,8 @@ public class TagCustSelectionList extends AppCompatActivity {
     private MasterDataDao masterDataDao;
 
 
+    // Create a map to store category codes and their corresponding names
+    HashMap<String, String> categoryMap = new HashMap<>();
     //To Hide the bottomNavigation When popup
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -162,6 +167,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             hideKeyboard();
         });
 
+
         binding.searchHq.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -170,14 +176,24 @@ public class TagCustSelectionList extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                arrayAdapter.getFilter().filter(charSequence, new Filter.FilterListener() {
+                    @Override
+                    public void onFilterComplete(int count) {
+                        if (count > 0) {
+                        }
+                    }
+                });
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                TagCustSelectionList.this.arrayAdapter.getFilter().filter(editable);
+
             }
         });
+
+
+
+
 
         binding.searchCust.addTextChangedListener(new TextWatcher() {
             @Override
@@ -190,6 +206,7 @@ public class TagCustSelectionList extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+
                 filter(editable.toString());
             }
         });
@@ -201,19 +218,44 @@ public class TagCustSelectionList extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.hqListView.setOnItemClickListener((adapterView, view, i, l) -> {
-            hideKeyboard();
-            binding.constraintHqList.setVisibility(View.GONE);
-            binding.dummyView.setVisibility(View.GONE);
-            SelectedHqCode = HqCodeList.get(i);
-            SelectedHqName = HqNameList.get(i);
-            binding.txtSelectedHq.setText(SelectedHqName);
-            MapsActivity.SelectedHqName = HqNameList.get(i);
-            MapsActivity.SelectedHqCode = SelectedHqCode;
-            AddCustList(SelectedHqCode);
-        });
-    }
+        binding.hqListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                System.out.println("position--->" + position);
+                String clickedValue = arrayAdapter.getItem(position);
+                // Handle the clicked value here
+                System.out.println("Clicked Value: " + clickedValue);
+                hideKeyboard();
+                binding.constraintHqList.setVisibility(View.GONE);
+                binding.dummyView.setVisibility(View.GONE);
+                JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew("Subordinate").getMasterSyncDataJsonArray();
 
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    try {
+                        JSONObject jsonHQList = jsonArray.getJSONObject(i);
+                        String name = jsonHQList.optString("name", "");
+                        if (name.equals(clickedValue)) {
+                            SelectedHqCode = jsonHQList.optString("Code", "");
+                            System.out.println("SelectedHqCode--->"+SelectedHqCode);
+                            SelectedHqName = clickedValue;
+                            System.out.println("SelectedHqName--->"+SelectedHqName);
+                            MapsActivity.SelectedHqName = clickedValue;
+                            System.out.println("MapsActivity.SelectedHqName--->"+MapsActivity.SelectedHqName);
+                            MapsActivity.SelectedHqCode = SelectedHqCode;
+                            System.out.println("MapsActivity.SelectedHqCode --->"+MapsActivity.SelectedHqCode );
+                            break;
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                binding.txtSelectedHq.setText(clickedValue);
+
+                AddCustList(SelectedHqCode);
+            }
+        });
+
+    }
 
     private void SetHqAdapter() {
         HqNameList.clear();
@@ -225,6 +267,7 @@ public class TagCustSelectionList extends AppCompatActivity {
             JSONArray jsonArray = masterDataDao.getMasterDataTableOrNew("Subordinate").getMasterSyncDataJsonArray();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonHQList = jsonArray.getJSONObject(i);
+                System.out.println("jsonHQList--->"+jsonHQList);
                 if (SelectedHqCode.equalsIgnoreCase(jsonHQList.getString("id"))) {
                     if (HqCodeList.size() != 0) {
                         HqNameList.add(jsonHQList.getString("name"));
@@ -239,8 +282,9 @@ public class TagCustSelectionList extends AppCompatActivity {
                 }
             }
 
-            arrayAdapter = new ArrayAdapter<>(TagCustSelectionList.this, R.layout.listview_items, HqNameList);
+            arrayAdapter = new ArrayAdapter<>(TagCustSelectionList.this, R.layout.listview_items,HqNameList);
             binding.hqListView.setAdapter(arrayAdapter);
+            arrayAdapter.notifyDataSetChanged();
             binding.txtSelectedHq.setText(SelectedHqName);
             if (SelectedHqCode.isEmpty()) {
                 SelectedHqCode = HqCodeList.get(0);
@@ -359,11 +403,10 @@ public class TagCustSelectionList extends AppCompatActivity {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void AddCustList(String selectedHqCode) {
+    private void AddCustList(String selectedHqCode)  {
         custListArrayList.clear();
         Log.v("map_selected_tab", "---" + SelectedTab);
         Log.v("selected_hq", "---" + selectedHqCode);
-
         switch (SelectedTab) {
             case "D":
                 try {
@@ -404,6 +447,43 @@ public class TagCustSelectionList extends AppCompatActivity {
                     if (jsonArray.length() == 0) {
                         commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
                     }
+                    JSONArray doctJsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CATEGORY_CHEMIST).getMasterSyncDataJsonArray();
+                    Map<String, String> townMap = new HashMap<>();
+                    for (int i = 0; i < doctJsonArray.length(); i++) {
+                        JSONObject doctJsonObject = doctJsonArray.getJSONObject(i);
+                        String chemistCategory = doctJsonObject.getString("Code");
+                        String chemistCategoryName = doctJsonObject.getString("Doc_Cat_Name");
+                        townMap.put(chemistCategory, chemistCategoryName);
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = jsonArray.getJSONObject(i);
+                        String chemistCategory = jsonObject.getString("Chm_cat");
+                        String chemistTownName = townMap.get(chemistCategory);
+                        if (chemistTownName==null) chemistTownName = "";
+                        if (jsonObject.has("cust_status")) {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), jsonObject.getString("cust_status")));
+                        } else {
+                            custListArrayList.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                            custListArrayNew.add(new CustList(jsonObject.getString("Name"), jsonObject.getString("Code"), SelectedTab, chemistTownName, "Specialty", jsonObject.getString("lat"), jsonObject.getString("long"), jsonObject.getString("addrs"), jsonObject.getString("Town_Name"), jsonObject.getString("Town_Code"), jsonObject.getString("GEOTagCnt"), jsonObject.getString("MaxGeoMap"), String.valueOf(i), "0"));
+                        }
+                    }
+                } catch (Exception ignored) {
+                    // Handle exceptions
+                }
+                break;
+
+           /* case "C":
+                try {
+                    binding.tagSelection.setText(SharedPref.getChmCap(this));
+                    if (!masterDataDao.getMasterSyncDataOfHQ(Constants.CHEMIST + selectedHqCode)) {
+                        prepareMasterToSync(selectedHqCode);
+                    } else {
+                        jsonArray = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + selectedHqCode).getMasterSyncDataJsonArray();
+                    }
+                    if (jsonArray.length() == 0) {
+                        commonUtilsMethods.showToastMessage(TagCustSelectionList.this, getString(R.string.no_data_found) + " " + getString(R.string.do_master_sync));
+                    }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.has("cust_status")) {
@@ -417,7 +497,7 @@ public class TagCustSelectionList extends AppCompatActivity {
                 } catch (Exception ignored) {
 
                 }
-                break;
+                break;*/
             case "S":
                 try {
                     binding.tagSelection.setText(SharedPref.getStkCap(this));
