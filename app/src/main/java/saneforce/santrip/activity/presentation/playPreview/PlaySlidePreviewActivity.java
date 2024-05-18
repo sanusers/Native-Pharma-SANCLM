@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -243,6 +244,21 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     public void populateViewPagerAdapter() {
         itemsPagerAdapter = new PlaySlidePagerAdapter(this, arrayList);
         binding.viewPager.setAdapter(itemsPagerAdapter);
+        binding.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                startTimer();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                startTimer();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     public void populateBottomViewAdapter() {
@@ -253,8 +269,9 @@ public class PlaySlidePreviewActivity extends AppCompatActivity {
     }
 
     public void startTimer() {
+        if(timer != null) timer.cancel();
         timer = new Timer();
-        timer.scheduleAtFixedRate(new SlideTimer(), 2000, 5000);
+        timer.schedule(new SlideTimer(), 2000, 5000);
     }
 
     public void loadPdf(String fileName) {

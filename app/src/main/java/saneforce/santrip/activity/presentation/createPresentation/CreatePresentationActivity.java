@@ -105,8 +105,8 @@ public class CreatePresentationActivity extends AppCompatActivity {
         binding.clear.setOnClickListener(view -> binding.presentationNameEt.setText(""));
 
         binding.save.setOnClickListener(view -> {
-            if (selectedSlideArrayList.size() > 0) {
-                String name = binding.presentationNameEt.getText().toString();
+            if (!selectedSlideArrayList.isEmpty()) {
+                String name = binding.presentationNameEt.getText().toString().trim();
 
                 if (!name.isEmpty()) {
                     if (!oldName.isEmpty()) {

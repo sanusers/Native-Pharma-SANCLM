@@ -1631,6 +1631,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         else
             menu.findItem(R.id.remaindercall).setVisible(false);
 
+        menu.findItem(R.id.form).setVisible(false);
 
         if (SharedPref.getGeoChk(this).equalsIgnoreCase("0")) {
             binding.tvLdot.setVisibility(View.VISIBLE);

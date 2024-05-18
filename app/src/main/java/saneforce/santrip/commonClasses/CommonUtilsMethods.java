@@ -347,4 +347,11 @@ public class CommonUtilsMethods {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
     }
+
+    public static String removeLastComma(String string) {
+        if (string.endsWith(",")) {
+            string = string.substring(0, string.length() - 1);
+        }
+        return string;
+    }
 }

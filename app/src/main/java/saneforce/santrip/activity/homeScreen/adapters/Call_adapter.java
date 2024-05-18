@@ -142,7 +142,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         TextView btn_yes=dialog.findViewById(R.id.btn_yes);
                         TextView btn_no=dialog.findViewById(R.id.btn_no);
                         TextView titte=dialog.findViewById(R.id.ed_alert_msg);
-                        titte.setText("Are You Sure To Delete ?");
+                        titte.setText(R.string.are_you_sure_to_delete);
 
                         btn_yes.setOnClickListener(view12 -> {
                             dialog.dismiss();

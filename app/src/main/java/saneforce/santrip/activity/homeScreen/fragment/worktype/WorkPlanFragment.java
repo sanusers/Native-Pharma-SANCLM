@@ -242,7 +242,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mWTCode1 = SelectedWorkType.getString("Code");
                     mWTName1 = SelectedWorkType.getString("Name");
 
-                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
                         IsFeildWorkFlag = "F1";
                         rlculster.setVisibility(View.VISIBLE);
                         if (!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
@@ -261,7 +261,7 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                     mFwFlg2 = SelectedWorkType.getString("FWFlg");
                     mWTCode2 = SelectedWorkType.getString("Code");
                     mWTName2 = SelectedWorkType.getString("Name");
-                    if (SelectedWorkType.getString("TerrSlFlg").equalsIgnoreCase("Y")) {
+                    if (SelectedWorkType.getString("FWFlg").equalsIgnoreCase("F")) {
                         NeedClusterFlag2 = true;
                         IsFeildWorkFlag = "F2";
                         rlculster.setVisibility(View.VISIBLE);
@@ -277,33 +277,29 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         rlculster.setVisibility(View.GONE);
                         rlHQ.setVisibility(View.GONE);
                     }
-
                 }
-
-                HomeDashBoard.binding.llNav.etSearch.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        String searchString = s.toString();
-                        WT_ListAdapter.getFilter().filter(searchString);
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                });
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         });
-    }
 
+        HomeDashBoard.binding.llNav.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchString = s.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(requireActivity());
+                WT_ListAdapter.getFilter().filter(searchString);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
 
     @SuppressLint("SetTextI18n")
     public void showMultiClusterAlter() {
@@ -340,7 +336,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchString = s.toString();
+                String searchString = s.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(requireActivity());
                 multiClusterAdapter.getFilter().filter(searchString);
             }
 
@@ -368,11 +365,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                 if (DayPlanCount.equalsIgnoreCase("1")) {
                     mTowncode1 = strClusterID;
                     mTownname1 = strClusterName;
-                    binding.txtCluster1.setText(strClusterName);
+                    binding.txtCluster1.setText(CommonUtilsMethods.removeLastComma(strClusterName.trim()));
                 } else {
                     mTowncode2 = strClusterID;
                     mTownname2 = strClusterName;
-                    binding.txtCluster2.setText(strClusterName);
+                    binding.txtCluster2.setText(CommonUtilsMethods.removeLastComma(strClusterName.trim()));
                 }
             }
         });
@@ -381,15 +378,11 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("SetTextI18n")
     public void showHQ(TextView TextHQ, TextView TextCL) {
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
-        HomeDashBoard.binding.llNav.wkRecyelerView.setVisibility(View.GONE);
-        HomeDashBoard.binding.llNav.wkListView.setVisibility(View.VISIBLE);
-
         HomeDashBoard.binding.llNav.txtClDone.setVisibility(View.GONE);
         HomeDashBoard.binding.llNav.wkRecyelerView.setVisibility(View.GONE);
         HomeDashBoard.binding.llNav.wkListView.setVisibility(View.VISIBLE);
         HomeDashBoard.binding.llNav.etSearch.setText("");
         HomeDashBoard.binding.llNav.tvSearchheader.setText("HeadQuarters");
-
 
         HomeDashBoard.binding.drMainlayout.openDrawer(GravityCompat.END);
         WorkplanListAdapter HQ_ListAdapter = new WorkplanListAdapter(getActivity(), HQList, "3");
@@ -432,7 +425,8 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchString = s.toString();
+                String searchString = s.toString().trim();
+                if(searchString.isEmpty()) UtilityClass.hideKeyboard(requireActivity());
                 HQ_ListAdapter.getFilter().filter(searchString);
             }
 
@@ -1393,17 +1387,17 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                         }else if(TerritoryFlag1.equalsIgnoreCase("Y")) {
                             if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                                 binding.rlheadquates1.setVisibility(View.VISIBLE);
-                                SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
-
+                                if(mFwFlg1.equalsIgnoreCase("F")) {
+                                    SharedPref.saveHq(requireContext(), mHQName1, mHQCode1);
+                                }
                             }else {
                                 binding.rlheadquates1.setVisibility(View.GONE);
                                 SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
-
                             }
 
                             binding.rlcluster1.setVisibility(View.VISIBLE);
                             binding.txtWorktype1.setText(mWTName1);
-                            binding.txtCluster1.setText(mTownname1);
+                            binding.txtCluster1.setText(CommonUtilsMethods.removeLastComma(mTownname1));
                             binding.txtheadquaters1.setText(mHQName1);
                             SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode1);
 
@@ -1500,14 +1494,16 @@ public class WorkPlanFragment extends Fragment implements View.OnClickListener {
                             }else if(TerritoryFlag2.equalsIgnoreCase("Y")) {
                                 if(!SharedPref.getDesig(requireContext()).equalsIgnoreCase("MR")) {
                                     binding.rlheadquates2.setVisibility(View.VISIBLE);
-                                    SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
+                                    if(mFwFlg2.equalsIgnoreCase("F")) {
+                                        SharedPref.saveHq(requireContext(), mHQName2, mHQCode2);
+                                    }
                                 }else {
                                     binding.rlheadquates2.setVisibility(View.GONE);
                                     SharedPref.saveHq(requireContext(), SharedPref.getSfName(requireContext()), SharedPref.getSfCode(requireContext()));
                                 }
                                 binding.rlcluster2.setVisibility(View.VISIBLE);
                                 binding.txtWorktype2.setText(mWTName2);
-                                binding.txtCluster2.setText(mTownname2);
+                                binding.txtCluster2.setText(CommonUtilsMethods.removeLastComma(mTownname2));
                                 binding.txtheadquaters2.setText(mHQName2);
                                 SharedPref.setTodayDayPlanClusterCode(requireContext(), mTowncode2);
                             }

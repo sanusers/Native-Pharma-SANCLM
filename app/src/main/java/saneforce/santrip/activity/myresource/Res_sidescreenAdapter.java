@@ -91,17 +91,22 @@ public class Res_sidescreenAdapter extends RecyclerView.Adapter<Res_sidescreenAd
         String count = String.valueOf((position + 1));
         final Resourcemodel_class app_adapt = resList.get(position);
 
-
-        Doc_geoneed = SharedPref.getGeoNeed(context);
+        Doc_geoneed = SharedPref.getGeotagNeed(context);
         Che_geoneed = SharedPref.getGeotagNeedChe(context);
         Stk_geoneed = SharedPref.getGeotagNeedStock(context);
         Cip_geoneed = SharedPref.getGeotagNeedCip(context);
         Ult_geoneed = SharedPref.getGeotagNeedUnlst(context);
 
-        if (Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1")) {
-            holder.Res_View.setVisibility(View.VISIBLE);
-        }
-
+//        if((Doc_geoneed.equals("1") || Che_geoneed.equals("1") || Stk_geoneed.equals("1") || Cip_geoneed.equals("1") || Ult_geoneed.equals("1"))
+//                && ((!app_adapt.getLatitude().isEmpty() || !app_adapt.getLongtitude().isEmpty())
+//                && (((!app_adapt.getLatitude().equalsIgnoreCase("0.0") || !app_adapt.getLongtitude().equalsIgnoreCase("0.0"))
+//                || (!app_adapt.getLatitude().equalsIgnoreCase("0") || !app_adapt.getLongtitude().equalsIgnoreCase("0"))))
+//                )
+//        ) {
+//            holder.Res_View.setVisibility(View.VISIBLE);
+//        }else {
+            holder.Res_View.setVisibility(View.GONE);
+//        }
         if (!split_val.equals("2")) {
 
 

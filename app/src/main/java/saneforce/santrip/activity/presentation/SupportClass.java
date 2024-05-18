@@ -304,7 +304,7 @@ public class SupportClass {
             case "html":
             case "zip":{
                 if(thumbnail.exists()) {
-                    Glide.with(context).load(new File(thumbnail.getAbsolutePath())).downsample(DownsampleStrategy.CENTER_INSIDE).placeholder(R.drawable.no_image).into(imageView);
+                    Glide.with(context).load(new File(thumbnail.getAbsolutePath())).downsample(DownsampleStrategy.FIT_CENTER).placeholder(R.drawable.baseline_cached_24).into(imageView);
                 }
                 break;
             }

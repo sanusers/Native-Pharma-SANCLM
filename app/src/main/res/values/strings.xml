@@ -94,7 +94,7 @@
     <string name="toast_no_img_found">No Image Found</string>
     <string name="hq_sel">HeadQuater Selection</string>
     <string name="presentation">Presentation</string>
-    <string name="presentation_saved_already">Already a Presentation has saved in the same name..Change name and try again! </string>
+    <string name="presentation_saved_already">Already a Presentation has saved in the same name.\nKindly change the name and try again! </string>
     <string name="create_presentation">Create Presentation</string>
     <string name="enter_presentation_name">Enter the Presentation name</string>
     <string name="title_activity_create_presentation">CreatePresentation</string>
@@ -398,4 +398,5 @@
     <string name="no">No</string>
     <string name="cannot_submit_work_plan">Cannot submit Work Plan!</string>
     <string name="day_submit_saved_locally">Day Submit saved locally</string>
+    <string name="are_you_sure_to_delete">Are You Sure To Delete ?</string>
 </resources>

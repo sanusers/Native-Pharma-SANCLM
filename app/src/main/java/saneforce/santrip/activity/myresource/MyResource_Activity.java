@@ -32,6 +32,7 @@ import saneforce.santrip.R;
 import saneforce.santrip.activity.masterSync.MasterSyncActivity;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
 import saneforce.santrip.commonClasses.Constants;
+import saneforce.santrip.commonClasses.UtilityClass;
 import saneforce.santrip.databinding.ActivityMyResourceBinding;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
@@ -99,8 +100,8 @@ public class MyResource_Activity extends AppCompatActivity {
         }
 
         binding.backArrow.setOnClickListener(v -> {
+            UtilityClass.hideKeyboard(this);
             getOnBackPressedDispatcher().onBackPressed();
-
         });
         Log.d("div_name", SharedPref.getDesigCode(this) + "--" + SharedPref.getDesig(this));
         if (!SharedPref.getDesig(this).equals("MR")) {
@@ -116,6 +117,7 @@ public class MyResource_Activity extends AppCompatActivity {
         close_sideview.setOnClickListener(v -> {
             binding.drawerLayout.closeDrawer(GravityCompat.END);
             et_Custsearch.getText().clear();
+            UtilityClass.hideKeyboard(this);
             hideKeyboard(MyResource_Activity.this);
         });
 
@@ -140,7 +142,7 @@ public class MyResource_Activity extends AppCompatActivity {
 
     public void Resource_list(String synhqval1) {
         try {
-            JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+            JSONArray jsonDoc = masterDataDao.getMasterDataTableOrNew(Constants.DOCTOR + synhqval1).getMasterSyncDataJsonArray();
 
             String Doc_code = "", Chm_code = "", Stk_code = "", Cip_code = "", Hosp_code = "", Unlist_code = "";
             String doctor = String.valueOf(jsonDoc);
@@ -160,7 +162,7 @@ public class MyResource_Activity extends AppCompatActivity {
                 }
             }
 
-            JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+            JSONArray jsonChm = masterDataDao.getMasterDataTableOrNew(Constants.CHEMIST + synhqval1).getMasterSyncDataJsonArray();
             String chemist = String.valueOf(jsonChm);
             if (!chemist.equals("") || !chemist.equals("null")) {
                 count_list.clear();
@@ -214,7 +216,7 @@ public class MyResource_Activity extends AppCompatActivity {
             }
 
 
-            JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+            JSONArray jsoncip = masterDataDao.getMasterDataTableOrNew(Constants.CIP + synhqval1).getMasterSyncDataJsonArray();
             String cip = String.valueOf(jsoncip);
             if (!cip.equals("") || !cip.equals("null")) {
                 count_list.clear();
@@ -231,7 +233,7 @@ public class MyResource_Activity extends AppCompatActivity {
                     Cip_count = "0";
                 }
             }
-            JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray();
+            JSONArray jsonhosp = masterDataDao.getMasterDataTableOrNew(Constants.HOSPITAL + synhqval1).getMasterSyncDataJsonArray();
             String hosp = String.valueOf(jsonhosp);
             if (!hosp.equals("") || !hosp.equals("null")) {
                 count_list.clear();
@@ -302,7 +304,7 @@ public class MyResource_Activity extends AppCompatActivity {
             if (SharedPref.getVstNd(getApplicationContext()).equalsIgnoreCase("0")) {
                 listed_data.add(new Resourcemodel_class("Doctor Visit", values1, "10"));
             }
-            listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + SharedPref.getHqCode(this)).getMasterSyncDataJsonArray().length()), "9"));
+            listed_data.add(new Resourcemodel_class(SharedPref.getClusterCap(this), String.valueOf(masterDataDao.getMasterDataTableOrNew(Constants.CLUSTER + synhqval1).getMasterSyncDataJsonArray().length()), "9"));
             listed_data.add(new Resourcemodel_class("Holiday / Weekly off", "", "11"));
             listed_data.add(new Resourcemodel_class("Calls Status", "", "12"));
             listed_data.add(new Resourcemodel_class("Category", "", "13"));
@@ -376,7 +378,7 @@ public class MyResource_Activity extends AppCompatActivity {
         try {
             listresource.clear();
             //add
-            if (MasterSyncActivity.HQCODE_SYN.size() == 0) {
+            if (MasterSyncActivity.HQCODE_SYN.isEmpty()) {
                 MasterSyncActivity.HQCODE_SYN.add(SharedPref.getHqCode(MyResource_Activity.this));
                 SharedPref.setsyn_hqcode(this, String.valueOf(MasterSyncActivity.HQCODE_SYN));
             }
@@ -403,6 +405,7 @@ public class MyResource_Activity extends AppCompatActivity {
                     appAdapter3.setOnItemClickListener(new Res_sidescreenAdapter.OnItemClickListener() {
                         public void onItemClick(Resourcemodel_class item) {
                             binding.hqHead.setText(item.getDcr_name());
+                            et_Custsearch.getText().clear();
                             Resource_list(item.getDcr_code());
                         }
                     });
@@ -429,6 +432,12 @@ public class MyResource_Activity extends AppCompatActivity {
         }
         Res_sidescreenAdapter appAdapter_0 = new Res_sidescreenAdapter(MyResource_Activity.this, listresource, Valcount);
         appAdapter_0.filterList(filterdNames);
+        appAdapter_0.setOnItemClickListener(item -> {
+            UtilityClass.hideKeyboard(this);
+            et_Custsearch.getText().clear();
+            binding.hqHead.setText(item.getDcr_name());
+            Resource_list(item.getDcr_code());
+        });
         appRecyclerView.setAdapter(appAdapter_0);
         appRecyclerView.setLayoutManager(new LinearLayoutManager(MyResource_Activity.this));
     }
