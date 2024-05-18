@@ -94,7 +94,7 @@ public class SlideDownloaderAlertBox {
             txt_downloadcount = dialogView.findViewById(R.id.txt_downloadcount);
             txt_downloadcount.setText(String.format("%d/%d", downloading_count, totalcount));
             ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
-            adapter = new Slide_adapter(activity, Slide_list);
+            adapter = new Slide_adapter(activity);
             LinearLayoutManager manager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setHasFixedSize(true);

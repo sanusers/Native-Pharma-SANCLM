@@ -1053,8 +1053,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toTopOf="@id/view_dummy_ic"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_visit_time"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/rcpaLayout">
 
                         <TextView
@@ -1088,28 +1088,85 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/constraint_tag_ic"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginHorizontal="@dimen/_6sdp"
-                            android:background="@drawable/bg_light_grey_1"
-                            android:paddingHorizontal="@dimen/_5sdp"
-                            android:paddingVertical="@dimen/_3sdp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toTopOf="@id/rv_ic"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tag_ic" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_ic"
-                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/_6sdp"
                             android:paddingHorizontal="@dimen/_5sdp"
+                            android:paddingVertical="@dimen/_3sdp"
                             android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/constraint_tag_ic" />
+                            app:layout_constraintTop_toBottomOf="@id/tag_ic" >
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:orientation="vertical"
+                                android:layout_height="wrap_content"
+                                tools:ignore="MissingConstraints">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:weightSum="3"
+                                    android:padding="@dimen/_4sdp"
+                                    android:background="@drawable/bg_light_grey_1"
+                                    android:layout_height="wrap_content"
+                                    tools:ignore="MissingConstraints">
+                                    <TextView
+                                        android:textColor="@color/dark_purple"
+                                        android:textSize="@dimen/_6sdp"
+                                        android:gravity="center"
+                                        android:layout_gravity="center"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:textStyle="bold"
+                                        android:layout_width="0dp"
+                                        android:layout_weight="0.5"
+                                        android:text="Captured"
+                                        /> >
+
+                                    <TextView
+                                        android:textColor="@color/dark_purple"
+                                        android:textSize="@dimen/_6sdp"
+                                        android:textStyle="bold"
+                                        android:gravity="center"
+                                        android:layout_gravity="center"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1"
+                                        android:text="Name"
+                                        >
+
+                                    </TextView>
+
+                                    <TextView
+                                        android:id="@+id/tv_description"
+                                        android:gravity="center"
+                                        android:layout_gravity="center"
+                                        android:textColor="@color/dark_purple"
+                                        android:textStyle="bold"
+                                        android:textSize="@dimen/_6sdp"
+                                        android:fontFamily="@font/satoshi_medium"
+                                        android:text="Description"
+                                        android:layout_width="0dp"
+                                        android:layout_weight="1.5"
+                                        android:layout_height="wrap_content">
+
+                                    </TextView>
+
+                                </LinearLayout>
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rvEventListview"
+                                    android:layout_width="match_parent"
+                                    android:layout_marginTop="@dimen/_2sdp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="@dimen/_6sdp"
+                                    android:paddingHorizontal="@dimen/_5sdp"
+                                    android:visibility="visible"
+                                    />
+                            </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <View

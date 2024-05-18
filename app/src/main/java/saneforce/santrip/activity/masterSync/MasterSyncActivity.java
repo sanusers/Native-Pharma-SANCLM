@@ -1,28 +1,35 @@
 package saneforce.santrip.activity.masterSync;
 
+import static saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox.downloading_count;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -39,17 +46,23 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
+import saneforce.santrip.activity.SlideDownloadNew.SlideServices;
+import saneforce.santrip.activity.SlideDownloadNew.SlidesViewModel;
 import saneforce.santrip.activity.homeScreen.HomeDashBoard;
+import saneforce.santrip.activity.map.custSelection.CustList;
 import saneforce.santrip.activity.slideDownloaderAlertBox.SlideDownloaderAlertBox;
-import saneforce.santrip.activity.tourPlan.TourPlanActivity;
+import saneforce.santrip.activity.slideDownloaderAlertBox.Slide_adapter;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
 import saneforce.santrip.activity.tourPlan.model.ReceiveModel;
 import saneforce.santrip.commonClasses.CommonUtilsMethods;
@@ -63,6 +76,8 @@ import saneforce.santrip.roomdatabase.CallDataRestClass;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesDao;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataTable;
 import saneforce.santrip.roomdatabase.TourPlanOnlineTableDetails.TourPlanOnlineDataDao;
@@ -118,6 +133,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
     ArrayList<MasterSyncItemModel> otherModelArray = new ArrayList<>();
     ArrayList<MasterSyncItemModel> setupModelArray = new ArrayList<>();
     public static ArrayList<String> HQCODE_SYN = new ArrayList<>();
+    public static ArrayList<String> SlideIds = new ArrayList<>();
     SharedPreferences sharedpreferences;
     LocalDate localDate;
     ArrayList<String> weeklyOffDays = new ArrayList<>();
@@ -133,6 +149,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
     private MasterDataDao masterDataDao;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
+    private SlidesDao SlidesDao;
 
 
 
@@ -161,12 +178,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
         if (bundle != null) {
             navigateFrom = getIntent().getExtras().getString(Constants.NAVIGATE_FROM);
         }
-        Animation blinkAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.downloading);
-        binding.imgDownloading.startAnimation(blinkAnimation);
         db = RoomDB.getDatabase(this);
         masterDataDao=db.masterDataDao();
         tourPlanOfflineDataDao = db.tourPlanOfflineDataDao();
         tourPlanOnlineDataDao = db.tourPlanOnlineDataDao();
+        SlidesDao = db.slidesDao();
 
         try {
             SFTP_Date_sp = SharedPref.getSftpDate(MasterSyncActivity.this);
@@ -212,9 +228,9 @@ public class    MasterSyncActivity extends AppCompatActivity {
         } else {
             binding.backArrow.setVisibility(View.VISIBLE);
             if(SharedPref.getSlideDowloadingStatus(this)){
-                binding.imgDownloading.setVisibility(View.GONE);
+                binding.imgDownloading.setVisibility(View.VISIBLE);
             }else {
-                binding.imgDownloading.setVisibility(View.GONE);
+                binding.imgDownloading.setVisibility(View.VISIBLE);
             }
         }
 //        else {
@@ -224,7 +240,8 @@ public class    MasterSyncActivity extends AppCompatActivity {
         //binding.backArrow.setOnClickListener(view -> startActivity(new Intent(MasterSyncActivity.this, HomeDashBoard.class)));
 
         binding.backArrow.setOnClickListener(view -> {
-            if (navigateFrom.equalsIgnoreCase("Login")) {
+
+            if (navigateFrom.equalsIgnoreCase("Login")||navigateFrom.equalsIgnoreCase("Slide")) {
                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -237,7 +254,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
         binding.imgDownloading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SlideDownloaderAlertBox.dialog.show();
+                SlideAlertbox(false);
             }
         });
 
@@ -1139,27 +1156,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                     if (success) {
                                         masterSyncItemModels.get(position).setCount(jsonArray.length());
                                         masterSyncItemModels.get(position).setSyncSuccess(0);
-
                                         String dateAndTime = TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_16);
                                         binding.lastSyncTime.setText(dateAndTime);
                                         SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0));
-                                        MasterDataTable MainData =new MasterDataTable();
-                                        MainData.setMasterKey(masterSyncItemModels.get(position).getLocalTableKeyName());
-                                        MainData.setMasterValues(jsonArray.toString());
-                                        MainData.setSyncStatus(0);
-                                        MasterDataTable mNChecked= masterDataDao.getMasterSyncDataByKey(masterSyncItemModels.get(position).getLocalTableKeyName());
-                                        if(mNChecked!=null){
-                                            masterDataDao.updateData(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString());
-                                        }else {
-                                            masterDataDao.insert(MainData);
-                                        }
-
                                         if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
                                             CallDataRestClass.resetcallValues(context);
                                         }
-
-
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {
                                                 JSONObject jsonObject1 = jsonArray.getJSONObject(0);
@@ -1167,43 +1170,27 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                                 JSONArray inputBalanceArray = jsonObject1.getJSONArray("Input_Stock");
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.STOCK_BALANCE, stockBalanceArray.toString(), 0));
                                                 masterDataDao.saveMasterSyncData(new MasterDataTable(Constants.INPUT_BALANCE, inputBalanceArray.toString(), 0));
-
-                                                MasterDataTable stockdata =new MasterDataTable();
-                                                stockdata.setMasterKey(Constants.STOCK_BALANCE);
-                                                stockdata.setMasterValues(stockBalanceArray.toString());
-                                                stockdata.setSyncStatus(0);
-
-                                                MasterDataTable mChecked= masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
-                                                if(mChecked!=null){
-                                                    masterDataDao.updateData(Constants.STOCK_BALANCE, stockBalanceArray.toString());
-                                                }else {
-                                                    masterDataDao.insert(stockdata);
-                                                }
-
-                                                MasterDataTable inputdata =new MasterDataTable();
-                                                inputdata.setMasterKey(Constants.INPUT_BALANCE);
-                                                inputdata.setMasterValues(inputBalanceArray.toString());
-                                                inputdata.setSyncStatus(0);
-                                                MasterDataTable nChecked = masterDataDao.getMasterSyncDataByKey(Constants.STOCK_BALANCE);
-                                                if(nChecked !=null){
-                                                    masterDataDao.updateData(Constants.INPUT_BALANCE, inputBalanceArray.toString());
-                                                }else {
-                                                    masterDataDao.insert(inputdata);
-                                                }
-
                                             }
                                         }
                                         else if (masterOf.equalsIgnoreCase(Constants.TOUR_PLAN) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getall_tp")) {
-                                            SaveTourPlan(jsonArray.getJSONObject(0));
+                                            if(jsonArray.getJSONObject(0).toString().equalsIgnoreCase("[]")){
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,false);
+                                            }else {
+                                                SaveTourPlan(jsonArray.getJSONObject(0));
+                                                SharedPref.setTpSyncStaus(MasterSyncActivity.this,true);
+                                            }
                                         }
                                         else if (masterOf.equalsIgnoreCase(Constants.DOCTOR) && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("gettodaydcr")) {
                                             if (mgrInitialSync) {
                                                 setHq(jsonArray);
                                                 return;
                                             }
-                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE) && !navigateFrom.equalsIgnoreCase("Login")) {
-                                            if (jsonArray.length() > 0)
-                                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, false);
+                                        } else if (masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.PROD_SLIDE)) {
+                                            if (jsonArray.length() > 0){
+                                                insertSlide(jsonArray);
+                                                if (!navigateFrom.equalsIgnoreCase("Login")) {
+                                                    SlideAlertbox(true);}
+                                            }
                                         }
                                     }
                                 } else {
@@ -1233,8 +1220,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 binding.backArrow.setVisibility(View.VISIBLE);
-                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                SlideAlertbox(true);
                             } else {
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                binding.backArrow.setVisibility(View.VISIBLE);
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
@@ -1266,8 +1256,12 @@ public class    MasterSyncActivity extends AppCompatActivity {
                             SharedPref.putAutomassync(getApplicationContext(), true);
                             SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                             if (masterDataDao.getMasterDataTableOrNew(Constants.PROD_SLIDE).getMasterSyncDataJsonArray().length() > 0) { // If product slide quantity is 0 then no need to display a dialog of Downloader
-                                SlideDownloaderAlertBox.openCustomDialog(MasterSyncActivity.this, true);
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
+                                SlideAlertbox(true);
                             } else {
+                                binding.backArrow.setVisibility(View.VISIBLE);
+                                binding.imgDownloading.setVisibility(View.VISIBLE);
                                 SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
                                 SharedPref.putAutomassync(getApplicationContext(), true);
                                 Intent intent = new Intent(MasterSyncActivity.this, HomeDashBoard.class);
@@ -1763,13 +1757,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
             hospArray = new ArrayList<>();
 
             if (receiveModel.getFWFlg2().equalsIgnoreCase("F")) {
-                if (!receiveModel.getClusterName().isEmpty())
+                if (!receiveModel.getClusterName2().isEmpty())
                     clusterArray = addExtraData(receiveModel.getClusterName2(), receiveModel.getClusterCode2());
                 if (!receiveModel.getJWNames2().isEmpty())
                     jcArray = addExtraData(receiveModel.getJWNames2(), receiveModel.getJWCodes2());
                 if (!receiveModel.getDr_two_name().isEmpty())
                     drArray = addExtraData(receiveModel.getDr_two_name(), receiveModel.getDr_two_code());
-                if (!receiveModel.getChem_Name().isEmpty())
+                if (!receiveModel.getChem_two_name().isEmpty())
                     chemArray = addExtraData(receiveModel.getChem_two_name(), receiveModel.getChem_two_code());
                 if (!receiveModel.getStockist_two_name().isEmpty())
                     stkArray = addExtraData(receiveModel.getStockist_two_name(), receiveModel.getStockist_two_code());
@@ -1885,5 +1879,104 @@ public class    MasterSyncActivity extends AppCompatActivity {
             binding.getRoot().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
+
+
+    public  void insertSlide(JSONArray jsonArray){
+        try {
+
+            if(jsonArray.length()>0){
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String FilePath = jsonObject.optString("FilePath");
+                    String id = jsonObject.optString("SlideId");
+                    Log.v("AAAA","1111");
+                    SlidesDao.insert(new SlidesTableDeatils(id,FilePath,"","1","0","1"));
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+  public void SlideAlertbox(boolean servesflag){
+      SlidesDao.Changestatus("1","0");
+      MasterSyncActivity.SlideIds.clear();
+        if(servesflag){
+            Intent intent1 = new Intent(MasterSyncActivity.this, SlideServices.class);
+            stopService(intent1);
+
+            Intent startIntent = new Intent(getApplicationContext(), SlideServices.class);
+            startService(startIntent);
+
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.slide_downloader_alert_box, null);
+        RecyclerView recyclerView = dialogView.findViewById(R.id.recyelerview123);
+        TextView txt_downloadcount = dialogView.findViewById(R.id.txt_downloadcount);
+        TextView txt_total = dialogView.findViewById(R.id.txt_totaldownloadcount);
+        ImageView cancel_img = dialogView.findViewById(R.id.cancel_img);
+        Slide_adapter adapter = new Slide_adapter(this);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+        builder.setView(dialogView);
+        Dialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+
+
+      cancel_img.setOnClickListener(view -> {
+          dialog.dismiss();
+          navigateFrom="Slide";
+      });
+
+     SlidesViewModel slidesViewModel = new ViewModelProvider(this).get(SlidesViewModel.class);
+    slidesViewModel.getAllSlides().observe(this, slides -> {
+        Collections.sort(slides, (s1, s2) -> Integer.compare(Integer.valueOf(s2.getDownloadingStaus()),Integer.valueOf(s1.getDownloadingStaus())));
+
+        adapter.setSlides(slides);
+    });
+
+
+    slidesViewModel.GetDowloaingCount().observe(this,integer -> {
+            recyclerView.getLayoutManager().scrollToPosition(integer);
+            txt_downloadcount.setText(String.valueOf(integer)+" / ");
+
+                if(Integer.valueOf(txt_total.getText().toString())!=0){
+                    if(integer==(Integer.valueOf(txt_total.getText().toString()))){
+                        if (navigateFrom.equalsIgnoreCase("Login")) {
+                           dialog.dismiss();
+                            commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
+
+                        }else {
+                            commonUtilsMethods.showToastMessage(this, "All Downloading Completed ");
+                        }
+                    }
+           }
+        });
+        slidesViewModel.SlideTotalCount().observe(this,integer -> {
+            txt_total.setText(String.valueOf(integer));
+
+        });
+      slidesViewModel.SlideNewCount().observe(this,integer -> {
+          if (navigateFrom.equalsIgnoreCase("Login")) {
+              if (integer == 0) {
+                  Intent intent = new Intent(context, HomeDashBoard.class);
+                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                  startActivity(intent);
+                  finish();
+              }
+          }
+
+      });
+    }
+
+
 
 }

@@ -40,6 +40,13 @@ public class AdapterApprovals extends RecyclerView.Adapter<AdapterApprovals.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tv_name.setText(approval_list.get(position).getName());
         holder.tv_count.setText(approval_list.get(position).getCount());
+
+        if(holder.tv_count.getText().toString().equalsIgnoreCase("0")){
+            holder.constraintMain.setEnabled(false);
+        }else {
+            holder.constraintMain.setEnabled(true);
+        }
+
         holder.constraintMain.setOnClickListener(view -> {
             if (approval_list.get(position).getName().equalsIgnoreCase(context.getResources().getString(R.string.leave_approvals))) {
                 context.startActivity(new Intent(context, LeaveApprovalActivity.class));

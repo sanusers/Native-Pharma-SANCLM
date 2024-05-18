@@ -14,20 +14,32 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import saneforce.santrip.R;
+import saneforce.santrip.activity.SlideDownloadNew.FileDownloadWorker;
+import saneforce.santrip.activity.setting.SettingsActivity;
+import saneforce.santrip.commonClasses.CommonUtilsMethods;
+import saneforce.santrip.commonClasses.UtilityClass;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesTableDeatils;
 import saneforce.santrip.storage.SharedPref;
+import saneforce.santrip.utility.NetworkStatusTask;
+import saneforce.santrip.utility.TimeUtils;
 
 public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataViewholider> {
     Activity activity;
-    ArrayList<SlideModelClass> list ;
 
+    CommonUtilsMethods commonUtilsMethods;
+    private List<SlidesTableDeatils> list = new ArrayList<>();
 
-    public Slide_adapter(Activity activity, ArrayList<SlideModelClass> list) {
+    public Slide_adapter(Activity activity) {
         this.activity = activity;
-        this.list = list;
+        commonUtilsMethods=new CommonUtilsMethods(activity);
     }
 
     @NonNull
@@ -43,49 +55,74 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
     public void onBindViewHolder(@NonNull listDataViewholider holder, @SuppressLint("RecyclerView") int position) {
         holder.setIsRecyclable(false);
 
-        holder.txt_imagename.setText(list.get(position).getImageName());
-        if(!list.get(position).getProgressValue().equalsIgnoreCase("")){
-            holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgressValue()));
+        // 0- failure,1-New, 2-Processing, 3- Success
+        holder.txt_imagename.setText(list.get(position).getSlideName());
+        if(list.get(position).getDownloadingStaus().equalsIgnoreCase("3")){
+            holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
+            holder.text_download_size.setText("Downloading Completed");
         }
-        if(!list.get(position).getDownloadSizeStatus().equalsIgnoreCase("")) {
-            holder.text_download_size.setText(list.get(position).getDownloadSizeStatus());
-        }
-        if(list.get(position).getDownloadStatus()){
-            int greencolor = activity.getResources().getColor(R.color.Green_45);
-            ColorStateList colorStateList = ColorStateList.valueOf(greencolor);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.progressBar.setProgressTintList(colorStateList);
+       else if(list.get(position).getDownloadingStaus().equalsIgnoreCase("2")){
+            holder.text_download_size.setText(list.get(position).getSlideSize());
+            holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
 
-            }
+        }   else if(list.get(position).getDownloadingStaus().equalsIgnoreCase("1")){
+            holder.text_download_size.setText("");
+            holder.progressBar.setProgress(0);
         }else {
+            holder.progressBar.setProgress(Integer.parseInt(list.get(position).getProgress()));
+            holder.text_download_size.setText("");
+            holder.progressBar.setProgress(0);
+        }
+
+        if (list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
             int redColor = Color.RED;
             ColorStateList colorStateList = ColorStateList.valueOf(redColor);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.progressBar.setProgressTintList(colorStateList);
 
             }
-        }
+        } else {
+            int greencolor = activity.getResources().getColor(R.color.Green_45);
+            ColorStateList colorStateList = ColorStateList.valueOf(greencolor);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.progressBar.setProgressTintList(colorStateList);
 
-        if (list.get(position).getDownloadSizeStatus().equalsIgnoreCase("Download failed")) {
+            }
+        }
+        if (list.get(position).getDownloadingStaus().equalsIgnoreCase("0")) {
             holder.text_retry.setVisibility(View.VISIBLE);
 
         } else {
             holder.text_retry.setVisibility(View.GONE);
         }
+        holder.text_retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (UtilityClass.isNetworkAvailable(activity)) {
+                    String url = "https://" + SharedPref.getLogInsite(activity) + "/" + SharedPref.getSlideUrl(activity) + list.get(position).getSlideName();
+                    Data inputData = new Data.Builder()
+                            .putString("Flag", "2")
+                            .putString("file_url", url)
+                            .putString("Slide_id", list.get(position).getSlideId())
+                            .putString("Slide_name", list.get(position).getSlideName())
+                            .build();
 
-
-        holder.rl_title_layout.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-
-               String url= "https://"+ SharedPref.getLogInsite(activity)+"/"+SharedPref.getSlideUrl(activity)+list.get(position).getImageName();
-               new DownloadTask(activity,url,list.get(position).getImageName(),list.get(position).getProgressValue(),list.get(position).getDownloadStatus(),list.get(position).getDownloadSizeStatus(),list.get(position), ()-> new ThumbnailTask(activity.getApplicationContext(), list.get(position).getImageName(), null));
-
-           }
-       });
-
+                    OneTimeWorkRequest fileDownloadRequest = new OneTimeWorkRequest.Builder(FileDownloadWorker.class)
+                            .setInputData(inputData)
+                            .build();
+                    WorkManager workManager = WorkManager.getInstance(activity);
+                    workManager.enqueue(fileDownloadRequest);
+                }else {
+                    commonUtilsMethods.showToastMessage(activity, activity.getString(R.string.no_network));
+                }
+            }
+        });
     }
-
+    public void setSlides(List<SlidesTableDeatils> slides) {
+        list.clear();
+        this.list = slides;
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return list.size();
@@ -111,6 +148,6 @@ public class Slide_adapter extends RecyclerView.Adapter<Slide_adapter.listDataVi
         }
     }
    public ArrayList<SlideModelClass> getList(){
-        return list;
+        return null;
     }
 }

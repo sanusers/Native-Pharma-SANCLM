@@ -71,6 +71,7 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     OnItemClickListenerApproval listenerApproval;
     ProgressDialog progressDialog;
     ApiInterface apiInterface;
+    EventDetailsCapture adapter;
 
 
     public AdapterCusSingleList(Context context, ArrayList<DcrDetailModelList> dcrApprovalNames, OnItemClickListenerApproval listenerApproval) {
@@ -149,12 +150,30 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
         holder.tv_name.setText(dcrApprovalNames.get(position).getName());
 
         holder.constraint_main.setOnClickListener(view -> {
+            EventCaptureData.clear();
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
+            dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
             listenerApproval.onClickDcrDetail(new DcrDetailModelList(dcrApprovalNames.get(position).getHq_name(), dcrApprovalNames.get(position).getName(), dcrApprovalNames.get(position).getCode(), dcrApprovalNames.get(position).getTypeCust(), dcrApprovalNames.get(position).getType(), dcrApprovalNames.get(position).getSdp_name(), dcrApprovalNames.get(position).getPob(), dcrApprovalNames.get(position).getRemark(), dcrApprovalNames.get(position).getJointWork(), dcrApprovalNames.get(position).getCall_feedback(), dcrApprovalNames.get(position).getModTime(), dcrApprovalNames.get(position).getVisitTime(),dcrApprovalNames.get(position).getDct_id(),dcrApprovalNames.get(position).getDcr_detial_id()));
             notifyDataSetChanged();
         });
 
         dcrDetailViewBinding.constraintMainCapImg.setOnClickListener(view -> {
-            EvetCapureAPICall(position);
+
+            if(dcrDetailViewBinding.constraintTagIc.getVisibility()==View.VISIBLE){
+                dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.arrow_down));
+                dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
+            }else {
+                if(EventCaptureData.size()>0){
+                    dcrDetailViewBinding.tagViewIc.setImageDrawable(context.getDrawable(R.drawable.up_arrow));
+                    dcrDetailViewBinding.constraintTagIc.setVisibility(View.VISIBLE);
+                }else {
+                    EvetCapureAPICall(position);
+                }
+
+            }
+
+
 
         });
         dcrDetailViewBinding.constraintMainRcpa.setOnClickListener(view -> {
@@ -205,7 +224,6 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
 
     public  void EvetCapureAPICall(int positon){
 
-
         progressDialog = CommonUtilsMethods.createProgressDialog(context);
         if (UtilityClass.isNetworkAvailable(context)) {
             NetworkStatusTask networkStatusTask = new NetworkStatusTask(context, status -> {
@@ -214,8 +232,8 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("tableName", "getevent_rpt");
-                        jsonObject.put("dcr_cd", dcrApprovalNames.get(positon).getDct_id());
-                        jsonObject.put("dcrdetail_cd", dcrApprovalNames.get(positon).getDcr_detial_id());
+                        jsonObject.put("dcr_cd", DcrDetailViewActivity.dcr_id);
+                        jsonObject.put("dcrdetail_cd",DcrDetailViewActivity.Details_id);
                         jsonObject.put("sfcode", SharedPref.getSfCode(context));
                         jsonObject.put("division_code", SharedPref.getDivisionCode(context));
                         jsonObject.put("Rsf", DcrApprovalActivity.SelectedSfCode);
@@ -244,6 +262,8 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
                                             if(EventCaptureData.size()>0){
                                                 setEventCaptureData(EventCaptureData);
                                             }else {
+                                                dcrDetailViewBinding.rvEventListview.setVisibility(View.GONE);
+                                                dcrDetailViewBinding.constraintTagIc.setVisibility(View.GONE);
                                                 commonUtilsMethods.showToastMessage(context, "No Event Capture");
                                             }
 
@@ -277,15 +297,13 @@ public class AdapterCusSingleList extends RecyclerView.Adapter<AdapterCusSingleL
     }
 
     public void setEventCaptureData(ArrayList<EventCaptureModelClass> List){
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        View view = LayoutInflater.from(context).inflate(R.layout.dayreport_eventcapture_image_layout, null);
-        dialog.setView(view);
-        RecyclerView recyclerView=view.findViewById(R.id.recyelerview);
-        EventCaptureAdapter adapter =new EventCaptureAdapter(context,List);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(adapter);
-        AlertDialog dialog1=dialog.create();
-        dialog1.show();
+
+
+         dcrDetailViewBinding.constraintTagIc.setVisibility(View.VISIBLE);
+         adapter =new EventDetailsCapture(List,context);
+         dcrDetailViewBinding.rvEventListview.setLayoutManager(new LinearLayoutManager(context));
+         dcrDetailViewBinding.rvEventListview.setAdapter(adapter);
+
 
     }
 

@@ -57,7 +57,9 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     @SuppressLint("StaticFieldLeak")
     public static ActivityDcrDetailViewBinding dcrDetailViewBinding;
     AdapterCusSingleList adapterCusSingleList;
-    String hq_name, Cus_pob, Cus_jw, Cus_type, Cus_cluster, Cus_remark, Cus_feedback, Cus_modTime, Cus_visitTime;
+      public static String dcr_id ,Details_id;
+    String hq_name, Cus_pob, Cus_jw, Cus_type, Cus_cluster, Cus_remark, Cus_feedback, Cus_modTime, Cus_visitTime,cut_name;
+
     CommonUtilsMethods commonUtilsMethods;
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -71,6 +73,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         commonUtilsMethods.setUpLanguage(getApplicationContext());
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
+            cut_name = extra.getString("cut_name");
             hq_name = extra.getString("hq_name");
             Cus_cluster = extra.getString("cus_cluster");
             Cus_pob = extra.getString("cus_pob");
@@ -80,9 +83,12 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
             Cus_feedback = extra.getString("cus_remark");
             Cus_modTime = extra.getString("cus_mod_time");
             Cus_visitTime = extra.getString("cus_visit_time");
+            dcr_id = extra.getString("dcr_id");
+            Details_id = extra.getString("Details_id");
         }
 
         dcrDetailViewBinding.tagHeader.setText(hq_name);
+        if (!cut_name.isEmpty()) dcrDetailViewBinding.tvName.setText(cut_name);
         if (!Cus_cluster.isEmpty()) dcrDetailViewBinding.tvClusterTop.setText(Cus_cluster);
         if (!Cus_pob.isEmpty()) dcrDetailViewBinding.tvPob.setText(Cus_pob);
         if (!Cus_jw.isEmpty()) dcrDetailViewBinding.tvJw.setText(Cus_jw);
@@ -159,8 +165,11 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onClickDcrDetail(DcrDetailModelList dcrDetailModelList) {
+        dcrDetailViewBinding.constraintTpListContent.setVisibility(View.VISIBLE);
         dcrDetailViewBinding.tvName.setText(dcrDetailModelList.getName());
         SelectedCode = dcrDetailModelList.getCode();
+        dcr_id= dcrDetailModelList.getDct_id();
+        Details_id= dcrDetailModelList.getDcr_detial_id();
 
         switch (dcrDetailModelList.getType()) {
             case "1":

@@ -62,6 +62,7 @@ import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.DownloaderClass;
 import saneforce.santrip.utility.ImageStorage;
 import saneforce.santrip.utility.LocaleHelper;
+import saneforce.santrip.utility.TimeUtils;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -145,12 +146,19 @@ public class LoginActivity extends AppCompatActivity {
             userPwd = binding.password.getText().toString().trim().replaceAll("\\s", "");
 
             if (!UtilityClass.isNetworkAvailable(getApplicationContext())) {
-                if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
+
+                if (userId.isEmpty()) {
+                    binding.userId.requestFocus();
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_user_id));
+                } else if (userPwd.isEmpty()) {
+                    binding.password.requestFocus();
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, context.getString(R.string.enter_password));
+                } else if (!navigateFrom.equalsIgnoreCase("Setting") && SharedPref.getLoginId(LoginActivity.this).equalsIgnoreCase(userId) && (SharedPref.getLoginUserPwd(LoginActivity.this).equalsIgnoreCase(userPwd))) {
                     SharedPref.setSetUpClickedTab(getApplicationContext(), "0");
-               commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.login_successfully));
                     startActivity(new Intent(LoginActivity.this, HomeDashBoard.class));
                 } else {
-               commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
+                    commonUtilsMethods.showToastMessage(LoginActivity.this, getString(R.string.mismatch));
                 }
             } else {
                 if (userId.isEmpty()) {
@@ -215,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(LoginActivity.this, SettingsActivity.class));
 
         if(iscleared()){
-            Toast.makeText(LoginActivity.this,"isSuceess",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,"Data Clear Sucessfully",Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(LoginActivity.this,"Failed",Toast.LENGTH_SHORT).show();
         }
@@ -364,6 +372,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(String userId, String password) {
         try {
+            binding.loginBtn.setEnabled(false);
             binding.progressBar.setVisibility(View.VISIBLE);
             apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), SharedPref.getCallApiUrl(getApplicationContext()));
 
@@ -374,6 +383,7 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("versionNo",  getResources().getString(R.string.app_version));
             jsonObject.put("mode", Constants.APP_MODE);
             jsonObject.put("Device_version", Build.VERSION.RELEASE);
+            jsonObject.put("Tt", TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_2));
             jsonObject.put("device_id", deviceId);
             jsonObject.put("Device_name", Build.MANUFACTURER + " - " + Build.MODEL);
             jsonObject.put("AppDeviceRegId", fcmToken);
@@ -383,6 +393,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onChanged(JsonElement jsonObject) {
                     binding.progressBar.setVisibility(View.GONE);
+                    binding.loginBtn.setEnabled(true);
                     try {
                         JSONObject responseObject = new JSONObject(jsonObject.toString());
                         if (responseObject.getBoolean("success")) {
@@ -395,7 +406,6 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         } else {
                             if (responseObject.has("msg")) {
-                                Log.v("Loginqqq", "--error-" + responseObject.has("msg"));
                                 commonUtilsMethods.showToastMessage(LoginActivity.this, responseObject.getString("msg"));
                             }
                         }

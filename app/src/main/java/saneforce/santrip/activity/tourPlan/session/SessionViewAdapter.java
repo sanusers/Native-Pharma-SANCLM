@@ -1,5 +1,6 @@
 package saneforce.santrip.activity.tourPlan.session;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +15,19 @@ import java.util.ArrayList;
 
 import saneforce.santrip.R;
 import saneforce.santrip.activity.tourPlan.model.ModelClass;
+import saneforce.santrip.storage.SharedPref;
 
 public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.MyViewHolder> {
 
     public ModelClass inputDataModel = new ModelClass();
-
+    Context context;
 
     public SessionViewAdapter () {
     }
 
-    public SessionViewAdapter (ModelClass inputDataModel) {
+    public SessionViewAdapter (ModelClass inputDataModel, Context context) {
         this.inputDataModel = inputDataModel;
+        this.context = context;
     }
 
     @NonNull
@@ -58,6 +61,8 @@ public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.
        }
 
        if (holder.data.getHQ().getName().equals("")){
+           holder.hqLayout.setVisibility(View.GONE);
+       }else if(SharedPref.getDesig(context).equalsIgnoreCase("MR")){
            holder.hqLayout.setVisibility(View.GONE);
        } else{
            holder.hqTV.setText(holder.data.getHQ().getName());

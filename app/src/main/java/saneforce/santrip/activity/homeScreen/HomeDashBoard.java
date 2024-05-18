@@ -86,6 +86,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import saneforce.santrip.R;
 import saneforce.santrip.activity.Quiz.QuizActivity;
+import saneforce.santrip.activity.SlideDownloadNew.SlideServices;
 import saneforce.santrip.activity.activityModule.Activity;
 import saneforce.santrip.activity.approvals.ApprovalsActivity;
 import saneforce.santrip.activity.forms.Forms_activity;
@@ -124,6 +125,7 @@ import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.santrip.roomdatabase.MasterTableDetails.MasterDataTable;
 import saneforce.santrip.roomdatabase.OfflineCheckInOutTableDetails.OfflineCheckInOutDataDao;
 import saneforce.santrip.roomdatabase.RoomDB;
+import saneforce.santrip.roomdatabase.SlideTable.SlidesDao;
 import saneforce.santrip.roomdatabase.TourPlanOfflineTableDetails.TourPlanOfflineDataDao;
 import saneforce.santrip.storage.SharedPref;
 import saneforce.santrip.utility.NetworkChangeReceiver;
@@ -166,7 +168,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
     public static CustomPagerAdapter adapter;
     private int passwordNotVisible = 1, passwordNotVisible1 = 1;
     RoomDB roomDB;
-
+   SlidesDao slidesDao;
     static MasterDataDao masterDataDao;
     OfflineCheckInOutDataDao offlineCheckInOutDataDao;
     TourPlanOfflineDataDao tourPlanOfflineDataDao;
@@ -288,6 +290,7 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         masterDataDao = roomDB.masterDataDao();
         roomDB=RoomDB.getDatabase(context);
         masterDataDao=roomDB.masterDataDao();
+        slidesDao=roomDB.slidesDao();
         offlineCheckInOutDataDao = roomDB.offlineCheckInOutDataDao();
 
         tourPlanOfflineDataDao=roomDB.tourPlanOfflineDataDao();
@@ -302,6 +305,15 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
         binding.imgNotofication.setOnClickListener(view -> {
 
             startActivity(new Intent(HomeDashBoard.this, MapViewActvity.class));
+        });
+
+
+        binding.imgLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent serviceIntent = new Intent(HomeDashBoard.this, SlideServices.class);
+                startService(serviceIntent);
+            }
         });
 
         binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -1682,8 +1694,6 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
                 Log.e("currentStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate));
                 Log.e("NextMonthStatus",tourPlanOfflineDataDao.getApprovalStatusByMonth(nextMonthDate));
 
-
-
                 if (!tourPlanOfflineDataDao.getApprovalStatusByMonth(currentDate).equalsIgnoreCase("3")) {
                     commonUtilsMethods.showToastMessage(HomeDashBoard.this, "Prepare  Tourplan....");
                     SharedPref.setSKIP(HomeDashBoard.this, false);
@@ -1719,6 +1729,13 @@ public class HomeDashBoard extends AppCompatActivity implements NavigationView.O
 
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        slidesDao.Changestatus("0","1");
+
     }
 }
 
