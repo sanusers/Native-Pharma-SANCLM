@@ -62,7 +62,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SANCLM"
         android:usesCleartextTraffic="true"
-        tools:replace="android:supportsRtl"
         tools:targetApi="31">
 
         <activity
@@ -269,13 +268,10 @@
             android:name=".activity.myresource.Resource_profiling"
             android:exported="false"
             android:screenOrientation="landscape" />
-        <activity android:name="saneforce.santrip.activity.myresource.callstatusview.Callsstatus_screenview"
+        <activity android:name=".activity.myresource.callstatusview.Callsstatus_screenview"
             android:exported="false"
             android:screenOrientation="landscape"/>
-        <activity android:name="saneforce.santrip.activity.myresource.Categoryview.Cate_viewscreen"
-            android:exported="false"
-            android:screenOrientation="landscape"/>
-        <activity android:name="saneforce.santrip.activity.remaindercalls.RemaindercallsActivity"
+        <activity android:name=".activity.myresource.Categoryview.Cate_viewscreen"
             android:exported="false"
             android:screenOrientation="landscape"/>
 
@@ -295,7 +291,7 @@
         -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="saneforce.santrip.fileprovider"
+            android:authorities="saneforce.sanzen.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

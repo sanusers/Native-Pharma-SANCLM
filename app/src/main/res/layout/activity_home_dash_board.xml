@@ -278,7 +278,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <saneforce.santrip.activity.homeScreen.adapters.CustomViewPager
+                    <saneforce.sanzen.activity.homeScreen.adapters.CustomViewPager
                         android:id="@+id/view_pager1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

@@ -124,7 +124,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_specialist_side"
-        android:name="saneforce.santrip.activity.previewPresentation.fragment.SpecialitySelectionSide"
+        android:name="saneforce.sanzen.activity.previewPresentation.fragment.SpecialitySelectionSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -138,7 +138,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_select_dr_side"
-        android:name="saneforce.santrip.activity.previewPresentation.DrSelectionSide"
+        android:name="saneforce.sanzen.activity.previewPresentation.DrSelectionSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"

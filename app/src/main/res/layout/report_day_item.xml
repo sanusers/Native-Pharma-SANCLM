@@ -96,8 +96,7 @@
                         android:layout_below="@id/workType"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="@dimen/_7sdp"
-                        android:visibility="gone">
+                        android:layout_marginTop="@dimen/_7sdp">
 
                         <TextView
                             android:id="@+id/checkIn"

@@ -100,7 +100,7 @@
                     android:textColor="@color/dark_purple"
                     android:textSize="@dimen/_7ssp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/product_qty"
+                    app:layout_constraintEnd_toStartOf="@+id/tagPromoted"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent"

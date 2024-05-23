@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <saneforce.santrip.activity.call.adapter.detailing.PaintView
+        <saneforce.sanzen.activity.call.adapter.detailing.PaintView
             android:id="@+id/paintviews"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

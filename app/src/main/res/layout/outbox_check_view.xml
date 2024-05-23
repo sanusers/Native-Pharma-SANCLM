@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tagCheckIn"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_medium"
@@ -42,7 +42,7 @@
 
     <TextView
         android:id="@+id/tagCheckOut"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_2sdp"
         android:fontFamily="@font/satoshi_medium"
