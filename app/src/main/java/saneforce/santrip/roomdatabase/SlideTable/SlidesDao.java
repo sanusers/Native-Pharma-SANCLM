@@ -28,6 +28,8 @@ public interface SlidesDao {
 
     @Delete
     void delete(SlidesTableDeatils SlidesTableDeatils);
+    @Query("DELETE FROM `SlidesTableDeatils`")
+    void deleteAllData();
 
 
     @Query("SELECT * FROM SlidesTableDeatils")

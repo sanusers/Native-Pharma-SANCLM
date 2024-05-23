@@ -171,6 +171,7 @@ public class DcrDetailViewActivity extends AppCompatActivity implements OnItemCl
         dcr_id= dcrDetailModelList.getDct_id();
         Details_id= dcrDetailModelList.getDcr_detial_id();
 
+        Log.v("Details_id",""+dcr_id+" "+Details_id);
         switch (dcrDetailModelList.getType()) {
             case "1":
                 dcrDetailViewBinding.imgCust.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.map_dr_img));
