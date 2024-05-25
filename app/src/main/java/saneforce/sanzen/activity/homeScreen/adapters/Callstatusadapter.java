@@ -23,12 +23,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.TreeSet;
 
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.homeScreen.modelClass.EventCalenderModelClass;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
+import saneforce.sanzen.commonClasses.MyDayPlanEntriesNeeded;
 import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 import saneforce.sanzen.storage.SharedPref;
@@ -39,7 +41,7 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
     private final Context context;
     LocalDate selectedMonth;
     CommonUtilsMethods commonUtilsMethods;
-    ArrayList<String> dateStrings = new ArrayList<>();
+    TreeSet<String> dateStrings = new TreeSet<>();
     String selectedDate;
     private RoomDB roomDB;
     private MasterDataDao masterDataDao;
@@ -54,17 +56,18 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
         masterDataDao = roomDB.masterDataDao();
         dateStrings.clear();
         selectedDate = SharedPref.getSelectedDateCal(context);
-        try {
-            JSONArray getMissedDates = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
-            for (int i = 0; i < getMissedDates.length(); i++) {
-                JSONObject jsonObject = getMissedDates.getJSONObject(i);
-                if (jsonObject.getString("tbname").equalsIgnoreCase("missed") || jsonObject.getString("tbname").equalsIgnoreCase("dcr")) {
-                    dateStrings.add(jsonObject.getJSONObject("dt").getString("date").substring(0, 10));
-                }
-            }
-        } catch (Exception e) {
-            Log.v("Chkkk", "--error---" + e);
-        }
+        dateStrings = MyDayPlanEntriesNeeded.datesNeeded;
+//        try {
+//            JSONArray getMissedDates = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
+//            for (int i = 0; i < getMissedDates.length(); i++) {
+//                JSONObject jsonObject = getMissedDates.getJSONObject(i);
+//                if (jsonObject.getString("tbname").equalsIgnoreCase("missed") || jsonObject.getString("tbname").equalsIgnoreCase("dcr")) {
+//                    dateStrings.add(jsonObject.getJSONObject("dt").getString("date").substring(0, 10));
+//                }
+//            }
+//        } catch (Exception e) {
+//            Log.v("Chkkk", "--error---" + e);
+//        }
     }
 
     @NonNull
@@ -159,20 +162,21 @@ public class Callstatusadapter extends RecyclerView.Adapter<Callstatusadapter.Ca
                 String selectedDate = String.format("%s-%s-%s", list.getYear(), monthConverted, dayConverted);
                 if (selectedDate.equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd"))) {
                     isApplicableDate = true;
-                } else {
-                    if (HomeDashBoard.SequentialEntry.equalsIgnoreCase("0")) {
-                        if (selectedDate.equalsIgnoreCase(dateStrings.get(0))) {
-                            isApplicableDate = true;
-                        }
-                    } else {
-                        for (int i = 0; i < dateStrings.size(); i++) {
-                            if (selectedDate.equalsIgnoreCase(dateStrings.get(i))) {
+                }
+//                else {
+//                    if (HomeDashBoard.SequentialEntry.equalsIgnoreCase("0")) {
+//                        if (selectedDate.equalsIgnoreCase(dateStrings.first())) {
+//                            isApplicableDate = true;
+//                        }
+//                    } else {
+                        for (String date: dateStrings) {
+                            if (selectedDate.equalsIgnoreCase(date)) {
                                 isApplicableDate = true;
                                 break;
                             }
                         }
-                    }
-                }
+//                    }
+//                }
 
                 if (isApplicableDate) {
                     SharedPref.setSelectedDateCal(context, String.format("%s-%s-%s", list.getDateID(), list.getMonth(), list.getYear()));

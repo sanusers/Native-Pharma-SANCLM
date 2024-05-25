@@ -16,6 +16,7 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import saneforce.sanzen.R;
 import saneforce.sanzen.network.ApiInterface;
 import saneforce.sanzen.network.RetrofitClient;
 import saneforce.sanzen.storage.SharedPref;
@@ -43,7 +44,7 @@ public class LoginRepo {
                 Log.e("test","login failed : " + t);
                 LoginActivity.binding.progressBar.setVisibility(View.GONE);
                 LoginActivity.binding.loginBtn.setEnabled(true);
-                Toast.makeText(context.getApplicationContext(), "Please Try Again !",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), R.string.please_try_again,Toast.LENGTH_SHORT).show();
 
             }
         });

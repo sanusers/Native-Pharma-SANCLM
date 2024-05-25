@@ -400,4 +400,6 @@
     <string name="cannot_submit_work_plan">Cannot submit Work Plan!</string>
     <string name="day_submit_saved_locally">Day Submit saved locally</string>
     <string name="are_you_sure_to_delete">Are You Sure To Delete ?</string>
+    <string name="complete_day">Complete selected date to change date!</string>
+    <string name="please_try_again">Please Try Again !</string>
 </resources>

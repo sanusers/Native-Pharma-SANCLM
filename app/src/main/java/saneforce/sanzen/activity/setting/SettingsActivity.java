@@ -262,128 +262,85 @@ public class SettingsActivity extends AppCompatActivity {
         apiInterface = RetrofitClient.getRetrofit(getApplicationContext(), enteredUrl);
 
         try {
-            JSONArray jsonArray = new JSONArray("[{\"key\":\"GLSP1128_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/GL/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"49\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"GLSPDEV1128_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/devdp.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/GL/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"49\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"ALPT1612_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/AP/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"70\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"AURL1018_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/AM/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"71\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"DEMO2904_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/DEM/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"15\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"DEMO2603_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/ZF/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"1\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"DEMO2801_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/Dem/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"15\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"FUT5258_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/FP/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"34\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/FUT5258IC.png\"}},{\"key\":\"BALV2618_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/MS/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"79\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"BALG2618_1\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/BG/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"81\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"GLSP1128\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/GL/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"49\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"GLSPDEV1128\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/devdp.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/GL/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"49\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"ALPT1612\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/AP/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"70\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"AURL1018\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/AM/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"71\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"DEMO2904\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/DEM/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"15\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"DEMO2603\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/ZF/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"1\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"DEMO2801\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/Dem/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"15\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"FUT5258\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/FP/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"34\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/FUT5258IC.png\"}},{\"key\":\"BALV2618\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/MS/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"79\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"BALG2618\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/BG/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"81\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"demo123\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/ZF/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"1\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"test123\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/SC/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"44\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"DEMO\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/ST/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"22\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903IC.png\"}},{\"key\":\"sandemo\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/DP/download/\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"63\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"sandet\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/DP/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"63\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"ED19\",\"config\":{\"weburl\":\"http://edetailing.sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/KS/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"19\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"SLSC2811\",\"config\":{\"weburl\":\"http://sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/SI/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"4\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"MARK2023\",\"config\":{\"weburl\":\"http://sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/DP/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"63\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"parvathi\",\"config\":{\"weburl\":\"http://sanffa.info/\",\"baseurl\":\"iOSServer/db_parvathi.php?axn=\",\"appurl\":\"iOSServer/db_api_parvathi.php?axn=\",\"iosurl\":\"iOSServer/db_api_parvathi.php?axn=\",\"slideurl\":\"Edetailing_files/DP/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"63\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"SKDEMO\",\"config\":{\"weburl\":\"http://sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"slideurl\":\"Edetailing_files/KS/download/\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"19\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}},{\"key\":\"TECH\",\"config\":{\"weburl\":\"http://sanffa.info/\",\"baseurl\":\"iOSServer/db.php?axn=\",\"slideurl\":\"Edetailing_files/DP/download/\",\"iosurl\":\"iOSServer/db_api.php?axn=\",\"appurl\":\"iOSServer/db_api.php?axn=\",\"reportUrl\":\"iOSServer/DetailingReport/\",\"division\":\"63\",\"bgimg\":\"iOSServer/eDetCompImg/DEMO2903BG.png\",\"logoimg\":\"iOSServer/eDetCompImg/DEMO2903ICNew.png\"}}]");
-            boolean licenseKeyValid = false;
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObj = jsonArray.getJSONObject(i);
-                if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
-                    JSONObject config = new JSONObject(jsonObj.getString("config"));
-                    divisionCode = config.getString("division");
-                    baseWebUrl = config.getString("weburl");
-                    phpPathUrl = config.getString("appurl");
-                    reportsUrl = config.getString("reportUrl");
-                    slidesUrl = config.getString("slideurl");
-                    logoUrl = config.getString("logoimg");
+            Call<JsonArray> call = apiInterface.configuration("/Apps/ConfigiOS.json");
+            call.enqueue(new Callback<JsonArray>() {
+                @Override
+                public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
+                    Log.d("setting", "onResponse: " + response.isSuccessful() + "\n" + response.body());
+                    Log.d("setting", "onResponse: " + response.message() );
+                    Log.d("setting", "onResponse: " + response.errorBody() );
+                    Log.d("setting", "onResponse: " + response.headers());
+                    if (response.isSuccessful()) {
+                        Log.e("test", "success : " + response.body().toString());
+                        JSONArray jsonArray = null;
+                        try {
+                            jsonArray = new JSONArray(response.body().toString());
+                            boolean licenseKeyValid = false;
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObj = jsonArray.getJSONObject(i);
+                                if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
+                                    JSONObject config = new JSONObject(jsonObj.getString("config"));
+                                    divisionCode = config.getString("division");
+                                    baseWebUrl = config.getString("weburl");
+                                    phpPathUrl = config.getString("appurl");
+                                    reportsUrl = config.getString("reportUrl");
+                                    slidesUrl = config.getString("slideurl");
+                                    logoUrl = config.getString("logoimg");
 
-                    String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
-                    String urlData = web_url_getText + phpPathUrl;
-                    String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
+                                    String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
+                                    String urlData = web_url_getText + phpPathUrl;
+                                    String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
 
-                    SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
-                    SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
+                                    SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
+                                    SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
 
-                    String[] splitUrl = logoUrl.split("/");
-                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
-                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
-                    downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
-                    licenseKeyValid = true;
-                    SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
-                    SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
-                    break;
+                                    String[] splitUrl = logoUrl.split("/");
+                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
+                                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
+                                    downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
+                                    licenseKeyValid = true;
+                                    SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
+                                    SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
+                                    break;
+                                }
+                            }
+
+                            if (!licenseKeyValid){
+                                    binding.configurationPB.setVisibility(View.GONE);
+                                    binding.btnSaveSettings.setEnabled(true);
+                                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));}
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        SharedPref.Loginsite(getApplicationContext(), url);
+                    } else {
+                        binding.btnSaveSettings.setEnabled(true);
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                        binding.configurationPB.setVisibility(View.GONE);
+                    }
+
+
+
                 }
-            }
 
-            if (!licenseKeyValid){
-                binding.configurationPB.setVisibility(View.GONE);
-                binding.btnSaveSettings.setEnabled(true);
-                commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));
-            }
-            SharedPref.Loginsite(getApplicationContext(), url);
-        } catch (Exception e){
-            e.printStackTrace();
+                @Override
+                public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
+                    Log.e("test", "failed : " + t.toString());
+                    binding.btnSaveSettings.setEnabled(true);
+                    hitCount++;
+                    if (hitCount < 2) {
+                        configuration("http://" + url + "/apps/");
+                    } else {
+                        binding.configurationPB.setVisibility(View.GONE);
+                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
+                        Log.e("test", "hit count is : " + hitCount);
+                        hitCount = 0;
+                    }
+                }
+            });
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
-
-        navigate();
-//        try {
-//            Call<JsonArray> call = apiInterface.configuration("/Apps/ConfigiOS.json");
-//            call.enqueue(new Callback<JsonArray>() {
-//                @Override
-//                public void onResponse(@NonNull Call<JsonArray> call, @NonNull Response<JsonArray> response) {
-//                    Log.d("setting", "onResponse: " + response.isSuccessful() + "\n" + response.body());
-//                    Log.d("setting", "onResponse: " + response.message() );
-//                    Log.d("setting", "onResponse: " + response.errorBody() );
-//                    Log.d("setting", "onResponse: " + response.headers());
-//                    if (response.isSuccessful()) {
-//                        Log.e("test", "success : " + response.body().toString());
-//                        JSONArray jsonArray = null;
-//                        try {
-//                            jsonArray = new JSONArray(response.body().toString());
-//                            boolean licenseKeyValid = false;
-//                            for (int i = 0; i < jsonArray.length(); i++) {
-//                                JSONObject jsonObj = jsonArray.getJSONObject(i);
-//                                if (jsonObj.getString("key").equalsIgnoreCase(licenseKey)) {
-//                                    JSONObject config = new JSONObject(jsonObj.getString("config"));
-//                                    divisionCode = config.getString("division");
-//                                    baseWebUrl = config.getString("weburl");
-//                                    phpPathUrl = config.getString("appurl");
-//                                    reportsUrl = config.getString("reportUrl");
-//                                    slidesUrl = config.getString("slideurl");
-//                                    logoUrl = config.getString("logoimg");
-//
-//                                    String web_url_getText = "http://" + binding.etWebUrl.getText().toString().trim() + "/";
-//                                    String urlData = web_url_getText + phpPathUrl;
-//                                    String UploadUrl = urlData.substring(0, urlData.indexOf('?')) + "/";
-//
-//                                    SharedPref.setTagImageUrl(getApplicationContext(), web_url_getText);
-//                                    SharedPref.setTagApiImageUrl(getApplicationContext(), UploadUrl);
-//
-//                                    String[] splitUrl = logoUrl.split("/");
-//                                    SharedPref.saveUrls(getApplicationContext(), enteredUrl, licenseKey, baseWebUrl, phpPathUrl, reportsUrl, slidesUrl, logoUrl, true);
-//                                    SharedPref.setCallApiUrl(SettingsActivity.this, baseWebUrl + phpPathUrl.replaceAll("\\?.*", "/"));
-//                                    downloadImage(baseWebUrl + logoUrl, splitUrl[splitUrl.length - 1], enteredUrl);
-//                                    licenseKeyValid = true;
-//                                    SharedPref.setSaveUrlSetting(getApplicationContext(), binding.etWebUrl.getText().toString());
-//                                    SharedPref.setSaveLicenseSetting(getApplicationContext(), binding.etLicenseKey.getText().toString());
-//                                    break;
-//                                }
-//                            }
-//
-//                            if (!licenseKeyValid){
-//                                    binding.configurationPB.setVisibility(View.GONE);
-//                                    binding.btnSaveSettings.setEnabled(true);
-//                                    commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_Lis));}
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                        SharedPref.Loginsite(getApplicationContext(), url);
-//                    } else {
-//                        binding.btnSaveSettings.setEnabled(true);
-//                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
-//                        binding.configurationPB.setVisibility(View.GONE);
-//                    }
-//
-//
-//
-//                }
-//
-//                @Override
-//                public void onFailure(@NonNull Call<JsonArray> call, @NonNull Throwable t) {
-//                    Log.e("test", "failed : " + t.toString());
-//                    binding.btnSaveSettings.setEnabled(true);
-//                    hitCount++;
-//                    if (hitCount < 2) {
-//                        configuration("http://" + url + "/apps/");
-//                    } else {
-//                        binding.configurationPB.setVisibility(View.GONE);
-//                        commonUtilsMethods.showToastMessage(SettingsActivity.this, getString(R.string.invalid_url));
-//                        Log.e("test", "hit count is : " + hitCount);
-//                        hitCount = 0;
-//                    }
-//                }
-//            });
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//        }
     }
 
     public void downloadImage(String url, String imageName, String enteredUrl) {

@@ -1,5 +1,6 @@
 package saneforce.sanzen.commonClasses;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -12,10 +13,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -41,7 +48,7 @@ public class MyDayPlanEntriesNeeded {
     private static int callSyncSuccess = 0, dateSyncSuccess = 0;
     private static SyncTaskStatus syncTaskStatus;
 
-    public static void updateMyDayPlanEntriesNeeded(Context context, boolean shouldSync, SyncTaskStatus syncTaskStatus) {
+    public static void updateMyDayPlanEntryDates(Context context, boolean shouldSync, SyncTaskStatus syncTaskStatus) {
         masterDataDao = RoomDB.getDatabase(context).masterDataDao();
         offlineDaySubmitDao = RoomDB.getDatabase(context).offlineDaySubmitDao();
         apiInterface = RetrofitClient.getRetrofit(context, SharedPref.getCallApiUrl(context));
@@ -54,8 +61,8 @@ public class MyDayPlanEntriesNeeded {
     }
 
     public static void syncCallAndDate(Context context) {
-        callSyncSuccess = 0;
-        dateSyncSuccess = 0;
+//        callSyncSuccess = 0;
+//        dateSyncSuccess = 0;
         JSONObject jj = new JSONObject();
         try {
             jj.put("tableName", "gethome"); // -> call sync
@@ -125,22 +132,28 @@ public class MyDayPlanEntriesNeeded {
         datesNeeded.clear();
         TreeMap<String, String> dates = new TreeMap<>();
         try {
+            LocalDate dateBefore;
+            LocalDate currentDate = LocalDate.now().plusDays(1);
+            LocalDate limitDate = LocalDate.now().minusDays(91);
+            boolean isTodayPresent = false;
+
             JSONArray dcrdatas = masterDataDao.getMasterDataTableOrNew(Constants.CALL_SYNC).getMasterSyncDataJsonArray();
             if(dcrdatas.length()>0) {
                 for (int i = 0; i<dcrdatas.length(); i++) {
                     JSONObject jsonObject = dcrdatas.getJSONObject(i);
-                    String CustType = jsonObject.optString("CustType");
-                    String worktypeFlog = jsonObject.optString("FW_Indicator");
+                    String cusType = jsonObject.optString("CustType");
+                    String dayStatus = jsonObject.optString("day_status");
                     String date = jsonObject.optString("Dcr_dt");
-                    dates.put(date, CustType + worktypeFlog);
-                }
-                Log.v("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(dates.keySet().toArray()));
-                for (String date : dates.keySet()) {
-                    if(dates.get(date).equalsIgnoreCase("0F")) {
-                        datesNeeded.add(date);
+                    if(cusType.equalsIgnoreCase("0") && !dayStatus.equalsIgnoreCase("1")) {
+                        dateBefore = LocalDate.parse(date);
+                        if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
+                            dates.put(date, cusType+dayStatus);
+                            datesNeeded.add(date);
+                        }
+                        if(date.equalsIgnoreCase(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))) isTodayPresent = true;
                     }
                 }
-                Log.v("TAG 1.1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
+                Log.v("TAG 1", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
             JSONArray dateSync = masterDataDao.getMasterDataTableOrNew(Constants.DATE_SYNC).getMasterSyncDataJsonArray();
             if(dateSync.length()>0) {
@@ -152,7 +165,10 @@ public class MyDayPlanEntriesNeeded {
                     if(tbName.equalsIgnoreCase("missed") ||
                             (tbName.equalsIgnoreCase("dcr") && (flag.equalsIgnoreCase("2") || (flag.equalsIgnoreCase("3")))) ||
                             flag.equalsIgnoreCase("0")) {
-                        datesNeeded.add(date);
+                        dateBefore = LocalDate.parse(date);
+                        if(dateBefore != null && dateBefore.isBefore(currentDate) && dateBefore.isAfter(limitDate)) {
+                            datesNeeded.add(date);
+                        }
                     }
                 }
             }
@@ -164,18 +180,34 @@ public class MyDayPlanEntriesNeeded {
                 }
                 Log.v("TAG 3", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
             }
+            if(!isTodayPresent) {
+                datesNeeded.add(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4));
+                Log.v("TAG 4", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         Log.i("TAG", "setupMyDayPlanEntriesNeeded: " + Arrays.toString(datesNeeded.toArray()));
-        if(!SharedPref.getSelectedDateCal(context).isEmpty() && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
-            Log.e("set date switched", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
+        if(!SharedPref.getDayPlanStartedDate(context).isEmpty() && datesNeeded.contains(SharedPref.getDayPlanStartedDate(context)))  {
+            Log.e("set date switched", "setupMyDayPlanEntriesNeeded: " + SharedPref.getDayPlanStartedDate(context));
+            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, SharedPref.getDayPlanStartedDate(context)));
             syncTaskStatus.datesFound();
-        }else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && datesNeeded.isEmpty()) {
+        }
+        else if(!SharedPref.getSelectedDateCal(context).isEmpty() && datesNeeded.contains(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_34, TimeUtils.FORMAT_4, SharedPref.getSelectedDateCal(context)))) {
+            Log.e("set date switched", "setupMyDayPlanEntriesNeeded: " + SharedPref.getSelectedDateCal(context));
+            syncTaskStatus.datesFound();
+        }
+        else if(SharedPref.getSelectedDateCal(context).isEmpty() && !datesNeeded.isEmpty()){
+            SharedPref.setSelectedDateCal(context, TimeUtils.GetConvertedDate(TimeUtils.FORMAT_4, TimeUtils.FORMAT_34, datesNeeded.first()));
+            Log.e("set date first", "setupMyDayPlanEntriesNeeded: " + datesNeeded.first());
+            syncTaskStatus.datesFound();
+        }
+        else if(dates.containsKey(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4)) && Objects.requireNonNull(dates.get(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_4))).equalsIgnoreCase("01") && datesNeeded.isEmpty()) {
             SharedPref.setSelectedDateCal(context, "");
             Log.e("set date today finished", "setupMyDayPlanEntriesNeeded: dates empty");
             syncTaskStatus.noDatesFound();
-        }else if(!datesNeeded.isEmpty()) {
+        }
+        else if(!datesNeeded.isEmpty()) {
             if(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_34).equalsIgnoreCase(SharedPref.getSelectedDateCal(context))) {
                 new CommonUtilsMethods(context).showToastMessage(context, context.getString(R.string.not_chose_after_date));
                 Log.e("TAG", "setupMyDayPlanEntriesNeeded: today" );

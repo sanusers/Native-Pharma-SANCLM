@@ -1177,9 +1177,13 @@ public class DCRCallActivity extends AppCompatActivity {
 
             latEdit = js.getString("lati");
             lngEdit = js.getString("long");
+            Log.e("TAG", "jsonExtractOnline: lat , lng -> " + latEdit + lngEdit);
 
-
-
+            if(!isFromActivity.equalsIgnoreCase("new ") && GeoChk.equalsIgnoreCase("0") && (latEdit.isEmpty() || lngEdit.isEmpty())){
+                gpsTrack = new GPSTrack(this);
+                latEdit = String.valueOf(gpsTrack.getLatitude());
+                lngEdit = String.valueOf(gpsTrack.getLongitude());
+            }
 
 
             if (CallActivityCustDetails.get(0).getType().equalsIgnoreCase("1") || CallActivityCustDetails.get(0).getType().equalsIgnoreCase("4")) {
@@ -1398,6 +1402,7 @@ public class DCRCallActivity extends AppCompatActivity {
             Log.v("jsonExtractOnline", "----" + RCPAFragment.ProductSelectedList.size() + "----" + RCPASelectCompSide.rcpa_comp_list.size());
         } catch (Exception e) {
             Log.v("jsonExtractOnline", "----" + e);
+            e.printStackTrace();
         }
     }
 
@@ -1830,7 +1835,7 @@ public class DCRCallActivity extends AppCompatActivity {
             }
             Log.v("final_value_call", "---inputzise---"+ jsonArray.toString()                                                                                                          );
             jsonSaveDcr.put("JointWork", jsonArray);
-            SharedPref.setJWKCODE(context, JWKCodeList, TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5));
+            SharedPref.setJWKCODE(context, JWKCodeList,TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_5, HomeDashBoard.binding.textDate.getText().toString()));
 
             //Input
             jsonArray = new JSONArray();
@@ -2101,6 +2106,10 @@ public class DCRCallActivity extends AppCompatActivity {
 
             jsonSaveDcr.put("town_code", CallActivityCustDetails.get(0).getTown_code());
             jsonSaveDcr.put("town_name", CallActivityCustDetails.get(0).getTown_name());
+            if(isFromActivity.equalsIgnoreCase("edit_online")) {
+                jsonSaveDcr.put("town_code", new JSONObject(CallActivityCustDetails.get(0).getJsonArray()).getJSONArray("DCRDetail").getJSONObject(0).getString("SDP"));
+                jsonSaveDcr.put("town_name", new JSONObject(CallActivityCustDetails.get(0).getJsonArray()).getJSONArray("DCRDetail").getJSONObject(0).getString("SDP_Name"));
+            }
             jsonSaveDcr.put("ModTime", CurrentDate + " " + CurrentTime);
             jsonSaveDcr.put("ReqDt", TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_15, HomeDashBoard.binding.textDate.getText().toString()));
             jsonSaveDcr.put("day_flag", "0");
@@ -2178,6 +2187,7 @@ public class DCRCallActivity extends AppCompatActivity {
         } catch (Exception e) {
 
             Log.v("final_value_call", "---error----" + e);
+            e.printStackTrace();
             isCreateJsonSuccess = false;
         }
     }
