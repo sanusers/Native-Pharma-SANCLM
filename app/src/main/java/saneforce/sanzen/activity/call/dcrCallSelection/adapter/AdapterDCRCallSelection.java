@@ -27,6 +27,7 @@ import java.util.Objects;
 import saneforce.sanzen.R;
 import saneforce.sanzen.activity.call.DCRCallActivity;
 import saneforce.sanzen.activity.call.dcrCallSelection.DcrCallTabLayoutActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.activity.map.custSelection.CustList;
 import saneforce.sanzen.activity.call.profile.CustomerProfile;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
@@ -35,6 +36,7 @@ import saneforce.sanzen.roomdatabase.MasterTableDetails.MasterDataDao;
 import saneforce.sanzen.roomdatabase.RoomDB;
 
 import saneforce.sanzen.storage.SharedPref;
+import saneforce.sanzen.utility.TimeUtils;
 
 public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCallSelection.ViewHolder> {
     Context context;
@@ -141,7 +143,7 @@ public class AdapterDCRCallSelection extends RecyclerView.Adapter<AdapterDCRCall
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(CommonUtilsMethods.getCurrentInstance("yyyy-MM-dd")) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
+                    if (jsonObject.getString("Dcr_dt").equalsIgnoreCase(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_4, HomeDashBoard.binding.textDate.getText().toString())) && jsonObject.getString("CustCode").equalsIgnoreCase(cusListArrayList.get(position).getCode())) {
                         isVisitedToday = true;
                         break;
                     }

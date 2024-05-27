@@ -369,7 +369,7 @@ public class Call_adapter extends RecyclerView.Adapter<Call_adapter.listDataView
                         Log.v("editCall", jsonObject.toString());
                         Intent intent = new Intent(context, DCRCallActivity.class);
                         CallActivityCustDetails = new ArrayList<>();
-                        CallActivityCustDetails.add(0, new CustList(docName, docCode, type, transSlno, aDetSLNo, "", jsonObject.toString()));
+                        CallActivityCustDetails.add(0, new CustList(docName.substring(0, docName.lastIndexOf(" ---")).trim(), docCode, type, transSlno, aDetSLNo, "", jsonObject.toString()));
                         intent.putExtra(Constants.DETAILING_REQUIRED, "false");
                         intent.putExtra(Constants.DCR_FROM_ACTIVITY, "edit_online");
                         intent.putExtra("remainder_save", "0");

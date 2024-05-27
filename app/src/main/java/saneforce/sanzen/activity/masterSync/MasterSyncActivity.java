@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,16 +135,13 @@ public class    MasterSyncActivity extends AppCompatActivity {
     boolean isDataAvailable;
     CommonUtilsMethods commonUtilsMethods;
     private RoomDB db;
-
-   static   Context context;
+    private static Context context;
     private MasterDataDao masterDataDao;
     private TourPlanOfflineDataDao tourPlanOfflineDataDao;
     private TourPlanOnlineDataDao tourPlanOnlineDataDao;
     private SlidesDao SlidesDao;
-
-
-
-
+    private boolean isCallSynced = false, isDateSynced = false;
+    private int dayPlanDelayCount = 0;
     public    String isFrom="",SFTP_Date_sp="",SFTP_Date="";
     public   int JoningDate,JoiningMonth, JoinYear;
 
@@ -557,7 +555,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         for (int i = 0; i < arrayList.size(); i++) {
                             arrayForAdapter.get(i).setPBarVisibility(true);
                             masterSyncAdapter.notifyDataSetChanged();
-                            sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
+                            if(arrayList.get(i).getRemoteTableName().equalsIgnoreCase("gettodaydcr")){
+                                setDelayForDayPlanSync(arrayList, i);
+                            }else {
+                                sync(arrayList.get(i).getMasterOf(), arrayList.get(i).getRemoteTableName(), arrayList, i);
+                            }
                         }
                     } else {
                         commonUtilsMethods.showToastMessage(MasterSyncActivity.this, getString(R.string.no_network));
@@ -685,21 +687,22 @@ public class    MasterSyncActivity extends AppCompatActivity {
 
     public void prepareArray(String hqCode) {
         doctorModelArray.clear();
-        MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), doctorCount, Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
-        MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, specialityCount, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
-        MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, qualificationCount, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
-        MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, categoryCount, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
-        MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
-        MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, classCount, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
-        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, feedbackCount, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
 
-        doctorModelArray.add(doctorModel);
-        doctorModelArray.add(spl);
-        doctorModelArray.add(ql);
-        doctorModelArray.add(cat);
-        doctorModelArray.add(dep);
-        doctorModelArray.add(clas);
-        doctorModelArray.add(feedback);
+        //Listed Doctor
+        if (SharedPref.getDrNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel doctorModel = new MasterSyncItemModel(SharedPref.getDrCap(this), doctorCount, Constants.DOCTOR, "getdoctors", Constants.DOCTOR + hqCode, doctorStatus, false);
+            MasterSyncItemModel spl = new MasterSyncItemModel(Constants.SPECIALITY, specialityCount, Constants.DOCTOR, "getspeciality", Constants.SPECIALITY, specialityStatus, false);
+            MasterSyncItemModel ql = new MasterSyncItemModel(Constants.QUALIFICATION, qualificationCount, Constants.DOCTOR, "getquali", Constants.QUALIFICATION, qualificationStatus, false);
+            MasterSyncItemModel cat = new MasterSyncItemModel(Constants.CATEGORY, categoryCount, Constants.DOCTOR, "getcategorys", Constants.CATEGORY, categoryStatus, false);
+            MasterSyncItemModel dep = new MasterSyncItemModel(Constants.DEPARTMENT, departmentCount, Constants.DOCTOR, "getdeparts", Constants.DEPARTMENT, departmentStatus, false);
+            MasterSyncItemModel clas = new MasterSyncItemModel(Constants.CLASS, classCount, Constants.DOCTOR, "getclass", Constants.CLASS, classStatus, false);
+            doctorModelArray.add(doctorModel);
+            doctorModelArray.add(spl);
+            doctorModelArray.add(ql);
+            doctorModelArray.add(cat);
+            doctorModelArray.add(dep);
+            doctorModelArray.add(clas);
+        } else binding.listedDr.setVisibility(View.GONE);
 
         //Chemist
         chemistModelArray.clear();
@@ -773,19 +776,18 @@ public class    MasterSyncActivity extends AppCompatActivity {
         //DCR
         dcrModelArray.clear();
         MasterSyncItemModel callSyncModel = new MasterSyncItemModel(Constants.CALL_SYNC, callSyncCount, "Home", "gethome", Constants.CALL_SYNC, callSyncStatus, false);
-        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN, -1, Constants.DOCTOR, "gettodaydcr", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
-        MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, visitControlCount, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
         MasterSyncItemModel dateSyncModel = new MasterSyncItemModel(Constants.DATE_SYNC, dateSyncCount, "Home", "getdcrdate", Constants.DATE_SYNC, dateSyncStatus, false);
+        MasterSyncItemModel myDayPlanModel = new MasterSyncItemModel(Constants.MY_DAY_PLAN, -1, Constants.DOCTOR, "gettodaydcr", Constants.MY_DAY_PLAN, myDayPlanStatus, false);
         MasterSyncItemModel stockBalanceModel = new MasterSyncItemModel(Constants.STOCK_BALANCE, -1, "AdditionalDcr", "getstockbalance", Constants.STOCK_BALANCE_MASTER, stockBalanceStatus, false);
-     //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
-
-
+        //   MasterSyncItemModel EventCallSync = new MasterSyncItemModel("Status", -1, "AdditionalDcr", "gettodycalls", Constants.CALENDER_EVENT_STATUS, calenderEventStaus, false);
         dcrModelArray.add(callSyncModel);
         dcrModelArray.add(dateSyncModel);
         dcrModelArray.add(myDayPlanModel);
-        dcrModelArray.add(visitControlModel);
         dcrModelArray.add(stockBalanceModel);
-
+        if(SharedPref.getVstNd(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel visitControlModel = new MasterSyncItemModel(Constants.VISIT_CONTROL, visitControlCount, "AdditionalDcr", "getvisit_contro", Constants.VISIT_CONTROL, visitControlStatus, false);
+            dcrModelArray.add(visitControlModel);
+        }
 
         //Work Type
         workTypeModelArray.clear();
@@ -825,9 +827,15 @@ public class    MasterSyncActivity extends AppCompatActivity {
         subordinateModelArray.add(subMgrModel);
         subordinateModelArray.add(jWorkModel);
 
+        //Other
         otherModelArray.clear();
-        MasterSyncItemModel Quiz = new MasterSyncItemModel("Quiz", Quixcount, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
-        otherModelArray.add(Quiz);
+        MasterSyncItemModel feedback = new MasterSyncItemModel(Constants.FEEDBACK, feedbackCount, Constants.DOCTOR, "getdrfeedback", Constants.FEEDBACK, feedbackStatus, false);
+        otherModelArray.add(feedback);
+        if(SharedPref.getQuizNeed(this).equalsIgnoreCase("0")) {
+            MasterSyncItemModel Quiz = new MasterSyncItemModel("Quiz", Quixcount, "AdditionalDcr", "getquiz", Constants.QUIZ, QuizStatus, false);
+            otherModelArray.add(Quiz);
+        }
+
         //Setup
         setupModelArray.clear();
         MasterSyncItemModel setupModel = new MasterSyncItemModel(Constants.SETUP, setupCount, Constants.SETUP, "getsetups", Constants.SETUP, setupStatus, false);
@@ -1010,16 +1018,20 @@ public class    MasterSyncActivity extends AppCompatActivity {
                         ArrayList<MasterSyncItemModel> childArray = new ArrayList<>(masterSyncAllModel.get(i));
                         itemCount += childArray.size();
                         for (int j = 0; j < childArray.size(); j++) {
-                            if (hqChanged) {
-                                if (childArray.get(j).getLocalTableKeyName().contains(rsf)) {
+                            if(childArray.get(j).getRemoteTableName().equalsIgnoreCase("gettodaydcr")){
+                                setDelayForDayPlanSync(childArray, j);
+                            }else {
+                                if(hqChanged) {
+                                    if(childArray.get(j).getLocalTableKeyName().contains(rsf)) {
+                                        childArray.get(j).setPBarVisibility(true);
+                                        masterSyncAdapter.notifyDataSetChanged();
+                                        sync(childArray.get(j).getMasterOf(), childArray.get(j).getRemoteTableName(), childArray, j);
+                                    }
+                                }else {
                                     childArray.get(j).setPBarVisibility(true);
                                     masterSyncAdapter.notifyDataSetChanged();
                                     sync(childArray.get(j).getMasterOf(), childArray.get(j).getRemoteTableName(), childArray, j);
                                 }
-                            } else {
-                                childArray.get(j).setPBarVisibility(true);
-                                masterSyncAdapter.notifyDataSetChanged();
-                                sync(childArray.get(j).getMasterOf(), childArray.get(j).getRemoteTableName(), childArray, j);
                             }
                         }
                     }
@@ -1031,6 +1043,20 @@ public class    MasterSyncActivity extends AppCompatActivity {
             }
         });
         networkStatusTask.execute();
+    }
+
+    private void setDelayForDayPlanSync(ArrayList<MasterSyncItemModel> childArray, int position) {
+        new Handler().postDelayed(() -> {
+            dayPlanDelayCount++;
+            if(dayPlanDelayCount == 8 || (isDateSynced && isCallSynced)) {
+                dayPlanDelayCount = 0;
+                isCallSynced = false;
+                isDateSynced = false;
+                sync(childArray.get(position).getMasterOf(), childArray.get(position).getRemoteTableName(), childArray, position);
+            }else {
+                setDelayForDayPlanSync(childArray, position);
+            }
+        }, 5000);
     }
 
     public void sync(String masterOf, String remoteTableName, ArrayList<MasterSyncItemModel> masterSyncItemModels, int position) {
@@ -1064,7 +1090,7 @@ public class    MasterSyncActivity extends AppCompatActivity {
                     break;
                 }
                 case "gettodaydcr": {
-                    MyDayPlanEntriesNeeded.updateMyDayPlanEntriesNeeded(this, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
+                    MyDayPlanEntriesNeeded.updateMyDayPlanEntryDates(this, false, new MyDayPlanEntriesNeeded.SyncTaskStatus() {
                         @Override
                         public void datesFound() {
                             try {
@@ -1153,7 +1179,11 @@ public class    MasterSyncActivity extends AppCompatActivity {
                                         SharedPref.saveMasterLastSync(getApplicationContext(), dateAndTime);
                                         masterDataDao.saveMasterSyncData(new MasterDataTable(masterSyncItemModels.get(position).getLocalTableKeyName(), jsonArray.toString(), 0));
                                         if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.CALL_SYNC)){
+                                            isCallSynced = true;
                                             CallDataRestClass.resetcallValues(context);
+                                        }
+                                        else if(masterSyncItemModels.get(position).getLocalTableKeyName().equalsIgnoreCase(Constants.DATE_SYNC)){
+                                            isDateSynced = true;
                                         }
                                         if (masterOf.equalsIgnoreCase("AdditionalDcr") && masterSyncItemModels.get(position).getRemoteTableName().equalsIgnoreCase("getstockbalance")) {
                                             if (jsonArray.length() > 0) {

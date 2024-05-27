@@ -57,6 +57,7 @@ import saneforce.sanzen.activity.call.adapter.jwOthers.AdapterCallJointWorkList;
 import saneforce.sanzen.activity.call.pojo.CallCaptureImageList;
 import saneforce.sanzen.activity.call.pojo.CallCommonCheckedList;
 import saneforce.sanzen.activity.camera.CameraActivity;
+import saneforce.sanzen.activity.homeScreen.HomeDashBoard;
 import saneforce.sanzen.commonClasses.CommonUtilsMethods;
 import saneforce.sanzen.commonClasses.Constants;
 import saneforce.sanzen.databinding.FragmentJwothersBinding;
@@ -125,7 +126,7 @@ public class JWOthersFragment extends Fragment {
         HiddenVisibleFunction();
         SetupAdapter();
 
-        if(TimeUtils.getCurrentDateTime(TimeUtils.FORMAT_5).equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
+        if(TimeUtils.GetConvertedDate(TimeUtils.FORMAT_27, TimeUtils.FORMAT_5, HomeDashBoard.binding.textDate.getText().toString()).equalsIgnoreCase(SharedPref.getJWKDATE(requireContext()))) {
             if (isFromActivity.equalsIgnoreCase("new")) {
                 Log.v("Testing","new");
                 String getjwkcode = SharedPref.getJWKCODE(requireContext());

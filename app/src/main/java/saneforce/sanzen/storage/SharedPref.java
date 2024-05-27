@@ -395,6 +395,7 @@ public class SharedPref {
     public static final String POB_UNLISTED_DR_NEED = "Pob_Unlstdr_Nd";
     public static final String DCR_SEQUENTIAL = "dcr_sequential";
 
+    public static final String DAY_PLAN_STARTED = "day_plan_started";
 
 
 
@@ -2294,7 +2295,6 @@ public class SharedPref {
         return context.getSharedPreferences(SETHQ_DETAILS, MODE_PRIVATE).getString(SETHQCODE, "");
     }
 
-
     public static void setJWKCODE(Context context, List<String> Jwkcode, String JwkDate) {
         Gson  gson = new Gson();
         String json = gson.toJson(Jwkcode);
@@ -2321,8 +2321,6 @@ public class SharedPref {
         return context.getSharedPreferences(SETSYNHQ, MODE_PRIVATE).getString(SETSYN_HQCODE, "");
     }
 
-
-
     public static void setSKIP(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2332,7 +2330,6 @@ public class SharedPref {
     public static boolean getskipstatus(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SKIPSTATUS, false);
     }
-
 
     public static void setSKIPDate(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -2344,7 +2341,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(SKIPDATE, "");
     }
 
-
     public static void setPolicyStaus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2355,8 +2351,6 @@ public class SharedPref {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(POLICY_STAUS, false);
     }
 
-
-
     public static void setTpSyncStaus(Context context, boolean status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -2366,6 +2360,17 @@ public class SharedPref {
     public static boolean getTpSyncStaus(Context context) {
         return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(TPSYNC_STAUS, false);
     }
+
+    public static String getDayPlanStartedDate(Context context) {
+        return context.getSharedPreferences(SP_NAME, MODE_PRIVATE).getString(DAY_PLAN_STARTED, "");
+    }
+
+    public static void setDayPlanStartedDate(Context context, String date) {
+        sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putString(DAY_PLAN_STARTED, date).apply();
+    }
+
     public static void setDcrSequential(Context context, String status) {
         sharedPreferences = context.getSharedPreferences(SP_NAME, MODE_PRIVATE);
         editor = sharedPreferences.edit();
